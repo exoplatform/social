@@ -192,27 +192,46 @@
   height: 16px;
   margin: 5px 7px;
   cursor: pointer;
+	float: left;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer .UIActionContainer .InviteButton {
+.UISpaceSettingPortlet .UISpaceMember .TitleContainer .InviteButton {
   background: url('DefaultSkin/background/SearchAddMember.png') no-repeat right 13px;
   width: 20px;
   height: 34px;
   margin: auto;
   cursor: pointer;
+	display: block;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleBar {
-  background: url('DefaultSkin/background/TitleBar.gif') repeat-x ;
+  background: #a0a0a0;
   line-height: 21px;
   font-weight: bold;
-  padding-left: 20px;
   color: #000000;
-  margin-top: 6px;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer {
-  background: #dfdfdf ;
+.UISpaceSettingPortlet .UISpaceMember .TitleContainerMembers {
+  background: #f8f8f8;
+	border: solid 5px #eeeeee;
+	border-top-left-radius: 5px 5px;
+	border-top-right-radius: 5px 5px;
+	-moz-border-radius-topright: 5px 5px;
+	-moz-border-radius-topleft: 5px 5px;
+	-webkit-border-radius-topleft: 5px 5px;
+	-webkit-border-radius-topleft: 5px 5px;
+}
+
+.UISpaceSettingPortlet .UISpaceMember .TableSpace{
+	margin-top: 5px;
+}
+
+.UISpaceSettingPortlet .UISpaceMember .TableSpace .TitleAction{
+	width: 80px;
+}
+
+.UISpaceSettingPortlet .UISpaceMember .TableSpace .MemberWidth{
+	width: 25%;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContent {
@@ -244,58 +263,60 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonSub {
-  background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat left top;
-  width: 14px;
+  background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat center top;
   height: 14px;
-  margin: 4px 120px;
-  cursor: pointer;
+	width: 14px;
+	margin: auto;
+	display: block;
+	cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonAdd {
-  background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
+  background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat center top;
   height: 14px;
-  margin: 0 120px;
-  width: 14px;
-  cursor: pointer;
+	width: 14px;
+	margin: auto;
+	display: block;
+	cursor: pointer;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer .DeleteMemberButton {
-  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-  width: 15px;
-  height: 16px;
-  cursor: pointer;
-  margin: 0 120px;
-  display: block;
+.UISpaceSettingPortlet .UISpaceMember .DeleteButton{
+  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat center center;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .RevokeInvitedButton {
-  background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat left center;
-  width: 15px;
-  height: 16px;
-  cursor: pointer;
-  margin: 0 41px;
+.UISpaceSettingPortlet .UISpaceMember .IconDelete{
+	display: block;
+	height: 16px;
+	width: 16px;
+	margin: auto;
+	cursor: pointer;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ValidateButton {
   background: url('DefaultSkin/background/ValidateButton.gif') no-repeat left top;
   height: 15px;
-  margin: 2px 2px 2px 33px;
+  margin-top: 2px;
   width: 17px;
   cursor: pointer;
-  float: left;
+	display: inline-block;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .DeclineButton {
   background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
+	display: inline-block;
   width: 14px;
   height: 15px;
   cursor: pointer;
-  float: left;
-  margin: 2px 10px 2px 2px;
+  margin-top:2px;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteButton {
-  float: left;
+.UISpaceSettingPortlet .UISpaceMember .AlginPendding{
+	text-align: center;
+}
+
+.UISpaceSettingPortlet .UISpaceMember .TitleContainer .ButtonSelectUse{
+	margin-left: 0;
+	padding: 5px 0 8px 10px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .IconButton {
@@ -324,7 +345,6 @@
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .SearchInviteForm {
   padding:4px 16px;
   margin: 8px 8px 0 0;
-  float: left;
   width: 590px;
 }
 /***********************UI Space Application********************************/
