@@ -52,6 +52,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- Add a new Space</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Spaces</td>
 	<td></td>
@@ -59,11 +64,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Add a new Space</td>
 	<td></td>
 </tr>
 <tr>
@@ -92,13 +92,18 @@
 	<td>This is description for Space_06</td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Create</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -133,7 +138,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Add Activites</td>
+	<td>-- Add Activites and Share link</td>
 	<td></td>
 </tr>
 <tr>
@@ -150,11 +155,6 @@
 	<td>type</td>
 	<td>composerInput</td>
 	<td>This is activity for Space 06</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- share link</td>
-	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -178,11 +178,6 @@
 	<td>http://google.com</td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- click attach button</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForElementPresent</td>
 	<td>AttachButton</td>
 	<td></td>
@@ -193,13 +188,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- share all</td>
-	<td></td>
-</tr>
-<tr>
 	<td>pause</td>
-	<td>3000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -228,8 +218,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyElementPresent</td>
+	<td>link=Google</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td></td>
+	<td>Source : http://www.google.com</td>
+</tr>
+<tr>
 	<td>echo</td>
-	<td>-- Comment for activity added</td>
+	<td>-- Add Comment for activity --</td>
 	<td></td>
 </tr>
 <tr>
@@ -265,6 +265,26 @@
 <tr>
 	<td>verifyTextPresent</td>
 	<td>This is Comment for Activity in Space 06</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Delete Commnet--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[8]/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[8]/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertConfirmation</td>
+	<td>Are you sure to delete this comment?</td>
 	<td></td>
 </tr>
 <tr>
