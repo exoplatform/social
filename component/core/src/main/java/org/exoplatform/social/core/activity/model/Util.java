@@ -37,7 +37,7 @@ public class Util {
         if (a1 == null || a2 == null) {
           throw new IllegalArgumentException("Cannot compare null Activity");
         }
-        return (int) (a2.getPostedTime() - a1.getPostedTime());
+        return a2.getPostedTime().compareTo(a1.getPostedTime());
       }
     };
   }
