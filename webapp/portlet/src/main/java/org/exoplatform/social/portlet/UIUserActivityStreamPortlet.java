@@ -20,15 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.UIPopupMessages;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
@@ -47,7 +47,6 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
   template = "app:/groovy/social/portlet/UIUserActivityStreamPortlet.gtmpl"
 )
 public class UIUserActivityStreamPortlet extends UIPortletApplication {
-  private static final Log LOG = ExoLogger.getLogger(UIUserActivityStreamPortlet.class);
   private String ownerName;
   private String viewerName;
   private UIComposer uiComposer;
@@ -112,4 +111,16 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
     return str.contains(activities);
   }
 
+  /**
+   * Renders popup message in case this child has not rendered in template.
+   * 
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  protected void renderPopupMessages() throws Exception {
+    UIPopupMessages popupMess = getUIPopupMessages();
+    if(popupMess == null)  return;
+    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
+    popupMess.processRender(context);
+  }
 }

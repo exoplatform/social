@@ -87,7 +87,7 @@ public class LinkShareRestServiceTest extends AbstractResourceTest {
     h.putSingle("content-length", "" + data.length);
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("POST", "/social/linkshare/show.json", "", h, data, writer);
-    assertEquals(500, response.getStatus());
+    assertEquals(200, response.getStatus());
     //assertEquals("text/plain", response.getContentType().toString());
   }
 

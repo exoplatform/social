@@ -37,6 +37,7 @@
       <% uicomponent.renderChild(PopupContainer.class); %>
       <% uicomponent.renderChild(UIComposer.class); %>
       <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
+      <% uicomponent.renderPopupMessages(); %>
     </div>
   </div>  
 </div>
