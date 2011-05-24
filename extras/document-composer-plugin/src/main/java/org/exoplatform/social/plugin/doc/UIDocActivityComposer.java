@@ -114,7 +114,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     showDocumentPopup(docActivityComposer);
   }
 
-  private void showDocumentPopup(UIDocActivityComposer docActivityComposer) {
+  private UIPopupWindow showDocumentPopup(UIDocActivityComposer docActivityComposer) {
     UIComposer uiComposer = docActivityComposer.getAncestorOfType(UIComposer.class);
     UIContainer optionContainer = uiComposer.getOptionContainer();
 
@@ -157,6 +157,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
         LOG.error(e);
       }
     }
+    return uiPopup;
   }
 
   @Override
@@ -296,7 +297,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
       docActivityComposer.rootpath = new StringBuilder().append("/Users/").
                                                          append(event.getRequestContext().getRemoteUser()).
                                                          append("/").toString();
-      docActivityComposer.showDocumentPopup(docActivityComposer);
+      UIPopupWindow uiPopup = docActivityComposer.showDocumentPopup(docActivityComposer);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 }
