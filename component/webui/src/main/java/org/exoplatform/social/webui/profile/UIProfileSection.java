@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -83,6 +84,17 @@ public abstract class UIProfileSection extends UIForm {
     return pp.isEditable();
   }
 
+  /**
+   * Escapes HTML.
+   * 
+   * @param value
+   * @return
+   * @since 1.2.0-Beta3
+   */
+  public String escapeHtml(String value) {
+    return StringEscapeUtils.escapeHtml(value);
+  }
+  
   /**
    * Get user
    *

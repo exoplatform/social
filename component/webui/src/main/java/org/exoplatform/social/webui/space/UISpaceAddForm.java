@@ -18,9 +18,9 @@ package org.exoplatform.social.webui.space;
 
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
@@ -126,8 +126,11 @@ public class UISpaceAddForm extends UIFormTabPane {
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setDisplayName(space.getDisplayName().trim());
-      if (space.getDescription() == null) {
+      String spaceDescription = space.getDescription();
+      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+      } else {
+        space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
       }
       String msg = MSG_SPACE_CREATION_SUCCESS;
       try {

@@ -89,7 +89,7 @@ public class UIHeaderSection extends UIProfileSection {
       UIFormStringInput uiPosition = uiHeaderSect.getChildById(Profile.POSITION);
       String position = uiPosition.getValue();
       Profile p = uiHeaderSect.getProfile();
-      p.setProperty(Profile.POSITION, position);
+      p.setProperty(Profile.POSITION, sect.escapeHtml(position));
       Utils.getIdentityManager().updateProfile(p);
     }
   }

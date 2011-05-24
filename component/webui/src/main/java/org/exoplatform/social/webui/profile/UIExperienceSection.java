@@ -526,10 +526,10 @@ public class UIExperienceSection extends UIProfileSection {
         endDate = null;
       }
 
-      uiMap.put(Profile.EXPERIENCES_COMPANY, company);
-      uiMap.put(Profile.EXPERIENCES_POSITION, position);
-      uiMap.put(Profile.EXPERIENCES_DESCRIPTION, description);
-      uiMap.put(Profile.EXPERIENCES_SKILLS, skills);
+      uiMap.put(Profile.EXPERIENCES_COMPANY, escapeHtml(company));
+      uiMap.put(Profile.EXPERIENCES_POSITION, escapeHtml(position));
+      uiMap.put(Profile.EXPERIENCES_DESCRIPTION, escapeHtml(description));
+      uiMap.put(Profile.EXPERIENCES_SKILLS, escapeHtml(skills));
       uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
       uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
       uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);
