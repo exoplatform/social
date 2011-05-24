@@ -63,6 +63,28 @@ div, table, tr, td, img, form{
 	font-size: 12px;
 }
 
+h1 {font-size: 22px;}
+
+h2 {font-size: 18px;}
+
+h3 {font-size: 16px;}
+
+h4 {font-size: 14px;}
+
+h5 {font-size: 12px;}
+
+h6 {font-size: 11px;}
+
+img {
+	border: none;
+}
+
+ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
 .UIWorkingWorkspace{
 	width: 100%;
 	background: #eee;
@@ -78,31 +100,6 @@ div, table, tr, td, img, form{
 	float: left; /* orientation=rt */
 }
 
-img {
-	border: none;
-}
-
-
-ul {
-	list-style: none;
-	padding: 0px;
-	margin: 0px;
-}
-
-.ClearFix:after {
-	content: ".";
-	display: block;
-	height: 0px;
-	clear: both;
-	visibility: hidden;
-}
-
-.ClearFix {
-	!display: inline-block;
-	!zoom: 1;
-	!display: block;
-}
-
 .UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage {
 	padding: 0px 8px;
 }
@@ -115,8 +112,4 @@ ul {
 	  background-color: #eee;
 	  margin:auto;
 	  width:100%;
-}
-
-p, h1, h2, h3, h4, h5, h6 {
-	margin: 0px;
 }

@@ -83,19 +83,6 @@
   white-space: nowrap;
 }
 
-.UILinkShareDisplay .ContentRight {
-
-}
-
-.UILinkShareDisplay .ContentRight .InputTitle {
-
-}
-
-.UILinkShareDisplay .ContentRight .InputDescription {
-
-}
-
-
 .UILinkShareDisplay .ContentRight .Title {
   color: #000000;
   width: 550px;
@@ -120,11 +107,18 @@
   color: #999999;
 }
 
+.LinkShare {
+	margin: 8px 0;
+}
+
 .LinkShare .Thumbnail {
-  float: left;
-  margin-right: 10px;
+  float: left; /* orientation=lt */
+  float: right; /* orientation=rt */
+  margin-right: 10px; /* orientation=lt */
+  margin-left: 10px; /* orientation=rt */
 }
 
 .LinkShare .Content {
-  margin-left: 110px;
+  float: left; /* orientation=lt */
+  float: right; /* orientation=rt */
 }

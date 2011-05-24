@@ -100,7 +100,7 @@
     <div class="$blastInput">
       <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
     </div>
-    <div class="BlastShare clearfix">
+    <div class="BlastShare ClearFix">
       <div class="AttachMents">
       $attachLabel:
       <%
