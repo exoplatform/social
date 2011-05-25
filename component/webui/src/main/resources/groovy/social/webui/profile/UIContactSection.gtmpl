@@ -223,7 +223,7 @@
         <!--              ims          -->
         <% if (isEditable) {%>
           <tr>
-            <td class="FieldLabel" style="width: 33%;"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
+            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
             <td class="FieldComponent">
               <%
                 if (isEdit) { %>
