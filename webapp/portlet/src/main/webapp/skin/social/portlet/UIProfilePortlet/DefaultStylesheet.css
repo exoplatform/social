@@ -191,29 +191,24 @@
 	margin: 4px 0px;
 }
 
-.UIProfile .ATitleBarL {
-	background: url('DefaultSkin/background/ATitleBarL.gif') no-repeat left top;
-	padding-left: 4px;
+.UIProfile .TitleBar {
+	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat 20px top;
+	padding-bottom: 4px;
 	margin-top: 8px;
 }
 
-.UIProfile .ATitleBarR {
-	background: url('DefaultSkin/background/ATitleBarR.gif') no-repeat right top;
-	padding-right: 4px;
+.UIProfile .ATitleBar {
+	background: #9d9d9d;
+	-moz-border-radius: 5px 5px 0px 0px;
+	height: 21px;
+	padding: 0px 15px;
+	line-height: 21px;
 }
 
-.UIProfile .ATitleBarM {
-	background: url('DefaultSkin/background/ATitleBarM.gif') repeat-x;
-	padding-left: 4px;
-}
-
-.UIProfile .ATitleBarC {
-	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat left top;
-	height: 25px;
+.UIProfile .ATitleBar h5 {
 	color: white;
-	margin-left: 8px;
-	line-height: 20px;
-	font-weight: bold;
+	margin: 0px;
+	font-size: 12px;
 }
 
 .UIProfile .EditIcon {
@@ -273,18 +268,14 @@
        FORM
  */
 .UIProfile .UIFormGrid {
-	padding: 8px 0px 0px 30px;
-	margin-bottom: 0;
-	margin-left: 30px;
-	margin-right: 0;
-	margin-top: 8px;
+	margin: 0px;
 }
 
 .UIProfile .Container .FieldLabel {
 	text-align: right;
 	padding: 4px;
 	font-weight: bold;
-	width: 130px;
+	width: 170px;
 }
 
 .UIProfile .Container .FieldComponent {
@@ -516,6 +507,14 @@ input.hint,textarea.hint {
 	margin-top: 2px;
 }
 
+.UIProfile .UIBasicInfoSection .UIFormGrid {
+	width: 100%;
+}
+
+.UIProfile .UIContactSection .UIFormGrid {
+	width: 100%;
+}
+
 .UIProfile .UIHeaderSection input {
 	height: 16px;
 }
@@ -526,14 +525,13 @@ input.hint,textarea.hint {
 
 .UIProfile .UIContactSection .UIForm td.FieldComponent {
 	padding: 2px;
-	font-size: 11px;
+	line-height: 16px;
 }
 
 .UIProfile .UIContactSection .UIForm td.FieldLabel {
-	padding: 2px;
-  text-align: right;
-  vertical-align: top;
-  font-size: 11px;
+  padding: 2px;
+  line-height: 16px;
+  width: 20%;
 }
 
 .UIProfile .UIContactSection .NoContactInformation {
@@ -542,12 +540,11 @@ input.hint,textarea.hint {
 
 .UIProfile .UIBasicInfoSection .UIForm td.FieldComponent {
 	padding: 2px;
-	font-size: 11px;
+	line-height: 16px;
 }
 
 .UIProfile .UIBasicInfoSection .UIForm td.FieldLabel {
-	padding: 2px;
-  text-align: right;
-  vertical-align: top;
-  font-size: 11px;
-
+  padding: 2px;
+  line-height: 16px;
+  width: 20%;
+}

@@ -20,24 +20,16 @@
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 %>
-<div class="TitleBar" id="$uicomponent.id">
-
-  <div class="ATitleBarL">
-    <div class="ATitleBarR">
-      <div class="ATitleBarM">
-        <div class="ATitleBarC">
-          <div class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></div>
-          <% if (isEditable) { %>
-            <% if (!isEdit) { %>
-              <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon">&nbsp;</a>
-            <% } else { %>
-              <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon">&nbsp;</a>
-              <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon">&nbsp;</a>
-             <% } %>
-          <% } %>
-        </div>
-      </div>
-    </div>
-  </div>
-
+<div class="UITitleBar" id="$uicomponent.id">
+	<div class="TitleBar">
+	  <% if (isEditable) { %>
+		<% if (!isEdit) { %>
+		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon">&nbsp;</a>
+		<% } else { %>
+		  <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon">&nbsp;</a>
+		 <% } %>
+	  <% } %>
+	  <h5 class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h5>
+	</div>
 </div>
