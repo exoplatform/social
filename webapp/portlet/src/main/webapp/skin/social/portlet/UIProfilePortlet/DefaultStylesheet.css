@@ -191,21 +191,22 @@
 	margin: 4px 0px;
 }
 
-.UIProfile .TitleBar {
+.UIProfile .UITitleBar {
 	background: url('DefaultSkin/background/ATitleBarC.gif') no-repeat 20px top;
 	padding-bottom: 4px;
 	margin-top: 8px;
 }
 
-.UIProfile .ATitleBar {
+.UIProfile .TitleBar {
 	background: #9d9d9d;
 	-moz-border-radius: 5px 5px 0px 0px;
+	-webkit-border-radius: 5px 5px 0px 0px;
 	height: 21px;
 	padding: 0px 15px;
 	line-height: 21px;
 }
 
-.UIProfile .ATitleBar h5 {
+.UIProfile .TitleBar h5 {
 	color: white;
 	margin: 0px;
 	font-size: 12px;
