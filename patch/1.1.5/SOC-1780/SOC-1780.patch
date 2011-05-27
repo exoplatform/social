@@ -1,0 +1,15 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(revision 69549)
++++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(working copy)
+@@ -166,9 +166,7 @@
+       uiPopup.setShow(false);
+       UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+       uiPortalApp.localizeNavigations();
+-      UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChild(UIWorkingWorkspace.class);
+-      uiWorkingWS.updatePortletsByName("SocialUserToolBarGroupPortlet");
+-      uiWorkingWS.updatePortletsByName("SpacesToolbarPortlet"); // For social demo
++      SpaceUtils.updateWorkingWorkSpace();
+     }
+   }
+ 
