@@ -85,7 +85,6 @@ public final class Util {
         break;
       }
     }
-    
     return viewerId;
   }
 

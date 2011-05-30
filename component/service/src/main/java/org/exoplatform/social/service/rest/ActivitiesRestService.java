@@ -375,7 +375,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
   private String getRemoteId(UriInfo uriInfo, String portalName) throws Exception {
     String viewerId = Util.getViewerId(uriInfo);
-    Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+    Identity identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, false);
     return identity.getRemoteId();
   }
 

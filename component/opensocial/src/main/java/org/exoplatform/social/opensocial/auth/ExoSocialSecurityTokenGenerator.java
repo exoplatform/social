@@ -30,9 +30,6 @@ import org.exoplatform.portal.gadget.core.SecurityTokenGenerator;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.web.application.RequestContext;
 
 public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
@@ -76,38 +73,9 @@ public class ExoSocialSecurityTokenGenerator implements SecurityTokenGenerator {
 
   public String createToken(String gadgetURL, Long moduleId) {
     RequestContext context = RequestContext.getCurrentInstance();
-    String rUserId = getIdentityId(context.getRemoteUser());
-
-
-    //PortalRequestContext request = Util.getPortalRequestContext() ;
-    //String uri = request.getNodePath();
-
-
-    //String[] els = uri.split("/");
+    String rUserId = context.getRemoteUser();
     String ownerId = rUserId;
-//    if (els.length >= 3 && els[1].equals("people")) {
-//      ownerId = getIdentityId(els[2]);
-//    }
-    /*else if(els.length == 2 && els[1].equals("mydashboard")) {
-      owner = rUser;
-    }*/
-
     return createToken(gadgetURL, ownerId, rUserId, moduleId, "default");
-  }
-
-  protected String getIdentityId(String remoteId){
-    PortalContainer pc = PortalContainer.getInstance();
-    IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-
-    Identity id = null;
-    try {
-      id = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId);
-    } catch (Exception e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-    }
-    if(id != null)
-      return id.getId();
-    return null;
   }
 
   private BlobCrypter getBlobCrypter(String fileName) throws IOException {

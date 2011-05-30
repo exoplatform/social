@@ -34,6 +34,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.jcr.QuerySpec;
 import org.exoplatform.social.common.jcr.QuerySpec.Operation;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -140,7 +141,12 @@ public class ExoService {
       PortalContainer pc = (PortalContainer) getPortalContainer(st);
       IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
-      Identity identity = im.getIdentity(id, loadProfile);
+      Identity identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, loadProfile);
+      
+      if (identity == null) {
+        identity = im.getIdentity(id, loadProfile);
+      }
+
 
       if(identity == null) throw new Exception("\n\n\n can't find identity \n\n\n");
 

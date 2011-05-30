@@ -35,6 +35,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -289,7 +290,8 @@ public class SpacesRestService implements ResourceContainer {
   
   private String getRemoteId(UriInfo uriInfo) throws Exception {
     String viewerId = Util.getViewerId(uriInfo);
-    Identity identity = getIdentityManager().getIdentity(viewerId);
+    Identity identity = getIdentityManager()
+      .getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, false);
     return identity.getRemoteId();
   }
 
