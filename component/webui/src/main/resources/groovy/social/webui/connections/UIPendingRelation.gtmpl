@@ -16,28 +16,19 @@
   def portalURI = pcontext.getPortalURI();
   def pendingRelationIdx = 0;
 %>
-<div class="ActivitiesTitleBarM">
+<h5 class="ActivitiesTitleBarM">
   <%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
-</div>
-<div class="UIPendingRelation" id="$uicomponent.id">
-  <div class="UITabPane">
-    <div class="ContainerSpace">
-      <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-
-      <div class="ATitleBarL">
-        <div class="ATitleBarR">
-          <div class="ATitleBarM">
-            <div class="ATitleBarC">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
-            </div>
-          </div>
-        </div>
-      </div>
+</h5>
+<div class="UIPendingRelation UITabPane ContainerSpace" id="$uicomponent.id">
+		<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+	<div class="UISocTitleBar">
+		<h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
+	</div>
       <%if ((list == null) || (list.size() == 0)) {%>
-          <div class="ContentSpace">
-            <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
-            <% def peopleURL = portalURI + "people" %>
-            </div>
+	<div class="ContentSpace">
+		<p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+		<% def peopleURL = portalURI + "people" %>
+		</p>
         <div class="UIAction">
             <table class="ActionContainer">
               <tbody>
@@ -57,11 +48,8 @@
               </tbody>
             </table>
          </div>
-            <div style="clear: left;"><span></span></div>
-          </div>
-
+		</div>
       <%}%>
-
       <%	for(relation in list) {
           def identity = relation.getPartner(currIdentity);
           def profileURL = identity.profile.url;
@@ -79,23 +67,19 @@
         <% } else {%>
           <div class="ContentSpace ClearFix">
         <% }%>
-          <div class="AvartarPeopleBG">
-               <img src="$imageSource"/>
-            </div>
-          <div class="CommunityContainer">
-            <div class="CommunityMane Line ClearFix">
-                <div class="CommunityName" style="float: left; cursor:pointer;"><a href="${profileURL}" style="color: #afafaf;">${fullName}</a></div>
+            <img class="ImgAvantar" alt="" src="$imageSource"/>
+            <div class="CommunityMane ClearFix">
+             <a class="CommunityName TitlePersonConect" href="${profileURL}">${fullName}</a>
                <% if (isEditable) {%>
-             <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
              <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+             <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
               <% } %>
             </div>
             <% if(position.length() > 0) { %>
-              <div class="CommunityContent" style="padding: 4px;">
-                <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-              </div>
+			<div class="TitlePosition">
+				<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+			</div>
             <% } %>
-          </div>
           </div>
      <% } %>
       <%
@@ -104,5 +88,3 @@
          }
        %>
     </div>
-  </div>
-</div>

@@ -37,7 +37,6 @@
 
 .UIProfile {
   padding: 8px;
-  font-family: tahoma;
   font-size: 11px;
   background: white;
   zoom: 100%;
@@ -98,7 +97,7 @@
   padding-left: 20px;
 }
 
-.UITabPane .ContainerSpace .ActionBar .CenterButton .SaveIcon{
+.ContainerSpace .ActionBar .CenterButton .SaveIcon{
   background: url('DefaultSkin/background/SaveIcon.gif') no-repeat left;
   line-height: 18px; width: auto;
   padding-left: 20px;
@@ -219,7 +218,7 @@
   color: #CC0000;
 }
 
- .ContainerSpace .ActionBar {
+.ContainerSpace .ActionBar {
   float: right;
   margin: 3px 4px 0px 0px;
   cursor: pointer;
@@ -273,7 +272,7 @@
 /**
  * Refactor to share the css with Spaces
  */
-.UITabPane .ContainerSpace{
+.ContainerSpace{
 	padding:10px;
 	background: #fff;
 }
@@ -304,17 +303,28 @@
 }
 
 .UITabPane .AvartarPeopleBG{
- background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
- width: 52px;
- height: 52px;
- padding: 6px 0px 0px 6px;
- float: left;
- margin: 8px;
+	background: url('DefaultSkin/background/AvartarPeopleBG.gif') no-repeat left top;
+	width: 52px;
+	height: 52px;
+	padding: 6px 0px 0px 6px;
+	float: left;
+	margin: 8px;
 }
 
-.UITabPane .AvartarPeopleBG img {
- width: 47px;
- height: 47px;
+.UITabPane img {
+	width: 47px;
+	height: 47px;
+}
+
+.ContainerSpace .ImgAvantar{
+	background: #fff;
+	border: solid 1px #ebebeb;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	float: left;
+	margin: 5px 0 8px 7px;
+	padding: 5px;
 }
 
 .ActivitiesTitleBarM{
@@ -323,25 +333,24 @@
   color: #7d7d7d;
   line-height: 21px;
   text-align: center;
-  font-weight: bold;
+	margin: 0px;
 }
 
-
-.UITabPane .ContainerSpace .ContentSpace {
+.ContainerSpace .ContentSpace {
   background: white;
   padding: 8px;
   margin-bottom:1px;
   background: #fbfbfb;
 }
 
-.UITabPane .ContainerSpace .ContentSpaceGray {
+.ContainerSpace .ContentSpaceGray {
   background: white;
   padding: 8px;
   margin-bottom:1px;
   background: #f3f3f3;
 }
 
-.UITabPane .ContainerSpace .ActivityContentSpace {
+.ContainerSpace .ActivityContentSpace {
   background: white;
   border:1px solid #c7c7c7;
   padding: 8px;
@@ -349,12 +358,11 @@
   width: 928px;
 }
 
-.UITabPane .ContainerSpace .CommunityIcon {
+.ContainerSpace .CommunityIcon {
   float: left;
 }
 
-
-.UITabPane .ContainerSpace .CommunityContainer {
+.ContainerSpace .CommunityContainer {
   padding-left: 16px;
   margin-left: 76px;
 }
@@ -364,35 +372,22 @@
   margin-left: 76px;
 }
 
-.UITabPane .ContainerSpace .Line {
-  border-bottom:1px solid #B7B7B7;
-}
-
-.UITabPane .ContainerSpace .Text {
+.ContainerSpace .Text {
   line-height: 16px;
 }
 
-.UITabPane .ContainerSpace .TagsName {
+.ContainerSpace .TagsName {
   color: #b7b7b7;
   line-height: 16px;
-}
-
-.UITabPane .ContainerSpace .CommunityMane {
-  color: #0d6e8f;
-  height: 20px;
-  font-size: 11px;
-  font-family: tahoma;
-  font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .ContainerSpace .CommunityMane {
   color: #0d6e8f;
   height: 20px;
-  font-size: 11px;
-  font-family: tahoma;
+  font-size: 12px;
   font-weight: bold;
-  margin-bottom: 5px;
+	margin: 0px 0px 5px 92px;
+	border-bottom:1px solid #B7B7B7;
 }
 
 .UITabPane .Title {
@@ -423,6 +418,7 @@
   height: 40px;
   line-height: 40px;
 }
+
 .UITabPane .noContact .LeftNocontact{
   background: url('DefaultSkin/background/LeftNocontact.gif') no-repeat left top;
   padding-left: 9px; width: 60%;
@@ -468,14 +464,16 @@ input.hint, textarea.hint {
   color:#999999 !important;
 }
 
-
-.UITabPane .ContainerSpace .WaitingConfirmation {
-  padding-left:5px;
+.ContainerSpace .WaitingConfirmation {
+	padding-left:5px;
+	color: ##0D6E8F;
+	font-size: 11px;
 }
 
 .ContainerSpace .NotYet {
-  color:gray;
-  text-align:center;
+	color:gray;
+	margin: 0px;
+	text-align:center;
 }
 
 .ContainerSpace .NoneExperience {
@@ -491,4 +489,14 @@ input.hint, textarea.hint {
   float: right;
   padding: 5px 8px 5px 6px;
   margin-left: 4px;
+}
+
+.ContainerSpace .TitlePersonConect{
+	color: #afafaf;
+	float: left; 
+	cursor:pointer;
+}
+
+.ContainerSpace .TitlePosition{
+	margin: 0px 0px 0px 92px;
 }
