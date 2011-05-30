@@ -699,7 +699,7 @@ public class SpaceServiceImpl implements SpaceService {
     // appHandler.installApplication(space, appId); // not implement yet
     // setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId),
     // Space.INSTALL_STATUS);
-    spaceLifeCycle.addApplication(space, appId);
+    spaceLifeCycle.addApplication(space, getPortletId(appId));
   }
 
   /**
@@ -719,7 +719,8 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     setApp(space, appId, appName, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
     appHandler.activateApplication(space, appId, appName);
-    spaceLifeCycle.activateApplication(space, appId);
+    // Use portletId instead of appId for fixing SOC-1633.
+    spaceLifeCycle.activateApplication(space, getPortletId(appId));
   }
 
   /**
@@ -743,7 +744,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.deactiveApplication(space, appId);
     setApp(space, appId, appId, SpaceUtils.isRemovableApp(space, appId), Space.DEACTIVE_STATUS);
-    spaceLifeCycle.deactivateApplication(space, appId);
+    spaceLifeCycle.deactivateApplication(space, getPortletId(appId));
   }
 
   /**
@@ -763,7 +764,7 @@ public class SpaceServiceImpl implements SpaceService {
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
     appHandler.removeApplication(space, appId, appName);
     removeApp(space, appId, appName);
-    spaceLifeCycle.removeApplication(space, appId);
+    spaceLifeCycle.removeApplication(space, getPortletId(appId));
   }
 
   /**
@@ -1325,5 +1326,21 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public ListAccess<Space> getInvitedSpacesWithListAccess(String userId) {
     return new SpaceListAccess(this.storage, userId, SpaceListAccess.Type.INVITED);  
+  }
+  
+  /**
+   * Returns portlet id.
+   */
+  private String getPortletId(String appId) {
+    final char SEPARATOR = '.';
+    
+    if (appId.indexOf(SEPARATOR) != -1) {
+      int beginIndex = appId.lastIndexOf(SEPARATOR) + 1;
+      int endIndex = appId.length();
+    
+      return appId.substring(beginIndex, endIndex);
+    }
+    
+    return appId;  
   }
 }
