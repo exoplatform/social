@@ -19,8 +19,8 @@
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
 %>
-<div class="UIMyRelations" id="$uicomponent.id">
-  <div class="UITabPane">
+<div class="UIMyRelations UITabPane" id="$uicomponent.id">
+
     <div class="ActivitiesTitleBarM">
      <% if (isOwner) {%>
         <%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
@@ -36,20 +36,17 @@
     <div class="ContainerSpace">
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
-       <div class="ATitleBarL">
-        <div class="ATitleBarR">
-          <div class="ATitleBarM">
-            <div class="ATitleBarC">
+       <div class="UISocTitleBar">
+            <h5 class="TitleBar">
             <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
-            </div>
-          </div>
-        </div>
+
+        </h5>
       </div>
       <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
         <div class="ContentSpace">
-            <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
             <% def peopleURL = portalURI + "people" %>
-            </div>
+            </p>
         <% if (isOwner) {%>
         <div class="UIAction">
             <table class="ActionContainer">
@@ -71,7 +68,6 @@
             </table>
          </div>
          <% } %>
-            <div style="clear: left;"><span></span></div>
          </div>
       <%}%>
 
@@ -93,16 +89,16 @@
          <% } else {%>
           <div class="ContentSpace ClearFix">
        <% }%>
-        <div class="AvartarPeopleBG">
+        <a href="#" class="AvartarPeopleBG">
              <img src="$imageSource"/>
-          </div>
+          </a>
         <div class="CommunityContainer">
-          <div class="CommunityMane Line">
-              <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
+          <div class="CommunityMane Line ClearFix">
+            <a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a>
        <% if (isEditable) {%>
-                 <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
+            <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
        <% } %>
-              <div style="clear: both;"><span/></div>
+              
           </div>
        <% if(position.length() > 0) { %>
         <div class="CommunityContent" style="padding: 4px;">
@@ -110,7 +106,6 @@
         </div>
        <% } %>
         </div>
-        <div style="clear: left;"><span></span></div>
       </div>
     <%  }
       }
@@ -119,5 +114,5 @@
       }
      %>
     </div>
-  </div>
+
 </div>

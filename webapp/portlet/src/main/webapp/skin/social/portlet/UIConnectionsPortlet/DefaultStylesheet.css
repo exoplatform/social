@@ -314,6 +314,7 @@
  padding: 6px 0px 0px 6px;
  float: left;
  margin: 8px;
+ display: block;
 }
 
 .UITabPane .AvartarPeopleBG img{
@@ -493,6 +494,7 @@ input.hint, textarea.hint {
 .ContainerSpace .NotYet {
 	color:gray;
 	text-align:center;
+	margin: 0px;
 }
 
 .ContainerSpace .NoneExperience {
