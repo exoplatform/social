@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="" />
-<title>Test_SNF_SOC_25_Demo_ViewOtherUserActivity</title>
+<link rel="selenium.base" href="http://localhost:8080/ksdemo/public/classic/" />
+<title>Test_SNF_DOC_30_Demo_ViewConnectionListOtherUser</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SNF_SOC_25_Demo_ViewOtherUserActivity</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SNF_DOC_30_Demo_ViewConnectionListOtherUser</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -47,69 +47,34 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>link=Activities</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Activities</td>
+	<td>echo</td>
+	<td>--Invite User--</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=My Status</td>
+	<td>link=Directory</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=My Status</td>
+	<td>link=Directory</td>
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Add Activites</td>
+	<td>--Accept invitation--</td>
 	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>composerInput</td>
-	<td>This is activity for User_Demo_25</td>
-</tr>
-<tr>
-	<td>keyPress</td>
-	<td>composerInput</td>
-	<td>\13</td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>ShareButton</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>ShareButton</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Verify activity is added</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td></td>
-	<td>This is activity for User_Demo_25</td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td></td>
-	<td>This is activity for User_Demo_25</td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -122,8 +87,68 @@
 	<td></td>
 </tr>
 <tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>john</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a[2]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
-	<td>-- View other user activities</td>
+	<td>-- View other user Connections list--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
 	<td></td>
 </tr>
 <tr>
@@ -178,23 +203,28 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIProfileNavigationPortlet']//a[@class='ActivityIcon']</td>
+	<td>//div[@id='UIProfileNavigationPortlet']/div[3]/div[3]/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='UIProfileNavigationPortlet']//a[@class='ActivityIcon']</td>
+	<td>//div[@id='UIProfileNavigationPortlet']/div[3]/div[3]/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
+	<td>John Anthony</td>
 	<td></td>
-	<td>This is activity for User_Demo_25</td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
+	<td>John Anthony</td>
 	<td></td>
-	<td>This is activity for User_Demo_25</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Remove Connection--</td>
+	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -204,11 +234,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--Delete Activity</td>
 	<td></td>
 </tr>
 <tr>
@@ -243,57 +268,32 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Activities</td>
+	<td>link=Connections</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Activities</td>
+	<td>link=Connections</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=My Status</td>
+	<td>//div[@id='UIMyConnections']/div/div[2]/div[3]/div[2]/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=My Status</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td></td>
-	<td>This is activity for User_Demo_25</td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td></td>
-	<td>This is activity for User_Demo_25</td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//h5/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//h5/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure to delete this activity?</td>
+	<td>//div[@id='UIMyConnections']/div/div[2]/div[3]/div[2]/div/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextNotPresent</td>
-	<td>This is activity for User_Demo_25</td>
+	<td>John Anthony</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>This is activity for User_Demo_25</td>
+	<td>John Anthony</td>
 	<td></td>
 </tr>
 <tr>
@@ -306,11 +306,7 @@
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
-<tr>
-	<td>close</td>
-	<td></td>
-	<td></td>
-</tr>
+
 </tbody></table>
 </body>
 </html>

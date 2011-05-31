@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- Update Profile</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -117,7 +112,32 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>--Check display new user in directory--</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>eXo Test_26</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>eXo Test_26</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
@@ -134,6 +154,11 @@
 <tr>
 	<td>echo</td>
 	<td>-- Update Profile</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
 	<td></td>
 </tr>
 <tr>
@@ -204,6 +229,16 @@
 <tr>
 	<td>click</td>
 	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>eXo Tester</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>eXo Tester</td>
 	<td></td>
 </tr>
 <tr>
@@ -519,6 +554,26 @@
 <tr>
 	<td>waitForConfirmation</td>
 	<td>Are you sure you want to delete test_user_26 user?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Directory</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>eXo Test_26</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>eXo Test_26</td>
 	<td></td>
 </tr>
 <tr>
