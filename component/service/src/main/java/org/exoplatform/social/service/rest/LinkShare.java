@@ -292,6 +292,7 @@ public class LinkShare extends DefaultFilter {
         remover
     };
     XMLParserConfiguration parser = new HTMLConfiguration();
+    parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "UTF-8");
     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
     parser.setDocumentHandler(this);
     XMLInputSource source = new XMLInputSource(null, link, null);
