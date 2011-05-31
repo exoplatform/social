@@ -25,7 +25,6 @@
   import org.exoplatform.webui.core.UIPageIterator
 
   def list = uicomponent.getList();
-  def currIdentity = uicomponent.getCurrentIdentity();
   def iterator = uicomponent.getUIPageIterator();
   def peopleIdx = 0
 %>

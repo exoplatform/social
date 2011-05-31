@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.webui.profile;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,8 +41,8 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 /**
  * Displays information about all existing users. Manages actions
  * such as request make connection, invoke request, accept or deny invitation
@@ -163,8 +162,8 @@ public class UIDisplayProfileList extends UIContainer {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
-      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,  currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
+      Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,  currUserId, false);
+      Identity requestedIdentity = im.getIdentity(userId, false);
       RelationshipManager rm = portlet.getRelationshipManager();
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
       // Check if invitation is established by another user
@@ -198,8 +197,8 @@ public class UIDisplayProfileList extends UIContainer {
 
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
+                                                       currUserId, false);
+      Identity requestedIdentity = im.getIdentity(userId, false);
       RelationshipManager rm = portlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
       Relationship rel = rm.getRelationship(currIdentity, requestedIdentity);
@@ -226,8 +225,8 @@ public class UIDisplayProfileList extends UIContainer {
       String currUserId = portlet.getCurrentUserName();
       IdentityManager im = portlet.getIdentityManager();
       Identity currIdentity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                       currUserId);
-      Identity requestedIdentity = im.getIdentity(userId);
+                                                       currUserId, false);
+      Identity requestedIdentity = im.getIdentity(userId, false);
       RelationshipManager rm = portlet.getRelationshipManager();
       // Check if invitation is revoked or deleted by another user
       UIApplication uiApplication = event.getRequestContext().getUIApplication();
@@ -259,18 +258,6 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Gets the identity of current user is viewed by another.<br>
-   *
-   * @return identity of current user who is viewed.
-   *
-   * @throws Exception
-   */
-  public Identity getCurrentViewerIdentity() throws Exception {
-    IdentityManager im = getIdentityManager();
-    return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentViewerUserName());
-  }
-
-  /**
    * Gets contact status between current user and identity that is checked.<br>
    *
    * @param identity
@@ -281,11 +268,12 @@ public class UIDisplayProfileList extends UIContainer {
    * @throws Exception
    */
   public Relationship.Type getContactStatus(Identity identity) throws Exception {
-    if (identity.getId().equals(getCurrentIdentity().getId()))
+    Identity currentIdentity = getCurrentIdentity(false);
+    if (identity.getId().equals(currentIdentity.getId()))
       return Relationship.Type.SELF;
     RelationshipManager rm = getRelationshipManager();
-    Relationship rl = rm.getRelationship(identity, getCurrentIdentity());
-    return rm.getRelationshipStatus(rl, getCurrentIdentity());
+    Relationship rl = rm.getRelationship(identity, currentIdentity);
+    return rm.getRelationshipStatus(rl, currentIdentity);
   }
 
   /**
@@ -339,9 +327,9 @@ public class UIDisplayProfileList extends UIContainer {
    *
    * @throws Exception
    */
-  public Identity getCurrentIdentity() throws Exception {
+  public Identity getCurrentIdentity(boolean forceLoadProfile) throws Exception {
       IdentityManager im = getIdentityManager();
-      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName());
+      return im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getCurrentUserName(), forceLoadProfile);
   }
 
   /**
@@ -379,11 +367,12 @@ public class UIDisplayProfileList extends UIContainer {
     if (matchIdentities == null) {
       return loadAllProfiles();
     }
-
+    String currentIdentityId = getCurrentIdentity(false).getId();
+    
     Iterator<Identity> itr = matchIdentities.iterator();
     while(itr.hasNext()) {
       Identity id = itr.next();
-      if(id.getId() == getCurrentIdentity().getId()){
+      if(id.getId().equals(currentIdentityId)){
         itr.remove();
       }
     }
@@ -417,9 +406,10 @@ public class UIDisplayProfileList extends UIContainer {
     IdentityManager im = getIdentityManager();
     List<Identity> ids = im.getIdentities(OrganizationIdentityProvider.NAME);
     Iterator<Identity> itr = ids.iterator();
+    String currentIdentityId = getCurrentIdentity(false).getId();
     while(itr.hasNext()) {
       Identity id = itr.next();
-      if(id.getId() == getCurrentIdentity().getId()){
+      if(id.getId().equals(currentIdentityId)){
         itr.remove();
       }
     }
