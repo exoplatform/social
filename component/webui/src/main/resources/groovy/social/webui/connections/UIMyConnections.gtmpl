@@ -19,28 +19,23 @@
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
 %>
-<div class="UIMyRelations UITabPane" id="$uicomponent.id">
+<h5 class="CommonTitleBar">
+ <% if (isOwner) {%>
+	<%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
+ <%} else {
+	def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
+	userRelationList = userRelationList.replace("{0}", currIdentity.profile.fullName);
+ %>
+  <%= userRelationList %>
 
-    <div class="ActivitiesTitleBarM">
-     <% if (isOwner) {%>
-        <%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
-     <%} else {
-        def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
-        userRelationList = userRelationList.replace("{0}", currIdentity.profile.fullName);
-     %>
-      <%= userRelationList %>
+ <%}%>
 
-     <%}%>
-
-    </div>
-    <div class="ContainerSpace">
+</h5>
+<div class="UIMyRelations UITabPane ContainerSpace" id="$uicomponent.id">
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
        <div class="UISocTitleBar">
-            <h5 class="TitleBar">
-            <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
-
-        </h5>
+            <h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
       </div>
       <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
         <div class="ContentSpace">
@@ -89,23 +84,18 @@
          <% } else {%>
           <div class="ContentSpace ClearFix">
        <% }%>
-        <a href="#" class="AvartarPeopleBG">
-             <img src="$imageSource"/>
-          </a>
-        <div class="CommunityContainer">
-          <div class="CommunityMane Line ClearFix">
-            <a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a>
-       <% if (isEditable) {%>
-            <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
-       <% } %>
-              
-          </div>
+		  <img class="ImgAvatar" src="$imageSource" alt="#"/>
+		  <div class="CommunityMane ClearFix">
+			  <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
+			   <% if (isEditable) {%>
+						 <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
+			   <% } %>
+		  </div>
        <% if(position.length() > 0) { %>
-        <div class="CommunityContent" style="padding: 4px;">
+        <div class="CommunityContent">
           <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
         </div>
        <% } %>
-        </div>
       </div>
     <%  }
       }
@@ -114,5 +104,3 @@
       }
      %>
     </div>
-
-</div>
