@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -16,220 +16,219 @@
  */
 
 .DisplayNone {
-  display: none;
-}
-
-.UIActivity {
+	display: none;
 }
 
 .UIActivity .AvatarPeopleBG img {
-  height:47px;
-  width:47px;
+	height:47px;
+	width:47px;
 }
 
-
 .UIActivity .Avatar {
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -78px; /* orientation=lt */
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat scroll right -78px; /* orientation=rt */
-  float:left; /* orientation=lt */
-  float:right; /* orientation=rt */
-  height:60px;
-  padding-left:4px; /* orientation=lt */
-  padding-right:4px; /* orientation=rt */
-  padding-top:4px;
-  width:60px;
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -78px; /* orientation=lt */
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat scroll right -78px; /* orientation=rt */
+	float:left; /* orientation=lt */
+	float:right; /* orientation=rt */
+	height:60px;
+	padding-left:4px; /* orientation=lt */
+	padding-right:4px; /* orientation=rt */
+	padding-top:4px;
+	width:60px;
 }
 
 .UIActivity .Avatar img {
-  width:56px;
-  height:54px;
+	width:56px;
+	height:54px;
 }
 
 .UIActivity .AvatarCM {
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat left -143px; /* orientation=lt */
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat right -143px; /* orientation=rt */
-  float:left; /* orientation=lt */
-  float:right; /* orientation=rt */
-  height:40px;
-  padding: 3px 0 0 3px; /* orientation=lt */
-  padding: 3px 3px 0 0; /* orientation=rt */
-  width:4%;
-  margin: 0;
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat left -143px; /* orientation=lt */
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat right -143px; /* orientation=rt */
+	float:left; /* orientation=lt */
+	float:right; /* orientation=rt */
+	height:40px;
+	padding: 3px 0 0 3px; /* orientation=lt */
+	padding: 3px 3px 0 0; /* orientation=rt */
+	width:4%;
+	margin: 0;
 }
 
 .UIActivity .AvatarCM img {
-  height:36px;
-  width:38px;
-  margin: 0;
-  padding: 0;
+	height:36px;
+	width:38px;
+	margin: 0;
+	padding: 0;
 }
 
 .UIActivity .DownIconCM {
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat 20px -323px; /* orientation=lt */
-  background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat 98% -323px; /* orientation=rt */
-  display: block;
-  height: 4px;
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat 20px -323px; /* orientation=lt */
+	background:url("/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png") no-repeat 98% -323px; /* orientation=rt */
+	display: block;
+	height: 4px;
 }
 
 .UIActivity .NormalBox {
-  padding: 4px 0px;
-  border-bottom: 1px solid #e2ddc7;
+	padding: 4px 0px;
+	border-bottom: 1px solid #e2ddc7;
 }
 
 .UIActivity .NormalBox .textarea {
-  border: 1px solid #e2ddc7;
-  background: white;
+	border: 1px solid #e2ddc7;
+	background: white;
 }
 
 .UIActivity .NormalBox .CommentBox textarea {
-  width: 99%;
-  height: 30px;
-  font-size: 11px;
+	width: 99%;
+	height: 30px;
+	font-size: 11px;
 }
 
 .UIActivity .NormalBox .CommentBox .CommentButton {
-  border: 1px solid #d6cfb4;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  background: white;
-  padding: 2px 10px;
-  float: right;
-  cursor: pointer;
-  margin-right: 5px;
+	border: 1px solid #d6cfb4;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	background: white;
+	padding: 2px 10px;
+	float: right;
+	cursor: pointer;
+	margin-right: 5px;
 }
 
 .UIActivity .CommentBox {
-  padding: 4px;
-  background: #f0ede2;
-  margin-bottom: 2px;
+	padding: 4px;
+	background: #f0ede2;
+	margin-bottom: 2px;
 }
 
 .UIActivity .ContentBox {
-  margin: 0 0 0 74px; /* orientation=lt */
-  margin: 0 74px 0 0; /* orientation=rt */
+	margin: 0 0 0 74px; /* orientation=lt */
+	margin: 0 74px 0 0; /* orientation=rt */
 }
 
-.UIActivity .ContentBox .Content .ContentBlock {
+.UIActivity .ContentBox .ContentBlock {
 	margin: 0; 
-	padding: 0; 
-	float: left; 
-	text-align: justify;
-	width: 100%;
 }
 
 .UIActivity .CommentBox .ContentBox {
 	margin: 0 0 0 4px; /* orientation=lt */
 	margin: 0 4px 0 0; /* orientation=rt */
-  padding:0;
-  width: 93%;
-  float: left; /* orientation=lt */
-  float: right; /* orientation=rt */
+	padding:0;
+	width: 93%;
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
 }
 
-.UIActivity .ContentBox .TitleContent {
-  height:24px;
-  color: #f68a2f;
-  overflow: hidden;
+.UIActivity .ContentBox h5 {
+	height:24px;
+	color: #f68a2f;
+	overflow: hidden;
+	margin: 0;
+}
+
+.UIActivity .ContentBox .Content {
+	margin: 0;
 }
 
 .UIActivity .ContentBox .LinkCM {
-  margin: 4px 0px;
+	margin: 0px;
 }
 
 .UIActivity .ContentBox .DateTime {
-  height:20px;
-  color: #808080;
+	margin-top: 5px;
+	color: #808080;
 }
 
 .UIActivity .ContentBox .LinkCM a {
-  height:20px;
-  color: #28175a;
-  margin: 0px 3px;
+	height:20px;
+	color: #28175a;
+	margin: 0px 3px;
 }
 
 .UIActivity .ContentBox a {
-  color: #F68A2F;
+	color: #F68A2F;
+	line-height: 24px;
 }
 
 .UIActivity .TitleContent .Text {
-  font-weight: bold;
-  display: block;
-  line-height:24px;
-  margin-right:50px; /* orientation=lt */
-  margin-left:50px; /* orientation=rt */
-  float: left; /* orientation=lt */
-  float: right; /* orientation=rt */
+	font-weight: bold;
+	display: block;
+	line-height:24px;
+	margin-right:50px; /* orientation=lt */
+	margin-left:50px; /* orientation=rt */
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
 }
 
 .UIActivity .ContentBox .Content a {
-  color: #F68A2F;
+	color: #F68A2F;
 }
 
 .UIActivity .ListPeopleLikeBG {
 	border: 1px solid #E5E1E2;
-    margin-bottom: 3px;
+	margin-bottom: 3px;
 	margin-top: 10px;
 }
 
 .ListPeopleContent {
-    background: url('background/ListPeopleLike.gif') no-repeat 50px top; /* orientation=lt */
+	background: url('background/ListPeopleLike.gif') no-repeat 50px top; /* orientation=lt */
 	background: url('background/ListPeopleLike-rt.gif') no-repeat 95% top; /* orientation=rt */
-    padding: 14px 8px 8px;
+	padding: 14px 8px 8px;
 	margin-top: -7px;
 }
 
 .UIActivity .CommentListInfo {
-  background:#F0EDE2;
-  border: 1px solid #e5e1e2;
-  margin: 8px 0;
+	background:#F0EDE2;
+	border: 1px solid #e5e1e2;
+	margin: 8px 0 4px;
 }
 
 .UIActivity .CommentListInfo a {
-  display: inline-block;
-  background: url('background/ListPeopleLike.gif') no-repeat 40px top; /* orientation=lt */
-  background: url('background/ListPeopleLike-rt.gif') no-repeat 65% top; /* orientation=rt */
-  margin-top: -7px;
-  padding: 10px 8px 5px;
+	display: inline-block;
+	background: url('background/ListPeopleLike.gif') no-repeat 40px top; /* orientation=lt */
+	background: url('background/ListPeopleLike-rt.gif') no-repeat 65% top; /* orientation=rt */
+	margin-top: -7px;
+	padding: 10px 8px 5px;
 }
 
 .UIActivity .ContentBox .CloseContentBoxHilight {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -204px; /* orientation=lt */
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -204px; /* orientation=rt */
-  float: right; /* orientation=lt */
-  float: left; /* orientation=rt */
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -204px; /* orientation=lt */
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -204px; /* orientation=rt */
+	float: right; /* orientation=lt */
+	float: left; /* orientation=rt */
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
 }
 
 .UIActivity .ContentBox .CloseContentBoxNormal {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -143px; /* orientation=lt */
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -143px; /* orientation=rt */
-  float: right; /* orientation=lt */
-  float: left; /* orientation=rt */
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -143px; /* orientation=lt */
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -143px; /* orientation=rt */
+	float: right; /* orientation=lt */
+	float: left; /* orientation=rt */
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
 }
 
 .UIActivity .CommentBox .CloseCMContentHilight {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -162px; /* orientation=lt */
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -162px; /* orientation=rt */
-  display: block;
-  float: right; /* orientation=lt */
-  float: left; /* orientation=rt */
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -162px; /* orientation=lt */
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -162px; /* orientation=rt */
+	display: block;
+	float: right; /* orientation=lt */
+	float: left; /* orientation=rt */
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
 }
 
 .UIActivity .CommentBox .CloseCMContentNormal {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -183px; /* orientation=lt */
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -183px; /* orientation=rt */
-  float: right; /* orientation=lt */
-  float: left; /* orientation=rt */
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -183px; /* orientation=lt */
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG-rt.png') no-repeat left -183px; /* orientation=rt */
+	float: right; /* orientation=lt */
+	float: left; /* orientation=rt */
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
 }
 
