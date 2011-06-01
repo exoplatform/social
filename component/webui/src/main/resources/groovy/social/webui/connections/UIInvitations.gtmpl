@@ -22,26 +22,17 @@
   UIPageIterator iteratorInvitation = uicomponent.getUIPageIteratorInvitation();
   def invitationRelationIdx = 0
 %>
-<div class="ActivitiesTitleBarM">
-  <%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%>
-</div>
+<h5 class="CommonTitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%></h5>
 <div class="UIInvitationRelation" id="$uicomponent.id">
   <div class="UITabPane">
     <div class="ContainerSpace">
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-      <div class="ATitleBarL">
-        <div class="ATitleBarR">
-          <div class="ATitleBarM">
-            <div class="ATitleBarC">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
-            </div>
-          </div>
-        </div>
+      <div class="UISocTitleBar">
+            <h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
       </div>
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
         <div class="ContentSpace">
-            <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
-            <div style="clear: left;"><span></span></div>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
          </div>
       <%}%>
 
@@ -64,26 +55,22 @@
     <% } else {%>
        <div class="ContentSpace ClearFix">
     <% }%>
-       <div class="AvartarPeopleBG">
-       <img src="$imageSource"/>
-    </div>
-      <div class="CommunityContainer">
-      <div class="CommunityMane Line">
-        <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
-            <% if (isEditable) {%>
-          <a href="#" class="StopIcon" title="Deny" onclick="$actionDeny" >&nbsp;</a>
-          <a href="#" class="SelectIcon" title="Accept" onclick="$actionAccept" >&nbsp;</a>
 
-            <% } %>
-              <div style="clear: both;"><span/></div>
-          </div>
-          <% if(position.length() > 0) { %>
-          <div class="CommunityContent" style="padding: 4px;">
-            <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-          </div>
-          <%  } %>
-      </div>
-      <div style="clear: left;"><span></span></div>
+		<img class="ImgAvatar" src="$imageSource"/>
+
+		<div class="CommunityMane ClearFix">
+			<a class="CommunityName" href="${profileURL}">${fullName}</a>
+			<% if (isEditable) {%>
+			<a href="#" class="StopIcon" title="Deny" onclick="$actionDeny" >&nbsp;</a>
+			<a href="#" class="SelectIcon" title="Accept" onclick="$actionAccept" >&nbsp;</a>
+			<% } %>
+		</div>
+		<% if(position.length() > 0) { %>
+		<div class="CommunityContent">
+			<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+		</div>
+		<%  } %>
+
     </div>
   <% } %>
     <% } %>
