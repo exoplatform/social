@@ -121,7 +121,7 @@
 	margin: 0 0 0 4px; /* orientation=lt */
 	margin: 0 4px 0 0; /* orientation=rt */
   padding:0;
-  width: 95%;
+  width: 93%;
   float: left; /* orientation=lt */
   float: right; /* orientation=rt */
 }
