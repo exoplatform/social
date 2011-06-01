@@ -20,6 +20,6 @@
 -->
 */
 %>
-<div class="UIRelationPortlet" id="$uicomponent.id">
+<div class="UIRelationPortlet UISocApplication" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
 </div>
