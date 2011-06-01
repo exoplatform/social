@@ -30,21 +30,14 @@
   def iterator = uicomponent.getUIPageIterator();
   def peopleIdx = 0
 %>
-<div class="UIProfileList" id="$uicomponent.id">
-  <div class="ContainerSpace">
+<div class="UIProfileList UITabPane ContainerSpace" id="$uicomponent.id">
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-    <div class="ATitleBarL">
-      <div class="ATitleBarR">
-        <div class="ATitleBarM">
-          <div class="ATitleBarC">
-            <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%>
-          </div>
-        </div>
-      </div>
+    <div class="UISocTitleBar">
+	   <h5 class="TitleBar"> <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
     </div>
   <% if ((list == null) || (list.size() == 0)) {%>
     <div class="ContentSpace">
-      <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></div>
+      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
     </div>
   <%}%>
 
@@ -75,34 +68,27 @@
     <% } else {%>
        <div class="ContentSpace ClearFix">
     <% }%>
-      <div class="AvartarPeopleBG">
-         <img src="$imageSource"/>
-      </div>
+         <img class="ImgAvatar" alt="#" src="$imageSource"/>
 
-      <div class="CommunityContainer">
-          <div class="CommunityMane Line ClearFix">
-              <div class="CommunityName" style="float: left; cursor:pointer;">
-                <a href="${profileURL}" style="color: #afafaf;">${fullName}</a>
-              </div>
-    <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-              <a href="#" class="StopIcon" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-               <a href="#" class="SelectIcon" title="$acceptTitle" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
-    <%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-              <a href="#" class="WaitingIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-              <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
-    <%  } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-              <a href="#" class="RemoveIcon" title="$removeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-    <% } else if (contactStatus == null) { %>
-              <a href="#" class="AddIcon" title="$inviteTitle" onclick="$addAction" >&nbsp;</a>
-    <% } %>
+          <div class="CommunityMane ClearFix">
+                <a class="CommunityName InviteTitle" href="${profileURL}" style="color: #afafaf;">${fullName}</a>
+				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
+						  <a href="#" class="StopIcon" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+						   <a href="#" class="SelectIcon" title="$acceptTitle" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
+				<%  } else if (contactStatus == Relationship.Type.PENDING) { %>
+						  <a href="#" class="WaitingIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+						  <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+				<%  } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+						  <a href="#" class="RemoveIcon" title="$removeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+				<% } else if (contactStatus == null) { %>
+						  <a href="#" class="AddIcon" title="$inviteTitle" onclick="$addAction" >&nbsp;</a>
+				<% } %>
           </div>
           <% if(position.length() > 0) { %>
-            <div class="CommunityContent" style="padding: 4px;">
+            <div class="CommunityContent">
               <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
             </div>
           <%  } %>
-      </div>
-      <div style="clear: left;"><span></span></div>
     </div>
   <% } %>
     <%
@@ -110,5 +96,4 @@
             _ctx.renderUIComponent(iterator)
         }
     %>
-  </div>
 </div>
