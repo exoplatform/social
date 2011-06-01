@@ -16,6 +16,6 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<div class="UIPeoplePortlet" id="$uicomponent.id">
+<div class="UIPeoplePortlet UISocApplication" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
 </div>
