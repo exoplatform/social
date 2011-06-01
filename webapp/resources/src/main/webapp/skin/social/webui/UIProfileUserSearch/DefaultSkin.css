@@ -216,22 +216,21 @@ a:ACTIVE {
   padding: 4px;
 }
 
-.DirectorySpaces {
+.UIProfileUserSearch .DirectorySpaces {
   background: #fbfbfb;
   padding: 2px 0px 3px 6px;
 }
 
-.DirectorySpaces ul.LetterList {
+.UIProfileUserSearch ul.LetterList {
   list-style-image: none;
   list-style-position: outside;
   list-style-type: none;
   margin: 0 0 10px;
   overflow: hidden;
-  padding: 0;
   width: 100%;
 }
 
-.DirectorySpaces ul.LetterList li {
+.UIProfileUserSearch ul.LetterList li {
   float: left;
   list-style-image: none;
   list-style-position: outside;
@@ -242,7 +241,7 @@ a:ACTIVE {
   width: 3.2%;
 }
 
-.DirectorySpaces ul.LetterList li a {
+.UIProfileUserSearch ul.LetterList li a {
   background: #EEEEEE none repeat scroll 0 0;
   color: inherit;
   display: block;
@@ -252,16 +251,16 @@ a:ACTIVE {
   text-decoration: none;
 }
 
-.DirectorySpaces ul.LetterList li a:hover {
+.UIProfileUserSearch ul.LetterList li a:hover {
   background: #FFF8DC none repeat scroll 0 0;
   color: #F57A00;
 }
 
-.DirectorySpaces ul.LetterList li a.selected {
+.UIProfileUserSearch ul.LetterList li a.selected {
   background: #AAAAAA none repeat scroll 0 0;
   color: #FFFFFF;
 }
 
-.DirectorySpaces ul.LetterList li a:active {
+.UIProfileUserSearch ul.LetterList li a:active {
   outline: none;
 }
