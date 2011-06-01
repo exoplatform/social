@@ -20,16 +20,16 @@
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
 %>
-<div class="UITitleBar" id="$uicomponent.id">
-	<div class="TitleBar">
+<div class="UISocTitleBar" id="$uicomponent.id">
+	<h5 class="TitleBar ClearFix">
 	  <% if (isEditable) { %>
 		<% if (!isEdit) { %>
-		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon TitIcon">&nbsp;</a>
 		<% } else { %>
-		  <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon">&nbsp;</a>
-		  <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon TitIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon TitIcon">&nbsp;</a>
 		 <% } %>
 	  <% } %>
-	  <h5 class="Title"><%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%></h5>
-	</div>
+	  <%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%>
+	</h5>
 </div>
