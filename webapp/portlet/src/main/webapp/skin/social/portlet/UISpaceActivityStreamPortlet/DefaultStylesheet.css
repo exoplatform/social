@@ -69,15 +69,6 @@
   font-family: lucida sans;
 }
 
-.UISpaceActivityStreamPortlet .TitleBar {
-  height: 22px;
-  color: #7d7d7d;
-  line-height: 22px;
-  text-align: center;
-  font-weight: bold;
-  background: #EBEBEB none repeat scroll 0 0;
-}
-
 .UISpaceActivitiesContainer {
   padding: 10px 10px 20px 10px;
   background: #fff;
@@ -108,33 +99,6 @@
   color: #058EE6;
   text-decoration: underline;
 }
-
-
-.ATitleBarL {
-  background: url('images/ATitleBarL.gif') no-repeat left top;
-  padding-left: 4px;
-  margin-top: 8px;
-}
-
-.ATitleBarR {
-  background: url('images/ATitleBarR.gif') no-repeat right top;
-  padding-right: 4px;
-}
-
-.ATitleBarM {
-  background: url('images/ATitleBarM.gif') repeat-x;
-  padding-left: 4px;
-}
-
-.ATitleBarC {
-  background: url('images/ATitleBarC.gif') no-repeat left top;
-  height:25px;
-  color: white;
-  margin-left: 8px;
-  line-height: 20px;
-  font-weight: bold;
-}
-
 
 .ADecoratorContainer .ActivitiesContent {
   background: white;/*#fbfbfb;*/

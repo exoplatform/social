@@ -26,7 +26,7 @@
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UITabPane">
- 	 	<div class="TitleBar">$labelSpaceActivities</div>
+ 	 	<div class="CommonTitleBar">$labelSpaceActivities</div>
  	  <div class="UISpaceActivitiesContainer">
       <%
         uicomponent.renderChildren();
