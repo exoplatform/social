@@ -1,5 +1,5 @@
 
-h1. Activities REST service
+h1. Activities REST service {anchor:id=SOCref.Developer_references.ActivitiesRESTService}
 
 || Name || Service URL || Location || Description ||
 | *ActivitiesRestService* | {noformat}{restContextName}/{portalName}/social/activities{noformat}  | *Maven groupId*: org.exoplatform.social {example}{example}  *ArtifactId*: exo.social.component.service |Provides REST services for activity applications, such as like/unlike, comment, delete activity.|
@@ -21,7 +21,7 @@ Example:
 - http://localhost:9090/rest-socialdemo/social/activities/s08d397dg6/likesdestroy/abc.xml
 - http://localhost:9090/rest-socialdemo/social/activities/s08d397dg6/likesdestroy/abc.json
 
-h1. Apps REST service
+h1. Apps REST service {anchor:id=SOCref.Developer_references.AppsRESTService}
 
 || Name || Service URL || Location ||Description ||
 | *AppsRestService* | {noformat}{restContextName}/social/apps{noformat} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service |Provides REST services for showing the application list from the application registry gadget.|
@@ -34,7 +34,7 @@ Example:
 
 http://localhost:9090/rest-socialdemo/apps/show.json
 
-h1. Identity REST service
+h1. Identity REST service {anchor:id=SOCref.Developer_references.IdentityRESTService}
 || Name || Service URL || Location|| Description ||
 | *IdentityRestService* | {noformat}{restContextName}/{portalName}/social/identity/{username}/id{noformat} |*Maven groupId*: org.exoplatform.social {example}{example}  *ArtifactId*: exo.social.component.service| Gets identityId by the username. |
 
@@ -47,7 +47,7 @@ Example:
 http://localhost:8080/rest-socialdemo/socialdemo/social/identity/john/id/show.json
 
 
-h1. Linkshare REST service
+h1. Linkshare REST service {anchor:id=SOCref.Developer_references.LinkshareRESTService}
 || Name || Service URL || Location || Description ||
 |*LinkshareRestService* | {noformat}{restContextName}/social/linkshare{noformat} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service |Provides REST service for getting metadata information, such as page title, images, and description  from a provided link. |
 
@@ -60,7 +60,7 @@ Example:
 
 http://localhost:9090/rest-socialdemo/social/linkshare/show.json
 
-h1. People REST Service
+h1. People REST Service {anchor:id=SOCref.Developer_references.PeopleRestService}
 || Name || Service URL || Location || Description ||
 | *PeopleRestService* | {noformat}{restContextName}/social/people{noformat}| *Maven groupId*: org.exoplatform.social {example}{example}  *ArtifactId*: exo.social.component.service | Provides REST services for serving requests related to people, such as suggesting username, getting people information. |
 
@@ -73,7 +73,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/people/suggest.json?nameToSearch=root&currentUser=john&typeOfRelation=pending&portalName=socialdemo
 
-h2. Spaces REST service
+h2. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTService}
 || Name || Service URL || Location || Description ||
 | *SpacesRestService* | {noformat}{restContextName}/{portalName}/social/spaces{noformat}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service |Provides REST services for space gadget to display user's spaces and pending spaces |
 
@@ -87,7 +87,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/spaces/s08d397dg6/mySpaces/show.xml
 
-h2. Widget REST service
+h2. Widget REST service {anchor:id=SOCref.Developer_references.WidgetRESTService}
 || Name || Service URL || Location || Description ||
 | *WidgetRestService* | {noformat}{restContextName}/spaces/{containerName}{noformat}|*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provides REST services for creating spaces or getting spaces'information. |
 
@@ -97,13 +97,8 @@ h2. Widget REST service
 | *spaceInfo* | {noformat}{restContextName}/spaces/{containerName}/space_info{noformat}|containerName{example}{example} portalName{example}{example} spaceName{example}{example} description| String {example}{example} String (Default Value: classic){example}{example} String| Returns the HTML page for displaying the information of space. Two query parameters needed: {{spaceName}} and {{description}} |
 
 
-
 Example:
 
 http://localhost:8080/rest-socialdemo/spaces/socialdemo/go_to_space?name=Social&description=Social
 
 http://localhost:8080/rest-socialdemo/spaces/socialdemo/space_info?name=Social&description=Social
-
-
-
-

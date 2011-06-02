@@ -1,12 +1,12 @@
-h1. About Activity Plug-in
+h1. About Activity Plug-in {anchor:id=Developer_document.Activity_plug-in}
   
 Since the Social 1.1.0, the activity plug-in feature was introduced that enables the activity composer extension and custom UI component to be used for displaying one activity by its type.
 
-h1. Create the activity plug-in
+h1. Create the activity plug-in {anchor:id=Developer_document.Create the activity plug-in}
 
 At first, you should have an idea about the UI Extension Framework. If you have already worked with the UI Extension Framework, it's really easy to create the activity plug-in. If no, you have chance to work with it visiting [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
 
-h2. Create a custom UI component for displaying the activity based on its type.
+h2. Create a custom UI component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_component}
 
 {note}
 ("Project Code can be downloadable [here|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]")
@@ -201,7 +201,7 @@ With our custom UI component for displaying activity of type: "exosocial:spaces"
 !SimpleSpaceActivity-custom.png!
 
 
-1.1.1 Make the custom UI activity display have the look and feel and function like default one.
+Make the custom UI activity display have the look and feel and function like default one.
 
 When displaying an activity, we should make sure the look and feel of the custom UI component is consistent and match other activities and have the functions of like, comments. So, to create the another UI component to display, we call {{UISpaceLookAndFeelActivity}}:
 
@@ -278,8 +278,8 @@ Rebuild the sample project, copy jar to tomcat/lib. Rerun the server and see the
 Currently, we have to copy and paste in the template file. We will have the full control of the UI, but it is not good when there is any change in UIDefaultActivity.
 {note}
 
-h3. What is activity builder?
+h3. What is activity builder? {anchor:id=Developer_document.What_is_activity_builder}
 {note}to do{note}
-h2. Create a composer extension for composing activity on the UI composer and display it on activity stream.
+h2. Create a composer extension for composing activity on the UI composer and display it on activity stream {anchor:id=Developer_document.Create_composer_extension}
 {note}to do{note}
 

@@ -1,4 +1,4 @@
-h1. ActivityManager
+h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
 
 || Method || Param || Return || Description ||
 | *saveActivity*(Identity owner, Activity activity) | {{owner}} - the owner of activity stream, {{activity}} - the activity which needs to be saved |Activity| Saves an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
@@ -22,7 +22,7 @@ h1. ActivityManager
 | *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} | void | Adds a new processor plug-in. |
 | *getActivitiesCount*(Identity owner) |{{owner}}  | int | Gets the number of activity from a stream owner. |
 
-h1. IdentityManager
+h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
 
 || Method || Param || Return || Description ||
 | *registerIdentityProviders(IdentityProviderPlugin plugin)* | {{plugin}}| |Registers one or more IdentityProvider through an IdentityProviderPlugin |
@@ -60,7 +60,7 @@ h1. IdentityManager
 | *getIdentityStorage*() | {{N/A}} | IdentityStorage | Gets identity storage.  |
 
 
-h1. RelationshipManager
+h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_manager}
 
 || Method || Param || Return || Description ||
 |*getRelationshipById*(String id) throws Exception|{{id}}|Relationship |Gets relationship the by id.|
@@ -90,7 +90,7 @@ h1. RelationshipManager
 
 
 
-h1. SpaceService
+h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 
 || Method || Param || Return || Description ||
 |*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Gets all spaces in Social.|

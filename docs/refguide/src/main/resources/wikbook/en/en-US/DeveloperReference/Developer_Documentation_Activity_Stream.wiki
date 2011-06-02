@@ -2,11 +2,11 @@ eXo Social provides a way to share status updates and activity information for u
 
 To manipulate activities, you will use the [ActivityManager|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]. To get an instance of this class, you will need to use the {{PortalContainer}}.
 
-h1. Create an activity
+h1. Create an activity {anchor:id=SOCref.Developer_references.CreateActivity} 
 
 There are two types of activities : activities for a user and activities for a space. The following examples will show you how to create an activity for each type.
 
-h1. Publish an activity for a user
+h1. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
 Users have activity streams. The code below shows you how to publish a nex activity into the public activity stream of a user.
 
 {code:java}
@@ -46,7 +46,7 @@ import org.exoplatform.social.core.identity.model.Identity;
   }
 {code}
 
-h1. Publish an activity for a space
+h1. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
 Spaces are also social objects and thus, they own an activity stream. The code below shows you how to publish activity into a space's stream
 
 {code:java}
@@ -101,7 +101,7 @@ import org.exoplatform.social.space.impl.SpaceIdentityProvider;
   }
 {code}
 
-h1. Useful functions
+h1. Useful functions {anchor:id=SOCref.Developer_references.Useful_functions}
 
 * [ActivityManager#getActivity|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
 * [ActivityManager#getActivities|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
@@ -111,9 +111,9 @@ h1. Useful functions
 * [ActivityManager#removeLike|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
 * [ActivityManager#getComments|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
 
-h2. Creating a custom activity processor
+h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
-Activity processor is used for modifying the content of activities before they are responsed and rendered at client's browser. For example, we will create an activity processor for replacing all the texts representing the smile face ":-)" in the activity title by the smiley icons.
+An Activity processor is used for modifying the content of activities before they are responsed and rendered at client's browser. For example, we will create an activity processor for replacing all the texts representing the smile face ":-)" in the activity title by the smiley icons.
 
 Firstly, we will create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}
 
@@ -159,7 +159,7 @@ And then, we have to register this processor by adding some XML configuration in
 
 "init-params" contains all the key-value data which a processor will use to initialize. At the above config, priority value indicates the order that this processor will be used. So with '1' value, this processor will be used before all remaining processors with lower priority.
 
-h1. Publish an rss feed with feedmash
+h1. Publish an rss feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
 It's really easy to publish an rss feed to a space's activity stream. eXo Social already provides {{FeedmashJobPlugin}} for publishing rss feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
 

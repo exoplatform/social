@@ -4,7 +4,7 @@ There are two options of the eXo Social widget that provide different levels of 
 
 The basic version of this widget is an iFrame. The more advanced version is a button you can insert in a page; this will display a small pop-up with information about the space.
 
-h1. Basic version
+h1. Basic version {anchor:id=SOCref.DeveloperReference.widget_tutorial.basic_version}
 
 To insert the basic version, you need to have an iFrame to insert on your site.
 
@@ -17,7 +17,7 @@ To install this version in your application, replace all the uppercase text belo
 * NAME_OF_YOUR_SPACE - this is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and "_", ".", "-" or ". "
 * DESCRIPTION_OF_THE_SPACE - this will be displayed in the list of spaces.
 
-h1. Advanced version
+h1. Advanced version {anchor:id=SOCref.DeveloperReference.widget_tutorial.advanced_version}
 
 To install an advanced version of the widget, you need to insert a code snippet in your page. This includes some HTMLs plus some JavaScripts. The necessary CSS will be added dynamically.
 
@@ -37,7 +37,7 @@ spaces.createPopup(link, spaceName, description)
 * spaceName: This is the name of space. It is also used to identify the space. We recommend you use the following format: "MyAppName - my social object"
 * description: This is the description of your space that will be displayed within eXo Spaces. It is used when a new space is created.
 
-h1. Configure
+h1. Configure {anchor:id=SOCref.DeveloperReference.widget_tutorial.configure}
 
 * serverURL (Default: _"http://127.0.0.1:8080"_): The address of your eXo installation. To change it, use _spaces.setServerURL(...);
 * spaceServicePath (Default: _"/rest/private/spaces/"_): The path to the spaces service. It is rare you have to change it; but if needed, use _spaces.setSpaceServicePath(...);
