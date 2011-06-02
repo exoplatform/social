@@ -20,17 +20,23 @@
 -->
 */
 %>
+
 <%
-  uicomponent.refresh();
-  def labelSpaceActivities = _ctx.appRes("${uicomponent.id}.label.SpaceActivities");
-%>
-<div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
-  <div class="UITabPane">
- 	 	<div class="CommonTitleBar">$labelSpaceActivities</div>
- 	  <div class="UISpaceActivitiesContainer">
-      <%
-        uicomponent.renderChildren();
-      %>
-    </div>
-  </div>
+  import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  
+  def space = uicomponent.getSpace();
+  def uicomponentId = uicomponent.id;
+  def labelActivityStreamOfSpace = _ctx.appRes("${uicomponentId}.label.Activity_Stream_Of_Space").replace("{0}", space.displayName);
+  def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.displayName);
+ %>
+
+<div class="UIDisplaySpaceActivities" id="$uicomponent.id">
+      <div class="UISocTitleBar">
+            <h5 class="TitleBar">$labelActivityStreamOfSpace</h5>
+      </div>
+
+  <% uicomponent.renderChild(UIActivitiesLoader.class);%>
 </div>
+<% if (!uicomponent.hasChildren()) {%>
+  <div class="EmptyList">labelEmptyActivityList</div>
+<%}%>
