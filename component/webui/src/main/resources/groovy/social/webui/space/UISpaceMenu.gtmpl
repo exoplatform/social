@@ -79,9 +79,9 @@
       <img src="$imageSource" height="65px" width="65px" />
     </a>
     <% if(spaceUrl.equals(appSelected)) { %>
-    <div class="Home"><a class="HomeSelect" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
+    <div class="Home"><a class="HomeSelect" href="$home"><span><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></span></a></div>
     <% } else { %>
-    <div class="Home"><a class="HomeSpace" href="$home"><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></a></div>
+    <div class="Home"><a class="HomeSpace" href="$home"><span><%=_ctx.appRes(uicomponent.getId() + ".label.Home")%></span></a></div>
     <% } %>
     <% if(apps.size() != 0) {
          for(node in apps) {
@@ -95,9 +95,9 @@
            if (node.getName().equals(spaceUserListName)) { %>
     <div class="UserListApp">
              <% if(node.getName().equals(appSelected)) { %>
-      <a class="UserListAppSelect" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+      <a class="UserListAppSelect" href="$pageURI" title="$nodeTitle"><span>$nodeLabel</span></a>
              <% } else { %>
-      <a class="UserListAppBG" href="$pageURI" title="$nodeTitle">$nodeLabel</a>
+      <a class="UserListAppBG" href="$pageURI" title="$nodeTitle"><span>$nodeLabel</span></a>
              <% }
            } else if (node.getName().equals(spaceSettingName)) { %>
     <div class="SpaceSetting">

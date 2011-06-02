@@ -111,6 +111,7 @@
 .UIMySpacesPortlet .BoxSpaceList .ContentBox .Content {
   line-height: 16px;
   padding-top: 5px;
+  word-wrap: break-word;
 }
 
 .UIMySpacesPortlet .BoxSpaceList .ContentBox .Content .SpaceStatus {

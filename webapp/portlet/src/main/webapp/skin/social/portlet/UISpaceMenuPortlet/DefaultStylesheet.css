@@ -146,13 +146,20 @@
 .MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingSelect{
   background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
   color: white;
-  padding-right: 50px;
+  padding:0px 50px 0px 4px;
   font-weight: bold;
   line-height: 23px;
   display: block;
   text-align: right;
   position:relative;
   width: 117px;
+}
+
+.MenuTDContainer .UISpaceMenuPortlet span{
+  overflow: hidden;
+  white-space: nowrap;
+  width: 113px;
+  display: block;
 }
 
 
