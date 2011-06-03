@@ -40,13 +40,12 @@
     def spaceName = space.getDisplayName();
     def position = adminName = "";
     def adminProfileURL = "#";
-    def clzz = "PortletContent";
     def leaderIdx = memberIdx = 0;
     def adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
-<div class="UIMembersPortlet" id="$uicomponentId">
-  <div class="ActivitiesTitleBarM">$labelUserList</div>
-  <div class="UIProfileSpace" >
+<div class="UIMembersPortlet UISocApplication" id="$uicomponentId">
+  <h5 class="CommonTitleBar">$labelUserList</h5>
+  <div class="UIProfileSpace">
     <!-- Left section (Admin information) -->
     <div class="LeftColumn">
       <% if (leaders.size() > 0) {
@@ -57,31 +56,19 @@
            adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
-      <div class="AvatarSpace">
-        <div class="Image" >
-            <img src="$adminImageSource" alt="" />
-        </div>
-        <div  style="text-align:center"><a href="${adminProfileURL}" style="color: #afafaf;">($adminLabel $adminName)</a></div>
-      </div>
+				<img class="ImgAvatarRoot" src="$adminImageSource" alt=""/>
+        <a href="${adminProfileURL}" class="TitleAvatarRoot">($adminLabel $adminName)</a>
     </div>
     <!-- End left section -->
     <!-- Right section (Member information) -->
-    <div class="ContainerSpace" >
+    <div class="ContainerSpace">
       <div class="UIHeaderSection">
         <h2>$spaceName</h2>
         <span>$visibility</span>
       </div>
       <!-- Leaders section -->
-      <div id="" class="TitleBar">
-        <div class="ATitleBarL">
-          <div class="ATitleBarR">
-            <div class="ATitleBarM">
-              <div class="ATitleBarC">
-                <div class="Title">$administratorLabel</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="UISocTitleBar">
+				<h5 class="TitleBar">$administratorLabel</h5>
       </div>
       <% if (leaderList.size() > 0) {
         for(user in leaderList) {
@@ -93,50 +80,32 @@
           def leaderImageSource = leaderIdentity.profile.avatarUrl;
           if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           leaderIdx += 1;
-          clzz = "PortletContent";
-          if (leaderIdx % 2 == 0) clzz = "PortletContentGray";
+          clzz = "ContentSpace";
+          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
       %>
 
-        <div class="clzz">
-          <div class="AvartarPeopleBG">
-            <img src="$leaderImageSource"/>
-          </div>
-          <div class="CommunityContainer">
-            <div class="CommunityMane Line">
-              <div class="CommunityName" style="float: left; cursor: pointer;">
-                <a href="${profileURL}" style="color: #afafaf;">$userName</a>
-              </div>
-              <div style="clear: both;"><span/></div>
-            </div>
-            <% if(position.length() > 0) { %>
-                 <div class="CommunityContent" style="padding: 4px;">
-                   <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-                 </div>
-            <% } %>
-          </div>
-          <div style="clear: left;"><span/></div>
+        <div class="$clzz ClearFix">
+					<img class="ImgAvatar" src="$leaderImageSource" alt=""/>
+					<div class="CommunityMane ClearFix">
+						<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
+					</div>
+					<% if(position.length() > 0) { %>
+				 <div class="CommunityContent">
+					 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+				 </div>
+					<% } %>
         </div>
       <% }
         if (iteratorLeaders.getAvailablePage() > 1) {
           uicomponent.renderUIComponent(iteratorLeaders) ;
         }
       } else { %>
-        <div class="PortletContent">
-          <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
-        </div>
+				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
       <% } %>
       <!-- End leaders section -->
       <!-- Members section -->
-      <div id="" class="TitleBar">
-        <div class="ATitleBarL">
-          <div class="ATitleBarR">
-            <div class="ATitleBarM">
-              <div class="ATitleBarC">
-                <div class="Title">$spaceMemberLabel</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="UISocTitleBar">
+				<h5 class="TitleBar">$spaceMemberLabel</h5>
       </div>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <% if(memberList.size() > 0)  {
@@ -149,40 +118,31 @@
           def memberImageSource = memberIdentity.profile.avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
-          clzz = "PortletContent";
-          if (memberIdx % 2 == 0) clzz = "PortletContentGray";
+					cssClass = "ContentSpace"; 
+          if (memberIdx % 2 == 0) {
+					cssClass = "ContentSpaceGray";
+				  }
       %>
-        <div class="clzz">
-          <div class="AvartarPeopleBG">
-            <img src="$memberImageSource"/>
-          </div>
-          <div class="CommunityContainer">
-            <div class="CommunityMane Line">
-              <div class="CommunityName" style="float: left; cursor: pointer;">
-                <a href="${profileURL}" style="color: #afafaf;">$memberUserName</a>
-              </div>
-              <div style="clear: both;"><span/></div>
-            </div>
-            <% if(position.length() > 0) { %>
-                 <div class="CommunityContent" style="padding: 4px;">
-                   <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-                 </div>
-             <% } %>
-          </div>
-          <div style="clear: left;"><span/></div>
+        <div class="$cssClass ClearFix">
+					<img class="ImgAvatar" src="$memberImageSource" alt=""/>
+					<div class="CommunityMane ClearFix">
+							<a href="${profileURL}" class="CommunityName InviteTitle">$memberUserName</a>
+					</div>
+					<% if(position.length() > 0) { %>
+					 <div class="CommunityContent">
+						 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+					 </div>
+					 <% } %>
         </div>
         <% }
         if(iteratorMembers.getAvailablePage() > 1) {
           uicomponent.renderUIComponent(iteratorMembers) ;
         }
       } else { %>
-        <div class="PortletContent">
-          <div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
-        </div>
+				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
       <% } %>
       <!-- End members section -->
     </div>
     <!-- End Right section -->
   </div>
 </div>
-
