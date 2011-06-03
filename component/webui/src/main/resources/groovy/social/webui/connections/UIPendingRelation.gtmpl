@@ -16,39 +16,41 @@
   def portalURI = pcontext.getPortalURI();
   def pendingRelationIdx = 0;
 %>
-<h5 class="ActivitiesTitleBarM">
-  <%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
-</h5>
-<div class="UIPendingRelation UITabPane ContainerSpace" id="$uicomponent.id">
+
+<div class="UIPendingRelation UISocApplication" id="$uicomponent.id">
+	<h5 class="CommonTitleBar">
+			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
+	</h5>
+	<div class="ContainerSpace">
 		<% uicomponent.renderChild(UIProfileUserSearch.class); %>
-	<div class="UISocTitleBar">
-		<h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
-	</div>
-      <%if ((list == null) || (list.size() == 0)) {%>
-	<div class="ContentSpace">
-		<p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
-		<% def peopleURL = portalURI + "people" %>
-		</p>
-        <div class="UIAction">
-            <table class="ActionContainer">
-              <tbody>
-                <tr>
-                   <td>
-                      <div  class="ActionButton LightBlueStyle">
-                        <div class="ButtonLeft">
-                          <div class="ButtonRight">
-                            <div class="ButtonMiddle">
-                              <a href="<%=peopleURL%>"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                   </td>
-                </tr>
-              </tbody>
-            </table>
-         </div>
+		<div class="UISocTitleBar">
+			<h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
 		</div>
+      <%if ((list == null) || (list.size() == 0)) {%>
+		<div class="ContentSpace">
+			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+			<% def peopleURL = portalURI + "people" %>
+			</div>
+					<div class="UIAction">
+							<table class="ActionContainer">
+								<tbody>
+									<tr>
+										 <td>
+												<div class="ActionButton LightBlueStyle">
+													<div class="ButtonLeft">
+														<div class="ButtonRight">
+															<div class="ButtonMiddle">
+																<a href="<%=peopleURL%>"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%>
+															</div>
+														</div>
+													</div>
+												</div>
+										 </td>
+									</tr>
+								</tbody>
+							</table>
+					 </div>
+				</div>
       <%}%>
       <%	for(relation in list) {
           def identity = relation.getPartner(currIdentity);
@@ -63,28 +65,29 @@
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
         <% if (pendingRelationIdx % 2 == 0) { %>
-          <div class="ContentSpaceGray ClearFix">
-        <% } else {%>
-          <div class="ContentSpace ClearFix">
-        <% }%>
-            <img class="ImgAvantar" alt="" src="$imageSource"/>
-            <div class="CommunityMane ClearFix">
-             <a class="CommunityName TitlePersonConect" href="${profileURL}">${fullName}</a>
-               <% if (isEditable) {%>
-             <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
-             <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
-              <% } %>
-            </div>
-            <% if(position.length() > 0) { %>
-			<div class="TitlePosition">
-				<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+		<div class="ContentSpaceGray ClearFix">
+	<% } else {%>
+			<div class="ContentSpace ClearFix">
+		<% }%>
+				<img class="ImgAvatar" alt="" src="$imageSource"/>
+				<div class="CommunityMane ClearFix">
+				 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
+					 <% if (isEditable) {%>
+				 <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
+				 <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
+					<% } %>
+				</div>
+				<% if(position.length() > 0) { %>
+				<div class="CommunityContent">
+					<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+				</div>
+				<% } %>
 			</div>
-            <% } %>
-          </div>
-     <% } %>
-      <%
-         if (iterator.getAvailablePage() > 1) {
-           uicomponent.renderUIComponent(iterator) ;
-         }
-       %>
-    </div>
+<% } %>
+<%
+	 if (iterator.getAvailablePage() > 1) {
+		 uicomponent.renderUIComponent(iterator) ;
+	 }
+ %>
+		</div>
+	</div>
