@@ -93,7 +93,7 @@ public class UIHeaderSection extends UIProfileSection {
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       Profile p = uiHeaderSect.getProfile(true);
-      p.setProperty(Profile.POSITION, position);
+      p.setProperty(Profile.POSITION, sect.escapeHtml(position));
       im.updateHeaderSection(p);
     }
   }

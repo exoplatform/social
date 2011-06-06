@@ -1,0 +1,122 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceInfo.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceInfo.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceInfo.java	(working copy)
+@@ -19,6 +19,7 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import org.apache.commons.lang.StringEscapeUtils;
+ import org.exoplatform.portal.application.PortalRequestContext;
+ import org.exoplatform.portal.config.DataStorage;
+ import org.exoplatform.portal.config.UserPortalConfig;
+@@ -216,6 +217,7 @@
+         SpaceUtils.setNavigation(spaceNavigation);
+       }
+       uiSpaceInfo.invokeSetBindingBean(space);
++      space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+       spaceService.saveSpace(space, false);
+       if (nameChanged) {
+         //update Space Navigation (change name).
+Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(working copy)
+@@ -18,6 +18,7 @@
+ 
+ import java.util.ResourceBundle;
+ 
++import org.apache.commons.lang.StringEscapeUtils;
+ import org.exoplatform.portal.webui.util.Util;
+ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+ import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+@@ -125,9 +126,13 @@
+       Space space = new Space();
+       uiAddForm.invokeSetBindingBean(space);
+       space.setName(space.getName().trim());
+-      if (space.getDescription() == null) {
++      String spaceDescription = space.getDescription();
++      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
+         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
++      } else {
++        space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
+       }
++      
+       String msg = MSG_SPACE_CREATION_SUCCESS;
+       try {
+         // Checks user is still existing or not.
+Index: component/webui/src/main/java/org/exoplatform/social/webui/profile/UIProfileSection.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/profile/UIProfileSection.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/profile/UIProfileSection.java	(working copy)
+@@ -16,6 +16,7 @@
+  */
+ package org.exoplatform.social.webui.profile;
+ 
++import org.apache.commons.lang.StringEscapeUtils;
+ import org.exoplatform.services.organization.OrganizationService;
+ import org.exoplatform.services.organization.User;
+ import org.exoplatform.services.organization.UserHandler;
+@@ -148,6 +149,17 @@
+   }
+ 
+   /**
++   * Escapes HTML.
++   * 
++   * @param value
++   * @return
++   * @since 1.1.5
++   */
++  public String escapeHtml(String value) {
++    return StringEscapeUtils.escapeHtml(value);
++  }
++  
++  /**
+    * Listens to edit event and changes the form to edit mode.<br>
+    *
+    */
+Index: component/webui/src/main/java/org/exoplatform/social/webui/profile/UIExperienceSection.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/profile/UIExperienceSection.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/profile/UIExperienceSection.java	(working copy)
+@@ -482,10 +482,10 @@
+         endDate = null;
+       }
+ 
+-      uiMap.put(Profile.EXPERIENCES_COMPANY, company);
+-      uiMap.put(Profile.EXPERIENCES_POSITION,position);
+-      uiMap.put(Profile.EXPERIENCES_DESCRIPTION, description);
+-      uiMap.put(Profile.EXPERIENCES_SKILLS,skills);
++      uiMap.put(Profile.EXPERIENCES_COMPANY, escapeHtml(company));
++      uiMap.put(Profile.EXPERIENCES_POSITION, escapeHtml(position));
++      uiMap.put(Profile.EXPERIENCES_DESCRIPTION, escapeHtml(description));
++      uiMap.put(Profile.EXPERIENCES_SKILLS, escapeHtml(skills));
+       uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
+       uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
+       uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);
+Index: component/webui/src/main/java/org/exoplatform/social/webui/profile/UIHeaderSection.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/profile/UIHeaderSection.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/profile/UIHeaderSection.java	(working copy)
+@@ -93,7 +93,7 @@
+       ExoContainer container = ExoContainerContext.getCurrentContainer();
+       IdentityManager im = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+       Profile p = uiHeaderSect.getProfile(true);
+-      p.setProperty(Profile.POSITION, position);
++      p.setProperty(Profile.POSITION, sect.escapeHtml(position));
+       im.updateHeaderSection(p);
+     }
+   }
+Index: component/webui/src/main/java/org/exoplatform/social/webui/profile/UIContactSection.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/profile/UIContactSection.java	(revision 69743)
++++ component/webui/src/main/java/org/exoplatform/social/webui/profile/UIContactSection.java	(working copy)
+@@ -322,7 +322,7 @@
+       }
+ 
+       uiMap.put(KEY,key);
+-      uiMap.put(VALUE, value);
++      uiMap.put(VALUE, escapeHtml(value));
+       profileMap.add(uiMap);
+     }
+     return profileMap;

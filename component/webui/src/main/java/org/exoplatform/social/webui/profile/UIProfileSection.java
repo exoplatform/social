@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
@@ -147,6 +148,17 @@ public abstract class UIProfileSection extends UIForm {
     return (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
   }
 
+  /**
+   * Escapes HTML.
+   * 
+   * @param value
+   * @return
+   * @since 1.1.5
+   */
+  public String escapeHtml(String value) {
+    return StringEscapeUtils.escapeHtml(value);
+  }
+  
   /**
    * Listens to edit event and changes the form to edit mode.<br>
    *

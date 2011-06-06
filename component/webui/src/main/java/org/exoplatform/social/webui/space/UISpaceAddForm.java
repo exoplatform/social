@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.space;
 
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -125,9 +126,13 @@ public class UISpaceAddForm extends UIFormTabPane {
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setName(space.getName().trim());
-      if (space.getDescription() == null) {
+      String spaceDescription = space.getDescription();
+      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+      } else {
+        space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
       }
+      
       String msg = MSG_SPACE_CREATION_SUCCESS;
       try {
         // Checks user is still existing or not.

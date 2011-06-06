@@ -322,7 +322,7 @@ public class UIContactSection extends UIProfileSection {
       }
 
       uiMap.put(KEY,key);
-      uiMap.put(VALUE, value);
+      uiMap.put(VALUE, escapeHtml(value));
       profileMap.add(uiMap);
     }
     return profileMap;

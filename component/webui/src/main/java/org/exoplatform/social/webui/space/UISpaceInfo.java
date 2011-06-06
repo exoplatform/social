@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -216,6 +217,7 @@ public class UISpaceInfo extends UIForm {
         SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
+      space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
       spaceService.saveSpace(space, false);
       if (nameChanged) {
         //update Space Navigation (change name).
