@@ -225,7 +225,7 @@ public class UIDisplayProfileList extends UIContainer {
       Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
 
       Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
-      if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
+      if (relationship == null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;

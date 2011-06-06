@@ -222,6 +222,47 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  public void testRemoveAcceptedRelationship() throws Exception {
+    Identity tmp1 = new Identity("organization", "tmp1");
+    Identity tmp2 = new Identity("organization", "tmp2");
+
+    identityStorage.saveIdentity(tmp1);
+    identityStorage.saveIdentity(tmp2);
+
+    Relationship newRelationship = new Relationship(tmp1, tmp2, Relationship.Type.PENDING);
+
+    //
+    storage._createRelationship(newRelationship);
+    assertNotNull(newRelationship.getId());
+    assertEquals(tmp1.getId(), newRelationship.getSender().getId());
+    assertEquals(tmp2.getId(), newRelationship.getReceiver().getId());
+    assertEquals(Relationship.Type.PENDING, newRelationship.getStatus());
+
+    //
+    newRelationship.setStatus(Relationship.Type.CONFIRMED);
+    storage._saveRelationship(newRelationship);
+
+    Relationship gotRelationship = storage.getRelationship(tmp1, tmp2);
+    assertNotNull(gotRelationship.getId());
+    assertEquals(tmp1.getId(), gotRelationship.getSender().getId());
+    assertEquals(tmp2.getId(), gotRelationship.getReceiver().getId());
+    assertEquals(Relationship.Type.CONFIRMED, gotRelationship.getStatus());
+
+    storage.removeRelationship(newRelationship);
+
+    //
+    try {
+      storage._getRelationship(newRelationship.getId());
+      fail();
+    } catch (NodeNotFoundException e) {
+      // test ok
+    }
+
+    //
+    tearDownIdentityList.add(tmp1.getId());
+    tearDownIdentityList.add(tmp2.getId());
+  }
+
   public void testGetSenderRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
