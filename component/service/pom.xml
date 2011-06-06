@@ -162,6 +162,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

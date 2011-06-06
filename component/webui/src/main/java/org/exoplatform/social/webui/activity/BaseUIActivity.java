@@ -88,6 +88,8 @@ public class BaseUIActivity extends UIForm {
   public BaseUIActivity(){
     //tricktip for gatein bug
     setSubmitAction("return false;");
+
+    comments = new ArrayList<ExoSocialActivity>();
   }
 
   public void setActivity(ExoSocialActivity activity) {

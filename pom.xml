@@ -172,6 +172,44 @@
         <version>${javax.xml.bind.version}</version>
       </dependency>
 
+      <!-- Chromattic -->
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.apt</artifactId>
+        <version>${org.chromattic.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.api</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.spi</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.core</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.ext</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.common</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.metamodel</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>

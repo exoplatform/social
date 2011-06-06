@@ -16,12 +16,18 @@
  */
 package org.exoplatform.social.common.lifecycle;
 
+import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.SessionContext;
+import org.exoplatform.commons.chromattic.SynchronizationListener;
+import org.exoplatform.commons.chromattic.SynchronizationStatus;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Generic implementation a Lifecycle<br/>
@@ -36,11 +42,29 @@ import java.util.concurrent.Executors;
  */
 public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extends LifeCycleEvent<?,?>> {
 
-  private Set<T>      listeners = new HashSet<T>();
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(AbstractLifeCycle.class);
 
-  protected ExecutorService                        executor  = Executors.newSingleThreadExecutor();
+  protected Set<T> listeners = new HashSet<T>();
 
-  protected ExecutorCompletionService<E> ecs;
+  protected final PortalContainer container;
+
+  protected LifeCycleCompletionService completionService;
+
+  protected ChromatticManager manager;
+
+  protected ChromatticLifeCycle lifeCycle;
+
+  protected AbstractLifeCycle() {
+
+    this.container = PortalContainer.getInstance();
+    this.completionService = (LifeCycleCompletionService) container.getComponentInstanceOfType(LifeCycleCompletionService.class);
+    this.manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+
+    if (manager != null) {
+      this.lifeCycle = manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -64,18 +88,53 @@ public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extend
    * @param event
    */
   protected void broadcast(final E event) {
-    if (ecs == null) {
-      ecs = new ExecutorCompletionService<E>(executor);
-    }
 
+    //
+    SessionContext ctx = lifeCycle.getContext();
+    ctx.addSynchronizationListener(new SynchronizationListener() {
+
+      public void beforeSynchronization() {}
+
+      public void afterSynchronization(SynchronizationStatus status) {
+        if (status == SynchronizationStatus.SAVED) {
+
+          addTasks(event);
+
+        }
+      }
+
+    });
+    
+  }
+
+  protected void addTasks(final E event) {
     for (final T listener : listeners) {
-      ecs.submit(new Callable<E>() {
+      completionService.addTask(new Callable<E>() {
         public E call() throws Exception {
-          dispatchEvent(listener, event);
+          try {
+            begin();
+            dispatchEvent(listener, event);
+          }
+          catch(Exception e) {
+            LOG.debug(e.getMessage(), e);
+          }
+          finally {
+            end();
+          }
+
           return event;
         }
       });
     }
+  }
+
+  protected void begin() {
+    manager.beginRequest();
+    lifeCycle.getChromattic().openSession();
+  }
+
+  protected void end() {
+    manager.endRequest(true);
   }
 
   protected abstract void dispatchEvent(final T listener, final E event);

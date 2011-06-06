@@ -3,14 +3,6 @@ package org.exoplatform.social.core.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-
-import org.exoplatform.social.common.jcr.JCRSessionManager;
-import org.exoplatform.social.common.jcr.NodeProperties;
-import org.exoplatform.social.common.jcr.NodeTypes;
-import org.exoplatform.social.common.jcr.QueryBuilder;
-import org.exoplatform.social.common.jcr.SocialDataLocation;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -198,25 +190,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     assertNotNull(tobeSavedProfile.getId());
     assertEquals(username, tobeSavedProfile.getProperty(Profile.USERNAME));
-
-    SocialDataLocation dataLocation = (SocialDataLocation) getContainer().getComponentInstanceOfType(SocialDataLocation.class);
-    JCRSessionManager sessionManager = dataLocation.getSessionManager();
-
-    //query created profile
-    try {
-      final Session session = sessionManager.getOrOpenSession();
-      final List<Node> nodes = new QueryBuilder(session)
-        .select( NodeTypes.EXO_PROFILE).exec();
-
-      assertEquals(1, nodes.size());
-
-      final Node profileNode = nodes.get(0);
-      final Node identityNode = profileNode.getProperty(NodeProperties.PROFILE_IDENTITY).getNode();
-      final Identity identityByProfile = identityStorage.findIdentityById(identityNode.getUUID());
-      assertEquals(tobeSavedIdentity.getId(), identityByProfile.getId());
-    } finally {
-      sessionManager.closeSession();
-    }
     
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username));
   }

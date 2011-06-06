@@ -27,7 +27,10 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.common.lifecycle.LifeCycleCompletionService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -36,24 +39,107 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {
   private SpaceService spaceService;
+  private IdentityStorage identityStorage;
+  private LifeCycleCompletionService lifeCycleCompletionService;
   private List<Space> tearDownSpaceList;
-  
+  private List<Identity> tearDownUserList;
+
   private final Log       LOG = ExoLogger.getLogger(SpaceServiceTest.class);
   
+  private Identity demo;
+  private Identity tom;
+  private Identity raul;
+  private Identity ghost;
+  private Identity dragon;
+  private Identity register1;
+  private Identity john;
+  private Identity mary;
+  private Identity harry;
+  private Identity root;
+  private Identity jame;
+  private Identity paul;
+  private Identity hacker;
+  private Identity hearBreaker;
+  private Identity newInvitedUser;
+  private Identity newPendingUser;
+
   @Override
   public void setUp() throws Exception {
     super.setUp();
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    lifeCycleCompletionService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
     assertNotNull("spaceService must not be null", spaceService);
     tearDownSpaceList = new ArrayList<Space>();
+    tearDownUserList = new ArrayList<Identity>();
+
+    demo = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    tom = new Identity(OrganizationIdentityProvider.NAME, "tom");
+    raul = new Identity(OrganizationIdentityProvider.NAME, "raul");
+    ghost = new Identity(OrganizationIdentityProvider.NAME, "ghost");
+    dragon = new Identity(OrganizationIdentityProvider.NAME, "dragon");
+    register1 = new Identity(OrganizationIdentityProvider.NAME, "register1");
+    mary = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    john = new Identity(OrganizationIdentityProvider.NAME, "john");
+    harry = new Identity(OrganizationIdentityProvider.NAME, "harry");
+    root = new Identity(OrganizationIdentityProvider.NAME, "root");
+    jame = new Identity(OrganizationIdentityProvider.NAME, "jame");
+    paul = new Identity(OrganizationIdentityProvider.NAME, "paul");
+    hacker = new Identity(OrganizationIdentityProvider.NAME, "hacker");
+    hearBreaker = new Identity(OrganizationIdentityProvider.NAME, "hearBreaker");
+    newInvitedUser = new Identity(OrganizationIdentityProvider.NAME, "newInvitedUser");
+    newPendingUser = new Identity(OrganizationIdentityProvider.NAME, "newPendingUser");
+
+    identityStorage.saveIdentity(demo);
+    identityStorage.saveIdentity(tom);
+    identityStorage.saveIdentity(raul);
+    identityStorage.saveIdentity(ghost);
+    identityStorage.saveIdentity(dragon);
+    identityStorage.saveIdentity(register1);
+    identityStorage.saveIdentity(mary);
+    identityStorage.saveIdentity(harry);
+    identityStorage.saveIdentity(john);
+    identityStorage.saveIdentity(root);
+    identityStorage.saveIdentity(jame);
+    identityStorage.saveIdentity(paul);
+    identityStorage.saveIdentity(hacker);
+    identityStorage.saveIdentity(hearBreaker);
+    identityStorage.saveIdentity(newInvitedUser);
+    identityStorage.saveIdentity(newPendingUser);
+
+    tearDownUserList = new ArrayList<Identity>();
+    tearDownUserList.add(demo);
+    tearDownUserList.add(tom);
+    tearDownUserList.add(raul);
+    tearDownUserList.add(ghost);
+    tearDownUserList.add(dragon);
+    tearDownUserList.add(register1);
+    tearDownUserList.add(mary);
+    tearDownUserList.add(harry);
+    tearDownUserList.add(john);
+    tearDownUserList.add(root);
+    tearDownUserList.add(jame);
+    tearDownUserList.add(paul);
+    tearDownUserList.add(hacker);
+    tearDownUserList.add(hearBreaker);
+    tearDownUserList.add(newInvitedUser);
+    tearDownUserList.add(newPendingUser);
   }
 
   @Override
   public void tearDown() throws Exception {
+    end();
+    begin();
+
+    for (Identity identity : tearDownUserList) {
+      identityStorage.deleteIdentity(identity);
+    }
     for (Space space : tearDownSpaceList) {
       spaceService.deleteSpace(space);
     }

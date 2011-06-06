@@ -18,6 +18,8 @@ package org.exoplatform.social.core.listeners;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserEventListener;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -43,6 +45,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
    * @throws Exception
    */
   public void postSave(User user, boolean isNew) throws Exception {
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
@@ -81,5 +84,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         idm.updateProfile(profile);
       }
     }
+    RequestLifeCycle.end();
   }
 }

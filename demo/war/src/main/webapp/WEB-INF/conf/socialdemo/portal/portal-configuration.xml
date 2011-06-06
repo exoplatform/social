@@ -125,7 +125,7 @@
             <field name="predefinedOwner">
               <collection type="java.util.HashSet">
                 <value>
-                  <string>developers</string>
+                  <string>/developers</string>
                 </value>
               </collection>
             </field>

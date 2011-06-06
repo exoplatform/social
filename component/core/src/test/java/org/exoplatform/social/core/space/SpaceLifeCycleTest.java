@@ -18,18 +18,26 @@ package org.exoplatform.social.core.space;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.lifecycle.LifeCycleCompletionService;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
+import org.exoplatform.social.core.test.AbstractCoreTest;
 
-public class SpaceLifeCycleTest extends TestCase {
+public class SpaceLifeCycleTest extends AbstractCoreTest {
+
+  private LifeCycleCompletionService completionService;
+
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+    completionService = (LifeCycleCompletionService) PortalContainer.getInstance().getComponentInstanceOfType(LifeCycleCompletionService.class);
+  }
 
   public void testSimpleBroadcast() {
 
-    AwaitingLifeCycle lifecycle = new AwaitingLifeCycle();
+    SpaceLifecycle lifecycle = new SpaceLifecycle();
 
     MockListener capture = new MockListener();
     lifecycle.addListener(capture);
@@ -39,7 +47,9 @@ public class SpaceLifeCycleTest extends TestCase {
     lifecycle.activateApplication(null, "foo");
     lifecycle.activateApplication(null, "bar");
 
-    lifecycle.await(100); // wait for the executor to finish
+    end();
+    completionService.waitCompletionFinished();
+    begin();
 
     assertTrue(capture.hasEvent("bar"));
     assertTrue(capture.hasEvent("foo"));
@@ -50,7 +60,7 @@ public class SpaceLifeCycleTest extends TestCase {
 
   public void testBroadcastWithFailingListener() {
 
-    AwaitingLifeCycle lifecycle = new AwaitingLifeCycle();
+    SpaceLifecycle lifecycle = new SpaceLifecycle();
     MockListener capture = new MockListener();
     lifecycle.addListener(capture);
     MockFailingListener failing = new MockFailingListener();
@@ -61,7 +71,9 @@ public class SpaceLifeCycleTest extends TestCase {
     lifecycle.activateApplication(null, "foo");
     lifecycle.activateApplication(null, "bar");
 
-    lifecycle.await(100); // wait for the executor to finish
+    end();
+    completionService.waitCompletionFinished();
+    begin();
 
     assertTrue(capture.hasEvent("bar"));
     assertTrue(capture.hasEvent("foo"));
@@ -129,34 +141,6 @@ public class SpaceLifeCycleTest extends TestCase {
     protected void recordEvent(SpaceLifeCycleEvent event) {
       throw new RuntimeException("fake runtime exception thrown on purpose");
     }
-  }
-
-  /**
-   * Custom SpaceLifeCycle for testing purpose, that can wait until all events
-   * are dispatched. Necessary to avoid test failures when the internal executor
-   * has not finished executing all listeners.
-   *
-   * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
-   *         Lamarque</a>
-   * @version $Revision$
-   */
-  class AwaitingLifeCycle extends SpaceLifecycle {
-
-    /**
-     * Awaits until all events are dispatched
-     *
-     * @param milisconds
-     */
-    public void await(long milisconds) {
-
-      try {
-        executor.awaitTermination(milisconds, TimeUnit.MILLISECONDS);
-      } catch (Exception e) {
-        // ignore
-      }
-
-    }
-
   }
 
 }

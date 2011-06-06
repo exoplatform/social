@@ -41,7 +41,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
   private RelationshipStorage relationshipStorage;
 
-  private IdentityManager identityManger;
+  private IdentityStorage identityStorage;
 
   private Identity rootIdentity,
                    johnIdentity,
@@ -57,12 +57,16 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     tearDownRelationshipList = new ArrayList<Relationship>();
     relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
     assertNotNull("relationshipStorage must not be null", relationshipStorage);
-    identityManger = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    assertNotNull("identityManger must not be null", identityManger);
-    rootIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root");
-    johnIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
-    maryIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
-    demoIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    assertNotNull("identityManger must not be null", identityStorage);
+    rootIdentity = new Identity(OrganizationIdentityProvider.NAME, "root");
+    johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
+    maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
+    demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    identityStorage.saveIdentity(rootIdentity);
+    identityStorage.saveIdentity(johnIdentity);
+    identityStorage.saveIdentity(maryIdentity);
+    identityStorage.saveIdentity(demoIdentity);
   }
 
   @Override
@@ -71,11 +75,10 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       relationshipStorage.removeRelationship(relationship);
     }
 
-    identityManger.deleteIdentity(rootIdentity);
-    identityManger.deleteIdentity(johnIdentity);
-    identityManger.deleteIdentity(maryIdentity);
-    identityManger.deleteIdentity(demoIdentity);
-
+    identityStorage.deleteIdentity(rootIdentity);
+    identityStorage.deleteIdentity(johnIdentity);
+    identityStorage.deleteIdentity(maryIdentity);
+    identityStorage.deleteIdentity(demoIdentity);
     super.tearDown();
   }
 

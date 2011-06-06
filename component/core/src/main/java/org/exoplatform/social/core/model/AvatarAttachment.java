@@ -16,19 +16,16 @@
  */
 package org.exoplatform.social.core.model;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.Session;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.jcr.NodeProperties;
 
 /*
  * This class using for attachment profile of identity or of space, such as
@@ -266,29 +263,6 @@ public class AvatarAttachment {
     } else {
       imageBytes = null;
     }
-  }
-
-  /**
-   * Gets the input stream.
-   *
-   * @param session the session
-   * @return the input stream
-   * @throws Exception the exception
-   */
-  public InputStream getInputStream(Session session) throws Exception {
-    if (imageBytes != null) {
-      return new ByteArrayInputStream(imageBytes);
-    }
-    Node attachment;
-    try {
-      attachment = (Node) session.getItem(getId());
-    } catch (Exception e) {
-      LOG.warn("Failed to get input stream", e);
-      return null;
-    }
-    Property property = attachment.getNode(NodeProperties.JCR_CONTENT).getProperty(NodeProperties.JCR_DATA);
-    InputStream inputStream = property.getValue().getStream();
-    return inputStream;
   }
 
   /**
