@@ -145,4 +145,19 @@ public abstract class AbstractStorage {
       }
     }
   }
+
+  protected boolean startSynchronization() {
+    if (lifeCycle.getManager().getSynchronization() == null) {
+      lifeCycle.getManager().beginRequest();
+      return true;
+    }
+    return false;
+  }
+
+  protected void stopSynchronization(boolean requestClose) {
+    if (requestClose) {
+      lifeCycle.getManager().endRequest(true);
+    }
+  }
+
 }

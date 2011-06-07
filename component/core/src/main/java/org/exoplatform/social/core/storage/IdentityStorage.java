@@ -589,7 +589,7 @@ public class IdentityStorage extends AbstractStorage {
    * @param identity the identity
    * @throws IdentityStorageException
    */
-  public final void saveIdentity(final Identity identity) throws IdentityStorageException {
+  public void saveIdentity(final Identity identity) throws IdentityStorageException {
 
     try {
       try {
@@ -634,7 +634,7 @@ public class IdentityStorage extends AbstractStorage {
    * @return the identity
    * @throws IdentityStorageException
    */
-  public final Identity findIdentityById(final String nodeId) throws IdentityStorageException {
+  public Identity findIdentityById(final String nodeId) throws IdentityStorageException {
 
     try {
 
@@ -659,7 +659,7 @@ public class IdentityStorage extends AbstractStorage {
    * @param identity
    * @throws IdentityStorageException
    */
-  public final void deleteIdentity(final Identity identity) throws IdentityStorageException {
+  public void deleteIdentity(final Identity identity) throws IdentityStorageException {
     try {
       _deleteIdentity(identity);
     }
@@ -674,7 +674,7 @@ public class IdentityStorage extends AbstractStorage {
    * @param profile the profile
    * @throws IdentityStorageException
    */
-  public final void loadProfile(final Profile profile) throws IdentityStorageException {
+  public void loadProfile(final Profile profile) throws IdentityStorageException {
     try {
       _loadProfile(profile);
     }
@@ -700,7 +700,7 @@ public class IdentityStorage extends AbstractStorage {
    * @return the identity by remote id
    * @throws IdentityStorageException
    */
-  public final Identity findIdentity(final String providerId, final String remoteId) throws IdentityStorageException {
+  public Identity findIdentity(final String providerId, final String remoteId) throws IdentityStorageException {
     try {
       return _findIdentity(providerId, remoteId);
     }
@@ -715,7 +715,7 @@ public class IdentityStorage extends AbstractStorage {
    * @param profile the profile
    * @throws IdentityStorageException
    */
-  public final void saveProfile(final Profile profile) throws IdentityStorageException {
+  public void saveProfile(final Profile profile) throws IdentityStorageException {
 
     try {
       if (profile.getId() == null) {
@@ -738,7 +738,7 @@ public class IdentityStorage extends AbstractStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public final void updateProfile(final Profile profile) throws IdentityStorageException {
+  public void updateProfile(final Profile profile) throws IdentityStorageException {
     saveProfile(profile);
   }
 
@@ -768,7 +768,7 @@ public class IdentityStorage extends AbstractStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public final List<Identity> getIdentitiesByProfileFilter(
+  public List<Identity> getIdentitiesByProfileFilter(
       final String providerId, final ProfileFilter profileFilter, long offset, long limit,
       boolean forceLoadOrReloadProfile)
       throws IdentityStorageException {
@@ -928,7 +928,7 @@ public class IdentityStorage extends AbstractStorage {
    * @return the type
    * @throws IdentityStorageException
    */
-  public final String getType(final String nodetype, final String property) {
+  public String getType(final String nodetype, final String property) {
 
     // TODO : move to appropriate classe
 
@@ -961,7 +961,7 @@ public class IdentityStorage extends AbstractStorage {
    * @param profile
    * @throws IdentityStorageException
    */
-  public final void addOrModifyProfileProperties(final Profile profile) throws IdentityStorageException {
+  public void addOrModifyProfileProperties(final Profile profile) throws IdentityStorageException {
     try {
       _saveProfile(profile);
     } catch (NodeNotFoundException e) {

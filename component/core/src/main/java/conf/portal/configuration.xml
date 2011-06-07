@@ -39,22 +39,22 @@
   
   <component>
     <key>org.exoplatform.social.core.storage.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.ActivityStorage</type>
+    <type>org.exoplatform.social.core.storage.SynchronizedActivityStorage</type>
   </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.IdentityStorage</type>
+    <type>org.exoplatform.social.core.storage.SynchronizedIdentityStorage</type>
   </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.RelationshipStorage</type>
+    <type>org.exoplatform.social.core.storage.SynchronizedRelationshipStorage</type>
   </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.SpaceStorage</type>
+    <type>org.exoplatform.social.core.storage.SynchronizedSpaceStorage</type>
   </component>
 
   <!--
