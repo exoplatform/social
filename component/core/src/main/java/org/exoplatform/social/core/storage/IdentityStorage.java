@@ -1,21 +1,19 @@
 /*
-* Copyright (C) 2003-2009 eXo Platform SAS.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.exoplatform.social.core.storage;
 
@@ -406,7 +404,8 @@ public class IdentityStorage extends AbstractStorage {
     return identity;
   }
 
-  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId) throws NodeNotFoundException {
+  protected IdentityEntity _findIdentityEntity(final String providerId, final String remoteId)
+      throws NodeNotFoundException {
 
     ProviderEntity providerEntity = getProviderRoot().getProviders().get(providerId);
 
@@ -441,11 +440,29 @@ public class IdentityStorage extends AbstractStorage {
   private String processUsernameSearchPattern(final String userName) {
     String modifiedUserName = userName;
     if (modifiedUserName.length() > 0) {
-      modifiedUserName = ((EMPTY_STR.equals(modifiedUserName)) || (modifiedUserName.length() == 0)) ? ASTERISK_STR : modifiedUserName;
-      modifiedUserName = (modifiedUserName.charAt(0) != ASTERISK_CHAR) ? ASTERISK_STR + modifiedUserName : modifiedUserName;
-      modifiedUserName = (modifiedUserName.charAt(modifiedUserName.length() - 1) != ASTERISK_CHAR) ? modifiedUserName += ASTERISK_STR : modifiedUserName;
-      modifiedUserName = (modifiedUserName.indexOf(ASTERISK_STR) >= 0) ? modifiedUserName.replace(ASTERISK_STR, "." + ASTERISK_STR) : modifiedUserName;
-      modifiedUserName = (modifiedUserName.indexOf(PERCENT_STR) >= 0) ? modifiedUserName.replace(PERCENT_STR, "." + ASTERISK_STR) : modifiedUserName;
+      modifiedUserName =
+          ((EMPTY_STR.equals(modifiedUserName)) || (modifiedUserName.length() == 0))
+              ? ASTERISK_STR
+              : modifiedUserName;
+
+      modifiedUserName =
+          (modifiedUserName.charAt(0) != ASTERISK_CHAR) ? ASTERISK_STR + modifiedUserName : modifiedUserName;
+
+      modifiedUserName =
+          (modifiedUserName.charAt(modifiedUserName.length() - 1) != ASTERISK_CHAR)
+              ? modifiedUserName += ASTERISK_STR
+              : modifiedUserName;
+
+      modifiedUserName =
+          (modifiedUserName.indexOf(ASTERISK_STR) >= 0)
+              ? modifiedUserName.replace(ASTERISK_STR, "." + ASTERISK_STR)
+              : modifiedUserName;
+      
+      modifiedUserName =
+          (modifiedUserName.indexOf(PERCENT_STR) >= 0)
+              ? modifiedUserName.replace(PERCENT_STR, "." + ASTERISK_STR)
+              : modifiedUserName;
+
       Pattern.compile(modifiedUserName);
     }
     return userName;
@@ -576,7 +593,7 @@ public class IdentityStorage extends AbstractStorage {
 
     try {
       try {
-        _findById(IdentityEntity.class, identity.getId()); // Throw NodeNotFoundException if the identity doesn't exists
+        _findById(IdentityEntity.class, identity.getId());
         _saveIdentity(identity);
       }
       catch (NodeNotFoundException e) {
@@ -666,7 +683,9 @@ public class IdentityStorage extends AbstractStorage {
         _createProfile(profile);
       }
       catch (NodeNotFoundException e1) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY_BY_NODE_ID, e1.getMessage(), e1);
+        throw new IdentityStorageException(
+            IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY_BY_NODE_ID,
+            e1.getMessage(), e1);
       }
     }
 
@@ -750,7 +769,8 @@ public class IdentityStorage extends AbstractStorage {
    * @since 1.2.0-GA
    */
   public final List<Identity> getIdentitiesByProfileFilter(
-      final String providerId, final ProfileFilter profileFilter, long offset, long limit, boolean forceLoadOrReloadProfile)
+      final String providerId, final ProfileFilter profileFilter, long offset, long limit,
+      boolean forceLoadOrReloadProfile)
       throws IdentityStorageException {
 
     if (offset < 0) {
@@ -827,7 +847,8 @@ public class IdentityStorage extends AbstractStorage {
    * @throws IdentityStorageException
    * @since 1.2.0-GA
    */
-  public int getIdentitiesByFirstCharacterOfNameCount(final String providerId, final ProfileFilter profileFilter) throws IdentityStorageException {
+  public int getIdentitiesByFirstCharacterOfNameCount(final String providerId, final ProfileFilter profileFilter)
+      throws IdentityStorageException {
 
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
 
@@ -944,7 +965,9 @@ public class IdentityStorage extends AbstractStorage {
     try {
       _saveProfile(profile);
     } catch (NodeNotFoundException e) {
-      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_ADD_OR_MODIFY_PROPERTIES, e.getMessage(), e);
+      throw new IdentityStorageException(
+          IdentityStorageException.Type.FAIL_TO_ADD_OR_MODIFY_PROPERTIES,
+          e.getMessage(), e);
     }
   }
 }

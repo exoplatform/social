@@ -1,21 +1,19 @@
 /*
-* Copyright (C) 2003-2009 eXo Platform SAS.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.exoplatform.social.core.storage;
 
@@ -57,12 +55,26 @@ public class RelationshipStorage extends AbstractStorage {
         sender.setRemoteId(senderEntity.getRemoteId());
         sender.setProviderId(senderEntity.getProviderId());
         ProfileEntity senderProfileEntity = senderEntity.getProfile();
+
         if (senderProfileEntity != null) {
           Profile senderProfile = new Profile(sender);
-          senderProfile.setProperty(Profile.FIRST_NAME, senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.FIRST_NAME)));
-          senderProfile.setProperty(Profile.LAST_NAME, senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.LAST_NAME)));
-          senderProfile.setProperty(Profile.URL, senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.URL)));
-          senderProfile.setProperty(Profile.POSITION, senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.POSITION)));
+
+          senderProfile.setProperty(
+              Profile.FIRST_NAME,
+              senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.FIRST_NAME)));
+
+          senderProfile.setProperty(
+              Profile.LAST_NAME,
+              senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.LAST_NAME)));
+
+          senderProfile.setProperty(
+              Profile.URL,
+              senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.URL)));
+
+          senderProfile.setProperty(
+              Profile.POSITION,
+              senderProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.POSITION)));
+
           senderProfile.setId(senderProfileEntity.getId());
           sender.setProfile(senderProfile);
         }
@@ -71,12 +83,26 @@ public class RelationshipStorage extends AbstractStorage {
         receiver.setRemoteId(receiverEntity.getRemoteId());
         receiver.setProviderId(receiverEntity.getProviderId());
         ProfileEntity receiverProfileEntity = receiverEntity.getProfile();
+
         if (receiverProfileEntity != null) {
           Profile receiverProfile = new Profile(receiver);
-          receiverProfile.setProperty(Profile.FIRST_NAME, receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.FIRST_NAME)));
-          receiverProfile.setProperty(Profile.LAST_NAME, receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.LAST_NAME)));
-          receiverProfile.setProperty(Profile.URL, receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.URL)));
-          receiverProfile.setProperty(Profile.POSITION, receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.POSITION)));
+
+          receiverProfile.setProperty(
+              Profile.FIRST_NAME,
+              receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.FIRST_NAME)));
+
+          receiverProfile.setProperty(
+              Profile.LAST_NAME,
+              receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.LAST_NAME)));
+
+          receiverProfile.setProperty(
+              Profile.URL,
+              receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.URL)));
+          
+          receiverProfile.setProperty(
+              Profile.POSITION,
+              receiverProfileEntity.getPropertyFirst(IdentityStorage.PropNs.VOID.nameOf(Profile.POSITION)));
+
           receiverProfile.setId(receiverProfileEntity.getId());
           receiver.setProfile(receiverProfile);
         }
@@ -184,14 +210,22 @@ public class RelationshipStorage extends AbstractStorage {
       case PENDING:
 
         // Move to sender / receiver
-        savedRelationship.getParent().getParent().getSender().getRelationships().put(savedRelationship.getName(), savedRelationship);
-        symmetricalRelationship.getParent().getParent().getReceiver().getRelationships().put(symmetricalRelationship.getName(), symmetricalRelationship);
+        savedRelationship.getParent().getParent().getSender().getRelationships()
+            .put(savedRelationship.getName(), savedRelationship);
+
+        symmetricalRelationship.getParent().getParent().getReceiver().getRelationships()
+            .put(symmetricalRelationship.getName(), symmetricalRelationship);
+        
         break;
       case CONFIRMED:
 
         // Move to relationship
-        savedRelationship.getParent().getParent().getRelationship().getRelationships().put(savedRelationship.getName(), savedRelationship);
-        symmetricalRelationship.getParent().getParent().getRelationship().getRelationships().put(symmetricalRelationship.getName(), symmetricalRelationship);
+        savedRelationship.getParent().getParent().getRelationship().getRelationships()
+            .put(savedRelationship.getName(), savedRelationship);
+
+        symmetricalRelationship.getParent().getParent().getRelationship().getRelationships()
+            .put(symmetricalRelationship.getName(), symmetricalRelationship);
+        
         break;
       
       // TODO : IGNORED
@@ -222,8 +256,9 @@ public class RelationshipStorage extends AbstractStorage {
     return savedRelationship;
   }
 
-  protected List<Relationship> _getSenderRelationships(final Identity sender, final Relationship.Type type,
-                                                   final List<Identity> listCheckIdentity) throws NodeNotFoundException {
+  protected List<Relationship> _getSenderRelationships(
+      final Identity sender, final Relationship.Type type, final List<Identity> listCheckIdentity)
+      throws NodeNotFoundException {
 
     // TODO : listCheckIdentity ?
 
@@ -255,8 +290,9 @@ public class RelationshipStorage extends AbstractStorage {
     return relationships;
   }
 
-  protected List<Relationship> _getReceiverRelationships(final Identity receiver, final Relationship.Type type,
-                                                   final List<Identity> listCheckIdentity) throws NodeNotFoundException {
+  protected List<Relationship> _getReceiverRelationships(
+      final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity)
+      throws NodeNotFoundException {
 
     List<Relationship> relationships = new ArrayList<Relationship>();
 
@@ -319,7 +355,8 @@ public class RelationshipStorage extends AbstractStorage {
     return relationship;
   }
 
-  protected Relationship _getRelationship(final Identity identity1, final Identity identity2) throws RelationshipStorageException, NodeNotFoundException {
+  protected Relationship _getRelationship(final Identity identity1, final Identity identity2)
+      throws RelationshipStorageException, NodeNotFoundException {
 
     IdentityEntity identityEntity1 = _findById(IdentityEntity.class, identity1.getId());
     IdentityEntity identityEntity2 = _findById(IdentityEntity.class, identity2.getId());
@@ -378,7 +415,9 @@ public class RelationshipStorage extends AbstractStorage {
       }
     }
     catch (NodeNotFoundException e) {
-      throw new RelationshipStorageException(RelationshipStorageException.Type.ILLEGAL_ARGUMENTS, new String[] { Relationship.class.getSimpleName() });
+      throw new RelationshipStorageException(
+          RelationshipStorageException.Type.ILLEGAL_ARGUMENTS,
+          new String[] { Relationship.class.getSimpleName() });
     }
 
     return relationship;
@@ -454,8 +493,9 @@ public class RelationshipStorage extends AbstractStorage {
    * @return the relationship
    * @throws RelationshipStorageException
    */
-  public List<Relationship> getSenderRelationships(final Identity sender, final Relationship.Type type,
-                                                   final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getSenderRelationships(
+      final Identity sender, final Relationship.Type type, final List<Identity> listCheckIdentity)
+      throws RelationshipStorageException {
 
     try {
       return _getSenderRelationships(sender, type, listCheckIdentity);
@@ -476,8 +516,9 @@ public class RelationshipStorage extends AbstractStorage {
    * @return the relationship
    * @throws RelationshipStorageException
    */
-  public List<Relationship> getReceiverRelationships(final Identity receiver, final Relationship.Type type,
-                                                   final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getReceiverRelationships(
+      final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity)
+      throws RelationshipStorageException {
 
     try {
       return _getReceiverRelationships(receiver, type, listCheckIdentity);
@@ -496,7 +537,9 @@ public class RelationshipStorage extends AbstractStorage {
    * @return the relationship
    * @throws RelationshipStorageException
    */
-  public Relationship getRelationship(final Identity identity1, final Identity identity2) throws RelationshipStorageException {
+  public Relationship getRelationship(final Identity identity1, final Identity identity2)
+      throws RelationshipStorageException {
+
     try {
       return _getRelationship(identity1, identity2);
     }
@@ -515,8 +558,10 @@ public class RelationshipStorage extends AbstractStorage {
    * @return the relationship
    * @throws RelationshipStorageException
    */
-  public List<Relationship> getRelationships(final Identity identity, final Relationship.Type type,
-                                             final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getRelationships(
+      final Identity identity, final Relationship.Type type, final List<Identity> listCheckIdentity)
+      throws RelationshipStorageException {
+    
     try {
       List<Relationship> relationships = new ArrayList<Relationship>();
 

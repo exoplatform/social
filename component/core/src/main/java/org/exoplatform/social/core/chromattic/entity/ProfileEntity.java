@@ -1,23 +1,24 @@
 /*
-* Copyright (C) 2003-2009 eXo Platform SAS.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.exoplatform.social.core.chromattic.entity;
+
+import java.util.List;
+import java.util.Map;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.FormattedBy;
@@ -33,9 +34,6 @@ import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -64,7 +62,8 @@ public abstract class ProfileEntity {
   @Property(name = "soc:parentId")
   public abstract String getParentId();
   public abstract void setParentId(String parentid);
-  public static final PropertyLiteralExpression<String> parentId = new PropertyLiteralExpression<String>(String.class, "soc:parentId");
+  public static final PropertyLiteralExpression<String> parentId =
+      new PropertyLiteralExpression<String>(String.class, "soc:parentId");
 
   @OneToMany
   @Owner
@@ -72,10 +71,17 @@ public abstract class ProfileEntity {
 
   @Properties
   public abstract Map<String, List<String>> getProperties();
-  public static final PropertyLiteralExpression<String> firstName = new PropertyLiteralExpression<String>(String.class, "void-firstName");
-  public static final PropertyLiteralExpression<String> fullName = new PropertyLiteralExpression<String>(String.class, "void-fullName");
-  public static final PropertyLiteralExpression<String> position = new PropertyLiteralExpression<String>(String.class, "void-position");
-  public static final PropertyLiteralExpression<String> gender = new PropertyLiteralExpression<String>(String.class, "void-gender");
+  public static final PropertyLiteralExpression<String> firstName =
+      new PropertyLiteralExpression<String>(String.class, "void-firstName");
+
+  public static final PropertyLiteralExpression<String> fullName =
+      new PropertyLiteralExpression<String>(String.class, "void-fullName");
+
+  public static final PropertyLiteralExpression<String> position =
+      new PropertyLiteralExpression<String>(String.class, "void-position");
+  
+  public static final PropertyLiteralExpression<String> gender =
+      new PropertyLiteralExpression<String>(String.class, "void-gender");
 
   @Create
   public abstract NTFile createAvatar();

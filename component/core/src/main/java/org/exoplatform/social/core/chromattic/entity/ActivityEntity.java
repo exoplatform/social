@@ -1,23 +1,24 @@
 /*
-* Copyright (C) 2003-2009 eXo Platform SAS.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.exoplatform.social.core.chromattic.entity;
+
+import java.util.List;
+import java.util.Map;
 
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.Create;
@@ -33,9 +34,6 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -60,7 +58,8 @@ public abstract class ActivityEntity {
   @ManyToOne(type = RelationshipType.REFERENCE)
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
-  public static final PropertyLiteralExpression<String> identity = new PropertyLiteralExpression<String>(String.class, "soc:identity");
+  public static final PropertyLiteralExpression<String> identity =
+      new PropertyLiteralExpression<String>(String.class, "soc:identity");
 
   @Property(name = "soc:title")
   public abstract String getTitle();
@@ -78,12 +77,14 @@ public abstract class ActivityEntity {
   @DefaultValue("false")
   public abstract Boolean isComment();
   public abstract void setComment(Boolean isComment);
-  public static final PropertyLiteralExpression<Boolean> isComment = new PropertyLiteralExpression<Boolean>(Boolean.class, "soc:isComment");
+  public static final PropertyLiteralExpression<Boolean> isComment =
+      new PropertyLiteralExpression<Boolean>(Boolean.class, "soc:isComment");
 
   @Property(name = "soc:postedTime")
   public abstract Long getPostedTime();
   public abstract void setPostedTime(Long postedTime);
-  public static final PropertyLiteralExpression<Long> postedTime = new PropertyLiteralExpression<Long>(Long.class, "soc:postedTime");
+  public static final PropertyLiteralExpression<Long> postedTime =
+      new PropertyLiteralExpression<Long>(Long.class, "soc:postedTime");
 
   @MappedBy("soc:params")
   @OneToOne

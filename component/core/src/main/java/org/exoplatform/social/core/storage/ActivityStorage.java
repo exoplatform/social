@@ -1,21 +1,19 @@
 /*
-* Copyright (C) 2003-2009 eXo Platform SAS.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 package org.exoplatform.social.core.storage;
 
@@ -233,7 +231,8 @@ public class ActivityStorage extends AbstractStorage {
    * @param limit
    * @return the activities
    */
-  public List<ExoSocialActivity> getActivities(Identity owner, long offset, long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivities(Identity owner, long offset, long limit)
+      throws ActivityStorageException {
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     int nb = 0;
@@ -347,7 +346,8 @@ public class ActivityStorage extends AbstractStorage {
      *              Usually a user or space identity
      * @param activity the activity to save
      * @return stored activity
-     * @throws ActivityStorageException activity storage exception with type: ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY
+     * @throws ActivityStorageException activity storage exception with type:
+     * ActivityStorageException.Type.FAILED_TO_SAVE_ACTIVITY
      * @since 1.1.1
      */
   public ExoSocialActivity saveActivity(Identity owner, ExoSocialActivity activity) throws ActivityStorageException {
@@ -519,7 +519,9 @@ public class ActivityStorage extends AbstractStorage {
 
     }
     catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT, e.getMessage(), e);
+      throw new ActivityStorageException(
+          ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT,
+          e.getMessage(), e);
     }
 
   }

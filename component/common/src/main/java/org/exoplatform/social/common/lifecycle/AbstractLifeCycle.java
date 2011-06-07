@@ -16,6 +16,10 @@
  */
 package org.exoplatform.social.common.lifecycle;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.SessionContext;
@@ -24,10 +28,6 @@ import org.exoplatform.commons.chromattic.SynchronizationStatus;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * Generic implementation a Lifecycle<br/>
