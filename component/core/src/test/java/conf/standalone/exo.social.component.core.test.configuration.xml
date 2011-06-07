@@ -99,12 +99,8 @@
     <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
     <init-params>
       <value-param>
-        <name>thread-number</name>
-        <value>1</value>
-      </value-param>
-      <value-param>
         <name>async-execution</name>
-        <value>true</value>
+        <value>false</value>
       </value-param>
     </init-params>
   </component>
