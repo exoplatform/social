@@ -63,12 +63,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a</td>
+	<td>//div[@id='UIDisplayProfileList']/div[3]/div/a[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a</td>
+	<td>//div[@id='UIDisplayProfileList']/div[3]/div/a[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -128,12 +128,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a[2]</td>
+	<td>//div[@id='UIDisplayProfileList']/div[3]/div/a[3]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIDisplayProfileList']/div/div[3]/div[2]/div/a[2]</td>
+	<td>//div[@id='UIDisplayProfileList']/div[3]/div/a[3]</td>
 	<td></td>
 </tr>
 <tr>
@@ -278,12 +278,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIMyConnections']/div/div[2]/div[3]/div[2]/div/a</td>
+	<td>//div[@id='UIMyConnectionsNavigationPortlet']/div[2]/div[3]/a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIMyConnections']/div/div[2]/div[3]/div[2]/div/a</td>
+	<td>//div[@id='UIMyConnectionsNavigationPortlet']/div[2]/div[3]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -306,7 +306,6 @@
 	<td>link=Sign out</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
