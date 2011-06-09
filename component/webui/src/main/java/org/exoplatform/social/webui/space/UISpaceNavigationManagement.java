@@ -44,8 +44,8 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UITree;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
   @ComponentConfig(
@@ -100,15 +100,39 @@ public class UISpaceNavigationManagement extends UIContainer {
     UISpaceNavigationNodeSelector selector = createUIComponent(UISpaceNavigationNodeSelector.class,
             null,
             "UISpaceNavigationNodeSelector");
-    selector.setEdittedNavigation(groupNav);
-    selector.initTreeData();
     addChild(selector);
   }
+  
+	/**
+	 * Relate to the SOC-1759 Reload space navigation to make sure that these
+	 * applications just is added or removed in the Space Application Tab which belong to
+	 * the current space will been displayed.
+	 */
+	public void reloadTreeData() throws Exception {
+		String spaceUrl = SpaceUtils.getSpaceUrl();
+		SpaceService spaceService = getApplicationComponent(SpaceService.class);
+		Space space = spaceService.getSpaceByUrl(spaceUrl);
+		PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+		
+		setOwner(groupNav.getOwnerId());
+		setOwnerType(groupNav.getOwnerType());
+
+		UISpaceNavigationNodeSelector selector = this.getChild(UISpaceNavigationNodeSelector.class);
+		
+		//clean the treeNodeData, 
+		//this is the condition to UITree knows the reload data.
+		selector.setEdittedTreeNodeData(null);
+		selector.setEdittedNavigation(groupNav);
+		selector.initTreeData();
+		addChild(selector);
+	}
+	
+	
 
   public void setOwner(String owner) {
     this.owner = owner;
   }
-
+ 
   public String getOwner() {
     return this.owner;
   }
@@ -204,7 +228,7 @@ public class UISpaceNavigationManagement extends UIContainer {
       prContext.setFullRender(true);
     }
 
-    private void setNavigation(List<PageNavigation> navs, PageNavigation nav) {
+    public void setNavigation(List<PageNavigation> navs, PageNavigation nav) {
       for (int i = 0; i < navs.size(); i++) {
         if (navs.get(i).getId() == nav.getId()) {
           navs.set(i, nav);

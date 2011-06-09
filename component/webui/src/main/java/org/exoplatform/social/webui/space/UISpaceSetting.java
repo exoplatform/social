@@ -44,7 +44,7 @@ import org.exoplatform.webui.event.EventListener;
   @ComponentConfig(
     type = UITabPane.class,
     id = "UISpaceSettingTabPane",
-    template = "system:/groovy/webui/core/UITabPane_New.gtmpl",
+    template = "classpath:groovy/social/webui/space/UISpaceSettingPane.gtmpl",
     events = { @EventConfig(listeners = UISpaceSetting.SelectTabActionListener.class) })
   })
 public class UISpaceSetting extends UIContainer {
@@ -123,6 +123,14 @@ public class UISpaceSetting extends UIContainer {
       String renderTab = context.getRequestParameter(UIComponent.OBJECTID);
       if (renderTab == null)
         return;
+      //SOC-1759 when user chooses the Space Navigation Tab.
+      //The content must have to refresh.
+      if (renderTab.equals(UISpaceNavigationManagement.class.getSimpleName())) {
+        UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.getChild(UISpaceNavigationManagement.class);
+        uiSpaceNavigation.reloadTreeData();
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavigation);
+      }
+     
       if (!renderTab.equals(UISpaceApplication.class.getSimpleName())) {
         UISpaceApplication uiApplication = uiTabPane.getChild(UISpaceApplication.class);
         if (uiApplication != null) {
@@ -131,7 +139,6 @@ public class UISpaceSetting extends UIContainer {
         }
       }
       uiTabPane.setSelectedTab(renderTab);
-      context.setResponseComplete(true);
     }
   }
 }
