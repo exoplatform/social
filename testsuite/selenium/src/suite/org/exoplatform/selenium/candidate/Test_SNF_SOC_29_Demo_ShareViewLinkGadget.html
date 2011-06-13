@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- Share and View link Fetcher gadget</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -82,7 +77,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
+	<td>click</td>
 	<td>xpath=//div[@title='Social Rss Reader']</td>
 	<td></td>
 </tr>
@@ -104,6 +99,16 @@
 <tr>
 	<td>click</td>
 	<td>//div[@id='UIDashboard']//div[@class='CloseButton']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>eXo Blog</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>eXo Blog</td>
 	<td></td>
 </tr>
 <tr>
@@ -188,12 +193,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form/div[2]/div/div[1]/div[2]</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form/div[2]/div/div[1]/div[2]</td>
+	<td>//div[2]/div/div[1]/div[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -203,12 +208,12 @@
 </tr>
 <tr>
 	<td>waitForTextNotPresent</td>
-	<td>eXo Announces Spanish Version of Website</td>
+	<td>eXo and Convertigo Accelerate Portal Development with Dynamic Widget Wiring</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>eXo Announces Spanish Version of Website</td>
+	<td>eXo and Convertigo Accelerate Portal Development with Dynamic Widget Wiring</td>
 	<td></td>
 </tr>
 <tr>
@@ -244,6 +249,11 @@
 <tr>
 	<td>waitForConfirmation</td>
 	<td>Are you sure to delete this gadget?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Drag your gadgets here.</td>
 	<td></td>
 </tr>
 <tr>

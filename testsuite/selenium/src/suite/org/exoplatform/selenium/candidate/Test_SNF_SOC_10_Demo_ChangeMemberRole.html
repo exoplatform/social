@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- Change Member Role</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -92,13 +87,13 @@
 	<td>This is description for Space_10</td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>waitForElementPresent</td>
 	<td>link=Create</td>
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>2000</td>
+	<td>click</td>
+	<td>link=Create</td>
 	<td></td>
 </tr>
 <tr>
@@ -167,8 +162,13 @@
 	<td>mary</td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[1]/div[2]/div</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>//div[@class='SearchAddMemberIcon']</td>
+	<td>//form[@id='UISpaceMember']/div[2]/div/div/div/div/div[1]/div[2]/div</td>
 	<td></td>
 </tr>
 <tr>
@@ -277,6 +277,31 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>--Check My space list of user after accept invitation--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=My Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=My Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_10</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_10</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
@@ -343,7 +368,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- - Change Member Role</td>
+	<td>-- Make user become space's leader--</td>
 	<td></td>
 </tr>
 <tr>
@@ -368,27 +393,152 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//table[@class='UIGrid']//tbody/tr[1]//div[@title='Make Leader']</td>
+	<td>//a[@id='label']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//table[@class='UIGrid']//tbody/tr[1]//div[@title='Make Leader']</td>
+	<td>//a[@id='label']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//table[@class='UIGrid']//tbody/tr[1]//div[@title='Remove Leader']</td>
+	<td>//a[@id='label']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//table[@class='UIGrid']//tbody/tr[1]//div[@title='Remove Leader']</td>
+	<td>//a[@id='label']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Check access Space setting--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>mary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space10</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space10</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Space Navigation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Space Navigation</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
 	<td>-- Delete Space created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>root</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
 <tr>

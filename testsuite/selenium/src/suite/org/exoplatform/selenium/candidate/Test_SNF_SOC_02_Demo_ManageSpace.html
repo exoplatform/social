@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Test_SNF_SOC_01_Demo_AccessSpace</title>
+<title>Test_SNF_SOC_02_Demo_CreateEditDeleteSpace</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Test_SNF_SOC_01_Demo_AccessSpace</td></tr>
+<tr><td rowspan="1" colspan="3">Test_SNF_SOC_02_Demo_CreateEditDeleteSpace</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -19,11 +19,6 @@
 <tr>
 	<td>windowMaximize</td>
 	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--Access Space--</td>
 	<td></td>
 </tr>
 <tr>
@@ -84,12 +79,17 @@
 <tr>
 	<td>type</td>
 	<td>name</td>
-	<td>Space01</td>
+	<td>Space02</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>description</td>
-	<td>This is description for Space_01</td>
+	<td>This is description for Space_02</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
 </tr>
 <tr>
 	<td>click</td>
@@ -98,37 +98,152 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Verify space created in the list</td>
+	<td>-- Verify space created</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space01</td>
+	<td>link=Space02</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=Space01</td>
+	<td>link=Space02</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Space01</td>
+	<td>link=Space02</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>Space01 was created</td>
+	<td>Space02 was created</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Space01 was created</td>
+	<td>Space02 was created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Edit Space created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Space Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Edit Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>name</td>
+	<td>Space02</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>description</td>
+	<td>This is description for Space_02_Edit</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Save</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- back to space link--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--check space after edit-</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_02_Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_02_Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- access space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space02</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space02</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Change application name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UISpaceMenu']/div/div[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UISpaceMenu']/div/div[4]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -137,7 +252,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
@@ -163,12 +283,12 @@
 </tr>
 <tr>
 	<td>waitForTextNotPresent</td>
-	<td>Space01</td>
+	<td>Space02</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>Space01</td>
+	<td>Space02</td>
 	<td></td>
 </tr>
 <tr>

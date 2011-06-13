@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>--&nbsp;&nbsp;Check displaying on Pending space list</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -92,13 +87,18 @@
 	<td>This is description for Space_15</td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Create</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>12000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -257,11 +257,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- Delete Space created</td>
-	<td></td>
-</tr>
-<tr>
 	<td>open</td>
 	<td>/socialdemo/public/classic/</td>
 	<td></td>
@@ -289,6 +284,61 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>mary</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>mary</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Delete Space created</td>
 	<td></td>
 </tr>
 <tr>

@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>echo</td>
-	<td>-- Edit Space Navigation</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -92,28 +87,48 @@
 	<td>This is description for Space_13</td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Create</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--access the new Space</td>
+	<td>-- Verify space created</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
+	<td>link=Space13</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[2]/div[2]/div[1]/div[1]/div[1]/a</td>
+	<td>verifyElementPresent</td>
+	<td>link=Space13</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space13</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Space13 was created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Space13 was created</td>
 	<td></td>
 </tr>
 <tr>
@@ -163,7 +178,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -228,7 +243,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>3000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -248,7 +263,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>3000</td>
+	<td>1000</td>
 	<td></td>
 </tr>
 <tr>
@@ -373,12 +388,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIGroupNavigationGrid']/table[6]//a[@class='DeleteIcon']</td>
+	<td>//div[@id='UIGroupNavigationGrid']/table[5]//a[@class='DeleteIcon']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIGroupNavigationGrid']/table[6]//a[@class='DeleteIcon']</td>
+	<td>//div[@id='UIGroupNavigationGrid']/table[5]//a[@class='DeleteIcon']</td>
 	<td></td>
 </tr>
 <tr>

@@ -143,7 +143,7 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>--Request&nbsp;&nbsp;to join the Space</td>
+	<td>--User 1 request&nbsp;&nbsp;to join the Space</td>
 	<td></td>
 </tr>
 <tr>
@@ -222,6 +222,41 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForTextNotPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Check Pending list space after request--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Pendings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Pendings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
 	<td>link=Sign out</td>
 	<td></td>
@@ -233,7 +268,132 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Accept Request</td>
+	<td>--User 2 request&nbsp;&nbsp;to join the Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>demo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//a[@class='Icon IconAdd']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@class='Icon IconAdd']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Check Pending list space after request--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Pendings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Pendings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Accept Request of User 1--</td>
 	<td></td>
 </tr>
 <tr>
@@ -288,17 +448,32 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@class='ValidateButton']</td>
+	<td>//form[@id='UISpaceMember']/table/tbody[1]/tr/td[2]/div[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@class='ValidateButton']</td>
+	<td>//form[@id='UISpaceMember']/table/tbody[1]/tr/td[2]/div[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- - Verify accepted user is displayed in Space Member List</td>
+	<td>-- Deny request of User 2--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//form[@id='UISpaceMember']/table/tbody/tr/td[2]/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//form[@id='UISpaceMember']/table/tbody/tr/td[2]/div[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- - Check member list after User accept/deny--</td>
 	<td></td>
 </tr>
 <tr>
@@ -322,8 +497,193 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyElementNotPresent</td>
+	<td>link=Demo gtn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Check My space list of user that accepted request--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>mary</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--Check Public space list of user that deny request--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>demo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Publics</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This is description for Space_08</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- Delete Space created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Sign out</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/socialdemo/public/classic/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Sign in</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>username</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>username</td>
+	<td>root</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>gtn</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
 	<td></td>
 </tr>
 <tr>
