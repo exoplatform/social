@@ -109,8 +109,14 @@ public class ActivityStorage extends AbstractStorage {
   private void fillActivityEntityFromActivity(ExoSocialActivity activity, ActivityEntity activityEntity) {
 
     activityEntity.setTitle(activity.getTitle());
+    activityEntity.setTitleId(activity.getTitleId());
     activityEntity.setBody(activity.getBody());
+    activityEntity.setBodyId(activity.getBodyId());
     activityEntity.setLikes(activity.getLikeIdentityIds());
+    activityEntity.setType(activity.getType());
+    activityEntity.setAppId(activity.getAppId());
+    activityEntity.setExternalId(activity.getExternalId());
+    activityEntity.setUrl(activity.getUrl());
 
     //
     Map<String, String> params = activity.getTemplateParams();
@@ -128,9 +134,15 @@ public class ActivityStorage extends AbstractStorage {
     //
     activity.setId(activityEntity.getId());
     activity.setTitle(activityEntity.getTitle());
+    activity.setTitleId(activityEntity.getTitleId());
     activity.setBody(activityEntity.getBody());
+    activity.setBodyId(activityEntity.getBodyId());
     activity.setUserId(activityEntity.getIdentity().getId());
     activity.setPostedTime(activityEntity.getPostedTime());
+    activity.setType(activityEntity.getType());
+    activity.setAppId(activityEntity.getAppId());
+    activity.setExternalId(activityEntity.getExternalId());
+    activity.setUrl(activityEntity.getUrl());
 
     //
     String computeCommentid = "";

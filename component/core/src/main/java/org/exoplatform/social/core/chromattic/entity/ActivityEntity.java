@@ -65,9 +65,33 @@ public abstract class ActivityEntity {
   public abstract String getTitle();
   public abstract void setTitle(String title);
 
+  @Property(name = "soc:titleId")
+  public abstract String getTitleId();
+  public abstract void setTitleId(String titleId);
+
+  @Property(name = "soc:appId")
+  public abstract String getAppId();
+  public abstract void setAppId(String appId);
+
   @Property(name = "soc:body")
   public abstract String getBody();
   public abstract void setBody(String body);
+
+  @Property(name = "soc:bodyId")
+  public abstract String getBodyId();
+  public abstract void setBodyId(String bodyId);
+
+  @Property(name = "soc:type")
+  public abstract String getType();
+  public abstract void setType(String type);
+
+  @Property(name = "soc:externalId")
+  public abstract String getExternalId();
+  public abstract void setExternalId(String externalId);
+
+  @Property(name = "soc:url")
+  public abstract String getUrl();
+  public abstract void setUrl(String url);
 
   @Property(name = "soc:likes")
   public abstract String[] getLikes();

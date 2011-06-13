@@ -19,11 +19,14 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -296,6 +299,62 @@ public class ActivityStorageNewTestCase extends AbstractCoreTest {
     ExoSocialActivity gotComment = activityStorage.getActivity(activities.get(0).getReplyToId().split(",")[1]);
     assertFalse(gotComment.getPostedTime() == 0);
 
+  }
+  
+  public void testRelationshipActivity() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("I am now connected with @receiverRemoteId");
+    activity.setType("exosocial:relationship");
+    //Shindig's Activity's fields
+    activity.setAppId("appId");
+    activity.setBody("body");
+    activity.setBodyId("bodyId");
+    activity.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
+    activity.setExternalId("externalId");
+    //activity.setId("id");
+    activity.setUrl("http://www.exoplatform.org");
+    activity.setUserId("userId");
+    
+    Map<String,String> params = new HashMap<String,String>();
+    params.put("SENDER", "senderRemoteId");
+    params.put("RECEIVER", "receiverRemoteId");
+    params.put("RELATIONSHIP_UUID", "relationship_id");
+    activity.setTemplateParams(params);
+    
+    activityStorage.saveActivity(rootIdentity, activity);
+    
+    List<ExoSocialActivity> activities = activityStorage.getActivities(rootIdentity);
+    assertNotNull(activities);
+    assertEquals(1, activities.size());
+    
+    for(ExoSocialActivity element : activities) {
+     
+      //title
+      assertNotNull(element.getTitle());
+      //type
+      assertNotNull(element.getType());
+      //appId
+      assertNotNull(element.getAppId());
+      //body
+      assertNotNull(element.getBody());
+      //bodyId
+      assertNotNull(element.getBodyId());
+      //titleId
+      assertEquals(TitleId.CONNECTION_REQUESTED.toString(), element.getTitleId());
+      //externalId
+      assertNotNull(element.getExternalId());
+      //id
+      //assertNotNull(element.getId());
+      //url
+      assertEquals("http://www.exoplatform.org", element.getUrl());
+      //id
+      assertNotNull(element.getUserId());
+      //templateParams
+      assertNotNull(element.getTemplateParams());
+      
+    }
+    
+    
   }
 
   // TODO : test many days
