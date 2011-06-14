@@ -167,6 +167,13 @@
     </dependency>
 
     <dependency>
+      <groupId>net.sourceforge.nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+      <version>${net.sourceforge.nekohtml.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
       <version>${stax.version}</version>
