@@ -61,6 +61,11 @@ public abstract class ActivityEntity {
   public static final PropertyLiteralExpression<String> identity =
       new PropertyLiteralExpression<String>(String.class, "soc:identity");
 
+  @MappedBy("soc:posterIdentity")
+  @ManyToOne(type = RelationshipType.REFERENCE)
+  public abstract IdentityEntity getPosterIdentity();
+  public abstract void setPosterIdentity(IdentityEntity posterIdentity);
+
   @Property(name = "soc:title")
   public abstract String getTitle();
   public abstract void setTitle(String title);

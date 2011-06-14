@@ -236,6 +236,11 @@
           <valueConstraint>soc:identitydefinition</valueConstraint>
         </valueConstraints>
       </propertyDefinition>
+      <propertyDefinition name="soc:posterIdentity" requiredType="Reference" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints>
+          <valueConstraint>soc:identitydefinition</valueConstraint>
+        </valueConstraints>
+      </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions>
       <childNodeDefinition name="*" defaultPrimaryType="soc:activity" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">

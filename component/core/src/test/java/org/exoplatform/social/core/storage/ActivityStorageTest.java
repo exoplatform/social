@@ -463,7 +463,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     final String URL_PARAMS = "URL";
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("blabla");
-    activity.setUserId("root");
+    activity.setUserId(rootIdentity.getId());
     activity.setUpdated(new Date());
 
     Map<String, String> templateParams = new HashMap<String, String>();
