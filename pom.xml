@@ -108,7 +108,7 @@
 
     <net.oauth.core.version>20090531</net.oauth.core.version>
     <net.oauth.version>20080621</net.oauth.version>
-    <net.sourceforge.nekohtml.version>1.9.9</net.sourceforge.nekohtml.version>
+    <net.sourceforge.nekohtml.version>1.9.12</net.sourceforge.nekohtml.version>
 
     <com.google.collections.version>1.0-rc2</com.google.collections.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
