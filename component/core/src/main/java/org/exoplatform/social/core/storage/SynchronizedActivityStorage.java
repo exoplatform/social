@@ -17,16 +17,23 @@
 
 package org.exoplatform.social.core.storage;
 
+import java.util.List;
+
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 
-import java.util.List;
-
 /**
+ * {@link SynchronizedActivityStorage} as a decorator to {@link ActivityStorage} for synchronization
+ * management.
+ *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class SynchronizedActivityStorage extends ActivityStorage {
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExoSocialActivity getActivity(final String activityId) throws ActivityStorageException {
 
@@ -40,6 +47,9 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ExoSocialActivity> getActivities(final Identity owner) throws ActivityStorageException {
 
@@ -53,8 +63,12 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<ExoSocialActivity> getActivities(final Identity owner, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivities(final Identity owner, final long offset, final long limit)
+                                               throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -66,8 +80,12 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void saveComment(final ExoSocialActivity activity, final ExoSocialActivity comment) throws ActivityStorageException {
+  public void saveComment(final ExoSocialActivity activity, final ExoSocialActivity comment)
+                          throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -79,8 +97,12 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public ExoSocialActivity saveActivity(final Identity owner, final ExoSocialActivity activity) throws ActivityStorageException {
+  public ExoSocialActivity saveActivity(final Identity owner, final ExoSocialActivity activity)
+                                        throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -92,6 +114,9 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deleteActivity(final String activityId) throws ActivityStorageException {
 
@@ -105,6 +130,9 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deleteComment(final String activityId, final String commentId) throws ActivityStorageException {
 
@@ -118,8 +146,12 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<ExoSocialActivity> getActivitiesOfConnections(final List<Identity> connectionList, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfConnections(final List<Identity> connectionList, final long offset,
+                                                            final long limit) throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -131,6 +163,9 @@ public class SynchronizedActivityStorage extends ActivityStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getActivitiesCount(final Identity owner) throws ActivityStorageException {
 

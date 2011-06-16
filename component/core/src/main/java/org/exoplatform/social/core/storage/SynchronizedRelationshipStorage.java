@@ -17,21 +17,30 @@
 
 package org.exoplatform.social.core.storage;
 
+import java.util.List;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
-import java.util.List;
-
 /**
+ * {@link SynchronizedRelationshipStorage} as a decorator to {@link RelationshipStorage} for synchronization
+ * management.
+ *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
+  /**
+   * {@inheritDoc}
+   */
   public SynchronizedRelationshipStorage(final IdentityStorage identityStorage) {
     super(identityStorage);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Relationship saveRelationship(final Relationship relationship) throws RelationshipStorageException {
 
@@ -45,6 +54,9 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void removeRelationship(final Relationship relationship) throws RelationshipStorageException {
 
@@ -58,6 +70,9 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Relationship getRelationship(final String uuid) throws RelationshipStorageException {
 
@@ -71,8 +86,13 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Relationship> getSenderRelationships(final Identity sender, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getSenderRelationships(final Identity sender, final Relationship.Type type,
+                                                   final List<Identity> listCheckIdentity)
+                                                   throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -84,8 +104,13 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Relationship> getSenderRelationships(final String senderId, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getSenderRelationships(final String senderId, final Relationship.Type type,
+                                                   final List<Identity> listCheckIdentity)
+                                                   throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -97,8 +122,13 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Relationship> getReceiverRelationships(final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getReceiverRelationships(final Identity receiver, final Relationship.Type type,
+                                                     final List<Identity> listCheckIdentity)
+                                                     throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -110,8 +140,12 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public Relationship getRelationship(final Identity identity1, final Identity identity2) throws RelationshipStorageException {
+  public Relationship getRelationship(final Identity identity1, final Identity identity2)
+                                      throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -123,8 +157,13 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Relationship> getRelationships(final Identity identity, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getRelationships(final Identity identity, final Relationship.Type type,
+                                             final List<Identity> listCheckIdentity)
+                                             throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -136,8 +175,12 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Identity> getRelationships(final Identity identity, final long offset, final long limit) throws RelationshipStorageException {
+  public List<Identity> getRelationships(final Identity identity, final long offset, final long limit)
+                                         throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -149,8 +192,12 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Identity> getIncomingRelationships(final Identity receiver, final long offset, final long limit) throws RelationshipStorageException {
+  public List<Identity> getIncomingRelationships(final Identity receiver, final long offset, final long limit)
+                                                 throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -162,6 +209,9 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getIncomingRelationshipsCount(final Identity receiver) throws RelationshipStorageException {
 
@@ -175,8 +225,12 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Identity> getOutgoingRelationships(final Identity sender, final long offset, final long limit) throws RelationshipStorageException {
+  public List<Identity> getOutgoingRelationships(final Identity sender, final long offset, final long limit)
+                                                 throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -188,6 +242,9 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getOutgoingRelationshipsCount(final Identity sender) throws RelationshipStorageException {
 
@@ -214,8 +271,12 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Identity> getConnections(final Identity identity, final long offset, final long limit) throws RelationshipStorageException {
+  public List<Identity> getConnections(final Identity identity, final long offset, final long limit)
+                                       throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -227,6 +288,9 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getConnectionsCount(final Identity identity) throws RelationshipStorageException {
 

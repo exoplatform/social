@@ -17,21 +17,31 @@
 
 package org.exoplatform.social.core.storage;
 
+import java.util.List;
+
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 
-import java.util.List;
-
 /**
+ * {@link SynchronizedSpaceStorage} as a decorator to {@link SpaceStorage} for synchronization management.
+ *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class SynchronizedSpaceStorage extends SpaceStorage {
 
+  /**
+   * Constructor.
+   *
+   * @param identityStorage the identity storage
+   */
   public SynchronizedSpaceStorage(final IdentityStorage identityStorage) {
     super(identityStorage);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Space getSpaceByDisplayName(final String spaceDisplayName) throws SpaceStorageException {
 
@@ -45,6 +55,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void saveSpace(final Space space, final boolean isNew) throws SpaceStorageException {
 
@@ -58,6 +71,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deleteSpace(final String id) throws SpaceStorageException {
 
@@ -71,6 +87,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMemberSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -84,6 +103,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getMemberSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -97,6 +119,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getMemberSpaces(final String userId) throws SpaceStorageException {
 
@@ -110,8 +135,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getMemberSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getMemberSpaces(final String userId, final long offset, final long limit)
+                                     throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -123,8 +152,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getMemberSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getMemberSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                             final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -136,6 +169,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPendingSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -149,6 +185,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPendingSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -162,6 +201,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getPendingSpaces(final String userId) throws SpaceStorageException {
 
@@ -175,8 +217,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getPendingSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getPendingSpaces(final String userId, final long offset, final long limit)
+                                      throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -188,8 +234,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getPendingSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getPendingSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                              final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -201,6 +251,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getInvitedSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -214,6 +267,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getInvitedSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -227,6 +283,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getInvitedSpaces(final String userId) throws SpaceStorageException {
 
@@ -240,8 +299,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getInvitedSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getInvitedSpaces(final String userId, final long offset, final long limit)
+                                      throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -253,8 +316,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getInvitedSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getInvitedSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                              final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -266,6 +333,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPublicSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -279,6 +349,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getPublicSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -292,8 +365,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getPublicSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getPublicSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                             final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -305,6 +382,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getPublicSpaces(final String userId) throws SpaceStorageException {
 
@@ -318,8 +398,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getPublicSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getPublicSpaces(final String userId, final long offset, final long limit)
+                                     throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -331,6 +415,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAccessibleSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -344,6 +431,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAccessibleSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -357,6 +447,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getAccessibleSpaces(final String userId) throws SpaceStorageException {
 
@@ -370,8 +463,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getAccessibleSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getAccessibleSpaces(final String userId, final long offset, final long limit)
+                                         throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -383,8 +480,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getAccessibleSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getAccessibleSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                                 final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -396,6 +497,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getEditableSpacesCount(final String userId) throws SpaceStorageException {
 
@@ -409,6 +513,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getEditableSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
@@ -422,6 +529,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getEditableSpaces(final String userId) throws SpaceStorageException {
 
@@ -435,8 +545,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getEditableSpaces(final String userId, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getEditableSpaces(final String userId, final long offset, final long limit)
+                                       throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -448,8 +562,12 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public List<Space> getEditableSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
+  public List<Space> getEditableSpacesByFilter(final String userId, final SpaceFilter spaceFilter, final long offset,
+                                               final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -461,6 +579,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAllSpacesCount() throws SpaceStorageException {
 
@@ -474,6 +595,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getAllSpaces() throws SpaceStorageException {
 
@@ -487,6 +611,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getAllSpacesByFilterCount(final SpaceFilter spaceFilter) {
 
@@ -500,6 +627,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getSpaces(final long offset, final long limit) throws SpaceStorageException {
 
@@ -513,6 +643,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<Space> getSpacesByFilter(final SpaceFilter spaceFilter, final long offset, final long limit) {
 
@@ -526,6 +659,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Space getSpaceById(final String id) throws SpaceStorageException {
 
@@ -539,6 +675,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Space getSpaceByPrettyName(final String spacePrettyName) throws SpaceStorageException {
 
@@ -552,6 +691,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Space getSpaceByGroupId(final String groupId) throws SpaceStorageException {
 
@@ -565,6 +707,9 @@ public class SynchronizedSpaceStorage extends SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Space getSpaceByUrl(final String url) throws SpaceStorageException {
 

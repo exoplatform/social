@@ -438,7 +438,8 @@ public interface RelationshipManager {
    *             Will be removed by 1.3.x
    */
   @Deprecated
-  List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType) throws RelationshipStorageException;
+  List<Identity> findRelationships(Identity ownerIdentity, Relationship.Type relationshipType)
+                                   throws RelationshipStorageException;
 
   /**
    * Gets the relationship status.
