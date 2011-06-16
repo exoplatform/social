@@ -1,20 +1,22 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.exoplatform.social.service.test;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
@@ -97,7 +99,10 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
    *
    * @param resource
    * @return
+   * @deprecated Use {@link #addResource(Object, javax.ws.rs.core.MultivaluedMap)} instead.
+   *             Will be removed by 1.3.x.
    */
+  @Deprecated
   public boolean unregistry(Object resource) {
     // container.unregisterComponentByInstance(resource);
     return resourceBinder.unbind(resource.getClass());
@@ -108,10 +113,55 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
    *
    * @param resourceClass
    * @return
+   * @deprecated Use {@link #removeResource(Class)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public boolean unregistry(Class<?> resourceClass) {
     // container.unregisterComponent(resourceClass.getName());
     return resourceBinder.unbind(resourceClass);
+  }
+
+   /**
+    * Registers supplied class as per-request root resource if it has valid
+    * JAX-RS annotations and no one resource with the same UriPattern already
+    * registered.
+    *
+    * @param resourceClass class of candidate to be root resource
+    * @param properties optional resource properties. It may contains additional
+    *        info about resource, e.g. description of resource, its
+    *        responsibility, etc. This info can be retrieved
+    *        {@link org.exoplatform.services.rest.ObjectModel#getProperties()}. This parameter may be
+    *        <code>null</code>
+    */
+  public void addResource(final Class<?> resourceClass, MultivaluedMap<String, String> properties) {
+    resourceBinder.addResource(resourceClass, properties);
+  }
+
+  /**
+    * Registers supplied Object as singleton root resource if it has valid JAX-RS
+    * annotations and no one resource with the same UriPattern already
+    * registered.
+    *
+    * @param resource candidate to be root resource
+    * @param properties optional resource properties. It may contains additional
+    *        info about resource, e.g. description of resource, its
+    *        responsibility, etc. This info can be retrieved
+    *        {@link org.exoplatform.services.rest.ObjectModel#getProperties()}. This parameter may be
+    *        <code>null</code>
+   */
+  public void addResource(final Object resource, MultivaluedMap<String, String> properties) {
+    resourceBinder.addResource(resource, properties);
+  }
+
+
+  /**
+   * Removes the resource instance of provided class from root resource container.
+   *
+   * @param clazz the class of resource
+   */
+  public void removeResource(Class clazz) {
+    resourceBinder.removeResource(clazz);
   }
 
   protected void startSystemSession() {

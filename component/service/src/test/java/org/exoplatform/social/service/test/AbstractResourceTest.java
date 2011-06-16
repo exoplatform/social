@@ -18,6 +18,15 @@
  */
 package org.exoplatform.social.service.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.exoplatform.services.rest.ContainerResponseWriter;
 import org.exoplatform.services.rest.impl.ContainerRequest;
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -26,14 +35,11 @@ import org.exoplatform.services.rest.impl.InputHeadersMap;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.DummyContainerResponseWriter;
 import org.exoplatform.services.test.mock.MockHttpServletRequest;
-
-import java.io.ByteArrayInputStream;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MultivaluedMap;
+import org.exoplatform.ws.frameworks.json.impl.JsonDefaultHandler;
+import org.exoplatform.ws.frameworks.json.impl.JsonException;
+import org.exoplatform.ws.frameworks.json.impl.JsonGeneratorImpl;
+import org.exoplatform.ws.frameworks.json.impl.JsonParserImpl;
+import org.exoplatform.ws.frameworks.json.value.JsonValue;
 
 /**
  * AbstractResourceTest.java <br />
@@ -104,5 +110,25 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                                    MultivaluedMap<String, String> headers,
                                    byte[] data) throws Exception {
     return service(method, requestURI, baseURI, headers, data, new DummyContainerResponseWriter());
+  }
+
+  /**
+   * Asserts if the provided jsonString is equal to an entity object's string.
+   *
+   * @param jsonString the provided json string
+   * @param entity the provided entity object
+   */
+  public void assertJsonStringEqualsEntity(String jsonString, Object entity) throws JsonException {
+    JsonParserImpl jsonParser = new JsonParserImpl();
+    JsonDefaultHandler jsonDefaultHandler = new JsonDefaultHandler();
+    jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(jsonString.getBytes())), jsonDefaultHandler);
+
+    JsonValue firstJsonValue = jsonDefaultHandler.getJsonObject();
+    assertNotNull("firstJsonValue must not be null", firstJsonValue);
+
+    JsonValue secondJsonValue = new JsonGeneratorImpl().createJsonObject(entity);
+    assertNotNull("secondJsonValue must not be null", secondJsonValue);
+
+    assertEquals(firstJsonValue.toString(), secondJsonValue.toString());
   }
 }

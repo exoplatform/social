@@ -1,18 +1,18 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.exoplatform.social.service.rest;
 
@@ -31,7 +31,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
  * Util.java: utility class for rest <br />.
- * Created by The eXo Platform SEA
+ *
  * @author hoatle <hoatlevan at gmail dot com>
  * @since  Jan 5, 2009
  */
@@ -62,9 +62,9 @@ public final class Util {
    * Currently supports json and xml only
    * @param format
    * @return mediaType of matched or throw BAD_REQUEST exception
-   * @throws Exception
+   * @throws WebApplicationException
    */
-  static public MediaType getMediaType(String format) throws Exception {
+  static public MediaType getMediaType(String format) throws WebApplicationException {
     if (format.equals("json")) {
       return MediaType.APPLICATION_JSON_TYPE;
     } else if(format.equals("xml")) {
