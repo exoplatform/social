@@ -1054,6 +1054,10 @@ public class RelationshipManagerTest extends AbstractCoreTest {
    * @throws Exception
    */
   public void testGetConfirmedWithIdentity() throws Exception {
+    List<Relationship> johnContacts = relationshipManager.getConfirmed(johnIdentity);
+    assertNotNull("johnContacts must not be null", johnContacts);
+    assertEquals("johnContacts.size() must be 0", 0, johnContacts.size());
+
     Relationship johnDemoRelationship = relationshipManager.invite(johnIdentity, demoIdentity);
     Relationship johnMaryRelationship = relationshipManager.invite(johnIdentity, maryIdentity);
     Relationship johnRootRelationship = relationshipManager.invite(johnIdentity, rootIdentity);
