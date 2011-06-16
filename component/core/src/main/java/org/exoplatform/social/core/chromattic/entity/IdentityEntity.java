@@ -23,6 +23,7 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
+import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
@@ -35,6 +36,9 @@ public abstract class IdentityEntity {
 
   @Id
   public abstract String getId();
+
+  @Path
+  public abstract String getPath();
 
   @Name
   public abstract String getName();
@@ -81,6 +85,16 @@ public abstract class IdentityEntity {
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getRelationship();
+
+  @MappedBy("soc:ignored")
+  @OneToOne
+  @Owner
+  public abstract RelationshipListEntity getIgnored();
+
+  @MappedBy("soc:ignore")
+  @OneToOne
+  @Owner
+  public abstract RelationshipListEntity getIgnore();
 
   @OneToOne
   @Owner

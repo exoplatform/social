@@ -68,8 +68,7 @@
 
       <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
 
-      <%  for(relation in myRelation) {
-            def id = relation.getPartner(currIdentity);
+      <%  for(id in myRelation) {
             profileURL = id.profile.url;
             fullName = id.profile.fullName;
             def actionLink = uicomponent.event("Remove",id.getId());

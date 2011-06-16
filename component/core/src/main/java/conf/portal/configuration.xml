@@ -99,7 +99,7 @@
 
   <component>
     <key>org.exoplatform.social.core.manager.RelationshipManager</key>
-    <type>org.exoplatform.social.core.manager.CachingRelationshipManager</type>
+    <type>org.exoplatform.social.core.manager.RelationshipManagerImpl</type>
   </component>
 
   <component>

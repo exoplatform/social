@@ -52,8 +52,7 @@
 					 </div>
 				</div>
       <%}%>
-      <%	for(relation in list) {
-          def identity = relation.getPartner(currIdentity);
+      <%	for(identity in list) {
           def profileURL = identity.profile.url;
           def fullName = identity.profile.fullName;
           def actionLink = uicomponent.event("DenyContact", identity.getId());

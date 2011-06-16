@@ -16,12 +16,13 @@
  */
 package org.exoplatform.social.webui.connections;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.webui.RelationshipListAccess;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -78,6 +79,13 @@ public class UIMyConnections extends UIContainer {
   private static final int FIRST_PAGE = 1;
 
   /**
+   * Default the number of relationships per page.
+   * 
+   * @since 1.2.0-Beta3
+   */
+  private static final int RELATIONSHIP_PER_PAGE = 5;
+  
+  /**
    * Gets identities.
    *
    * @return one list of identity.
@@ -112,6 +120,7 @@ public class UIMyConnections extends UIContainer {
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearchRelation.setTypeOfRelation(CONFIRMED_STATUS);
     addChild(uiProfileUserSearchRelation);
+    this.identityList = new ArrayList<Identity> ();
   }
 
   /**
@@ -121,12 +130,27 @@ public class UIMyConnections extends UIContainer {
    *
    * @throws Exception
    */
-  public List<Relationship> getMyRelation() throws Exception {
-    List<Relationship> listContacts = getMyContacts();
-    if (listContacts == null)
-      return null;
-    List<Relationship> contactLists = getDisplayRelationList(listContacts, uiPageIteratorContact);
-    return contactLists;
+  @SuppressWarnings("unchecked")
+  public List<Identity> getMyRelation() throws Exception {
+    int curPage = this.uiPageIteratorContact.getCurrentPage();
+    
+    ListAccess<Identity> connectionListAccess = Utils.getRelationshipManager().getConnections(Utils.getOwnerIdentity());
+    if (connectionListAccess != null && connectionListAccess.getSize() == 0) {
+      return new ArrayList<Identity> ();
+    }
+    
+    LazyPageList<Identity> pageListContact = new LazyPageList<Identity>(connectionListAccess, RELATIONSHIP_PER_PAGE);
+    this.uiPageIteratorContact.setPageList(pageListContact) ;
+    int availablePage = this.uiPageIteratorContact.getAvailablePage();
+    if (this.uiProfileUserSearchRelation.isNewSearch()) {
+      this.uiPageIteratorContact.setCurrentPage(FIRST_PAGE);
+    } else if (curPage > availablePage) {
+      this.uiPageIteratorContact.setCurrentPage(availablePage);
+    } else {
+      this.uiPageIteratorContact.setCurrentPage(curPage);
+    }
+    this.uiProfileUserSearchRelation.setNewSearch(false);
+    return this.uiPageIteratorContact.getCurrentPageData();
   }
 
   /**
@@ -140,7 +164,7 @@ public class UIMyConnections extends UIContainer {
     @Override
     public void execute(Event<UIMyConnections> event) throws Exception {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId, false);
+      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
       Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
       if (relationship == null || relationship.getStatus() != Relationship.Type.CONFIRMED) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
@@ -148,7 +172,7 @@ public class UIMyConnections extends UIContainer {
         return;
       }
 
-      Utils.getRelationshipManager().remove(relationship);
+      Utils.getRelationshipManager().delete(relationship);
     }
   }
 
@@ -174,48 +198,5 @@ public class UIMyConnections extends UIContainer {
    */
   public boolean isEditable () {
     return Utils.isOwner();
-  }
-
-  /**
-   * Returns list of relation of current page in iterator.<br>
-   *
-   * @param listContacts
-   *        All invited contact.
-   *
-   * @param uiPageIterator
-   *        Page iterator for paging.
-   *
-   * @return list of relation in current page.
-   *
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
-  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts,
-                                                    UIPageIterator uiPageIterator) throws Exception {
-    int curPage = uiPageIterator.getCurrentPage();
-    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
-    uiPageIterator.setPageList(pageListContact) ;
-    int availablePage = uiPageIterator.getAvailablePage();
-    if (this.uiProfileUserSearchRelation.isNewSearch()) {
-      uiPageIterator.setCurrentPage(FIRST_PAGE);
-    } else if (curPage > availablePage) {
-      uiPageIterator.setCurrentPage(availablePage);
-    } else {
-      uiPageIterator.setCurrentPage(curPage);
-    }
-    this.uiProfileUserSearchRelation.setNewSearch(false);
-    return uiPageIterator.getCurrentPageData();
-  }
-
-  /**
-   * Gets contacts from searched result list.
-   *
-   * @return Relationship list.
-   *
-   * @throws Exception
-   */
-  private List<Relationship> getMyContacts() throws Exception {
-    List<Identity> matchIdentities = getIdentityList();
-    return Utils.getRelationshipManager().getConfirmed(Utils.getOwnerIdentity(), matchIdentities);
   }
 }

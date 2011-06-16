@@ -16,12 +16,13 @@
  */
 package org.exoplatform.social.webui.connections;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.webui.RelationshipListAccess;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -75,6 +76,13 @@ public class UIPendingRelation extends UIContainer {
   private static final int FIRST_PAGE = 1;
 
   /**
+   * Default the number of relationships per page.
+   * 
+   * @since 1.2.0-Beta3
+   */
+  private static final int RELATIONSHIP_PER_PAGE = 5;
+  
+  /**
    * Gets identities.
    *
    * @return one list of identity.
@@ -113,6 +121,7 @@ public class UIPendingRelation extends UIContainer {
     uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearchPending.setTypeOfRelation(PENDING_STATUS);
     addChild(uiProfileUserSearchPending);
+    this.identityList = new ArrayList<Identity> ();
   }
 
   /**
@@ -122,12 +131,15 @@ public class UIPendingRelation extends UIContainer {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public List<Relationship> getPendingRelationList() throws Exception {
-    List<Relationship> listRelationShip = getPendingRelationships();
-    if (listRelationShip == null)
-      return null;
+  public List<Identity> getPendingRelationList() throws Exception {
+    ListAccess<Identity> incomingListAccess = Utils.getRelationshipManager().getOutgoing(Utils.getOwnerIdentity());
+    
+    if (incomingListAccess != null && incomingListAccess.getSize() == 0) {
+      return new ArrayList<Identity> (); 
+    }
+    
     int currentPage = uiPageIterator_.getCurrentPage();
-    LazyPageList<Relationship> pageList = new LazyPageList<Relationship>(new RelationshipListAccess(listRelationShip), 5);
+    LazyPageList<Identity> pageList = new LazyPageList<Identity>(incomingListAccess, RELATIONSHIP_PER_PAGE);
     uiPageIterator_.setPageList(pageList);
     int availablePage = uiPageIterator_.getAvailablePage();
     if (this.uiProfileUserSearchPending.isNewSearch()) {
@@ -151,16 +163,17 @@ public class UIPendingRelation extends UIContainer {
   public static class DenyContactActionListener extends EventListener<UIPendingRelation> {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship ==null || relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Utils.getRelationshipManager().deny(relationship);
+      Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
     }
   }
 
@@ -186,16 +199,5 @@ public class UIPendingRelation extends UIContainer {
    */
   public boolean isEditable () {
     return Utils.isOwner();
-  }
-
-  /**
-   * Gets pending relationships from searched result identities.
-   *
-   * @return Relationship list.
-   * @throws Exception
-   */
-  private List<Relationship> getPendingRelationships() throws Exception {
-    List<Identity> matchIdentities = getIdentityList();
-    return Utils.getRelationshipManager().getPending(Utils.getOwnerIdentity(), matchIdentities);
   }
 }

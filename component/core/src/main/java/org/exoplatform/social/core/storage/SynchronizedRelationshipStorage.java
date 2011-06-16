@@ -28,6 +28,10 @@ import java.util.List;
  */
 public class SynchronizedRelationshipStorage extends RelationshipStorage {
 
+  public SynchronizedRelationshipStorage(final IdentityStorage identityStorage) {
+    super(identityStorage);
+  }
+
   @Override
   public Relationship saveRelationship(final Relationship relationship) throws RelationshipStorageException {
 
@@ -44,7 +48,6 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   @Override
   public void removeRelationship(final Relationship relationship) throws RelationshipStorageException {
 
-
     boolean created = startSynchronization();
     try {
       super.removeRelationship(relationship);
@@ -58,7 +61,6 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   @Override
   public Relationship getRelationship(final String uuid) throws RelationshipStorageException {
 
-
     boolean created = startSynchronization();
     try {
       return super.getRelationship(uuid);
@@ -66,11 +68,11 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
     finally {
       stopSynchronization(created);
     }
+
   }
 
   @Override
   public List<Relationship> getSenderRelationships(final Identity sender, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
-
 
     boolean created = startSynchronization();
     try {
@@ -83,8 +85,20 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   }
 
   @Override
-  public List<Relationship> getReceiverRelationships(final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
+  public List<Relationship> getSenderRelationships(final String senderId, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
 
+    boolean created = startSynchronization();
+    try {
+      return super.getSenderRelationships(senderId, type, listCheckIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public List<Relationship> getReceiverRelationships(final Identity receiver, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -112,7 +126,6 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   @Override
   public List<Relationship> getRelationships(final Identity identity, final Relationship.Type type, final List<Identity> listCheckIdentity) throws RelationshipStorageException {
 
-
     boolean created = startSynchronization();
     try {
       return super.getRelationships(identity, type, listCheckIdentity);
@@ -124,8 +137,85 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   }
 
   @Override
-  public List<Identity> getConnections(final Identity identity, final int offset, final int limit) throws RelationshipStorageException {
+  public List<Identity> getRelationships(final Identity identity, final long offset, final long limit) throws RelationshipStorageException {
 
+    boolean created = startSynchronization();
+    try {
+      return super.getRelationships(identity, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public List<Identity> getIncomingRelationships(final Identity receiver, final long offset, final long limit) throws RelationshipStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getIncomingRelationships(receiver, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public int getIncomingRelationshipsCount(final Identity receiver) throws RelationshipStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getIncomingRelationshipsCount(receiver);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public List<Identity> getOutgoingRelationships(final Identity sender, final long offset, final long limit) throws RelationshipStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getOutgoingRelationships(sender, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public int getOutgoingRelationshipsCount(final Identity sender) throws RelationshipStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getOutgoingRelationshipsCount(sender);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public int getRelationshipsCount(final Identity identity) throws RelationshipStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getRelationshipsCount(identity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  @Override
+  public List<Identity> getConnections(final Identity identity, final long offset, final long limit) throws RelationshipStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -140,7 +230,6 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
   @Override
   public int getConnectionsCount(final Identity identity) throws RelationshipStorageException {
 
-
     boolean created = startSynchronization();
     try {
       return super.getConnectionsCount(identity);
@@ -150,5 +239,4 @@ public class SynchronizedRelationshipStorage extends RelationshipStorage {
     }
 
   }
-
 }

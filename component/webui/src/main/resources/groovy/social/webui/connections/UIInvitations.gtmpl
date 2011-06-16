@@ -37,8 +37,7 @@
       <%}%>
 
     <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
-      <% for (invitation in myInvitations) {
-            def identity = invitation.sender;
+      <% for (identity in myInvitations) {
             profileURL = identity.profile.url;
             fullName = identity.profile.fullName;
             position = identity.profile.position;

@@ -16,13 +16,16 @@
  */
 package org.exoplatform.social.core.storage;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -83,6 +86,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
   /**
    * Test for {@link RelationshipStorage#saveRelationship(Relationship)}
+   * 
    * @throws RelationshipStorageException 
    */
   public void testSaveRelationship() throws RelationshipStorageException {
@@ -111,7 +115,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
   /**
    * Test for {@link RelationshipStorage#getRelationship(String)}
-   * @throws RelationshipStorageException 
+   * @throws RelationshipStorageException
    */
   public void testGetRelationship() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
@@ -122,8 +126,141 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
-
   /**
+   * Test {@link RelationshipStorage#getConnections(Identity, long, long)}
+   *
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetConnections() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+
+    Relationship maryToRootRelationship = new Relationship(maryIdentity, rootIdentity, Type.CONFIRMED);
+    maryToRootRelationship = relationshipStorage.saveRelationship(maryToRootRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", maryToRootRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.PENDING);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+
+    //Test change avatar
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    assertNotNull(avatarAttachment);
+
+    Profile profile = johnIdentity.getProfile();
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateProfile(profile);
+
+    List<Identity> listIdentities = relationshipStorage.getConnections(rootIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+
+    // Check john has avatar
+    assertNotNull(listIdentities.get(0).getProfile());
+    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+
+    // Check mary hasn't avatar but empty profile
+    assertNotNull(listIdentities.get(1).getProfile());
+    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    
+    for (Identity identity : listIdentities) {
+      assertNotNull("identity.getProfile() must not be null", identity.getProfile());
+      Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
+      assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(), identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
+    }
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(maryToRootRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getConnectionsCount(Identity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetConnectionsCount() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship maryToRootRelationship = new Relationship(maryIdentity, rootIdentity, Type.CONFIRMED);
+    maryToRootRelationship = relationshipStorage.saveRelationship(maryToRootRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", maryToRootRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.PENDING);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    List<Identity> listIdentities = relationshipStorage.getConnections(rootIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+    
+    int count = relationshipStorage.getConnectionsCount(rootIdentity);
+    assertEquals("count must be: 2", 2, count);
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(maryToRootRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getRelationships(Identity, Type, List)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetRelationshipsWithListCheck() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship maryToRootRelationship = new Relationship(maryIdentity, rootIdentity, Type.PENDING);
+    maryToRootRelationship = relationshipStorage.saveRelationship(maryToRootRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", maryToRootRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    List<Identity> listCheckIdentity = new ArrayList<Identity>();
+    listCheckIdentity.add(rootIdentity);
+    listCheckIdentity.add(demoIdentity);
+    listCheckIdentity.add(maryIdentity);
+    listCheckIdentity.add(johnIdentity);
+    
+    List<Relationship> rootConfirmedRelationships = relationshipStorage.getRelationships(rootIdentity, Relationship.Type.CONFIRMED, listCheckIdentity);
+    assertNotNull("rootConfirmedRelationships must not be null", rootConfirmedRelationships);
+    assertEquals("rootConfirmedRelationships.size() must return: 1", 1, rootConfirmedRelationships.size());
+    
+    List<Relationship> johnConfirmedRelationships = relationshipStorage.getRelationships(johnIdentity, Relationship.Type.CONFIRMED, listCheckIdentity);
+    assertNotNull("johnConfirmedRelationships must not be null", johnConfirmedRelationships);
+    assertEquals("johnConfirmedRelationships.size() must return: 1", 1, johnConfirmedRelationships.size());
+    
+    List<Relationship> johnPendingRelationships = relationshipStorage.getRelationships(johnIdentity, Relationship.Type.PENDING, listCheckIdentity);
+    assertNotNull("johnPendingRelationships must not be null", johnPendingRelationships);
+    assertEquals("johnPendingRelationships.size() must return: 0", 0, johnPendingRelationships.size());
+    
+    List<Relationship> maryPendingRelationships = relationshipStorage.getRelationships(maryIdentity, Relationship.Type.PENDING, listCheckIdentity);
+    assertNotNull("maryPendingRelationships must not be null", maryPendingRelationships);
+    assertEquals("maryPendingRelationships.size() must return: 1", 1, maryPendingRelationships.size());
+    
+    List<Relationship> demoIgnoredRelationships = relationshipStorage.getRelationships(demoIdentity, Relationship.Type.IGNORED, listCheckIdentity);
+    assertNotNull("demoIgnoredRelationships must not be null", demoIgnoredRelationships);
+    assertEquals("demoIgnoredRelationships.size() must return: 1", 1, demoIgnoredRelationships.size());
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(maryToRootRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getSenderRelationships(Identity, Type, List)}
+   * 
    * @throws RelationshipStorageException 
    */
   public void testGetSenderRelationshipsByIdentityAndType() throws RelationshipStorageException {
@@ -153,18 +290,262 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test for {@link RelationshipStorage#getRelationshipByIdentityId(String)}
+   * Test {@link RelationshipStorage#getSenderRelationships(String, Type, List)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
    */
-  public void testGetRelationshipByIdentityId() {
-    assert true;
+  public void testGetSenderRelationships() throws Exception {
+    String rootId = rootIdentity.getId();
+    
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.PENDING);
+    relationshipStorage.saveRelationship(rootToJohnRelationship);
+    relationshipStorage.saveRelationship(rootToDemoRelationship);
+
+    List<Relationship> relationships = relationshipStorage.getSenderRelationships(rootId, Type.PENDING, null);
+    assertNotNull(relationships);
+    assertEquals(2, relationships.size());
+
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.CONFIRMED);
+    relationshipStorage.saveRelationship(rootToMaryRelationship);
+
+    relationships = relationshipStorage.getSenderRelationships(rootId, Type.CONFIRMED, null);
+    assertNotNull(relationships);
+    assertEquals(1, relationships.size());
+
+    relationships = relationshipStorage.getSenderRelationships(rootId, null, null);
+    assertNotNull(relationships);
+    assertEquals(3, relationships.size());
+
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
   /**
-   * Test for {@link RelationshipStorage#getRelationshipIdentitiesByIdentity(org.exoplatform.social.core.identity.model.Identity)}
+   * Test {@link RelationshipStorage#getRelationships(Identity, long, long)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
    */
-  public void testGetRelationshipIdentitiesByIdentity() {
-    assert true;
+  public void testGetRelationships() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.CONFIRMED);
+    rootToMaryRelationship = relationshipStorage.saveRelationship(rootToMaryRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", rootToMaryRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    List<Identity> listIdentities = relationshipStorage.getRelationships(rootIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 3", 3, listIdentities.size());
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
   }
 
+  /**
+   * Test {@link RelationshipStorage#getRelationshipsCount(Identity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetRelationshipsCount() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
 
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.CONFIRMED);
+    rootToMaryRelationship = relationshipStorage.saveRelationship(rootToMaryRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", rootToMaryRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    int count = relationshipStorage.getRelationshipsCount(rootIdentity);
+    assertEquals("count must be: 3", 3, count);
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getIncomingRelationships(Identity, long, long)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetIncomingRelationships() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship maryToJohnRelationship = new Relationship(maryIdentity, johnIdentity, Type.PENDING);
+    maryToJohnRelationship = relationshipStorage.saveRelationship(maryToJohnRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", maryToJohnRelationship.getId());
+    
+    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity, Type.CONFIRMED);
+    demoToJohnRelationship = relationshipStorage.saveRelationship(demoToJohnRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", demoToJohnRelationship.getId());
+
+    //Test change avatar
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    assertNotNull(avatarAttachment);
+    
+    Profile profile = maryIdentity.getProfile();
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateProfile(profile);
+
+    List<Identity> listIdentities = relationshipStorage.getIncomingRelationships(johnIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+
+    // Check root hasn't avatar but empty profile
+    assertNotNull(listIdentities.get(0).getProfile());
+    assertNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+
+    // Check mary has avatar
+    assertNotNull(listIdentities.get(1).getProfile());
+    assertNotNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+
+    for (Identity identity : listIdentities) {
+      assertNotNull("identity.getProfile() must not be null", identity.getProfile());
+      Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
+      assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(),
+                   identityLoadProfile.getProfile().getFullName(), identity.getProfile().getFullName());
+    }
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(maryToJohnRelationship);
+    tearDownRelationshipList.add(demoToJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getIncomingRelationshipsCount(Identity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetIncomingRelationshipsCount() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship maryToJohnRelationship = new Relationship(maryIdentity, johnIdentity, Type.PENDING);
+    maryToJohnRelationship = relationshipStorage.saveRelationship(maryToJohnRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", maryToJohnRelationship.getId());
+    
+    Relationship demoToJohnRelationship = new Relationship(demoIdentity, johnIdentity, Type.CONFIRMED);
+    demoToJohnRelationship = relationshipStorage.saveRelationship(demoToJohnRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", demoToJohnRelationship.getId());
+    
+    List<Identity> listIdentities = relationshipStorage.getIncomingRelationships(johnIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+    
+    int count = relationshipStorage.getIncomingRelationshipsCount(johnIdentity);
+    assertEquals("count must be: 2", 2, count);
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(maryToJohnRelationship);
+    tearDownRelationshipList.add(demoToJohnRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getOutgoingRelationships(Identity, long, long)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetOutgoingRelationships() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.PENDING);
+    rootToMaryRelationship = relationshipStorage.saveRelationship(rootToMaryRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", rootToMaryRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    //Test change avatar
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    assertNotNull(avatarAttachment);
+    
+    Profile profile = johnIdentity.getProfile();
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.updateProfile(profile);
+
+    List<Identity> listIdentities = relationshipStorage.getOutgoingRelationships(rootIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+    
+    listIdentities = relationshipStorage.getOutgoingRelationships(rootIdentity, 0, 10);
+    demoIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId());
+
+    // Check john has avatar
+    assertNotNull(listIdentities.get(0).getProfile());
+    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+
+    // Check mary hasn't avatar but empty profile
+    assertNotNull(listIdentities.get(1).getProfile());
+    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    
+    for (Identity identity : listIdentities) {
+      Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
+      assertNotNull("identity.getProfile() must not be nul", identity.getProfile());
+      assertNotNull("temp must not be null", identityLoadProfile);
+      assertEquals("identity.getProfile().getFullName() must return: " + identityLoadProfile.getProfile().getFullName(), 
+                   identityLoadProfile.getProfile().getFullName(), 
+                   identity.getProfile().getFullName());
+    }
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
+  
+  /**
+   * Test {@link RelationshipStorage#getOutgoingRelationshipsCount(Identity)}
+   * 
+   * @throws Exception
+   * @since 1.2.0-Beta3
+   */
+  public void testGetOutgoingRelationshipsCount() throws Exception {
+    Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
+    rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
+    assertNotNull("rootToJohnRelationship.getId() must not be null", rootToJohnRelationship.getId());
+    
+    Relationship rootToMaryRelationship = new Relationship(rootIdentity, maryIdentity, Type.PENDING);
+    rootToMaryRelationship = relationshipStorage.saveRelationship(rootToMaryRelationship);
+    assertNotNull("rootToMaryRelationship.getId() must not be null", rootToMaryRelationship.getId());
+    
+    Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.IGNORED);
+    rootToDemoRelationship = relationshipStorage.saveRelationship(rootToDemoRelationship);
+    assertNotNull("rootToDemoRelationship.getId() must not be null", rootToDemoRelationship.getId());
+    
+    List<Identity> listIdentities = relationshipStorage.getOutgoingRelationships(rootIdentity, 0, 10);
+    assertNotNull("listIdentities must not be null", listIdentities);
+    assertEquals("listIdentities.size() must return: 2", 2, listIdentities.size());
+    
+    int count = relationshipStorage.getOutgoingRelationshipsCount(rootIdentity);
+    assertEquals("count must be: 2", 2, count);
+    
+    tearDownRelationshipList.add(rootToJohnRelationship);
+    tearDownRelationshipList.add(rootToMaryRelationship);
+    tearDownRelationshipList.add(rootToDemoRelationship);
+  }
 }

@@ -134,6 +134,7 @@ public class UIDisplayProfileList extends UIContainer {
     iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
     uiProfileUserSearchPeople = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     addChild(uiProfileUserSearchPeople);
+    this.identityList = new ArrayList<Identity> ();
   }
 
   /**
@@ -180,16 +181,17 @@ public class UIDisplayProfileList extends UIContainer {
   public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship != null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Utils.getRelationshipManager().invite(Utils.getViewerIdentity(), requestedIdentity);
+      Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
     }
   }
 
@@ -201,16 +203,17 @@ public class UIDisplayProfileList extends UIContainer {
   public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Utils.getRelationshipManager().confirm(relationship);
+      Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
     }
   }
 
@@ -222,16 +225,23 @@ public class UIDisplayProfileList extends UIContainer {
   public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(userId);
+      Identity inviIdentityIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, inviIdentityIdentity);
+      
+      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
+        Utils.getRelationshipManager().delete(relationship);
+        return;
+      }
+      
       if (relationship == null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Utils.getRelationshipManager().deny(relationship);
+      Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
     }
   }
 

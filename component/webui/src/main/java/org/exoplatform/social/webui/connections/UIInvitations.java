@@ -16,12 +16,13 @@
  */
 package org.exoplatform.social.webui.connections;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.webui.RelationshipListAccess;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -79,6 +80,13 @@ public class UIInvitations extends UIContainer {
   private static final int FIRST_PAGE = 1;
   
   /**
+   * Default the number of relationships per page.
+   * 
+   * @since 1.2.0-Beta3
+   */
+  private static final int RELATIONSHIP_PER_PAGE = 5;
+  
+  /**
    * Gets identities.<br>
    *
    * @return list of identity.
@@ -108,6 +116,7 @@ public class UIInvitations extends UIContainer {
     uiProfileUserSearchRelation = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearchRelation.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiProfileUserSearchRelation);
+    identityList = new ArrayList<Identity> ();
   }
 
   /**
@@ -117,12 +126,27 @@ public class UIInvitations extends UIContainer {
    *
    * @throws Exception
    */
-  public List<Relationship> getInvitation() throws Exception {
-    List<Relationship> invitationList = getInvitedRelations();
-    if (invitationList == null)
-      return null;
-    List<Relationship> contactLists = getDisplayRelationList(invitationList, uiPageIteratorInvitation);
-    return contactLists;
+  @SuppressWarnings("unchecked")
+  public List<Identity> getInvitation() throws Exception {
+    int curPage = this.uiPageIteratorInvitation.getCurrentPage();
+    ListAccess<Identity> incomingListAccess = Utils.getRelationshipManager().getIncomingWithListAccess(Utils.getOwnerIdentity());
+    
+    if (incomingListAccess != null && incomingListAccess.getSize() == 0) {
+      return new ArrayList<Identity> ();
+    }
+    
+    LazyPageList<Identity> pageListContact = new LazyPageList<Identity>(incomingListAccess, RELATIONSHIP_PER_PAGE);
+    this.uiPageIteratorInvitation.setPageList(pageListContact);
+    int availablePage = this.uiPageIteratorInvitation.getAvailablePage();
+    if (this.uiProfileUserSearchRelation.isNewSearch()) {
+      this.uiPageIteratorInvitation.setCurrentPage(FIRST_PAGE);
+    } else if (curPage > availablePage) {
+      this.uiPageIteratorInvitation.setCurrentPage(availablePage);
+    } else {
+      this.uiPageIteratorInvitation.setCurrentPage(curPage);
+    }
+    this.uiProfileUserSearchRelation.setNewSearch(false);
+    return this.uiPageIteratorInvitation.getCurrentPageData();
   }
 
   /**
@@ -135,15 +159,16 @@ public class UIInvitations extends UIContainer {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
+      Identity invitingIdentity = Utils.getOwnerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      Utils.getRelationshipManager().confirm(relationship);
+      Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
     }
   }
 
@@ -158,16 +183,17 @@ public class UIInvitations extends UIContainer {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(Utils.getViewerIdentity(), requestedIdentity);
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
 
-      Utils.getRelationshipManager().deny(relationship);
+      Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
     }
   }
 
@@ -193,47 +219,5 @@ public class UIInvitations extends UIContainer {
    */
   public boolean isEditable () {
     return Utils.isOwner();
-  }
-
-  /**
-   * Returns list of relation of current page in iterator.<br>
-   *
-   * @param listContacts
-   *        All invited contact.
-   *
-   * @param uiPageIterator
-   *        Page iterator for paging.
-   *
-   * @return list of relation in current page.
-   *
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
-  private List<Relationship> getDisplayRelationList(List<Relationship> listContacts,
-                                                    UIPageIterator uiPageIterator) throws Exception {
-    int curPage = uiPageIterator.getCurrentPage();
-    LazyPageList<Relationship> pageListContact = new LazyPageList<Relationship>(new RelationshipListAccess(listContacts), 5);
-    uiPageIterator.setPageList(pageListContact);
-    int availablePage = uiPageIterator.getAvailablePage();
-    if (this.uiProfileUserSearchRelation.isNewSearch()) {
-      uiPageIterator.setCurrentPage(FIRST_PAGE);
-    } else if (curPage > availablePage) {
-      uiPageIterator.setCurrentPage(availablePage);
-    } else {
-      uiPageIterator.setCurrentPage(curPage);
-    }
-    this.uiProfileUserSearchRelation.setNewSearch(false);
-    return uiPageIterator.getCurrentPageData();
-  }
-
-  /**
-   * Gets contact relationships from searched result identities.
-   *
-   * @return Relationship list.
-   *
-   * @throws Exception
-   */
-  private List<Relationship> getInvitedRelations() throws Exception {
-    return Utils.getRelationshipManager().getIncoming(Utils.getOwnerIdentity(), getIdentityList());
   }
 }

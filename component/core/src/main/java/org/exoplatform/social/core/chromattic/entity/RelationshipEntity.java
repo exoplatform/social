@@ -26,6 +26,7 @@ import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -64,6 +65,12 @@ public abstract class RelationshipEntity {
   @Owner
   public abstract RelationshipEntity getReciprocal();
   public abstract void setReciprocal(RelationshipEntity reciprocal);
+
+  @Property(name = "soc:createdTime")
+  public abstract Long getCreatedTime();
+  public abstract void setCreatedTime(Long createdTime);
+  public static final PropertyLiteralExpression<Long> createdTime =
+      new PropertyLiteralExpression<Long>(Long.class, "soc:createdTime");
 
   @ManyToOne
   public abstract RelationshipListEntity getParent();
