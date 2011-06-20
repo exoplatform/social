@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.services.rest.ContainerResponseWriter;
 import org.exoplatform.services.rest.impl.ContainerRequest;
@@ -141,4 +142,40 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
   public void assertXmlStringEqualsEntity(String xmlString, Object entity) {
     //TODO implement this
   }
+
+
+  /**
+   * Tests: an anonymous user that accesses a resource requires authentication.
+   *
+   * @param method the http method string
+   * @param resourceUrl the resource url to access
+   * @param data the data if any
+   * @throws Exception
+   */
+  protected void testAccessResourceAsAnonymous(String method, String resourceUrl, byte[] data) throws Exception {
+    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data, null);
+    assertEquals(Status.UNAUTHORIZED, containerResponse.getStatus());
+  }
+
+
+  /**
+   * Tests: a authenticated user that accesses a resource that is forbidden, has no permission.
+   *
+   * @param username the portal user name
+   * @param method the http method string
+   * @param resourceUrl the resource url to access
+   * @param data the data if any
+   * @throws Exception
+   */
+  protected void testAccessResourceWithoutPermission(String username, String method, String resourceUrl, byte[] data)
+                                                  throws Exception {
+    startSessionAs(username);
+    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data, null);
+    assertEquals(Status.FORBIDDEN, containerResponse.getStatus());
+  }
+
+
+
+
+
 }
