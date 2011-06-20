@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.service.rest.api;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -81,6 +82,51 @@ public class ActivityResources implements ResourceContainer {
     //TODO implement this
     return null;
   }
+
+
+  /**
+   * Deletes an existing activity by DELETE method from a specified activity id. Just returns the deleted activity
+   * object.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @DELETE
+  @Path("{activityId}.{format}")
+  public Response deleteExistingActivityById(@Context UriInfo uriInfo,
+                                            @PathParam("portalContainerName") String portalContainerName,
+                                            @PathParam("activityId") String activityId,
+                                            @PathParam("format") String format) {
+    //TODO implement this
+    return null;
+  }
+
+
+  /**
+   * Deletes an existing activity by POST method from a specified activity id. Just returns the deleted activity
+   * object. Deletes by DELETE method is recommended. This API should be used only when DELETE method is not supported
+   * by the client.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @POST
+  @Path("destroy/{activityId}.{format}")
+  public Response postToDeleteActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format) {
+    //TODO implement this
+    return null;
+  }
+
+
 
 
 }
