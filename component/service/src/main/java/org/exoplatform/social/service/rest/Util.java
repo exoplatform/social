@@ -21,6 +21,7 @@ import java.net.URI;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -63,7 +64,10 @@ public final class Util {
    * @param format
    * @return mediaType of matched or throw BAD_REQUEST exception
    * @throws WebApplicationException
+   * @deprecated User {@link #getMediaType(String, String[])} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   static public MediaType getMediaType(String format) throws WebApplicationException {
     if (format.equals("json")) {
       return MediaType.APPLICATION_JSON_TYPE;
@@ -72,6 +76,35 @@ public final class Util {
     }
     throw new WebApplicationException(Response.Status.BAD_REQUEST);
   }
+
+
+  /**
+   * Gets the media type from an expected format string (usually the input) and an array of supported format strings.
+   * If epxectedFormat is not found in the supported format array, Status.UNSUPPORTED_MEDIA_TYPE is thrown.
+   * The supported format must include one of those format: json, xml, atom or rss, otherwise Status.NOT_ACCEPTABLE
+   * could be thrown.
+   *
+   * @param expectedFormat the expected input format
+   * @param supportedFormats the supported format array
+   * @return the associated media type
+   */
+  public static MediaType getMediaType(String expectedFormat, String[] supportedFormats) {
+
+    if (!isSupportedFormat(expectedFormat, supportedFormats)) {
+      throw new WebApplicationException(Status.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    if (expectedFormat.equals("json") && isSupportedFormat("json", supportedFormats)) {
+      return MediaType.APPLICATION_JSON_TYPE;
+    } else if (expectedFormat.equals("xml") && isSupportedFormat("xml", supportedFormats)) {
+      return MediaType.APPLICATION_XML_TYPE;
+    } else if (expectedFormat.equals("atom") && isSupportedFormat("atom", supportedFormats)) {
+      return MediaType.APPLICATION_ATOM_XML_TYPE;
+    }
+    //TODO What's about RSS format?
+    throw new WebApplicationException(Status.NOT_ACCEPTABLE);
+  }
+
   
   /**
    * Get viewerId from servlet request data information.
@@ -118,11 +151,29 @@ public final class Util {
   }
   
   /**
-   * Gets identityManager
+   * Gets identityManager with default portal container.
    * @return identityManager
    * @since 1.2.0 GA
    */
   public static final IdentityManager getIdentityManager() {
     return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
   }
+
+
+  /**
+   * Checks if an expected format is supported not not.
+   *
+   * @param expectedFormat  the expected format
+   * @param supportedFormats the array of supported format
+   * @return true or false
+   */
+  private static boolean isSupportedFormat(String expectedFormat, String[] supportedFormats) {
+    for (String supportedFormat : supportedFormats) {
+      if (supportedFormat.equals(expectedFormat)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

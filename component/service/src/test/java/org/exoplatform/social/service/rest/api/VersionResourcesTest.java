@@ -19,6 +19,7 @@ package org.exoplatform.social.service.rest.api;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.social.service.rest.api.models.Versions;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 /**
@@ -71,9 +72,14 @@ public class VersionResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  /*
+
   public void testGetLatestVersionWithXmlFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/latest.xml", "", null, null);
+
+    //not-supported yet
+    assertEquals(415, containerResponse.getStatus());
+
+    /*
     assertEquals("containerResponse.getContentType() must return: MediaType.APPLICATION_XML_TYPE",
             MediaType.APPLICATION_XML_TYPE,
             containerResponse.getContentType());
@@ -83,12 +89,13 @@ public class VersionResourcesTest extends AbstractResourceTest {
 
     final String expectedResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                                      "<version>v1-alpha1</version>";
-    //assertJsonStringEqualsEntity(expectedResponse, entity);
+    //assertXmlStringEqualsEntity(expectedResponse, entity);
+    */
   }
-  */
+
 
   /**
-   * Tests {@link VersionResources#getSupportedVersions(javax.ws.rs.core.UriInfo, String)}.
+   * Tests {@link VersionResources#getSupportedVersions(javax.ws.rs.core.UriInfo, String)} with json format.
    */
   public void testGetSupportedVersionsWithJsonFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/supported.json", "", null, null);
@@ -102,4 +109,24 @@ public class VersionResourcesTest extends AbstractResourceTest {
     final String expectedResponse = "{\"versions\": [\"v1-alpha1\"]}";
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
+
+  /**
+   * Tests {@link VersionResources#getSupportedVersions(javax.ws.rs.core.UriInfo, String)} with xml format.
+   *
+   * @throws Exception
+   */
+  public void testGetSupportedVersionsWithXmlFormat() throws Exception {
+    ContainerResponse containerResponse = service("GET", "/api/social/version/supported.xml", "", null, null);
+    assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_XML_TYPE,
+            containerResponse.getContentType());
+    assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+    Versions entity = (Versions) containerResponse.getEntity();
+    assertNotNull("entity must not be null", entity);
+
+    final String expectedResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+            "<versions><version>v1-alpha1</version></versions>";
+    assertXmlStringEqualsEntity(expectedResponse, entity);
+  }
+
 }

@@ -131,4 +131,14 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
 
     assertEquals(firstJsonValue.toString(), secondJsonValue.toString());
   }
+
+  /**
+   * Asserts if the provided xmlString is equal to an entity object's string.
+   *
+   * @param xmlString the provided xml string
+   * @param entity the provided entity object
+   */
+  public void assertXmlStringEqualsEntity(String xmlString, Object entity) {
+    //TODO implement this
+  }
 }

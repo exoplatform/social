@@ -70,7 +70,8 @@ public class VersionResources implements ResourceContainer {
   @Path("latest.{format}")
   public Response getLatestVersion(@Context UriInfo uriInfo,
                                    @PathParam("format") String format) {
-    MediaType mediaType = Util.getMediaType(format);
+    final String[] supportedFormat = new String[]{"json"};
+    MediaType mediaType = Util.getMediaType(format, supportedFormat);
     Version entity = new Version();
     entity.setVersion(LATEST_VERSION);
     return Util.getResponse(entity, uriInfo, mediaType, Status.OK);
@@ -89,9 +90,10 @@ public class VersionResources implements ResourceContainer {
   @Path("supported.{format}")
   public Response getSupportedVersions(@Context UriInfo uriInfo,
                                        @PathParam("format") String format) {
+    final String[] supportedFormat = new String[]{"json", "xml"};
     Versions entity = new Versions();
     entity.getVersions().addAll(SUPPORTED_VERSIONS);
-    return Util.getResponse(entity, uriInfo, Util.getMediaType(format), Status.OK);
+    return Util.getResponse(entity, uriInfo, Util.getMediaType(format, supportedFormat), Status.OK);
   }
 
   /**
