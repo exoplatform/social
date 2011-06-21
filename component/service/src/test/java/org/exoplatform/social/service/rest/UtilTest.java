@@ -19,7 +19,11 @@ package org.exoplatform.social.service.rest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
-import junit.framework.TestCase;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.test.AbstractServiceTest;
 
 
 /**
@@ -28,7 +32,7 @@ import junit.framework.TestCase;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jun 16, 2011
  */
-public class UtilTest extends TestCase {
+public class UtilTest extends AbstractServiceTest {
 
   /**
    * Tests {@link Util#getMediaType(String, String[])}.
@@ -56,5 +60,70 @@ public class UtilTest extends TestCase {
       assertEquals(406, wae.getResponse().getStatus());
     }
   }
+
+  /**
+   * Tests {@link org.exoplatform.social.service.rest.Util#getIdentityManager()}
+   */
+  public void testGetIdentityManager() {
+    IdentityManager identityManager = Util.getIdentityManager();
+    assertNotNull("identityManager must not be null", identityManager);
+  }
+
+  /**
+   * Tests {@link Util#getIdentityManager(String)}.
+   */
+  public void testGetIdentityManagerByPortalContainerName() {
+    IdentityManager identityManager = Util.getIdentityManager("portal");
+    assertNotNull("identityManager must not be null", identityManager);
+  }
+
+  /**
+   * Tests {@link Util#getSpaceService()}.
+   */
+  public void testGetSpaceService() {
+    SpaceService spaceService = Util.getSpaceService();
+    assertNotNull("spaceService must not be null", spaceService);
+  }
+
+  /**
+   * Tests {@link Util#getSpaceService(String)}.
+   */
+  public void testGetSpaceServiceByPortalContainerName() {
+    SpaceService spaceService = Util.getSpaceService("portal");
+    assertNotNull("spaceService must not be null", spaceService);
+  }
+
+  /**
+   * Tests {@link Util#getActivityManager()}.
+   */
+  public void testGetActivityManager() {
+    ActivityManager activityManager = Util.getActivityManager();
+    assertNotNull("activityManager must not be null", activityManager);
+  }
+
+  /**
+   * Tests {@link Util#getActivityManager(String)}.
+   */
+  public void testGetActivityManagerByPortalContainerName() {
+    ActivityManager activityManager = Util.getActivityManager("portal");
+    assertNotNull("activityManager must not be null", activityManager);
+  }
+
+  /**
+   * Tests {@link Util#getRelationshipManager()}.
+   */
+  public void testGetRelationshipManager() {
+    RelationshipManager relationshipManager = Util.getRelationshipManager();
+    assertNotNull("relationshipManager must not be null", relationshipManager);
+  }
+
+  /**
+   * Tests {@link Util#getRelationshipManager(String)}.
+   */
+  public void testGetRelationshipManagerByPortalContainerName() {
+    RelationshipManager relationshipManager = Util.getRelationshipManager("portal");
+    assertNotNull("relationshipManager must not be null", relationshipManager);
+  }
+
 
 }

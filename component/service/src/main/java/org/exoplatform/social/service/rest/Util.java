@@ -26,9 +26,13 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * Util.java: utility class for rest <br />.
@@ -38,17 +42,19 @@ import org.exoplatform.social.core.manager.IdentityManager;
  */
 public final class Util {
   /**
-   * Prevent construction.
+   * Prevents constructing a new instance.
    */
   private Util() {
   }
+
   /**
-   * gets response constructed from provided params.
-   * @param entity
-   * @param uriInfo
-   * @param mediaType
-   * @param status
-   * @return response
+   * Gets the response object constructed from the provided params.
+   *
+   * @param entity the identity
+   * @param uriInfo the uri request info
+   * @param mediaType the media type to be returned
+   * @param status the status code
+   * @return response the response object
    */
   static public Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
     return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
@@ -59,8 +65,9 @@ public final class Util {
   }
   
   /**
-   * gets mediaType from string format
-   * Currently supports json and xml only
+   * Gets mediaType from string format.
+   * Currently supports json and xml only.
+   *
    * @param format
    * @return mediaType of matched or throw BAD_REQUEST exception
    * @throws WebApplicationException
@@ -147,17 +154,99 @@ public final class Util {
    * @since 1.2.0 GA
    */
   public static Identity getUserIdentity(String userName, boolean loadProfile) {
-    return Util.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
+    return getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
   }
   
   /**
    * Gets identityManager with default portal container.
+   *
    * @return identityManager
    * @since 1.2.0 GA
    */
   public static final IdentityManager getIdentityManager() {
-    return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+    return (IdentityManager) getDefaultPortalContainer().getComponentInstanceOfType(IdentityManager.class);
   }
+
+  /**
+   * Gets {@link IdentityManager} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the identity manager
+   * @since  1.2.0-GA
+   */
+  public static final IdentityManager getIdentityManager(String portalContainerName) {
+    return (IdentityManager) getPortalContainerByName(portalContainerName).
+                             getComponentInstanceOfType(IdentityManager.class);
+  }
+
+
+  /**
+   * Gets {@link SpaceService} with default portal container.
+   *
+   * @return the space service
+   * @since  1.2.0-GA
+   */
+  public static final SpaceService getSpaceService() {
+    return (SpaceService) getDefaultPortalContainer().getComponentInstanceOfType(SpaceService.class);
+  }
+
+  /**
+   * Gets {@link SpaceService} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the space service
+   * @since  1.2.0-GA
+   */
+  public static final SpaceService getSpaceService(String portalContainerName) {
+    return (SpaceService) getPortalContainerByName(portalContainerName).getComponentInstanceOfType(SpaceService.class);
+  }
+
+
+  /**
+   * Gets {@link ActivityManager} with default portal container.
+   *
+   * @return the activity manager
+   * @since  1.2.0-GA
+   */
+  public static final ActivityManager getActivityManager() {
+    return (ActivityManager) getDefaultPortalContainer().getComponentInstanceOfType(ActivityManager.class);
+  }
+
+  /**
+   * Gets {@link ActivityManager} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container
+   * @return the activity manager
+   * @since  1.2.0-GA
+   */
+  public static final ActivityManager getActivityManager(String portalContainerName) {
+    return (ActivityManager) getPortalContainerByName(portalContainerName).
+                             getComponentInstanceOfType(ActivityManager.class);
+  }
+
+  /**
+   * Gets {@link RelationshipManager} with default portal container.
+   *
+   * @return the relationship manager
+   * @since  1.2.0-GA
+   */
+  public static final RelationshipManager getRelationshipManager() {
+    return (RelationshipManager) getDefaultPortalContainer().getComponentInstanceOfType(RelationshipManager.class);
+  }
+
+
+  /**
+   * Gets {@link RelationshipManager} with specified portal container name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the relationship manager
+   * @since  1.2.0-GA
+   */
+  public static final RelationshipManager getRelationshipManager(String portalContainerName) {
+    return (RelationshipManager) getPortalContainerByName(portalContainerName).
+                                 getComponentInstanceOfType(RelationshipManager.class);
+  }
+
 
 
   /**
@@ -174,6 +263,25 @@ public final class Util {
       }
     }
     return false;
+  }
+
+  /**
+   * Gets default portal container name.
+   *
+   * @return the portal container
+   */
+  private static PortalContainer getDefaultPortalContainer() {
+    return PortalContainer.getInstance();
+  }
+
+  /**
+   * Gets a portal container by its name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the portal container name
+   */
+  private static PortalContainer getPortalContainerByName(String portalContainerName) {
+    return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
   }
 
 }
