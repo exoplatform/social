@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.TimeZone;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
@@ -123,6 +125,18 @@ public class UtilTest extends AbstractServiceTest {
   public void testGetRelationshipManagerByPortalContainerName() {
     RelationshipManager relationshipManager = Util.getRelationshipManager("portal");
     assertNotNull("relationshipManager must not be null", relationshipManager);
+  }
+
+  /**
+   * Tests {@link Util#convertTimestampToTimeString(long)}.
+   */
+  public void testConvertTimestampToTimeString() {
+    long timestamp = 1308643759381L;
+    //With GTM +07:00: Tue Jun 21 15:09:19 +0700 2011
+    if ("GTM +07:00".equals(TimeZone.getDefault().getID())) {
+      String expected = "Tue Jun 21 15:09:19 +0700 2011";
+      assertEquals(expected, Util.convertTimestampToTimeString(timestamp));
+    }
   }
 
 

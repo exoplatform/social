@@ -17,6 +17,9 @@
 package org.exoplatform.social.service.rest;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -245,6 +248,19 @@ public final class Util {
   public static final RelationshipManager getRelationshipManager(String portalContainerName) {
     return (RelationshipManager) getPortalContainerByName(portalContainerName).
                                  getComponentInstanceOfType(RelationshipManager.class);
+  }
+
+
+  /**
+   * Converts a timestamp string to time string by the pattern: EEE MMM d HH:mm:ss Z yyyy.
+   *
+   * @param timestamp the timstamp to convert
+   * @return the time string
+   */
+  public static final String convertTimestampToTimeString(long timestamp) {
+   SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy");
+   dateFormat.setTimeZone(TimeZone.getDefault());
+   return dateFormat.format(new Date(timestamp));
   }
 
 
