@@ -153,7 +153,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    * @throws Exception
    */
   protected void testAccessResourceAsAnonymous(String method, String resourceUrl, byte[] data) throws Exception {
-    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data, null);
+    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
     assertEquals(Status.UNAUTHORIZED, containerResponse.getStatus());
   }
 
@@ -170,7 +170,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
   protected void testAccessResourceWithoutPermission(String username, String method, String resourceUrl, byte[] data)
                                                   throws Exception {
     startSessionAs(username);
-    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data, null);
+    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
     assertEquals(Status.FORBIDDEN, containerResponse.getStatus());
   }
 
