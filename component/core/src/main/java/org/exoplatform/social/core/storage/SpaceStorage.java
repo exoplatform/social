@@ -31,6 +31,7 @@ import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
@@ -79,6 +80,10 @@ public class SpaceStorage extends AbstractStorage {
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
 
+    if (entity.getHasAvatar()) {
+      space.setAvatarUrl(LinkProvider.buildAvatarImageUri(space.getPrettyName()));
+    }
+
   }
 
   private void fillEntityFormSpace(Space space, SpaceEntity entity) {
@@ -97,6 +102,7 @@ public class SpaceStorage extends AbstractStorage {
     entity.setManagerMembersId(space.getManagers());
     entity.setPendingMembersId(space.getPendingUsers());
     entity.setInvitedMembersId(space.getInvitedUsers());
+    entity.setHasAvatar(space.getAvatarAttachment() != null);
 
   }
 

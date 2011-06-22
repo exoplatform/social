@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
@@ -284,6 +285,15 @@ public interface SpaceService {
    * @since  1.2.0-GA
    */
   Space updateSpace(Space existingSpace);
+
+  /**
+   * Updates a space's avatar
+   *
+   * @param existingSpace the existing space to be updated
+   * @return the updated space
+   * @since  1.2.0-GA
+   */
+  Space updateSpaceAvatar(Space existingSpace);
 
   /**
    * Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.

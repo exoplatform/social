@@ -18,6 +18,8 @@
 package org.exoplatform.social.core.storage;
 
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -2376,8 +2378,8 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("foundSpaceList must not be null", foundSpaceList);
     assertNotNull("foundSpaceList.getId() must not be null", foundSpaceList.getId());
     assertEquals("space.getId() must return: " + space.getId(),
-                 space.getId(),
-                 foundSpaceList.getId());
+        space.getId(),
+        foundSpaceList.getId());
     assertEquals("space.getPrettyName() must return: " + space.getPrettyName(),
                  space.getPrettyName(),
                  foundSpaceList.getPrettyName());
@@ -2428,6 +2430,28 @@ public class SpaceStorageTest extends AbstractCoreTest {
         + newName, newName, spaceStorage.getSpaceById(space.getId())
                                                                 .getName());
     assertEquals("space.getName() must return: " + newName, newName, space.getName());
+
+    Space got = spaceStorage.getSpaceById(space.getId());
+    assertEquals(null, got.getAvatarUrl());
+  }
+
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#saveSpace(org.exoplatform.social.core.space.model.Space, boolean)}
+   *
+   * @throws Exception
+   */
+  public void testSaveSpaceAvatar() throws Exception {
+    int number = 1;
+    Space space = this.getSpaceInstance(number);
+    space.setAvatarAttachment(new AvatarAttachment());
+    tearDownSpaceList.add(space);
+
+    spaceStorage.saveSpace(space, true);
+
+    Space got = spaceStorage.getSpaceById(space.getId());
+
+    assertFalse(got.getAvatarUrl() == null);
+    assertEquals(LinkProvider.buildAvatarImageUri(got.getPrettyName()), got.getAvatarUrl());
   }
 
   // TODO : test getSpaceByGroupId without result

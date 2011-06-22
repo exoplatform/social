@@ -136,9 +136,7 @@ public class UISpaceInfo extends UIForm {
 
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
     spaceService.updateSpace(space);
-    space = spaceService.getSpaceById(space.getId());
-    space.setAvatarUrl(LinkProvider.buildAvatarImageUri(space.getAvatarAttachment()));
-    spaceService.updateSpace(space);
+    spaceService.updateSpaceAvatar(space);
   }
 
   /**

@@ -188,6 +188,19 @@ public class LinkProvider {
   }
 
   /**
+   * Gets url of avatar from identity name.
+   *
+   * @param identityName
+   * @return
+   * @since 1.2.0-GA
+   */
+  public static String buildAvatarImageUri(final String identityName) {
+    return String.format(
+        "/rest/jcr/repository/social/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
+        identityName);
+  }
+
+  /**
    * Builds avatar image uri from avatarAttachment.
    *
    * @param container

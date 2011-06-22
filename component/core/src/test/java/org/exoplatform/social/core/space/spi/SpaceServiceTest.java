@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.space.spi;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -1308,6 +1311,35 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals("savedSpace.getDisplayName() must return: " + spaceDisplayName, spaceDisplayName, savedSpace.getDisplayName());
     assertEquals("savedSpace.getDescription() must return: " + spaceDescription, spaceDescription, savedSpace.getDescription());
     assertEquals("savedSpace.getGroupId() must return: " + groupId, groupId, savedSpace.getGroupId());
+    assertEquals(null, savedSpace.getAvatarUrl());
+  }
+
+  /**
+   * Test {@link SpaceService#saveSpace(Space, boolean)}
+   *
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  public void testUpdateSpaceAvatar() throws Exception {
+
+    Space space = this.getSpaceInstance(0);
+    Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    identityStorage.saveIdentity(spaceIdentity);
+
+    tearDownSpaceList.add(space);
+    tearDownUserList.add(spaceIdentity);
+
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment =
+        new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    space.setAvatarAttachment(avatarAttachment);
+
+    spaceService.updateSpaceAvatar(space);
+    spaceService.updateSpace(space);
+
+    Space savedSpace = spaceService.getSpaceById(space.getId());
+    assertFalse(savedSpace.getAvatarUrl() == null);
+    assertEquals(LinkProvider.buildAvatarImageUri(space.getPrettyName()), savedSpace.getAvatarUrl());
   }
 
   /**
