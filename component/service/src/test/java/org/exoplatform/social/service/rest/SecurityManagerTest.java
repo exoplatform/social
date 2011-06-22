@@ -184,13 +184,10 @@ public class SecurityManagerTest extends AbstractServiceTest {
     boolean demoDeleteDemoActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, demoActivity);
     assertTrue("demoDeleteDemoActivity must be true", demoDeleteDemoActivity);
 
-    //---- BUG #1 TODO: FIX THIS
-
     boolean maryDeleteDemoActivity = SecurityManager.canDeleteActivity(getContainer(), maryIdentity, demoActivity);
     assertFalse("maryDeleteDemoActivity must be false", maryDeleteDemoActivity);
 
 
-    //-- BUG #2: //TODO FIX THIS
     //demo connects to john
     createActivities(johnIdentity, johnIdentity, 1);
     connectIdentities(demoIdentity, johnIdentity, false);
@@ -306,13 +303,11 @@ public class SecurityManagerTest extends AbstractServiceTest {
     ExoSocialActivity demoCommentMaryActivity = comments.get(0); // must be 1
     ExoSocialActivity maryCommentMaryActivity = comments.get(1); // must be 0
 
-    //BUG #4: TODO FIX THIS
     boolean demoDeleteMaryCommentMaryActivity = SecurityManager.canDeleteComment(getContainer(),
                                                                                  demoIdentity, maryCommentMaryActivity);
 
     assertTrue("demoDeleteMaryCommentMaryActivity must be true", demoDeleteMaryCommentMaryActivity);
 
-    //BUG #5: TODO FIX THIS
     boolean johnDeleteDemoCommentMaryActivity = SecurityManager.canDeleteComment(getContainer(),
                                                                                  johnIdentity,
                                                                                  demoCommentMaryActivity);
