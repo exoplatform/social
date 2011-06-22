@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response.Status;
 
 import org.exoplatform.services.rest.ContainerResponseWriter;
 import org.exoplatform.services.rest.impl.ContainerRequest;
@@ -154,12 +153,12 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    */
   protected void testAccessResourceAsAnonymous(String method, String resourceUrl, byte[] data) throws Exception {
     ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
-    assertEquals(Status.UNAUTHORIZED, containerResponse.getStatus());
+    assertEquals(401, containerResponse.getStatus());
   }
 
 
   /**
-   * Tests: a authenticated user that accesses a resource that is forbidden, has no permission.
+   * Tests: an authenticated user that accesses a resource that is forbidden, has no permission.
    *
    * @param username the portal user name
    * @param method the http method string
@@ -171,11 +170,24 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                                                   throws Exception {
     startSessionAs(username);
     ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
-    assertEquals(Status.FORBIDDEN, containerResponse.getStatus());
+    assertEquals(403, containerResponse.getStatus());
   }
 
 
-
-
+  /**
+   * Tests: an authenticated user that accesses a resource that is not found.
+   *
+   * @param username the portal user name
+   * @param method the http method string
+   * @param resourceUrl the resource url to access
+   * @param data the data if any
+   * @throws Exception
+   */
+  protected void testAccessNotFoundResourceWithAuthentication(String username, String method, String resourceUrl,
+                                                              byte[] data) throws Exception {
+    startSessionAs(username);
+    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
+    assertEquals(404, containerResponse.getStatus());
+  }
 
 }

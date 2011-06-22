@@ -53,9 +53,11 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
   protected ProviderBinder providerBinder;
   protected ResourceBinder resourceBinder;
   protected RequestHandlerImpl requestHandler;
-  private static SessionProviderService sessionProviderService = null;
+  private static SessionProviderService sessionProviderService;
 
   protected void setUp() throws Exception {
+    sessionProviderService = (SessionProviderService) getContainer().
+                                                      getComponentInstanceOfType(SessionProviderService.class);
     resourceBinder = (ResourceBinder) getContainer().getComponentInstanceOfType(ResourceBinder.class);
     requestHandler = (RequestHandlerImpl) getContainer().getComponentInstanceOfType(RequestHandlerImpl.class);
     // Reset providers to be sure it is clean
@@ -67,6 +69,7 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
   }
 
   protected void tearDown() throws Exception {
+    endSession();
     end();
   }
 
@@ -171,6 +174,7 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
   protected void startSessionAs(String user) {
     Identity identity = new Identity(user);
     ConversationState state = new ConversationState(identity);
+    ConversationState.setCurrent(state);
     sessionProviderService.setSessionProvider(null, new SessionProvider(state));
     sessionProvider = sessionProviderService.getSessionProvider(null);
   }

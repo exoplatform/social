@@ -45,6 +45,15 @@
   <component>
     <type>org.exoplatform.social.service.rest.PeopleRestService</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.services.jcr.ext.app.SessionProviderService</key>
+    <type>org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.services.rest.impl.ProvidersRegistry</type>
+  </component>
   
   <component>
      <type>org.exoplatform.services.rest.impl.RequestHandlerImpl</type>
