@@ -181,6 +181,7 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
 
   protected void endSession() {
     sessionProviderService.removeSessionProvider(null);
+    ConversationState.setCurrent(null);
     startSystemSession();
   }
 
