@@ -78,14 +78,14 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    *
    * @return the corresponding identity id
    */
-  String getReplyToId();
+  String[] getReplyToId();
 
   /**
    * Sets reply to identity id.
    *
    * @param replyToId the identity id
    */
-  void setReplyToId(String replyToId);
+  void setReplyToId(String[] replyToId);
 
   /**
    * To know if this is a hidden activity.

@@ -37,7 +37,15 @@ public class ActivityStorageException extends ExoSocialException {
     FAILED_TO_DELETE_COMMENT("Failed_To_Delete_Comment"),
     FAILED_TO_GET_ACTIVITIES("Failed_To_Get_Activities"),
     FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Activities_Of_Connections"),
-    FAILED_TO_GET_ACTIVITIES_COUNT("Failed_To_Get_Activities_Count");
+    FAILED_TO_GET_ACTIVITIES_OF_CONNECTIONS_WITH_OFFSET_LIMIT("Failed_To_Get_Activities_Of_Connections_With_Offset_Limit"),
+    FAILED_TO_GET_NUMBER_OF_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Number_Of_Activities_Of_Connections"),
+    FAILED_TO_GET_ACTIVITIES_COUNT("Failed_To_Get_Activities_Count"),
+    FAILED_TO_GET_NUMBER_OF_NEWER_ON_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Number_Of_Newer_On_Activities_Of_Connections"),
+    FAILED_TO_GET_NEWER_ON_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Newer_On_Activities_Of_Connections"),
+    FAILED_TO_GET_OLDER_ON_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Older_On_Activities_Of_Connections"),
+    FAILED_TO_GET_NUMBER_OF_OLDER_ON_ACTIVITIES_OF_CONNECTIONS("Failed_To_Get_Number_Of_Older_On_Activities_Of_Connections"),
+    FAILED_TO_GET_USER_SPACE_ACTIVITIES_WITH_OFFSET_LIMIT("Failed_To_Get_User_Space_Activities_With_Offset_Limit"),
+    FAILED_TO_GET_NUMBER_OF_USER_SPACE_ACTIVITIES("Failed_To_Get_Number_Of_User_Space_Activities");;
     
     private final String msgKey;
 

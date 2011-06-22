@@ -52,6 +52,9 @@ public abstract class ActivityListEntity {
   @Create
   public abstract ActivityYearEntity newYear();
 
+  @Create
+  public abstract ActivityEntity createActivity(String name);
+
   public void inc() {
     setNumber(getNumber() + 1);
   }

@@ -33,7 +33,7 @@ import org.exoplatform.social.core.storage.SpaceStorage;
  * Aug 28, 2009  
  */
 public class SpaceListAccess implements ListAccess<Space> {
-  /** The space storage. */
+  /** The space activityStorage. */
   private SpaceStorage spaceStorage;
   
   /** The user id. */

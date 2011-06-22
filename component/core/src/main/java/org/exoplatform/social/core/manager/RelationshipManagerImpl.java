@@ -40,7 +40,7 @@ import org.exoplatform.social.core.storage.RelationshipStorageException;
  * @version 1.2.0-GA
  */
 public class RelationshipManagerImpl implements RelationshipManager {
-  /** The storage. */
+  /** The activityStorage. */
   protected RelationshipStorage   storage;
 
   /**
@@ -235,7 +235,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   /**
-   * Gets the relationship storage.
+   * Gets the relationship activityStorage.
    *
    * @return storage
    */
@@ -244,7 +244,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   /**
-   * Sets the relationship storage.
+   * Sets the relationship activityStorage.
    *
    * @param storage
    */
@@ -271,7 +271,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   /**
-   * Get relationships by identity and status from cache or storage
+   * Get relationships by identity and status from cache or activityStorage
    * 
    * @param identity
    * @param status
@@ -285,7 +285,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   /**
-   * Get relationships by identity and status and identities from storage
+   * Get relationships by identity and status and identities from activityStorage
    * 
    * @param sender
    * @param status
@@ -298,7 +298,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   /**
-   * Get relationships by identity and status from cache or storage
+   * Get relationships by identity and status from cache or activityStorage
    * 
    * @param receiver
    * @param status

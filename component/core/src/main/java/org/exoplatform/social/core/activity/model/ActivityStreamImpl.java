@@ -32,7 +32,7 @@ public class ActivityStreamImpl implements ActivityStream {
   private static final Log LOG = ExoLogger.getLogger(ActivityStreamImpl.class);
 
   /**
-   * Internal storage uuid, from "published" node.
+   * Internal activityStorage uuid, from "published" node.
    */
   private String id;
   /**

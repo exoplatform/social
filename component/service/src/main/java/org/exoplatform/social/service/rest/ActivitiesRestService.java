@@ -329,12 +329,10 @@ public class ActivitiesRestService implements ResourceContainer {
       if (activity == null) {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
       }
-      String rawCommentIds = activity.getReplyToId();
-      //rawCommentIds can be: null || ,a,b,c,d
-      if (rawCommentIds == null) {
+      String[] commentIds = activity.getReplyToId();
+      if (commentIds == null) {
         commentList.setComments(new ArrayList<ExoSocialActivity>());
       } else {
-        String[] commentIds = rawCommentIds.split(",");
         for (String commentId: commentIds) {
           if (commentId.length() > 0) {
             commentList.addComment(_activityManager.getActivity(commentId));

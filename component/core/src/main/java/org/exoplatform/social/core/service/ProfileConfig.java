@@ -41,7 +41,7 @@ public class ProfileConfig {
   /** The node types. */
   private Map<String, String> nodeTypes = new HashMap<String, String>();
 
-  /** The storage. */
+  /** The activityStorage. */
   private IdentityStorage storage = null;
 
   /**

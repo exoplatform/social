@@ -63,6 +63,7 @@ public class CachingIdentityManager extends IdentityManagerImpl {
   /**
    * {@inheritDoc}
    */
+  /*
   @Override
   public Identity getIdentity(String identityId, boolean forceLoadOrReloadProfile) {
     Identity cachedIdentity = identityCacheById.get(identityId);
@@ -76,28 +77,34 @@ public class CachingIdentityManager extends IdentityManagerImpl {
     }
     return cachedIdentity;
   }
+  */
 
   /**
    * {@inheritDoc}
    */
+  /*
   @Override
   public Identity updateIdentity(Identity identity) {
     updateIdentityCaches(identity);
     return super.updateIdentity(identity);
   }
+  */
 
   /**
    * {@inheritDoc}
    */
+  /*
   @Override
   public void deleteIdentity(Identity identity) {
     super.deleteIdentity(identity);
     updateIdentityCaches(identity);
   }
+  */
 
   /**
    * {@inheritDoc}
    */
+  /*
   @Override
   public void saveIdentity(Identity identity) {
     super.saveIdentity(identity);
@@ -112,4 +119,5 @@ public class CachingIdentityManager extends IdentityManagerImpl {
       identityListCacheByIdentityProvider.remove(identity.getProviderId());
     }
   }
+  */
 }

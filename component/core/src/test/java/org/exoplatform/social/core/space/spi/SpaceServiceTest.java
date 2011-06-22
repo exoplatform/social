@@ -73,7 +73,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
     super.setUp();
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     lifeCycleCompletionService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
     assertNotNull("spaceService must not be null", spaceService);
     tearDownSpaceList = new ArrayList<Space>();
@@ -141,6 +140,10 @@ public class SpaceServiceTest extends AbstractCoreTest {
       identityStorage.deleteIdentity(identity);
     }
     for (Space space : tearDownSpaceList) {
+      Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      if (spaceIdentity != null) {
+        identityStorage.deleteIdentity(spaceIdentity);
+      }
       spaceService.deleteSpace(space);
     }
     super.tearDown();

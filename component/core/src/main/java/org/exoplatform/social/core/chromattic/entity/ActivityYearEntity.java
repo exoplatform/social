@@ -23,6 +23,7 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.Path;
@@ -37,10 +38,13 @@ import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 @PrimaryType(name = "soc:activityyear")
 @FormattedBy(BaseEncodingObjectFormatter.class)
 @NamingPrefix("soc")
-public abstract class ActivityYearEntity {
+public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
 
   @Path
   public abstract String getPath();
+
+  @Name
+  public abstract String getName();
 
   @Property(name = "soc:number")
   @DefaultValue({"0"})

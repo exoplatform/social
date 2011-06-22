@@ -411,9 +411,9 @@ public interface IdentityManager {
   List<Identity> getConnections(Identity ownerIdentity) throws Exception;
 
   /**
-   * Gets the identity storage.
+   * Gets the identity activityStorage.
    *
-   * @return the storage
+   * @return the activityStorage
    * @deprecated Will be removed by 1.3.x
    */
   IdentityStorage getIdentityStorage();

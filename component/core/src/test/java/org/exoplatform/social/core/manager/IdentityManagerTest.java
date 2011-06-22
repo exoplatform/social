@@ -46,8 +46,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
   private ActivityManager activityManager;
 
-  private LifeCycleCompletionService completionLifeCYcleService;
-
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -55,9 +53,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull(activityManager);
-
-    completionLifeCYcleService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
-    assertNotNull(completionLifeCYcleService);
 
     tearDownIdentityList = new ArrayList<Identity>();
   }
@@ -480,9 +475,8 @@ public class IdentityManagerTest extends AbstractCoreTest {
     assertEquals("CEO", identityUpdated.getProfile().getProperty(Profile.POSITION));
 
     end();
-    completionLifeCYcleService.waitCompletionFinished();
     begin();
-    
+
     List<ExoSocialActivity> rootActivityList = activityManager.getActivities(rootIdentity);
 
     tearDownIdentityList.add(rootIdentity);
@@ -718,9 +712,8 @@ public class IdentityManagerTest extends AbstractCoreTest {
     ActivityManager activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
 
     end();
-    completionLifeCYcleService.waitCompletionFinished();
     begin();
-    
+
     List<ExoSocialActivity> johnActivityList = activityManager.getActivities(gotJohnIdentity, 0, 10);
     assertEquals("johnActivityList.size() must be 1", 1, johnActivityList.size());
   }

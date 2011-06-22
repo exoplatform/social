@@ -23,6 +23,7 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.Path;
@@ -37,9 +38,13 @@ import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 @PrimaryType(name = "soc:activityday", orderable = true)
 @FormattedBy(BaseEncodingObjectFormatter.class)
 @NamingPrefix("soc")
-public abstract class ActivityDayEntity {
+public abstract class ActivityDayEntity implements NamedEntity, IndexNumber {
+
   @Path
   public abstract String getPath();
+
+  @Name
+  public abstract String getName();
 
   @Property(name = "soc:number")
   @DefaultValue({"0"})
@@ -51,9 +56,6 @@ public abstract class ActivityDayEntity {
 
   @ManyToOne
   public abstract ActivityMonthEntity getMonth();
-
-  @Create
-  public abstract ActivityEntity createActivity(String name);
 
   public void inc() {
     getMonth().inc();

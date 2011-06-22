@@ -46,7 +46,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * The id of the activity which this activity posted as a reply.
    */
-  private String replyToId;
+  private String[] replyToId;
 
   /**
    * Boolean value to indicate if this is a hidden activity.
@@ -118,6 +118,25 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     this(userId, activityType, activityTitle);
     setBody(activityBody);
   }
+  
+  /**
+   * Instantiates a new activity based on userId, type, title, its body 
+   * and check activity is a comment or not.
+   * <p/>
+   * The fields <code>postedTime</code> and <code>updatedTimestamp</code> is
+   * automatically initialized.
+   *
+   * @param userId        the user id
+   * @param activityType  the type
+   * @param activityTitle the title
+   * @param activityBody  the body
+   */
+  public ExoSocialActivityImpl(final String userId, final String activityType,
+                               final String activityTitle, final String activityBody, boolean isAComment) {
+    this(userId, activityType, activityTitle);
+    setBody(activityBody);
+    this.isAComment = isAComment;
+  }
 
   /**
    * Gets associated activity stream of this activity. If it's null, init its
@@ -182,7 +201,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    *
    * @return the reply to identity id
    */
-  public final String getReplyToId() {
+  public String[] getReplyToId() {
     return replyToId;
   }
 
@@ -191,8 +210,8 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    *
    * @param replyToIdentityId the identity id
    */
-  public final void setReplyToId(final String replyToIdentityId) {
-    replyToId = replyToIdentityId;
+  public final void setReplyToId(String[] replyToIdentityId) {
+    this.replyToId = replyToIdentityId;
   }
 
   /**
@@ -369,4 +388,6 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     setUpdated(date);
     activityStream = new ActivityStreamImpl();
   }
+
+
 }

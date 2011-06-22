@@ -17,11 +17,16 @@
 
 package org.exoplatform.social.core.storage.query;
 
+import com.google.caja.parser.js.QuotedExpression;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class WhereExpression {
+
+  private static final String QUOTED = "'%s'";
+  private static final String DIRECT = "%s";
 
   private final StringBuilder builder;
 
@@ -34,7 +39,35 @@ public class WhereExpression {
   public <T> WhereExpression equals(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s = '%s' ", property.getName(), value));
+    builder.append(String.format("%s = %s ", property.getName(), espace(property, value)));
+    return this;
+  }
+
+  public <T> WhereExpression lesser(PropertyLiteralExpression<T> property, T value) {
+    checkParam(property, value);
+
+    builder.append(String.format("%s < %s ", property.getName(), value));
+    return this;
+  }
+
+  public <T> WhereExpression lessEq(PropertyLiteralExpression<T> property, T value) {
+    checkParam(property, value);
+
+    builder.append(String.format("%s <= %s ", property.getName(), value));
+    return this;
+  }
+
+  public <T> WhereExpression greater(PropertyLiteralExpression<T> property, T value) {
+    checkParam(property, value);
+
+    builder.append(String.format("%s > %s ", property.getName(), espace(property, value)));
+    return this;
+  }
+
+  public <T> WhereExpression greaterEq(PropertyLiteralExpression<T> property, T value) {
+    checkParam(property, value);
+
+    builder.append(String.format("%s >= '%s' ", property.getName(), value));
     return this;
   }
 
@@ -105,6 +138,12 @@ public class WhereExpression {
 
   public <T> CallExpression callFunction(QueryFunction function, PropertyLiteralExpression<T> property) {
     return new CallExpression(function, property);
+  }
+
+  private <T> String espace(PropertyLiteralExpression<T> property, T value) {
+    String format = (property.getType().equals(Long.class) ? DIRECT : QUOTED);
+
+    return String.format(format, value);
   }
 
   private <T> void checkParam(PropertyLiteralExpression<T> property, T value) {

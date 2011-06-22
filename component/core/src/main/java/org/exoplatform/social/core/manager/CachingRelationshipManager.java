@@ -202,7 +202,7 @@ public class CachingRelationshipManager extends RelationshipManagerImpl {
                                                 List<Identity> identities) throws RelationshipStorageException {
     List<Relationship> cachedRelationships = getAllRelationships(identity);
     if(cachedRelationships == null || cachedRelationships.size() == 0) {
-      return null;
+      return new ArrayList<Relationship>();
     }
 
     List<Relationship> filterCachedRelationships = new ArrayList<Relationship>();

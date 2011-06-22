@@ -2368,7 +2368,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
 
     // add to tearDownSpaceList
     tearDownSpaceList.add(space);
-    // save to space storage
+    // save to space activityStorage
     spaceStorage.saveSpace(space, true);
 
     // get space saved by name

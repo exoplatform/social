@@ -60,7 +60,7 @@ public class IdentityManagerImpl implements IdentityManager {
   /** The identity providers */
   protected Map<String, ProfileListener> profileListeners = new HashMap<String, ProfileListener>();
   
-  /** The storage */
+  /** The activityStorage */
   protected IdentityStorage                  identityStorage;
 
   /** The relationship manager */
@@ -299,7 +299,7 @@ public class IdentityManagerImpl implements IdentityManager {
     if (result == null) {
       if (identityFoundByRemoteProvider != null) {
         // identity is valid for provider, but no yet
-        // referenced in storage
+        // referenced in activityStorage
         saveIdentity(identityFoundByRemoteProvider);
         this.getIdentityStorage().saveProfile(identityFoundByRemoteProvider.getProfile());
         result = identityFoundByRemoteProvider;

@@ -73,13 +73,13 @@ public interface ActivityStream {
   void setType(String name);
 
   /**
-   * Gets stream Id (internal storage).
+   * Gets stream Id (internal activityStorage).
    * @return stream uuid
    */
   String getId();
 
   /**
-   * Sets stream Id (internal storage).
+   * Sets stream Id (internal activityStorage).
    * @param id the uuid of published-node
    */
   void setId(String id);

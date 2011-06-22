@@ -135,14 +135,14 @@ public class RelationshipStorage extends AbstractStorage {
           break;
       }
 
-      if (limit > 0 && ++i >= limit) {
+      if (limit != -1 && limit > 0 && ++i >= limit) {
         break;
       }
 
     }
 
     return identities;
-}
+  }
 
   private Identity createIdentityFromEntity(IdentityEntity entity) {
 
@@ -861,6 +861,20 @@ public class RelationshipStorage extends AbstractStorage {
     catch (NodeNotFoundException e) {
       throw new RelationshipStorageException(RelationshipStorageException.Type.ILLEGAL_ARGUMENTS);
     }
+  }
+
+  /**
+   * Gets connections with the identity.
+   *
+   * @param identity
+   * @return number of connections belong to limitation of offset and limit.
+   * @throws RelationshipStorageException
+   * @since 1.2.0-GA
+   */
+  public List<Identity> getConnections(Identity identity) throws RelationshipStorageException {
+
+    return getConnections(identity, 0, -1);
+
   }
 
   /**
