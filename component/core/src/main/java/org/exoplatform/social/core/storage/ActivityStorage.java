@@ -160,6 +160,7 @@ public class ActivityStorage extends AbstractStorage {
     activityEntity.setAppId(activity.getAppId());
     activityEntity.setExternalId(activity.getExternalId());
     activityEntity.setUrl(activity.getUrl());
+    activityEntity.setPriority(activity.getPriority());
 
     //
     Map<String, String> params = activity.getTemplateParams();
@@ -186,6 +187,7 @@ public class ActivityStorage extends AbstractStorage {
     activity.setAppId(activityEntity.getAppId());
     activity.setExternalId(activityEntity.getExternalId());
     activity.setUrl(activityEntity.getUrl());
+    activity.setPriority(activityEntity.getPriority());
 
     //
     List<String> computeCommentid = new ArrayList<String>();

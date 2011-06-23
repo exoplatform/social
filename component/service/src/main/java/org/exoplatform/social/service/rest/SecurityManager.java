@@ -53,6 +53,7 @@ public class SecurityManager {
   public static boolean canAccessActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
     //currently, anyone can access an existing activity.
+    // TODO : implements
     return true;
   }
   

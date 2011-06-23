@@ -102,6 +102,10 @@ public abstract class ActivityEntity implements NamedEntity {
   public abstract String getUrl();
   public abstract void setUrl(String url);
 
+  @Property(name = "soc:priority")
+  public abstract Float getPriority();
+  public abstract void setPriority(Float priority);
+
   @Property(name = "soc:likes")
   public abstract String[] getLikes();
   public abstract void setLikes(String[] title);

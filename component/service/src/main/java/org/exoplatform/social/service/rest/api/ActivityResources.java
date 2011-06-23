@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.service.rest.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,11 +24,25 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.shindig.social.opensocial.model.Activity;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.service.rest.Util;
+import org.exoplatform.social.service.rest.api.models.Activity;
+import org.exoplatform.social.service.rest.api.models.ActivityStream;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Activity Resources end point.
@@ -38,6 +53,7 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 @Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/activity")
 public class ActivityResources implements ResourceContainer {
 
+  private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
 
   /**
    * Gets an activity by its id.
@@ -57,8 +73,71 @@ public class ActivityResources implements ResourceContainer {
                                   @QueryParam("posterIdentity") String showPosterIdentity,
                                   @QueryParam("numberOfComments") String numberOfComments,
                                   @QueryParam("activityStream") String showActivityStream) {
-    //TODO implement this
-    return null;
+
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    try {
+
+      //
+      ActivityManager manager = getActivityManager(portalContainerName);
+      ExoSocialActivity activity = manager.getActivity(activityId);
+
+      //
+      String[] likes = activity.getLikeIdentityIds();
+      Activity model = new Activity(
+          activity.getId(),
+          activity.getTitle(),
+          activity.getPriority(),
+          activity.getAppId(),
+          activity.getType(),
+          activity.getPostedTime(),
+          new Date(activity.getPostedTime().longValue()).toString(),
+          activity.getTitleId(),
+          activity.getTemplateParams(),
+          (likes != null && likes.length > 0),
+          activity.getLikeIdentityIds(),
+          activity.getStreamId()
+      );
+
+      //
+      if (isPassed(showPosterIdentity)) {
+        model.setPosterIdentity(activity.getUserId());
+      }
+
+      //
+      if (isPassed(showActivityStream)) {
+        model.setActivityStream(new ActivityStream(
+            "",
+            activity.getStreamOwner(),
+            activity.getStreamFaviconUrl(),
+            activity.getStreamTitle(),
+            activity.getStreamUrl()
+        ));
+      }
+
+      //
+      if (numberOfComments != null) {
+
+        int commentNumber = activity.getReplyToId().length;
+        int number = Integer.parseInt(numberOfComments);
+
+        if (number > 100) {
+          number = 100;
+        }
+        
+        if (number > commentNumber) {
+          number = commentNumber;
+        }
+        model.setComments(Arrays.asList(activity.getReplyToId()).subList(0, number).toArray(new String[]{}));
+        model.setNumberOfComments(commentNumber);
+      }
+
+      return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+    }
+    catch (ActivityStorageException e) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.NOT_FOUND);
+    }
+    
   }
 
 
@@ -73,16 +152,57 @@ public class ActivityResources implements ResourceContainer {
    * @return a response object
    */
   @POST
-  @Path(".{format}")
+  @Path("new.{format}")
+  @Consumes(MediaType.APPLICATION_JSON)
   public Response createNewActivity(@Context UriInfo uriInfo,
                                     @PathParam("portalContainerName") String portalContainerName,
                                     @PathParam("format") String format,
                                     @QueryParam("identityId") String identityIdStream,
                                     Activity newActivity) {
-    //TODO implement this
-    return null;
-  }
 
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(newActivity.getTitle());
+    activity.setUserId(identityIdStream);
+
+    try {
+
+      //
+      ActivityManager activityManager = getActivityManager(portalContainerName);
+      IdentityManager identityManager =  getIdentityManager(portalContainerName);
+
+      //
+      Identity identity = identityManager.getIdentity(identityIdStream, false);
+      activityManager.saveActivityNoReturn(identity, activity);
+      ExoSocialActivity got = activityManager.getActivity(activity.getId());
+
+      //
+      String[] likes = got.getLikeIdentityIds();
+      Activity model = new Activity(
+          got.getId(),
+          got.getTitle(),
+          got.getPriority(),
+          got.getAppId(),
+          got.getType(),
+          got.getPostedTime(),
+          new Date(got.getPostedTime().longValue()).toString(),
+          got.getTitleId(),
+          got.getTemplateParams(),
+          (likes != null && likes.length > 0),
+          got.getLikeIdentityIds(),
+          got.getStreamId()
+      );
+      model.setIdentityId(identityIdStream);
+
+      return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   /**
    * Deletes an existing activity by DELETE method from a specified activity id. Just returns the deleted activity
@@ -100,10 +220,16 @@ public class ActivityResources implements ResourceContainer {
                                             @PathParam("portalContainerName") String portalContainerName,
                                             @PathParam("activityId") String activityId,
                                             @PathParam("format") String format) {
-    //TODO implement this
-    return null;
-  }
 
+    Response response = getActivityById(uriInfo, portalContainerName, activityId, format, null, null, null);
+
+    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+      ActivityManager manager = getActivityManager(portalContainerName);
+      manager.deleteActivity(activityId);
+    }
+
+    return response;
+  }
 
   /**
    * Deletes an existing activity by POST method from a specified activity id. Just returns the deleted activity
@@ -122,11 +248,24 @@ public class ActivityResources implements ResourceContainer {
                                            @PathParam("portalContainerName") String portalContainerName,
                                            @PathParam("activityId") String activityId,
                                            @PathParam("format") String format) {
-    //TODO implement this
-    return null;
+
+    return deleteExistingActivityById(uriInfo, portalContainerName, activityId, format);
+    
   }
 
+  private boolean isPassed(String value) {
+    return value != null && ("true".equals(value) || "t".equals(value) || "1".equals(value));
+  }
 
+  private ActivityManager getActivityManager(String name) {
+    return (ActivityManager) getPortalContainer(name).getComponentInstanceOfType(ActivityManager.class);
+  }
 
+  private IdentityManager getIdentityManager(String name) {
+    return (IdentityManager) getPortalContainer(name).getComponentInstanceOfType(IdentityManager.class);
+  }
 
+  private PortalContainer getPortalContainer(String name) {
+    return (PortalContainer) ExoContainerContext.getContainerByName(name);
+  }
 }

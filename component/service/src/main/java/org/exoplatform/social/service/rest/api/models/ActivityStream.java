@@ -24,4 +24,92 @@ package org.exoplatform.social.service.rest.api.models;
  */
 public class ActivityStream {
 
+  /**
+   * The type : either "user" or "space"
+   */
+  private String type;
+
+  /**
+   * The pretty id.
+   */
+  private String prettyId;
+
+  /**
+   * The favorite icon URL.
+   */
+  private String faviconUrl;
+
+  /**
+   * The title.
+   */
+  private String title;
+
+  /**
+   * The permanent link.
+   */
+  private String permalink;
+
+  /**
+   * Constructor.
+   *
+   * @param type The type.
+   * @param prettyId The pretty id.
+   * @param faviconUrl The favorite icon URL.
+   * @param title The title.
+   * @param permalink The permanent link.
+   */
+  public ActivityStream(
+      final String type,
+      final String prettyId,
+      final String faviconUrl,
+      final String title,
+      final String permalink) {
+
+    this.type = type;
+    this.prettyId = prettyId;
+    this.faviconUrl = faviconUrl;
+    this.title = title;
+    this.permalink = permalink;
+
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(final String type) {
+    this.type = type;
+  }
+
+  public String getPrettyId() {
+    return prettyId;
+  }
+
+  public void setPrettyId(final String prettyId) {
+    this.prettyId = prettyId;
+  }
+
+  public String getFaviconUrl() {
+    return faviconUrl;
+  }
+
+  public void setFaviconUrl(final String faviconUrl) {
+    this.faviconUrl = faviconUrl;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(final String title) {
+    this.title = title;
+  }
+
+  public String getPermalink() {
+    return permalink;
+  }
+
+  public void setPermalink(final String permalink) {
+    this.permalink = permalink;
+  }
 }
