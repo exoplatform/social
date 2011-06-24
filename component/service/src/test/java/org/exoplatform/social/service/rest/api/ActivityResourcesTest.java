@@ -162,7 +162,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithComment1WithJsonFormat() throws Exception {
 
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=1", "", null, null);
+    ContainerResponse response =
+        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=1", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -192,7 +193,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithComment10WithJsonFormat() throws Exception {
 
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=10", "", null, null);
+    ContainerResponse response =
+        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=10", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -222,7 +224,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithPosterIdTrueWithJsonFormat() throws Exception {
 
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=true", "", null, null);
+    ContainerResponse response =
+        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=true", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -252,7 +255,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithPosterIdTWithJsonFormat() throws Exception {
 
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=t", "", null, null);
+    ContainerResponse response =
+        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=t", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -282,7 +286,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithPosterId1WithJsonFormat() throws Exception {
 
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=1", "", null, null);
+    ContainerResponse response =
+        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=1", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {

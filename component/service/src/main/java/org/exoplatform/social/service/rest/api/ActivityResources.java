@@ -42,7 +42,6 @@ import org.exoplatform.social.service.rest.api.models.Activity;
 import org.exoplatform.social.service.rest.api.models.ActivityStream;
 
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Activity Resources end point.
@@ -83,21 +82,7 @@ public class ActivityResources implements ResourceContainer {
       ExoSocialActivity activity = manager.getActivity(activityId);
 
       //
-      String[] likes = activity.getLikeIdentityIds();
-      Activity model = new Activity(
-          activity.getId(),
-          activity.getTitle(),
-          activity.getPriority(),
-          activity.getAppId(),
-          activity.getType(),
-          activity.getPostedTime(),
-          new Date(activity.getPostedTime().longValue()).toString(),
-          activity.getTitleId(),
-          activity.getTemplateParams(),
-          (likes != null && likes.length > 0),
-          activity.getLikeIdentityIds(),
-          activity.getStreamId()
-      );
+      Activity model = new Activity(activity);
 
       //
       if (isPassed(showPosterIdentity)) {
@@ -179,21 +164,7 @@ public class ActivityResources implements ResourceContainer {
       ExoSocialActivity got = activityManager.getActivity(activity.getId());
 
       //
-      String[] likes = got.getLikeIdentityIds();
-      Activity model = new Activity(
-          got.getId(),
-          got.getTitle(),
-          got.getPriority(),
-          got.getAppId(),
-          got.getType(),
-          got.getPostedTime(),
-          new Date(got.getPostedTime().longValue()).toString(),
-          got.getTitleId(),
-          got.getTemplateParams(),
-          (likes != null && likes.length > 0),
-          got.getLikeIdentityIds(),
-          got.getStreamId()
-      );
+      Activity model = new Activity(got);
       model.setIdentityId(identityIdStream);
 
       return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);

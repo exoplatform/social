@@ -16,6 +16,10 @@
  */
 package org.exoplatform.social.service.rest.api.models;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The Activity List for Social Rest APIs: Activity Stream resources.
  *
@@ -24,5 +28,20 @@ package org.exoplatform.social.service.rest.api.models;
  */
 public class ActivityList {
 
+  /**
+   * The activities data.
+   */
+  private List<Activity> activities;
 
+  public ActivityList() {
+    this.activities = new ArrayList<Activity>();
+  }
+
+  public List<Activity> getActivities() {
+    return Collections.unmodifiableList(activities);
+  }
+
+  public void addActivity(final Activity activity) {
+    activities.add(activity);
+  }
 }

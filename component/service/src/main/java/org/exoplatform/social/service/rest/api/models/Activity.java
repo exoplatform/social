@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.service.rest.api.models;
 
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -155,6 +158,25 @@ public class Activity {
     this.liked = liked;
     this.likedByIdentities = likedByIdentities;
     this.identityId = identityId;
+  }
+
+  public Activity(final ExoSocialActivity activity) {
+
+    this(
+        activity.getId(),
+        activity.getTitle(),
+        activity.getPriority(),
+        activity.getAppId(),
+        activity.getType(),
+        activity.getPostedTime(),
+        new Date(activity.getPostedTime().longValue()).toString(),
+        activity.getTitleId(),
+        activity.getTemplateParams(),
+        (activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0),
+        activity.getLikeIdentityIds(),
+        activity.getStreamId()
+        );
+    
   }
 
   public String getId() {

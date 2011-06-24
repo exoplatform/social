@@ -89,6 +89,8 @@
   </component>
 
 
+
+
   <component>
     <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
     <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
