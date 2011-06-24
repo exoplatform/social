@@ -170,7 +170,6 @@ public class ActivityResources implements ResourceContainer {
       return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
     }
     catch (Exception e) {
-      e.printStackTrace();
       return Util.getResponse(null, uriInfo, mediaType, Response.Status.INTERNAL_SERVER_ERROR);
     }
   }
