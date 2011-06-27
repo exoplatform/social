@@ -30,6 +30,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
@@ -63,7 +64,7 @@ public class IdentityRestService implements ResourceContainer {
       String id = null;
       String viewerId = Util.getViewerId(uriInfo);
       if (viewerId != null) {
-        Identity identity = getIdentityManager(portalName).getIdentity(viewerId);
+        Identity identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerId, true);
         if (identity == null) {
           throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

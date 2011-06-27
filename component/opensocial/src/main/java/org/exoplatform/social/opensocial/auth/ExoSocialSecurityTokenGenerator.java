@@ -24,9 +24,6 @@ import org.exoplatform.portal.gadget.core.ExoDefaultSecurityTokenGenerator;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.web.application.RequestContext;
 
 /**
@@ -86,26 +83,10 @@ public class ExoSocialSecurityTokenGenerator extends ExoDefaultSecurityTokenGene
    */
   public String createToken(String gadgetURL, Long moduleId) {
     RequestContext context = RequestContext.getCurrentInstance();
-    String rUserId = getIdentityId(context.getRemoteUser());
+    String rUserId = context.getRemoteUser();
     String ownerId = rUserId;
     return createToken(gadgetURL, ownerId, rUserId, moduleId, "default");
   }
 
-  /**
-   * Gets identity id from a remote id.
-   *
-   * @param remoteId
-   * @return
-   */
-  protected String getIdentityId(String remoteId) {
-    PortalContainer pc = PortalContainer.getInstance();
-    IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
-
-    Identity id = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
-    if (id != null) {
-      return id.getId();
-    }
-    return null;
-  }
 }
 

@@ -38,6 +38,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 
@@ -196,7 +197,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
       String user = userId.getUserId(token); // can be organization:name or organization:UUID
-      Identity userIdentity = identityManager.getIdentity(user);
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
 
       // identity for the stream to post on
       Identity targetStream = userIdentity;

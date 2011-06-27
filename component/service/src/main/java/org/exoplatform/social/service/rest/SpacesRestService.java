@@ -142,7 +142,7 @@ public class SpacesRestService implements ResourceContainer {
     if (state != null) {
       userId = state.getIdentity().getUserId();
     } else {
-      userId = getRemoteId(uriInfo);
+      userId = Util.getViewerId(uriInfo);
     }
 
     SpaceList mySpaceList = showMySpaceList(userId);
@@ -166,8 +166,7 @@ public class SpacesRestService implements ResourceContainer {
     MediaType mediaType = Util.getMediaType(format);
     String userId = ConversationState.getCurrent().getIdentity().getUserId();
     portalContainerName = portalName;
-    String remoteId = getRemoteId(uriInfo);
-    if (!userId.equals(remoteId)) {
+    if (!userId.equals(Util.getViewerId(uriInfo))) {
       return null;
     }
     SpaceList pendingSpaceList = showPendingSpaceList(userId);
@@ -305,12 +304,6 @@ public class SpacesRestService implements ResourceContainer {
    */
   private SpaceService getSpaceService() {
     return (SpaceService) getPortalContainer().getComponentInstanceOfType(SpaceService.class);
-  }
-
-  private String getRemoteId(UriInfo uriInfo) throws Exception {
-    String viewerId = Util.getViewerId(uriInfo);
-    Identity identity = getIdentityManager().getIdentity(viewerId);
-    return identity.getRemoteId();
   }
 
   /**

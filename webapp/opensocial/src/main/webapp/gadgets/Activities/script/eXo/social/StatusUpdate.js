@@ -1123,8 +1123,10 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
     }
   }
 
+  var date = new Date()
+  var time = date.getTime();
   if (this.currentView === 'home') {
-    var activity = opensocial.newActivity({ 'title': activityElement.value});
+    var activity = opensocial.newActivity({ 'title': activityElement.value, 'updated': date, 'postedTime' : time});
     var statusUpdate = this;
     opensocial.requestCreateActivity(activity, "HIGH", function() {
       statusUpdate.refresh();}
@@ -1157,7 +1159,7 @@ eXo.social.StatusUpdate.prototype.share = function(el) {
 
   if ((currentView === 'canvas') && (this.shareable === false)) return;
 
-  var activity = opensocial.newActivity({ 'title': activityContent});
+  var activity = opensocial.newActivity({ 'title': activityContent, 'updated': date, 'postedTime' : time});
   var statusUpdate = this;
   opensocial.requestCreateActivity(activity, "HIGH", function() {
     statusUpdate.updateOwnerActivities();}
