@@ -20,6 +20,7 @@ package org.exoplatform.social.service.rest.api;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -70,6 +71,10 @@ public class ActivityStreamResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
+
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
     IdentityManager identityManager = getIdentityManager(portalContainerName);
@@ -107,6 +112,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                              @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -147,6 +156,10 @@ public class ActivityStreamResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
+
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
     IdentityManager identityManager = getIdentityManager(portalContainerName);
@@ -183,6 +196,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                                @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -221,6 +238,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                              @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -261,6 +282,10 @@ public class ActivityStreamResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
+
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
     IdentityManager identityManager = getIdentityManager(portalContainerName);
@@ -297,6 +322,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                                       @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -335,6 +364,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                                     @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -375,6 +408,10 @@ public class ActivityStreamResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
+
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
     IdentityManager identityManager = getIdentityManager(portalContainerName);
@@ -411,6 +448,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                                       @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -450,6 +491,10 @@ public class ActivityStreamResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
+
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
     IdentityManager identityManager = getIdentityManager(portalContainerName);
@@ -488,6 +533,10 @@ public class ActivityStreamResources implements ResourceContainer {
                                                     @QueryParam("limit") String limit) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if (!authenticated()) {
+      return Util.getResponse(null, uriInfo, mediaType, Response.Status.UNAUTHORIZED);
+    }
 
     //
     ActivityManager activityManager = getActivityManager(portalContainerName);
@@ -551,5 +600,10 @@ public class ActivityStreamResources implements ResourceContainer {
     }
     
     return activityList;
+  }
+
+  private boolean authenticated() {
+
+    return ConversationState.getCurrent() != null;
   }
 }
