@@ -17,6 +17,9 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +29,8 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
@@ -68,6 +71,7 @@ public class UISpaceApplication extends UIForm {
    */
   private static final Log LOG = ExoLogger.getLogger(UISpaceApplication.class);
 
+  private static final int APPLICATIONS_PER_PAGE = 3;
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
@@ -179,8 +183,9 @@ public class UISpaceApplication extends UIForm {
     }
     
     int currentPage = iterator.getCurrentPage();
+    Collections.sort(installedApps, new ApplicationComparator());
     
-    PageList pageList = new ObjectPageList(installedApps, 3);
+    PageList pageList = new ObjectPageList(installedApps, APPLICATIONS_PER_PAGE);
     iterator.setPageList(pageList);
     
     int availablePage = iterator.getAvailablePage();
@@ -191,6 +196,17 @@ public class UISpaceApplication extends UIForm {
       iterator.setCurrentPage(currentPage);
     }
 
+  }
+  
+  /**
+   * Application comparator.
+   *
+   * @author hoatle
+   */
+  private class ApplicationComparator implements Comparator<Application> {
+    public int compare(Application app1, Application app2) {
+      return app1.getApplicationName().compareToIgnoreCase(app2.getApplicationName());
+    }
   }
 
   /**
@@ -228,23 +244,22 @@ public class UISpaceApplication extends UIForm {
     if (space == null) {
       return null;
     }
-    PageNavigation pageNav = null;
+    UserNavigation pageNav = null;
     try {
       pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
     } catch (Exception e1) {
       LOG.warn(e1.getMessage(), e1);
     }
 
-    PageNode homeNode = SpaceUtils.getHomeNode(pageNav, spaceUrl);
-    if (homeNode == null) {
-      return null;
-    }
-    List<PageNode> nodes = homeNode.getChildren();
+    UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, spaceUrl);
+    
+    
+    Collection<UserNode> nodes = homeNode.getChildren();
     String applicationName = application.getApplicationName();
     String appName = applicationName.split(":")[1];
     String appNodeName;
-    for (PageNode node : nodes) {
-      String nodeUri = node.getUri();
+    for (UserNode node : nodes) {
+      String nodeUri = node.getURI();
       appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
       if (appNodeName.equals(appName)) {
         return SpaceUtils.getDisplayAppName(node.getResolvedLabel());

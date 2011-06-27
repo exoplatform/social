@@ -24,6 +24,13 @@
   <priority>1</priority>
   
   <page-nodes>
+  <node>
+      <uri>home</uri>
+      <name>home</name>
+      <label>#{portal.classic.home}</label>
+      <visibility>SYSTEM</visibility>
+      <page-reference>portal::classic::homepage</page-reference>
+    </node>
     <node>
       <uri>activities</uri>
       <name>activities</name>
@@ -31,15 +38,6 @@
       <visibility>SYSTEM</visibility>
       <page-reference>portal::classic::activities</page-reference>
     </node>
-    
-    <node>
-      <uri>home</uri>
-      <name>home</name>
-      <label>#{portal.classic.home}</label>
-      <visibility>SYSTEM</visibility>
-      <page-reference>portal::classic::homepage</page-reference>
-    </node>
-    
     <node>
       <uri>sitemap</uri>
       <name>sitemap</name>

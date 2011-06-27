@@ -22,14 +22,16 @@ import java.util.List;
 import javax.portlet.WindowState;
 
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.application.UIPortlet;
-import org.exoplatform.portal.webui.navigation.PageNavigationUtils;
 import org.exoplatform.portal.webui.page.UIPageBody;
 import org.exoplatform.portal.webui.portal.PageNodeEvent;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
@@ -42,7 +44,7 @@ import org.exoplatform.webui.event.EventListener;
 public class UISocialNavigation extends UIComponent {
   private boolean    useAJAX = true;
 
-  protected PageNode selectedNode_;
+  protected UserNode selectedNode_;
 
   protected Object   selectedParent_;
 
@@ -79,15 +81,15 @@ public class UISocialNavigation extends UIComponent {
    * @return navigation page list
    * @throws Exception
    */
-  public List<PageNavigation> getNavigations() throws Exception {
-    List<PageNavigation> result = new ArrayList<PageNavigation>();
-    List<PageNavigation> navigations = Util.getUIPortalApplication().getNavigations();
+  public List<UserNavigation> getNavigations() throws Exception {
+    List<UserNavigation> result = new ArrayList<UserNavigation>();
+    List<UserNavigation> navigations = SpaceUtils.getUserPortal().getNavigations();
 
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    for (PageNavigation pageNavigation : navigations) {
-      if (pageNavigation.getOwner().equals(portalRequest.getPortalOwner())
-          && pageNavigation.getOwnerType().equals("portal")) {
-        result.add(pageNavigation);
+    for (UserNavigation userNavigation : navigations) {
+      if (userNavigation.getKey().getName().equals(portalRequest.getPortalOwner())
+          && userNavigation.getKey().getTypeName().equals("portal")) {
+        result.add(userNavigation);
       }
     }
     return result;
@@ -99,13 +101,10 @@ public class UISocialNavigation extends UIComponent {
    * @return selected navigation page
    * @throws Exception 
    */
-  public PageNavigation getSelectedNavigation() throws Exception {
+  public UserNavigation getSelectedNavigation() throws Exception {
     UIPortal uiPortal = Util.getUIPortal();
-    PageNavigation nav = uiPortal.getSelectedNavigation();
-    if (nav == null && uiPortal.getNavigations().size() > 0 ) {
-      nav = uiPortal.getNavigations().get(0);
-    }
-    return nav;
+    UserNode selectedNode = uiPortal.getSelectedUserNode();
+    return selectedNode.getNavigation();
   }
 
   /**
@@ -123,9 +122,9 @@ public class UISocialNavigation extends UIComponent {
    * @return selected page node
    * @throws Exception 
    */
-  public PageNode getSelectedPageNode() throws Exception {
+  public UserNode getSelectedPageNode() throws Exception {
     if (selectedNode_ == null) {
-      selectedNode_ = Util.getUIPortal().getSelectedNode();
+      selectedNode_ = Util.getUIPortal().getSelectedUserNode();
     }
     return selectedNode_;
   }
@@ -136,20 +135,20 @@ public class UISocialNavigation extends UIComponent {
    * @param node
    * @return true or false
    */
-  public boolean isSelectedNode(PageNode node) {
-    if (selectedNode_ != null && node.getUri().equals(selectedNode_.getUri())) {
+  public boolean isSelectedNode(UserNode node) {
+    if (selectedNode_ != null && node.getURI().equals(selectedNode_.getURI())) {
       return true;
     }
     if (selectedParent_ != null && selectedParent_ instanceof PageNode) {
-      return node.getUri().equals(((PageNode) selectedParent_).getUri());
+      return node.getURI().equals(((UserNode) selectedParent_).getURI());
     }
     return false;
   }
 
   public void processRender(WebuiRequestContext context) throws Exception {
     UIPortal uiPortal = Util.getUIPortal();
-    if (uiPortal.getSelectedNode() != selectedNode_) {
-      setSelectedPageNode(uiPortal.getSelectedNode());
+    if (uiPortal.getSelectedUserNode() != selectedNode_) {
+      setSelectedPageNode(uiPortal.getSelectedUserNode());
     }
     super.processRender(context);
   }
@@ -160,21 +159,22 @@ public class UISocialNavigation extends UIComponent {
    * @param selectedNode
    * @throws Exception
    */
-  private void setSelectedPageNode(PageNode selectedNode) throws Exception {
+  private void setSelectedPageNode(UserNode selectedNode) throws Exception {
+    UserPortal userPortal = SpaceUtils.getUserPortal();
     selectedNode_ = selectedNode;
     selectedParent_ = null;
-    String seletctUri = selectedNode.getUri();
+    String seletctUri = selectedNode.getURI();
     int index = seletctUri.lastIndexOf("/");
     String parentUri = null;
     if (index > 0)
       parentUri = seletctUri.substring(0, seletctUri.lastIndexOf("/"));
-    List<PageNavigation> pageNavs = getNavigations();
-    for (PageNavigation pageNav : pageNavs) {
-      if (PageNavigationUtils.searchPageNodeByUri(pageNav, selectedNode.getUri()) != null) {
+    List<UserNavigation> pageNavs = getNavigations();
+    for (UserNavigation pageNav : pageNavs) {
+      if (userPortal.resolvePath(pageNav, null, selectedNode.getURI()) != null) {
         if (parentUri == null || parentUri.length() < 1)
           selectedParent_ = pageNav;
         else
-          selectedParent_ = PageNavigationUtils.searchPageNodeByUri(pageNav, parentUri);
+          selectedParent_ = userPortal.resolvePath(pageNav, null, parentUri);
         break;
       }
     }
@@ -188,18 +188,20 @@ public class UISocialNavigation extends UIComponent {
   public static class SelectNodeActionListener extends EventListener<UISocialNavigation> {
     @SuppressWarnings("unchecked")
     public void execute(Event<UISocialNavigation> event) throws Exception {
+      UserPortal userPortal = Util.getUIPortalApplication().getUserPortalConfig().getUserPortal();
       UISocialNavigation uiNavigation = event.getSource();
       UIPortal uiPortal = Util.getUIPortal();
       String uri = event.getRequestContext().getRequestParameter(OBJECTID);
       int index = uri.lastIndexOf("::");
       String id = uri.substring(index + 2);
-      PageNavigation selectNav = null;
+      UserNavigation selectNav = null;
       if (index <= 0) {
-        selectNav = uiPortal.getSelectedNavigation();
+        UserNode selectedNode = uiPortal.getSelectedUserNode();
+        selectNav = selectedNode.getNavigation();
       } else {
         String navId = uri.substring(0, index);
       }
-      PageNode selectNode = PageNavigationUtils.searchPageNodeByUri(selectNav, id);
+      UserNode selectNode = userPortal.resolvePath(selectNav, null, id);
       uiNavigation.selectedNode_ = selectNode;
       String parentUri = null;
       index = uri.lastIndexOf("/");
@@ -208,7 +210,7 @@ public class UISocialNavigation extends UIComponent {
       if (parentUri == null || parentUri.length() < 1)
         uiNavigation.selectedParent_ = selectNav;
       else
-        uiNavigation.selectedParent_ = PageNavigationUtils.searchPageNodeByUri(selectNav, parentUri);
+        uiNavigation.selectedParent_ = userPortal.resolvePath(selectNav, null, parentUri);
       UIPageBody uiPageBody = uiPortal.findFirstComponentOfType(UIPageBody.class);
       if (uiPageBody != null) {
         if (uiPageBody.getMaximizedUIComponent() != null) {

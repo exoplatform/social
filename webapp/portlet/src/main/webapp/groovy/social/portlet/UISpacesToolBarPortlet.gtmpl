@@ -21,11 +21,13 @@
 */
 %>
 <%
-  import org.exoplatform.portal.config.model.PageNavigation;
-  import org.exoplatform.portal.config.model.PageNode;
+  import org.exoplatform.portal.mop.user.UserNode;
+  import org.exoplatform.portal.mop.user.UserNavigation;
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.organization.OrganizationUtils;
   import org.exoplatform.social.core.space.SpaceUtils;
+  import javax.portlet.MimeResponse;
+  import javax.portlet.ResourceURL;
   
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
@@ -36,24 +38,28 @@
   def spacesLink = portalURI + "spaces";
   def spaceNavigations = uicomponent.getSpaceNavigations();
   
-  void renderSpacePageNavigation(PageNavigation navigation) {
-    nodes = navigation.getNodes();
+  void renderSpacePageNavigation(UserNavigation navigation) {
+    def nodes = uicomponent.getNavigationNodes(navigation);
     if(nodes.size() < 1) return;
-    for(int i = 0; i < nodes.size(); i++) {
-      renderPageNode(nodes.get(i), i%2 == 0);
+    def ownerId = navigation.getKey().getName();
+    int idx = 0;
+    for(UserNode node : nodes) {
+        renderPageNode(node, ownerId, idx++ % 2 == 0);
     }
+                            
+    
   }
   
-  void renderPageNode(PageNode node, boolean flag) {
-    PageNode selectedNode = uicomponent.getSelectedPageNode();
+  void renderPageNode(UserNode node, String groupId, boolean flag) {
+    UserNode selectedNode = uicomponent.getSelectedNode();
     def tabStyleNavigation = "";
-    if(selectedNode != null && node.getUri() == selectedNode.getUri()) {
+    if(selectedNode != null && node.getURI() == selectedNode.getURI()) {
       tabStyleNavigation = "SelectedItem";
     }
-    def hasChild = (node.getChildren() != null && node.getChildren().size() > 0);
+    boolean hasChild = (node.getChildren() != null && node.getChildren().size() > 0);
     def clazz = "";
     if(hasChild) clazz = "ArrowIcon";
-    def href = Util.getPortalRequestContext().getPortalURI() + node.getUri();
+    def href = Util.getPortalRequestContext().getPortalURI() + node.getURI();
     def icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon";
     def displayAppName = SpaceUtils.getDisplayAppName(node.resolvedLabel);
@@ -65,11 +71,19 @@
     } else {
       title = "";
     }
+    
+    def getNodeURL = "";
+    if (hasChild) {
+        MimeResponse res = _ctx.getRequestContext().getResponse();
+        ResourceURL resourceURL = res.createResourceURL();
+        resourceURL.setResourceID(res.encodeURL(groupId + "::" + node.getURI()));   
+        getNodeURL = "exo:getNodeURL='" + resourceURL.toString() + "'";
+    }
     print """
-      <div class="MenuItem $tabStyleNavigation">
+      <div class="MenuItem $tabStyleNavigation" $getNodeURL>
         <div class="$clazz">
     """;
-    if(node.pageReference != null) {
+    if(node.pageRef != null) {
       print """<a class="ItemIcon $icon" href="$href" $title>$label</a>""";
     } else {
       print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
@@ -82,10 +96,11 @@
         <div class="MenuItemContainer" style="position: absolute; display:none">
           <div class="SubBlock">
       """;
-        for(int j = 0; j < node.getChildren().size(); j++) {
-          PageNode childNode = node.getChildren().get(j);
+      
+        int idx = 0;
+        for(UserNode childNode : node.getChildren()) {
           def isRender = uicomponent.isRender(node, childNode);
-          if (isRender) renderPageNode(childNode, j%2 == 0);
+           if (isRender) renderPageNode(childNode, groupId, idx++ % 2 == 0);
         }
       print """
           </div>

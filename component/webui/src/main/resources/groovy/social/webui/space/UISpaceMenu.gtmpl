@@ -24,7 +24,7 @@
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
 
-  SpaceUtils.reloadNavigation();
+  //sSpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def appSelected = uicomponent.getAppSelected();
@@ -88,7 +88,7 @@
            def SpaceClass = "";
            def nodeTitle = node.getResolvedLabel();
            def nodeLabel = getFitString(nodeTitle, 15);
-           def nodeUri = node.getUri();
+           def nodeUri = node.getURI();
            def uriParts = nodeUri.split("/");
            def nodeName = uriParts[uriParts.length - 1];
            def pageURI = Util.getPortalRequestContext().getPortalURI() + spaceUrl + "/" + nodeName;

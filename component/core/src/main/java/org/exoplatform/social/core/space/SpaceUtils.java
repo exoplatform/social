@@ -46,10 +46,15 @@ import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.portal.UIPortal;
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NavigationServiceException;
+import org.exoplatform.portal.mop.navigation.NavigationState;
+import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -388,10 +393,10 @@ public class SpaceUtils {
    * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public static void changeSpaceUrlPreference(PageNode spacePageNode,
+  public static void changeSpaceUrlPreference(UserNode spacePageNode,
                                               Space space,
                                               String newSpaceName) throws Exception {
-    String pageId = spacePageNode.getPageReference();
+    String pageId = spacePageNode.getPageRef();
     DataStorage dataStorage = getDataStorage();
     Page page = dataStorage.getPage(pageId);
     page.setTitle(page.getTitle().replace(space.getDisplayName(), newSpaceName));
@@ -478,8 +483,10 @@ public class SpaceUtils {
    * portal navigations.
    *
    * @param nav
+   * TODO This method which uses to cache the Navigation. Maybe remove this method because it
+   * uses to cache for UI
    */
-  public static void setNavigation(PageNavigation nav) {
+  public static void setNavigation(UserNavigation nav) {
     if (nav == null) {
       return;
     }
@@ -487,26 +494,11 @@ public class SpaceUtils {
     if (context == null) {
       return;
     }
-    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     try {
-      UserPortalConfig userPortalConfig = uiPortalApplication.getUserPortalConfig();
-      List<PageNavigation> navs = userPortalConfig.getNavigations();
-      PageNavigation selectedNav = Util.getUIPortal().getSelectedNavigation();
-      if (selectedNav.getId() == nav.getId()) {
-        Util.getUIPortal().setSelectedNavigation(nav);
+      UserNode selectedNav = Util.getUIPortal().getSelectedUserNode();
+      if (selectedNav.getId() == nav.getKey().getName()) {
+        Util.getUIPortal().setNavPath(selectedNav);
       }
-      boolean alreadyExisted = false;
-      for (int i = 0; i < navs.size(); i++) {
-        if (navs.get(i).getId() == nav.getId()) {
-          navs.set(i, nav);
-          alreadyExisted = true;
-          return;
-        }
-      }
-      if (!alreadyExisted) {
-        navs.add(nav);
-      }
-      userPortalConfig.setNavigations(navs);
     } catch (Exception e) {
       LOG.warn(e.getMessage(), e);
     }
@@ -518,22 +510,16 @@ public class SpaceUtils {
    * @param nav
    * @throws Exception
    */
-  public static void removeNavigation(PageNavigation nav) throws Exception {
-    UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
+  public static void removeNavigation(UserNavigation nav) throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
-    if (dataStorage == null) {
-      LOG.warn("dataStorage is null!");
-      return;
-    }
-
-    List<PageNavigation> navs = userPortalConfig.getNavigations();
-    navs.remove(nav);
+    NavigationService navService = (NavigationService) container.getComponentInstanceOfType(NavigationService.class);
     try {
-      userPortalConfig.setNavigations(navs);
+      navService.destroyNavigation(new NavigationContext(nav.getKey(), new NavigationState(1)));
+    } catch (NavigationServiceException nex) {
+      LOG.warn("Failed to remove navigations", nex);
     } catch (Exception e) {
-      LOG.warn("Failed to set navigations", e);
-    }
+      LOG.warn("Failed to remove navigations", e);
+    } 
   }
 
   /**
@@ -548,11 +534,12 @@ public class SpaceUtils {
     String userId = Util.getPortalRequestContext().getRemoteUser();
     List<Space> spaces = spaceService.getAccessibleSpaces(userId);
     UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-    List<PageNavigation> navs = userPortalConfig.getNavigations();
-    List<PageNavigation> spaceNavs = new ArrayList<PageNavigation>();
+    UserPortal userPortal = userPortalConfig.getUserPortal();
+    List<UserNavigation> navs = userPortal.getNavigations();
+    List<UserNavigation> spaceNavs = new ArrayList<UserNavigation>();
     String ownerId;
-    for (PageNavigation nav : navs) {
-      ownerId = nav.getOwnerId();
+    for (UserNavigation nav : navs) {
+      ownerId = nav.getKey().getName();
       try {
         Space space = spaceService.getSpaceByGroupId(ownerId);
         if (space != null) {
@@ -567,8 +554,8 @@ public class SpaceUtils {
     boolean spaceContained = false;
     for (Space space : spaces) {
       groupId = space.getGroupId();
-      for (PageNavigation nav : spaceNavs) {
-        if (groupId.equals(nav.getOwnerId())) {
+      for (UserNavigation nav : spaceNavs) {
+        if (groupId.equals(nav.getKey().getName())) {
           spaceContained = true;
           break;
         }
@@ -580,15 +567,15 @@ public class SpaceUtils {
     // remove deleted space navigation
     if (spaces.size() == 0) {
       // remove all navs
-      for (PageNavigation nav : spaceNavs) {
+      for (UserNavigation nav : spaceNavs) {
         removeNavigation(nav);
       }
     } else {
       boolean navContained = false;
-      for (PageNavigation nav : spaceNavs) {
+      for (UserNavigation nav : spaceNavs) {
         for (Space space : spaces) {
           groupId = space.getGroupId();
-          if (groupId.equals(nav.getOwnerId())) {
+          if (groupId.equals(nav.getKey().getName())) {
             navContained = true;
             break;
           }
@@ -815,25 +802,35 @@ public class SpaceUtils {
    * @return spaceNav PageNavigation
    * @throws SpaceException
    */
-  public static PageNavigation createGroupNavigation(String groupId) throws SpaceException {
+  public static UserNavigation createGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DataStorage dataStorage = (DataStorage) container.getComponentInstance(DataStorage.class);
-    PageNavigation spaceNav;
+    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+    //14-june-2011 Apply UserNavigation
+    //PageNavigation spaceNav;
+    UserNavigation spaceNav = null;
     try {
-      spaceNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      //spaceNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      spaceNav = getUserPortal().getNavigation(SiteKey.group(groupId));
       if (spaceNav == null) {
         // creates new space navigation
-        spaceNav = new PageNavigation();
-        spaceNav.setOwnerType(PortalConfig.GROUP_TYPE);
-        spaceNav.setOwnerId(groupId);
-        spaceNav.setModifiable(true);
-        dataStorage.create(spaceNav);
+        NavigationContext navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
+        navService.saveNavigation(navContext);
+        spaceNav = getUserPortal().getNavigation(SiteKey.group(groupId));
       }
       return spaceNav;
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
     }
+  }
+  /**
+   * Using this method to get the UserPortal make sure that the data is latest.
+   * It's will remove the caching.
+   * @return
+   */
+  public static UserPortal getUserPortal() {
+    UIPortalApplication uiApp = Util.getUIPortalApplication();
+    return uiApp.getUserPortalConfig().getUserPortal();
   }
 
   /**
@@ -844,15 +841,11 @@ public class SpaceUtils {
    */
   public static void removeGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
-    PageNavigation spaceNav;
+    NavigationService navService = (NavigationService) container.getComponentInstanceOfType(NavigationService.class);
     try {
-      spaceNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
-      if (spaceNav != null) {
-        UIPortal uiPortal = Util.getUIPortal();
-        List<PageNavigation> pnavigations = uiPortal.getNavigations();
-        pnavigations.remove(spaceNav);
-        dataStorage.remove(spaceNav);
+      NavigationContext nav = navService.loadNavigation(SiteKey.group(groupId));
+      if (nav != null) {
+        navService.destroyNavigation(nav);
       } else {
         throw new Exception("spaceNav is null");
       }
@@ -863,39 +856,53 @@ public class SpaceUtils {
   }
 
   /**
-   * Gets pageNavigation by a space's groupId
+   * Gets userNavigation by a space's groupId
    *
    * @param groupId
-   * @return pageNavigation
    * @throws Exception
    * @throws Exception
    */
-  public static PageNavigation getGroupNavigation(String groupId) throws Exception {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
-    return (PageNavigation) dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+  public static UserNavigation getGroupNavigation(String groupId) throws Exception {
+    return getUserPortal().getNavigation(SiteKey.group(groupId));
   }
 
   /**
-   * This related to a bug from portal. When this bug is resolved, use pageNavigation.getNode(space.getUrl());
+   * This related to a bug from portal. When this bug is resolved, use userNavigation.getNode(space.getUrl());
    *
-   * @param pageNavigation
+   * @param userNavigation
    * @param spaceUrl
    * @return
    */
-  public static PageNode getHomeNode(PageNavigation pageNavigation, String spaceUrl) {
-    PageNode homeNode = pageNavigation.getNode(spaceUrl);
-    // works around
-    if (homeNode == null) {
-      List<PageNode> pageNodes = pageNavigation.getNodes();
-      for (PageNode pageNode : pageNodes) {
-        if (pageNode.getUri().equals(spaceUrl)) {
-          homeNode = pageNode;
-          break;
-        }
-      }
-    }
+  public static UserNode getHomeNode(UserNavigation userNavigation, String spaceUrl) {
+    //Need to get usernode base on resolvePath
+    return getUserPortal().resolvePath(userNavigation, null, spaceUrl);
+  }
+  
+  /**
+   * Retrieving the UserNode base on the UserNavigation
+   *
+   * @param userNavigation
+   * @return
+   */
+  public static UserNode getHomeNode(UserNavigation userNavigation) {
+    return getUserPortal().getNode(userNavigation, Scope.SINGLE, null, null);
+  }
+  
+  /**
+   * Retrieving the UserNode with Children base on the spaceUrl and UserNavigation.
+   * When user can use this method to get homeNode, you can not call the update node
+   *  to getChildren()
+   *  
+   * @param userNavigation
+   * @param spaceUrl
+   * @return
+   */
+  public static UserNode getHomeNodeWithChildren(UserNavigation userNavigation, String spaceUrl) {
+    //Need to get usernode base on resolvePath
+    UserNode homeNode = getUserPortal().resolvePath(userNavigation, null, spaceUrl);
+    getUserPortal().updateNode(homeNode, Scope.CHILDREN, null);
     return homeNode;
+    
   }
 
   /**

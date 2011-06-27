@@ -17,20 +17,40 @@
 package org.exoplatform.social.portlet;
 
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
+import javax.portlet.MimeResponse;
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceURL;
+
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.Visibility;
+import org.exoplatform.portal.mop.navigation.GenericScope;
+import org.exoplatform.portal.mop.navigation.NodeChange;
+import org.exoplatform.portal.mop.navigation.NodeChangeQueue;
+import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
+import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * {@link UISpaceToolBarPortlet} used as a portlet displaying spaces.<br />
@@ -44,6 +64,9 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UISpacesToolBarPortlet extends UIPortletApplication {
 
   private static final String SPACE_SETTINGS = "settings";
+  protected static final int DEFAULT_LEVEL = 2;
+  private Scope toolbarScope;
+  private UserNodeFilterConfig toolbarFilterConfig;
 
   /**
    * constructor
@@ -51,27 +74,52 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public UISpacesToolBarPortlet() throws Exception {
+    int level = DEFAULT_LEVEL;
+    try {
+      PortletRequestContext context = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+      PortletRequest prequest = context.getRequest();
+      PortletPreferences prefers = prequest.getPreferences();
+
+      level = Integer.valueOf(prefers.getValue("level", String.valueOf(DEFAULT_LEVEL)));
+    } catch (Exception ex) {
+      log.warn("Preference for navigation level can only be integer");
+    }
+    
+    if (level <= 0) {
+      toolbarScope = Scope.ALL;
+    } else {
+      toolbarScope = new GenericScope(level);
+    }
+    
+    
+    UserNodeFilterConfig.Builder builder = UserNodeFilterConfig.builder();
+    builder.withAuthorizationCheck().withVisibility(Visibility.DISPLAYED, Visibility.TEMPORAL);
+    builder.withTemporalCheck();
+    toolbarFilterConfig = builder.build();     
   }
 
   private SpaceService spaceService = null;
   private String userId = null;
 
-  public List<PageNavigation> getSpaceNavigations() throws Exception {
+  public List<UserNavigation> getSpaceNavigations() throws Exception {
     String remoteUser = getUserId();
     List<Space> spaces = getSpaceService().getAccessibleSpaces(remoteUser);
-    UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-    List<PageNavigation> allNavigations = userPortalConfig.getNavigations();
-    List<PageNavigation> navigations = new ArrayList<PageNavigation>();
+
+    UserPortal userPortal = SpaceUtils.getUserPortal();
+    List<UserNavigation> allNavigations = userPortal.getNavigations();
+    List<UserNavigation> navigations = new LinkedList<UserNavigation>();
+    
+    
     // Copy to another list to fix Concurency error
-    for (PageNavigation navi : allNavigations) {
+    for (UserNavigation navi : allNavigations) {
       navigations.add(navi);
     }
-    Iterator<PageNavigation> navigationItr = navigations.iterator();
+    Iterator<UserNavigation> navigationItr = navigations.iterator();
     String ownerId;
     String[] navigationParts;
     Space space;
     while (navigationItr.hasNext()) {
-      ownerId = navigationItr.next().getOwnerId();
+      ownerId = navigationItr.next().getKey().getName();
       if (ownerId.startsWith("/spaces")) {
         navigationParts = ownerId.split("/");
         space = spaceService.getSpaceByUrl(navigationParts[2]);
@@ -92,10 +140,17 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
     return navigations;
   }
 
-  public boolean isRender(PageNode spaceNode, PageNode applicationNode) throws SpaceException {
+  /**
+   * Verifying the UserNode which need to render in the Groovy template.
+   * @param spaceNode SpaceNode
+   * @param applicationNode ApplicationNode
+   * @return TRUE/FALSE to render.
+   * @throws SpaceException
+   */
+  public boolean isRender(UserNode spaceNode, UserNode applicationNode) throws SpaceException {
     SpaceService spaceSrv = getSpaceService();
     String remoteUser = getUserId();
-    String spaceUrl = spaceNode.getUri();
+    String spaceUrl = spaceNode.getURI();
     if (spaceUrl.contains("/")) {
       spaceUrl = spaceUrl.split("/")[0];
     }
@@ -118,9 +173,15 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
     return true;
   }
 
-  public PageNode getSelectedPageNode() throws Exception {
-    return Util.getUIPortal().getSelectedNode();
+  /**
+   * Retrieving the selected node.
+   * @return
+   * @throws Exception
+   */
+  protected UserNode getSelectedNode() throws Exception {
+    return Util.getUIPortal().getSelectedUserNode();
   }
+
 
   /**
    * gets spaceService
@@ -145,5 +206,135 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       userId = Util.getPortalRequestContext().getRemoteUser();
     }
     return userId;
+  }
+  
+  /**
+   * Getting the Node children base on the UserNavigation which provides for Groovy template.
+   * @param nav UserNavigation.
+   * @return
+   * @throws Exception
+   */
+  public Collection<UserNode> getNavigationNodes(UserNavigation nav) throws Exception {
+    if (nav != null) {
+      try {
+        //toolbarScope
+        UserNode rootNodes = SpaceUtils.getUserPortal().getNode(nav, toolbarScope, toolbarFilterConfig, null);
+        return rootNodes.getChildren();
+      } catch (Exception ex) {
+        log.warn(nav.getKey().getName() + " has been deleted");
+      }
+    }
+    return Collections.emptyList();
+  }
+  
+  @Override
+  public void serveResource(WebuiRequestContext context) throws Exception
+  {      
+     super.serveResource(context);
+     
+     ResourceRequest req = context.getRequest();
+     String id = req.getResourceID();
+     
+     JSONArray jsChilds = getChildrenAsJSON(getNodeFromResourceID(id));
+     if (jsChilds == null)
+     {
+        return;
+     }
+     
+     MimeResponse res = context.getResponse(); 
+     res.setContentType("text/json"); 
+     res.getWriter().write(jsChilds.toString());
+  }
+  
+  private UserNode getNodeFromResourceID(String resourceId) throws Exception {
+    UserNavigation currNav = getCurrentUserNavigation();
+    if (currNav == null)
+      return null;
+
+    UserPortal userPortal = SpaceUtils.getUserPortal();
+    //UserNodeFilterConfig = null ????
+    UserNode node = userPortal.resolvePath(currNav, null, resourceId);
+    if (node != null && node.getURI().equals(resourceId)) {
+      return node;
+    }
+    return null;
+  }
+  
+  /**
+   * Retrieving the Current Navigation.
+   * @return
+   * @throws Exception
+   */
+  public UserNavigation getCurrentUserNavigation() throws Exception {
+    WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
+    return SpaceUtils.getUserPortal().getNavigation(SiteKey.user(rcontext.getRemoteUser()));
+  }
+  
+  private JSONArray getChildrenAsJSON(UserNode userNode) throws Exception {
+    if (userNode == null) {
+      return null;
+    }
+
+    NodeChangeQueue<UserNode> queue = new NodeChangeQueue<UserNode>();
+    //Scope.CHILDREN ???
+    SpaceUtils.getUserPortal().updateNode(userNode, toolbarScope, queue);
+    for (NodeChange<UserNode> change : queue) {
+      if (change instanceof NodeChange.Removed) {
+        UserNode deletedNode = ((NodeChange.Removed<UserNode>) change).getTarget();
+        if (hasRelationship(deletedNode, userNode)) {
+          return null;
+        }
+      }
+    }
+    Collection<UserNode> childs = userNode.getChildren();
+
+    JSONArray jsChilds = new JSONArray();
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    MimeResponse res = context.getResponse();
+    for (UserNode child : childs) {
+      jsChilds.put(toJSON(child, userNode.getNavigation().getKey().getName(), res));
+    }
+    return jsChilds;
+  }
+  
+  private boolean hasRelationship(UserNode parent, UserNode userNode) {
+    if (parent.getId().equals(userNode.getId())) {
+      return true;
+    }
+    for (UserNode child : parent.getChildren()) {
+      if (hasRelationship(child, userNode)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected JSONObject toJSON(UserNode node, String navId, MimeResponse res) throws Exception {
+    JSONObject json = new JSONObject();
+    String nodeId = node.getId();
+
+    json.put("label", node.getEncodedResolvedLabel());
+    json.put("hasChild", node.getChildrenCount() > 0);
+    json.put("isSelected", nodeId.equals(getSelectedNode().getId()));
+    json.put("icon", node.getIcon());
+
+    ResourceURL rsURL = res.createResourceURL();
+    rsURL.setResourceID(res.encodeURL(getResourceIdFromNode(node, navId)));
+    json.put("getNodeURL", rsURL.toString());
+    json.put("actionLink", Util.getPortalRequestContext().getPortalURI() + node.getURI());
+
+    JSONArray childs = new JSONArray();
+    for (UserNode child : node.getChildren()) {
+      childs.put(toJSON(child, navId, res));
+    }
+    json.put("childs", childs);
+    return json;
+  }
+  
+  private String getResourceIdFromNode(UserNode node, String navId) throws Exception {
+    if (node == null) {
+      throw new IllegalArgumentException("node can't be null");
+    }
+    return node.getURI();
   }
 }

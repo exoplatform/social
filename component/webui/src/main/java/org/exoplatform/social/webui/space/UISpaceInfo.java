@@ -17,15 +17,18 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
@@ -45,8 +48,8 @@ import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
@@ -177,8 +180,8 @@ public class UISpaceInfo extends UIForm {
         return;
       }
       String spaceUrl = space.getUrl();
-      PageNode selectedNode = uiPortal.getSelectedNode();
-      PageNode homeNode = null;
+      UserNode selectedNode = uiPortal.getSelectedUserNode();
+      UserNode homeNode = null;
       boolean nameChanged = (!space.getDisplayName().equals(name));
       if (nameChanged) {
         String cleanedString = SpaceUtils.cleanString(name);
@@ -187,41 +190,43 @@ public class UISpaceInfo extends UIForm {
           return;
         }
         UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-        List<PageNavigation> pageNavigations = userPortalConfig.getNavigations();
-        DataStorage dataStorage = uiSpaceInfo.getApplicationComponent(DataStorage.class);
+        UserPortal userPortal = userPortalConfig.getUserPortal();
+        List<UserNavigation> pageNavigations = userPortal.getNavigations();
         space.setUrl(cleanedString);
-        PageNavigation spaceNavigation = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, space.getGroupId());
-        for (PageNavigation pageNavigation : pageNavigations) {
-          if (pageNavigation.getOwner().equals(spaceNavigation.getOwner())) {
+        UserNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+        for (UserNavigation pageNavigation : pageNavigations) {
+          if (pageNavigation.getKey().getName().equals(spaceNavigation.getKey().getName())) {
             spaceNavigation = pageNavigation;
             break;
           }
         }
-        homeNode = SpaceUtils.getHomeNode(spaceNavigation, spaceUrl);
+        homeNode = SpaceUtils.getHomeNodeWithChildren(spaceNavigation, spaceUrl);
         if (homeNode == null) {
           throw new Exception("homeNode is null!");
         }
         SpaceUtils.changeSpaceUrlPreference(homeNode, space, name);
-        homeNode.setUri(cleanedString);
+        //homeNode.setUri(cleanedString);
         homeNode.setName(cleanedString);
         homeNode.setLabel(name);
-        List<PageNode> childNodes = homeNode.getNodes();
-        PageNode childNode;
+        Collection<UserNode> childNodes = homeNode.getChildren();
+        UserNode childNode;
         String oldUri;
         String newUri;
-        for (int i = 0; i < childNodes.size(); i++) {
-          childNode = childNodes.get(i);
+        while(childNodes.iterator().hasNext()) {
+          childNode = childNodes.iterator().next();
           SpaceUtils.changeSpaceUrlPreference(childNode, space, name);
-          oldUri = childNode.getUri();
+          oldUri = childNode.getURI();
           newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), cleanedString);
-          childNode.setUri(newUri);
+          //Need to checking ???
+          //childNode.setUri(newUri);
           childNode.setName(newUri.substring(newUri.lastIndexOf("/") + 1, newUri.length()));
           if (selectedNode.getName().equals(childNode.getName())) {
             selectedNode = childNode;
           }
         }
-        dataStorage.save(spaceNavigation);
-        uiPortal.setSelectedNode(selectedNode);
+       
+        //Need to get userPortal clear the caching.
+        userPortalConfig.getUserPortal().saveNode(homeNode, null);
         SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
@@ -230,17 +235,7 @@ public class UISpaceInfo extends UIForm {
       if (nameChanged) {
         //update Space Navigation (change name).
         UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-        UITabPane uiTabPane = uiSpaceSetting.getChild(UITabPane.class);
-        UISpaceNavigationManagement uiSpaceNavigationManagement = uiTabPane.getChild(UISpaceNavigationManagement.class);
-        UISpaceNavigationNodeSelector uiSpaceNavigationNodeSelector =
-                uiSpaceNavigationManagement.getChild(UISpaceNavigationNodeSelector.class);
-        PageNavigation groupNav = SpaceUtils.getGroupNavigation(space.getGroupId());
-        uiSpaceNavigationNodeSelector.setEdittedNavigation(groupNav);
-        //reset edittedTreeNodeData with null value after changing name space.
-        uiSpaceNavigationNodeSelector.setEdittedTreeNodeData(null);
-        uiSpaceNavigationNodeSelector.initTreeData();
-        
-        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + selectedNode.getUri());
+        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + selectedNode.getURI());
         return;
       } else {
         uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));

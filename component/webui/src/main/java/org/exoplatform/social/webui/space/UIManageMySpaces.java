@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.utils.LazyPageList;
@@ -24,12 +25,8 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.model.PageNavigation;
-import org.exoplatform.portal.config.model.PageNode;
-import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.navigation.UINavigationManagement;
-import org.exoplatform.portal.webui.navigation.UINavigationNodeSelector;
-import org.exoplatform.portal.webui.page.UIPageNodeForm;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
@@ -93,8 +90,8 @@ public class UIManageMySpaces extends UIContainer {
   private final String ITERATOR_ID = "UIIteratorMySpaces";
   private SpaceService spaceService = null;
   private String userId = null;
-  private List<PageNavigation> navigations;
-  private PageNavigation selectedNavigation;
+  private List<UserNavigation> navigations;
+  private UserNavigation selectedNavigation;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
 
@@ -130,7 +127,7 @@ public class UIManageMySpaces extends UIContainer {
     String userId = getUserId();
     List<Space> userSpaces = spaceService.getAccessibleSpaces(userId);
     //reload navigation BUG #SOC-555
-    SpaceUtils.reloadNavigation();
+//    SpaceUtils.reloadNavigation();
     return SpaceUtils.getOrderedSpaces(userSpaces);
   }
 
@@ -139,7 +136,7 @@ public class UIManageMySpaces extends UIContainer {
    *
    * @return page navigation
    */
-  public PageNavigation getSelectedNavigation() {
+  public UserNavigation getSelectedNavigation() {
     return selectedNavigation;
   }
 
@@ -148,7 +145,7 @@ public class UIManageMySpaces extends UIContainer {
    *
    * @param navigation
    */
-  public void setSelectedNavigation(PageNavigation navigation) {
+  public void setSelectedNavigation(UserNavigation navigation) {
     selectedNavigation = navigation;
   }
 
@@ -270,13 +267,13 @@ public class UIManageMySpaces extends UIContainer {
     @Override
     public void execute(Event<UIPageNodeForm> event) throws Exception {
       UIPageNodeForm uiPageNode = event.getSource();
-      PageNavigation contextNavigation = uiPageNode.getContextPageNavigation();
+      UserNavigation contextNavigation = uiPageNode.getContextPageNavigation();
       UIManageMySpaces uiMySpaces = uiPageNode.getAncestorOfType(UIManageMySpaces.class);
       UIPopupWindow uiPopup = uiMySpaces.getChild(UIPopupWindow.class);
-      UINavigationManagement navigationManager = uiMySpaces.createUIComponent(UINavigationManagement.class, null, null);
-      navigationManager.setOwner(contextNavigation.getOwnerId());
-      navigationManager.setOwnerType(contextNavigation.getOwnerType());
-      UINavigationNodeSelector selector = navigationManager.getChild(UINavigationNodeSelector.class);
+      UISpaceNavigationManagement navigationManager = uiMySpaces.createUIComponent(UISpaceNavigationManagement.class, null, null);
+      navigationManager.setOwner(contextNavigation.getKey().getName());
+      navigationManager.setOwnerType(contextNavigation.getKey().getTypeName());
+      UISpaceNavigationNodeSelector selector = navigationManager.getChild(UISpaceNavigationNodeSelector.class);
       selector.setEdittedNavigation(contextNavigation);
       selector.initTreeData();
       uiPopup.setUIComponent(navigationManager);
@@ -445,26 +442,26 @@ public class UIManageMySpaces extends UIContainer {
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
     try {
       String groupId = space.getGroupId();
-      PageNavigation nav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
+      UserNavigation nav = SpaceUtils.getGroupNavigation(groupId);
       // return in case group navigation was removed by portal SOC-548
       if (nav == null) {
         return null;
       }
-      PageNode homeNode = SpaceUtils.getHomeNode(nav, space.getUrl());
+      UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(nav, space.getUrl());
       if (homeNode == null) {
         throw new Exception("homeNode is null!");
       }
       String nodeName = SpaceUtils.getAppNodeName(space, appId);
-      PageNode childNode = homeNode.getChild(nodeName);
+      UserNode childNode = homeNode.getChild(nodeName);
       //bug from portal, gets by nodeUri instead
       if (childNode != null) {
-        return childNode.getUri();
+        return childNode.getURI();
       } else {
-        List<PageNode> pageNodes = homeNode.getChildren();
-        for (PageNode pageNode : pageNodes) {
-          String pageReference = pageNode.getPageReference();
+        Collection<UserNode> pageNodes = homeNode.getChildren();
+        for (UserNode pageNode : pageNodes) {
+          String pageReference = pageNode.getPageRef();
           if (pageReference.contains(nodeName)) {
-            return pageNode.getUri();
+            return pageNode.getURI();
           }
         }
       }

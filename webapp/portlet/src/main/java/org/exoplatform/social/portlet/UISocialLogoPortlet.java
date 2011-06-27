@@ -19,8 +19,9 @@ package org.exoplatform.social.portlet;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
@@ -62,10 +63,11 @@ public class UISocialLogoPortlet extends UIPortletApplication {
   }
 
   public String getNavigationTitle() throws Exception {
-    PageNavigation navigation = Util.getUIPortal().getSelectedNavigation();
-    if (navigation.getOwnerType().equals(PortalConfig.GROUP_TYPE)) {
-      return OrganizationUtils.getGroupLabel(navigation.getOwnerId());
-    } else if (navigation.getOwnerType().equals(PortalConfig.USER_TYPE)) {
+    UserNode selectedNode = Util.getUIPortal().getSelectedUserNode();
+    UserNavigation userNav = selectedNode.getNavigation();
+    if (userNav.getKey().getType().equals(PortalConfig.GROUP_TYPE)) {
+      return OrganizationUtils.getGroupLabel(userNav.getKey().getName());
+    } else if (userNav.getKey().getType().equals(PortalConfig.USER_TYPE)) {
       ConversationState state = ConversationState.getCurrent();
       User user = (User) state.getAttribute(CacheUserProfileFilter.USER_PROFILE);
       return user.getFullName();
