@@ -16,6 +16,22 @@
  */
 package org.exoplatform.social.service.rest.api;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import org.exoplatform.social.service.rest.api.models.ActivityStream;
+import org.exoplatform.social.service.rest.api.models.Comment;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -27,12 +43,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.api.models.Activity;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 import org.json.JSONWriter;
-
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Unit Test for {@link ActivityResources}.
@@ -46,9 +56,15 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
   private IdentityManager identityManager;
   private ActivityManager activityManager;
-  private Identity rootIdentity;
-  private Identity johnIdentity;
-  private ExoSocialActivity activity;
+  private RelationshipManager relationshipManager;
+  private SpaceService spaceService;
+
+  private Identity rootIdentity, johnIdentity, maryIdentity, demoIdentity;
+
+  private List<Identity> tearDownIdentityList;
+  private List<ExoSocialActivity> tearDownActivityList;
+  private List<Relationship> tearDownRelationshipList;
+  private List<Space> tearDownSpaceList;
 
   /**
    * Adds {@link ActivityResources}.
@@ -58,42 +74,29 @@ public class ActivityResourcesTest extends AbstractResourceTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    addResource(ActivityResources.class, null);
 
-    //
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
-    activityManager =  (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
+    activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
+    relationshipManager = (RelationshipManager) getContainer().getComponentInstanceOfType(RelationshipManager.class);
+    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+
     rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
+    maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
+    demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
 
-    //
-    activity = new ExoSocialActivityImpl();
-    activity.setTitle("title");
-    activity.setAppId("appId");
-    activity.setType("type");
-    activity.setPriority(0.5F);
-    activity.setTitleId("title id");
-    activity.setUserId(johnIdentity.getId());
+    tearDownIdentityList = new ArrayList<Identity>();
+    tearDownIdentityList.add(rootIdentity);
+    tearDownIdentityList.add(johnIdentity);
+    tearDownIdentityList.add(maryIdentity);
+    tearDownIdentityList.add(demoIdentity);
 
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("key1", "value1");
-    params.put("key2", "value2");
-    activity.setTemplateParams(params);
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownRelationshipList = new ArrayList<Relationship>();
+    tearDownSpaceList = new ArrayList<Space>();
 
-    //
-    activityManager.saveActivityNoReturn(rootIdentity, activity);
 
-    ExoSocialActivity comment1 = new ExoSocialActivityImpl();
-    comment1.setTitle("comment 1");
-    comment1.setUserId(rootIdentity.getId());
-
-    ExoSocialActivity comment2 = new ExoSocialActivityImpl();
-    comment2.setTitle("comment 2");
-    comment2.setUserId(rootIdentity.getId());
-
-    activityManager.saveComment(activity, comment1);
-    activityManager.saveComment(activity, comment2);
-
+    addResource(ActivityResources.class, null);
   }
 
   /**
@@ -103,10 +106,25 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    */
   @Override
   public void tearDown() throws Exception {
-    removeResource(ActivityResources.class);
 
-    //
-    identityManager.deleteIdentity(rootIdentity);
+    //Removing the relationships
+    for (Relationship relationship: tearDownRelationshipList) {
+      relationshipManager.delete(relationship);
+    }
+    
+    //Removing the activitys
+    for (ExoSocialActivity activity: tearDownActivityList) {
+      activityManager.deleteActivity(activity);
+    }
+
+    //Removing the spaces
+    for (Space space: tearDownSpaceList) {
+      spaceService.deleteSpace(space);
+    }
+    for (Identity identity: tearDownIdentityList) {
+      identityManager.deleteIdentity(identity);
+    }
+    removeResource(ActivityResources.class);
 
     super.tearDown();
   }
@@ -117,53 +135,152 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * @throws Exception
    */
   public void testGetActivityByIdForAccess() throws Exception {
-
-    testAccessNotFoundResourceWithAuthentication("root", "GET", RESOURCE_URL+"/fake.json", null);
-
-    // TODO : unauthorized
+    String resourceUrl = RESOURCE_URL+"/1a2b3c4d5e.json";
+    // unauthorized
+    testAccessResourceAsAnonymous("GET", resourceUrl, null);
+    //not found
+    testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
     // TODO : forbidden
-
   }
 
 
   /**
-   * Tests {@link ActivityResources#getActivityById(javax.ws.rs.core.UriInfo, String, String, String, String, String,
-   * String)} with json format.
+   * Tests
+   * {@link ActivityResources#getActivityById(javax.ws.rs.core.UriInfo, String, String, String, String, String, String)}
+   * with json format.
    */
   public void testGetActivityByIdWithJsonFormat() throws Exception {
-
-    ContainerResponse response = service("GET", RESOURCE_URL+"/" + activity.getId() + ".json", "", null, null);
-
-    assertNotNull(response.getEntity());
-    if (!(response.getEntity() instanceof Activity)) {
-      fail();
+    createActivities(demoIdentity, demoIdentity, 1);
+    ExoSocialActivity demoActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    String resourceUrl = RESOURCE_URL+"/" + demoActivity.getId() + ".json";
+    { // get activity by id without any query param
+      startSessionAs("demo");
+      ContainerResponse containerResponse = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse.getStatus() must return " + 200, 200, containerResponse.getStatus());
+      assertEquals(MediaType.APPLICATION_JSON_TYPE, containerResponse.getContentType());
+      Activity entity = (Activity) containerResponse.getEntity();
+      assertNotNull("entity must not be null", entity);
+      assertNotNull("entity.getId() must not be null", entity.getId());
+      assertEquals("entity.getTitle() must return: " + demoActivity.getTitle(),
+                    demoActivity.getTitle(), entity.getTitle());
+      assertEquals("entity.getAppId() must return: " + demoActivity.getAppId(),
+              demoActivity.getAppId(), entity.getAppId());
+      assertEquals("entity.getType() must return: " + demoActivity.getType(),
+                    demoActivity.getType(), entity.getType());
+      assertEquals("entity.getPriority() must return: " + demoActivity.getPriority(),
+                    demoActivity.getPriority(), entity.getPriority());
+      assertEquals("entity.getTemplateParams() must return: " + demoActivity.getTemplateParams(),
+                    demoActivity.getTemplateParams(),
+                    entity.getTemplateParams());
+      assertEquals("entity.getTitleId() must return: " + demoActivity.getTitleId(),
+                    demoActivity.getTitleId(),
+                    entity.getTitleId());
+      assertEquals("entity.getIdentityId() must return: " + demoActivity.getUserId(),
+                    demoActivity.getUserId(),
+                    entity.getIdentityId());
+      assertEquals("entity.isLiked() must be false", false, entity.isLiked());
+      assertNull("entity.getLikedByIdentities() must be null", entity.getLikedByIdentities());
+      assertNull("entity.getPosterIdentity() must be null", entity.getPosterIdentity());
+      assertNull("entity.getComments() must be null", entity.getComments());
+      assertEquals("entity.getNumberOfComments() must return: " + 0, 0, entity.getNumberOfComments());
+      assertNull("entity.getActivityStream() must be null", entity.getActivityStream());
     }
 
-    Activity got = (Activity) response.getEntity();
+    {//gets activity by specifying posterIdentity
+      String posterIdentityResourceUrl = resourceUrl + "?poster_identity=true";
+      startSessionAs("john");
+      ContainerResponse containerResponse = service("GET", posterIdentityResourceUrl, "", null, null);
+      assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+      Activity entity = (Activity) containerResponse.getEntity();
+      assertNotNull("entity must not be null", entity);
+      /*
+      org.exoplatform.social.service.rest.api.models.Identity posterIdentity = entity.getPosterIdentity();
+      assertNotNull("posterIdentity must not be null", posterIdentity);
+      assertEquals("posterIdentity.getProviderId() must return: " + OrganizationIdentityProvider.NAME,
+                   OrganizationIdentityProvider.NAME,
+                   posterIdentity.getProviderId());
+      assertEquals("posterIdentity.getRemoteId() must return: demo", "demo", posterIdentity.getRemoteId());
+      */
+    }
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
-    assertEquals(false, got.isLiked());
-    assertEquals(null, got.getLikedByIdentities());
-    assertEquals(null, got.getComments());
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
-    assertEquals(null, got.getPosterIdentity());
-    assertEquals(null, got.getActivityStream());
+    {//gets activity by specifying numberOfComments
+      //creating the comments for unit testing.
+      startSessionAs("john");
+      createComment(demoActivity, johnIdentity, 30);
+      String numberOfCommentsResourceUrl = resourceUrl + "?number_of_comments=20";
+      ContainerResponse containerResponse = service("GET", numberOfCommentsResourceUrl, "", null, null);
+      assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+      Activity entity = (Activity) containerResponse.getEntity();
+      assertNotNull("entity must not be null", entity);
+      assertEquals("numberOfComments must be equals 30", 30, entity.getNumberOfComments());
+      Comment[] gotComments = entity.getComments();
+      assertEquals("content of comments must be equals 20", 20, gotComments.length);
+      
+    }
+
+    {//gets activity by specifying activityStream
+      String posterIdentityResourceUrl = resourceUrl + "?activity_stream=1";
+      startSessionAs("john");
+      ContainerResponse containerResponse = service("GET", posterIdentityResourceUrl, "", null, null);
+      assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+      Activity entity = (Activity) containerResponse.getEntity();
+      assertNotNull("entity must not be null", entity);
+      ActivityStream activityStream = entity.getActivityStream();
+      assertNotNull("activityStream must not be null", activityStream);
+      assertEquals("activityStream.getType() must return: " + demoActivity.getActivityStream().getType(),
+                    demoActivity.getActivityStream().getType(),
+                    activityStream.getType());
+      assertEquals("activityStream.getPrettyId() must return: " + demoActivity.getActivityStream().getPrettyId(),
+                   demoActivity.getActivityStream().getPrettyId(),
+                   activityStream.getPrettyId());
+    }
+
+    {//Tests with full optional params
+      startSessionAs("john");
+      String allOfOptionalParamsResourceUrl = resourceUrl + "?poster_identity=true&number_of_comments=20&activity_stream=1";
+      ContainerResponse containerResponse = service("GET", allOfOptionalParamsResourceUrl, "", null, null);
+      assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+      Activity entity = (Activity) containerResponse.getEntity();
+      assertNotNull("entity must not be null", entity);
+      //Assert the activity's fields.
+      assertNotNull("entity.getId() must not be null", entity.getId());
+      assertEquals("entity.getTitle() must return: " + demoActivity.getTitle(),
+                    demoActivity.getTitle(), entity.getTitle());
+      assertEquals("entity.getAppId() must return: " + demoActivity.getAppId(),
+                   demoActivity.getAppId(), entity.getAppId());
+      assertEquals("entity.getType() must return: " + demoActivity.getType(),
+                         demoActivity.getType(), entity.getType());
+      //assert the comments
+      assertEquals("numberOfComments must be equals 30", 30, entity.getNumberOfComments());
+      Comment[] commentArray = entity.getComments();
+      assertEquals("content of comments must be equals 20", 20, commentArray.length);
+      
+      //assert the activityStream
+      ActivityStream activityStream = entity.getActivityStream();
+      assertNotNull("activityStream must not be null", activityStream);
+      assertEquals("activityStream.getType() must return: " + demoActivity.getActivityStream().getType(),
+                    demoActivity.getActivityStream().getType(),
+                    activityStream.getType());
+      assertEquals("activityStream.getPrettyId() mu" +
+          "st return: " + demoActivity.getActivityStream().getPrettyId(),
+                   demoActivity.getActivityStream().getPrettyId(),
+                   activityStream.getPrettyId());
+    }
   }
 
+
   /**
-   * Tests {@link ActivityResources#getActivityById(javax.ws.rs.core.UriInfo, String, String, String, String, String,
-   * String)} with json format.
+   * Tests
+   * {@link ActivityResources#getActivityById(javax.ws.rs.core.UriInfo, String, String, String, String, String,String)}
+   * with json format.
    */
   public void testGetActivityByIdWithComment1WithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
+    createActivities(demoIdentity, rootIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(rootIdentity).load(0, 1)[0];
+    createComment(expectedActivity, rootIdentity, 1);
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=1", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?number_of_comments=1", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -172,17 +289,17 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(1, got.getComments().length);
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
     assertEquals(null, got.getActivityStream());
   }
@@ -192,28 +309,32 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * String)} with json format.
    */
   public void testGetActivityByIdWithComment10WithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
+    createActivities(demoIdentity, rootIdentity, 1);
+    
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(rootIdentity).load(0, 1)[0];
+    createComment(expectedActivity, rootIdentity, 2);
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?numberOfComments=10", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?number_of_comments=10", "", null, null);
 
     assertNotNull(response.getEntity());
-    if (!(response.getEntity() instanceof Activity)) {
+    if (!(response.getEntity() instanceof Activity)) { 
       fail();
     }
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(2, got.getComments().length);
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
     assertEquals(null, got.getActivityStream());
   }
@@ -223,9 +344,12 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * String)} with json format.
    */
   public void testGetActivityByIdWithPosterIdTrueWithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
+    createActivities(demoIdentity, johnIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(johnIdentity).load(0, 1)[0];
+    
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=true", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?poster_identity=true", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -234,18 +358,18 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
-    assertEquals(johnIdentity.getId(), got.getPosterIdentity());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
 
@@ -254,9 +378,12 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * String)} with json format.
    */
   public void testGetActivityByIdWithPosterIdTWithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
+    createActivities(demoIdentity, rootIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(rootIdentity).load(0, 1)[0];
+    
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=t", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?poster_identity=t", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -265,18 +392,18 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
-    assertEquals(johnIdentity.getId(), got.getPosterIdentity());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
 
@@ -285,9 +412,13 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * String)} with json format.
    */
   public void testGetActivityByIdWithPosterId1WithJsonFormat() throws Exception {
-
+    startSessionAs("john");
+    connectIdentities(demoIdentity, johnIdentity, true);
+    createActivities(johnIdentity, demoIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?posterIdentity=1", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?poster_identity=1", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -296,18 +427,18 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
-    assertEquals(johnIdentity.getId(), got.getPosterIdentity());
+    assertEquals(johnIdentity.getId(), got.getIdentityId());
+    assertEquals(johnIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
 
@@ -316,9 +447,12 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * String)} with json format.
    */
   public void testGetActivityByIdWithStreamWithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
+    createActivities(demoIdentity, rootIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(rootIdentity).load(0, 1)[0];
+    
     ContainerResponse response =
-        service("GET", RESOURCE_URL+"/" + activity.getId() + ".json?activityStream=true", "", null, null);
+        service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + ".json?activity_stream=true", "", null, null);
 
     assertNotNull(response.getEntity());
     if (!(response.getEntity() instanceof Activity)) {
@@ -327,22 +461,22 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     Activity got = (Activity) response.getEntity();
 
-    assertEquals(activity.getId(), got.getId());
-    assertEquals(activity.getTitle(), got.getTitle());
-    assertEquals(activity.getPriority(), activity.getPriority());
-    assertEquals(activity.getAppId(), got.getAppId());
-    assertEquals(activity.getType(), got.getType());
-    assertEquals(activity.getTitleId(), got.getTitleId());
-    assertEquals(activity.getTemplateParams().size(), activity.getTemplateParams().size());
+    assertEquals(expectedActivity.getId(), got.getId());
+    assertEquals(expectedActivity.getTitle(), got.getTitle());
+    assertEquals(expectedActivity.getPriority(), got.getPriority());
+    assertEquals(expectedActivity.getAppId(), got.getAppId());
+    assertEquals(expectedActivity.getType(), got.getType());
+    assertEquals(expectedActivity.getTitleId(), got.getTitleId());
+    assertEquals(expectedActivity.getTemplateParams().size(), got.getTemplateParams().size());
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(rootIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
-    assertEquals(activity.getStreamTitle(), got.getActivityStream().getTitle());
-    assertEquals(activity.getStreamOwner(), got.getActivityStream().getPrettyId());
-    assertEquals(activity.getStreamFaviconUrl(), got.getActivityStream().getFaviconUrl());
-    assertEquals(activity.getStreamUrl(), got.getActivityStream().getPermalink());
+    assertEquals(expectedActivity.getStreamTitle(), got.getActivityStream().getTitle());
+    assertEquals(expectedActivity.getStreamOwner(), got.getActivityStream().getPrettyId());
+    assertEquals(expectedActivity.getStreamFaviconUrl(), got.getActivityStream().getFaviconUrl());
+    assertEquals(expectedActivity.getStreamUrl(), got.getActivityStream().getPermalink());
   }
 
   /**
@@ -351,6 +485,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * @throws Exception
    */
   public void testCreateNewActivityForAccess() throws Exception {
+    //final byte[] data = "{\"title\" : \"hello world!\"}".getBytes();
+    //unauthorized
+    //testAccessResourceAsAnonymous("POST", RESOURCE_URL + ".json", data);
+    //forbidden
 
     // TODO : unauthorized
     // TODO : forbidden
@@ -362,14 +500,14 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * with json format.
    */
   public void testDeleteDELETEActivityWithJsonFormat() throws Exception {
-
+    startSessionAs("demo");
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title");
     activity.setAppId("appId");
     activity.setType("type");
     activity.setPriority(0.5F);
     activity.setTitleId("title id");
-    activity.setUserId(johnIdentity.getId());
+    activity.setUserId(demoIdentity.getId());
 
     Map<String, String> params = new HashMap<String, String>();
     params.put("key1", "value1");
@@ -415,7 +553,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     ExoSocialActivity got1 = activityManager.getActivity(activity.getId());
     assertNotNull(got1);
-
+    
+    startSessionAs("john");
+    connectIdentities(johnIdentity, rootIdentity, true);
+     
     ContainerResponse response = service("POST", RESOURCE_URL+"/destroy/" + activity.getId() + ".json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -435,7 +576,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * with json format.
    */
   public void testCreateNewActivityWithJsonFormat() throws Exception {
-
+    startSessionAs("john");
     String title = "hello !";
     StringWriter writer = new StringWriter();
     JSONWriter jsonWriter = new JSONWriter(writer);
@@ -452,7 +593,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
     //
     ContainerResponse response =
-        service("POST", RESOURCE_URL + "/new.json?identityId=" + rootIdentity.getId(), "", h, data);
+        service("POST", RESOURCE_URL + ".json?identity_id=" + johnIdentity.getId(), "", h, data);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
     //
@@ -465,6 +606,90 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertNotNull(got.getId());
     assertEquals(title, got.getTitle());
 
+  }
+
+
+  /**
+   * An identity posts an activity to an identity's activity stream with a number of activities.
+   *
+   * @param posterIdentity the identity who posts activity
+   * @param identityStream the identity who has activity stream to be posted.
+   * @param number the number of activities
+   */
+  private void createActivities(Identity posterIdentity, Identity identityStream, int number) {
+    for (int i = 0; i < number; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setType("exosocial:core");
+      activity.setTitle("title " + i);
+      activity.setUserId(posterIdentity.getId());
+      activity = activityManager.saveActivity(identityStream, activity);
+      tearDownActivityList.add(activity);
+    }
+  }
+
+  /**
+   * Creates a comment to an existing activity.
+   *
+   * @param existingActivity the existing activity
+   * @param posterIdentity the identity who comments
+   * @param number the number of comments
+   */
+  private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, int number) {
+    for (int i = 0; i < number; i++) {
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("comment " + i);
+      comment.setUserId(posterIdentity.getId());
+      activityManager.saveComment(existingActivity, comment);
+      comment = activityManager.getComments(existingActivity).get(0);
+    }
+  }
+
+  /**
+   * Gets an instance of the space.
+   *
+   * @param number the number to be created
+   */
+  private void createSpaces(int number) {
+    for (int i = 0; i < number; i++) {
+      Space space = new Space();
+      space.setDisplayName("my space " + number);
+      space.setRegistration(Space.OPEN);
+      space.setDescription("add new space " + number);
+      space.setType(DefaultSpaceApplicationHandler.NAME);
+      space.setVisibility(Space.PUBLIC);
+      space.setRegistration(Space.VALIDATION);
+      space.setPriority(Space.INTERMEDIATE_PRIORITY);
+      space.setGroupId("/space/space" + number);
+      String[] managers = new String[]{"demo", "tom"};
+      String[] members = new String[]{"raul", "ghost", "dragon", "demo", "mary"};
+      String[] invitedUsers = new String[]{"register1", "john"};
+      String[] pendingUsers = new String[]{"jame", "paul", "hacker"};
+      space.setInvitedUsers(invitedUsers);
+      space.setPendingUsers(pendingUsers);
+      space.setManagers(managers);
+      space.setMembers(members);
+      try {
+        spaceService.saveSpace(space, true);
+        tearDownSpaceList.add(space);
+      } catch (SpaceException e) {
+        fail("Could not create a new space");
+      }
+    }
+  }
+
+  /**
+   * Connects 2 identities, if toConfirm = true, they're connected. If false, in pending connection type.
+   *
+   * @param senderIdentity the identity who sends connection request
+   * @param receiverIdentity the identity who receives connnection request
+   * @param beConfirmed boolean value
+   */
+  private void connectIdentities(Identity senderIdentity, Identity receiverIdentity, boolean beConfirmed) {
+    relationshipManager.inviteToConnect(senderIdentity, receiverIdentity);
+    if (beConfirmed) {
+      relationshipManager.confirm(receiverIdentity, senderIdentity);
+    }
+    tearDownRelationshipList.add(relationshipManager.get(senderIdentity, receiverIdentity));
   }
 
 }
