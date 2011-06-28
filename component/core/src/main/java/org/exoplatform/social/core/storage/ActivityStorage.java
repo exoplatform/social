@@ -23,7 +23,6 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.ExoSocialException;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ActivityStreamImpl;
@@ -292,6 +291,8 @@ public class ActivityStorage extends AbstractStorage {
       activity.setId(activityEntity.getId());
       fillActivityFromEntity(activityEntity, activity);
 
+      processActivity(activity);
+
       //
       return activity;
 
@@ -369,8 +370,6 @@ public class ActivityStorage extends AbstractStorage {
   public void saveComment(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException {
 
     try {
-
-      processActivity(comment);
 
       //
       long currentMillis = System.currentTimeMillis();
