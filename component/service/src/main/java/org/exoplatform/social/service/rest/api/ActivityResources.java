@@ -23,25 +23,32 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.StorageException;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.Activity;
 import org.exoplatform.social.service.rest.api.models.ActivityStream;
+import org.exoplatform.social.service.rest.api.models.Comment;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Activity Resources end point.
@@ -49,10 +56,12 @@ import java.util.Arrays;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jun 15, 2011
  */
-@Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/activity")
+@Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/")
 public class ActivityResources implements ResourceContainer {
 
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
+  private ActivityManager activityManager;
+  private IdentityManager identityManager;
 
   /**
    * Gets an activity by its id.
@@ -64,63 +73,93 @@ public class ActivityResources implements ResourceContainer {
    * @return a response object
    */
   @GET
-  @Path("{activityId}.{format}")
+  @Path("activity/{activityId}.{format}")
   public Response getActivityById(@Context UriInfo uriInfo,
                                   @PathParam("portalContainerName") String portalContainerName,
                                   @PathParam("activityId") String activityId,
                                   @PathParam("format") String format,
-                                  @QueryParam("posterIdentity") String showPosterIdentity,
-                                  @QueryParam("numberOfComments") String numberOfComments,
-                                  @QueryParam("activityStream") String showActivityStream) {
+                                  @QueryParam("poster_identity") String showPosterIdentity,
+                                  @QueryParam("number_of_comments") String numberOfComments,
+                                  @QueryParam("activity_stream") String showActivityStream) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
 
-    try {
-
-      //
-      ActivityManager manager = getActivityManager(portalContainerName);
-      ExoSocialActivity activity = manager.getActivity(activityId);
-
-      //
-      Activity model = new Activity(activity);
-
-      //
-      if (isPassed(showPosterIdentity)) {
-        model.setPosterIdentity(activity.getUserId());
-      }
-
-      //
-      if (isPassed(showActivityStream)) {
-        model.setActivityStream(new ActivityStream(
-            "",
-            activity.getStreamOwner(),
-            activity.getStreamFaviconUrl(),
-            activity.getStreamTitle(),
-            activity.getStreamUrl()
-        ));
-      }
-
-      //
-      if (numberOfComments != null) {
-
-        int commentNumber = activity.getReplyToId().length;
-        int number = Integer.parseInt(numberOfComments);
-
-        if (number > 100) {
-          number = 100;
+    if(activityId !=null && !activityId.equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      
+      if(isAuthenticated()){
+        try {
+          //
+          ActivityManager manager = Util.getActivityManager();
+          ExoSocialActivity activity = manager.getActivity(activityId);
+          
+          if(SecurityManager.canAccessActivity(portalContainer,ConversationState.getCurrent().getIdentity().getUserId(),activity)){
+            //
+            Activity model = new Activity(activity);
+      
+            //
+            if (isPassed(showPosterIdentity)) {
+              model.setPosterIdentity(new org.exoplatform.social.service.rest.api.models.Identity(
+                  identityManager.getIdentity(activity.getUserId(), false)));
+            }
+      
+            //
+            if (isPassed(showActivityStream)) {
+              model.setActivityStream(new ActivityStream(activity.getActivityStream()));
+            }
+      
+            //
+            if (numberOfComments != null) {
+      
+              int commentNumber = activity.getReplyToId().length;
+              int number = Integer.parseInt(numberOfComments);
+      
+              if (number > 100) {
+                number = 100;
+              }
+              
+              if (number > commentNumber) {
+                number = commentNumber;
+              }
+              ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
+              ExoSocialActivity[] commentsLimited =  comments.load(0, number);
+              Comment[] commentWrapers = new Comment[number];
+              for(int i = 0; i < number; i++){
+                commentWrapers[i] = new Comment();
+                ExoSocialActivity resultComment = commentsLimited[i];
+                
+                commentWrapers[i].setIdentityId(resultComment.getUserId());
+                commentWrapers[i].setText(resultComment.getTitle());
+                commentWrapers[i].setPostedTime(resultComment.getPostedTime());
+                commentWrapers[i].setCreatedAt(Util.convertTimestampToTimeString(resultComment.getPostedTime()));        
+              }
+              model.setComments(commentWrapers);
+              
+              model.setComments(commentWrapers);
+            }
+            model.setNumberOfComments(activity.getReplyToId().length);
+            
+            if(isLikedByIdentity(authenticatedUserIdentity().getId(),activity)){
+              model.setLiked(true);
+            } else {
+              model.setLiked(false);
+            }
+            
+            return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+          } else {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+          }
         }
-        
-        if (number > commentNumber) {
-          number = commentNumber;
+        catch (Exception e) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        model.setComments(Arrays.asList(activity.getReplyToId()).subList(0, number).toArray(new String[]{}));
-        model.setNumberOfComments(commentNumber);
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
-
-      return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
-    }
-    catch (ActivityStorageException e) {
-      return Util.getResponse(null, uriInfo, mediaType, Response.Status.NOT_FOUND);
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
   }
@@ -137,40 +176,64 @@ public class ActivityResources implements ResourceContainer {
    * @return a response object
    */
   @POST
-  @Path("new.{format}")
+  @Path("activity.{format}")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createNewActivity(@Context UriInfo uriInfo,
                                     @PathParam("portalContainerName") String portalContainerName,
                                     @PathParam("format") String format,
-                                    @QueryParam("identityId") String identityIdStream,
+                                    @QueryParam("identity_id") String identityIdStream,
                                     Activity newActivity) {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+    
+    
+    if(newActivity !=null && newActivity.getTitle()!=null && !newActivity.getTitle().equals("")){
+        try {
+          ActivityManager activityManager = Util.getActivityManager();
+          IdentityManager identityManager =  Util.getIdentityManager();
+          PortalContainer portalContainer = getPortalContainer(portalContainerName);
+          
 
-    //
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle(newActivity.getTitle());
-    activity.setUserId(identityIdStream);
+          Identity authenticatedIdentity = authenticatedUserIdentity();
+          Identity postToIdentity;
 
-    try {
+          if(identityIdStream != null && !identityIdStream.equals("")){
+            postToIdentity = identityManager.getIdentity(identityIdStream, false);
+            if(postToIdentity == null){
+              throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+          } else {
+            postToIdentity = authenticatedIdentity;
+          }
+          
+          if(authenticatedIdentity != null && SecurityManager.canPostActivity(portalContainer, authenticatedIdentity, postToIdentity)){
+            ExoSocialActivity activity = new ExoSocialActivityImpl();          
 
-      //
-      ActivityManager activityManager = getActivityManager(portalContainerName);
-      IdentityManager identityManager =  getIdentityManager(portalContainerName);
+            activity.setId(newActivity.getId());
+            activity.setTitle(newActivity.getTitle());
+            activity.setType(newActivity.getType());
+            activity.setPriority(newActivity.getPriority());
+            activity.setTitleId(newActivity.getTitleId());
+            activity.setTemplateParams(newActivity.getTemplateParams());
+            
 
-      //
-      Identity identity = identityManager.getIdentity(identityIdStream, false);
-      activityManager.saveActivityNoReturn(identity, activity);
-      ExoSocialActivity got = activityManager.getActivity(activity.getId());
-
-      //
-      Activity model = new Activity(got);
-      model.setIdentityId(identityIdStream);
-
-      return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
-    }
-    catch (Exception e) {
-      return Util.getResponse(null, uriInfo, mediaType, Response.Status.INTERNAL_SERVER_ERROR);
+            newActivity.setIdentityId(authenticatedIdentity.getId());
+            activityManager.saveActivityNoReturn(postToIdentity, activity);
+            
+            //
+            Activity model = new Activity(activity);
+            model.setIdentityId(postToIdentity.getId());
+      
+            return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+          } else {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+          }
+        }
+        catch (StorageException e) {
+          throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
   }
 
@@ -185,20 +248,32 @@ public class ActivityResources implements ResourceContainer {
    * @return a response object
    */
   @DELETE
-  @Path("{activityId}.{format}")
+  @Path("activity/{activityId}.{format}")
   public Response deleteExistingActivityById(@Context UriInfo uriInfo,
                                             @PathParam("portalContainerName") String portalContainerName,
                                             @PathParam("activityId") String activityId,
                                             @PathParam("format") String format) {
-
-    Response response = getActivityById(uriInfo, portalContainerName, activityId, format, null, null, null);
-
-    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-      ActivityManager manager = getActivityManager(portalContainerName);
-      manager.deleteActivity(activityId);
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT); 
+    if(activityId!=null && portalContainerName!=null ){      
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      ExoSocialActivity existingActivity = activityManager.getActivity(activityId);
+      Identity authenticatedIdentity = authenticatedUserIdentity();
+      
+      if(authenticatedIdentity != null){
+        if(SecurityManager.canDeleteActivity(portalContainer, authenticatedIdentity, existingActivity)){
+          activityManager.deleteActivity(existingActivity);
+          return Util.getResponse(existingActivity, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-
-    return response;
   }
 
   /**
@@ -213,7 +288,7 @@ public class ActivityResources implements ResourceContainer {
    * @return a response object
    */
   @POST
-  @Path("destroy/{activityId}.{format}")
+  @Path("activity/destroy/{activityId}.{format}")
   public Response postToDeleteActivityById(@Context UriInfo uriInfo,
                                            @PathParam("portalContainerName") String portalContainerName,
                                            @PathParam("activityId") String activityId,
@@ -223,17 +298,38 @@ public class ActivityResources implements ResourceContainer {
     
   }
 
+  private boolean isLikedByIdentity(String identityID, ExoSocialActivity activity){
+    String[] likedIdentityIds = activity.getLikeIdentityIds();
+    if(activity.getLikeIdentityIds()!=null && likedIdentityIds.length > 0 ){
+      for (int i = 0; i < likedIdentityIds.length; i++) {
+        if (identityID.equals(likedIdentityIds[i])){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean isAuthenticated() {
+    return ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
+              ConversationState.getCurrent().getIdentity().getUserId() != null;
+  }
+  
+  private Identity authenticatedUserIdentity() {
+    if(ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
+              ConversationState.getCurrent().getIdentity().getUserId() != null){
+      IdentityManager identityManager =  Util.getIdentityManager();
+      String authenticatedUserRemoteID = ConversationState.getCurrent().getIdentity().getUserId(); 
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUserRemoteID, false);
+    } else {
+      return null;
+    }
+  }
+  
   private boolean isPassed(String value) {
     return value != null && ("true".equals(value) || "t".equals(value) || "1".equals(value));
   }
 
-  private ActivityManager getActivityManager(String name) {
-    return (ActivityManager) getPortalContainer(name).getComponentInstanceOfType(ActivityManager.class);
-  }
-
-  private IdentityManager getIdentityManager(String name) {
-    return (IdentityManager) getPortalContainer(name).getComponentInstanceOfType(IdentityManager.class);
-  }
 
   private PortalContainer getPortalContainer(String name) {
     return (PortalContainer) ExoContainerContext.getContainerByName(name);

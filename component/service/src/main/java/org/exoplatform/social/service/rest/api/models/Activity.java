@@ -17,6 +17,8 @@
 package org.exoplatform.social.service.rest.api.models;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.service.rest.Util;
 
 import java.util.Date;
 import java.util.Map;
@@ -82,12 +84,12 @@ public class Activity {
   /**
    * The identities who like.
    */
-  private String[] likedByIdentities;
+  private Identity[] likedByIdentities;
 
   /**
-   * The comments ids.
+   * The comments wrapper.
    */
-  private String[] comments;
+  private Comment[] comments;
 
   /**
    * The number of comment.
@@ -97,7 +99,7 @@ public class Activity {
   /**
    * The poster identity id.
    */
-  private String posterIdentity;
+  private Identity posterIdentity;
 
   /**
    * The owner identity id.
@@ -143,7 +145,7 @@ public class Activity {
       final String titleId,
       final Map<String, String> templateParams,
       final boolean liked,
-      final String[] likedByIdentities,
+      final Identity[] likedByIdentities,
       final String identityId) {
 
     this.id = id;
@@ -161,22 +163,26 @@ public class Activity {
   }
 
   public Activity(final ExoSocialActivity activity) {
+    Identity[] identitysIdentities = null ;
+    if(activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0){
+      String[] getLikeIdentityIds = activity.getLikeIdentityIds();
+      identitysIdentities = new Identity[getLikeIdentityIds.length];
+      for (int i = 0; i < identitysIdentities.length; i++) {
+        identitysIdentities[i] = new Identity(getLikeIdentityIds[i]);
+      }
+    }
 
-    this(
-        activity.getId(),
-        activity.getTitle(),
-        activity.getPriority(),
-        activity.getAppId(),
-        activity.getType(),
-        activity.getPostedTime(),
-        new Date(activity.getPostedTime().longValue()).toString(),
-        activity.getTitleId(),
-        activity.getTemplateParams(),
-        (activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0),
-        activity.getLikeIdentityIds(),
-        activity.getStreamId()
-        );
-    
+   this.id = activity.getId();
+   this.title = activity.getTitle();
+   this.priority = activity.getPriority();
+   this.appId = activity.getAppId();
+   this.type = activity.getType();
+   this.postedTime = activity.getPostedTime();
+   this.createdAt = Util.convertTimestampToTimeString(getPostedTime());
+   this.titleId = activity.getTitleId();
+   this.templateParams = activity.getTemplateParams();
+   this.likedByIdentities = identitysIdentities;
+   this.identityId = activity.getUserId();
   }
 
   public String getId() {
@@ -259,19 +265,19 @@ public class Activity {
     this.liked = liked;
   }
 
-  public String[] getLikedByIdentities() {
+  public Identity[] getLikedByIdentities() {
     return likedByIdentities;
   }
 
-  public void setLikedByIdentities(final String[] likedByIdentities) {
+  public void setLikedByIdentities(final Identity[] likedByIdentities) {
     this.likedByIdentities = likedByIdentities;
   }
 
-  public String[] getComments() {
+  public Comment[] getComments() {
     return comments;
   }
 
-  public void setComments(final String[] comments) {
+  public void setComments(final Comment[] comments) {
     this.comments = comments;
   }
 
@@ -283,11 +289,11 @@ public class Activity {
     this.numberOfComments = numberOfComments;
   }
 
-  public String getPosterIdentity() {
+  public Identity getPosterIdentity() {
     return posterIdentity;
   }
 
-  public void setPosterIdentity(final String posterIdentity) {
+  public void setPosterIdentity(final Identity posterIdentity) {
     this.posterIdentity = posterIdentity;
   }
 

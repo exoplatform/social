@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest.api.models;
 
+import org.exoplatform.social.core.activity.model.ActivityStream.Type;
+
 /**
  * The Activity Stream model for Social Rest APIs.
  *
@@ -27,7 +29,7 @@ public class ActivityStream {
   /**
    * The type : either "user" or "space"
    */
-  private String type;
+  private Type type;
 
   /**
    * The pretty id.
@@ -47,7 +49,7 @@ public class ActivityStream {
   /**
    * The permanent link.
    */
-  private String permalink;
+  private String permaLink;
 
   /**
    * Constructor.
@@ -59,25 +61,33 @@ public class ActivityStream {
    * @param permalink The permanent link.
    */
   public ActivityStream(
-      final String type,
+      final Type type,
       final String prettyId,
       final String faviconUrl,
       final String title,
-      final String permalink) {
+      final String permaLink) {
 
     this.type = type;
     this.prettyId = prettyId;
     this.faviconUrl = faviconUrl;
     this.title = title;
-    this.permalink = permalink;
+    this.permaLink = permaLink;
 
   }
-
-  public String getType() {
+  
+  public ActivityStream(org.exoplatform.social.core.activity.model.ActivityStream activityStream ) {
+    type = activityStream.getType();
+    prettyId = activityStream.getPrettyId();
+    faviconUrl = activityStream.getFaviconUrl();
+    title = activityStream.getTitle();
+    permaLink =  activityStream.getPermaLink();
+  }
+  
+  public Type getType() {
     return type;
   }
 
-  public void setType(final String type) {
+  public void setType(final Type type) {
     this.type = type;
   }
 
@@ -106,10 +116,10 @@ public class ActivityStream {
   }
 
   public String getPermalink() {
-    return permalink;
+    return permaLink;
   }
 
   public void setPermalink(final String permalink) {
-    this.permalink = permalink;
+    this.permaLink = permalink;
   }
 }

@@ -31,11 +31,34 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  * The security manager helper class for Social Rest APIs.
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @author <a href="http://phuonglm.net">phuonglm</a>
  * @since 1.2.0-GA
  * @since Jun 17, 2011
  */
 public class SecurityManager {
 
+  /**
+   * <p>Checks if an authenticated remoteId of user can access an existing activity.</p>
+   *
+   * If the authenticated identity is the one who posted that existing activity, return true.<br />
+   * If the existing activity belongs to that authenticated identity's activity stream, return true.<br />
+   * If the existing activity belongs to that authenticated identity's connections' activity stream, return true.<br />
+   * If the existing activity belongs to a space stream that the authenticated is a space member, return true.<br />
+   * Otherwise, return false.
+   *
+   * @param portalContainer the specified portal container
+   * @param authenticatedIdentity the authenticated identity to check
+   * @param existingActivity the existing activity to check
+   * @return true or false
+   */
+  public static boolean canAccessActivity(PortalContainer portalContainer, String userIdentity,
+                                          ExoSocialActivity existingActivity) {
+    //currently, anyone can access an existing activity.
+    if(userIdentity !=null && existingActivity !=null){
+      return true;
+    }
+    return false;
+  }
   /**
    * <p>Checks if an authenticated identity can access an existing activity.</p>
    *
@@ -53,8 +76,10 @@ public class SecurityManager {
   public static boolean canAccessActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
     //currently, anyone can access an existing activity.
-    // TODO : implements
-    return true;
+    if(authenticatedIdentity !=null && existingActivity !=null){
+      return true;
+    }
+    return false;
   }
   
   /**
