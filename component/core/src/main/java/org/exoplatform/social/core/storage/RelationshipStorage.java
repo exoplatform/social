@@ -359,17 +359,17 @@ public class RelationshipStorage extends AbstractStorage {
     IdentityEntity receiverEntity = relationshipEntity.getTo();
     IdentityEntity senderEntity = relationshipEntity.getFrom();
 
-    Identity receiver = new Identity(receiverEntity.getId());
-    Identity sender = new Identity(senderEntity.getId());
+    Identity receiver = identityStorage.findIdentityById(receiverEntity.getId());
+    Identity sender = identityStorage.findIdentityById(senderEntity.getId());
 
     Relationship relationship = new Relationship(uuid);
-    if (relationshipEntity.isSender()) {
-      relationship.setSender(sender);
-      relationship.setReceiver(receiver);
-    }
-    else {
+    if (relationshipEntity.isReceiver()) {
       relationship.setSender(receiver);
       relationship.setReceiver(sender);
+    }
+    else {
+      relationship.setSender(sender);
+      relationship.setReceiver(receiver);
     }
 
     if (SENDER.equals(relationshipEntity.getParent().getName()) ||

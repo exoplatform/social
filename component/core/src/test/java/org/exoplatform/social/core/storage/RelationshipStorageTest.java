@@ -37,7 +37,9 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @since     Oct 17, 2010
  * @copyright eXo SAS
  */
-public class RelationshipStorageTest extends AbstractCoreTest {
+public class
+
+    RelationshipStorageTest extends AbstractCoreTest {
 
   private final Log LOG = ExoLogger.getLogger(RelationshipStorageTest.class);
 
@@ -120,9 +122,24 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   public void testGetRelationship() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
-    assertNotNull(rootToJohnRelationship.getId());
     rootToJohnRelationship = relationshipStorage.getRelationship(rootToJohnRelationship.getId());
     assertNotNull(rootToJohnRelationship.getId());
+    assertEquals(rootIdentity.getRemoteId(), rootToJohnRelationship.getSender().getRemoteId());
+    assertEquals(rootIdentity.getProviderId(), rootToJohnRelationship.getSender().getProviderId());
+    assertEquals(johnIdentity.getRemoteId(), rootToJohnRelationship.getReceiver().getRemoteId());
+    assertEquals(johnIdentity.getProviderId(), rootToJohnRelationship.getReceiver().getProviderId());
+    assertEquals(Relationship.Type.PENDING, rootToJohnRelationship.getStatus());
+    
+    rootToJohnRelationship.setStatus(Relationship.Type.CONFIRMED);
+    relationshipStorage.saveRelationship(rootToJohnRelationship);
+    rootToJohnRelationship = relationshipStorage.getRelationship(rootToJohnRelationship.getId());
+    assertNotNull(rootToJohnRelationship.getId());
+    assertEquals(rootIdentity.getRemoteId(), rootToJohnRelationship.getSender().getRemoteId());
+    assertEquals(rootIdentity.getProviderId(), rootToJohnRelationship.getSender().getProviderId());
+    assertEquals(johnIdentity.getRemoteId(), rootToJohnRelationship.getReceiver().getRemoteId());
+    assertEquals(johnIdentity.getProviderId(), rootToJohnRelationship.getReceiver().getProviderId());
+    assertEquals(Relationship.Type.CONFIRMED, rootToJohnRelationship.getStatus());
+    
     tearDownRelationshipList.add(rootToJohnRelationship);
   }
 
