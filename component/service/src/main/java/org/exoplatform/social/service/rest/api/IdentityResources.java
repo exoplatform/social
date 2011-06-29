@@ -43,7 +43,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @since Jun 29, 2011
  */
-@Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}")
+@Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/identity/")
 public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   private IdentityManager identityManager;
@@ -58,7 +58,7 @@ public class IdentityResources implements ResourceContainer {
    * @return a response object
    */
   @GET
-  @Path("/identity/{identityId}.{format}")
+  @Path("{identityId}.{format}")
   public Response getIdentityById(@Context UriInfo uriInfo,
                                            @PathParam("portalContainerName") String portalContainerName,
                                            @PathParam("identityId") String identityId,
