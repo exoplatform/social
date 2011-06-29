@@ -205,6 +205,9 @@ public class ActivityStorageTest extends AbstractCoreTest {
       assertNotNull(activity.getReplyToId());
       assertEquals(1, activity.getReplyToId().length);
 
+      comment = activityStorage.getActivity(comment.getId());
+      assertTrue(comment.isComment());
+      
       tearDownActivityList.add(activity);
     }
 

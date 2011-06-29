@@ -187,7 +187,8 @@ public class ActivityStorage extends AbstractStorage {
     activity.setExternalId(activityEntity.getExternalId());
     activity.setUrl(activityEntity.getUrl());
     activity.setPriority(activityEntity.getPriority());
-
+    activity.isComment(activityEntity.isComment());
+    
     //
     List<String> computeCommentid = new ArrayList<String>();
     for (ActivityEntity commentEntity : activityEntity.getComments()) {
