@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest.api;
 
+import java.util.HashMap;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,7 +30,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -47,12 +48,10 @@ import org.exoplatform.social.service.rest.api.models.Activity;
 import org.exoplatform.social.service.rest.api.models.ActivityStream;
 import org.exoplatform.social.service.rest.api.models.Comment;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Activity Resources end point.
- *
+ * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jun 15, 2011
  */
@@ -94,62 +93,59 @@ public class ActivityResources implements ResourceContainer {
           //
           ActivityManager manager = Util.getActivityManager();
           ExoSocialActivity activity = manager.getActivity(activityId);
-          
-          if(SecurityManager.canAccessActivity(portalContainer,ConversationState.getCurrent().getIdentity().getUserId(),activity)){
-            //
-            Activity model = new Activity(activity);
-      
-            //
-            if (isPassed(showPosterIdentity)) {
-              model.setPosterIdentity(new org.exoplatform.social.service.rest.api.models.Identity(
-                  identityManager.getIdentity(activity.getUserId(), false)));
-            }
-      
-            //
-            if (isPassed(showActivityStream)) {
-              model.setActivityStream(new ActivityStream(activity.getActivityStream()));
-            }
-      
-            //
-            if (numberOfComments != null) {
-      
-              int commentNumber = activity.getReplyToId().length;
-              int number = Integer.parseInt(numberOfComments);
-      
-              if (number > 100) {
-                number = 100;
+          if(!activity.isComment()){
+            if(SecurityManager.canAccessActivity(portalContainer,ConversationState.getCurrent().getIdentity().getUserId(),activity)){
+              //
+              Activity model = new Activity(activity);
+        
+              //
+              if (isPassed(showPosterIdentity)) {
+                model.setPosterIdentity(new org.exoplatform.social.service.rest.api.models.Identity(
+                    identityManager.getIdentity(activity.getUserId(), false)));
               }
-              
-              if (number > commentNumber) {
-                number = commentNumber;
+        
+              //
+              if (isPassed(showActivityStream)) {
+                model.setActivityStream(new ActivityStream(activity.getActivityStream()));
               }
-              ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
-              ExoSocialActivity[] commentsLimited =  comments.load(0, number);
-              Comment[] commentWrapers = new Comment[number];
-              for(int i = 0; i < number; i++){
-                commentWrapers[i] = new Comment();
-                ExoSocialActivity resultComment = commentsLimited[i];
+        
+              //
+              if (numberOfComments != null) {
+        
+                int commentNumber = activity.getReplyToId().length;
+                int number = Integer.parseInt(numberOfComments);
+        
+                if (number > 100) {
+                  number = 100;
+                }
                 
-                commentWrapers[i].setIdentityId(resultComment.getUserId());
-                commentWrapers[i].setText(resultComment.getTitle());
-                commentWrapers[i].setPostedTime(resultComment.getPostedTime());
-                commentWrapers[i].setCreatedAt(Util.convertTimestampToTimeString(resultComment.getPostedTime()));        
+                if (number > commentNumber) {
+                  number = commentNumber;
+                }
+                ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
+                ExoSocialActivity[] commentsLimited =  comments.load(0, number);
+                Comment[] commentWrapers = new Comment[number];
+                for(int i = 0; i < number; i++){
+                  commentWrapers[i] = new Comment(commentsLimited[i]);      
+                }
+                model.setComments(commentWrapers);
+                
+                model.setComments(commentWrapers);
               }
-              model.setComments(commentWrapers);
+              model.setTotalNumberOfComments(activity.getReplyToId().length);
               
-              model.setComments(commentWrapers);
-            }
-            model.setNumberOfComments(activity.getReplyToId().length);
-            
-            if(isLikedByIdentity(authenticatedUserIdentity().getId(),activity)){
-              model.setLiked(true);
+              if(isLikedByIdentity(authenticatedUserIdentity().getId(),activity)){
+                model.setLiked(true);
+              } else {
+                model.setLiked(false);
+              }
+              
+              return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
             } else {
-              model.setLiked(false);
+              throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
-            
-            return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
           } else {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
           }
         }
         catch (Exception e) {
@@ -186,7 +182,6 @@ public class ActivityResources implements ResourceContainer {
 
     MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
     
-    
     if(newActivity !=null && newActivity.getTitle()!=null && !newActivity.getTitle().equals("")){
         try {
           ActivityManager activityManager = Util.getActivityManager();
@@ -216,7 +211,6 @@ public class ActivityResources implements ResourceContainer {
             activity.setTitleId(newActivity.getTitleId());
             activity.setTemplateParams(newActivity.getTemplateParams());
             
-
             newActivity.setIdentityId(authenticatedIdentity.getId());
             activityManager.saveActivityNoReturn(postToIdentity, activity);
             
@@ -293,11 +287,281 @@ public class ActivityResources implements ResourceContainer {
                                            @PathParam("portalContainerName") String portalContainerName,
                                            @PathParam("activityId") String activityId,
                                            @PathParam("format") String format) {
-
     return deleteExistingActivityById(uriInfo, portalContainerName, activityId, format);
-    
   }
 
+  /**
+   * Get Comment from existing activity by GET method from a specified activity id. Just returns the Comment List and total number of Comment
+   * in activity.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @GET
+  @Path("activity/{activityId}/comments.{format}")
+  public Response getCommentsByActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format) {
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if(activityId !=null && !activityId.equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      Identity authenticatedUserIdentity = authenticatedUserIdentity();
+      ExoSocialActivity activity = activityManager.getActivity(activityId);
+      if(authenticatedUserIdentity != null){
+        if(SecurityManager.canAccessActivity(portalContainer, authenticatedUserIdentity, activity)){
+          int total;
+          Comment[] commentWrapers = null;
+          try {
+            ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
+            total = comments.getSize();
+            ExoSocialActivity[] commentsLimited =  comments.load(0, total);
+            commentWrapers = new Comment[total];
+            for(int i = 0; i < total; i++){
+              commentWrapers[i] = new Comment(commentsLimited[i]);      
+            }
+          } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+          }
+          
+          HashMap resultJson = new HashMap();
+          resultJson.put("total", commentWrapers.length);
+          resultJson.put("comments", commentWrapers);
+          return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+  }
+  
+  /**
+   * Comment an existing activity by POST method from a specified activity id. Just returns the created comment.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @POST
+  @Path("activity/{activityId}/comment.{format}")
+  public Response createCommentActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format,
+                                           Comment comment) {
+    
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if(comment !=null && comment.getText() != null && !comment.getText().equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      Identity authenticatedUserIdentity = authenticatedUserIdentity();
+      ExoSocialActivity activity = activityManager.getActivity(activityId);
+      if(authenticatedUserIdentity != null){
+        if(SecurityManager.canCommentToActivity(portalContainer, authenticatedUserIdentity, activity)){
+          
+          ExoSocialActivity commentActivity = new ExoSocialActivityImpl();
+          commentActivity.setTitle(comment.getText());
+          commentActivity.setUserId(authenticatedUserIdentity.getId());
+          
+          activityManager.saveComment(activity,commentActivity);
+          
+          comment = new Comment(commentActivity);
+          
+          return Util.getResponse(comment, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+  }
+  
+  /**
+   * Comment an existing activity by POST method from a specified activity id. Just returns the created comment.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @DELETE
+  @Path("activity/{activityId}/comment/{commentId}.{format}")
+  public Response deleteCommentById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format,
+                                           @PathParam("commentId") String commentId) {
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if(commentId !=null && !commentId.equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      Identity authenticatedUserIdentity = authenticatedUserIdentity();
+      ExoSocialActivity commentActivity = activityManager.getActivity(commentId);
+      ExoSocialActivity activity = activityManager.getActivity(commentId);
+      if(commentActivity.isComment()){
+        if(authenticatedUserIdentity != null){
+          if(SecurityManager.canDeleteActivity(portalContainer, authenticatedUserIdentity, commentActivity)){
+            activityManager.deleteComment(activity, commentActivity);
+            Comment resultComment = new Comment(commentActivity);
+            return Util.getResponse(resultComment, uriInfo, mediaType, Response.Status.OK);
+          } else {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+          }
+        } else {
+          throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+  }
+  
+  /**
+   * Delete a Comment in activity spectify by commentId and activityId using DELETE.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @POST
+  @Path("activity/{activityId}/comment/destroy/{commentId}.{format}")
+  public Response postDeleteCommentById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format,
+                                           @PathParam("commentId") String commentId) {
+    return deleteCommentById(uriInfo, portalContainerName, activityId, format, commentId);
+  }
+  
+  
+  /**
+   * Like an existing activity by POST method from a specified activity id. Just returns {"liked": "true"} if success.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @POST
+  @Path("activity/{activityId}/like.{format}")
+  public Response createLikeActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format) {
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if(activityId !=null && !activityId.equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      Identity authenticatedUserIdentity = authenticatedUserIdentity();
+      ExoSocialActivity activity = activityManager.getActivity(activityId);
+      if(authenticatedUserIdentity != null){
+        if(SecurityManager.canCommentToActivity(portalContainer, authenticatedUserIdentity, activity)){        
+          
+          activityManager.saveLike(activity, authenticatedUserIdentity());
+          
+          HashMap resultJson = new HashMap();
+          resultJson.put("like", true);
+          
+          return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Like an existing activity by POST method from a specified activity id. Just returns {"liked": "true"} if success.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @DELETE
+  @Path("activity/{activityId}/like.{format}")
+  public Response deleteLikeActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format) {
+    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
+
+    if(activityId !=null && !activityId.equals("")){
+      PortalContainer portalContainer = getPortalContainer(portalContainerName);
+      activityManager = Util.getActivityManager();
+      identityManager = Util.getIdentityManager();
+      Identity authenticatedUserIdentity = authenticatedUserIdentity();
+      ExoSocialActivity activity = activityManager.getActivity(activityId);
+      if(authenticatedUserIdentity != null){
+        if(SecurityManager.canCommentToActivity(portalContainer, authenticatedUserIdentity, activity)){        
+          
+          activityManager.deleteLike(activity, authenticatedUserIdentity());
+          
+          HashMap resultJson = new HashMap();
+          resultJson.put("like", false);
+          
+          return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+      } else {
+        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      }
+    } else {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+  }
+  
+  /**
+   * Like an existing activity by POST method from a specified activity id. Just returns {"liked": "true"} if success.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @POST
+  @Path("activity/{activityId}/like/destroy.{format}")
+  public Response postDeleteLikeActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalContainerName") String portalContainerName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format) {
+    return deleteLikeActivityById(uriInfo, portalContainerName, activityId, format);
+  }
+  
   private boolean isLikedByIdentity(String identityID, ExoSocialActivity activity){
     String[] likedIdentityIds = activity.getLikeIdentityIds();
     if(activity.getLikeIdentityIds()!=null && likedIdentityIds.length > 0 ){
@@ -309,7 +573,7 @@ public class ActivityResources implements ResourceContainer {
     }
     return false;
   }
-
+  
   private boolean isAuthenticated() {
     return ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
               ConversationState.getCurrent().getIdentity().getUserId() != null;
@@ -329,7 +593,6 @@ public class ActivityResources implements ResourceContainer {
   private boolean isPassed(String value) {
     return value != null && ("true".equals(value) || "t".equals(value) || "1".equals(value));
   }
-
 
   private PortalContainer getPortalContainer(String name) {
     return (PortalContainer) ExoContainerContext.getContainerByName(name);

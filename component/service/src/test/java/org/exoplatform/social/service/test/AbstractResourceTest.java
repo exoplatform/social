@@ -151,8 +151,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    * @param data the data if any
    * @throws Exception
    */
-  protected void testAccessResourceAsAnonymous(String method, String resourceUrl, byte[] data) throws Exception {
-    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
+  protected void testAccessResourceAsAnonymous(String method, String resourceUrl, MultivaluedMap<String,String> h, byte[] data) throws Exception {
+    ContainerResponse containerResponse = service(method, resourceUrl, "", h, data);
     assertEquals(401, containerResponse.getStatus());
   }
 

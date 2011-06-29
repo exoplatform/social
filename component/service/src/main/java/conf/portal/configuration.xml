@@ -58,6 +58,9 @@
   <component>
     <type>org.exoplatform.social.service.rest.api.ActivityStreamResources</type>
   </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api.IdentityResources</type>
+  </component>
 <!-- Social Rest API resources -->
 
 </configuration>

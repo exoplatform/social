@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * The Activity model for Social Rest APIs.
- *
+ * @author <a href="http://phuonglm.net">phuonglm</a>
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jun 17, 2011
  */
@@ -94,7 +94,7 @@ public class Activity {
   /**
    * The number of comment.
    */
-  private int numberOfComments;
+  private int totalNumberOfComments;
 
   /**
    * The poster identity id.
@@ -182,7 +182,10 @@ public class Activity {
    this.titleId = activity.getTitleId();
    this.templateParams = activity.getTemplateParams();
    this.likedByIdentities = identitysIdentities;
-   this.identityId = activity.getUserId();
+   org.exoplatform.social.core.identity.model.Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(activity);
+   if(streamOwnerIdentity != null){
+     this.identityId = streamOwnerIdentity.getId();
+   }
   }
 
   public String getId() {
@@ -281,12 +284,12 @@ public class Activity {
     this.comments = comments;
   }
 
-  public int getNumberOfComments() {
-    return numberOfComments;
+  public int getTotalNumberOfComments() {
+    return totalNumberOfComments;
   }
 
-  public void setNumberOfComments(final int numberOfComments) {
-    this.numberOfComments = numberOfComments;
+  public void setTotalNumberOfComments(final int numberOfComments) {
+    this.totalNumberOfComments = numberOfComments;
   }
 
   public Identity getPosterIdentity() {

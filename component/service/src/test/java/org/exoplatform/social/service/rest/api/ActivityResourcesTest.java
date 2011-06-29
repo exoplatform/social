@@ -21,12 +21,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+
+import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -48,6 +52,7 @@ import org.json.JSONWriter;
  * Unit Test for {@link ActivityResources}.
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @since Jun 16, 2011
  */
 public class ActivityResourcesTest extends AbstractResourceTest {
@@ -137,7 +142,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
   public void testGetActivityByIdForAccess() throws Exception {
     String resourceUrl = RESOURCE_URL+"/1a2b3c4d5e.json";
     // unauthorized
-    testAccessResourceAsAnonymous("GET", resourceUrl, null);
+    testAccessResourceAsAnonymous("GET", resourceUrl,null, null);
     //not found
     testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
     // TODO : forbidden
@@ -182,7 +187,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       assertNull("entity.getLikedByIdentities() must be null", entity.getLikedByIdentities());
       assertNull("entity.getPosterIdentity() must be null", entity.getPosterIdentity());
       assertNull("entity.getComments() must be null", entity.getComments());
-      assertEquals("entity.getNumberOfComments() must return: " + 0, 0, entity.getNumberOfComments());
+      assertEquals("entity.getTotalNumberOfComments() must return: " + 0, 0, entity.getTotalNumberOfComments());
       assertNull("entity.getActivityStream() must be null", entity.getActivityStream());
     }
 
@@ -203,7 +208,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       */
     }
 
-    {//gets activity by specifying numberOfComments
+    {//gets activity by specifying totalNumberOfComments
       //creating the comments for unit testing.
       startSessionAs("john");
       createComment(demoActivity, johnIdentity, 30);
@@ -212,7 +217,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
       Activity entity = (Activity) containerResponse.getEntity();
       assertNotNull("entity must not be null", entity);
-      assertEquals("numberOfComments must be equals 30", 30, entity.getNumberOfComments());
+      assertEquals("totalNumberOfComments must be equals 30", 30, entity.getTotalNumberOfComments());
       Comment[] gotComments = entity.getComments();
       assertEquals("content of comments must be equals 20", 20, gotComments.length);
       
@@ -251,7 +256,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       assertEquals("entity.getType() must return: " + demoActivity.getType(),
                          demoActivity.getType(), entity.getType());
       //assert the comments
-      assertEquals("numberOfComments must be equals 30", 30, entity.getNumberOfComments());
+      assertEquals("totalNumberOfComments must be equals 30", 30, entity.getTotalNumberOfComments());
       Comment[] commentArray = entity.getComments();
       assertEquals("content of comments must be equals 20", 20, commentArray.length);
       
@@ -299,7 +304,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(1, got.getComments().length);
-    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(rootIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
     assertEquals(null, got.getActivityStream());
   }
@@ -334,7 +339,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(2, got.getComments().length);
-    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(rootIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
     assertEquals(null, got.getActivityStream());
   }
@@ -368,7 +373,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(johnIdentity.getId(), got.getIdentityId());
     assertEquals(demoIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
@@ -402,7 +407,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(rootIdentity.getId(), got.getIdentityId());
     assertEquals(demoIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
@@ -437,7 +442,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(johnIdentity.getId(), got.getIdentityId());
+    assertEquals(demoIdentity.getId(), got.getIdentityId());
     assertEquals(johnIdentity.getId(), got.getPosterIdentity().getId());
     assertEquals(null, got.getActivityStream());
   }
@@ -471,7 +476,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(false, got.isLiked());
     assertEquals(null, got.getLikedByIdentities());
     assertEquals(null, got.getComments());
-    assertEquals(demoIdentity.getId(), got.getIdentityId());
+    assertEquals(rootIdentity.getId(), got.getIdentityId());
     assertEquals(null, got.getPosterIdentity());
     assertEquals(expectedActivity.getStreamTitle(), got.getActivityStream().getTitle());
     assertEquals(expectedActivity.getStreamOwner(), got.getActivityStream().getPrettyId());
@@ -485,9 +490,21 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * @throws Exception
    */
   public void testCreateNewActivityForAccess() throws Exception {
-    //final byte[] data = "{\"title\" : \"hello world!\"}".getBytes();
+    StringWriter writer = new StringWriter();
+    JSONWriter jsonWriter = new JSONWriter(writer);
+    jsonWriter
+        .object()
+        .key("title")
+        .value("hello world")
+        .endObject();
+    byte[] data = writer.getBuffer().toString().getBytes("UTF-8");
+
+    MultivaluedMap<String, String> h = new MultivaluedMapImpl();
+    h.putSingle("content-type", "application/json");
+    h.putSingle("content-length", "" + data.length);
+    
     //unauthorized
-    //testAccessResourceAsAnonymous("POST", RESOURCE_URL + ".json", data);
+    testAccessResourceAsAnonymous("POST", RESOURCE_URL + ".json",h , data);
     //forbidden
 
     // TODO : unauthorized
@@ -608,7 +625,160 @@ public class ActivityResourcesTest extends AbstractResourceTest {
 
   }
 
+  /**
+   * Tests {@link ActivityResources#createLikeActivityById(javax.ws.rs.core.UriInfo, String, String, String) 
+   */
+  public void testcreateLikeActivityById() throws Exception {
+    createActivities(demoIdentity, demoIdentity, 1);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    startSessionAs("demo");
+    ContainerResponse response =
+      service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like.json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    assertEquals("The activity liked array must contain Demo's IdentityID",expectedActivity.getLikeIdentityIds()[0], demoIdentity.getId());
+    
+    connectIdentities(demoIdentity, rootIdentity, true);
+    startSessionAs("root");
+    response =
+      service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like.json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    assertEquals("The activity liked array must contain Demo's IdentityID",expectedActivity.getLikeIdentityIds()[1], rootIdentity.getId());
+  }
+  
 
+  
+  /**
+   * Tests {@link ActivityResources#deleteLikeActivityById(javax.ws.rs.core.UriInfo, String, String, String)
+   * Tests {@link ActivityResources#postDeleteLikeActivityById(javax.ws.rs.core.UriInfo, String, String, String)
+   */
+  public void testdeleteLikeActivityById() throws Exception {
+    testcreateLikeActivityById();
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    startSessionAs("demo");
+    assertEquals("Number of user liked this Activty must be 2", 2, expectedActivity.getLikeIdentityIds().length);
+    ContainerResponse response = service("DELETE", RESOURCE_URL+"/" + expectedActivity.getId() + "/like.json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    assertEquals("Number of user liked this Activty must be 1", 1, expectedActivity.getLikeIdentityIds().length);
+    
+    String demoIdentiyID = demoIdentity.getId();
+    String [] likedIdentityIds = expectedActivity.getLikeIdentityIds();
+    
+    for(String likedUserIdentityID: likedIdentityIds){
+      if(likedUserIdentityID.equals(demoIdentiyID)){
+        fail("Demo's IdentityId must be deleted from getLikeIdentityIds");
+      }
+    }
+    
+    startSessionAs("root");
+    response = service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/like/destroy.json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    expectedActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
+    assertEquals("Number of user liked this Activty must be 0", 0, expectedActivity.getLikeIdentityIds().length);
+
+    String rootIdentiyID = rootIdentity.getId();
+    likedIdentityIds = expectedActivity.getLikeIdentityIds();
+    for(String likedUserIdentityID: likedIdentityIds){
+      if(likedUserIdentityID.equals(rootIdentiyID)){
+        fail("Root's IdentityId must be deleted from getLikeIdentityIds");
+      }
+    }
+  }
+  
+  /**
+   * Test {@link ActivityResources#createCommentActivityById(javax.ws.rs.core.UriInfo, String, String, String, Comment)}
+   */
+  public void testCreateComment() throws Exception{
+    createActivities(johnIdentity, maryIdentity, 1);
+    connectIdentities(johnIdentity, maryIdentity, true);
+    connectIdentities(demoIdentity, maryIdentity, true);
+    connectIdentities(demoIdentity, johnIdentity, true);
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(maryIdentity).load(0, 1)[0];
+    
+    startSessionAs("mary");
+    StringWriter writer = new StringWriter();
+    JSONWriter jsonWriter = new JSONWriter(writer);
+    jsonWriter
+        .object()
+        .key("text")
+        .value("mary comment to john's activity")
+        .endObject();
+    byte[] data = writer.getBuffer().toString().getBytes("UTF-8");
+
+    MultivaluedMap<String, String> h = new MultivaluedMapImpl();
+    h.putSingle("content-type", "application/json");
+    h.putSingle("content-length", "" + data.length);
+    
+    ContainerResponse response = service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/comment.json", "", h, data);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    
+    startSessionAs("demo");
+    writer = new StringWriter();
+    jsonWriter = new JSONWriter(writer);
+    jsonWriter
+        .object()
+        .key("text")
+        .value("demo comment to john's activity")
+        .endObject();
+    data = writer.getBuffer().toString().getBytes("UTF-8");
+
+    h = new MultivaluedMapImpl();
+    h.putSingle("content-type", "application/json");
+    h.putSingle("content-length", "" + data.length);
+    
+    response = service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/comment.json", "", h, data);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+  }
+  /**
+   * Test {@link ActivityResources#getCommentActivityById(javax.ws.rs.core.UriInfo, String, String, String)
+   */
+  public void testGetComments() throws Exception{
+    testCreateComment();
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(maryIdentity).load(0, 1)[0];
+
+    startSessionAs("john");
+    ContainerResponse response = service("GET", RESOURCE_URL+"/" + expectedActivity.getId() + "/comments.json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    
+    HashMap resultEntity = (HashMap) response.getEntity();
+    Comment[] comments = (Comment[]) resultEntity.get("comments");
+    assertEquals("Number of user liked this Activty must be 2",2,resultEntity.get("total"));
+    assertEquals("Number of user liked this Activty must be 2",2,comments.length);
+    assertEquals("The activity liked array 0 must be mary's Identity",maryIdentity.getId(),comments[0].getIdentityId());
+    assertEquals("John's comment text must be \"mary comment to john's activity\"","mary comment to john's activity",comments[0].getText());
+    assertEquals("The activity liked array 1 must be demo's Identity",demoIdentity.getId(),comments[1].getIdentityId());
+    assertEquals("Demo's comment text must be \"demo comment to john's activity\"","demo comment to john's activity",comments[1].getText());
+  }
+  
+  /**
+   * Test {@link ActivityResources#deleteCommentById(javax.ws.rs.core.UriInfo, String, String, String, String)
+   * Test {@link ActivityResources#postDeleteCommentById(javax.ws.rs.core.UriInfo, String, String, String, String)
+   */
+  public void testDeleteComment() throws Exception{
+    testCreateComment();
+    ExoSocialActivity expectedActivity = activityManager.getActivitiesWithListAccess(maryIdentity).load(0, 1)[0];
+    ListAccess<ExoSocialActivity> commentActivitysListAccess= activityManager.getCommentsWithListAccess(expectedActivity);
+    
+    assertEquals("commentActivitys Size must be equal 2", 2 , commentActivitysListAccess.getSize());
+    
+    ExoSocialActivity[] commentActivitys = commentActivitysListAccess.load(0, 2);
+    startSessionAs("mary");
+    ContainerResponse response = service("DELETE", RESOURCE_URL+"/" + expectedActivity.getId() + "/comment/"+ commentActivitys[0].getId() +".json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    
+    commentActivitysListAccess= activityManager.getCommentsWithListAccess(expectedActivity);
+    assertEquals("commentActivitys Size must be equal 1", 1 , commentActivitysListAccess.getSize());
+    startSessionAs("demo");
+    response = service("POST", RESOURCE_URL+"/" + expectedActivity.getId() + "/comment/destroy/"+ commentActivitys[1].getId() +".json", "", null, null);
+    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    
+    commentActivitysListAccess= activityManager.getCommentsWithListAccess(expectedActivity);
+    assertEquals("commentActivitys Size must be equal 0", 0 , commentActivitysListAccess.getSize());
+    
+  }
+  
   /**
    * An identity posts an activity to an identity's activity stream with a number of activities.
    *

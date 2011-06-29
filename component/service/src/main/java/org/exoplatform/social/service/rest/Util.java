@@ -30,8 +30,12 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.activity.model.ActivityStream.Type;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -299,5 +303,21 @@ public final class Util {
   private static PortalContainer getPortalContainerByName(String portalContainerName) {
     return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
   }
-
+  /**
+   * Gets a Owner IdentityID from Activity
+   *
+   * @param activity Activity which you want to get the owner
+   * @return IdentityID
+   */
+  public static Identity getOwnerIdentityIdFromActivity(ExoSocialActivity activity) {
+    IdentityManager identityManager = getIdentityManager();
+    ActivityStream activityStream=  activity.getActivityStream();
+    Type activityType =  activityStream.getType();
+    String name = activity.getStreamOwner();
+    if(activityType.equals(Type.USER)){
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, false);
+    } else {
+      return identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, name, false);
+    }
+  }
 }

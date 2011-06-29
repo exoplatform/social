@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.service.rest.api.models;
 
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.service.rest.Util;
+
 /**
  * The comment model for Social Rest APIs.
  * 
@@ -28,6 +31,17 @@ public class Comment {
   private String text;
   private long postedTime;
   private String createdAt;
+  
+  public Comment(){
+    
+  }
+  
+  public Comment(ExoSocialActivity commentActivity){
+    this.setIdentityId(commentActivity.getUserId());
+    this.setText(commentActivity.getTitle());
+    this.setPostedTime(commentActivity.getPostedTime());
+    this.setCreatedAt(Util.convertTimestampToTimeString(commentActivity.getPostedTime()));  
+  }
   
   public String getIdentityId() {
     return identityId;
