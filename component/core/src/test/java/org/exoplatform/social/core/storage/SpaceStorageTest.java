@@ -2454,6 +2454,28 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertEquals(LinkProvider.buildAvatarImageUri(got.getPrettyName()), got.getAvatarUrl());
   }
 
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#saveSpace(org.exoplatform.social.core.space.model.Space, boolean)} with isNew is false
+   *
+   * @throws Exception
+   */
+  public void testUpdateSpace() throws Exception {
+    int number = 1;
+    Space space = this.getSpaceInstance(number);
+    space.setAvatarAttachment(new AvatarAttachment());
+    tearDownSpaceList.add(space);
+    spaceStorage.saveSpace(space, true);
+
+    //
+    Space spaceForUpdate = spaceStorage.getSpaceById(space.getId());
+    spaceStorage.saveSpace(spaceForUpdate, false);
+
+    //
+    Space got = spaceStorage.getSpaceById(spaceForUpdate.getId());
+
+    assertFalse(got.getAvatarUrl() == null);
+  }
+  
   // TODO : test getSpaceByGroupId without result
   // TODO : save space with null member[]
   // TODO : test space member number

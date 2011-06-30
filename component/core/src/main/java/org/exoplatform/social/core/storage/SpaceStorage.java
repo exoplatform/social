@@ -102,7 +102,7 @@ public class SpaceStorage extends AbstractStorage {
     entity.setManagerMembersId(space.getManagers());
     entity.setPendingMembersId(space.getPendingUsers());
     entity.setInvitedMembersId(space.getInvitedUsers());
-    entity.setHasAvatar(space.getAvatarAttachment() != null);
+    entity.setHasAvatar(space.getAvatarAttachment() != null || space.getAvatarUrl() != null);
 
   }
 
