@@ -71,19 +71,23 @@ public class IdentityResources implements ResourceContainer {
       Identity authenticatedUserIdentity = authenticatedUserIdentity();
       Identity identity = identityManager.getIdentity(identityId, true);
       if(authenticatedUserIdentity != null){
-        HashMap resultHashMap = new HashMap();
-        HashMap resultProfileHashMap = new HashMap();
-        resultHashMap.put("id", identity.getId());
-        resultHashMap.put("providerId",identity.getProviderId());
-        resultHashMap.put("remoteId",identity.getRemoteId());
+        if(portalContainer!=null && identity!=null){
+          HashMap resultHashMap = new HashMap();
+          HashMap resultProfileHashMap = new HashMap();
+          resultHashMap.put("id", identity.getId());
+          resultHashMap.put("providerId",identity.getProviderId());
+          resultHashMap.put("remoteId",identity.getRemoteId());
+          
+          Profile profile = identity.getProfile();
+          resultProfileHashMap.put("fullName", profile.getFullName());
+          resultProfileHashMap.put("avatarUrl", profile.getAvatarUrl());
+          
+          resultHashMap.put("profile",resultProfileHashMap);
         
-        Profile profile = identity.getProfile();
-        resultProfileHashMap.put("fullName", profile.getFullName());
-        resultProfileHashMap.put("avatarUrl", profile.getAvatarUrl());
-        
-        resultHashMap.put("profile",resultProfileHashMap);
-        
-        return Util.getResponse(resultHashMap, uriInfo, mediaType, Response.Status.OK);
+          return Util.getResponse(resultHashMap, uriInfo, mediaType, Response.Status.OK);
+        } else {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       } else {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
