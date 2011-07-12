@@ -258,7 +258,8 @@ public class ActivityResources implements ResourceContainer {
       if(authenticatedIdentity != null){
         if(SecurityManager.canDeleteActivity(portalContainer, authenticatedIdentity, existingActivity)){
           activityManager.deleteActivity(existingActivity);
-          return Util.getResponse(existingActivity, uriInfo, mediaType, Response.Status.OK);
+          Activity model = new Activity(existingActivity);
+          return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
         } else {
           throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
