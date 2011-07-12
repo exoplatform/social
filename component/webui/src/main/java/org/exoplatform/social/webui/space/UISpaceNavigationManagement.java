@@ -76,6 +76,8 @@ public class UISpaceNavigationManagement extends UIContainer {
 
   private String ownerType;
 
+  private Space space;
+  
   public UISpaceNavigationManagement() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "AddNode", null);
     uiPopup.setWindowSize(800, 500);
@@ -233,5 +235,23 @@ public class UISpaceNavigationManagement extends UIContainer {
       selector.initTreeData();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavManagement);
     }
+  }
+
+  /**
+   * Resets value of space.
+   * 
+   * @param space
+   */
+  protected void setSpace(Space space) {
+    this.space = space;
+  }
+  
+  /**
+   * Gets space.
+   * 
+   * @return
+   */
+  protected Space getSpace() {
+    return this.space;
   }
 }

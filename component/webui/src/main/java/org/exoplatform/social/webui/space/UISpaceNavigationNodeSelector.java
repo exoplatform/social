@@ -42,6 +42,8 @@ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIPortalToolPanel;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -80,7 +82,7 @@ import org.gatein.common.util.ParameterValidation;
  */
 public class UISpaceNavigationNodeSelector extends UIContainer {
   private UserNavigation       edittedNavigation;
-
+  
   /**
    * This field holds transient copy of edittedTreeNodeData, which is used when
    * user pastes the content to a new tree node
@@ -720,6 +722,30 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       if (childNode == null) {
         return;
       }
+      String pageRef = childNode.getPageRef();
+      String appName = pageRef.substring(pageRef.lastIndexOf(":") + 1);
+      
+      // check this node can be deleted or not
+      SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
+      UISpaceNavigationManagement uiSpaceNavManagement = uiNodeSelector.getParent();
+      Space space = uiSpaceNavManagement.getSpace();
+      String spaceAppList = space.getApp();
+      String[] spaceApps = spaceAppList.split(",");
+      for (String spaceApp : spaceApps) {
+        String[] appConfig = spaceApp.split(":");  
+        if (appConfig[0].equals(appName)) {
+          if (!Boolean.parseBoolean(appConfig[2])) {
+            UIApplication uiApp = pcontext.getUIApplication();
+            uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
+                                                    null));
+            return;
+          } else {
+            spaceService.removeApplication(space.getId(), appName, appConfig[1]);
+            break;
+          }
+        }
+      }
+      
       TreeNode parentNode = childNode.getParent();
 
       if (Visibility.SYSTEM.equals(childNode.getVisibility())) {

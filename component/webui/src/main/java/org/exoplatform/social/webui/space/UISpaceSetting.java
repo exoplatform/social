@@ -87,6 +87,15 @@ public class UISpaceSetting extends UIContainer {
   }
 
   /**
+   * Gets space object.
+   * 
+   * @return
+   */
+  protected Space getSpace() {
+    return this.space;
+  }
+  
+  /**
    * gets space name
    *
    * @return space name
@@ -128,6 +137,8 @@ public class UISpaceSetting extends UIContainer {
       if (renderTab.equals(UISpaceNavigationManagement.class.getSimpleName())) {
         UISpaceNavigationManagement uiSpaceNavigation = uiTabPane.getChild(UISpaceNavigationManagement.class);
         uiSpaceNavigation.reloadTreeData();
+        UISpaceSetting uiSpaceSetting = (UISpaceSetting)uiTabPane.getParent();
+        uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
         event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceNavigation);
       }
      

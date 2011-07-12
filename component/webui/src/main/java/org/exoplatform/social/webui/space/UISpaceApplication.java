@@ -120,6 +120,9 @@ public class UISpaceApplication extends UIForm {
    * @throws Exception
    */
   public void setValue(Space space) throws Exception {
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    // Get space to update space's information.
+    space = spaceService.getSpaceById(space.getId());
     this.space = space;
     List<String> appIdList = SpaceUtils.getAppIdList(space);
     List<String> notAvailableAppIdList = new ArrayList<String>(appIdList);
