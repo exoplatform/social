@@ -17,29 +17,22 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
@@ -122,19 +115,12 @@ public class UISpaceMenu extends UIContainer {
     }
     UserNavigation pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
     UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, space.getUrl());
-    
 
-    UserNode tobeRemoved = homeNode.getChild(SPACE_SETTINGS);
+    UserNode hiddenNode = homeNode.getChild(SPACE_SETTINGS);
     
-    if (!hasSettingPermission() && (tobeRemoved != null)) {
-      homeNode.removeChild(SPACE_SETTINGS);
+    if (!hasSettingPermission() && (hiddenNode != null)) {
+      homeNode.removeChild(hiddenNode.getName());
     }
-    
-    //Need to use getUserPortal().saveNode(homeNode, null); ???
-    SpaceUtils.getUserPortal().saveNode(homeNode, null);
-    
-    //Getting the latest data.
-    SpaceUtils.getUserPortal().updateNode(homeNode, Scope.CHILDREN, null);
     
     List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(homeNode.getChildren());
     Collections.sort(userNodeArraySorted, new ApplicationComparator());
