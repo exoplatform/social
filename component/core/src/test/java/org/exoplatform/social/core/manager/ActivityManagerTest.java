@@ -134,7 +134,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
   public void testSaveActivity() throws ActivityStorageException {
     //save mal-formed activity
     {
-      ExoSocialActivity malformedActivity = new ExoSocialActivityImpl();;
+      ExoSocialActivity malformedActivity = new ExoSocialActivityImpl();
       malformedActivity.setTitle("malform");
       try {
         activityManager.saveActivity(malformedActivity);
@@ -169,6 +169,21 @@ public class ActivityManagerTest extends AbstractCoreTest {
       tearDownActivityList.add(johnActivity);
 
       assertNotNull("johnActivity.getId() must not be null", johnActivity.getId());
+    }
+
+    // updated and postedTime is optional
+    {
+      final String title = "test";
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setUpdated(null);
+      activity.setPostedTime(null);
+      activity.setTitle(title);
+      activityManager.saveActivity(demoIdentity, activity);
+      tearDownActivityList.add(activity);
+      assertNotNull("activity.getId() must not be null", activity.getId());
+      assertNotNull("activity.getUpdated() must not be null", activity.getUpdated());
+      assertNotNull("activity.getPostedTime() must not be null", activity.getPostedTime());
+      assertEquals("activity.getTitle() must return: " + title, title, activity.getTitle());
     }
   }
   

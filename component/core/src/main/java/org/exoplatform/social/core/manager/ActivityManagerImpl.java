@@ -18,6 +18,7 @@ package org.exoplatform.social.core.manager;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -80,6 +81,12 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void saveActivityNoReturn(Identity streamOwner, ExoSocialActivity newActivity) {
+    long currentTime = System.currentTimeMillis();
+    newActivity.setUpdated(new Date(currentTime));
+    //new activity
+    if (newActivity.getId() == null) {
+      newActivity.setPostedTime(currentTime);
+    }
     activityStorage.saveActivity(streamOwner, newActivity);
   }
 
