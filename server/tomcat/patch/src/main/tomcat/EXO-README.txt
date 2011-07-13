@@ -125,8 +125,6 @@ All those accounts have the default password "gtn".
 ===========
 - 1.2.0-GA
 
-Release Notes - eXo Social - Version social-1.2.0-GA
-
 ** Bug
     * [SOC-875] - Space description displays null when Space description field is edited with blank
     * [SOC-878] - Share link without thumb, the thumb is still displayed
@@ -185,6 +183,7 @@ Release Notes - eXo Social - Version social-1.2.0-GA
     * [SOC-1396] - IndexOutOfBoundsException when we try to get more activities
     * [SOC-1411] - The button Save in Space Setting must be center text area
     * [SOC-1412] - The button Save in Space Setting must be center text area
+    * [SOC-1413] - [People] Need log out/re-log in to display new user on people page
     * [SOC-1414] - Sometimes profile display "null" value for username
     * [SOC-1417] - Missing message bundle key for UISpaceAddForm
     * [SOC-1425] - UI Bug for comments in activity stream
@@ -200,6 +199,7 @@ Release Notes - eXo Social - Version social-1.2.0-GA
     * [SOC-1488] - Mistake on <span> syntax usage
     * [SOC-1501] - Error UI When change name of application have long name
     * [SOC-1522] - Load activities from private spaces to connections tab
+    * [SOC-1523] - Still can upload a image file that over 2 MB although only allow below 2 MB
     * [SOC-1525] - Bad presentation of the profile screen when switch to French
     * [SOC-1530] - Have problem with title is Vietnamese with share link on user's activities
     * [SOC-1540] - [Add Activities] Attached link is disappear after attach
@@ -228,6 +228,11 @@ Release Notes - eXo Social - Version social-1.2.0-GA
     * [SOC-1820] - NPE when running Activity Stream gadget without any connections
     * [SOC-1841] - Can not run gadget due to SecurityTokenGenerator Exception
     * [SOC-1856] - comment is not set  isComment() when get
+    * [SOC-1865] - Show code error and exception in console when search public space
+    * [SOC-1866] - Unknown error when edit name of application in Space
+    * [SOC-1873] - [Dashboard] Throw exception and don't show shared link from social RSS reader gadgets
+    * [SOC-1884] - RestAPI ActivityResources#deleteExistingActivityById() should return model of json object.
+    * [SOC-1907] - Space Setting disappears after space's member add comment
 
 ** Feedback
     * [SOC-1095] - Backport - Don't use a trash to remove a relation
