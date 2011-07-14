@@ -30,20 +30,20 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-project</artifactId>
-  <version>1.2.0-GA</version>
+  <version>1.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
 
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.2.0-GA</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/tags/1.2.0-GA</developerConnection>
-    <url>https://fisheye.exoplatform.org/browse/social/tags/1.2.0-GA</url>
+    <connection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.2.x</connection>
+    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.2.x</developerConnection>
+    <url>https://fisheye.exoplatform.org/browse/social/branches/1.2.x</url>
   </scm>
 
   <ciManagement>
     <system>hudson</system>
-    <url>https://ci.exoplatform.org/job/social-trunk-ci/</url>
+    <url>https://ci.exoplatform.org/job/social-1.2.x-ci/</url>
   </ciManagement>
 
   <properties>
@@ -81,11 +81,11 @@
     <org.exoplatform.core.version>2.4.0-CR2</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.2.0-CR2</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.0-CR2</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.0-PLF-Beta3</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.2.0-Beta3</org.exoplatform.ecms.version>  
+    <org.exoplatform.portal.version>3.2.0-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.2.0-Beta4-SNAPSHOT</org.exoplatform.ecms.version>  
 
    
-    <org.exoplatform.commons.version>1.1.0-Beta02</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>1.1.0-Beta03-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.2</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
