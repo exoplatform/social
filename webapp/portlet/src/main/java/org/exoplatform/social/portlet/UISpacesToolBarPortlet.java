@@ -88,7 +88,7 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
     if (level <= 0) {
       toolbarScope = Scope.ALL;
     } else {
-      toolbarScope = new GenericScope(level);
+      toolbarScope =  GenericScope.treeShape(level);
     }
     
     
