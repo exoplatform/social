@@ -65,7 +65,7 @@
   -->
   <component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
-    <type>org.exoplatform.social.core.manager.CachingActivityManager</type>
+    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
     <component-plugins>
       <component-plugin>
         <name>OSHtmlSanitizer</name>
@@ -113,7 +113,7 @@
 
   <component>
     <key>org.exoplatform.social.core.manager.IdentityManager</key>
-    <type>org.exoplatform.social.core.manager.CachingIdentityManager</type>
+    <type>org.exoplatform.social.core.manager.IdentityManagerImpl</type>
     <component-plugins>
       <component-plugin>
         <name>SpaceIdentityProvider plugin</name>

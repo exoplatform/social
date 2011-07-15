@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.common;
 
-import javax.jcr.Session;
-
 import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
@@ -34,7 +32,7 @@ import org.exoplatform.services.jcr.RepositoryService;
  */
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml")
 })
 public abstract class AbstractCommonTest extends AbstractKernelTest {
 
