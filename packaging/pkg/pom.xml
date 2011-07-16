@@ -104,6 +104,12 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.resource</groupId>
+      <artifactId>connector-api</artifactId>
+      <version>${javax.resource.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
       <version>${asm.version}</version>
@@ -564,20 +570,20 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-  <dependency>
-   <groupId>bouncycastle</groupId>
-   <artifactId>bcprov-jdk14</artifactId>
-   <version>${bouncycastle.version}</version>
-   <type>jar</type>
-  </dependency> 
-  <dependency>
-   <groupId>bouncycastle</groupId>
-   <artifactId>bcmail-jdk14</artifactId>
-   <version>${bouncycastle.version}</version>
-   <type>jar</type>
-  </dependency>
 
+    <dependency>
+      <groupId>bouncycastle</groupId>
+      <artifactId>bcprov-jdk14</artifactId>
+      <version>${bouncycastle.version}</version>
+      <type>jar</type>
+    </dependency>
 
+    <dependency>
+      <groupId>bouncycastle</groupId>
+      <artifactId>bcmail-jdk14</artifactId>
+      <version>${bouncycastle.version}</version>
+      <type>jar</type>
+    </dependency>
 
   </dependencies>
 
