@@ -1399,7 +1399,21 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     Space savedSpace = spaceService.getSpaceById(space.getId());
     assertFalse(savedSpace.getAvatarUrl() == null);
-    assertEquals(LinkProvider.buildAvatarImageUri(space.getPrettyName()), savedSpace.getAvatarUrl());
+    String avatarRandomURL = savedSpace.getAvatarUrl();
+    int indexOfRandomVar = avatarRandomURL.indexOf("/?upd=");
+
+    String avatarURL = null;
+    if(indexOfRandomVar != -1){
+      avatarURL = avatarRandomURL.substring(0,indexOfRandomVar);
+    } else {
+      avatarURL = avatarRandomURL;
+    }
+    assertEquals(escapeJCRSpecialCharacters(
+            String.format(
+              "/rest/jcr/repository/portal-test/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
+              space.getPrettyName())
+            ),avatarURL);
+
   }
 
   /**
@@ -2545,5 +2559,12 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.saveSpace(space2, true);
 
     return space2;
+  }
+  
+  private static String escapeJCRSpecialCharacters(String string) {
+    if (string == null) {
+      return null;
+    }
+    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
 }

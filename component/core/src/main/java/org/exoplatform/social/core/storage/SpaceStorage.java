@@ -17,7 +17,7 @@
 
 package org.exoplatform.social.core.storage;
 
-
+import org.chromattic.api.ChromatticSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +27,7 @@ import java.util.List;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -35,6 +36,7 @@ import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
@@ -90,11 +92,19 @@ public class SpaceStorage extends AbstractStorage {
     space.setManagers(entity.getManagerMembersId());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
-
+    
     if (entity.getHasAvatar()) {
-      space.setAvatarUrl(LinkProvider.buildAvatarImageUri(space.getPrettyName()));
+      try {
+        IdentityEntity identityEntity = identityStorage._findIdentityEntity(SpaceIdentityProvider.NAME, entity.getPrettyName());
+        NTFile avatarAttachment = identityEntity.getProfile().getAvatar();
+        ChromatticSession chromatticSession = getSession();
+        space.setAvatarUrl(LinkProvider.buildUriFromPath(
+                              chromatticSession.getJCRSession().getWorkspace(),
+                              chromatticSession.getPath(avatarAttachment)));
+      } catch (NodeNotFoundException e) {
+        LOG.warn(e.getMessage(), e);
+      }
     }
-
   }
 
   /**

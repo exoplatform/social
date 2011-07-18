@@ -633,11 +633,17 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
     //
     Profile loadedProfile = new Profile(newIdentity);
     storage._loadProfile(loadedProfile);
+    String avatarRandomURL = loadedProfile.getAvatarUrl();
+    int indexOfRandomVar = avatarRandomURL.indexOf("/?upd=");
+    String avatarURL = null;
+    if(indexOfRandomVar != -1){
+      avatarURL = avatarRandomURL.substring(0,indexOfRandomVar);
+    } else {
+      avatarURL = avatarRandomURL;
+    }
     assertEquals(
-        "/rest/jcr/repository/social/production/soc:providers/soc:organization/soc:remoteid/soc:profile/soc:avatar",
-        loadedProfile.getAvatarUrl()
-    );
-
+        escapeJCRSpecialCharacters("/rest/jcr/repository/portal-test/production/soc:providers/soc:organization/soc:remoteid/soc:profile/soc:avatar"),
+        avatarURL);
     
   }
 
@@ -858,5 +864,11 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
-
+  
+  private static String escapeJCRSpecialCharacters(String string) {
+    if (string == null) {
+      return null;
+    }
+    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
+  }
 }

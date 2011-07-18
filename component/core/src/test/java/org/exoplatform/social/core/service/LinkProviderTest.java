@@ -16,18 +16,29 @@
  */
 package org.exoplatform.social.core.service;
 
+import java.io.InputStream;
+
+import org.chromattic.ext.ntdef.NTFile;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.storage.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class LinkProviderTest extends AbstractCoreTest {
-
   private IdentityManager identityManager;
+  private IdentityStorage identityStorage;
 
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+    identityStorage = (IdentityStorage) this.getContainer().getComponentInstanceOfType(IdentityStorage.class);
+
     assertNotNull(identityManager);
   }
 
@@ -55,4 +66,29 @@ public class LinkProviderTest extends AbstractCoreTest {
     identityManager.deleteIdentity(rootIdentity);
   }
   
+  /**
+   * Test the {@link LinkProvider#buildNTFileUri(javax.jcr.Workspace, String, org.chromattic.ext.ntdef.NTFile)}
+   * 
+   * @throws Exception
+   */
+  public void testbuildUriFromPath() throws Exception {
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager chromatticManager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) chromatticManager.
+                                                      getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+
+    assertEquals("The path right.",
+        escapeJCRSpecialCharacters("/rest/jcr/repository/portal-test/production/soc:providers/" +
+                                    "soc:organization/soc:User1/soc:profile/soc:avatar"),
+        LinkProvider.buildUriFromPath(
+            lifeCycle.getSession().getJCRSession().getWorkspace(), 
+            "/production/soc:providers/soc:organization/soc:User1/soc:profile/soc:avatar"));
+  }
+  
+  private static String escapeJCRSpecialCharacters(String string) {
+    if (string == null) {
+      return null;
+    }
+    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
+  }
 }

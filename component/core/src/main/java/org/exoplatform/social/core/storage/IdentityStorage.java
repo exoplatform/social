@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.ext.ntdef.NTFile;
@@ -31,6 +32,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
@@ -559,7 +561,10 @@ public class IdentityStorage extends AbstractStorage {
     //
     NTFile avatar = profileEntity.getAvatar();
     if (avatar != null) {
-      profile.setProperty(Profile.AVATAR_URL, "/rest/jcr/repository/social" + getSession().getPath(avatar));
+      ChromatticSession chromatticSession = getSession();
+      profile.setProperty(Profile.AVATAR_URL,
+                          LinkProvider.buildUriFromPath(chromatticSession.getJCRSession().getWorkspace(),
+                                   chromatticSession.getPath(avatar)));
     }
 
     //

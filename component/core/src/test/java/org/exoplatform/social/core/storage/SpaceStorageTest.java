@@ -19,14 +19,15 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import java.io.InputStream;
 
 /**
  * Unit Tests for {@link org.exoplatform.social.core.storage.SpaceStorage}
@@ -2442,15 +2443,39 @@ public class SpaceStorageTest extends AbstractCoreTest {
   public void testSaveSpaceAvatar() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
-    space.setAvatarAttachment(new AvatarAttachment());
-    tearDownSpaceList.add(space);
-
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    assertNotNull(avatarAttachment); 
+    space.setAvatarAttachment(avatarAttachment);
+    
+    Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    Profile profile = new Profile(identity);
+    identity.setProfile(profile);
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.saveIdentity(identity);
+    identityStorage.saveProfile(profile);
+    
+    tearDownIdentityList.add(identity);
     spaceStorage.saveSpace(space, true);
 
-    Space got = spaceStorage.getSpaceById(space.getId());
+    Space got = spaceStorage.getSpaceByPrettyName(space.getPrettyName());
+    tearDownSpaceList.add(got);
 
-    assertFalse(got.getAvatarUrl() == null);
-    assertEquals(LinkProvider.buildAvatarImageUri(got.getPrettyName()), got.getAvatarUrl());
+    assertNotNull(got.getAvatarUrl());
+    String avatarRandomURL = got.getAvatarUrl();
+    int indexOfLastupdatedParam = avatarRandomURL.indexOf("/?upd=");
+    String avatarURL = null;
+    if(indexOfLastupdatedParam != -1){
+      avatarURL = avatarRandomURL.substring(0,indexOfLastupdatedParam);
+    } else {
+      avatarURL = avatarRandomURL;
+    }
+    assertEquals(escapeJCRSpecialCharacters(
+            String.format(
+              "/rest/jcr/repository/portal-test/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
+              space.getPrettyName())),
+              avatarURL);
+    
   }
 
   /**
@@ -2461,9 +2486,19 @@ public class SpaceStorageTest extends AbstractCoreTest {
   public void testUpdateSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
-    space.setAvatarAttachment(new AvatarAttachment());
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    assertNotNull("avatar attachment should not be null", avatarAttachment);
+    space.setAvatarAttachment(avatarAttachment);
     tearDownSpaceList.add(space);
     spaceStorage.saveSpace(space, true);
+    
+    Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    Profile profile = new Profile(identity);
+    identity.setProfile(profile);
+    profile.setProperty(Profile.AVATAR, avatarAttachment);
+    identityStorage.saveIdentity(identity);
+    identityStorage.saveProfile(profile);
 
     //
     Space spaceForUpdate = spaceStorage.getSpaceById(space.getId());
@@ -2472,7 +2507,14 @@ public class SpaceStorageTest extends AbstractCoreTest {
     //
     Space got = spaceStorage.getSpaceById(spaceForUpdate.getId());
 
-    assertFalse(got.getAvatarUrl() == null);
+    assertNotNull("avatar URL should not be null",got.getAvatarUrl());
+  }
+  
+  private static String escapeJCRSpecialCharacters(String string) {
+    if (string == null) {
+      return null;
+    }
+    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
   
   // TODO : test getSpaceByGroupId without result
