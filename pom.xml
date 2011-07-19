@@ -845,14 +845,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-eclipse-plugin</artifactId>
-          <version>${version.eclipse.plugin}</version>
-          <configuration>
-            <addVersionToProjectName>true</addVersionToProjectName>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${version.exec.plugin}</version>
