@@ -53,10 +53,7 @@
     navTitle = navTitle.replace("{0}", OrganizationUtils.getGroupLabel(navigation.ownerId));
 
     print """
-      <div class="TitleBar">
-        <div style="width: 99%" title="$navigation.ownerId">$navTitle</div>
-      </div>
-      <div class="SubBlock">
+      <li class="TitleBar" title="$navigation.ownerId">$navTitle</li>
     """
     int idx = 0;
     for(UserNode node : nodes) {
@@ -64,9 +61,6 @@
             renderPageNode(node, ownerId, idx++ % 2 == 0);
          }
     }
-    print """
-      </div>
-    """
   }
 
 
@@ -91,8 +85,7 @@
 
         
     print """
-      <div class="MenuItem $tabStyleNavigation">
-      <div class="$clazz">
+      <li class="MenuItem $clazz $tabStyleNavigation">
     """
 
     if(node.getPageRef() != null) {
@@ -101,44 +94,33 @@
       print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
     }
 
-    print """
-      </div>
-    """
     if(hasChild) {
       print """
-        <div class="MenuItemContainer" style="position: absolute; display:none">
-          <div class="SubBlock">
+        <ul class="MenuItemContainer" style="position: absolute; display:none">
       """
       int idx = 0;
       for(UserNode child : node.getChildren()) {
         renderPageNode(child, groupId, idx++ % 2 == 0);
       }
-
+		
       print """
-        </div>
-      </div>
+      </ul>
       """;
     }
   print """
-    </div>
+    </li>
   """;
   }
 %>
-<div class="UIUserToolBarGroupPortlet" id="$uicomponent.id">
-  <div class="UIHorizontalTabs">
-    <div class="TabsContainer">
-      <div class="UITab NormalToolbarTab">
-        <div>
-          <a class="GroupIcon TBIcon" href="${portalURI}groupnavigation">$labelGroup</a>
-        </div>
+<ul class="UIUserToolBarGroupPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
+	<li class="UITab NormalToolbarTab">
+        <a class="GroupIcon TBIcon" href="${portalURI}groupnavigation">$labelGroup</a>
       <% if (!groupNavigations.isEmpty()) { %>
-        <div style="display:none" class="MenuItemContainer">
+        <ul style="display:none" class="MenuItemContainer">
         <% for(navigation in groupNavigations) {
           renderGroupPageNavigation(navigation);
         } %>
-        </div>
+        </ul>
       <% } %>
-      </div>
-    </div>
-  </div>
-</div>
+  </li>
+</ul>

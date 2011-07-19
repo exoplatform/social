@@ -65,7 +65,7 @@
       <div class="Lable">${findContactLabel} :</div>
       <div class="Search">
 		<% uiform.renderField(childs.get(0))%>
-		<a href="#" class="SearchIcon" title="Search" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></a>
+		<a href="#" class="SearchIcon" title="Search" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');">&nbsp;</a>
       </div>
       <a id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</a>
       

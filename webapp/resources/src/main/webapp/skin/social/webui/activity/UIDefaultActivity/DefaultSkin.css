@@ -81,6 +81,7 @@
 	width: 99%;
 	height: 30px;
 	font-size: 11px;
+	*margin-left: -74px;
 }
 
 .UIActivity .NormalBox .CommentBox .CommentButton {

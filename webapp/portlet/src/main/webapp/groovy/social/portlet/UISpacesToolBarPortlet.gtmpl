@@ -80,21 +80,17 @@
         getNodeURL = "exo:getNodeURL='" + resourceURL.toString() + "'";
     }
     print """
-      <div class="MenuItem $tabStyleNavigation" $getNodeURL>
-        <div class="$clazz">
+      <li class="MenuItem $clazz $tabStyleNavigation" $getNodeURL>
     """;
     if(node.pageRef != null) {
       print """<a class="ItemIcon $icon" href="$href" $title>$label</a>""";
     } else {
       print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
     }
-    print """
-        </div>
-    """;
+	
     if(hasChild) {
       print """
-        <div class="MenuItemContainer" style="position: absolute; display:none">
-          <div class="SubBlock">
+       <ul class="MenuItemContainer" style="position: absolute; display:none">
       """;
       
         int idx = 0;
@@ -103,32 +99,25 @@
            if (isRender) renderPageNode(childNode, groupId, idx++ % 2 == 0);
         }
       print """
-          </div>
-        </div>
+        </ul>
       """;
     }
     print """
-      </div>
+      </li>
     """;
   }
 %> 
-<div class="UIUserToolBarGroupPortlet" id="$uicomponent.id" >
-  <div class="UIHorizontalTabs">
-    <div class="TabsContainer">
-      <div class="UITab NormalToolbarTab">
-        <div class="">
-          <a class="SocialSpacesIcon TBIcon" href="<%= spacesLink %>">
-            <%=_ctx.appRes("UISpacesToolBarPortlet.label.Spaces")%>
-          </a>
-        </div>
+<ul class="UIUserToolBarGroupPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
+	<li class="UITab NormalToolbarTab">
+		<a class="SocialSpacesIcon TBIcon" href="<%= spacesLink %>">
+		<%=_ctx.appRes("UISpacesToolBarPortlet.label.Spaces")%>
+		</a>
         <% if (!spaceNavigations.isEmpty()) { %>
-        <div style="display:none" class="MenuItemContainer">
+        <ul style="display:none" class="MenuItemContainer">
         <% for(navigation in spaceNavigations) {
           renderSpacePageNavigation(navigation);
            } %>
-        </div>
+        </ul>
        <% } %>
-      </div>
-    </div>
-  </div>
-</div>
+  </li>
+</ul>

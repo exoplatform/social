@@ -40,30 +40,16 @@ def profileLink = LinkProvider.getProfileUri(user.userName);
 
 %>
 
-<div class="UIUserToolBarPortlet" id="$uicomponent.id">
-  <div class="UIHorizontalTabs">
-    <div class="TabsContainer" style="position: relative">
-      <div class="UITab NormalToolbarTab">
-        <div>
-          <a class="SocialUserToolBarIcon TBIcon" href="$accountSettingsLink">
-            ${user.fullName}
-          </a>
-        </div>
-        <div style="position: absolute; display:none" class="MenuItemContainer">
-          <div class="SubBlock">
-            <div class="MenuItem">
-              <div>
+<ul class="UIUserToolBarPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
+	<li class="UITab NormalToolbarTab" >
+		<a class="SocialUserToolBarIcon TBIcon" href="$accountSettingsLink">${user.fullName}</a>
+        <ul style="position: absolute; display:none" class="MenuItemContainer">
+            <li class="MenuItem">
                 <a href="$activitiesLink" class="ToolBarActivityIcon">$labelActivities</a>
-              </div>
-            </div>
-            <div class="MenuItem">
-              <div>
+            </li>
+            <li class="MenuItem">
                 <a href="$profileLink" class="ToolBarProfileIcon">$labelProfile</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+            </li>
+        </ul>
+	</li>
+</ul>
