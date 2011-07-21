@@ -17,13 +17,13 @@
 
 package org.exoplatform.social.core.storage;
 
-import org.chromattic.api.ChromatticSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -92,7 +92,7 @@ public class SpaceStorage extends AbstractStorage {
     space.setManagers(entity.getManagerMembersId());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
-    
+
     if (entity.getHasAvatar()) {
       try {
         IdentityEntity identityEntity = identityStorage._findIdentityEntity(SpaceIdentityProvider.NAME, entity.getPrettyName());
@@ -103,8 +103,8 @@ public class SpaceStorage extends AbstractStorage {
                               chromatticSession.getPath(avatarAttachment)));
       } catch (NodeNotFoundException e) {
         LOG.warn(e.getMessage(), e);
-      }
     }
+  }
   }
 
   /**
@@ -285,7 +285,7 @@ public class SpaceStorage extends AbstractStorage {
 
         spaceNameSearchCondition = this.processSearchCondition(spaceNameSearchCondition);
 
-        if (spaceNameSearchCondition.indexOf(PERCENT_STR) >= 0) {
+        if (spaceNameSearchCondition.contains(PERCENT_STR)) {
           whereExpression.startGroup();
           whereExpression
               .like(SpaceEntity.name, spaceNameSearchCondition)
@@ -312,22 +312,20 @@ public class SpaceStorage extends AbstractStorage {
   }
 
   private boolean isValidInput(String input) {
-    if (input == null) {
+    if (input == null || input.length() == 0) {
       return false;
     }
     String cleanString = input.replaceAll("\\*", "");
     cleanString = cleanString.replaceAll("\\%", "");
-    if (cleanString.length() > 0 && Character.isDigit(cleanString.charAt(0))) {
+    if (cleanString.length() == 0) {
        return false;
-    } else if (cleanString.length() == 0) {
-      return false;
     }
     return true;
   }
 
   private String processSearchCondition(String searchCondition) {
     StringBuffer searchConditionBuffer = new StringBuffer();
-    if (searchCondition.indexOf(ASTERISK_STR) < 0 && searchCondition.indexOf(PERCENT_STR) < 0) {
+    if (!searchCondition.contains(ASTERISK_STR) && !searchCondition.contains(PERCENT_STR)) {
       if (searchCondition.charAt(0) != ASTERISK_CHAR) {
         searchConditionBuffer.append(ASTERISK_STR).append(searchCondition);
       }
@@ -344,7 +342,7 @@ public class SpaceStorage extends AbstractStorage {
   /*
     Filter query
    */
-  
+
   private Query<SpaceEntity> _getSpacesByFilterQuery(String userId, SpaceFilter spaceFilter) {
 
     QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
@@ -498,7 +496,7 @@ public class SpaceStorage extends AbstractStorage {
     whereExpression.equals(SpaceEntity.displayName, spaceDisplayName);
 
     QueryResult<SpaceEntity> result = builder.where(whereExpression.toString()).get().objects();
-    
+
     if (result.hasNext()) {
       space = new Space();
       fillSpaceFromEntity(result.next(), space);
@@ -520,7 +518,7 @@ public class SpaceStorage extends AbstractStorage {
     SpaceEntity entity;
 
     try {
-      
+
       if (isNew) {
         entity = createSpace(space);
       }
@@ -1229,7 +1227,7 @@ public class SpaceStorage extends AbstractStorage {
   }
 
   /*
-    Editable spaces    
+    Editable spaces
    */
 
   /**
@@ -1450,7 +1448,7 @@ public class SpaceStorage extends AbstractStorage {
 
     Iterator<SpaceEntity> it = getSpaceRoot().getSpaces().values().iterator();
     _skip(it, offset);
-    
+
     while (it.hasNext()) {
 
       SpaceEntity spaceEntity = it.next();
