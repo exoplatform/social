@@ -41,7 +41,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {

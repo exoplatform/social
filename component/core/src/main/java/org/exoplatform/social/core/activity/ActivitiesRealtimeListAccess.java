@@ -23,7 +23,7 @@ import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.storage.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 
 /**
  * The real time list access for activities.

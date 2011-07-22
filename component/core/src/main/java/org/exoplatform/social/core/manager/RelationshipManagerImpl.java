@@ -29,7 +29,7 @@ import org.exoplatform.social.core.relationship.RelationshipListener;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
-import org.exoplatform.social.core.storage.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
 /**

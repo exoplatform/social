@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
+package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +31,19 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @version $Revision$
  */
 public class RelationshipStorageNewTestCase extends AbstractCoreTest {
-  private RelationshipStorage storage;
+  private RelationshipStorageImpl storage;
 
-  private IdentityStorage identityStorage;
+  private IdentityStorageImpl identityStorage;
 
   private List<String> tearDownIdentityList;
 
   @Override
   protected void setUp() throws Exception {
 
-    storage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
+    storage = (RelationshipStorageImpl) getContainer().getComponentInstanceOfType(RelationshipStorageImpl.class);
     assertNotNull(storage);
 
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
     assertNotNull("identityManger must not be null", identityStorage);
 
     tearDownIdentityList = new ArrayList<String>();
@@ -554,7 +554,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     identityStorage.saveIdentity(tmp5);
 
     Profile profile = new Profile(tmp1);
-    identityStorage.loadProfile(profile);
+    profile = identityStorage.loadProfile(profile);
 
     profile.setProperty(Profile.POSITION, "my position");
     profile.setProperty(Profile.AVATAR_URL, "my avatar url");

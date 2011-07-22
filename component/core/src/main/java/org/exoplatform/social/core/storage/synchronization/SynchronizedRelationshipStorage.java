@@ -15,21 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
-
-import java.util.List;
+package org.exoplatform.social.core.storage.synchronization;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.RelationshipStorageException;
+import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+
+import java.util.List;
 
 /**
- * {@link SynchronizedRelationshipStorage} as a decorator to {@link RelationshipStorage} for synchronization
+ * {@link SynchronizedRelationshipStorage} as a decorator to {@link org.exoplatform.social.core.storage.api.RelationshipStorage} for synchronization
  * management.
  *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SynchronizedRelationshipStorage extends RelationshipStorage {
+public class SynchronizedRelationshipStorage extends RelationshipStorageImpl {
 
   /**
    * {@inheritDoc}

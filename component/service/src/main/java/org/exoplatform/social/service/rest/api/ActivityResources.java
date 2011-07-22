@@ -418,7 +418,7 @@ public class ActivityResources implements ResourceContainer {
       identityManager = Util.getIdentityManager();
       Identity authenticatedUserIdentity = authenticatedUserIdentity();
       ExoSocialActivity commentActivity = activityManager.getActivity(commentId);
-      ExoSocialActivity activity = activityManager.getActivity(commentId);
+      ExoSocialActivity activity = activityManager.getActivity(activityId);
       if(commentActivity.isComment()){
         if(authenticatedUserIdentity != null){
           if(SecurityManager.canDeleteActivity(portalContainer, authenticatedUserIdentity, commentActivity)){

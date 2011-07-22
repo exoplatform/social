@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
+package org.exoplatform.social.core.storage.impl;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityStorageNewTestCase extends AbstractCoreTest {
-  private IdentityStorage storage;
+public class IdentityStorageImplTestCase extends AbstractCoreTest {
+  private IdentityStorageImpl storage;
   private List<String> tearDownIdentityList;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    storage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    storage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
     tearDownIdentityList = new ArrayList<String>();
     assertNotNull(storage);
   }
@@ -224,7 +224,7 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
     assertNotNull(profile.getId());
 
     //
-    storage._loadProfile(profile);
+    profile = storage._loadProfile(profile);
     assertNotNull(profile.getId());
 
     //
@@ -455,7 +455,7 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
 
    //
    Profile toLoadAfterUpdateProfile = new Profile(newIdentity);
-   storage.loadProfile(toLoadAfterUpdateProfile);
+   toLoadAfterUpdateProfile = storage.loadProfile(toLoadAfterUpdateProfile);
    assertEquals("updated user", toLoadAfterUpdateProfile.getProperty(Profile.USERNAME));
    assertEquals("updated last", toLoadAfterUpdateProfile.getProperty(Profile.LAST_NAME));
    assertEquals("avatarurl", toLoadAfterUpdateProfile.getProperty(Profile.AVATAR_URL));
@@ -608,6 +608,8 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
 
     //
     storage._createIdentity(newIdentity);
+    tearDownIdentityList.add(newIdentity.getId());
+    
     String generatedId = newIdentity.getId();
     assertNotNull(generatedId);
     assertEquals("organization", newIdentity.getProviderId());
@@ -644,7 +646,7 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
     assertEquals(
         escapeJCRSpecialCharacters("/rest/jcr/repository/portal-test/production/soc:providers/soc:organization/soc:remoteid/soc:profile/soc:avatar"),
         avatarURL);
-    
+
   }
 
   private Identity addIdentity(String provider, String name, String gender, String position) throws Exception {
@@ -864,7 +866,7 @@ public class IdentityStorageNewTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
-  
+
   private static String escapeJCRSpecialCharacters(String string) {
     if (string == null) {
       return null;

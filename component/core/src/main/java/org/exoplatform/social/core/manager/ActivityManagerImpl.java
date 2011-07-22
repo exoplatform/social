@@ -37,7 +37,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 
 /**

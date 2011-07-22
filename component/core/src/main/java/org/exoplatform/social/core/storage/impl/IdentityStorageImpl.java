@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
+package org.exoplatform.social.core.storage.impl;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.QueryBuilder;
@@ -33,6 +33,8 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.storage.IdentityStorageException;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
@@ -53,13 +55,17 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * IdentityStorage implementation.
+ *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityStorage extends AbstractStorage {
+public class IdentityStorageImpl extends AbstractStorage implements IdentityStorage {
 
   /** Logger */
-  private static final Log LOG = ExoLogger.getLogger(IdentityStorage.class);
+  private static final Log LOG = ExoLogger.getLogger(IdentityStorageImpl.class);
+
+  private IdentityStorage identityStorage;
 
   static enum PropNs {
 
@@ -139,6 +145,10 @@ public class IdentityStorage extends AbstractStorage {
   private void putParam(ProfileEntity profileEntity, Object value, String key) {
     Map<String, List<String>> params = createEntityParamMap(value);
     profileEntity.setProperty(key, new ArrayList<String>(params.keySet()));
+  }
+
+  private IdentityStorage getStorage() {
+    return (identityStorage != null ? identityStorage : this);
   }
 
   /*
@@ -243,7 +253,7 @@ public class IdentityStorage extends AbstractStorage {
     ));
   }
 
-  protected void _createProfile(final Profile profile) throws NodeNotFoundException {
+  protected Profile _createProfile(final Profile profile) throws NodeNotFoundException {
 
     //
     Identity identity = profile.getIdentity();
@@ -270,9 +280,12 @@ public class IdentityStorage extends AbstractStorage {
     ));
 
     _saveProfile(profile);
+
+    return profile;
+
   }
 
-  protected void _loadProfile(final Profile profile) throws NodeNotFoundException {
+  protected Profile _loadProfile(final Profile profile) throws NodeNotFoundException {
 
     //
     if (profile.getIdentity().getId() == null) {
@@ -297,6 +310,8 @@ public class IdentityStorage extends AbstractStorage {
         identityEntity.getRemoteId(),
         identityEntity.getId()
     ));
+
+    return profile;
   }
 
   protected void _saveProfile(final Profile profile) throws NodeNotFoundException {
@@ -511,13 +526,8 @@ public class IdentityStorage extends AbstractStorage {
   private Identity createIdentityFromEntity(final IdentityEntity identityEntity) {
 
     //
-    Identity identity = new Identity(identityEntity.getId());
-    identity.setDeleted(identityEntity.isDeleted());
-    identity.setRemoteId(identityEntity.getRemoteId());
-    identity.setProviderId(identityEntity.getProviderId());
-
-    //
-    return identity;
+    return getStorage().findIdentityById(identityEntity.getId());
+    
   }
 
   private void populateProfile(final Profile profile, final ProfileEntity profileEntity) {
@@ -589,10 +599,7 @@ public class IdentityStorage extends AbstractStorage {
    */
 
   /**
-   * Saves identity.
-   *
-   * @param identity the identity
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public void saveIdentity(final Identity identity) throws IdentityStorageException {
 
@@ -615,12 +622,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Updates existing identity's properties.
-   *
-   * @param identity the identity to be updated.
-   * @return the updated identity.
-   * @throws IdentityStorageException
-   * @since  1.2.0-GA
+   * {@inheritDoc}
    */
   public Identity updateIdentity(final Identity identity) throws IdentityStorageException {
 
@@ -633,11 +635,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Gets the identity by his id.
-   *
-   * @param nodeId the id of identity
-   * @return the identity
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public Identity findIdentityById(final String nodeId) throws IdentityStorageException {
 
@@ -659,10 +657,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Deletes an identity from JCR
-   *
-   * @param identity
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public void deleteIdentity(final Identity identity) throws IdentityStorageException {
     try {
@@ -674,18 +669,15 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Load profile.
-   *
-   * @param profile the profile
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
-  public void loadProfile(final Profile profile) throws IdentityStorageException {
+  public Profile loadProfile(Profile profile) throws IdentityStorageException {
     try {
-      _loadProfile(profile);
+      profile = _loadProfile(profile);
     }
     catch (NodeNotFoundException e) {
       try {
-        _createProfile(profile);
+        profile = _createProfile(profile);
       }
       catch (NodeNotFoundException e1) {
         throw new IdentityStorageException(
@@ -695,15 +687,12 @@ public class IdentityStorage extends AbstractStorage {
     }
 
     profile.clearHasChanged();
+
+    return profile;
   }
 
   /**
-   * Gets the identity by remote id.
-   *
-   * @param providerId the identity provider
-   * @param remoteId   the id
-   * @return the identity by remote id
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public Identity findIdentity(final String providerId, final String remoteId) throws IdentityStorageException {
     try {
@@ -715,10 +704,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Saves profile.
-   *
-   * @param profile the profile
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public void saveProfile(final Profile profile) throws IdentityStorageException {
 
@@ -737,19 +723,14 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Updates profile.
-   *
-   * @param profile the profile
-   * @throws IdentityStorageException
-   * @since 1.2.0-GA
+   * {@inheritDoc}
    */
   public void updateProfile(final Profile profile) throws IdentityStorageException {
     saveProfile(profile);
   }
 
   /**
-   * Gets total number of identities in storage depend on providerId.
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public int getIdentitiesCount (final String providerId) throws IdentityStorageException {
 
@@ -762,16 +743,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Gets the identities by profile filter.
-   *
-   * @param providerId Id of provider.
-   * @param profileFilter    Information of profile that used in filtering.
-   * @param offset           Start index of list to be get.
-   * @param limit            End index of list to be get.
-   * @param forceLoadOrReloadProfile Load profile or not.
-   * @return the identities by profile filter.
-   * @throws IdentityStorageException
-   * @since 1.2.0-GA
+   * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByProfileFilter(
       final String providerId, final ProfileFilter profileFilter, long offset, long limit,
@@ -804,8 +776,7 @@ public class IdentityStorage extends AbstractStorage {
       ProfileEntity profileEntity = results.next();
 
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      Profile profile = new Profile(identity);
-      populateProfile(profile, profileEntity);
+      Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
       listIdentity.add(identity);
 
@@ -815,13 +786,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Counts the number of identity by profile filter.
-   *
-   * @param providerId Id of Provider.
-   * @param profileFilter Information of profile are used in filtering.
-   * @return Number of identities that are filtered by profile.
-   * @throws IdentityStorageException
-   * @since 1.2.0-GA
+   * {@inheritDoc}
    */
   public int getIdentitiesByProfileFilterCount(final String providerId, final ProfileFilter profileFilter)
       throws IdentityStorageException {
@@ -844,13 +809,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Counts the number of identities that match the first character of name.
-   *
-   * @param providerId
-   * @param profileFilter Profile filter object.
-   * @return Number of identities that start with the first character of name.
-   * @throws IdentityStorageException
-   * @since 1.2.0-GA
+   * {@inheritDoc}
    */
   public int getIdentitiesByFirstCharacterOfNameCount(final String providerId, final ProfileFilter profileFilter)
       throws IdentityStorageException {
@@ -877,16 +836,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Gets the identities that match the first character of name.
-   *
-   * @param providerId Id of provider.
-   * @param profileFilter Profile filter object.
-   * @param offset   Start index of list to be get.
-   * @param limit    End index of list to be get.
-   * @param forceLoadOrReloadProfile Load profile or not.
-   * @return Identities that have name start with the first character.
-   * @throws IdentityStorageException
-   * @since 1.2.0-GA
+   * {@inheritDoc}
    */
   public List<Identity> getIdentitiesByFirstCharacterOfName(final String providerId, final ProfileFilter profileFilter,
       long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
@@ -914,8 +864,7 @@ public class IdentityStorage extends AbstractStorage {
       ProfileEntity profileEntity = results.next();
 
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
-      Profile profile = new Profile(identity);
-      populateProfile(profile, profileEntity);
+      Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
       listIdentity.add(identity);
 
@@ -926,12 +875,7 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Gets the type.
-   *
-   * @param nodetype the nodetype
-   * @param property the property
-   * @return the type
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public String getType(final String nodetype, final String property) {
 
@@ -959,20 +903,16 @@ public class IdentityStorage extends AbstractStorage {
   }
 
   /**
-   * Add or modify properties of profile and persist to JCR. Profile parameter is a lightweight that
-   * contains only the property that you want to add or modify. NOTE: The method will
-   * not delete the properties on old profile when the param profile have not those keys.
-   *
-   * @param profile
-   * @throws IdentityStorageException
+   * {@inheritDoc}
    */
   public void addOrModifyProfileProperties(final Profile profile) throws IdentityStorageException {
-    try {
-      _saveProfile(profile);
-    } catch (NodeNotFoundException e) {
-      throw new IdentityStorageException(
-          IdentityStorageException.Type.FAIL_TO_ADD_OR_MODIFY_PROPERTIES,
-          e.getMessage(), e);
-    }
+    getStorage().updateProfile(profile);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setStorage(IdentityStorage storage) {
+    this.identityStorage = storage;
   }
 }

@@ -28,7 +28,6 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -116,6 +115,7 @@ public class DataInjector {
 
 
   public Collection<ExoSocialActivity> generateActivities(long count) {
+
     Collection<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
     for (int i = 0; i < count; i++) {
       ExoSocialActivity activity = generateActivity();
@@ -213,8 +213,7 @@ public class DataInjector {
     while (identity == null) {
       try {
         username = username(getRandomUserIndex());
-        String id = GlobalId.create(OrganizationIdentityProvider.NAME, username).toString();
-        identity = identityManager.getIdentity(id);
+        identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME, username, false);
         if (except != null && except.getId().equals(identity.getId())) {
           identity = null; // continue
         }

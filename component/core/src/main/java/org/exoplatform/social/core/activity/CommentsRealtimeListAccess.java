@@ -21,7 +21,7 @@ import java.util.List;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.storage.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 
 /**
  * The realtime list access for comments of activities.

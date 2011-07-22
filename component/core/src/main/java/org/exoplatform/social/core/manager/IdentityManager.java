@@ -27,7 +27,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * The Interface IdentityManager.

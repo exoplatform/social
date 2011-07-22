@@ -27,7 +27,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 
 /**

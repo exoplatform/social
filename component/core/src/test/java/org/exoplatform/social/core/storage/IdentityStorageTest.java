@@ -7,6 +7,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -16,12 +17,12 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * Time: 9:34:56 AM
  */
 public class IdentityStorageTest extends AbstractCoreTest {
-  private IdentityStorage identityStorage;
+  private CachedIdentityStorage identityStorage;
   private List<Identity> tearDownIdentityList;
 
   public void setUp() throws Exception {
     super.setUp();
-    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    identityStorage = (CachedIdentityStorage) getContainer().getComponentInstanceOfType(CachedIdentityStorage.class);
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
   }
@@ -75,7 +76,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
       identityStorage.saveIdentity(tobeSavedIdentity);
       assertNotNull("tobeSavedIdentity.getId() must not be null.", tobeSavedIdentity.getId());
       assertNull("tobeSavedIdentity.getProfile().getId() must be null.", tobeSavedIdentity.getProfile().getId());
-      identityStorage.loadProfile(tobeSavedIdentity.getProfile());
+      Profile profile = identityStorage.loadProfile(tobeSavedIdentity.getProfile());
+      tobeSavedIdentity.setProfile(profile);
       assertNotNull("tobeSavedIdentity.getProfile().getId() must not be null", tobeSavedIdentity.getProfile().getId());
 
       identityStorage.deleteIdentity(tobeSavedIdentity);
@@ -185,7 +187,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tobeSavedProfile.setProperty(Profile.USERNAME, username);
 
     assertTrue(tobeSavedProfile.hasChanged());
-    identityStorage.loadProfile(tobeSavedProfile);
+    tobeSavedProfile = identityStorage.loadProfile(tobeSavedProfile);
     assertFalse(tobeSavedProfile.hasChanged());
 
     assertNotNull(tobeSavedProfile.getId());
@@ -206,7 +208,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
       //create new profile in db without data (lazy creating)
       Profile profile = new Profile(identity);
       assertFalse(profile.hasChanged());
-      identityStorage.loadProfile(profile);
+      profile = identityStorage.loadProfile(profile);
       assertFalse(profile.hasChanged());
       profileId = profile.getId();
     }
@@ -215,7 +217,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     {
       Profile profile = new Profile(identity);
       assertFalse(profile.hasChanged());
-      identityStorage.loadProfile(profile);
+      profile = identityStorage.loadProfile(profile);
       assertFalse(profile.hasChanged());
       assertEquals(profileId, profile.getId());
     }

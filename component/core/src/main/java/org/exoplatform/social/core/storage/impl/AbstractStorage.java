@@ -15,11 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
+package org.exoplatform.social.core.storage.impl;
 
-import java.text.DateFormatSymbols;
 import java.util.Iterator;
-import java.util.Locale;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
@@ -27,6 +25,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.storage.cache.CachedActivityStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 /**
@@ -39,9 +38,6 @@ public abstract class AbstractStorage {
   protected final PortalContainer container;
   protected final ChromatticManager manager;
   protected final SocialChromatticLifeCycle lifeCycle;
-
-  //
-  protected String[] MONTH_NAME = new DateFormatSymbols(Locale.ENGLISH).getMonths();
 
   //
   protected static final String NS_JCR = "jcr:";
@@ -61,6 +57,8 @@ public abstract class AbstractStorage {
   protected static final String SPACE_STR = " ";
   protected static final String EMPTY_STR = "";
   protected static final String SLASH_STR = "/";
+
+  private CachedActivityStorage cachedActivityStorage;
 
   protected AbstractStorage() {
 
@@ -83,11 +81,17 @@ public abstract class AbstractStorage {
   }
 
   protected ProviderRootEntity getProviderRoot() {
-    return getRoot(NODETYPE_PROVIDERS, ProviderRootEntity.class);
+    if (lifeCycle.getProviderRoot().get() == null) {
+      lifeCycle.getProviderRoot().set(getRoot(NODETYPE_PROVIDERS, ProviderRootEntity.class));
+    }
+    return (ProviderRootEntity) lifeCycle.getProviderRoot().get();
   }
 
   protected SpaceRootEntity getSpaceRoot() {
-    return getRoot(NODETYPE_SPACES, SpaceRootEntity.class);
+    if (lifeCycle.getSpaceRoot().get() == null) {
+      lifeCycle.getSpaceRoot().set(getRoot(NODETYPE_SPACES, SpaceRootEntity.class));
+    }
+    return (SpaceRootEntity) lifeCycle.getSpaceRoot().get();
   }
 
   protected <T> T _findById(final Class<T> clazz, final String nodeId) throws NodeNotFoundException {
@@ -133,7 +137,7 @@ public abstract class AbstractStorage {
 
   protected void _skip(Iterator<?> it, long offset) {
 
-    // TODO : user JCR skip
+    // TODO : use JCR skip
 
     while (it.hasNext()) {
       if (offset == 0) {

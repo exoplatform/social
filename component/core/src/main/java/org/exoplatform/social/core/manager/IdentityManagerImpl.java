@@ -28,14 +28,13 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.ProfileFilterListAccess;
-import org.exoplatform.social.core.identity.model.GlobalId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * Class IdentityManagerImpl implements IdentityManager without caching.
@@ -104,7 +103,8 @@ public class IdentityManagerImpl implements IdentityManager {
   public Profile getProfile(Identity identity) {
     Profile profile = identity.getProfile();
     if (profile.getId() == null) {
-      identityStorage.loadProfile(profile);
+      profile = identityStorage.loadProfile(profile);
+      identity.setProfile(profile);
     }
     return profile;
   }
@@ -265,7 +265,8 @@ public class IdentityManagerImpl implements IdentityManager {
 
     if (returnIdentity != null) {
       if (forceLoadOrReloadProfile) {
-        this.getIdentityStorage().loadProfile(returnIdentity.getProfile());
+        Profile profile = this.getIdentityStorage().loadProfile(returnIdentity.getProfile());
+        returnIdentity.setProfile(profile);
       }
     } else {
       LOG.info("Can not get identity with id: " + identityId);
@@ -318,7 +319,8 @@ public class IdentityManagerImpl implements IdentityManager {
         return null;
       }
       if (forceLoadOrReloadProfile) {
-        this.getIdentityStorage().loadProfile(result.getProfile());
+        Profile profile = this.getIdentityStorage().loadProfile(result.getProfile());
+        result.setProfile(profile);
       }
     }
     returnIdentity = result;

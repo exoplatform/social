@@ -28,10 +28,12 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
- * Unit Tests for {@link org.exoplatform.social.core.storage.SpaceStorage}
+ * Unit Tests for {@link org.exoplatform.social.core.storage.api.SpaceStorage}
  *
  * @since Nov 3, 2010
  * @copyright eXo SAS

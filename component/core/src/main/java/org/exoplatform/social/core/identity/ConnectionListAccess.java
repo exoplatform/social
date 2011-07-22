@@ -21,7 +21,7 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.storage.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 
 /**
  * ListAccess is used in loading connection with the input identity.

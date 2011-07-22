@@ -24,7 +24,7 @@ import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * ListAccess is used in loading identity with the input profile filter.

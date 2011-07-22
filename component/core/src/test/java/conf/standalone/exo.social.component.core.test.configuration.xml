@@ -88,6 +88,10 @@
     </init-params>
   </component>
 
+  <component>
+    <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
+    <type>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</type>
+  </component>
 
   <component>
     <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
@@ -105,24 +109,56 @@
     </init-params>
   </component>
 
+  <!--
+    Activity storage components.
+  -->
   <component>
-    <key>org.exoplatform.social.core.storage.ActivityStorage</key>
-    <type>org.exoplatform.social.core.storage.SynchronizedActivityStorage</type>
+    <key>org.exoplatform.social.core.storage.api.ActivityStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedActivityStorage</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.IdentityStorage</key>
-    <type>org.exoplatform.social.core.storage.SynchronizedIdentityStorage</type>
+    <key>org.exoplatform.social.core.storage.impl.ActivityStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedActivityStorage</type>
+  </component>
+
+  <!--
+    Identity storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.IdentityStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedIdentityStorage</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.RelationshipStorage</key>
-    <type>org.exoplatform.social.core.storage.SynchronizedRelationshipStorage</type>
+    <key>org.exoplatform.social.core.storage.impl.IdentityStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedIdentityStorage</type>
+  </component>
+
+  <!--
+    Relationship storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.RelationshipStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedRelationshipStorage</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.core.storage.SpaceStorage</key>
-    <type>org.exoplatform.social.core.storage.SynchronizedSpaceStorage</type>
+    <key>org.exoplatform.social.core.storage.impl.RelationshipStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedRelationshipStorage</type>
+  </component>
+
+  <!--
+    Space storage components.
+  -->
+  <component>
+    <key>org.exoplatform.social.core.storage.api.SpaceStorage</key>
+    <type>org.exoplatform.social.core.storage.cache.CachedSpaceStorage</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
+    <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
   </component>
 
   <component>

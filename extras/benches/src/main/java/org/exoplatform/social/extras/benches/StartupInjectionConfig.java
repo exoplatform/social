@@ -81,11 +81,11 @@ public class StartupInjectionConfig implements Startable {
         String name = property.getName();
         String value = property.getValue();
         Long longValue = longValue(name, value);
-        if ("people".equals(property)) {
+        if ("people".equals(name)) {
           people = longValue;
-        } else if ("relations".equals(property)) {
+        } else if ("relations".equals(name)) {
           relations = longValue;
-        } else if ("activities".equals(property)) {
+        } else if ("activities".equals(name)) {
           activities = longValue;
         } else if (name.contains(".activities")) {
           String user = name.substring(0, name.indexOf(".activities"));

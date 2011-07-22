@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage;
+package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,15 +33,18 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityStorageNewTestCase extends AbstractCoreTest {
+public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
-  private ActivityStorage activityStorage;
+  private ActivityStorageImpl activityStorage;
   private RelationshipStorage relationshipStorage;
   private List<ExoSocialActivity> tearDownActivityList;
 
@@ -55,7 +58,7 @@ public class ActivityStorageNewTestCase extends AbstractCoreTest {
     super.setUp();
 
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorage.class);
+    activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
     relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
 
     assertNotNull(identityStorage);
@@ -168,7 +171,7 @@ public class ActivityStorageNewTestCase extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.ActivityStorage#getActivity(String)}
+   * Test {@link org.exoplatform.social.core.storage.impl.ActivityStorageImpl#getActivity(String)}
    */
   public void testUserPostActivityToSpace() throws ActivityStorageException {
     // Create new Space and its Identity

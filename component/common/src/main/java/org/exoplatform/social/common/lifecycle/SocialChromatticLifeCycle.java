@@ -30,6 +30,8 @@ import org.exoplatform.container.xml.InitParams;
 public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
 
   private static final ThreadLocal<ChromatticSession> session = new ThreadLocal<ChromatticSession>();
+  private final ThreadLocal providerRoot = new ThreadLocal();
+  private final ThreadLocal spaceRoot = new ThreadLocal();
 
   public static final String SOCIAL_LIFECYCLE_NAME = "soc";
 
@@ -61,6 +63,17 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
     super.onCloseSession(context);
     session.get().close();
     session.remove();
+    providerRoot.set(null);
+    spaceRoot.set(null);
 
   }
+
+  public ThreadLocal getProviderRoot() {
+    return providerRoot;
+  }
+
+  public ThreadLocal getSpaceRoot() {
+    return spaceRoot;
+  }
+
 }

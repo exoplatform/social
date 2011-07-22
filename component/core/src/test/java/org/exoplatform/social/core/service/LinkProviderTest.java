@@ -16,18 +16,13 @@
  */
 package org.exoplatform.social.core.service;
 
-import java.io.InputStream;
-
-import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.storage.IdentityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class LinkProviderTest extends AbstractCoreTest {

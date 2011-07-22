@@ -36,6 +36,8 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -163,13 +165,12 @@ public class ActivityStorageTest extends AbstractCoreTest {
       assertNotNull("activity.getId() must not be null", activity.getId());
 
       activityStorage.deleteActivity(activity.getId());
-      boolean exceptionThrown = false;
       try {
         activityStorage.getActivity(activity.getId());
-      } catch (ActivityStorageException ase) {
-        exceptionThrown = true;
+        fail();
+      } catch (Exception ase) {
+        // ok
       }
-      assertTrue("exceptionThrows must be true", exceptionThrown);
     }
     //Test deleteActivity(Activity)
     {
