@@ -312,10 +312,6 @@
 	cursor: pointer;
 }
 
-.UIProfile .Container .UIAction {
-	padding: 8px 0px;
-}
-
 .UIProfile .Container .ButtonLeft {
 	background: url("DefaultSkin/background/LeftButton.gif") no-repeat left;
 	padding-left: 4px;
@@ -401,24 +397,6 @@ input.hint,textarea.hint {
 	color: gray;
 }
 
-.UIAvatarUploader .UIAction .ButtonLeft {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-	padding-left: 4px;
-}
-
-.UIAvatarUploader .UIAction .ButtonRight {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-	padding-right: 4px;
-}
-
-.UIAvatarUploader .UIAction .ButtonMiddle {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-	line-height: 21px;
-	padding: 0px 14px;
-}
-
-
-
 .UIAvatarUploadContent .InfoTitle {
 	background: #e2e2e2;
 	color: #878787;
@@ -452,22 +430,6 @@ input.hint,textarea.hint {
 .UIAvatarUploadContent .ImageAvatar img {
   width: 110px;
   height: 110px;
-}
-
-.UIAvatarUploadContent .UIAction .ButtonLeft {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-	padding-left: 4px;
-}
-
-.UIAvatarUploadContent .UIAction .ButtonRight {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-	padding-right: 4px;
-}
-
-.UIAvatarUploadContent .UIAction .ButtonMiddle {
-	background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-	line-height: 21px;
-	padding: 0px 14px;
 }
 
 .UIProfile .Experience {

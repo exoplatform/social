@@ -109,40 +109,6 @@
   padding:15px 0;
 }
 
-.UISpaceSettingPortlet .UIAction .ActionContainer {
-  margin:auto;
-  width:auto;
-}
-
-.UISpaceSettingPortlet .UIAction .UITable {
-	margin: 0;
-	padding: 0;
-}
-
-.UISpaceSettingPortlet .UIAction .ActionButton {
-  cursor:pointer;
-  display:block;
-  float:left;
-  margin:0 3px;
-}
-
-.UISpaceSettingPortlet .UIAction .ButtonLeft {
-  background:transparent url('DefaultSkin/background/SimpleButtonLeft.gif') no-repeat left;
-  padding:0 0 0 2px;
-}
-
-.UISpaceSettingPortlet .UIAction .ButtonRight {
-  background:transparent url('DefaultSkin/background/SimpleButtonRight.gif') no-repeat right;
-  padding:0 2px 0 0;
-}
-
-.UISpaceSettingPortlet .UIAction .ButtonMiddle {
-  background:transparent url('DefaultSkin/background/SimpleButtonMiddle.gif') repeat-x center bottom;
-  line-height:23px;
-  padding:0 12px;
-  text-align:center;
-  white-space:nowrap;
-}
 
 .UISpaceSettingPortlet .UIAction a {
   color:black;
@@ -730,24 +696,6 @@
   color: gray;
 }
 
-.UIAvatarUploader .UIAction .ButtonLeft {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-  padding-left: 4px;
-  height: 21px;
-}
-
-.UIAvatarUploader .UIAction .ButtonRight {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-  padding-right: 4px;
-  height: 21px;
-}
-
-.UIAvatarUploader .UIAction .ButtonMiddle {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-  line-height: 21px;
-  padding: 0 14px;
-}
-
 .UIAvatarUploadContent .InfoTitle {
   background: #e2e2e2;
   color: #878787;
@@ -782,18 +730,3 @@
   width: 110px;
 }
 
-.UIAvatarUploadContent .UIAction .ButtonLeft {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat left top;
-  padding-left: 4px;
-}
-
-.UIAvatarUploadContent .UIAction .ButtonRight {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) no-repeat right top;
-  padding-right: 4px;
-}
-
-.UIAvatarUploadContent .UIAction .ButtonMiddle {
-  background: url(/eXoResources/skin/DefaultSkin/webui/component/UIBarDecorator/UIAction/background/LightBlueStyle.gif) repeat-x left -22px;
-  line-height: 21px;
-  padding: 0 14px;
-}

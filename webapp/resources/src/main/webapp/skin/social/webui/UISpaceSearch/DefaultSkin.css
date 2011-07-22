@@ -63,6 +63,10 @@
   width:273px;
   margin-top: 8px;
 }
+ 
+ .UISpaceSearch .CenterContentSearchInput .UIAction {
+  text-align: left;
+}
 
 .UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {
   border:1px solid white;

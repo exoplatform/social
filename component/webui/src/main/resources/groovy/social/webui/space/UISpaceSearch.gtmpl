@@ -64,18 +64,10 @@ def searchAction = uicomponent.event('Search');
                       <div class="SpaceSearchInput"><%uiform.renderField(childs.get(0)); %>
                       <div id="SearchButton" class="SearchIcon" title="Search" onclick="$searchAction"><span></span></div>
                       </div>
-                      
                       <div class="UIAction">
-									      <div class="ActionButton LightBlueStyle" onclick="<%= uicomponent.event("AddSpace") %>">
-									        <div class="ButtonLeft">
-									          <div class="ButtonRight">
-									            <div class="ButtonMiddle">
-									              <a><%= labelActionAddSpace %></a>
-									            </div>
-									          </div>
-									        </div>
-									      </div>
-									    </div>
+			              <a href="javascript:void(0);" onclick="<%= uicomponent.event("AddSpace") %>" class="ActionButton LightBlueStyle"><%= labelActionAddSpace %></a>
+			            </div>
+                      
 						    
                       <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc">
                 </div>

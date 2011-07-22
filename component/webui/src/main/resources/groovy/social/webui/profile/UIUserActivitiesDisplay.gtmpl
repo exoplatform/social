@@ -43,43 +43,12 @@
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
 <% if (uicomponent.isActivityStreamOwner()) { %>
-  <div class="UIAction">
-      <table class="ActionContainer">
-        <tbody>
-          <tr>
-            <td>
-              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "CONNECTIONS");%>" class="ActionButton $connectionsDisplayModeStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a>$labelConnections</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACES");%>" class="ActionButton $mySpacesDisplayModeStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a>$labelSpaces</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a>$labelMyStatus</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  </div>
+<div class="UIAction">
+  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "CONNECTIONS");%>" class="ActionButton $connectionsDisplayModeStyle">$labelConnections</a>
+  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaces</a>
+  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
+</div>
+
 <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
 </div>

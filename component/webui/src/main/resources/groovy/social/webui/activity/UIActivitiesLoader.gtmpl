@@ -46,25 +46,10 @@
   <%
     if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
       %>
-        <div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event("LoadMore")%>" class="UIAction">
-          <table>
-            <tbody>
-              <tr>
-             <td>
-              <div class="ActionButton MoreActivitiesLoader">
-               <div class="ButtonLeft">
-                 <div class="ButtonRight">
-                   <div class="ButtonMiddle">
-                     <a>$labelMore</a>
-                   </div>
-                 </div>
-               </div>
-              </div>
-             </td>
-              </tr>
-            </tbody>
-          </table>
+      	<div id="UIActivitiesLoadButton" class="UIAction">
+          <a href="javascript:void(0);" onclick="<%=uicomponent.event("LoadMore")%>" class="ActionButton LightBlueStyle">$labelMore</a>
         </div>
+        
       <%
     }
 

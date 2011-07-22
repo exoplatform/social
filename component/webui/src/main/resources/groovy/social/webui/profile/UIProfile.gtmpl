@@ -37,25 +37,10 @@
        </div>
      </div>
     <% if (isEditable) { %>
-        <div class="UIAction">
-          <table class="ActionContainer">
-            <tbody>
-              <tr>
-                <td>
-                  <div onclick="" class="ActionButton ButtonChange">
-                    <div class="ButtonLeft">
-                      <div class="ButtonRight">
-                        <div class="ButtonMiddle">
-                          <a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="UIAction">
+      <a href="javascript:void(0);" onclick="$changeAvatar" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
+    </div>
+        
     <% } %>
   </div>
   <div class="Container" >

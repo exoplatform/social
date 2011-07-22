@@ -81,25 +81,10 @@
         </tbody>
       </table>
       <div style="clear: left;"><span></span></div>
-      <div class="UIAction UISaveButton"> 
-        <table class="ActionContainer UITable">
-          <tbody>
-            <tr>
-              <td>
-                <div onmouseout="this.style.color='black'" onmouseover="this.style.color = '#058ee6'" class="ActionButton LightBlueStyle">
-                  <div class="ButtonLeft">
-                    <div class="ButtonRight">
-                      <div class="ButtonMiddle">
-                        <a href="#" onclick="$saveAction"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="UIAction UISaveButton">
+	      <a href="javascript:void(0);" onclick="$saveAction" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
+	    </div>
+      
     </div>
   </div>
   <% uiform.end(); %>

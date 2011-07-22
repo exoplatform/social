@@ -54,28 +54,14 @@
             }
           %>
       </table>
-      <div class="UIAction"> 
-        <table class="ActionContainer">
-          <tr>
-            <td>
-              <% for(action in uicomponent.getActions()) { 
+      <div class="UIAction">
+      <% for(action in uicomponent.getActions()) { 
                    def actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
                    def link = uicomponent.event(action);
               %>
-              <div onclick="$link" class="ActionButton LightBlueStyle" onmouseover="this.style.color = '#058ee6'" onmouseout="this.style.color='black'">
-                <div class="ButtonLeft">
-                  <div class="ButtonRight">
-                    <div class="ButtonMiddle">
-                      <a href="javascript:void(0);">$actionLabel</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-               <% } %>
-            </td>
-          </tr>
-        </table>
-      </div>
+           <a onclick="$link" href="javascript:void(0);" class="ActionButton LightBlueStyle">$actionLabel</a>
+       		<% } %>
+        </div>
     </div>
   </div>
   <%uiform.end()%>

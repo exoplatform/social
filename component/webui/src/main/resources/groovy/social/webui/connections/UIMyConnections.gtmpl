@@ -44,24 +44,9 @@
             </p>
         <% if (isOwner) {%>
         <div class="UIAction">
-            <table class="ActionContainer">
-              <tbody>
-                <tr>
-                   <td>
-                      <div  class="ActionButton LightBlueStyle">
-                        <div class="ButtonLeft">
-                          <div class="ButtonRight">
-                            <div class="ButtonMiddle">
-                              <a href="<%=peopleURL%>"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                   </td>
-                </tr>
-              </tbody>
-            </table>
-         </div>
+          <a href="<%=peopleURL%>" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%></a>
+        </div>
+        
          <% } %>
          </div>
       <%}%>

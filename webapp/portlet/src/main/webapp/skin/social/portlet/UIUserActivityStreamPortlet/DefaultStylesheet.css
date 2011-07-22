@@ -56,29 +56,22 @@ visibility: hidden;
   background: #EBEBEB none repeat scroll 0 0;
 }
 
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonLeft {
-  background: none;
-}
 
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonRight {
-  background: none;
-}
-
-.UIUserActivityStreamPortlet .UIAction .LightBlueStyle .ButtonMiddle {
+.UIUserActivityStreamPortlet .UIAction .LightBlueStyle {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -233px;
   line-height:26px;
   color: #484848;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  border: none;
 }
 
-.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle {
+.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle {
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -327px;
-  display:table-cell;
   line-height:26px;
   padding:0 12px;
   text-align:center;
   white-space:nowrap;
-}
-
-.UIUserActivityStreamPortlet .UIAction .DarkBlueStyle .ButtonMiddle a {
-  color: #bcbcbc;
+  color: white;
 }
