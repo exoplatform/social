@@ -25,6 +25,7 @@ import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
+import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -188,7 +189,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getMemberSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, null);
 
     //
     return spacesCountCache.get(
@@ -208,7 +209,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getMemberSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.MEMBER);
 
     //
     return spacesCountCache.get(
@@ -236,7 +237,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.MEMBER);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -261,7 +262,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.MEMBER);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -285,7 +286,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getPendingSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.PENDING);
 
     //
     return spacesCountCache.get(
@@ -305,7 +306,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getPendingSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.PENDING);
 
     //
     return spacesCountCache.get(
@@ -333,7 +334,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.PENDING);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -358,7 +359,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.PENDING);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -382,7 +383,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getInvitedSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.INVITED);
 
     //
     return spacesCountCache.get(
@@ -402,7 +403,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getInvitedSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.INVITED);
 
     //
     return spacesCountCache.get(
@@ -430,7 +431,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.INVITED);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -455,7 +456,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.INVITED);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -479,7 +480,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getPublicSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.PUBLIC);
 
     //
     return spacesCountCache.get(
@@ -499,7 +500,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getPublicSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.PUBLIC);
 
     //
     return spacesCountCache.get(
@@ -520,7 +521,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.PUBLIC);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -552,7 +553,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.PUBLIC);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -576,7 +577,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getAccessibleSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.ACCESSIBLE);
 
     //
     return spacesCountCache.get(
@@ -596,7 +597,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getAccessibleSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.ACCESSIBLE);
 
     //
     return spacesCountCache.get(
@@ -624,7 +625,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.ACCESSIBLE);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -649,7 +650,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.ACCESSIBLE);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -673,7 +674,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getEditableSpacesCount(final String userId) throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.EDITABLE);
 
     //
     return spacesCountCache.get(
@@ -693,7 +694,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getEditableSpacesByFilterCount(final String userId, final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.EDITABLE);
 
     //
     return spacesCountCache.get(
@@ -721,7 +722,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       throws SpaceStorageException {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, null);
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.EDITABLE);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -746,7 +747,7 @@ public class CachedSpaceStorage implements SpaceStorage {
       final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.EDITABLE);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //
@@ -784,7 +785,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public int getAllSpacesByFilterCount(final SpaceFilter spaceFilter) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(null, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(null, spaceFilter, null);
 
     //
     return spacesCountCache.get(
@@ -827,7 +828,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   public List<Space> getSpacesByFilter(final SpaceFilter spaceFilter, final long offset, final long limit) {
 
     //
-    SpaceFilterKey key = new SpaceFilterKey(null, spaceFilter);
+    SpaceFilterKey key = new SpaceFilterKey(null, spaceFilter, null);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
 
     //

@@ -31,13 +31,15 @@ public class SpaceFilterKey implements CacheKey {
   private String userId;
   private char firstCharacterOfSpaceName;
   private String spaceNameSearchCondition;
+  private SpaceType type;
 
-  public SpaceFilterKey(String userId, SpaceFilter filter) {
+  public SpaceFilterKey(String userId, SpaceFilter filter, SpaceType type) {
     this.userId = userId;
     if (filter != null) {
       this.firstCharacterOfSpaceName = filter.getFirstCharacterOfSpaceName();
       this.spaceNameSearchCondition = filter.getSpaceNameSearchCondition();
     }
+    this.type = type;
   }
 
   @Override
@@ -57,6 +59,9 @@ public class SpaceFilterKey implements CacheKey {
     if (spaceNameSearchCondition != null ? !spaceNameSearchCondition.equals(that.spaceNameSearchCondition) : that.spaceNameSearchCondition != null) {
       return false;
     }
+    if (type != that.type) {
+      return false;
+    }
     if (userId != null ? !userId.equals(that.userId) : that.userId != null) {
       return false;
     }
@@ -69,7 +74,8 @@ public class SpaceFilterKey implements CacheKey {
     int result = userId != null ? userId.hashCode() : 0;
     result = 31 * result + (int) firstCharacterOfSpaceName;
     result = 31 * result + (spaceNameSearchCondition != null ? spaceNameSearchCondition.hashCode() : 0);
+    result = 31 * result + (type != null ? type.hashCode() : 0);
     return result;
   }
-
+  
 }
