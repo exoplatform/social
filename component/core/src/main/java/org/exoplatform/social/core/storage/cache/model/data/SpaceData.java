@@ -28,6 +28,7 @@ import org.exoplatform.social.core.space.model.Space;
 public class SpaceData implements CacheData<Space> {
 
   private final String id;
+  private final String app;
   private final String prettyName;
   private final String displayName;
   private final String registration;
@@ -47,6 +48,7 @@ public class SpaceData implements CacheData<Space> {
   public SpaceData(final Space space) {
 
     id = space.getId();
+    app = space.getApp();
     prettyName = space.getPrettyName();
     displayName = space.getDisplayName();
     registration = space.getRegistration();
@@ -70,6 +72,7 @@ public class SpaceData implements CacheData<Space> {
     Space space = new Space();
 
     space.setId(id);
+    space.setApp(app);
     space.setPrettyName(prettyName);
     space.setDisplayName(displayName);
     space.setRegistration(registration);
@@ -92,6 +95,10 @@ public class SpaceData implements CacheData<Space> {
 
   public String getId() {
     return id;
+  }
+
+  public String getApp() {
+    return app;
   }
 
   public String getPrettyName() {

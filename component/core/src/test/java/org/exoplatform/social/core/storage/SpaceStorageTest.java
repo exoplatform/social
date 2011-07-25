@@ -130,6 +130,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    */
   private Space getSpaceInstance(int number) {
     Space space = new Space();
+    space.setApp("app");
     space.setDisplayName("my space " + number);
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
@@ -2167,6 +2168,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space savedSpace = spaceStorage.getSpaceById(space.getId());
     assertNotNull("savedSpace must not be null", savedSpace);
     assertNotNull("savedSpace.getId() must not be null", savedSpace.getId());
+    assertNotNull("savedSpace.getApp() must not be null", savedSpace.getApp());
     assertEquals("space.getId() must return: " + space.getId(), space.getId(), savedSpace.getId());
     assertEquals("space.getPrettyName() must return: " + space.getPrettyName(), space.getPrettyName(), savedSpace.getPrettyName());
     assertEquals("space.getRegistration() must return: " + space.getRegistration(), space.getRegistration(), savedSpace.getRegistration());
