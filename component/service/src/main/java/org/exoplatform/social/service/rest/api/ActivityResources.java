@@ -18,7 +18,6 @@ package org.exoplatform.social.service.rest.api;
 
 import java.util.HashMap;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,6 +29,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -173,7 +173,6 @@ public class ActivityResources implements ResourceContainer {
    */
   @POST
   @Path("activity.{format}")
-  @Consumes(MediaType.APPLICATION_JSON)
   public Response createNewActivity(@Context UriInfo uriInfo,
                                     @PathParam("portalContainerName") String portalContainerName,
                                     @PathParam("format") String format,
