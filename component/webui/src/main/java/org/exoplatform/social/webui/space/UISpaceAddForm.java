@@ -146,10 +146,11 @@ public class UISpaceAddForm extends UIFormTabPane {
         space.setType(DefaultSpaceApplicationHandler.NAME);
         spaceService.initApps(space);
       } catch (SpaceException se) {
-        LOG.warn("Failed to create a new space", se);
+        LOG.warn("Failed to create a new space.");
         if (se.getCode() == SpaceException.Code.SPACE_ALREADY_EXIST) {
           msg = MSG_ERROR_SPACE_ALREADY_EXIST;
-          uiApplication.addMessage(new ApplicationMessage(msg, null, ApplicationMessage.WARNING));
+          uiApplication.addMessage(new ApplicationMessage(msg, new String[] {space.getName()},
+                                                          ApplicationMessage.WARNING));
           return;
         } else if (se.getCode() == SpaceException.Code.UNABLE_TO_ADD_CREATOR) {
           msg = MSG_ERROR_UNABLE_TO_ADD_CREATOR;

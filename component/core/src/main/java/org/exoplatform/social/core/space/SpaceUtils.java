@@ -664,15 +664,18 @@ public class SpaceUtils {
     Group newGroup;
     String groupId;
     String shortName;
+    
+    if (isSpaceNameExisted(spaceName)) {
+      throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
+    }
+    
     try {
       parentGroup = groupHandler.findGroupById(SPACE_GROUP);
       // Creates new group
       newGroup = groupHandler.createGroupInstance();
       shortName = SpaceUtils.cleanString(spaceName);
       groupId = parentGroup.getId() + "/" + shortName;
-      if (isSpaceNameExisted(spaceName)) {
-        throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
-      }
+
       newGroup.setGroupName(shortName);
       newGroup.setLabel(spaceName);
       newGroup.setDescription("the " + parentGroup.getId() + "/" + shortName + " group");
@@ -712,24 +715,29 @@ public class SpaceUtils {
   }
 
   /**
-   * Checks if a space exists
+   * Checks if a space or a group already exists
    *
    * @param spaceName
    * @return boolean if existed return true, else return false
    * @throws SpaceException with code INTERNAL_SERVER_ERROR
    */
   static public boolean isSpaceNameExisted(String spaceName) throws SpaceException {
-    PortalContainer portalContainer = PortalContainer.getInstance();
-    SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    List<Space> spaces = spaceService.getAllSpaces();
-    // Checks whether spaceName has existed yet
-    for (Space space : spaces) {
-      if (cleanString(space.getName()).equalsIgnoreCase(cleanString(spaceName)))
-        return true;
+    List<PageNavigation> allNavs = Util.getUIPortalApplication().getUserPortalConfig().getNavigations();
+    String space_Name = spaceName.replaceAll(" ", "_"); // Compares with Existing Pages
+    String spacePrettyName = cleanString(spaceName); // Compares with Existing DashBoard Tabs's & Spaces's Names
+    for (PageNavigation pn : allNavs) {
+      if ((pn.getNode(space_Name) != null) ||
+          (pn.getNode(spacePrettyName) != null)) return true;
+      ArrayList<PageNode> nodes = pn.getNodes();
+      for (PageNode node : nodes) {
+        if ((node.getChild(space_Name) != null) || 
+            (node.getChild(spacePrettyName) != null)) return true;
+      }
     }
+    
     return false;
   }
-
+  
   /**
    * When user chooses an existing group, that user will be added to that group
    * as a manager
