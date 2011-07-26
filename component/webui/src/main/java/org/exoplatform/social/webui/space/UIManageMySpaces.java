@@ -58,7 +58,6 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
   events = {
-    @EventConfig(listeners = UIManageMySpaces.EditSpaceActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class,
                  confirm = "UIManageMySpaces.msg.confirm_space_delete"),
     @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class)
@@ -221,41 +220,6 @@ public class UIManageMySpaces extends UIContainer {
     return space.getAvatarUrl();
   }
 
-
-  /**
-   * This action is triggered when user click on EditSpace Currently, when user click on EditSpace,
-   * they will be redirected to /xxx/SpaceSettingPortlet When user click on editSpace, the user is
-   * redirected to SpaceSettingPortlet.
-   */
-  static public class EditSpaceActionListener extends EventListener<UIManageMySpaces> {
-
-    @Override
-    public void execute(Event<UIManageMySpaces> event) throws Exception {
-      UIManageMySpaces uiMySpaces = event.getSource();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      SpaceService spaceService = uiMySpaces.getSpaceService();
-      Space space = spaceService.getSpaceById(ctx.getRequestParameter(OBJECTID));
-      if (space == null) {
-        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.warning_space_not_available",
-                                                null, ApplicationMessage.WARNING));
-      }
-      OrganizationService organizationService = SpaceUtils.getOrganizationService();
-      Group group = organizationService.getGroupHandler().findGroupById(space.getGroupId());
-      if (group == null) {
-        uiApp.addMessage(new ApplicationMessage("UIManageMySpaces.msg.group_unable_to_retrieve",
-                                                null, ApplicationMessage.ERROR));
-        return;
-      } else {
-        String spaceUrl = Util.getPortalRequestContext().getPortalURI();
-        String spaceSettingUri = uiMySpaces.getNodeUri(space, "SpaceSettingPortlet");
-        String spaceSettingUrl = spaceUrl + spaceSettingUri;
-        PortalRequestContext prContext = Util.getPortalRequestContext();
-        prContext.setResponseComplete(true);
-        prContext.getResponse().sendRedirect(spaceSettingUrl);
-      }
-    }
-  }
 
   /**
    * This action trigger when user click on back button from UINavigationManagement.

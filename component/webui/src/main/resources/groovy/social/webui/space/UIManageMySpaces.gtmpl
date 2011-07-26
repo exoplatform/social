@@ -71,7 +71,7 @@
         def role = uicomponent.getRole(space.id)
         def hasMembership = uicomponent.hasMembership(space.id)
         def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
-        def editSpaceLink = spaceUrl + "/" + "SpaceSettingPortlet";
+        def editSpaceLink = spaceUrl + "/" + "settings";
         def visibility = space.visibility
         if (visibility.equals("private")) visibility = "visible"
         def status
@@ -114,7 +114,7 @@
             <% } else { %>
             <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:none;"><span></span></a>
             <% } %>
-            <a href="<%=uicomponent.url("EditSpace", space.id);%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
+            <a href="<%=editSpaceLink%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
             <div class="Text"><a href="<%= spaceUrl %>"><%= space.displayName %></a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
             <div class="ClearBoth"><span></span></div>
           </div>
