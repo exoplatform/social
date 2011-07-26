@@ -1,0 +1,239 @@
+/*
+ * Copyright (C) 2003-2011 eXo Platform SAS.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.exoplatform.social.core.storage.cache;
+
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.test.AbstractCoreTest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
+ * @version $Revision$
+ */
+public class CachedIdentityStorageTestCase extends AbstractCoreTest {
+
+  private CachedIdentityStorage identityStorage;
+  private SocialStorageCacheService cacheService;
+
+  private List<String> tearDownIdentityList;
+
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+
+    identityStorage = (CachedIdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+
+    cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
+    cacheService.getIdentityCache().clearCache();
+    cacheService.getIdentitiesCache().clearCache();
+    cacheService.getCountIdentitiesCache().clearCache();
+    cacheService.getIdentityIndexCache().clearCache();
+    cacheService.getProfileCache().clearCache();
+
+    tearDownIdentityList = new ArrayList<String>();
+  }
+
+  @Override
+  public void tearDown() throws Exception {
+    for (String id : tearDownIdentityList) {
+      identityStorage.deleteIdentity(new Identity(id));
+    }
+    super.tearDown();
+  }
+
+  public void testSaveIdentity() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
+    assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
+
+  }
+
+  public void testFindIdentityById() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    String id = i.getId();
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    cacheService.getIdentityCache().clearCache();
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    identityStorage.findIdentityById(id);
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+  }
+
+  public void testFindIdentity() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
+
+    cacheService.getIdentityCache().clearCache();
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentityIndexCache().getCacheSize());
+    identityStorage.findIdentity("p", "id");
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(1, cacheService.getIdentityIndexCache().getCacheSize());
+
+  }
+
+  public void testRemoveIdentity() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    identityStorage.deleteIdentity(i);
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+
+  }
+
+  public void testUpdateIdentity() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    identityStorage.updateIdentity(i);
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+
+  }
+
+  public void testLoadProfile() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+
+    identityStorage.loadProfile(new Profile(i));
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(1, cacheService.getProfileCache().getCacheSize());
+
+  }
+
+  public void testSaveProfile() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+
+    identityStorage.saveProfile(new Profile(i));
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+
+  }
+
+  public void testUpdateProfile() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+
+    identityStorage.updateProfile(new Profile(i));
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getProfileCache().getCacheSize());
+
+  }
+
+  public void testGetIdentitiesByFilterCount() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
+    identityStorage.getIdentitiesByProfileFilterCount("p", new ProfileFilter());
+    assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
+
+  }
+
+  public void testGetIdentitiesByFilter() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
+    identityStorage.getIdentitiesByProfileFilter("p", new ProfileFilter(), 0, 10, false);
+    assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
+
+  }
+
+  public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
+    identityStorage.getIdentitiesByFirstCharacterOfNameCount("p", new ProfileFilter());
+    assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
+
+  }
+
+  public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
+
+    assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    Identity i = new Identity("p", "id");
+    identityStorage.saveIdentity(i);
+    tearDownIdentityList.add(i.getId());
+    assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
+    identityStorage.getIdentitiesByFirstCharacterOfName("p", new ProfileFilter(), 0, 10, false);
+    assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
+
+  }
+}
