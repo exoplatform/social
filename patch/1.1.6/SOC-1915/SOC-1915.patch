@@ -1,0 +1,173 @@
+Index: component/core/src/main/java/conf/portal/configuration.xml
+===================================================================
+--- component/core/src/main/java/conf/portal/configuration.xml	(revision 71614)
++++ component/core/src/main/java/conf/portal/configuration.xml	(working copy)
+@@ -286,56 +286,6 @@
+   </component>
+ 
+   <external-component-plugins>
+-    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+-    <component-plugin>
+-      <name>MentionsProcessor</name>
+-      <set-method>addProcessorPlugin</set-method>
+-      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+-      <init-params>
+-        <value-param>
+-          <name>priority</name>
+-          <description>priority of this processor (lower are executed first)</description>
+-          <value>2</value>
+-        </value-param>
+-      </init-params>
+-    </component-plugin>
+-    <component-plugin>
+-      <name>TemplateParamsProcessor</name>
+-      <set-method>addProcessorPlugin</set-method>
+-      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
+-      <init-params>
+-        <value-param>
+-          <name>priority</name>
+-          <value>1</value>
+-        </value-param>
+-      </init-params>
+-    </component-plugin>
+-  </external-component-plugins>
+-
+-  <external-component-plugins>
+-    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+-
+-  </external-component-plugins>
+-
+-  <external-component-plugins>
+-    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
+-    <component-plugin>
+-      <name>ProfileUpdatesPublisher</name>
+-      <set-method>addProfileListener</set-method>
+-      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+-    </component-plugin>
+-  </external-component-plugins>
+-
+-  <external-component-plugins>
+-    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
+-    <component-plugin>
+-      <name>RelationshipPublisher</name>
+-      <set-method>addListenerPlugin</set-method>
+-      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+-    </component-plugin>
+-  </external-component-plugins>
+-
+-  <external-component-plugins>
+     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+     <component-plugin>
+       <name>add.social.nodeType</name>
+Index: demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(revision 71614)
++++ demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(working copy)
+@@ -24,6 +24,51 @@
+    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+ 
+   <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
++    <component-plugin>
++      <name>MentionsProcessor</name>
++      <set-method>addProcessorPlugin</set-method>
++      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
++      <init-params>
++        <value-param>
++          <name>priority</name>
++          <description>priority of this processor (lower are executed first)</description>
++          <value>2</value>
++        </value-param>
++      </init-params>
++    </component-plugin>
++    <component-plugin>
++      <name>TemplateParamsProcessor</name>
++      <set-method>addProcessorPlugin</set-method>
++      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
++      <init-params>
++        <value-param>
++          <name>priority</name>
++          <value>1</value>
++        </value-param>
++      </init-params>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
++    <component-plugin>
++      <name>ProfileUpdatesPublisher</name>
++      <set-method>addProfileListener</set-method>
++      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
++    <component-plugin>
++      <name>RelationshipPublisher</name>
++      <set-method>addListenerPlugin</set-method>
++      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>
+Index: extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(revision 71614)
++++ extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(working copy)
+@@ -24,6 +24,51 @@
+    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+ 
+   <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
++    <component-plugin>
++      <name>MentionsProcessor</name>
++      <set-method>addProcessorPlugin</set-method>
++      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
++      <init-params>
++        <value-param>
++          <name>priority</name>
++          <description>priority of this processor (lower are executed first)</description>
++          <value>2</value>
++        </value-param>
++      </init-params>
++    </component-plugin>
++    <component-plugin>
++      <name>TemplateParamsProcessor</name>
++      <set-method>addProcessorPlugin</set-method>
++      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
++      <init-params>
++        <value-param>
++          <name>priority</name>
++          <value>1</value>
++        </value-param>
++      </init-params>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
++    <component-plugin>
++      <name>ProfileUpdatesPublisher</name>
++      <set-method>addProfileListener</set-method>
++      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
++    <component-plugin>
++      <name>RelationshipPublisher</name>
++      <set-method>addListenerPlugin</set-method>
++      <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>
