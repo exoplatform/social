@@ -25,6 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -2475,7 +2476,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     } else {
       avatarURL = avatarRandomURL;
     }
-    assertEquals(escapeJCRSpecialCharacters(
+    assertEquals(LinkProvider.escapeJCRSpecialCharacters(
             String.format(
               "/rest/jcr/repository/portal-test/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
               space.getPrettyName())),
@@ -2516,12 +2517,6 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("avatar URL should not be null",got.getAvatarUrl());
   }
   
-  private static String escapeJCRSpecialCharacters(String string) {
-    if (string == null) {
-      return null;
-    }
-    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
-  }
   
   // TODO : test getSpaceByGroupId without result
   // TODO : save space with null member[]

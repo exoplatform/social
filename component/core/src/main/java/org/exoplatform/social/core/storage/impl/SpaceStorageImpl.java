@@ -95,18 +95,21 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
 
-    if (entity.getHasAvatar()) {
+    if (entity.getAvatarLastUpdated() != null) {
       try {
-        IdentityEntity identityEntity = identityStorage._findIdentityEntity(SpaceIdentityProvider.NAME, entity.getPrettyName());
-        NTFile avatarAttachment = identityEntity.getProfile().getAvatar();
         ChromatticSession chromatticSession = getSession();
-        space.setAvatarUrl(LinkProvider.buildUriFromPath(
-                              chromatticSession.getJCRSession().getWorkspace(),
-                              chromatticSession.getPath(avatarAttachment)));
-      } catch (NodeNotFoundException e) {
-        LOG.warn(e.getMessage(), e);
+        String url = String.format("/%s/jcr/%s/%s/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar/?upd=%d",
+                      container.getRestContextName(),
+                      lifeCycle.getRepositoryName(),
+                      chromatticSession.getJCRSession().getWorkspace().getName(),
+                      entity.getPrettyName(),
+                      entity.getAvatarLastUpdated());
+        space.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(url));
+      } catch (Exception e) {
+        LOG.warn("Failed to build avatar url: " + e.getMessage());
       }
     }
+    space.setAvatarLastUpdated(entity.getAvatarLastUpdated());
   }
 
   /**
@@ -131,7 +134,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setManagerMembersId(space.getManagers());
     entity.setPendingMembersId(space.getPendingUsers());
     entity.setInvitedMembersId(space.getInvitedUsers());
-    entity.setHasAvatar(space.getAvatarAttachment() != null || space.getAvatarUrl() != null);
+    entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
 
   }
 

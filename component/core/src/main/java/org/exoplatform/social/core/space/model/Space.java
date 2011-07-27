@@ -100,6 +100,13 @@ public class Space {
   private String[] managers;
   
   /**
+   * The last updated time of avatar ( in millisecond)
+   * 
+   * @since 1.2.1
+   */
+   private Long avatarLastUpdated;
+  
+  /**
    * The members of a space.
    * 
    * @since 1.2.0-GA
@@ -430,6 +437,7 @@ public class Space {
    */
   public void setAvatarAttachment(AvatarAttachment avatarAttachment) {
     this.avatarAttachment = avatarAttachment;
+    this.setAvatarLastUpdated(avatarAttachment.getLastModified());
   }
 
   /**
@@ -537,5 +545,23 @@ public class Space {
    */
   public void setMembers(String[] members) {
     this.members = members;
+  }
+  
+  /**
+   * Gets the last updated time in milliseconds of avatar in a space
+   * @return {@link Void}
+   * @since 1.2.1
+   */
+  public Long getAvatarLastUpdated() {
+    return avatarLastUpdated;
+  }
+
+  /**
+   * Sets the last updated time in milliseconds of avatar in a space
+   * @param avatarLastUpdatedTime
+   * @since 1.2.1
+   */
+  public void setAvatarLastUpdated(Long avatarLastUpdatedTime) {
+    this.avatarLastUpdated = avatarLastUpdatedTime;
   }
 }

@@ -36,6 +36,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -1422,7 +1423,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     } else {
       avatarURL = avatarRandomURL;
   }
-    assertEquals(escapeJCRSpecialCharacters(
+    assertEquals(LinkProvider.escapeJCRSpecialCharacters(
             String.format(
               "/rest/jcr/repository/portal-test/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar",
               space.getPrettyName())
@@ -2573,12 +2574,5 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.saveSpace(space2, true);
 
     return space2;
-  }
-
-  private static String escapeJCRSpecialCharacters(String string) {
-    if (string == null) {
-      return null;
-    }
-    return string.replace("[", "%5B").replace("]", "%5D").replace(":", "%3A");
   }
 }

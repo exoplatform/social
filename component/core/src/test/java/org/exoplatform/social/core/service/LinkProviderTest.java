@@ -62,22 +62,12 @@ public class LinkProviderTest extends AbstractCoreTest {
   }
   
   /**
-   * Test the {@link LinkProvider#buildNTFileUri(javax.jcr.Workspace, String, org.chromattic.ext.ntdef.NTFile)}
+   * Test the {@link LinkProvider#escapeJCRSpecialCharacters(String)
    * 
    * @throws Exception
    */
-  public void testbuildUriFromPath() throws Exception {
-    PortalContainer container = PortalContainer.getInstance();
-    ChromatticManager chromatticManager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) chromatticManager.
-                                                      getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
-
-    assertEquals("The path right.",
-        escapeJCRSpecialCharacters("/rest/jcr/repository/portal-test/production/soc:providers/" +
-                                    "soc:organization/soc:User1/soc:profile/soc:avatar"),
-        LinkProvider.buildUriFromPath(
-            lifeCycle.getSession().getJCRSession().getWorkspace(), 
-            "/production/soc:providers/soc:organization/soc:User1/soc:profile/soc:avatar"));
+  public void testEscapeJCRSpecialCharacters() throws Exception {
+    assertEquals("The method escapeJCRSpecialCharacters not escape special characters as expected", "%5B%5D%3A", LinkProvider.escapeJCRSpecialCharacters("[]:"));
   }
   
   private static String escapeJCRSpecialCharacters(String string) {

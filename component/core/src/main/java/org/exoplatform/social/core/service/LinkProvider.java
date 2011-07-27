@@ -243,28 +243,6 @@ public class LinkProvider {
     }
     return null;
   }
-
-  /**
-   * Builds uri from Path.
-   * @param workSpace
-   * @param path
-   * @return
-   */
-  public static String buildUriFromPath(Workspace workSpace, String path) {
-    final PortalContainer container = PortalContainer.getInstance();
-    String avatarUrl = null;
-    try {
-        StringBuilder avatarUrlSB = new StringBuilder();
-        final String repository = ((RepositoryService) container.getComponentInstanceOfType(RepositoryService.class)).
-                                  getCurrentRepository().getConfiguration().getName();        
-        avatarUrlSB = avatarUrlSB.append("/").append(container.getRestContextName()).append("/jcr/").
-                                  append(repository).append("/").append(workSpace.getName()).append(path);
-        avatarUrl = escapeJCRSpecialCharacters(avatarUrlSB.toString());
-    } catch (Exception e) {
-      LOG.warn("Failed to build file url from fileResource: " + e.getMessage());
-    }
-    return avatarUrl;
-  }
   
   /**
    * Gets avatar image uri of profile.
@@ -333,7 +311,7 @@ public class LinkProvider {
    * @param string
    * @return
    */
-  private static String escapeJCRSpecialCharacters(String string) {
+  public static String escapeJCRSpecialCharacters(String string) {
     if (string == null) {
       return null;
     }

@@ -62,9 +62,9 @@ public abstract class SpaceEntity {
   public static final PropertyLiteralExpression<String> description =
       new PropertyLiteralExpression<String>(String.class, "soc:description");
 
-  @Property(name = "soc:hasAvatar")
-  public abstract boolean getHasAvatar();
-  public abstract void setHasAvatar(boolean hasAvatar);
+  @Property(name = "soc:avatarLastUpdated")
+  public abstract Long getAvatarLastUpdated();
+  public abstract void setAvatarLastUpdated(Long avatarLastUpdated);
 
   @Property(name = "soc:type")
   public abstract String getType();
