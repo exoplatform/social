@@ -90,8 +90,10 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
     Relationship r = relationshipStorage.saveRelationship(new Relationship(i1, i2));
     assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
+    relationshipStorage.getRelationshipsCount(i1);
     relationshipStorage.removeRelationship(r);
     assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
+    assertEquals(0, cacheService.getRelationshipsCount().getCacheSize());
 
   }
 
