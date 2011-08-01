@@ -17,11 +17,17 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.text.DateFormatSymbols;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
+import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NamingPrefix;
@@ -35,16 +41,21 @@ import org.chromattic.ext.format.BaseEncodingObjectFormatter;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@PrimaryType(name = "soc:activityyear")
+@PrimaryType(name = "soc:activityyear", orderable = true)
 @FormattedBy(BaseEncodingObjectFormatter.class)
 @NamingPrefix("soc")
 public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
+
+  private List<String> MONTH_NAME = Arrays.asList(new DateFormatSymbols(Locale.ENGLISH).getMonths());
 
   @Path
   public abstract String getPath();
 
   @Name
   public abstract String getName();
+
+  @Id
+  public abstract String getId();
 
   @Property(name = "soc:number")
   @DefaultValue({"0"})
@@ -53,6 +64,9 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
 
   @OneToMany
   public abstract Map<String, ActivityMonthEntity> getMonths();
+
+  @OneToMany
+  public abstract List<ActivityMonthEntity> getMonthsList();
 
   @ManyToOne
   public abstract ActivityListEntity getList();
@@ -77,6 +91,13 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
     if (monthEntity ==  null) {
       monthEntity = newMonth();
       getMonths().put(month, monthEntity);
+      long longMonth = MONTH_NAME.indexOf(month);
+      for (int i = getMonthsList().size() - 1; i >= 0 ; --i) {
+        long longCurrent = MONTH_NAME.indexOf(getMonthsList().get(i).getName());
+        if (longCurrent < longMonth) {
+          getMonthsList().set(i, monthEntity);
+        }
+      }
     }
 
     return monthEntity;

@@ -112,17 +112,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     // Create activity
     long currentMillis = System.currentTimeMillis();
-    ActivityEntity activityEntity = activityListEntity.createActivity(String.valueOf(currentMillis));
+    long activityMillis = (activity.getPostedTime() != null ? activity.getPostedTime() : currentMillis);
+    ActivityEntity activityEntity = activityListEntity.createActivity(String.valueOf(activityMillis));
     entities.add(activityEntity);
     activityEntity.setIdentity(identityEntity);
     activityEntity.setComment(Boolean.FALSE);
-    activityEntity.setPostedTime(currentMillis);
+    activityEntity.setPostedTime(activityMillis);
     activityEntity.setPosterIdentity(posterIdentityEntity);
 
     // Fill activity model
     activity.setId(activityEntity.getId());
     activity.setStreamOwner(identityEntity.getRemoteId());
-    activity.setPostedTime(currentMillis);
+    activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
 
     //

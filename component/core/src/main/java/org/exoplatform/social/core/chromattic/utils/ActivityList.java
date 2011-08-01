@@ -67,6 +67,7 @@ public class ActivityList implements Collection<ActivityEntity> {
 
   public boolean add(final ActivityEntity activityEntity) {
     Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    calendar.setTimeInMillis(Long.parseLong(activityEntity.getName()));
 
     String year = String.valueOf(calendar.get(Calendar.YEAR));
     String month = MONTH_NAME[calendar.get(Calendar.MONTH)];

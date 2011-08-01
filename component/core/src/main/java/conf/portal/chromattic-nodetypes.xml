@@ -294,7 +294,7 @@
     </childNodeDefinitions>
   </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity -->
-  <nodeType name="soc:activitymonth" isMixin="false" hasOrderableChildNodes="false">
+  <nodeType name="soc:activitymonth" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
@@ -316,7 +316,7 @@
     </childNodeDefinitions>
   </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityYearEntity -->
-  <nodeType name="soc:activityyear" isMixin="false" hasOrderableChildNodes="false">
+  <nodeType name="soc:activityyear" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>
@@ -338,7 +338,7 @@
     </childNodeDefinitions>
   </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityListEntity -->
-  <nodeType name="soc:activitylist" isMixin="false" hasOrderableChildNodes="false">
+  <nodeType name="soc:activitylist" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>

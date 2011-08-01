@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.util.List;
 import java.util.Map;
 
 import org.chromattic.api.annotations.Create;
@@ -29,11 +30,14 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@PrimaryType(name = "soc:activitylist")
+@PrimaryType(name = "soc:activitylist", orderable = true)
 @FormattedBy(BaseEncodingObjectFormatter.class)
 @NamingPrefix("soc")
 public abstract class ActivityListEntity {
@@ -48,6 +52,9 @@ public abstract class ActivityListEntity {
   
   @OneToMany
   public abstract Map<String, ActivityYearEntity> getYears();
+
+  @OneToMany
+  public abstract List<ActivityYearEntity> getYearsList();
 
   @Create
   public abstract ActivityYearEntity newYear();
@@ -70,6 +77,13 @@ public abstract class ActivityListEntity {
     if (yearEntity == null) {
       yearEntity = newYear();
       getYears().put(year, yearEntity);
+      long longYear = Long.parseLong(year);
+      for (int i = getYearsList().size() - 1; i >= 0 ; --i) {
+        long longCurrent = Long.parseLong(getYearsList().get(i).getName());
+        if (longCurrent < longYear) {
+          getYearsList().set(i, yearEntity);
+        }
+      }
     }
 
     return yearEntity;

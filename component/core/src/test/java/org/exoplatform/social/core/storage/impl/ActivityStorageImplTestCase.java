@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -206,6 +207,35 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     int i = 9;
     for (ExoSocialActivity activity : activityStorage.getUserActivities(rootIdentity)) {
       assertEquals("title " + i, activity.getTitle());
+      --i;
+    }
+  }
+
+  public void testActivityOrderByPostedTime() throws Exception {
+    // fill 10 activities
+    Calendar cal = Calendar.getInstance();
+    long today = cal.getTime().getTime();
+    cal.add(Calendar.DAY_OF_MONTH, -1);
+    long yesterday = cal.getTime().getTime();
+    //i > 5 PostedTime = currentDate + i;
+    //else yesterdayDate = currentDate + i;
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activity.setPostedTime(i> 5 ? today + i : yesterday + i);
+      activityStorage._createActivity(rootIdentity, activity);
+    }
+
+    int i = 9;
+    for (ExoSocialActivity activity : activityStorage.getUserActivities(rootIdentity)) {
+      assertEquals("title " + i, activity.getTitle());
+      
+      if (i>5) {
+        assertEquals(today + i, activity.getPostedTime().longValue());        
+      } else {
+        assertEquals(yesterday + i, activity.getPostedTime().longValue());
+      }
+      
       --i;
     }
   }
