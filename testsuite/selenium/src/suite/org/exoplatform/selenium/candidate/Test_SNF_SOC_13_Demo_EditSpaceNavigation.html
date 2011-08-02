@@ -43,7 +43,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='UIPortalLoginFormAction']//div[@class='ButtonMiddle']/a</td>
+	<td>//a[@id='UIPortalLoginFormAction']</td>
 	<td></td>
 </tr>
 <tr>
@@ -153,12 +153,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//td[2]/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[5]/div/div/div/div</td>
+	<td>//div[@id='UITabPane']/div[1]/div/div[5]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//td[2]/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[5]/div/div/div/div</td>
+	<td>//div[@id='UITabPane']/div[1]/div/div[5]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
@@ -167,14 +167,19 @@
 	<td></td>
 </tr>
 <tr>
+	<td>mouseDownRight</td>
+	<td>//a[@title=&quot;Space13&quot;]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>link=Add Node</td>
+	<td>//div[@id='SpaceNavigationNodePopupMenu']//a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Add Node</td>
-	<td>1,1</td>
+	<td>//div[@id='SpaceNavigationNodePopupMenu']//a</td>
+	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
@@ -208,12 +213,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td>//div[@id='AddNode']/div/div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td>//div[@id='AddNode']/div/div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
 	<td></td>
 </tr>
 <tr>
@@ -253,28 +258,13 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[2]/table/tbody/tr/td/div[1]/div/div/div/a</td>
+	<td>//form[@id='UIPageNodeForm']/div[3]/div[2]/a[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[2]/table/tbody/tr/td/div[1]/div/div/div/a</td>
-	<td>1,1</td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>1000</td>
+	<td>//form[@id='UIPageNodeForm']/div[3]/div[2]/a[1]</td>
 	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//td[2]/div/div/div/div/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//td[2]/div/div/div/div/a</td>
-	<td>1,1</td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -313,12 +303,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='test_node_label_13']</td>
+	<td>//a[@title=&quot;test_node_label_13&quot;]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>mouseDownRight</td>
-	<td>//a[@title='test_node_label_13']</td>
+	<td>//div[@id='UISpaceNavigationNodeSelector']//a[@title=&quot;test_node_label_13&quot;]</td>
 	<td></td>
 </tr>
 <tr>
@@ -334,16 +324,6 @@
 <tr>
 	<td>waitForConfirmation</td>
 	<td>Are you sure you want to delete this node?</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Save</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Save</td>
 	<td></td>
 </tr>
 <tr>
@@ -388,12 +368,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIGroupNavigationGrid']/table[5]//a[@class='DeleteIcon']</td>
+	<td>//div[@id='UIGroupNavigationGrid']/table[1]/tbody/tr/td[3]/a[3]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIGroupNavigationGrid']/table[5]//a[@class='DeleteIcon']</td>
+	<td>//div[@id='UIGroupNavigationGrid']/table[1]/tbody/tr/td[3]/a[3]</td>
 	<td></td>
 </tr>
 <tr>
