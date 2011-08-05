@@ -35,6 +35,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
@@ -138,13 +139,17 @@ public class SpacesRestService implements ResourceContainer {
     MediaType mediaType = Util.getMediaType(format);
     ConversationState state = ConversationState.getCurrent();
     portalContainerName = portalName;
+    
     String userId = null;
     if (state != null) {
       userId = state.getIdentity().getUserId();
-    } else {
+    } 
+    
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    if (identity == null) {
       userId = Util.getViewerId(uriInfo);
     }
-
+    
     SpaceList mySpaceList = showMySpaceList(userId);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
