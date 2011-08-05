@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityCompositeKey implements CacheKey {
+public class IdentityCompositeKey extends MultitenantCacheKey {
 
   private final String providerId;
 
@@ -50,7 +50,10 @@ public class IdentityCompositeKey implements CacheKey {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof IdentityCompositeKey)) {
+      return false;
+    }
+    if (!super.equals(o)) {
       return false;
     }
 
@@ -68,8 +71,10 @@ public class IdentityCompositeKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = providerId != null ? providerId.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
     result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     return result;
   }
+
 }

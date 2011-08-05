@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipKey implements CacheKey {
+public class RelationshipKey extends MultitenantCacheKey {
 
   private final String id;
 
@@ -40,13 +40,16 @@ public class RelationshipKey implements CacheKey {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof RelationshipKey)) {
+      return false;
+    }
+    if (!super.equals(o)) {
       return false;
     }
 
-    RelationshipKey key = (RelationshipKey) o;
+    RelationshipKey that = (RelationshipKey) o;
 
-    if (id != null ? !id.equals(key.id) : key.id != null) {
+    if (id != null ? !id.equals(that.id) : that.id != null) {
       return false;
     }
 
@@ -55,7 +58,9 @@ public class RelationshipKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    return id != null ? id.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (id != null ? id.hashCode() : 0);
+    return result;
   }
-  
+
 }

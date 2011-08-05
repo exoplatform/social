@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceRefKey implements CacheKey {
+public class SpaceRefKey extends MultitenantCacheKey {
 
   private final String displayName;
   private final String prettyName;
@@ -58,6 +58,9 @@ public class SpaceRefKey implements CacheKey {
     if (!(o instanceof SpaceRefKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     SpaceRefKey that = (SpaceRefKey) o;
 
@@ -79,7 +82,8 @@ public class SpaceRefKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = displayName != null ? displayName.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
     result = 31 * result + (prettyName != null ? prettyName.hashCode() : 0);
     result = 31 * result + (groupId != null ? groupId.hashCode() : 0);
     result = 31 * result + (url != null ? url.hashCode() : 0);

@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityFilterKey implements CacheKey {
+public class IdentityFilterKey extends MultitenantCacheKey {
 
   private final String providerId;
   private final String name;
@@ -101,6 +101,9 @@ public class IdentityFilterKey implements CacheKey {
     if (!(o instanceof IdentityFilterKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     IdentityFilterKey that = (IdentityFilterKey) o;
 
@@ -134,7 +137,8 @@ public class IdentityFilterKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = providerId != null ? providerId.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (position != null ? position.hashCode() : 0);
     result = 31 * result + (company != null ? company.hashCode() : 0);
@@ -144,4 +148,5 @@ public class IdentityFilterKey implements CacheKey {
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
     return result;
   }
+
 }

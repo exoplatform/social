@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ListCacheKey implements CacheKey {
+public class ListCacheKey extends MultitenantCacheKey {
 
   private final long offset;
   private final long limit;
@@ -41,6 +41,9 @@ public class ListCacheKey implements CacheKey {
     if (!(o instanceof ListCacheKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     ListCacheKey that = (ListCacheKey) o;
 
@@ -56,7 +59,8 @@ public class ListCacheKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = (int) (offset ^ (offset >>> 32));
+    int result = super.hashCode();
+    result = 31 * result + (int) (offset ^ (offset >>> 32));
     result = 31 * result + (int) (limit ^ (limit >>> 32));
     return result;
   }

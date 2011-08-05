@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityKey implements CacheKey {
+public class ActivityKey extends MultitenantCacheKey {
 
   private final String id;
 
@@ -43,6 +43,9 @@ public class ActivityKey implements CacheKey {
     if (!(o instanceof ActivityKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     ActivityKey that = (ActivityKey) o;
 
@@ -55,6 +58,9 @@ public class ActivityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    return id != null ? id.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (id != null ? id.hashCode() : 0);
+    return result;
   }
+
 }

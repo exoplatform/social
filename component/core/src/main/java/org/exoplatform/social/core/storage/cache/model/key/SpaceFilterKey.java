@@ -26,7 +26,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceFilterKey implements CacheKey {
+public class SpaceFilterKey extends MultitenantCacheKey {
 
   private String userId;
   private char firstCharacterOfSpaceName;
@@ -50,6 +50,9 @@ public class SpaceFilterKey implements CacheKey {
     if (!(o instanceof SpaceFilterKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     SpaceFilterKey that = (SpaceFilterKey) o;
 
@@ -71,11 +74,11 @@ public class SpaceFilterKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = userId != null ? userId.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (userId != null ? userId.hashCode() : 0);
     result = 31 * result + (int) firstCharacterOfSpaceName;
     result = 31 * result + (spaceNameSearchCondition != null ? spaceNameSearchCondition.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
     return result;
   }
-  
 }

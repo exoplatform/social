@@ -25,7 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityKey implements CacheKey {
+public class IdentityKey extends MultitenantCacheKey {
 
   private final String id;
 
@@ -42,7 +42,10 @@ public class IdentityKey implements CacheKey {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof IdentityKey)) {
+      return false;
+    }
+    if (!super.equals(o)) {
       return false;
     }
 
@@ -57,7 +60,9 @@ public class IdentityKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    return id != null ? id.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (id != null ? id.hashCode() : 0);
+    return result;
   }
 
 }

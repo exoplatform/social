@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipCountKey implements CacheKey {
+public class RelationshipCountKey extends MultitenantCacheKey {
 
   private final IdentityKey key;
 
@@ -43,6 +43,9 @@ public class RelationshipCountKey implements CacheKey {
     if (!(o instanceof RelationshipCountKey)) {
       return false;
     }
+    if (!super.equals(o)) {
+      return false;
+    }
 
     RelationshipCountKey that = (RelationshipCountKey) o;
 
@@ -58,8 +61,10 @@ public class RelationshipCountKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    int result = key != null ? key.hashCode() : 0;
+    int result = super.hashCode();
+    result = 31 * result + (key != null ? key.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
     return result;
   }
+
 }
