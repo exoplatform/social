@@ -1,6 +1,6 @@
 Index: component/core/src/main/java/org/exoplatform/social/core/space/SpaceUtils.java
 ===================================================================
---- component/core/src/main/java/org/exoplatform/social/core/space/SpaceUtils.java	(revision 71745)
+--- component/core/src/main/java/org/exoplatform/social/core/space/SpaceUtils.java	(revision 71746)
 +++ component/core/src/main/java/org/exoplatform/social/core/space/SpaceUtils.java	(working copy)
 @@ -1,1177 +1,1185 @@
 -/*
@@ -2367,7 +2367,7 @@ Index: component/core/src/main/java/org/exoplatform/social/core/space/SpaceUtils
 +}
 Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java
 ===================================================================
---- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(revision 71745)
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(revision 71746)
 +++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceAddForm.java	(working copy)
 @@ -146,10 +146,11 @@
          space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2385,27 +2385,41 @@ Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceA
            msg = MSG_ERROR_UNABLE_TO_ADD_CREATOR;
 Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_en.properties
 ===================================================================
---- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_en.properties	(revision 71745)
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_en.properties	(revision 71746)
 +++ component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_en.properties	(working copy)
 @@ -31,7 +31,7 @@
  UISpaceAddForm.label.option.3=Low
  
  UISpaceAddForm.msg.default_space_description=This space has no descriptive summary.
 -UISpaceAddForm.msg.error_space_already_exist=A space with the same name already exists.
-+UISpaceAddForm.msg.error_space_already_exist=You can not use '{0}' as new being created space's name, the same url has been already existed.
++UISpaceAddForm.msg.error_space_already_exist=A page named '{0}' already exists, please choose a different name for the space.
  UISpaceAddForm.msg.error_space_creation=Can not create new space.
  UISpaceAddForm.msg.error_space_not_saved=Can not save new space.
  UISpaceAddForm.msg.error_unable_to_init_app=Unable to initialize application new space.
+@@ -55,4 +55,4 @@
+ 
+ UIPopupWindow.Close=Close Window
+ 
+-UINavigationManagement.action.Save=Save
+\ No newline at end of file
++UINavigationManagement.action.Save=Save
 Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_fr.properties
 ===================================================================
---- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_fr.properties	(revision 71745)
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_fr.properties	(revision 71746)
 +++ component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_fr.properties	(working copy)
 @@ -30,7 +30,7 @@
  UISpaceAddForm.label.option.3=Basse
  
  UISpaceAddForm.msg.default_space_description=Cet espace n'a pas de description.
 -UISpaceAddForm.msg.error_space_already_exist=Un espace portant ce nom existe déjà.
-+UISpaceAddForm.msg.error_space_already_exist=Vous ne pouvez pas utiliser '{0}' comme nom de d'espace, l'url existe déjà.
++UISpaceAddForm.msg.error_space_already_exist=Une page nommée '{0}' existe déjà, veuillez choisir un autre nom pour l'espace.
  UISpaceAddForm.msg.error_space_creation=Erreur à la création d'un nouvel espace.
  UISpaceAddForm.msg.error_space_not_saved=Erreur à la sauvegarde de l'espace.
  UISpaceAddForm.msg.error_unable_to_init_app=Erreur à l'initialisation de l'application.
+@@ -63,4 +63,4 @@
+ 
+ UIPopupWindow.Close=Fermer la fenêtre
+ 
+-UINavigationManagement.action.Save=Sauver
+\ No newline at end of file
++UINavigationManagement.action.Save=Sauver
