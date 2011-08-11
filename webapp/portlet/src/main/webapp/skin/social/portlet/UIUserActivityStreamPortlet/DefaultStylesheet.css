@@ -56,9 +56,24 @@ visibility: hidden;
   background: #EBEBEB none repeat scroll 0 0;
 }
 
+.UIUserActivityStreamPortlet .UIAction {
+  border: none;
+  border-bottom: 1px solid #e1e1e1;
+  text-align: left;
+  padding: 20px 0px;
+}
+
+.UIUserActivityStreamPortlet .UIActivitiesLoadButton {
+  background: #f8f8f8;
+  text-align: center;
+  line-height: 26px;
+  border-bottom: 1px solid #e1e1e1;
+  color: #535656;
+  cursor: pointer;
+}
 
 .UIUserActivityStreamPortlet .UIAction .LightBlueStyle {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -233px;
+  background:none;
   line-height:26px;
   color: #484848;
   -moz-border-radius: 0px;
@@ -68,10 +83,13 @@ visibility: hidden;
 }
 
 .UIUserActivityStreamPortlet .UIAction .DarkBlueStyle {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') repeat-x center -327px;
-  line-height:26px;
+  background: #757575;
+  line-height:23px;
   padding:0 12px;
   text-align:center;
   white-space:nowrap;
   color: white;
-}
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+ }

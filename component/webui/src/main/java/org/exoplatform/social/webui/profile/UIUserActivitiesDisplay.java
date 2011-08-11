@@ -53,12 +53,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
 
   public enum DisplayMode {
-    CONNECTIONS,
-    SPACES,
+    ALL_UPDATES,
+    NETWORK_UPDATES,
+    SPACE_UPDATES,
     MY_STATUS,
     OWNER_STATUS
   }
-  private DisplayMode selectedDisplayMode = DisplayMode.CONNECTIONS;
+  private DisplayMode selectedDisplayMode = DisplayMode.ALL_UPDATES;
   private UIActivitiesLoader activitiesLoader;
   private String                ownerName;
   private String                viewerName;
@@ -117,12 +118,14 @@ public class UIUserActivitiesDisplay extends UIContainer {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
-      if (selectedDisplayMode.equals(DisplayMode.MY_STATUS.toString())) {
+      if (selectedDisplayMode.equals(DisplayMode.ALL_UPDATES.toString())) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
+      } else if (selectedDisplayMode.equals(DisplayMode.MY_STATUS.toString())) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
-      } else if (selectedDisplayMode.equals(DisplayMode.SPACES.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACES);
+      } else if (selectedDisplayMode.equals(DisplayMode.SPACE_UPDATES.toString())) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
       } else {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
       }
       requestContext.addUIComponentToUpdateByAjax(uiUserActivitiesDisplay);
     }

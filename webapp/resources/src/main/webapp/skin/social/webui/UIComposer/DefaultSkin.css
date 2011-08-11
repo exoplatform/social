@@ -3,16 +3,13 @@
 @import url('/social-resources/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css');
 
 .UIComposer .BlastContainer {
-  background:#EAE6D7;
-  border:1px solid #EBE8D9;
+  background:#f8f8f8;
+  border:1px solid #e1e1e1;
   margin-top:5px;
   padding: 8px;
-}
-
-.UIComposer .BlastContainer .BlastInputPeople {
-  padding: 0px 4px 4px 45px;
-  margin-bottom: 4px;
-  background: url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll 5px -410px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
 }
 
 .UIComposer .BlastContainer .BlastInputSpace {
@@ -20,9 +17,12 @@
 }
 
 .UIComposer .BlastContainer textarea {
-  width: 100%;
-  border: 1px solid #d7d0b5;
+  width: 99%;
+  border: 1px solid #e1e1e1;
   font-size: 11px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  padding: 5px 5px 0px 5px;
 }
 
 .UIComposer .BlastContainer .BlastShare {
@@ -45,7 +45,7 @@
 
 .UIComposer .BlastContainer .UILinkActivityComposer {
   padding: 0px 7px;
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -361px;
+  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -388px;
   margin-right: 0px;
 }
 
@@ -55,16 +55,38 @@
   margin-right: 8px;
 }
 
+.UIComposer .BlastContainer .BlastShare .AttachMents {
+  padding-top: 8px;
+}
+
 .UIComposer .BlastContainer .BlastShare .ShareButton {
-  border: 1px solid #d6cfb4;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  background: white;
-  padding: 2px 10px;
+  border: 1px solid #7b7b7b;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: #6c6c6c;
+  padding: 3px 15px;
   float: right;
   cursor: pointer;
   margin-right: 5px;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.UIComposer .BlastContainer .BlastShare .ShareButtonDisable {
+  border: 1px solid #E7E7E7;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: #E7E7E7;
+  padding: 3px 15px;
+  float: right;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
 }
 
 .UIComposer .BlastContainer .LinkForm {
@@ -75,7 +97,6 @@
 }
 
 .UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer {
-  border: 1px solid #d6cfb4;
   margin-bottom: 3px;
 }
 

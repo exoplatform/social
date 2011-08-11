@@ -22,7 +22,7 @@
 %>
 <%
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
-  def labelMore = _ctx.appRes("UIActivitiesLoader.label.More");
+  def labelMore = _ctx.appRes("UIActivitiesLoader.label.Show_More_Post");
 
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
@@ -46,8 +46,8 @@
   <%
     if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
       %>
-      	<div id="UIActivitiesLoadButton" class="UIAction">
-          <a href="javascript:void(0);" onclick="<%=uicomponent.event("LoadMore")%>" class="ActionButton LightBlueStyle">$labelMore</a>
+      	<div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="UIActivitiesLoadButton">
+          $labelMore
         </div>
         
       <%

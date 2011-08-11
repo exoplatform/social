@@ -86,6 +86,7 @@
      commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
      commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
      commentFormDisplayed: $commentFormDisplayed,
+     allCommentSize: ${allComments.size()},
      commentFormFocused: ${uicomponent.isCommentFormFocused()}
     }
   """
@@ -155,6 +156,8 @@
   <div class="NormalBox ClearFix">
     <a class="Avatar" title="$ownerName" href="$ownerUri">
       <img title="$ownerName" src="$ownerAvatar" alt="$ownerName">
+		  <span class="BorderTop"></span>
+      <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div class="TitleContent ClearFix">
@@ -178,7 +181,7 @@
         &nbsp;|&nbsp;
         <a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a>
       </div>
-      <div class="LinkCM">
+      <div class="DocActivityIcon">
         <span class="DateTime">$activityPostedTime *</span>
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
          def commentLink = "";
@@ -225,6 +228,7 @@
           </div>
       </div>
     <%}%>
+   <div id="CommentBlockBound${activity.id}">
       <% if (uicomponent.commentListToggleable()) {
       def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
@@ -241,12 +245,9 @@
             <% } %>
       </div>
   <% } %>
-  <% if (allComments.size() > 0) { %>
-    <span class="DownIconCM"></span>
-  <% }%>
 
   <%
-  def commenterFullName, commenterProfileUri, commenterImageSource, commentMessage, commentPostedTime;
+  def commenterFullName, commenterProfileUri, commentMessage, commentPostedTime;
   def first = true, commentContentClass;
   commentList.each({
     if (first & !uicomponent.commentListToggleable()) {
@@ -258,15 +259,10 @@
     def id = Utils.getIdentityManager().getIdentity(it.userId);
     commenterFullName = id.profile.fullName;
     commenterProfileUri = id.profile.url;
-    commenterImageSource = id.profile.avatarUrl;
-    if (!commenterImageSource) commenterImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     commentMessage = it.title;
     commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
   %>
     <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
-      <a class="AvatarCM" title="$commenterFullName" href="$commenterProfileUri">
-        <img src="$commenterImageSource" alt="$commenterFullName">
-      </a>
       <div class="ContentBox">
         <div class="Content">
           <a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a>
@@ -284,11 +280,23 @@
     </div>
   <% }) %>
 
-    <div class="CommentBox ClearFix" id="CommentFormBlock${activity.id}">
+    <%
+      def currentCommenterIdentity = Utils.getOwnerIdentity();
+      def currentCommenterUri = currentCommenterIdentity.profile.url;
+      def currentCommenterAvatar = currentCommenterIdentity.profile.avatarUrl;
+      def currentCommenterName = currentCommenterIdentity.profile.fullName;
+      if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+    %>
+    <div class="CommentBox CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
+      <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
+        <img src="$currentCommenterAvatar">
+		    <span class="BorderTopCM"></span>
+        <span class="BorderBottomCM"></span>
+		  </a>
       <% uicomponent.renderChild(UIFormTextAreaInput.class); %>
       <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
     </div>
-
+   </div>
   </div>
   <% uiform.end() %>
 </div>

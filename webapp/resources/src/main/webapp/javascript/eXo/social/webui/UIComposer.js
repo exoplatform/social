@@ -60,7 +60,7 @@
     this.composer.value = this.defaultInput;
     this.composer.style.height = this.minHeight;
     this.composer.style.color = this.blurColor;
-    this.shareButton.style.background = 'white'
+    this.shareButton.className = 'ShareButtonDisable';
     this.shareButton.disabled = true;
     this.currentValue = this.composer.value;
     var uiComposer = this;
@@ -87,6 +87,7 @@
         //if current composer is default composer then disable share button
         if(document.getElementById("ComposerContainer") == null){
           uiComposer.shareButton.disabled = true;
+          uiComposer.shareButton.className = 'ShareButtonDisable';
         }
 
       } else {
@@ -102,17 +103,19 @@
       if (uiComposer.minCharactersRequired !== 0) {
         //TODO hoatle handle backspace problem
         if (uiComposer.composer.value.length >= uiComposer.minCharactersRequired) {
-          uiComposer.shareButton.style.background = 'white';
+          uiComposer.shareButton.className = 'ShareButtonDisable';
           if(document.getElementById("ComposerContainer") == null){
             uiComposer.shareButton.disabled = false;
+            uiComposer.shareButton.className = 'ShareButton';
           }
         } else {
           uiComposer.shareButton.style.background = '';
+          uiComposer.shareButton.className = 'ShareButton';
         }
       } else {
-        uiComposer.shareButton.style.background = 'white';
         if(document.getElementById("ComposerContainer") == null){
           uiComposer.shareButton.disabled = false;
+          uiComposer.shareButton.className = 'ShareButton';
         }
       }
       

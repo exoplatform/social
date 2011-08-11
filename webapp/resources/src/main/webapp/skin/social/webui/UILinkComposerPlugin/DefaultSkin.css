@@ -1,7 +1,5 @@
 .UIComposerLinkExtension {
   margin: 5px 0px;
-  background: white;
-  border: 1px solid #d7d7d7;
   height: 23px;
 }
 
@@ -18,16 +16,26 @@
 }
 
 .UIComposerLinkExtension #InputLink {
-  width: 85%;
-  height: 19px;
-  float: left;
-  border: 1px solid white;
+    border: 1px solid #D7D7D7;
+    float: left;
+    height: 19px;
+    width: 92%;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
 }
 
 .UIComposerLinkExtension .AttachButton {
-  border: 1px solid gray;
-  float: right;
+  background: #f0f0f0;
+  border: 1px solid #b7b7b7;
+  float: left;
   height: 23px;
+  cursor: pointer;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  color: #757575;
+  font-weight: bold;
+  font-size: 11px;
+  margin-left: 3px;
 }
 
 .UILinkShareDisplay {
@@ -109,6 +117,11 @@
 
 .LinkShare {
 	margin: 8px 0;
+	background: #f8f8f8;
+	border: 1px solid #e1e1e1;
+	padding: 10px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
 .LinkShare .Thumbnail {
@@ -116,6 +129,7 @@
   float: right; /* orientation=rt */
   margin-right: 10px; /* orientation=lt */
   margin-left: 10px; /* orientation=rt */
+  width: 110px;
 }
 
 .LinkShare .Content {

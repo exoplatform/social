@@ -54,10 +54,12 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
     int size;
     if (displayMode == DisplayMode.MY_STATUS || displayMode == DisplayMode.OWNER_STATUS) {
       size = Utils.getActivityManager().getActivitiesCount(ownerIdentity);
-    } else if (displayMode == DisplayMode.SPACES) {
+    } else if (displayMode == DisplayMode.SPACE_UPDATES) {
       size = Utils.getActivityManager().getActivitiesOfUserSpaces(ownerIdentity).size();
-    } else {
+    } else if (displayMode == DisplayMode.NETWORK_UPDATES) {
       size = Utils.getActivityManager().getActivitiesOfConnections(ownerIdentity).size();
+    } else { // All Updates
+      size = Utils.getActivityManager().getActivityFeedWithListAccess(ownerIdentity).getSize();
     }
 
     return size;
@@ -74,10 +76,13 @@ public class UserActivityListAccess implements ListAccess<ExoSocialActivity> {
     List<ExoSocialActivity> activityList;
     if (displayMode == DisplayMode.MY_STATUS || displayMode == DisplayMode.OWNER_STATUS) {
       activityList = Utils.getActivityManager().getActivities(ownerIdentity, index, length);
-    } else if (displayMode == DisplayMode.SPACES) {
+    } else if (displayMode == DisplayMode.SPACE_UPDATES) {
       activityList = getActivitiesOfUserSpaces(index, length);
-    } else {
+    } else if (displayMode == DisplayMode.NETWORK_UPDATES) {
       activityList = getActivitiesOfConnections(index, length);
+    } else {
+      activityList = Utils.getActivityManager()
+      .getActivityFeedWithListAccess(ownerIdentity).loadAsList(index, length);
     }
 
     return (activityList == null ? null : activityList.toArray(new ExoSocialActivity[activityList.size()]));

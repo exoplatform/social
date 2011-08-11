@@ -158,12 +158,13 @@
     }
     
     var shareButton = Util.getElementById('ShareButton');
-
+    shareButton.className = 'ShareButton';
     uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       //trick: enable share button
       if (shareButton) {
         shareButton.disabled = false;
+        shareButton.className = 'ShareButton';
       }
       
       this.uiThumbnailDisplay = Util.getElementById(this.uiThumbnailDisplayId);
@@ -224,6 +225,7 @@
 
       if (shareButton) {
         shareButton.disabled = true;
+        shareButton.className = 'ShareButtonDisable';
       }
       this.inputLink = Util.getElementById(this.inputLinkId);
       this.attachButton = Util.getElementById(this.attachButtonId);

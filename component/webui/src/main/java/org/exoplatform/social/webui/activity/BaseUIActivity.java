@@ -358,7 +358,7 @@ public class BaseUIActivity extends UIForm {
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
         if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
           return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
           //currently displays only
           return false;
         } else {
@@ -406,7 +406,7 @@ public class BaseUIActivity extends UIForm {
         if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
           if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
             return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACES) {
+          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
             return false;
           } else {
             //connections
@@ -472,6 +472,7 @@ public class BaseUIActivity extends UIForm {
       if (commentListStatus != null) {
         uiActivity.setCommentListStatus(commentListStatus);
       }
+      uiActivity.setCommentFormDisplayed(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
   }

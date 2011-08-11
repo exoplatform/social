@@ -100,7 +100,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
           activitiesContainer.addActivity(activity);
           requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
         }
-      } else {
+      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }

@@ -23,18 +23,21 @@
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 
-
-  def labelConnections = _ctx.appRes("${uicomponent.id}.label.Connections");
-  def labelSpaces = _ctx.appRes("${uicomponent.id}.label.Spaces");
+  def labelAllUpdates = _ctx.appRes("${uicomponent.id}.label.All_Updates");
+  def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
+  def labelSpaceUpdates = _ctx.appRes("${uicomponent.id}.label.Space_Updates");
   def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
 
   def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
+  def allUpdatesDisplayModeStyle = "LightBlueStyle";
   def connectionsDisplayModeStyle = "LightBlueStyle";
   def mySpacesDisplayModeStyle = "LightBlueStyle";
   def myStatusDisplayModeStyle = "LightBlueStyle";
-  if (selectedDisplayMode.toString().equals("CONNECTIONS")) {
+  if (selectedDisplayMode.toString().equals("ALL_UPDATES")) {
+    allUpdatesDisplayModeStyle = "DarkBlueStyle";
+  } else if (selectedDisplayMode.toString().equals("NETWORK_UPDATES")) {
     connectionsDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("SPACES")) {
+  } else if (selectedDisplayMode.toString().equals("SPACE_UPDATES")) {
     mySpacesDisplayModeStyle = "DarkBlueStyle";
   } else if (selectedDisplayMode.toString().equals("MY_STATUS")) {
     myStatusDisplayModeStyle = "DarkBlueStyle";
@@ -43,12 +46,15 @@
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
 <% if (uicomponent.isActivityStreamOwner()) { %>
-<div class="UIAction">
-  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "CONNECTIONS");%>" class="ActionButton $connectionsDisplayModeStyle">$labelConnections</a>
-  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaces</a>
-  <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
-</div>
-
+  <div class="UIAction">
+    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "ALL_UPDATES");%>" class="ActionButton $allUpdatesDisplayModeStyle">$labelAllUpdates</a>
+    <span style="border-right: 1px solid #e1e1e1;"></span>
+    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "NETWORK_UPDATES");%>" class="ActionButton $connectionsDisplayModeStyle">$labelNetworkUpdates</a>
+    <span style="border-right: 1px solid #e1e1e1;"></span>
+    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACE_UPDATES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaceUpdates</a>
+    <span style="border-right: 1px solid #e1e1e1;"></span>
+    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
+  </div>
 <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
 </div>

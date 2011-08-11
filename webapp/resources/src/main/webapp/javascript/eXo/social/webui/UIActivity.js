@@ -21,7 +21,13 @@
 
 (function() {
   var window_ = this,
-  Util = eXo.social.Util;
+  Util = eXo.social.Util,
+  COMMENT_BLOCK_BOUND_CLASS_NAME = "CommentBlockBound",
+  COMMENT_BLOCK_BOUND_NONE_CLASS_NAME = "CommentBlockBoundNone",
+  DEFAULT_COMMENT_TEXT_AREA_HEIGHT = "30px",
+  FOCUS_COMMENT_TEXT_AREA_HEIGHT = "30px",
+  FOCUS_COMMENT_TEXT_AREA_COLOR = "#000000",
+  DEFAULT_COMMENT_TEXT_AREA_COLOR = "#808080";
 
   function UIActivity(params) {
     this.configure(params);
@@ -47,7 +53,8 @@
     this.commentButtonId = 'CommentButton' + this.activityId;
     this.contentBoxId = 'ContextBox' + this.activityId;
     this.deleteActivityButtonId = 'DeleteActivityButton' + this.activityId;
-
+    this.allCommentSize = parseInt(params.allCommentSize);
+    this.commentBlockBoundId = "CommentBlockBound" + this.activityId;
   }
 
   UIActivity.prototype.init = function() {
@@ -58,25 +65,50 @@
     this.commentButtonEl = Util.getElementById(this.commentButtonId);
     this.contentBoxEl = Util.getElementById(this.contentBoxId);
     this.deleteActivityButtonEl = Util.getElementById(this.deleteActivityButtonId);
-
+    this.commentBlockBoundEl = Util.getElementById(this.commentBlockBoundId);
+    
     if (!(this.commentFormBlockEl && this.commentTextareaEl && this.commentButtonEl)) {
       alert('err: init uiActivity!');
     }
+    
+    this.commentBlockBoundEl.className=COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+    
+    if (this.commentFormDisplayed) {
+      this.commentTextareaEl.style.height = DEFAULT_COMMENT_TEXT_AREA_HEIGHT;
+      this.commentTextareaEl.style.color = DEFAULT_COMMENT_TEXT_AREA_COLOR;
+      if (this.commentTextareaEl.value === this.inputWriteAComment) {
+        this.commentTextareaEl.value = '';
+      }
+      this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+    } else {
+      if (this.allCommentSize == 0) {
+        this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+      } else {
+        this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+      }
+    }
+
     var uiActivity = this;
     if (this.commentLinkEl) {
       //event handlers
       Util.addEventListener(this.commentLinkEl, 'click', function(evt) {
         if (uiActivity.commentFormBlockEl.style.display != 'block') {
+          if (uiActivity.allCommentSize == 0) {
+            uiActivity.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+          }
           Util.showElement(uiActivity.commentFormBlockId);
           uiActivity.commentTextareaEl.focus();
         } else {
+          if (uiActivity.allCommentSize == 0) {
+            uiActivity.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+          }
           Util.hideElement(uiActivity.commentFormBlockId);
         }
       }, false);
 
       Util.addEventListener(this.commentTextareaEl, 'focus', function(evt) {
-        this.style.height = '50px';
-        this.style.color = '#000000';
+        this.style.height = FOCUS_COMMENT_TEXT_AREA_HEIGHT;
+        this.style.color = FOCUS_COMMENT_TEXT_AREA_COLOR;
         if (this.value === uiActivity.inputWriteAComment) {
           this.value = '';
         }
@@ -87,8 +119,8 @@
         if (this.value === '') {
           Util.hideElement(uiActivity.commentButtonId);
           this.value = uiActivity.inputWriteAComment;
-          this.style.height = '20px';
-          this.style.color = 'gray';
+          this.style.height = DEFAULT_COMMENT_TEXT_AREA_HEIGHT;
+          this.style.color = DEFAULT_COMMENT_TEXT_AREA_COLOR;
         }
       }, false);
 

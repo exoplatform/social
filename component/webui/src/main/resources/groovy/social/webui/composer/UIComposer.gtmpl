@@ -35,7 +35,7 @@
 
   def jsManager = requestContext.getJavascriptManager();
   def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
-  def attachLabel = _ctx.appRes("${uicomponent.id}.label.Attach");
+  def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def blastInput = "BlastInputSpace";
 
@@ -102,7 +102,7 @@
     </div>
     <div class="BlastShare ClearFix">
       <div class="AttachMents">
-      $attachLabel:
+      $addLabel:
       <%
         def simpleName, labelSimpleName;
         for(acComposer in uicomponent.getActivityComposers()) {
@@ -124,7 +124,7 @@
       <div class="ComposerExtensionContainer">
         <div class="Button" onclick="<%=currentActivityComposer.event("Close")%>; uicomposer.setCurrentValue();">x</div>
         <div style="clear:right"><span></span></div>
-        <div id="ComposerContainer" class="ClearLeft">
+        <div id="ComposerContainer" class="ClearFix">
           <%
             uicomponent.renderChild(UIActivityComposerContainer.class);
           %>

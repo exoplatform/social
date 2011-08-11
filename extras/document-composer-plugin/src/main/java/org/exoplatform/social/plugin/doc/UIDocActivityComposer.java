@@ -222,7 +222,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
         requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
         requestContext.addUIComponentToUpdateByAjax(uiComposer);
       }
-    } else{
+    } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
       uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
     }
   }

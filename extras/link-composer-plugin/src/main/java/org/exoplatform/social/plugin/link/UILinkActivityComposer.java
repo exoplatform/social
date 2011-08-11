@@ -247,7 +247,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
           requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
           requestContext.addUIComponentToUpdateByAjax(uiComposer);
         }
-      } else{
+      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }

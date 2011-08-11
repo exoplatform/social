@@ -80,7 +80,7 @@ ul {
 }
 
 .UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage{
-	padding: 0px 8px;
+	padding: 0px;
 }
 
 .UIWorkingWorkspace .UIPageBody .BLPagebody {
@@ -98,10 +98,6 @@ ul {
 .UIWorkingWorkspace{
 	width: 100%;
 	background: #eee;
-}
-
-.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage {
-	padding: 0px 8px;
 }
 
 .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock {
