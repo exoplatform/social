@@ -1,0 +1,999 @@
+h3. {noformat}activity_stream/:identityId/user{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity}
+
+h4. GET {noformat}activity_stream/:identityId/user/default.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity.GetDefault}
+
+*Description*: Gets activities of a defined identity which can be an user identity or a space identity.
+
+*Url*:                                                                              s
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/user/default.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json?limit=20]
+
+[http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/default.json]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+** *Response*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/default.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856902483,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e2d55c0a8013737dc8eabde05e7f7",
+      "title":"Hello World 3",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:22 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856896732,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e16dec0a801377bfea51ee20d8b66",
+      "title":"Hello World 2",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:16 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856884889,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98de8aec0a801372dde36ca1cf69c6b",
+      "title":"Hello World!!!",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:04 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+h4. GET {noformat}activity_stream/:identityId/user/newer/:activityBaseId.format{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity.Getnewer}
+
+*Description*: Gets newer activities of a defined identity based on an activity Id.
+
+*URL*:
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/user/newer/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/newer/f98de8aec0a801372dde36ca1cf69c6b.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856902483,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e2d55c0a8013737dc8eabde05e7f7",
+      "title":"Hello World 3",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:22 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856896732,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e16dec0a801377bfea51ee20d8b66",
+      "title":"Hello World 2",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:16 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+h4. GET {noformat}activity_stream/:identityId/user/older/:activityBaseId.{noformat}format {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity.Getolder}
+
+*Description*: Gets older activities of a defined identity based on an activity Id.
+
+*Url*:
+
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/user/older/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+*Examples*
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/older/f98e16dec0a801377bfea51ee20d8b66.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856884889,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98de8aec0a801372dde36ca1cf69c6b",
+      "title":"Hello World!!!",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:04 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+h3. {noformat}activity_stream/:identityId/feed{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed}
+
+h4. GET {noformat}activity_stream/:identityId/feed/default.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Feed.Getlastest}
+
+*Description*: Gets the latest activity stream feed of a defined user identity.
+
+*URL*
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/default.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+
+* *Optional*
+** *limit*: Specifies the number of activities to be retrieved. This number must be less than or equal to *100*. The value you pass to *limit* is a maximum number of activities to be returned. The actual number of activities you receive maybe less than *limit*. If *limit* is not specified, the default value will be 100.
+
+*Examples*
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/default.json
+{code}
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f98f1197c0a80137528356921f2948c7",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856997920,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98fa222c0a801373d2b094dcc48bf9b",
+      "title":"<a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> has joined the space.",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:57 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f98f1197c0a80137528356921f2948c7",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+      },
+      "postedTime":1309856961044,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98f121dc0a80137294aeb29d84f202e",
+      "title":"john space was created by <a href=\"/socialdemo/private/classic/profile/john\" target=\"_parent\">John Anthony</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:21 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f98ed67ec0a801370fc7afc98400df35",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856945880,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98ed6f1c0a80137086908621ded6fe3",
+      "title":"demo space was created by <a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:05 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856902483,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e2d55c0a8013737dc8eabde05e7f7",
+      "title":"Hello World 3",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:22 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856896732,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e16dec0a801377bfea51ee20d8b66",
+      "title":"Hello World 2",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:16 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856884889,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98de8aec0a801372dde36ca1cf69c6b",
+      "title":"Hello World!!!",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:04 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+h4. *GET* {noformat}activity_stream/:identityId/feed/newer/:activityBaseId.format{noformat}{anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed.Getnewer}
+
+*Description*: Gets the newer activity stream feed of an identity based on an activity Id.
+
+*URL*:
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/newer/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/newer/f98ed6f1c0a80137086908621ded6fe3.json
+{code}
+** *Response*
+{code}
+{
+   "activities":[
+      {
+         "appId":null,
+         "identityId":"f98f1197c0a80137528356921f2948c7",
+         "totalNumberOfComments":0,
+         "liked":false,
+         "templateParams":{
+
+         },
+         "postedTime":1309856997920,
+         "type":"exosocial:spaces",
+         "posterIdentity":null,
+         "activityStream":null,
+         "id":"f98fa222c0a801373d2b094dcc48bf9b",
+         "title":"<a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> has joined the space.",
+"priority":null,
+"createdAt":"Tue Jul 5 16:09:57 +0700 2011",
+"likedByIdentities":null,
+"titleId":null,
+"comments":null
+},
+{
+"appId":null,
+"identityId":"f98f1197c0a80137528356921f2948c7",
+"totalNumberOfComments":0,
+"liked":false,
+"templateParams":{
+},
+"postedTime":1309856961044,
+"type":"exosocial:spaces",
+"posterIdentity":null,
+"activityStream":null,
+"id":"f98f121dc0a80137294aeb29d84f202e",
+"title":"john space was created by <a href=\"/socialdemo/private/classic/profile/john\" target=\"_parent\">John Anthony</a> .",
+         "priority":null,
+         "createdAt":"Tue Jul 5 16:09:21 +0700 2011",
+         "likedByIdentities":null,
+         "titleId":null,
+         "comments":null
+      }
+   ]
+}
+{code}
+
+
+h4. GET {noformat}activity_stream/:identityId/feed/older/:activityBaseId.{noformat}format {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed.Getolder}
+
+*Description*: Gets the older activity stream feed on an identity based on an activity Id.
+
+*URL*
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/older/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/older/f98e16dec0a801377bfea51ee20d8b66.json
+{code}
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd6f0c0a80137102696ac26430766",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856884889,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98de8aec0a801372dde36ca1cf69c6b",
+      "title":"Hello World!!!",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:04 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+h3. {noformat}activity_stream/:identityId/connections{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection}
+
+
+h4. GET {noformat}activity_stream/:identityId/connections/default{noformat}.format {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection.default}
+
+*Description*: Gets activities of a defined identity's connections based on an activity Id.
+
+*URL*:
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/default.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*:
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/default.json
+{code}
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd31ac0a801373fbb2043e05d3312",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+        "SENDER":"demo",
+        "RECEIVER":"john",
+        "RELATIONSHIP_UUID":"f9cff1ecc0a8013742f758cfaee8db70"
+      },
+      "postedTime":1309861232904,
+      "type":"exosocial:relationship",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f9d0410ac0a8013731e419f08bea9993",
+      "title":"I am now connected with <a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a>",
+"priority":null,
+"createdAt":"Tue Jul 5 17:20:32 +0700 2011",
+"likedByIdentities":null,
+"titleId":"CONNECTION_CONFIRMED",
+"comments":null
+},
+{
+"appId":null,
+"identityId":"f92cd31ac0a801373fbb2043e05d3312",
+"totalNumberOfComments":0,
+"liked":false,
+"templateParams":{
+"SENDER":"demo",
+"RECEIVER":"john",
+"RELATIONSHIP_UUID":"f9cff1ecc0a8013742f758cfaee8db70"
+},
+"postedTime":1309861213060,
+"type":"exosocial:relationship",
+"posterIdentity":null,
+"activityStream":null,
+"id":"f9cff39fc0a8013716a77b1ce66864d7",
+"title":"<a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> has invited <a href=\"/socialdemo/private/classic/profile/john\" target=\"_parent\">John Anthony</a> to connect",
+      "priority":null,
+      "createdAt":"Tue Jul 5 17:20:13 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":"CONNECTION_REQUESTED",
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd31ac0a801373fbb2043e05d3312",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856926090,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e898cc0a801372c958fbfe847e2d3",
+      "title":"john activity 2",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:46 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f92cd31ac0a801373fbb2043e05d3312",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856921353,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e770fc0a8013762a63bbd2c426726",
+      "title":"john activity 1",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:41 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+h4. GET {noformat}activity_stream/:identityId/connections/newer/:activityBaseId{noformat}.format {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection.Getnewer}
+
+*Description*: Gets newer activities of a defined identity's connections based on an activity Id.
+
+*URL*
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/newer/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/newer/f9cff39fc0a8013716a77b1ce66864d7.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd31ac0a801373fbb2043e05d3312",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+        "SENDER":"demo",
+        "RECEIVER":"john",
+        "RELATIONSHIP_UUID":"f9cff1ecc0a8013742f758cfaee8db70"
+      },
+      "postedTime":1309861232904,
+      "type":"exosocial:relationship",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f9d0410ac0a8013731e419f08bea9993",
+      "title":"I am now connected with <a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a>",
+"priority":null,
+"createdAt":"Tue Jul 5 17:20:32 +0700 2011",
+"likedByIdentities":null,
+"titleId":"CONNECTION_CONFIRMED",
+"comments":null
+}
+]
+}
+{code}
+
+
+h4. GET {noformat}activity_stream/:identityId/connections/older/:activityBaseId.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection.Getolder}
+
+*Description*: Gets older activities of a defined user identity's connections based on an activity Id.
+
+*URL*:
+
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/older/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/older/f98e898cc0a801372c958fbfe847e2d3.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f92cd31ac0a801373fbb2043e05d3312",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856921353,
+      "type":"DEFAULT_ACTIVITY",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98e770fc0a8013762a63bbd2c426726",
+      "title":"john activity 1",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:08:41 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+
+h3. {noformat}activity_stream/:identityId/spaces{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces}
+
+
+h4. GET {noformat}activity_stream/:identityId/spaces/default.format{noformat}   {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.GetDefault}
+
+*Description*: Gets activities of spaces that the defined identity is the member or the manager.
+
+*URL*:
+
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/default.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+***Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/default.json
+{code}
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f98f1197c0a80137528356921f2948c7",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856997920,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98fa222c0a801373d2b094dcc48bf9b",
+      "title":"<a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> has joined the space.",
+"priority":null,
+"createdAt":"Tue Jul 5 16:09:57 +0700 2011",
+"likedByIdentities":null,
+"titleId":null,
+"comments":null
+},
+{
+"appId":null,
+"identityId":"f98f1197c0a80137528356921f2948c7",
+"totalNumberOfComments":0,
+"liked":false,
+"templateParams":{
+},
+"postedTime":1309856961044,
+"type":"exosocial:spaces",
+"posterIdentity":null,
+"activityStream":null,
+"id":"f98f121dc0a80137294aeb29d84f202e",
+"title":"john space was created by <a href=\"/socialdemo/private/classic/profile/john\" target=\"_parent\">John Anthony</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:21 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f98ed67ec0a801370fc7afc98400df35",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856945880,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98ed6f1c0a80137086908621ded6fe3",
+      "title":"demo space was created by <a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:05 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}
+
+
+
+h4. GET {noformat}activity_stream/:identityId/spaces/newer/:activityBaseId.format{noformat}{anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.Getnewer}
+
+*Description*: Gets newer activities from all spaces that the defined user identity is the member or the manager based on a specified activity Id.
+
+*URL*:
+
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/newer/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/newer/f98f121dc0a80137294aeb29d84f202e.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f98f1197c0a80137528356921f2948c7",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856997920,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98fa222c0a801373d2b094dcc48bf9b",
+      "title":"<a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> has joined the space.",
+"priority":null,
+"createdAt":"Tue Jul 5 16:09:57 +0700 2011",
+"likedByIdentities":null,
+"titleId":null,
+"comments":null
+}
+]
+}
+{code}
+
+
+h4. GET {noformat}activity_stream/:identityId/spaces/older/:activityBaseId.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.Getolder}
+
+*Description*: Gets the older activities of spaces that the defined user identity is the member or the manager based on a specified activity Id.
+
+*URL*:
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/older/{activityBaseId}.{format}{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json]
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json?limit=20]
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*:
+
+* *Optional*
+** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/older/f98fa222c0a801373d2b094dcc48bf9b.json
+{code}
+
+** *Response*
+{code}
+{
+  "activities":[
+    {
+      "appId":null,
+      "identityId":"f98f1197c0a80137528356921f2948c7",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856961044,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98f121dc0a80137294aeb29d84f202e",
+      "title":"john space was created by <a href=\"/socialdemo/private/classic/profile/john\" target=\"_parent\">John Anthony</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:21 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    },
+    {
+      "appId":null,
+      "identityId":"f98ed67ec0a801370fc7afc98400df35",
+      "totalNumberOfComments":0,
+      "liked":false,
+      "templateParams":{
+
+      },
+      "postedTime":1309856945880,
+      "type":"exosocial:spaces",
+      "posterIdentity":null,
+      "activityStream":null,
+      "id":"f98ed6f1c0a80137086908621ded6fe3",
+      "title":"demo space was created by <a href=\"/socialdemo/private/classic/profile/demo\" target=\"_parent\">Demo gtn</a> .",
+      "priority":null,
+      "createdAt":"Tue Jul 5 16:09:05 +0700 2011",
+      "likedByIdentities":null,
+      "titleId":null,
+      "comments":null
+    }
+  ]
+}
+{code}

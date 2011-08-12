@@ -34,9 +34,9 @@ h3. How to extend the activities rendering
 {include:document="DeveloperReference/How_to_extend_the_activities_rendering.wiki"}
 h2. Public REST APIs {anchor:id=SOCref.DevelopersReferences.PublicREST_APIs}
 {include:document="DeveloperReference/REST_APIs.wiki"}
+h2. Rest Service APIs (v1-alpha1) {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1}
+{include:document="DeveloperReference/Rest_Service_APIs_V1_Alpha1.wiki"}
 h2. Public Javascript APIs {anchor:id=SOCref.DevelopersReferences.PublicJavascriptAPIs}
 {include:document="DeveloperReference/Javascript_APIs.wiki"}
 h2. Social JCR Structure {anchor:id=SOCref.Social_JCR_Structure}
 {include:document="jcr_structure.wiki"}
-
-

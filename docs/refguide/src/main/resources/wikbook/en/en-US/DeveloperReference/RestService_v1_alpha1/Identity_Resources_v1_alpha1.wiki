@@ -1,0 +1,74 @@
+h3. identity    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity}
+h4. GET identity/:identityId.format    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity.Get}
+
+*Description*: Gets the identity and its associated profile by the activity Id.
+*Url*:
+{code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/identity/:identityId.format{code}
+
+*For example*:
+
+[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json]
+
+[http://localhost:8080/rest-socialdemo/private/api/social/v1/socialdemo/identity/123456789.json]
+
+
+
+*Supported Format*: json
+
+*Requires Authentication*: true
+
+*Parameters*: No
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json
+{code}
+** *Response*
+{code}
+{
+  "id" : "123456789",
+  "providerId": "organization",
+  "remoteId": "demo",
+  "profile": {
+    "fullName": "Demo Gtn",
+    "avatarUrl": "http://platform35.demo.exoplatform.org/profile/avatar/demo.jpg"
+  }
+}
+{code}
+
+h3. Notes   {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.Notes}
+*Identity Resources*: *Identity Resources* has been supported to get an Id of identity based on providerId and remoteId. eXo Social 1.2.0-GA has not implemented this feature yet, however there is a workaround solution for that.
+
+h4. GET: {noformat}{rest_context_name}/{portal_container_name}/social/identity/:username/id/show.json{noformat} {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.Notes.Get}
+
+*Description*: Gets the identity Id from a provided username.
+
+*Url*:
+
+{code}http://{domain_name}/{rest_context_name}/{portal_container_name}/social/identity/{username}/id/show.json{code}
+
+For example:
+
+[http://platform35.demo.exoplatform.org/rest/portal/social/identity/demo/id/show.json]
+
+[http://localhost:8080/rest-socialdemo/socialdemo/social/identity/demo/id/show.json]
+
+*Supported Format*: json
+
+*Requires Authentication*: false
+
+*Parameters*: No
+
+*Examples*:
+* *JSON*
+** *Request*
+{code}
+GET: http://localhost:8080/rest-socialdemo/socialdemo/social/identity/demo/id/show.json
+{code}
+
+** *Response*
+{code}
+{"id":"f92cd6f0c0a80137102696ac26430766"}
+{code}
