@@ -1368,12 +1368,12 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ExoSocialActivity comment1 = new ExoSocialActivityImpl();
       comment1.setTitle("comment 1");
       comment1.setUserId(rootIdentity.getId());
+      activityManager.saveComment(activity, comment1);
 
       ExoSocialActivity comment2 = new ExoSocialActivityImpl();
       comment2.setTitle("comment 2");
       comment2.setUserId(rootIdentity.getId());
 
-      activityManager.saveComment(activity, comment1);
       activityManager.saveComment(activity, comment2);
     }
   }

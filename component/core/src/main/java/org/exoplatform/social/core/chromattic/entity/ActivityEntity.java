@@ -23,16 +23,19 @@ import java.util.Map;
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
+import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
 /**
@@ -40,6 +43,8 @@ import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
  * @version $Revision$
  */
 @PrimaryType(name = "soc:activity", orderable = true)
+@FormattedBy(BaseEncodingObjectFormatter.class)
+@NamingPrefix("soc")
 public abstract class ActivityEntity implements NamedEntity {
 
   @Id

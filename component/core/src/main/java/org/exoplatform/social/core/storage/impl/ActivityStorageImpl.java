@@ -353,8 +353,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       //
       long currentMillis = System.currentTimeMillis();
+      long commentMillis = (comment.getPostedTime() != null ? comment.getPostedTime() : currentMillis);
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-      ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(currentMillis));
+      ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
 
       //
       activityEntity.getComments().add(commentEntity);
@@ -363,7 +364,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setIdentity(activityEntity.getIdentity());
       commentEntity.setPosterIdentity(_findById(IdentityEntity.class, comment.getUserId()));
       commentEntity.setComment(Boolean.TRUE);
-      commentEntity.setPostedTime(currentMillis);
+      commentEntity.setPostedTime(commentMillis);
       comment.setId(commentEntity.getId());
 
       //
