@@ -19,14 +19,17 @@ package org.exoplatform.social.plugin.doc;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.jcr.Node;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.selector.UISelectable;
 import org.exoplatform.ecm.webui.tree.selectone.UIOneNodePathSelector;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.portal.webui.util.SessionProviderFactory;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -109,9 +112,31 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   @Override
   protected void onActivate(Event<UIActivityComposer> event) {
     isDocumentReady = false;
-    rootpath = "/Users/"+ event.getRequestContext().getRemoteUser();
+    //SOC-1912
+    rootpath = getPathForCurrentUser(event.getRequestContext().getRemoteUser());
     final UIDocActivityComposer docActivityComposer = (UIDocActivityComposer) event.getSource();
     showDocumentPopup(docActivityComposer);
+  }
+  
+  /**
+   * Because the new path for user change from ECMS,
+   *  this method fix path for User's NodePath.
+   *  
+   * @param remoteUser
+   * @return NodePath
+   * @since 1.2.1
+   */
+  private String getPathForCurrentUser(String remoteUser) {
+    try {
+      NodeHierarchyCreator nodeHierarchyCreator = WCMCoreUtils.getService(NodeHierarchyCreator.class);
+      Node userNode = nodeHierarchyCreator.getUserNode(WCMCoreUtils.getUserSessionProvider(), remoteUser);
+      return userNode.getPath();
+                                
+    } catch (Exception e) {
+      LOG.error(e);
+      return "";
+    }
+    
   }
 
   private UIPopupWindow showDocumentPopup(UIDocActivityComposer docActivityComposer) {
