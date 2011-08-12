@@ -70,6 +70,9 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     identityStorage.deleteIdentity(tobeSavedIdentity);
 
+    tobeSavedIdentity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username);
+    assertNull("tobeSavedIdentity must be null", tobeSavedIdentity);
+
     // Delete identity with loaded profile
     {
       tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
@@ -316,6 +319,25 @@ public class IdentityStorageTest extends AbstractCoreTest {
     filter.setName("First");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
     assertEquals(1, result.size());
+
+
+    //create a new identity
+    Identity test2Identity = populateIdentity("test2", false);
+
+    //check when new identity is not deleted
+    final ProfileFilter profileFilter2 = new ProfileFilter();
+    List<Identity> foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
+    assertEquals("foundIdentities.size() must be 1", 2, foundIdentities.size());
+
+    //finds the second one
+    profileFilter2.setName("g");
+    foundIdentities =  identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
+    assertEquals("foundIdentities.size() must be 1", 1, foundIdentities.size());
+
+    //check when new identity is deleted
+    identityStorage.deleteIdentity(test2Identity);
+    foundIdentities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter2, 0, 10, false);
+    assertEquals("foundIdentities.size() must be 0", 0, foundIdentities.size());
   }
 
   /**
@@ -336,8 +358,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
       profile.setProperty(Profile.LAST_NAME, "LastName");
       profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " + "LastName" + i);
-      profile.setProperty("position", "developer");
-      profile.setProperty("gender", "male");
+      profile.setProperty(Profile.POSITION, "developer");
+      profile.setProperty(Profile.GENDER, "male");
       identity.setProfile(profile);
       tearDownIdentityList.add(identity);
       identityStorage.saveProfile(profile);
@@ -482,19 +504,33 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * @return
    */
   private Identity populateIdentity(String remoteId) {
+    return populateIdentity(remoteId, false);
+  }
+
+  /**
+   * Populates one identity with remoteId.
+   *
+   * @param remoteId
+   * @param addedToTearDown
+   * @return
+   */
+  private Identity populateIdentity(String remoteId, boolean addedToTearDown) {
     String providerId = "organization";
     Identity identity = new Identity(providerId, remoteId);
-    
+    identityStorage.saveIdentity(identity);
+
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, remoteId);
     profile.setProperty(Profile.LAST_NAME, "gtn");
     profile.setProperty(Profile.FULL_NAME, remoteId + " " +  "gtn");
     profile.setProperty(Profile.POSITION, "developer");
     profile.setProperty(Profile.GENDER, "male");
+    identityStorage.saveProfile(profile);
 
     identity.setProfile(profile);
-    identityStorage.saveIdentity(identity);
-    tearDownIdentityList.add(identity);
+    if (addedToTearDown) {
+      tearDownIdentityList.add(identity);
+    }
     return identity;
   }
   

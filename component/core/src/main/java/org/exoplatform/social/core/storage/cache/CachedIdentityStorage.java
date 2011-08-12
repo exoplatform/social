@@ -187,6 +187,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     }
     exoProfileCache.remove(key);
     exoIdentitiesCountCache.clearCache();
+    exoIdentitiesCache.clearCache();
 
   }
 
