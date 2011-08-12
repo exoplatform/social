@@ -114,9 +114,15 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     Identity i = new Identity("p", "id");
     identityStorage.saveIdentity(i);
     assertEquals(1, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
+
+    ProfileFilter filter = new ProfileFilter();
+    identityStorage.getIdentitiesByProfileFilter("p", filter, 0, 10, false);
+    assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
 
     identityStorage.deleteIdentity(i);
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
 
   }
 
