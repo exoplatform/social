@@ -21,7 +21,7 @@
 */
 %>
 <%
-  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.social.webui.Utils
   import org.exoplatform.webui.core.UIPageIterator
   import org.exoplatform.webui.core.UIVirtualList
   import org.exoplatform.social.core.space.SpaceUtils
@@ -70,7 +70,7 @@
         def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
         def role = uicomponent.getRole(space.id)
         def hasMembership = uicomponent.hasMembership(space.id)
-        def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+        def spaceUrl = Utils.getSpaceHomeURL(space)
         def editSpaceLink = spaceUrl + "/" + "settings";
         def visibility = space.visibility
         if (visibility.equals("private")) visibility = "visible"

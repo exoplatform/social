@@ -25,6 +25,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.space.SpaceException;
@@ -370,7 +371,7 @@ public class UISpaceMember extends UIForm {
    */
   public String getHomeSpaceUrl() throws Exception {
     Space space = getSpaceService().getSpaceById(spaceId);
-    return Util.getPortalRequestContext().getPortalURI() + space.getUrl();
+    return Utils.getSpaceHomeURL(space);
   }
 
   /**
@@ -381,7 +382,7 @@ public class UISpaceMember extends UIForm {
    */
   public String getManageSpacesUrl() throws Exception {
     //TODO hoatle: Hard-coded
-    return Util.getPortalRequestContext().getPortalURI() + "spaces";
+    return Utils.getURI("spaces");
   }
 
   /**
@@ -520,11 +521,11 @@ public class UISpaceMember extends UIForm {
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
-        StringBuffer url = new StringBuffer(Util.getPortalRequestContext().getPortalURI());
+        StringBuffer url = new StringBuffer();
         if (uiSpaceMember.isSuperUser()) {
-          url.append(space.getUrl()).append("/SpaceSettingPortlet");
+          url.append(Utils.getSpaceHomeURL(space)).append("/SpaceSettingPortlet");
         } else {
-          url.append("spaces");
+          url.append(Utils.getURI("spaces"));
         }
         prContext.getResponse().sendRedirect(url.toString());
         return;
@@ -580,11 +581,9 @@ public class UISpaceMember extends UIForm {
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
         prContext.setResponseComplete(true);
-        StringBuffer url = new StringBuffer(Util.getPortalRequestContext().getPortalURI());
+        StringBuffer url = new StringBuffer(Utils.getSpaceHomeURL(space));
         if (uiSpaceMember.isSuperUser()) {
-          url.append(space.getUrl()).append("/SpaceSettingPortlet");
-        } else {
-          url.append(space.getUrl());
+          url.append("/SpaceSettingPortlet");
         }
         prContext.getResponse().sendRedirect(url.toString());
         return;

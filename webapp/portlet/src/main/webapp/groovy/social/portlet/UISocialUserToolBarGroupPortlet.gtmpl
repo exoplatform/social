@@ -23,7 +23,7 @@
 <%
   import org.exoplatform.portal.config.model.UserNavigation;
   import org.exoplatform.portal.config.model.UserNode;
-  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.webui.organization.OrganizationUtils;
   import org.exoplatform.portal.mop.Visibility;
 
@@ -36,7 +36,7 @@
   def labelGroup = _ctx.appRes("UISocialUserToolBarGroupPortlet.label.group");
 
   def groupNavigations = uicomponent.getGroupNavigations();
-  def portalURI = Util.getPortalRequestContext().getPortalURI();
+  def portalURI = Utils.getURI("");
 
   void renderGroupPageNavigation(UserNavigation navigation) {
     def nodes = uicomponent.getNavigationNodes(navigation);
@@ -74,7 +74,7 @@
     boolean hasChild = node.getChildrenCount() > 0;
     String clazz = "";
     if(hasChild) clazz = "ArrowIcon";
-    String href = Util.getPortalRequestContext().getPortalURI() + node.getURI();
+    String href = Utils.getSpaceURL(node);
     String icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon";
     boolean toolong = (node.resolvedLabel.length() > 60);

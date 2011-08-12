@@ -21,7 +21,7 @@
 */
 %>
 <%
-  import org.exoplatform.portal.webui.util.Util
+  import org.exoplatform.social.webui.Utils
   import org.exoplatform.webui.core.UIPageIterator
   import org.exoplatform.social.core.space.model.Space
   import org.exoplatform.social.core.space.SpaceUtils
@@ -65,7 +65,7 @@
         //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
         if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
         if (registration.equals(Space.CLOSE)) isClose = true
-        def spaceUrl = Util.getPortalRequestContext().getPortalURI() + space.getUrl()
+        def spaceUrl = Utils.getSpaceHomeURL(space)
         //Temporary use private as visible
         if (visibility.equals(Space.PRIVATE)) visibility = "visible"
         def status = visibleStatus + " "

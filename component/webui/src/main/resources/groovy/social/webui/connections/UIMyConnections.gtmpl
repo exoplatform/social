@@ -1,5 +1,5 @@
 <%
-  import org.exoplatform.portal.webui.util.Util ;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.webui.core.UIVirtualList;
   import org.exoplatform.social.core.model.AvatarAttachment;
@@ -14,8 +14,6 @@
   def currIdentity = Utils.getOwnerIdentity(true);
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
   UIPageIterator iteratorContact = uicomponent.getUIPageIteratorContact();
-  PortalRequestContext pcontext = Util.getPortalRequestContext();
-  def portalURI = pcontext.getPortalURI();
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
 %>
@@ -40,7 +38,7 @@
       <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
         <div class="ContentSpace">
             <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
-            <% def peopleURL = portalURI + "people" %>
+            <% def peopleURL = Utils.getURI("people") %>
             </p>
         <% if (isOwner) {%>
         <div class="UIAction">

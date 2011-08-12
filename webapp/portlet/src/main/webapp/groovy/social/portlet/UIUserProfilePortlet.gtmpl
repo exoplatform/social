@@ -1,9 +1,9 @@
 <%	
 	import org.exoplatform.services.organization.User;
-	import org.exoplatform.portal.webui.util.Util;
+	import org.exoplatform.social.webui.Utils;
 		
 	def rcontext = _ctx.getRequestContext();
-	def userProfilePage = Util.getPortalRequestContext().getPortalURI() + "activities";
+	def userProfilePage = Utils.getURI("activities");
 	
 %>
 <div class="UIUserProfilePortlet" id="$uicomponent.id">

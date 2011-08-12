@@ -23,7 +23,7 @@
 <%
   import org.exoplatform.portal.mop.user.UserNode;
   import org.exoplatform.portal.mop.user.UserNavigation;
-  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.webui.organization.OrganizationUtils;
   import org.exoplatform.social.core.space.SpaceUtils;
   import javax.portlet.MimeResponse;
@@ -34,8 +34,7 @@
   jsManager.importJavascript('eXo.portal.UIPortalNavigation');
   jsManager.importJavascript('eXo.portal.UIAdminToolbar');
   jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
-  def portalURI = Util.getPortalRequestContext().getPortalURI();
-  def spacesLink = portalURI + "spaces";
+  def spacesLink = Utils.getURI("spaces");
   def spaceNavigations = uicomponent.getSpaceNavigations();
   
   void renderSpacePageNavigation(UserNavigation navigation) {
@@ -59,7 +58,7 @@
     boolean hasChild = (node.getChildren() != null && node.getChildren().size() > 0);
     def clazz = "";
     if(hasChild) clazz = "ArrowIcon";
-    def href = Util.getPortalRequestContext().getPortalURI() + node.getURI();
+    def href = Utils.getSpaceURL(node);
     def icon = node.getIcon();
     if(icon == null) icon = "DefaultPageIcon";
     def displayAppName = SpaceUtils.getDisplayAppName(node.resolvedLabel);

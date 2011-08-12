@@ -18,13 +18,14 @@
 -->
 <%
   import org.exoplatform.portal.application.PortalRequestContext;
-  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
+  
   def prContext = _ctx.getRequestContext().getParentAppRequestContext();
   String signInAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ShowLoginForm', true));";
   String changeLanguageAction = "if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'ChangeLanguage', true));";
   String portletId = uicomponent.getId();
-  String registerURI = Util.getPortalRequestContext().getPortalURI() + "register";
-  String homeURI = Util.getPortalRequestContext().getPortalURI();
+  String registerURI = Utils.getURI("register");
+  String homeURI = Utils.getURI("");
 %>
 <div id="$portletId" class="UIBannerPortlet UIApplication">
   <div class="ApplicationMinWidth">

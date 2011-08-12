@@ -23,6 +23,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.web.controller.QualifiedName;
 
 /**
  * Processes url and returns the some type of result base on url.
@@ -39,18 +40,10 @@ public class URLUtils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     PortalRequestContext request = Util.getPortalRequestContext() ;
-    String uri = request.getNodePath();
-    String[] els = uri.split("/");
-    String currentUserName = null;
-    
-    if (els.length == 3) {
-      currentUserName = els[2];
-    } else if (els.length == 4) {
-      currentUserName = els[3];
-    }
+    String currentUserName = request.getControllerContext().getParameter(QualifiedName.parse("soc:user"));
     
     if (currentUserName != null) {
-      Identity id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName);
+      Identity id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
       if (id != null) return currentUserName;
     }
     

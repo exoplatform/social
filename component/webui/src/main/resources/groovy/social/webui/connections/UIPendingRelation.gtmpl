@@ -1,5 +1,5 @@
 <%
-  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
   import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
@@ -12,8 +12,6 @@
   def list = uicomponent.getPendingRelationList();
   def currIdentity = Utils.getOwnerIdentity();
   UIPageIterator iterator = uicomponent.getUIPageIterator();
-  PortalRequestContext pcontext = Util.getPortalRequestContext();
-  def portalURI = pcontext.getPortalURI();
   def pendingRelationIdx = 0;
 %>
 
@@ -29,7 +27,7 @@
       <%if ((list == null) || (list.size() == 0)) {%>
 		<div class="ContentSpace">
 			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
-			<% def peopleURL = portalURI + "people" %>
+			<% def peopleURL = Utils.getURI("people") %>
 			</div>
 			<div class="UIAction">
               <a href="<%=peopleURL%>" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%></a>

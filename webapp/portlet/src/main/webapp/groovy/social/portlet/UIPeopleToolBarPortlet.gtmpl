@@ -1,5 +1,6 @@
 <%
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.Utils;
 
 def labelPeople    = _ctx.appRes("UIPeopleToolBarPortlet.label.People");
 def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
@@ -11,12 +12,12 @@ jsManager.importJavascript('eXo.portal.UIPortalNavigation');
 jsManager.importJavascript('eXo.portal.UIAdminToolbar');
 jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
 
-def portalURI = Util.getPortalRequestContext().getPortalURI();
-def peopleLink = portalURI + "people";
+def peopleLink = Utils.getURI("people");
+
 def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 
-def directoryLink = portalURI + "people";
-def connectionsLink = portalURI + "connections/myConnections/" + remoteUser;
+def directoryLink = Utils.getURI("people");
+def connectionsLink = Utils.getURI("connections") + "/myConnections@" + remoteUser;
 %>
 <ul class="UIPeopleToolBarPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
 	<li class="UITab NormalToolbarTab">

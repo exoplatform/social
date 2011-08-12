@@ -220,7 +220,7 @@ public class UISocialNavigation extends UIComponent {
         }
       }
       PageNodeEvent<UIPortal> pnevent;
-      pnevent = new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_PAGE_NODE, uri);
+      pnevent = new PageNodeEvent<UIPortal>(uiPortal, PageNodeEvent.CHANGE_NODE, selectNode.getNavigation().getKey(), uri);
       uiPortal.broadcast(pnevent, Event.Phase.PROCESS);
     }
   }

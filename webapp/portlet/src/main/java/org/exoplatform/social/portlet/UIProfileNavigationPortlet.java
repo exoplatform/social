@@ -21,6 +21,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -65,16 +66,15 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String[] split = requestUrl.split("/");
-    if (split.length == 6) {
-      return split[split.length - 2];
-    } else if (split.length == 7) {
-      return split[split.length - 3];
+    
+    String path = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    
+    if (path.contains("/")) {
+     return path.split("/")[0]; 
     }
-    return split[split.length-1];
+    return path;
   }
-
+  
   /**
    * Gets relationship between current user and viewer identity.<br>
    * 

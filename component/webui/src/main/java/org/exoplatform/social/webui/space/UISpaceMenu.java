@@ -43,6 +43,7 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -160,19 +161,19 @@ public class UISpaceMenu extends UIContainer {
       String oldName = selectedNode.getName();
       String oldUri = selectedNode.getURI();
       if (selectedNode.getResolvedLabel().equals(newSpaceAppName)) {
-        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+        prContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
         return;
       }
       UIApplication uiApp = context.getUIApplication();
       if (!spaceMenu.isValidAppName(newSpaceAppName)) {
         uiApp.addMessage(new ApplicationMessage(INVALID_APPLICATION_NAME_MSG, null, ApplicationMessage.WARNING));
-        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+        prContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
         return;
       }
       String newNodeName = newSpaceAppName.trim().replace(' ', '_');
       if (spaceMenu.isAppNameExisted(homeNode, newNodeName)) {
         uiApp.addMessage(new ApplicationMessage(EXISTING_APPLICATION_NAME_MSG, null, ApplicationMessage.INFO));
-        prContext.getResponse().sendRedirect(prContext.getPortalURI() + oldUri);
+        prContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
         return;
       }
 
@@ -212,7 +213,7 @@ public class UISpaceMenu extends UIContainer {
       
       String newUri = renamedNode.getURI();
       if (newUri != null) {
-        prContext.getResponse().sendRedirect(prContext.getPortalURI() + newUri);
+        prContext.getResponse().sendRedirect(Utils.getSpaceURL(renamedNode));
       }
     }
   }
@@ -358,5 +359,16 @@ public class UISpaceMenu extends UIContainer {
       return false;
     }
     return true;
+  }
+  
+  /**
+   * Get the space from space url.
+   * 
+   * @param spaceUrl
+   * @return
+   * @since 1.2.1
+   */
+  protected Space getSpace(String spaceUrl) {
+    return spaceService.getSpaceByUrl(spaceUrl);
   }
 }

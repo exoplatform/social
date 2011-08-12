@@ -38,6 +38,7 @@ public class LinkProvider {
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript";
   public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
   public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  public static final String ROUTE_DELIMITER = "@";
   
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);
@@ -145,7 +146,7 @@ public class LinkProvider {
    * @return
    */
   public static String getUserConnectionsUri(final String remoteId) {
-    return getBaseUri(null, null) + "/connections/myConnections/" + remoteId;
+    return getBaseUri(null, null) + "/connections/myConnections" + ROUTE_DELIMITER + remoteId;
   }
 
   /**
@@ -159,9 +160,9 @@ public class LinkProvider {
   public static String getActivityUri(final String providerId, final String remoteId) {
     final String prefix = getBaseUri(null, null) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
-      return prefix + "activities/" + remoteId;
+      return prefix + "activities" + ROUTE_DELIMITER + remoteId;
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
-      return prefix + remoteId;
+      return prefix + ROUTE_DELIMITER + remoteId;
     } else {
       LOG.warn("Failed to getActivityLink with providerId: " + providerId);
     }
@@ -277,7 +278,7 @@ public class LinkProvider {
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
     if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
-    return getBaseUri(portalName, portalOwner) + "/profile/" + userName;
+    return getBaseUri(portalName, portalOwner) + "/profile" + ROUTE_DELIMITER + userName;
   }
 
   /**
@@ -302,7 +303,7 @@ public class LinkProvider {
    * @return
    */
   private static String getBaseUri(final String portalName, String portalOwner) {
-    return "/" + getPortalName(portalName) + "/private/" + getPortalOwner(portalOwner);
+    return "/" + getPortalName(portalName) + "/" + getPortalOwner(portalOwner);
   }
 
   /**

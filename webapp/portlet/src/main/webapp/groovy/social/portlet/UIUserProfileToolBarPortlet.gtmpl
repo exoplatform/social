@@ -21,7 +21,7 @@
 */
 %>
 <%
-import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.core.service.LinkProvider;
 
 def requestContext = _ctx.getRequestContext();
@@ -32,10 +32,9 @@ jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicom
 
 def accountSettingsLink = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));";
 def user = uicomponent.getUser();
-def portalURI = Util.getPortalRequestContext().getPortalURI();
 def labelActivities = _ctx.appRes("UIUserToolBarPortlet.label.activities");
 def labelProfile = _ctx.appRes("UIUserToolBarPortlet.label.profile");
-def activitiesLink = portalURI + "activities";
+def activitiesLink = Utils.getURI("activities");
 def profileLink = LinkProvider.getProfileUri(user.userName);
 
 %>

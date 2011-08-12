@@ -38,6 +38,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -176,7 +177,7 @@ public class UISpaceInfo extends UIForm {
       Space space = spaceService.getSpaceById(id);
       if (space == null) {
         //redirect to spaces
-        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + "spaces");
+        portalRequestContext.getResponse().sendRedirect(Utils.getURI("spaces"));
         return;
       }
       String spaceUrl = space.getUrl();
@@ -235,7 +236,7 @@ public class UISpaceInfo extends UIForm {
       if (nameChanged) {
         //update Space Navigation (change name).
         UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-        portalRequestContext.getResponse().sendRedirect(portalRequestContext.getPortalURI() + selectedNode.getURI());
+        portalRequestContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
         return;
       } else {
         uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));

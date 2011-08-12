@@ -18,7 +18,6 @@
 
 <%
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.core.UIPopupWindow;
 
@@ -44,8 +43,6 @@ def spaceDirectoryLabel = _ctx.appRes("${uicomponentId}.label.SpaceDirectory");
 def searchId = "SpaceSearch";
 def selectedChar = uicomponent.getSelectedChar();
 def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-PortalRequestContext pcontext = Util.getPortalRequestContext();
-def portalURI = pcontext.getPortalURI();
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
 

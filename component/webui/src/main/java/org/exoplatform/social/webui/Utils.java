@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -29,8 +31,11 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 
 /**
  * Contains some common methods for using as utility.<br>
@@ -203,5 +208,46 @@ public class Utils {
    */
   public static final SpaceService getSpaceService() {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+  }
+  
+  /**
+   * Get the uri.
+   * 
+   * @param url
+   * @return
+   * @since 1.2.1
+   */
+  public static String getURI(String url) {
+    RequestContext ctx = RequestContext.getCurrentInstance();
+    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.PORTAL, Util.getPortalRequestContext().getPortalOwner(), url);
+    return nodeURL.setResource(resource).toString(); 
+  }
+  
+  /**
+   * Get the space url.
+   * 
+   * @param node
+   * @return
+   * @since 1.2.1
+   */
+  public static String getSpaceURL(UserNode node) {
+    RequestContext ctx = RequestContext.getCurrentInstance();
+    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+    return nodeURL.setNode(node).toString();
+  }
+  
+  /**
+   * Gets the space home url of a space.
+   * 
+   * @param space
+   * @return
+   * @since 1.2.1
+   */
+  public static String getSpaceHomeURL(Space space) {
+    RequestContext ctx = RequestContext.getCurrentInstance();
+    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
+    return nodeURL.setResource(resource).toString(); 
   }
 }

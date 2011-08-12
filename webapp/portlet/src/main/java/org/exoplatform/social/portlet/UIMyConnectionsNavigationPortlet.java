@@ -18,6 +18,7 @@ package org.exoplatform.social.portlet;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -47,8 +48,7 @@ public class UIMyConnectionsNavigationPortlet extends UIPortletApplication {
    */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String requestUrl = pcontext.getRequestURI();
-    String[] split = requestUrl.split("/");
-    return split[split.length-2];
+    String path = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    return path.split("/")[1];
   }
 }

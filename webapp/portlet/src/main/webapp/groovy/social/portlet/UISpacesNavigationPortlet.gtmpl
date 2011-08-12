@@ -21,17 +21,15 @@
 */
 %>
 <%
-  import org.exoplatform.portal.webui.util.Util;
-  import org.exoplatform.social.core.space.SpaceUtils
+  import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
 
-  def pcontext = Util.getPortalRequestContext();
-  def portalURI = pcontext.getPortalURI();
   def uicomponentId = uicomponent.id;
-  def mySpaceURL = portalURI + "spaces";
-  def invitationsURL = portalURI + "invitationSpace";
-  def pendingsURL = portalURI + "pendingSpace";
-  def publicsURL = portalURI + "publicSpace";
+  def mySpaceURL = Utils.getURI("spaces");
+  def invitationsURL = Utils.getURI("invitationSpace");
+  def pendingsURL = Utils.getURI("pendingSpace");
+  def publicsURL = Utils.getURI("publicSpace");
   def selectedNode = uicomponent.getSelectedNode();
   def labelSpace = _ctx.appRes("${uicomponentId}.label.Space");
   def labelMySpace = _ctx.appRes("${uicomponentId}.label.MySpace");
