@@ -1,10 +1,10 @@
-eXo Social provides a way to add profile information, connections and connections between users called People. With the eXo People API, profile information and relationship can be easily managed and customized.
+eXo Social provides a way to manage profile information, and connections between users. With APIs provided, you can easily add, manage and customize information and relationships of users.
 
 h1. Identity {anchor:id=SOCref.Developers_References.People.Identity}
-The identity allows identifying a unique social object. Social objects can be persons, groups, applications, or whatever is related to social interactions like connecting, publishing an activity stream or holding a profile.
+The identity allows identifying a unique social object. Social objects can be person, group, application, or whatever related to social interactions like connecting, publishing an activity stream or holding a user profile.
 h2. IdentityProvider {anchor:id=SOCref.Developers_References.People.IdentityProvider}
 
-eXo Social provides IdentityProvider as a identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
+eXo Social provides IdentityProvider as an identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
 
 {code:java}
 class SampleIdentityProvider extends OrganizationIdentityProvider{
@@ -56,7 +56,7 @@ Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentity
 
 h1. ProfileListener {anchor:id=SOCref.Developers_References.People.ProfileListener}
 
-The People API provides notification interfaces which you can implement to create your own handlers for notification when having profile modifications by extending the ProfileListenerPlugin class or relationship changes by extending [RelationshipListenerPlugin|#SOCref.Developers_References.People.RelationshipListener].
+The APIs provides notification interfaces which you can implement to create your own handlers for notification when having profile modifications by extending the ProfileListenerPlugin class, or relationship changes by extending [RelationshipListenerPlugin|#SOCref.Developers_References.People.RelationshipListener].
 
 * Firstly, create the ProfileLoggerListener class to log all profile modifications of the systems. The abstract class ProfileListenerPlugin provides the interface to implement this method.
 
@@ -96,7 +96,7 @@ public class ProfileLoggerListener extends ProfileListenerPlugin{
 }
 {code}
 
-* Then, add some configurations for this class to the configuration.xml:
+* Then, add some configurations to this class to the configuration.xml:
 
 {code:xml}
 <external-component-plugins>
@@ -116,7 +116,7 @@ Relationship is the bridge between two identities in eXo Social. There are many 
 
 h2. Users connection {anchor:id=SOCref.Developers_References.People.Connecting_users}
 
-The following code will show how to invite a user to connect to another :
+The following code will show you how to invite a user to connect with another:
 
 {code:java}
 import org.exoplatform.container.ExoContainer;
@@ -189,7 +189,7 @@ public class RelationshipLoggerListener extends RelationshipListenerPlugin{
 }
 {code}
 
-* Then, add some configurations for this class to the configuration.xml:
+* Then, add some configurations for this class in the configuration.xml:
 
 {code:xml}
 <external-component-plugins>

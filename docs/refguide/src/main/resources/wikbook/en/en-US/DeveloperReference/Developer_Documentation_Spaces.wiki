@@ -1,10 +1,10 @@
-eXo Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together.
+eXo Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.
 
 To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current PortalContainer instance.
 
 h1. Spaces Management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_Management}
 
-The following example shows how to create a space:
+The following example will show how to create a space:
 
 {code:java}
 package org.exoplatform.social.sample;
@@ -22,7 +22,7 @@ public class SpaceCreationSample {
     String creator = "jeremi";
     PortalContainer container = PortalContainer.getInstance();
     SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-    // We verify if there is no space already created
+    // verify if there is no space already created
     Space space = spaceService.getSpaceByDisplayName(spaceName);
     if (space == null) {
       space = new Space();
@@ -31,9 +31,9 @@ public class SpaceCreationSample {
       space.setDescription("space description"); 
       //DefaultSpaceApplicationHander is the default implementation of SpaceApplicationHandler. You can create your own by extending SpaceApplicationHandler. The default type is "classic" (DefaultSpaceApplicationHandler.NAME = clasic)
       space.setType(DefaultSpaceApplicationHandler.NAME);
-      //We create the space
+      //create the space
       space = spaceService.createSpace(space, creator);
-      //We initialize the applications
+      //initialize the applications
       spaceService.initApps(space);
       
     }
@@ -42,8 +42,9 @@ public class SpaceCreationSample {
 {code}
 
 h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
+
 h2. Add an application to a space  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
-You can add portlet or gadget applications into spaces. Once added, all members of the space can use that application. The following code shows how to add an application to a space :
+You can add portlet or gadget applications into spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
 
 {code:java}
 public void addApplicationToSpace() throws SpaceException {
@@ -60,17 +61,19 @@ public void addApplicationToSpace() throws SpaceException {
   //install application for the space
   spaceService.installApplication(spaceId, appId);
 
-  //we must activate installed application to be able to use it
+  //you must activate installed application to be able to use it
   spaceService.activateApplication(spaceId, appId);
 }
 {code}
 
 {note}
-appId is the portlet or gadget name as defined in portlet.xml or gadget.xml in the web-app. With eXo Social, you can find it in social-portlet.war and social.war. 
+appId is the portlet or gadget name as defined in portlet.xml or gadget.xml in the web-app. You can find it in social-portlet.war and social.war.
 {note}
 
+
 h2. Remove an application from a space
-You can remove portlet or gadget applications from a space. The members of this space cannot see them anymore. The following code shows how to remove an application from a space :
+
+You can remove portlet or gadget applications from a space and the members of this space will not see them anymore. The following code shows you how to remove an application from a space :
 {code:java}
 public void removeApplicationFromSpace() throws SpaceException {
   //Your portlet name
@@ -88,6 +91,8 @@ public void removeApplicationFromSpace() throws SpaceException {
   spaceService.removeApplication(spaceId, appId, appName);
 }
 {code}
+
+
 h1. Space's members management	 {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Members_Management}
 The SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:
 {code:java}
@@ -101,8 +106,10 @@ if (space != null) {
     spaceService.addMember(space, "mary");
 }
 {code}
+
+
 h1. Listener to a space lifecycle  {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Listener_to_a_space_lifecycle}
-To receive notifications of what are happening in spaces, you need to extend SpaceListenerPlugin and register it. Every method takes a SpaceLifeCycleEvent object as a parameter that contains the information about the event and its context.
+To receive notifications of what are happening in spaces, you need to extend the SpaceListenerPlugin and register it. Every method takes a SpaceLifeCycleEvent object as a parameter that contains the information about the event and its context.
 
 The available events are:
 
@@ -127,7 +134,8 @@ public class MySpaceListenerPlugin extends SpaceListenerPlugin {
 
 As an example, see the [SpaceActivityPublisher|http://fisheye.exoplatform.org/browse/social/trunk/component/exosocial/src/main/java/org/exoplatform/social/space/SpaceActivityPublisher.java?r=HEAD] that publishes an activity based on an event that happened in a space.
 
-To register your listener, configure it as a plugin to the SpaceService like this :
+To register your listener, configure it as a plugin to the SpaceService like this:
+
 {code:xml}
 <external-component-plugins>
   <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>

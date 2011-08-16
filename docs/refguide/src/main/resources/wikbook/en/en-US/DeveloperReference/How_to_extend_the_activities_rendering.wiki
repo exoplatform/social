@@ -1,25 +1,25 @@
 
 h1. Objective {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Objective}
-In this article you will learn how you can implement a preprocessor for activities rendering.
+In this section, you will learn how to implement a preprocessor for activities rendering.
 
 h1. Requirements {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Requirements}
-You need to be familiar with the eXo Kernel component model and its xml configuration. You also need be able to program in java.
+To understand this section, java and eXo Kernel (component model and its XML configuration) knowledge is prerequisite.
 
+h1. Why would you need to do this? {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.what_you_need_to_do_this}
 
-h1. Why would you need to do this ? {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.what_you_need_to_do_this}
+An simple activity is made of simple text. We have created an extension point at the level of activities rendering for two cases:
+* support more HTML tags.
+* support @mentions.
 
-An simplistic activity is made of simple text.  We have created an extension point at the level of activities renderting for two cases :
-* support more html tags
-* support @mentions
+But you may want to support a special syntax like:
+* #hashtags to feel like Twitter.
+* smileys to look like Skype.
+* [Markdown|http://en.wikipedia.org/wiki/Markdown] to feel like Buzz.
 
-But you may want to support a special syntax like :
-* #hashtags to feel like twitter
-* smileys to look like skype
-* [Markdown|http://en.wikipedia.org/wiki/Markdown] to be as cool as Buzz ;-)
+You can have more sophisticated cases to process, such as parsing the link that include in the activity's content. Because a process actually has full the access to the Activity, so you can very well process based on the owner, the app, media item.
 
-You can imagine more sophisticated processing. And not only text-related because a processor actually has full access to the Activity. So you can very well process based on the owner, the app, mediaitem, etc..
 h1. Writing an ActivityProcessor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering._writing_ActivityProcessor}
-eXo Social let's you pre-process an activity before it is returned by the ActivityManager. To do this you simply need to implement the interface ActivityProcessor :
+eXo Social lets you pre-process an activity before it is returned by the ActivityManager. To do this, you simply need to implement the interface ActivityProcessor:
 
 {code:java}
 /**
@@ -44,7 +44,7 @@ public interface ActivityProcessor {
 {code}
 
 
-For example let's implement a SmileyProcessor that will replace text smileys by icons :
+For example, the following shows you how to implement a SmileyProcessor that will replace text smileys by icons:
 
 {code:java}
 public class SmileyProcessor implements ActivityProcessor {
@@ -66,11 +66,11 @@ public class SmileyProcessor implements ActivityProcessor {
 h1. Configuring the processor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Configuring_the_Processor}
 
 Now that you have a nice procesor you need to hook it to the system.
-At runtime, processors can be attached to the ActivityManager via the method ActivityManageraddProcessor(ActivityProcessor processor).
+At runtime, the processors can be attached to ActivityManager via addProcessor(ActivityProcessor) method..
 
-But there is also a component plugin hook for it :   public void addProcessorPlugin(BaseActivityProcessorPlugin plugin)
+But there is also a component plugin hooked for it: public void addProcessorPlugin(BaseActivityProcessorPlugin plugin)
 
-So to make your processor easy to hook, you simply need to let him extend the BaseActivityProcessorPlugin.
+So, to make your processor easy to hook, you simply need to let him extend the BaseActivityProcessorPlugin.
 
 {code:java}
 public class SmileyProcessor extends BaseActivityProcessorPlugin {
@@ -88,9 +88,9 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 }
 {code}
 
-It will have the additional benefit to make the priority field configurable so you don't need to implement getPriorty().
+It will have the additional benefit to make the priority field configurable, so you don't need to implement getPriorty().
 
-Then your processor can be configured as a component plugi like this :
+Then your processor can be configured as a component plugin like this:
 
 {code:xml}
   <external-component-plugins>
@@ -110,7 +110,6 @@ Then your processor can be configured as a component plugi like this :
   </external-component-plugins>
 {code}
 
-Restart, place the smiley gif on the server and you should see something like that  :
-
+Restart then place the smiley imagesu on the server and you should see something like that:
 
 !activity-smiley.png!

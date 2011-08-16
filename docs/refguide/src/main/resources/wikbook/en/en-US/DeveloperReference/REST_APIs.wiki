@@ -78,7 +78,6 @@ Example:
 http://localhost:8080/rest-socialdemo/social/people/suggest.json
 
 
-
 h1. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTService}
 
 

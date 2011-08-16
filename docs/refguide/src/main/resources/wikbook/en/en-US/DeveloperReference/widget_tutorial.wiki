@@ -31,12 +31,14 @@ Next, insert the following code at the position you want the button to be displa
 {code}
 
 The important function here is:
+
 {code:js}
 spaces.createPopup(link, spaceName, description)
 {code}
+
 * link: link is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you do not need to change this value.
-* spaceName: This is the name of space. It is also used to identify the space. We recommend you use the following format: "MyAppName - my social object"
-* description: This is the description of your space that will be displayed within eXo Spaces. It is used when a new space is created.
+* spaceName: This is the name of space. It is also used to identify the space. You should use the following format: "MyAppName - my social object"
+* description: A brief introduction about your space.
 
 h1. Configure {anchor:id=SOCref.DeveloperReference.widget_tutorial.configure}
 

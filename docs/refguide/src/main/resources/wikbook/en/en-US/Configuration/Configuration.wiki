@@ -6,9 +6,9 @@ h2. ActivityManager {anchor:id=SOCref.Configuration.Component.ActivityManager}
 
 h2. SpaceService {anchor:id=SOCref.Configuration.Component.SpaceService}
 || Configuration name || Data type || Default Value || Description ||
-| space.homeNodeApp | {{String}} | {{SpaceActivityStreamPortlet}} | The home application for a space |
-| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} | The space applications |
-	
+| space.homeNodeApp | {{String}} | {{SpaceActivityStreamPortlet}} | The home application for a space. |
+| space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} | The applications that are used for application initializing when the space is created. |
+
 {note}
 Deprecated: Use external-component-plugins instead: org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.
 {note}
@@ -31,21 +31,21 @@ h2. ProfileConfig {anchor:id=SOCref.Configuration.Component.ProfileConfig}
  
 h2. ServiceProviderStore {anchor:id=SOCref.Configuration.Component.ServiceProviderStore}
 || Configuration name || Data type || Default Value || Description ||
-| sample-provider | properties-params |  |  sample service provider |
+| sample-provider | properties-params |  |  Sample service provider. |
 	 
 h1. External component plugins {anchor:id=SOCref.Configuration.External_component_plugins}
 h2. MentionsProcessor {anchor:id=SOCref.Configuration.External_component_plugins.MentionsProcessor}
 || Configuration name || Data type || Default Value || Description ||
-| priority | {{String}} | 2 | priority of this processor (lower are executed first) |
+| priority | {{String}} | 2 | The priority of this processor (the lower are executed first). |
   
 h2. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.External_component_plugins.PortletPrederenceRequiredPlugin}
 || Configuration name || Data type || Default Value || Description ||
-| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | The portlet name which requires space URL preference|
+| portletsPrefsRequired | {{String list}} | {{SpaceActivityStreamPortlet, SpaceSettingPortlet, MembersPortlet}} | The portlet name which requires space URL preference.|
 	 
 h2. SpaceApplicationConfigPlugin {anchor:id=SOCref.Configuration.External_component_plugins.SpaceApplicationConfigPlugin}
 || Configuration name || Data type || Description ||
 | spaceHomeApplication | {{SpaceApplicationConfigPlugin$SpaceApplication}} | The space application for the space home node.|
-|spaceApplicationList| {{SpaceApplicationConfigPlugin}} |space application list configuration|
+|spaceApplicationList| {{SpaceApplicationConfigPlugin}} |Space application list configuration.|
 	 
 h2. AddNodeTypePlugin {anchor:id=SOCref.Configuration.External_component_plugins.AddNodeTypePlugin}
 || Configuration name || Data type || Default Value || Description ||
@@ -95,8 +95,8 @@ h2. Components configuration {anchor:id=SOCref.Configuration.SpaceService.Compon
 {code}
 
 || Configuration name || Data Type || Possible Value || Default Value || Description ||
-| *SpaceActivityStreamPortlet* | {{String}} | N/A | {{SpaceActivityStreamPortlet}} | The name of portlet displaying activities of spaces |
-| *space.apps* | {{String list}} | {{Porlets' name: true/false }} | {{DashboardPortlet:true}}; {{SpaceSettingPortlet:false}}; {{MembersPortlet:true}} |The list of configurations for portlets used as portlet applications. |
+| *SpaceActivityStreamPortlet* | {{String}} | N/A | {{SpaceActivityStreamPortlet}} | The name of portlet displaying activities of spaces. |
+| *space.apps* | {{String list}} | {{Porlets' name: true/false }} | {{DashboardPortlet:true}}; {{SpaceSettingPortlet:false}}; {{MembersPortlet:true}} |The list of configurations for portlets. |
 
 h2. External plug-in configuration {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration}
 h3. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.PortletPreferenceRequiredPlugin}
@@ -128,8 +128,12 @@ In which:
 
 || Name || Possible value || Default Value || Description ||
 | *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} | List of portlets which need to be saved and get the space context name. |
+
+
 h3. SpaceApplicationConfigPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.SpaceApplicationConfigPlugin}
+
 {note} Since 1.2.0-GA {note}
+
 {code:xml}
  <external-component-plugins>
     <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
@@ -222,8 +226,8 @@ h2. Component plug-in configuration {anchor:id=SOCref.Configuration.ActivityMana
             <name>allowedTags</name>
             <value>b</value>
             <value>i</value>
-            <value>a</value>
             <value>span</value>
+            <value>a</value>
             <value>em</value>
             <value>strong</value>
             <value>p</value>
@@ -246,7 +250,7 @@ In which,
 * Init-params:
 
 || Name || Possible value  || Default Value || Description ||
-| *allowedTags* | {{html tags}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | To process and render html tags in the activity content (body). |
+| *allowedTags* | {{html tags}} | b, i, a, span, em, strong, p, ol, ul,li, br, img | Process and render html tags in the activity content (body). |
 
 h2. External plug-in configuration {anchor:id=SOCref.Configuration.ActivityManager.ExternalPluginConfiguration}
 
@@ -268,12 +272,12 @@ h2. External plug-in configuration {anchor:id=SOCref.Configuration.ActivityManag
 In which:
 
 || Name || Set-method || Type || Description ||
-| *MentionsProcessor* | addProcessorPlugin | org.exoplatform.social.core.processor.MentionsProcessor | A processor that substitutes @username expressions by a link on the user profile. |
+| *MentionsProcessor* | addProcessorPlugin | org.exoplatform.social.core.processor.MentionsProcessor | A processor that will substitute @username expressions by a link on the user profile. |
 
 * Init-params:
 
 || Name || Possible value || Default Value || Description ||
-| *priority* | {{priority number}} | 2 | Priority of this processor (The lower level will be executed first). |
+| *priority* | {{priority number}} | 2 | The priority of this processor (The lower level will be executed first). |
 
 h1. Identity Manager {anchor:id=SOCref.Configuration.IdentityManager}
 
@@ -307,7 +311,7 @@ h2. Component plug-in configuration {anchor:id=SOCref.Configuration.IdentityMana
 In which:
 
 || Name || Set-method || Type || Description ||
-| *SpaceIdentityProvider plugin* | registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space |
+| *SpaceIdentityProvider plugin* | registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space. |
 
 * Init-params:
 
@@ -345,9 +349,9 @@ This should be used when there is a portal container different than the default 
 In which:
 
 || Name || Set-method || Type || Description ||
-| *set portal container name used for REST service* | setRestContainerName | org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig | The plugin provided to set rest portal container name for OpenSocial REST API request |
+| *set portal container name used for REST service* | setRestContainerName | org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig | This plugin is used to set the rest portal container name for OpenSocial REST API request. |
 
 * Init-params:
 
 || Name || Possible value || Default Value || Description ||
-| *rest-container-name* | {{any valid portal container name}} | {{N/A}} | Portal container name |
+| *rest-container-name* | {{any valid portal container name}} | {{N/A}} | Portal container name. |
