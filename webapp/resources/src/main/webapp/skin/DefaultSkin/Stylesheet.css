@@ -79,32 +79,15 @@ ul {
 	float: left; /* orientation=rt */
 }
 
-.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage{
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY {
 	padding: 0px;
-}
-
-.UIWorkingWorkspace .UIPageBody .BLPagebody {
-	background: #EEEEEE;
-}
-
-.UIWorkingWorkspace .UIPageBody .BRPagebody {
-	background: #EEEEEE;
-}
-
-.UIWorkingWorkspace .UIPageBody .BMPagebody {
-	background:#EEEEEE;
-}
-
-.UIWorkingWorkspace{
-	width: 100%;
-	background: #eee;
 }
 
 .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock {
 	background: #eee !important;
 }
 
-#UIPortalApplication .UIWorkingWorkspace {
+.UIWorkingWorkspace {
 	background-color: #eee;
 	margin:auto;
 	width:100%;
