@@ -236,18 +236,10 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
 
     String remoteUser = requestContext.getRemoteUser();
-    ExoSocialActivity activity = saveActivity(activityParams, activityManager, identityManager, ownerIdentity, remoteUser);
+    saveActivity(activityParams, activityManager, identityManager, ownerIdentity, remoteUser);
 
-    if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
-      UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
-      if (activitiesContainer.getChildren().size() == 1) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
-      } else {
-        activitiesContainer.addActivity(activity);
-        requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
-        requestContext.addUIComponentToUpdateByAjax(uiComposer);
-      }
-    } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
+    if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
+        || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
       uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
     }
   }

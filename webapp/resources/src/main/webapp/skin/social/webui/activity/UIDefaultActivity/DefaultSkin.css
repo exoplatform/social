@@ -64,7 +64,12 @@
 }
 
 .UIActivity .AvatarCM img {
-	width:38px;
+	width:37px;
+}
+
+.UIActivity .CommentInputBox{
+	margin-left: 50px;
+	padding-right: 15px;
 }
 
 .UIActivity .AvatarCM span {
@@ -97,7 +102,7 @@
 }
 
 .UIActivity .NormalBox .CommentBox textarea {
-	width: 91%;
+	width: 100%;
 	font-size: 11px;
 	*margin-left: -74px;
 	padding: 5px;

@@ -19,7 +19,6 @@ package org.exoplatform.social.plugin.link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -30,7 +29,6 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.service.rest.LinkShare;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.UIActivityComposer;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
@@ -226,10 +224,6 @@ public class UILinkActivityComposer extends UIActivityComposer {
       
       activityManager.saveActivity(spaceIdentity, activity);
 
-      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
-      activitiesContainer.addActivity(activity);
-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
-      requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
@@ -238,16 +232,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
       
       activityManager.saveActivity(ownerIdentity, activity);
       
-      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
-        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
-        if (activitiesContainer.getChildren().size() == 1) {
-          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
-        } else {
-          activitiesContainer.addActivity(activity);
-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
-          requestContext.addUIComponentToUpdateByAjax(uiComposer);
-        }
-      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }

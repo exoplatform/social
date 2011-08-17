@@ -25,7 +25,6 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
@@ -60,7 +59,6 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                                     ApplicationMessage.WARNING));
       return;
     }
-    final UIComposer uiComposer = (UIComposer) source;
 
     if (postContext == UIComposer.PostContext.SPACE){
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
@@ -75,11 +73,6 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivity(spaceIdentity, activity);
-
-      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
-      activitiesContainer.addActivity(activity);
-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
-      requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
@@ -91,16 +84,8 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivity(ownerIdentity, activity);
 
-      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
-        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
-        if (activitiesContainer.getChildren().size() == 1) {
-          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
-          requestContext.addUIComponentToUpdateByAjax(uiComposer);
-        } else {
-          activitiesContainer.addActivity(activity);
-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
-        }
-      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() != UIUserActivitiesDisplay.DisplayMode.ALL_UPDATES) {
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }

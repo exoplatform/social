@@ -157,8 +157,8 @@
 <% } else { %>
   <div class="UIComposerExtensionContainer">
     <div class="UIComposerLinkExtension">
-      <% uicomponent.renderChild(UIFormStringInput.class); %>
       <input id="AttachButton" class="AttachButton" type="submit" value="$labelAttach" />
+      <div class="InputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
       <div class="ClearBoth">
         <span></span>
       </div>
