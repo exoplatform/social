@@ -50,7 +50,7 @@ public class StartupInjectionConfig implements Startable {
 
   private Map<String, Long> userActivities = new HashMap<String,Long>();
 
-  private DataInjector     injector;
+  private ExoSocialDataInjectionExecutor     injector;
 
   /**
    * Example init-params :
@@ -70,7 +70,7 @@ public class StartupInjectionConfig implements Startable {
    * @param injector
    */
   public StartupInjectionConfig(InitParams params,
-                           DataInjector injector,
+                           ExoSocialDataInjectionExecutor injector,
                            OrganizationService organizationService) {
     this.injector = injector;
     PropertiesParam props = params.getPropertiesParam("inject.conf");
@@ -92,9 +92,6 @@ public class StartupInjectionConfig implements Startable {
           userActivities.put(user, longValue);
         }
       }
-
-
-
     }
   }
 
