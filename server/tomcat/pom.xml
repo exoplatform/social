@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.server</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.server.tomcat</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Server Patch for Tomcat</name>
   <description>eXo Social Server Patch for Tomcat</description>
