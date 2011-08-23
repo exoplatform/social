@@ -81,11 +81,11 @@
     <org.exoplatform.core.version>2.4.0-CR4</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.2.0-CR4</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.0-CR4-CP01</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.0-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.2.0-GA-SNAPSHOT</org.exoplatform.ecms.version>  
+    <org.exoplatform.portal.version>3.2.0-PLF-Beta4</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.2.0-GA</org.exoplatform.ecms.version>  
 
    
-    <org.exoplatform.commons.version>1.1.0-Beta03-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>1.1.0-GA</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
