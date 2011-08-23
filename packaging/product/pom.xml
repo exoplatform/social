@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.packaging</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social.packaging.product</artifactId>
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.1</version>
   <packaging>pom</packaging>
   <name>eXo Social Packaging (product)</name>
   <description>eXo Social Packaging (product)</description>
