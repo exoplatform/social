@@ -55,89 +55,21 @@ public class ExoSocialDataInjector extends DataInjector {
   }
 
   @Override
-  public boolean isInitialized() {
-    return isInitialized;
+  public Object execute(HashMap<String, String> arg0) throws Exception {
+    // TODO Auto-generated method stub
+    return null;
   }
 
-  
-  
   @Override
-  public void initParams(InitParams initParams) {
-    if (initParams != null) {
-      //Gets the maximum the User using for creating Users
-      ValueParam vParam = (ValueParam) initParams.get("mU");
-      numberOfUser = longValue("mU", vParam.getValue());
-      
-      //Gets the maximum the Relationship using for creating Relationships
-      vParam = (ValueParam) initParams.get("mR");
-      numberOfRelation = longValue("mR", vParam.getValue());
-      
-      //Gets the maximum the Activity using for creating Activities
-      vParam = (ValueParam) initParams.get("mA");
-      numberOfActivity = longValue("mA", vParam.getValue());
-    }
+  public void inject(HashMap<String, String> arg0) throws Exception {
+    
     
   }
 
   @Override
-  public void inject() throws Exception {
-    LOG.info("starting...");
-    boolean nothingWasDone = true;
-    if (numberOfUser > 0) {
-      nothingWasDone = false;
-      LOG.info("\t> about to inject " + numberOfUser + " people.");
-      injector.generatePeople(numberOfUser);
-    }
-    if (numberOfRelation > 0) {
-      nothingWasDone = false;
-      LOG.info("\t> about to inject " + numberOfRelation + " connections.");
-      injector.generateRelations(numberOfRelation);
-    }
-    if (numberOfActivity > 0) {
-      nothingWasDone = false;
-      LOG.info("\t> about to inject " + numberOfActivity + " activities.");
-      injector.generateActivities(numberOfActivity);
-    }
-
-    if(! userActivities.isEmpty()) {
-      Set<Entry<String,Long>> entries = userActivities.entrySet();
-      for (Entry<String, Long> entry : entries) {
-        String username = entry.getKey();
-        Long count = entry.getValue();
-        LOG.info("\t> about to inject " + count + " activities for " + username + ".");
-        injector.generateActivities(username, count);
-      }
-
-    }
-
-
-    if (nothingWasDone) {
-      LOG.info("nothing to inject.");
-    }
-    isInitialized = true;
+  public void reject(HashMap<String, String> arg0) throws Exception {
     
   }
 
-  @Override
-  public void reject() throws Exception {
-    throw new UnsupportedOperationException();
-  }
   
-  /**
-   * Gets Long Value from param value.
-   * @param property
-   * @param value
-   * @return
-   */
-  private long longValue(String property, String value) {
-    try {
-      if (value != null) {
-        return Long.valueOf(value);
-      }
-    } catch (NumberFormatException e) {
-      LOG.warn("Long number expected for property " + property);
-    }
-    return 0;
-  }
-
 }
