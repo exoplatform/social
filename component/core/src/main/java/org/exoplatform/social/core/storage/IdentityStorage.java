@@ -921,7 +921,7 @@ public class IdentityStorage {
         }
       }
     } catch (ItemNotFoundException e) {
-      LOG.warn(e.getMessage(), e);
+      LOG.warn("Cannot load profile. The identity has been deleted.");
     } catch (RepositoryException e) {
       LOG.warn(e.getMessage(), e);
     } finally {

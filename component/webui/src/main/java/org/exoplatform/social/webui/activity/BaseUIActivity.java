@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.PortalContainer;
@@ -352,7 +353,10 @@ public class BaseUIActivity extends UIForm {
   public String getUserFullName(String userIdentityId) throws Exception {
     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
     if (userIdentity == null) {
-      return null;
+      String deletedUser = WebuiRequestContext.getCurrentInstance()
+      .getApplicationResourceBundle().getString("UIActivitiesLoader.label.Deleted_User");
+      
+      return "<strike>" + deletedUser + "</strike>";
     }
     Profile userProfile = userIdentity.getProfile();
     return userProfile.getFullName();
@@ -367,7 +371,7 @@ public class BaseUIActivity extends UIForm {
   public String getUserProfileUri(String userIdentityId) throws Exception {
     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
     if (userIdentity == null) {
-      throw new Exception("User " + userIdentityId +" does not exist");
+      return "#";
     }
 
     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
@@ -401,13 +405,14 @@ public class BaseUIActivity extends UIForm {
    */
   public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
     Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
-    String spaceId = spaceIdentity.getRemoteId();
-    SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceById(spaceId);
-    if (space != null) {
-      return space.getImageSource();
+    if (spaceIdentity != null) {
+      String spaceId = spaceIdentity.getRemoteId();
+      SpaceService spaceService = getSpaceService();
+      Space space = spaceService.getSpaceById(spaceId);
+      if (space != null) {
+        return space.getImageSource();
+      }
     }
-
     return null;
   }
 
@@ -459,6 +464,9 @@ public class BaseUIActivity extends UIForm {
       Identity identity = identityManager.getIdentity(id, false);
       if (identity != null) {
         isUserActivity = (identity.getProviderId().equals(OrganizationIdentityProvider.NAME));
+      } else {
+        // In case user identity is deleted already. SOC-1733
+        return true; 
       }
     } catch (Exception e) {
       LOG.warn("Failed to check if an activity is of a user." + e.getMessage());

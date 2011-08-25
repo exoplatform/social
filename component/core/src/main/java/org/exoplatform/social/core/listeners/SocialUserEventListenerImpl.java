@@ -16,14 +16,23 @@
  */
 package org.exoplatform.social.core.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserEventListener;
+import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 
 /**
  * Listens to user updating events.
@@ -34,6 +43,8 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * @since 1.1.3
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
+
+  private static final Log LOG = ExoLogger.getExoLogger(SocialUserEventListenerImpl.class);
   
   /**
    * Listens to postSave action for updating profile.
@@ -44,8 +55,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
    */
   public void postSave(User user, boolean isNew) throws Exception {
     if (!isNew) {
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      IdentityManager idm = getIdentityManager();
       Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
 
       Profile profile = identity.getProfile();
@@ -79,4 +89,81 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       }
     }
   }
+
+  /**
+   * Deletes the associated identity and profile when a user is deleted.
+   *
+   * @param deletedUser the deleted user
+   */
+  @Override
+  public void postDelete(User deletedUser) {
+    IdentityManager identityManager = getIdentityManager();
+    Identity id = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, deletedUser.getUserName());
+    if (id != null) {
+      deleteAllActivities(id);
+      deleteAllConnections(id);
+      identityManager.deleteIdentity(id);
+    }
+  }
+
+  /**
+   * Delete all activities of the identity that will be deleted.
+   *
+   * @param deletedIdentity the identity that will be deleted.
+   */
+  private void deleteAllActivities(Identity deletedIdentity) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
+    //this could be a big performance problem. ActivityManager#deleteAll(Identity) should be introduced?
+    List<Activity> activities = activityManager.getActivities(deletedIdentity,
+                                                              0,
+                                                              activityManager.getActivitiesCount(deletedIdentity));
+    for (Activity activity : activities) {
+      activityManager.deleteActivity(activity);
+    }
+  }
+
+  /**
+   * Deletes all connections with the identity that will be deleted.
+   *
+   * @param deletedIdentity the identity that will be deleted
+   */
+  private void deleteAllConnections(Identity deletedIdentity) {
+    RelationshipManager relationshipManager = getRelationshipManager();
+    List<Relationship> allRelationships = new ArrayList<Relationship>();
+    try {
+      allRelationships = relationshipManager.getAllRelationships(deletedIdentity);
+    } catch (Exception e) {
+      LOG.warn("Failed to get all relationships", e);
+    }
+    for (Relationship relationship : allRelationships) {
+      try {
+        relationshipManager.remove(relationship);
+      } catch (Exception e) {
+        LOG.warn("Failed to remove relationship: " + relationship, e);
+      }
+    }
+
+  }
+
+  /**
+   * Gets the identity manager.
+   *
+   * @return the identity manager
+   */
+  private IdentityManager getIdentityManager() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    return (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+  }
+
+  /**
+   * Gets the relationship manager.
+   *
+   * @return the relationship manager
+   */
+  private RelationshipManager getRelationshipManager() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
+  }
+
 }

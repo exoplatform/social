@@ -33,6 +33,9 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
+import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -156,6 +159,15 @@ public class UIRelationshipActivity extends BaseUIActivity {
       Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
 
       RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
+      if ((receiverIdentity == null) || (senderIdentity == null)) {
+        WebuiRequestContext webuiReq = WebuiRequestContext.getCurrentInstance();
+        webuiReq.getUIApplication().addMessage(
+          new ApplicationMessage("UIRelationshipActivity.msg.error.Can_not_Accept_Deleted_User",
+          null,
+          ApplicationMessage.WARNING));
+        
+        return;
+      }
       Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
       Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
       if (status == Type.REQUIRE_VALIDATION) {
@@ -180,6 +192,15 @@ public class UIRelationshipActivity extends BaseUIActivity {
       Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
 
       RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
+      if ((receiverIdentity == null) || (senderIdentity == null)) {
+        WebuiRequestContext webuiReq = WebuiRequestContext.getCurrentInstance();
+        webuiReq.getUIApplication().addMessage(
+          new ApplicationMessage("UIRelationshipActivity.msg.error.Can_not_Refuse_Deleted_User",
+          null,
+          ApplicationMessage.WARNING));
+        
+        return;
+      }
       Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
       Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
       if (status == Type.REQUIRE_VALIDATION) {

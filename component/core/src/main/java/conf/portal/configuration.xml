@@ -70,6 +70,7 @@
             <value>li</value>
             <value>br</value>
             <value>img</value>
+            <value>strike</value>
           </values-param>
         </init-params>
       </component-plugin>

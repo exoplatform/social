@@ -78,8 +78,7 @@ public class LinkProvider {
     try {
       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
       if (identity == null) {
-        LOG.warn("could not find a user identity for " + username);
-        return null;
+        return "<strike>"+username+"</strike>";
       }
 
       String container = PortalContainer.getCurrentPortalContainerName();

@@ -1,0 +1,330 @@
+Index: component/core/src/main/java/conf/portal/configuration.xml
+===================================================================
+--- component/core/src/main/java/conf/portal/configuration.xml	(revision 72251)
++++ component/core/src/main/java/conf/portal/configuration.xml	(working copy)
+@@ -70,6 +70,7 @@
+             <value>li</value>
+             <value>br</value>
+             <value>img</value>
++            <value>strike</value>
+           </values-param>
+         </init-params>
+       </component-plugin>
+Index: component/core/src/main/java/org/exoplatform/social/core/service/LinkProvider.java
+===================================================================
+--- component/core/src/main/java/org/exoplatform/social/core/service/LinkProvider.java	(revision 72251)
++++ component/core/src/main/java/org/exoplatform/social/core/service/LinkProvider.java	(working copy)
+@@ -78,8 +78,7 @@
+     try {
+       Identity identity = identityManager.getIdentity(OrganizationIdentityProvider.NAME + ":" + username, true);
+       if (identity == null) {
+-        LOG.warn("could not find a user identity for " + username);
+-        return null;
++        return "<strike>"+username+"</strike>";
+       }
+ 
+       String container = PortalContainer.getCurrentPortalContainerName();
+Index: component/core/src/main/java/org/exoplatform/social/core/storage/IdentityStorage.java
+===================================================================
+--- component/core/src/main/java/org/exoplatform/social/core/storage/IdentityStorage.java	(revision 72251)
++++ component/core/src/main/java/org/exoplatform/social/core/storage/IdentityStorage.java	(working copy)
+@@ -921,7 +921,7 @@
+         }
+       }
+     } catch (ItemNotFoundException e) {
+-      LOG.warn(e.getMessage(), e);
++      LOG.warn("Cannot load profile. The identity has been deleted.");
+     } catch (RepositoryException e) {
+       LOG.warn(e.getMessage(), e);
+     } finally {
+Index: component/core/src/main/java/org/exoplatform/social/core/listeners/SocialUserEventListenerImpl.java
+===================================================================
+--- component/core/src/main/java/org/exoplatform/social/core/listeners/SocialUserEventListenerImpl.java	(revision 72251)
++++ component/core/src/main/java/org/exoplatform/social/core/listeners/SocialUserEventListenerImpl.java	(working copy)
+@@ -16,14 +16,23 @@
+  */
+ package org.exoplatform.social.core.listeners;
+ 
++import java.util.ArrayList;
++import java.util.List;
++
+ import org.exoplatform.container.ExoContainer;
+ import org.exoplatform.container.ExoContainerContext;
++import org.exoplatform.services.log.ExoLogger;
++import org.exoplatform.services.log.Log;
+ import org.exoplatform.services.organization.User;
+ import org.exoplatform.services.organization.UserEventListener;
++import org.exoplatform.social.core.activity.model.Activity;
+ import org.exoplatform.social.core.identity.model.Identity;
+ import org.exoplatform.social.core.identity.model.Profile;
+ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
++import org.exoplatform.social.core.manager.ActivityManager;
+ import org.exoplatform.social.core.manager.IdentityManager;
++import org.exoplatform.social.core.manager.RelationshipManager;
++import org.exoplatform.social.core.relationship.model.Relationship;
+ 
+ /**
+  * Listens to user updating events.
+@@ -34,6 +43,8 @@
+  * @since 1.1.3
+  */
+ public class SocialUserEventListenerImpl extends UserEventListener {
++
++  private static final Log LOG = ExoLogger.getExoLogger(SocialUserEventListenerImpl.class);
+   
+   /**
+    * Listens to postSave action for updating profile.
+@@ -44,8 +55,7 @@
+    */
+   public void postSave(User user, boolean isNew) throws Exception {
+     if (!isNew) {
+-      ExoContainer container = ExoContainerContext.getCurrentContainer();
+-      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
++      IdentityManager idm = getIdentityManager();
+       Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+ 
+       Profile profile = identity.getProfile();
+@@ -79,4 +89,81 @@
+       }
+     }
+   }
++
++  /**
++   * Deletes the associated identity and profile when a user is deleted.
++   *
++   * @param deletedUser the deleted user
++   */
++  @Override
++  public void postDelete(User deletedUser) {
++    IdentityManager identityManager = getIdentityManager();
++    Identity id = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, deletedUser.getUserName());
++    if (id != null) {
++      deleteAllActivities(id);
++      deleteAllConnections(id);
++      identityManager.deleteIdentity(id);
++    }
++  }
++
++  /**
++   * Delete all activities of the identity that will be deleted.
++   *
++   * @param deletedIdentity the identity that will be deleted.
++   */
++  private void deleteAllActivities(Identity deletedIdentity) {
++    ExoContainer container = ExoContainerContext.getCurrentContainer();
++    ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
++    //this could be a big performance problem. ActivityManager#deleteAll(Identity) should be introduced?
++    List<Activity> activities = activityManager.getActivities(deletedIdentity,
++                                                              0,
++                                                              activityManager.getActivitiesCount(deletedIdentity));
++    for (Activity activity : activities) {
++      activityManager.deleteActivity(activity);
++    }
++  }
++
++  /**
++   * Deletes all connections with the identity that will be deleted.
++   *
++   * @param deletedIdentity the identity that will be deleted
++   */
++  private void deleteAllConnections(Identity deletedIdentity) {
++    RelationshipManager relationshipManager = getRelationshipManager();
++    List<Relationship> allRelationships = new ArrayList<Relationship>();
++    try {
++      allRelationships = relationshipManager.getAllRelationships(deletedIdentity);
++    } catch (Exception e) {
++      LOG.warn("Failed to get all relationships", e);
++    }
++    for (Relationship relationship : allRelationships) {
++      try {
++        relationshipManager.remove(relationship);
++      } catch (Exception e) {
++        LOG.warn("Failed to remove relationship: " + relationship, e);
++      }
++    }
++
++  }
++
++  /**
++   * Gets the identity manager.
++   *
++   * @return the identity manager
++   */
++  private IdentityManager getIdentityManager() {
++    ExoContainer container = ExoContainerContext.getCurrentContainer();
++    return (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
++  }
++
++  /**
++   * Gets the relationship manager.
++   *
++   * @return the relationship manager
++   */
++  private RelationshipManager getRelationshipManager() {
++    ExoContainer container = ExoContainerContext.getCurrentContainer();
++    return (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
++  }
++
+ }
+Index: component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java	(revision 72251)
++++ component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java	(working copy)
+@@ -19,6 +19,7 @@
+ import java.util.ArrayList;
+ import java.util.Date;
+ import java.util.List;
++import java.util.ResourceBundle;
+ 
+ import org.apache.commons.lang.ArrayUtils;
+ import org.exoplatform.container.PortalContainer;
+@@ -352,7 +353,10 @@
+   public String getUserFullName(String userIdentityId) throws Exception {
+     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
+     if (userIdentity == null) {
+-      return null;
++      String deletedUser = WebuiRequestContext.getCurrentInstance()
++      .getApplicationResourceBundle().getString("UIActivitiesLoader.label.Deleted_User");
++      
++      return "<strike>" + deletedUser + "</strike>";
+     }
+     Profile userProfile = userIdentity.getProfile();
+     return userProfile.getFullName();
+@@ -367,7 +371,7 @@
+   public String getUserProfileUri(String userIdentityId) throws Exception {
+     Identity userIdentity = getIdentityManager().getIdentity(userIdentityId, true);
+     if (userIdentity == null) {
+-      throw new Exception("User " + userIdentityId +" does not exist");
++      return "#";
+     }
+ 
+     LinkProvider linkProvider = (LinkProvider) PortalContainer.getInstance().getComponentInstanceOfType(LinkProvider.class);
+@@ -401,13 +405,14 @@
+    */
+   public String getSpaceAvatarImageSource(String spaceIdentityId) throws Exception {
+     Identity spaceIdentity = identityManager.getIdentity(spaceIdentityId, false);
+-    String spaceId = spaceIdentity.getRemoteId();
+-    SpaceService spaceService = getSpaceService();
+-    Space space = spaceService.getSpaceById(spaceId);
+-    if (space != null) {
+-      return space.getImageSource();
++    if (spaceIdentity != null) {
++      String spaceId = spaceIdentity.getRemoteId();
++      SpaceService spaceService = getSpaceService();
++      Space space = spaceService.getSpaceById(spaceId);
++      if (space != null) {
++        return space.getImageSource();
++      }
+     }
+-
+     return null;
+   }
+ 
+@@ -459,6 +464,9 @@
+       Identity identity = identityManager.getIdentity(id, false);
+       if (identity != null) {
+         isUserActivity = (identity.getProviderId().equals(OrganizationIdentityProvider.NAME));
++      } else {
++        // In case user identity is deleted already. SOC-1733
++        return true; 
+       }
+     } catch (Exception e) {
+       LOG.warn("Failed to check if an activity is of a user." + e.getMessage());
+Index: component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(revision 72251)
++++ component/webui/src/main/java/org/exoplatform/social/webui/activity/plugin/UIRelationshipActivity.java	(working copy)
+@@ -33,6 +33,9 @@
+ import org.exoplatform.social.webui.activity.UIActivitiesContainer;
+ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
++import org.exoplatform.web.application.ApplicationMessage;
++import org.exoplatform.web.application.RequestContext;
++import org.exoplatform.webui.application.WebuiRequestContext;
+ import org.exoplatform.webui.config.annotation.ComponentConfig;
+ import org.exoplatform.webui.config.annotation.EventConfig;
+ import org.exoplatform.webui.core.UIComponent;
+@@ -156,6 +159,15 @@
+       Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
+ 
+       RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
++      if ((receiverIdentity == null) || (senderIdentity == null)) {
++        WebuiRequestContext webuiReq = WebuiRequestContext.getCurrentInstance();
++        webuiReq.getUIApplication().addMessage(
++          new ApplicationMessage("UIRelationshipActivity.msg.error.Can_not_Accept_Deleted_User",
++          null,
++          ApplicationMessage.WARNING));
++        
++        return;
++      }
+       Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
+       Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
+       if (status == Type.REQUIRE_VALIDATION) {
+@@ -180,6 +192,15 @@
+       Identity receiverIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, uiRelationshipActivity.getReceiverName(), false);
+ 
+       RelationshipManager relationshipManager = uiRelationshipActivity.getApplicationComponent(RelationshipManager.class);
++      if ((receiverIdentity == null) || (senderIdentity == null)) {
++        WebuiRequestContext webuiReq = WebuiRequestContext.getCurrentInstance();
++        webuiReq.getUIApplication().addMessage(
++          new ApplicationMessage("UIRelationshipActivity.msg.error.Can_not_Refuse_Deleted_User",
++          null,
++          ApplicationMessage.WARNING));
++        
++        return;
++      }
+       Relationship relationship = relationshipManager.getRelationship(receiverIdentity, senderIdentity);
+       Type status = relationshipManager.getRelationshipStatus(relationship, receiverIdentity);
+       if (status == Type.REQUIRE_VALIDATION) {
+Index: component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_en.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_en.properties	(revision 72251)
++++ component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_en.properties	(working copy)
+@@ -16,4 +16,5 @@
+ #
+ 
+ UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet=Not any updates posted yet.
+-UIActivitiesLoader.label.More=More
+\ No newline at end of file
++UIActivitiesLoader.label.More=More
++UIActivitiesLoader.label.Deleted_User=Deleted User
+\ No newline at end of file
+Index: component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties	(revision 72251)
++++ component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties	(working copy)
+@@ -16,4 +16,5 @@
+ #
+ 
+ UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet=Aucune activité postée.
+-UIActivitiesLoader.label.More=Plus
+\ No newline at end of file
++UIActivitiesLoader.label.More=Plus
++UIActivitiesLoader.label.Deleted_User=Utilisateur supprimé
+\ No newline at end of file
+Index: component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_en.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_en.properties	(revision 72251)
++++ component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_en.properties	(working copy)
+@@ -18,6 +18,8 @@
+ UIRelationshipActivity.label.Accept=Accept
+ UIRelationshipActivity.label.Refuse=Refuse
+ UIRelationshipActivity.label.Revoke=Revoke
++UIRelationshipActivity.msg.error.Can_not_Accept_Deleted_User=User has been deleted, so you cannot accept invitation.
++UIRelationshipActivity.msg.error.Can_not_Refuse_Deleted_User=User has been deleted, so you cannot refuse invitation.
+ 
+ UIRelationshipActivity.msg.You_Invited_UserName_To_Connect=You invited {0} to connect.
+ UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0} invited you to connect.
+Index: component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties	(revision 72251)
++++ component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_fr.properties	(working copy)
+@@ -18,6 +18,8 @@
+ UIRelationshipActivity.label.Accept=Accepter
+ UIRelationshipActivity.label.Refuse=Refuser
+ UIRelationshipActivity.label.Revoke=Retirer
++UIRelationshipActivity.msg.error.Can_not_Accept_Deleted_User=L'utilisateur a été supprimé, vous ne pouvez pas accepter l'invitation. 
++UIRelationshipActivity.msg.error.Can_not_Refuse_Deleted_User=L'utilisateur a été supprimé, vous ne pouvez pas refuser l'invitation.
+ 
+ UIRelationshipActivity.msg.You_Invited_UserName_To_Connect=Vous avez invité {0} à se connecter.
+ UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0} vous a envoyé une demande de connexion.
