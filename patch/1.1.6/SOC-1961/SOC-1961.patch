@@ -1,0 +1,61 @@
+Index: component/core/src/main/java/conf/portal/configuration.xml
+===================================================================
+--- component/core/src/main/java/conf/portal/configuration.xml	(revision 72933)
++++ component/core/src/main/java/conf/portal/configuration.xml	(working copy)
+@@ -302,12 +302,4 @@
+     </component-plugin>
+   </external-component-plugins>
+ 
+-  <external-component-plugins>
+-   <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+-   <component-plugin>
+-     <name>new.user.event.listener</name>
+-     <set-method>addListenerPlugin</set-method>
+-     <type>org.exoplatform.social.core.listeners.SocialUserEventListenerImpl</type>
+-   </component-plugin>
+-  </external-component-plugins>
+ </configuration>
+Index: demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(revision 72925)
++++ demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(working copy)
+@@ -68,7 +68,17 @@
+     </component-plugin>
+   </external-component-plugins>
+ 
++
+   <external-component-plugins>
++    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
++    <component-plugin>
++      <name>new.user.event.listener</name>
++      <set-method>addListenerPlugin</set-method>
++      <type>org.exoplatform.social.core.listeners.SocialUserEventListenerImpl</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>
+Index: extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(revision 72925)
++++ extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(working copy)
+@@ -68,7 +68,17 @@
+     </component-plugin>
+   </external-component-plugins>
+ 
++
+   <external-component-plugins>
++    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
++    <component-plugin>
++      <name>new.user.event.listener</name>
++      <set-method>addListenerPlugin</set-method>
++      <type>org.exoplatform.social.core.listeners.SocialUserEventListenerImpl</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>
