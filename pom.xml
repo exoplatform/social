@@ -82,7 +82,7 @@
     <org.exoplatform.ws.version>2.2.0-CR4</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.0-CR4-CP01</org.exoplatform.jcr.version>
     <org.exoplatform.portal.version>3.2.0-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.3.0-Beta1-SNAPSHOT</org.exoplatform.ecms.version>  
+    <org.exoplatform.ecms.version>2.3.0-GA-SNAPSHOT</org.exoplatform.ecms.version>  
 
    
     <org.exoplatform.commons.version>1.1.1-GA-SNAPSHOT</org.exoplatform.commons.version>
