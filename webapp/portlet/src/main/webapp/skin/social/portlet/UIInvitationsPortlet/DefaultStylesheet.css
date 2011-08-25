@@ -372,3 +372,7 @@ input.hint, textarea.hint {
 	padding: 5px 6px;
 	margin-left: 4px;
 }
+
+.UIInvitationRelation .ContainerSpace .ContentSpace .CommunityMane .CommunityName{
+	float: left;
+}
