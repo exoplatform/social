@@ -18,14 +18,17 @@
 
 .UIComposerLinkExtension .InputLink {
     margin-right: 75px;
+	overflow: hidden;
+	border: 1px solid #D7D7D7;
+	-moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
 }
 
-.UIComposerLinkExtension #InputLink {
-    border: 1px solid #D7D7D7;
+.UIComposerLinkExtension .InputLink #InputLink {
+    border:1px solid white;
     height: 19px;
     width: 100%;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
+  height: 16px;
 }
 
 .UIComposerLinkExtension .AttachButton {
