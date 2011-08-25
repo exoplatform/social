@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.common.xmlprocessor.model;
 
+import org.exoplatform.social.common.xmlprocessor.DOMParser;
+import org.exoplatform.social.common.xmlprocessor.Tokenizer;
 import junit.framework.TestCase;
 
 /**
@@ -69,7 +71,73 @@ public class NodeTest extends TestCase {
     assertEquals("rootNode.toString() must be <b style=\"header\" />","<b style=\"header\" />",
                             rootNode.getChildNodes().get(0).getContent());
   }
-
+  /**
+   *  unit test for {@link Node#isTextNode()}
+   */
+  public void testIsTextNode(){
+    Node testNode = new Node();
+    testNode.setContent("hello");
+    assertTrue("testNode.isTextNode() must be true", testNode.isTextNode());
+    
+    Node testNode2 = new Node();
+    Node testNode3 = new Node();
+    testNode2.addChildNode(testNode3);
+    testNode3.setParentNode(testNode2);
+    assertFalse("testNode2.isTextNode() must be false", testNode2.isTextNode());
+    
+    Node testNode4 = new Node();
+    testNode4.setTitle("hello");
+    assertFalse("testNode2.isTextNode() must be false", testNode4.isTextNode());
+  }
+  
+  /**
+   *  unit test for {@link Node#isRootNode()}
+   */
+  public void testIsRootNode(){
+    Node testNode = new Node();
+    assertTrue("testNode.isRootNode() must be true", testNode.isRootNode());
+    
+    Node testNode2 = new Node();
+    Node testNode3 = new Node();
+    testNode3.setParentNode(testNode2);
+    testNode2.addChildNode(testNode3);
+    
+    assertFalse("testNode3.testIsRootNode() must be false", testNode3.isRootNode());
+  }
+  
+  /**
+   *  unit test for {@link Node#isSelfClosedNode()}
+   */
+  public void testIsSelfClosedNode(){
+    Node testNode = new Node();
+    testNode.setTitle("a");
+    
+    Attributes testNodeAttribute = new Attributes();
+    testNodeAttribute.put("href", "http://google.com");
+    
+    assertTrue("testNode.isSelfCloseNode() must be true", testNode.isSelfClosedNode());        
+  }
+  
+  public void testInsertAfterWithRefNode(){
+    Node rootNode = DOMParser.createDOMTree(Tokenizer.tokenize("<a>help</a><b>hello</b>"));
+    Node nodeToAdd = new Node();
+    nodeToAdd.setContent("test Node");
+    
+    rootNode.insertAfter(rootNode.getChildNodes().get(0), nodeToAdd);
+    
+    assertEquals("nodeToAdd must be inserted after <a> node", "<a>help</a>test Node<b>hello</b>", rootNode.toString());        
+  }
+  
+  public void testInsertAfterWithPosition(){
+    Node rootNode = DOMParser.createDOMTree(Tokenizer.tokenize("<a>help</a><b>hello</b>"));
+    Node nodeToAdd = new Node();
+    nodeToAdd.setContent("test Node");
+    
+    rootNode.insertAfter(0, nodeToAdd);
+    
+    assertEquals("nodeToAdd must be inserted after <a> node", "<a>help</a>test Node<b>hello</b>", rootNode.toString());        
+  }
+  
   public void testSetGet(){
     Node node = new Node();
 

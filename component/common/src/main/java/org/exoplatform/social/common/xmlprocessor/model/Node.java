@@ -138,9 +138,57 @@ public class Node {
   public void addAttribute(String key, String value) {
     this.attributes.put(key, value);
   }
-
-
-
+  
+  /**
+   * Check if node is TextNode
+   * @return
+   * @since 1.2.2
+   */
+  public boolean isTextNode(){
+    return(attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty() && title.isEmpty());
+  }
+  
+  /**
+   * Check if node is RootNode
+   * @return
+   * @since 1.2.2
+   */
+  public boolean isRootNode(){
+    return(parentNode == null && attributes.size() == 0 && content.isEmpty() && title.isEmpty());
+  }
+  
+  /**
+   * Check if node is SelfCloseNode
+   * @return
+   * @since 1.2.2
+   */
+  public boolean isSelfClosedNode(){
+    return childNodes.size() == 0 && content.isEmpty();
+  }
+  
+  /**
+   * insert Node to DOM tree after refNode
+   * @param refNode
+   * @param nodeToInsert
+   * @since 1.2.2
+   */
+  public void insertAfter(Node refNode, Node nodeToInsert){
+    if(refNode != null && nodeToInsert != null){
+      insertAfter(childNodes.indexOf(refNode), nodeToInsert);
+    }
+  }
+  
+  /**
+   * Insert Node to DOM tree after the node at position
+   * @param position
+   * @param node
+   * @since 1.2.2
+   */
+  public void insertAfter(int position, Node node){
+    if((position + 1) <= childNodes.size() && node != null){
+      childNodes.add(position + 1, node);
+    }
+  }
   /**
    * Convert Node to XML String including all sub-Node
    * @return XML String
@@ -148,18 +196,8 @@ public class Node {
   @Override
   public String toString() {
     StringBuilder xmlString = new StringBuilder("");
-    boolean selfClosedTag = false;
-    boolean textTag = false;
 
-    if (childNodes.size() == 0 && content.isEmpty()) {
-      selfClosedTag = true;
-    }
-    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
-            && title.isEmpty()) {
-      textTag = true;
-    }
-
-    if (textTag) {
+    if (isTextNode()) {
       xmlString.append(this.content);
     } else {
       if (this.parentNode != null) {
@@ -168,7 +206,7 @@ public class Node {
 
         xmlString.append(attributes.toString());
 
-        if (selfClosedTag) {
+        if (isSelfClosedNode()) {
           xmlString.append(" /");
         }
         xmlString.append(">");
@@ -177,7 +215,7 @@ public class Node {
         xmlString.append(childNode.toString());
       }
 
-      if (this.parentNode != null && !selfClosedTag) {
+      if (this.parentNode != null && !isSelfClosedNode()) {
         xmlString.append("</" + this.title + ">");
       }
     }
@@ -191,18 +229,8 @@ public class Node {
    */
   private String toOpenString() {
     StringBuilder xmlString = new StringBuilder("");
-    boolean selfClosedTag = false;
-    boolean textTag = false;
 
-    if (childNodes.size() == 0 && content.isEmpty()) {
-      selfClosedTag = true;
-    }
-    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
-            && title.isEmpty()) {
-      textTag = true;
-    }
-
-    if (textTag) {
+    if (isTextNode()) {
       xmlString.append(this.content);
     } else {
       if (this.parentNode != null) {
@@ -211,7 +239,7 @@ public class Node {
 
         xmlString.append(attributes.toString());
 
-        if (selfClosedTag) {
+        if (isSelfClosedNode()) {
           xmlString.append(" /");
         }
         xmlString.append(">");
@@ -227,21 +255,11 @@ public class Node {
    */
   private String toCloseString() {
     StringBuilder xmlString = new StringBuilder("");
-    boolean selfClosedTag = false;
-    boolean textTag = false;
 
-    if (childNodes.size() == 0 && content.isEmpty()) {
-      selfClosedTag = true;
-    }
-    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
-            && title.isEmpty()) {
-      textTag = true;
-    }
-
-    if (textTag) {
+    if (isTextNode()) {
       xmlString.append(this.content);
     } else {
-      if (this.parentNode != null && !selfClosedTag) {
+      if (this.parentNode != null && !isSelfClosedNode()) {
         xmlString.append("</" + this.title + ">");
       }
     }
