@@ -16,11 +16,10 @@
  */
 package org.exoplatform.social.core.service;
 
-import javax.jcr.Workspace;
-
 import org.apache.commons.lang.Validate;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
@@ -32,6 +31,10 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 
 public class LinkProvider {
   public static final String RESOURCE_URL = "/social-resources";
@@ -65,7 +68,12 @@ public class LinkProvider {
    * @since 1.2.0 GA
    */
   public static String getSpaceUri(final String prettyName) {
-    return buildSpaceUri(prettyName, null, null);
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceByPrettyName(prettyName);
+    RequestContext ctx = RequestContext.getCurrentInstance();
+    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
+    return nodeURL.setResource(resource).toString();  
   }
 
   /**
@@ -282,20 +290,6 @@ public class LinkProvider {
   }
 
   /**
-   * Builds space uri from userName and portalOwner.
-   *
-   * @param prettyName
-   * @param portalName
-   * @param portalOwner
-   * @return space uri
-   * @since 1.2.0 GA
-   */
-  private static String buildSpaceUri(final String prettyName, final String portalName, String portalOwner) {
-    if(portalOwner == null || portalOwner.trim().length() == 0) portalOwner = DEFAULT_PORTAL_OWNER;
-    return getBaseUri(portalName, portalOwner) + "/" + prettyName;
-  }
-
-  /**
    * Builds profile uri from userName and portalName and portalOwner.
    *
    * @param portalName
@@ -332,6 +326,16 @@ public class LinkProvider {
     return LinkProvider.identityManager;
   }
 
+  /**
+   * Gets the space service.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  private static SpaceService getSpaceService() {
+    return (SpaceService) PortalContainer.getInstance().getComponentInstanceOfType(SpaceService.class);
+  }
+  
   /**
    * Gets portal owner, if parameter is null or "", the method return default portal owner.
    *
