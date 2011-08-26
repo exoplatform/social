@@ -30,6 +30,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -677,6 +678,54 @@ public class ActivityStorageTest extends AbstractCoreTest {
     }
   }
 
+  /**
+   * Test {@link ActivityStorage#getActivitiesOfConnections(Identity, int, int)} for issue SOC-1995
+   * 
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void testGetActivitiesOfConnectionsWithPosterIdentity() throws Exception {
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+    List<Relationship> relationships = new ArrayList<Relationship>();
+    
+    Relationship johnDemoIdentity = relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, johnIdentity);
+    johnDemoIdentity = relationshipManager.get(johnDemoIdentity.getId());
+    relationships.add(johnDemoIdentity);
+    
+    Relationship demoMaryIdentity = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(maryIdentity, demoIdentity);
+    johnDemoIdentity = relationshipManager.get(demoMaryIdentity.getId());
+    relationships.add(demoMaryIdentity);
+   
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("Hello Demo from Mary");
+    activity.setUserId(maryIdentity.getId());
+    activityStorage.saveActivity(demoIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    activity = activityStorage.getActivity(activity.getId());
+    assertNotNull("activity must not be null", activity);
+    assertEquals("activity.getStreamOwner() must return: demo", "demo", activity.getStreamOwner());
+    assertEquals("activity.getUserId() must return: " + maryIdentity.getId(), maryIdentity.getId(), activity.getUserId());
+    
+    List<ExoSocialActivity> johnConnectionActivities = activityStorage.getActivitiesOfConnections(johnIdentity, 0, 10);
+    assertNotNull("johnConnectionActivities must not be null", johnConnectionActivities);
+    assertEquals("johnConnectionActivities.size() must return: 0", 0, johnConnectionActivities.size());
+    
+    List<ExoSocialActivity> demoConnectionActivities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
+    assertNotNull("demoConnectionActivities must not be null", demoConnectionActivities);
+    assertEquals("demoConnectionActivities.size() must return: 1", 1, demoConnectionActivities.size());
+    
+    List<ExoSocialActivity> maryConnectionActivities = activityStorage.getActivitiesOfConnections(maryIdentity, 0, 10);
+    assertNotNull("maryConnectionActivities must not be null", maryConnectionActivities);
+    assertEquals("maryConnectionActivities.size() must return: 0", 0, maryConnectionActivities.size());
+    
+    for (Relationship rel : relationships) {
+      relationshipManager.delete(rel);
+    }
+  }
+  
   /**
    * Test {@link ActivityStorage#getNumberOfActivitiesOfConnections(Identity)}
    * 

@@ -36,6 +36,7 @@ import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.utils.ActivityIterator;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -564,7 +565,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         whereExpression.or();
       }
 
-      whereExpression.equals(ActivityEntity.identity, currentIdentity.getId());
+      if (OrganizationIdentityProvider.NAME.equals(currentIdentity.getProviderId())) {
+        whereExpression.equals(ActivityEntity.poster, currentIdentity.getId());
+      } else {
+        whereExpression.equals(ActivityEntity.identity, currentIdentity.getId());
+      }
     }
     whereExpression.endGroup();
 

@@ -74,6 +74,14 @@ public abstract class ActivityEntity implements NamedEntity {
   @ManyToOne(type = RelationshipType.REFERENCE)
   public abstract IdentityEntity getPosterIdentity();
   public abstract void setPosterIdentity(IdentityEntity posterIdentity);
+  
+  /**
+   * Property for searching activities by poster.
+   * 
+   * @since 1.2.2
+   */
+  public static final PropertyLiteralExpression<String> poster =
+    new PropertyLiteralExpression<String>(String.class, "soc:posterIdentity");
 
   @Property(name = "soc:title")
   public abstract String getTitle();
