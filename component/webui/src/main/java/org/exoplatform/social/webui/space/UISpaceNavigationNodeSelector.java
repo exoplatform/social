@@ -723,28 +723,30 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         return;
       }
       String pageRef = childNode.getPageRef();
-      String appName = pageRef.substring(pageRef.lastIndexOf(":") + 1);
-      
-      // check this node can be deleted or not
-      SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
-      UISpaceNavigationManagement uiSpaceNavManagement = uiNodeSelector.getParent();
-      Space space = uiSpaceNavManagement.getSpace();
-      String spaceAppList = space.getApp();
-      String[] spaceApps = spaceAppList.split(",");
-      for (String spaceApp : spaceApps) {
-        String[] appConfig = spaceApp.split(":");  
-        if (appConfig[0].equals(appName)) {
-          if (!Boolean.parseBoolean(appConfig[2])) {
-            UIApplication uiApp = pcontext.getUIApplication();
-            uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
-                                                    null));
-            return;
-          } else {
-            spaceService.removeApplication(space.getId(), appName, appConfig[1]);
-            break;
+      if (pageRef != null) {
+        String appName = pageRef.substring(pageRef.lastIndexOf(":") + 1);
+        
+        // check this node can be deleted or not
+        SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
+        UISpaceNavigationManagement uiSpaceNavManagement = uiNodeSelector.getParent();
+        Space space = uiSpaceNavManagement.getSpace();
+        String spaceAppList = space.getApp();
+        String[] spaceApps = spaceAppList.split(",");
+        for (String spaceApp : spaceApps) {
+          String[] appConfig = spaceApp.split(":");  
+          if (appConfig[0].equals(appName)) {
+            if (!Boolean.parseBoolean(appConfig[2])) {
+              UIApplication uiApp = pcontext.getUIApplication();
+              uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
+                                                      null));
+              return;
+            } else {
+              spaceService.removeApplication(space.getId(), appName, appConfig[1]);
+              break;
+            }
           }
         }
-      }
+      }      
       
       TreeNode parentNode = childNode.getParent();
 
