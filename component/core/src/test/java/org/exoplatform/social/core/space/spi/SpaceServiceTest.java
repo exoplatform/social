@@ -403,6 +403,10 @@ public class SpaceServiceTest extends AbstractCoreTest {
     foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("new"));
     assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);
     assertEquals("foundSpaceListAccess.getSize() must return: " + count, count, foundSpaceListAccess.getSize());
+    
+    foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("<new>new(\"new\")</new>"));
+    assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);
+    assertEquals("foundSpaceListAccess.getSize() must return: " + count, count, foundSpaceListAccess.getSize());
 
     foundSpaceListAccess = spaceService.getAllSpacesByFilter(new SpaceFilter("what new space add"));
     assertNotNull("foundSpaceListAccess must not be null", foundSpaceListAccess);

@@ -1238,4 +1238,17 @@ public class SpaceUtils {
     PortalContainer portalContainer = PortalContainer.getInstance();
     return (ApplicationRegistryService) portalContainer.getComponentInstanceOfType(ApplicationRegistryService.class);
   }
+  
+  /**
+   * Filter all invalid character (anything except word, number, space and search wildcard) from Space search conditional.
+   * @since: 1.2.2
+   * @param input String
+   * @return
+   */
+
+  public static String removeSpecialCharacterInSpaceFilter(String input){
+    String result = input.replaceAll("[^\\pL\\pM\\p{Nd}\\p{Nl}\\p{Pc}[\\p{InEnclosedAlphanumerics}&&\\p{So}]\\?\\*%0-9]", " ");
+    result = result.replaceAll("\\s+", " ");
+    return result.trim();
+  }
 }

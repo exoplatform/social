@@ -55,7 +55,7 @@ public class SpaceFilter {
    */
   public SpaceFilter(String spaceNameSearchCondition) {
     this.firstCharacterOfSpaceName = CHAR_DEFAULT_VALUE;
-    this.spaceNameSearchCondition = spaceNameSearchCondition;
+    this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
   }
   
   /**
@@ -66,7 +66,7 @@ public class SpaceFilter {
    */
   public SpaceFilter(char firstCharacterOfSpaceName, String spaceNameSearchCondition) {
     this.firstCharacterOfSpaceName = firstCharacterOfSpaceName;
-    this.spaceNameSearchCondition = spaceNameSearchCondition;
+    this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
   }
   
   /**
@@ -102,6 +102,6 @@ public class SpaceFilter {
    * @param spaceNameSearchCondition
    */
   public void setSpaceNameSearchCondition(String spaceNameSearchCondition) {
-    this.spaceNameSearchCondition = spaceNameSearchCondition;
+    this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
   }
 }
