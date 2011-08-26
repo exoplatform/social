@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.services.bench.DataInjector;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -38,38 +36,108 @@ public class ExoSocialDataInjector extends DataInjector {
   private long       numberOfUser;
   private long       numberOfRelation;
   private long       numberOfActivity;
-  private long       numberOfSpace;
   private ExoSocialDataInjectionExecutor injector;
-  private boolean isInitialized = false;
   
   private Map<String, Long> userActivities = new HashMap<String,Long>();
   
   public ExoSocialDataInjector(ExoSocialDataInjectionExecutor injector) {
     this.injector = injector;
-  }
-  
-  @Override
-  public Log getLog() {
-    // TODO Auto-generated method stub
-    return null;
+    
   }
 
   @Override
   public Object execute(HashMap<String, String> arg0) throws Exception {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public void inject(HashMap<String, String> arg0) throws Exception {
-    
-    
+  public Log getLog() {
+    return LOG;
   }
 
+  @Override
+  public void inject(HashMap<String, String> paramsMap) throws Exception {
+    initParams(paramsMap);
+    executeInject();
+  }
+
+  /**
+   * Executes the DataInjector into database.
+   */
+  private void executeInject() {
+    LOG.info("starting...");
+    boolean nothingWasDone = true;
+    if (numberOfUser > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + numberOfUser + " people.");
+      injector.generatePeople(numberOfUser);
+    }
+    if (numberOfRelation > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + numberOfRelation + " connections.");
+      injector.generateRelations(numberOfRelation);
+    }
+    if (numberOfActivity > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + numberOfActivity + " activities.");
+      injector.generateActivities(numberOfActivity);
+    }
+
+    if(! userActivities.isEmpty()) {
+      Set<Entry<String,Long>> entries = userActivities.entrySet();
+      for (Entry<String, Long> entry : entries) {
+        String username = entry.getKey();
+        Long count = entry.getValue();
+        LOG.info("\t> about to inject " + count + " activities for " + username + ".");
+        injector.generateActivities(username, count);
+      }
+
+    }
+
+
+    if (nothingWasDone) {
+      LOG.info("nothing to inject.");
+    }
+  }
+  
+  /**
+   * Parsing the Init parameters which is passed via request parameters.
+   * @param paramsMap
+   */
+  private void initParams(HashMap<String, String> paramsMap) {
+    if (paramsMap != null) {
+      //Gets the maximum the User using for creating Users
+      String value = paramsMap.get("mU");
+      numberOfUser = longValue("mU", value);
+      
+      //Gets the maximum the Relationship using for creating Relationships
+      value = paramsMap.get("mR");
+      numberOfRelation = longValue("mR", value);
+      
+      //Gets the maximum the Activity using for creating Activities
+      value = paramsMap.get("mA");
+      numberOfActivity = longValue("mA", value);
+    }
+  }
   @Override
   public void reject(HashMap<String, String> arg0) throws Exception {
     
   }
-
   
+  /**
+   * Gets Long Value from param value.
+   * @param property
+   * @param value
+   * @return
+   */
+  private long longValue(String property, String value) {
+    try {
+      if (value != null) {
+        return Long.valueOf(value);
+      }
+    } catch (NumberFormatException e) {
+      LOG.warn("Long number expected for property " + property);
+    }
+    return 0;
+  }
 }
