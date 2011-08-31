@@ -32,7 +32,7 @@
 
   def currentUser = ownerIdentity.profile.fullName;
   def actititesURL = LinkProvider.getUserActivityUri(ownerIdentity.getRemoteId());
-  def profileURL = ownerIdentity.profile.url;
+  def profileURL = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
   def relationURL = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
 
   def selectedNode = uicomponent.getSelectedNode();

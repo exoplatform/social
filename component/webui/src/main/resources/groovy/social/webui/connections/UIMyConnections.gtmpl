@@ -52,7 +52,7 @@
       <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
 
       <%  for(id in myRelation) {
-            profileURL = id.profile.url;
+            profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
             fullName = id.profile.fullName;
             def actionLink = uicomponent.event("Remove",id.getId());
             position = id.profile.position;

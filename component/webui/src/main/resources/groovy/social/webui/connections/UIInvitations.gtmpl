@@ -38,7 +38,7 @@
 
     <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
       <% for (identity in myInvitations) {
-            profileURL = identity.profile.url;
+            profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
             fullName = identity.profile.fullName;
             position = identity.profile.position;
             actionAccept = uicomponent.event("Accept",identity.getId());

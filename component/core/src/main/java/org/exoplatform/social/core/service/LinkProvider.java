@@ -147,7 +147,7 @@ public class LinkProvider {
   }
 
   /**
-   * Gets activity link of user; remoteId should be the id name. For
+   * Gets connections link of user; remoteId should be the id name. For
    * example: root
    * 
    * @param remoteId
@@ -155,6 +155,17 @@ public class LinkProvider {
    */
   public static String getUserConnectionsUri(final String remoteId) {
     return getBaseUri(null, null) + "/connections/myConnections" + ROUTE_DELIMITER + remoteId;
+  }
+
+  /**
+   * Gets profile link of user; remoteId should be the id name. For
+   * example: root
+   *
+   * @param remoteId
+   * @return
+   */
+  public static String getUserProfileUri(final String remoteId) {
+    return getBaseUri(null, null) + "/profile" + ROUTE_DELIMITER + remoteId;
   }
 
   /**

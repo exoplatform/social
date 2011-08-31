@@ -46,7 +46,7 @@
 
   <% list.each {
       def identity = it;
-      def profileURL = identity.profile.url;
+      def profileURL = LinkProvider.getUserProfileUri(it.getRemoteId());
       def fullName = identity.profile.fullName;
       def addAction = uicomponent.event("AddContact", identity.getId());
       def relationship = uicomponent.getRelationship(identity);

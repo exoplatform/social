@@ -36,7 +36,7 @@
 				</div>
       <%}%>
       <%	for(identity in list) {
-          def profileURL = identity.profile.url;
+          def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
           def actionLink = uicomponent.event("DenyContact", identity.getId());
           def position = identity.profile.position;
