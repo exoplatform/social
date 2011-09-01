@@ -88,14 +88,14 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
 
     ActivityMonthEntity monthEntity = getMonths().get(month);
 
-    if (monthEntity ==  null) {
+    if (monthEntity == null) {
       monthEntity = newMonth();
       getMonths().put(month, monthEntity);
       long longMonth = MONTH_NAME.indexOf(month);
       for (int i = getMonthsList().size() - 1; i >= 0 ; --i) {
         long longCurrent = MONTH_NAME.indexOf(getMonthsList().get(i).getName());
         if (longCurrent < longMonth) {
-          getMonthsList().set(i, monthEntity);
+          getMonthsList().add(i, monthEntity);
         }
       }
     }

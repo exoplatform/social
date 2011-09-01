@@ -81,7 +81,7 @@ public abstract class ActivityListEntity {
       for (int i = getYearsList().size() - 1; i >= 0 ; --i) {
         long longCurrent = Long.parseLong(getYearsList().get(i).getName());
         if (longCurrent < longYear) {
-          getYearsList().set(i, yearEntity);
+          getYearsList().add(i, yearEntity);
         }
       }
     }

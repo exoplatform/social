@@ -85,7 +85,7 @@ public abstract class ActivityMonthEntity implements NamedEntity, IndexNumber {
       for (int i = getDaysList().size() - 1; i >= 0 ; --i) {
         long longCurrent = Long.parseLong(getDaysList().get(i).getName());
         if (longCurrent < longDay) {
-          getDaysList().set(i, dayEntity);
+          getDaysList().add(i, dayEntity);
         }
       }
     }
