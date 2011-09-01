@@ -36,37 +36,10 @@
   border-bottom: 10px solid #F7F7F9;
 }
 
-.UISpaceSettingPortlet .UIHorizontalTabs {
-  background:transparent url('background/NormalTabStyle.gif') repeat-x scroll center top;
-  padding:0 6px;
-  height:27px;
-}
-
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab {
   color:#307DCC;
   line-height:27px;
   margin-right:2px;
-}
-
-.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .LeftTab {
-  background:transparent url('DefaultSkin/background/SelectedLeftTab.gif') no-repeat scroll left;
-  line-height:27px;
-  padding-left:6px;
-}
-
-.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .RightTab {
-  background:transparent url('DefaultSkin/background/SelectedRightTab.gif') no-repeat scroll right;
-  line-height:27px;
-  padding-right:6px;
-}
-
-.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .SelectedTab .MiddleTab {
-  background:transparent url('DefaultSkin/background/SelectedMiddleTab.gif') repeat-x scroll center;
-  color: #202020;
-  cursor:pointer;
-  font-weight: bold;
-  line-height:27px;
-  padding:0 8px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab {
@@ -95,13 +68,13 @@
 }
 
 .UISpaceSettingPortlet .UITabPane .UITabContentContainer {
-  background:white none repeat scroll 0 0;
-  border: 1px solid #d6d6d6;
+  background:white;
+  border: 1px solid #aeaeae;
   border-top: none;
 }
 
 .UISpaceSettingPortlet .UITabContentContainer .UITabContent {
-  background:#fbfbfb;
+  background:white;
   padding:10px;
 }
 
@@ -653,16 +626,6 @@
   line-height: 15px;
   padding: 0 12px 0 5px;
   font-size: 11px;
-}
-
-.UISpaceSettingPortlet .UISpaceInfo .UIAction {
-  padding: 5px 0 20px 0;
-}
-
-.UISpaceSettingPortlet .UISpaceInfo .UISaveButton {
-	display: inline;
-	margin: 0 0 0 35%;
-	float: left;
 }
 
 .UIAvatarUploader .HorizontalLayout {
