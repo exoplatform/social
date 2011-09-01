@@ -44,18 +44,7 @@
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab {
   margin-right: 2px;
-}
-
-.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .LeftTab {
-  background:transparent url('DefaultSkin/background/NormalLeftTab.gif') no-repeat scroll left;
-  line-height:26px;
-  padding-left:5px;
-}
-
-.UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .RightTab {
-  background:transparent url('DefaultSkin/background/NormalRightTab.gif') no-repeat scroll right;
-  line-height:26px;
-  padding-right:5px;
+  font-size: 11px;
 }
 
 .UISpaceSettingPortlet .UIHorizontalTabs .GrayTabStyle .NormalTab .MiddleTab {
@@ -65,6 +54,9 @@
   font-weight:normal;
   line-height:26px;
   padding:0 8px;
+  -moz-border-radius: 6px 6px 0px 0px;
+  -webkit-border-radius: 6px 6px 0px 0px;
+  border-radius: 6px 6px 0px 0px;
 }
 
 .UISpaceSettingPortlet .UITabPane .UITabContentContainer {
