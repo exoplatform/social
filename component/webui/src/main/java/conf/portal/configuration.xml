@@ -80,7 +80,7 @@
           <value>locale.social.webui.space.UIManageInvitationSpaces</value>
           <value>locale.social.webui.space.UIManageMySpaces</value>
           <value>locale.social.webui.space.UIManagePendingSpaces</value>
-          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UIManageAllSpaces</value>
           <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
           <value>locale.social.webui.space.UISpaceAddForm</value>
           <value>locale.social.webui.space.UISpaceApplication</value>
@@ -120,7 +120,7 @@
           <value>locale.social.webui.space.UIManageInvitationSpaces</value>
           <value>locale.social.webui.space.UIManageMySpaces</value>
           <value>locale.social.webui.space.UIManagePendingSpaces</value>
-          <value>locale.social.webui.space.UIManagePublicSpaces</value>
+          <value>locale.social.webui.space.UIManageAllSpaces</value>
           <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
           <value>locale.social.webui.space.UISpaceAddForm</value>
           <value>locale.social.webui.space.UISpaceApplication</value>

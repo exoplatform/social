@@ -41,6 +41,10 @@ public class LinkProvider {
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript";
   public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
   public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  public static final String SPACE_MANAGER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Manager.png";
+  public static final String SPACE_MEMBER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
+  public static final String SPACE_WAITING_CONFIRM_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
+  
   public static final String ROUTE_DELIMITER = "@";
   
   private static IdentityManager identityManager;

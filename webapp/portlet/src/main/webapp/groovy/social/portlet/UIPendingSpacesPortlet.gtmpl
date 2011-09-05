@@ -20,12 +20,6 @@
 -->
 */
 %>
-<%
-  def labelPendingSpaceList = _ctx.appRes("${uicomponent.id}.label.PendingSpaceList")
-%>
 <div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="UITabPane">
-    <div class="TitleBar">$labelPendingSpaceList</div>
-  </div>
   <% uicomponent.renderChildren(); %>
 </div>

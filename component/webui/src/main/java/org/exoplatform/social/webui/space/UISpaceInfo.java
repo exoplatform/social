@@ -177,7 +177,7 @@ public class UISpaceInfo extends UIForm {
       Space space = spaceService.getSpaceById(id);
       if (space == null) {
         //redirect to spaces
-        portalRequestContext.getResponse().sendRedirect(Utils.getURI("spaces"));
+        portalRequestContext.getResponse().sendRedirect(Utils.getURI("all-spaces"));
         return;
       }
       String spaceUrl = space.getUrl();

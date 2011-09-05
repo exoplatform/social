@@ -1,5 +1,3 @@
-<%
-/*
 <!--
 
     Copyright (C) 2003-2007 eXo Platform SAS.
@@ -18,16 +16,12 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-*/
-%>
-<%
-  def uicomponentId = uicomponent.id;
-  def labelPublicSpaceList = _ctx.appRes("${uicomponentId}.label.PublicSpaceList");
-%>
-<div class="$uicomponentId" id="$uicomponentId">
-  <div class="UITabPane">
-    <div class="TitleBar">$labelPublicSpaceList</div>
-    <% uicomponent.renderChildren(); %>
-  </div>
-</div>
-
+<webui-configuration>
+  <application>
+    <ui-component-root>org.exoplatform.social.portlet.UIAllSpacesPortlet</ui-component-root>
+    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
+    <application-lifecycle-listeners>
+      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
+    </application-lifecycle-listeners>
+  </application>
+</webui-configuration>

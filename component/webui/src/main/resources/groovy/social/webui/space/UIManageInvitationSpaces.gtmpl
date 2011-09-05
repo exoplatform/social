@@ -2,27 +2,27 @@
 /*
 <!--
 
-    Copyright (C) 2003-2009 eXo Platform SAS.
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
 */
 %>
 <%
+  import org.exoplatform.social.webui.Utils
   import org.exoplatform.portal.webui.util.Util
-  import org.exoplatform.webui.core.UIPageIterator
   import org.exoplatform.social.core.space.model.Space
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
@@ -30,28 +30,39 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
-  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
+  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
+  def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation")
+  def denySpaceActionLabel = _ctx.appRes("${uicomponentId}.label.deny_invitation")
+  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
   def labelMembers = _ctx.appRes("${uicomponentId}.label.Members")
-  def iterator = uicomponent.getUIPageIterator()
-  def invitedSpaces = uicomponent.getInvitedSpaces()
   def mySpaceIdx = 0
   def style="display:none;"
+  
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members")
+  
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def invitedSpaces = uicomponent.getInvitedSpacesList()
+  
+  if (invitedSpaces.size() == uicomponent.getInvitedSpacesNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
 %>
 <div class="UIManageInvitationSpaces" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
-  <div class="BoxSpaceList">
-    <div class="CenterTitleBox">
-      <div class="LeftTitleBox">
-        <div class="RightTitleBox">$labelSpaceListing</div>
-      </div>
-    </div>
+  <div class="BoxSpaceList ClearFix">
+
   <%if ((invitedSpaces.size() == 0)) {%>
-    <div class="NormalBox">
+    <div class="NoneBox">
       <div class="NotYet">$labelNoSpaces</div>
     </div>
   <%}%>
   <%for (space in invitedSpaces) {
+      def spaceUrl = Utils.getSpaceHomeURL(space)
       def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
       def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
       def imageSource = uicomponent.getImageSource(space);
@@ -65,33 +76,46 @@
   %>
 
     <% if (mySpaceIdx % 2 == 0) { %>
-    <div class="GrayBox">
+    <div class="GrayBox ClearFix FL">
     <% } else { %>
-    <div class="NormalBox">
+    <div class="NormalBox ClearFix FL">
     <% } %>
       <div class="AvatarSpace">
         <img alt="#" src="$imageSource" />
+        <span class="BorderTop"></span>
+        <span class="BorderBottom"></span>
       </div>
       <div class="ContentBox">
         <div class="TitleContent">
-          <a href="#" onclick="<%= denySpaceAction %>" title="Deny" class="Icon IconDeny"><span></span></a>
-          <a href="#" onclick="<%= acceptSpaceAction %>" title="Accept" class="Icon IconAccept"><span></span></a>
-          <div class="Text"><span><%= space.displayName %></span><span class="MembersCount"> - $visibility - $labelMembers <%= SpaceUtils.countMembers(space)%></span></div>
-          <div class="ClearBoth"><span></span></div>
+          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
+          <img title="$iconImgLabel" src="$LinkProvider.SPACE_WAITING_CONFIRM_ICON" />
         </div>
+        <div><span class="MembersCount" />$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
         <div class="Content">
           $space.description
         </div>
+	      <ul class="ActionContent ClearFix">
+		      <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptSpaceAction %>" title="<%= acceptSpaceActionLabel %>" class="Action">$acceptSpaceActionLabel</a></li>
+		      <li class="Line FL">&nbsp;</li>
+		      <li class="FL"><a href="javascript:void(0)" onclick="<%= denySpaceAction %>" title="<%= denySpaceActionLabel %>" class="Action">$denySpaceActionLabel</a></li>
+	      </ul>
       </div>
-      <div class="ClearBoth"><span></span></div>
     </div>
     <%}%>
-    <div>
-    <%
-      if (iterator.getAvailablePage() > 1) {
-        _ctx.renderUIComponent(iterator)
-      }
-    %>
-    </div>
   </div>
+    <%
+   if(uicomponent.isEnableLoadNext()) {
+  %>
+      <div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+        $labelShowMoreSpace
+      </div>
+    <%
+   } else {
+   %>
+        <script type="text/javascript">
+          try{document.getElementById("LoadMoreReceivedInvitationButton").style.display = "none";}catch(e){};
+        </script>
+    <%
+    }
+    %>
 </div>

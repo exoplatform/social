@@ -72,7 +72,7 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * Public Status information
    */
-  private static final String PUBLIC_STATUS = "public";
+  private static final String ALL_SPACES_STATUS = "all_spaces";
 
   private String portalContainerName;
 
@@ -216,9 +216,7 @@ public class SpacesRestService implements ResourceContainer {
       } else if (CONFIRMED_STATUS.equals(typeOfRelation) && (spaceSrv.isMember(space, userId))) {
         nameList.addName(space.getDisplayName());
         continue;
-      } else if (PUBLIC_STATUS.equals(typeOfRelation) && !space.getVisibility().equals(Space.HIDDEN) &&
-              (!spaceSrv.isPending(space, userId)) && (!spaceSrv.isInvited(space, userId)) &&
-              (!spaceSrv.isMember(space, userId))) {
+      } else if (ALL_SPACES_STATUS.equals(typeOfRelation)) {
         nameList.addName(space.getDisplayName());
       }
     }

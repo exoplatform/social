@@ -91,13 +91,6 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>SpacesNavigationPortlet</portlet-name>
-    <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISpacesNavigationPortlet/DefaultStylesheet.css</css-path>
-  </portlet-skin>
-
-  <portlet-skin>
-    <application-name>social-portlet</application-name>
     <portlet-name>MySpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UIMySpacesPortlet/DefaultStylesheet.css</css-path>
@@ -119,9 +112,9 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>PublicSpacesPortlet</portlet-name>
+    <portlet-name>AllSpacesPortlet</portlet-name>
     <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UIPublicSpacesPortlet/DefaultStylesheet.css</css-path>
+    <css-path>/skin/social/portlet/UIAllSpacesPortlet/DefaultStylesheet.css</css-path>
   </portlet-skin>
 
   <portlet-skin>

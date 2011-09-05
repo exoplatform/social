@@ -31,6 +31,7 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.UISocialGroupSelector;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -170,6 +171,9 @@ public class UISpaceAddForm extends UIFormTabPane {
       UIPopupWindow uiPopup = uiAddForm.getParent();
       uiPopup.setShow(false);
       Utils.updateWorkingWorkSpace();
+      // TODO Re-check and re-confirm that navigation is ok then re-direct into Home of space.
+      JavascriptManager jsManager = ctx.getJavascriptManager();
+      jsManager.addJavascript("window.location.href='" + Utils.getURI("spaces") + "'");
     }
   }
 

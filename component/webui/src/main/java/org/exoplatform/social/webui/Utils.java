@@ -34,6 +34,7 @@ import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
@@ -222,6 +223,17 @@ public class Utils {
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
     NavigationResource resource = new NavigationResource(SiteType.PORTAL, Util.getPortalRequestContext().getPortalOwner(), url);
     return nodeURL.setResource(resource).toString(); 
+  }
+  
+  /**
+   * Gets selected node name.
+   * 
+   * @returns
+   * @since 1.2.2
+   */
+  public static String getSelectedNode() {
+    PortalRequestContext request = Util.getPortalRequestContext() ;
+    return request.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
   }
   
   /**

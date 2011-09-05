@@ -1,19 +1,20 @@
 /**
- * UIPendingSpacesPortlet style
+ * UIAllSpacesPortlet style
  */
 
 @import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
 @import url('/social-resources/skin/social/webui/UIManageSpaces/DefaultSkin.css');
 
-.UIPendingSpacesPortlet {
+.UIAllSpacesPortlet {
+    background: none repeat scroll 0 0 #FFFFFF;
+    padding: 20px 10px;
+    background: #fff;
+}
+
+.UIAllSpacesPortlet TDContainer{
 	background: #fff;
 }
 
-.PendingSpacesPortletTDContainer{
-	background: #fff;
-}
-
-.UIManageInvitationSpaces {
+.UIManageAllSpaces {
   padding: 20px 10px 20px;
 }
-

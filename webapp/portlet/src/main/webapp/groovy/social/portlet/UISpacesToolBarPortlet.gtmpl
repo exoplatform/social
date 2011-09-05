@@ -34,7 +34,7 @@
   jsManager.importJavascript('eXo.portal.UIPortalNavigation');
   jsManager.importJavascript('eXo.portal.UIAdminToolbar');
   jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
-  def spacesLink = Utils.getURI("spaces");
+  def spacesLink = Utils.getURI("all-spaces");
   def spaceNavigations = uicomponent.getSpaceNavigations();
   
   void renderSpacePageNavigation(UserNavigation navigation) {

@@ -1,30 +1,29 @@
 /*
- * Copyright (C) 2003-2009 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.commons.utils.LazyPageList;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.mop.user.UserNavigation;
-import org.exoplatform.portal.mop.user.UserPortal;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -37,27 +36,29 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
  * Created by The eXo Platform SAS
  * @author tung.dang <tungcnw at gmail dot com>
  * @since Nov 02, 2009
+ * @modified Aug 23 2011 by hanhvq
  */
 
 @ComponentConfig(
   template="classpath:groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
   events = {
     @EventConfig(listeners = UIManageInvitationSpaces.AcceptActionListener.class),
-    @EventConfig(listeners = UIManageInvitationSpaces.DenyActionListener.class)
+    @EventConfig(listeners = UIManageInvitationSpaces.DenyActionListener.class),
+    @EventConfig(listeners = UIManageInvitationSpaces.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIManageInvitationSpaces.LoadMoreSpaceActionListener.class)
   }
 )
 public class UIManageInvitationSpaces extends UIContainer {
-  private static final String MSG_ERROR_ACCEPT_INVITATION = "UIManageInvitationSpaces.msg.error_accept_invitation";
-  private static final String MSG_ERROR_DENY_INVITATION = "UIManageInvitationSpaces.msg.error_deny_invitation";
+  private static final Log LOG = ExoLogger.getLogger(UIManageInvitationSpaces.class);
   private static final String SPACE_DELETED_INFO = "UIManageInvitationSpaces.msg.DeletedInfo";
   private static final String INVITATION_REVOKED_INFO = "UIManageInvitationSpaces.msg.RevokedInfo";
   private static final String INCOMING_STATUS = "incoming";
@@ -67,19 +68,23 @@ public class UIManageInvitationSpaces extends UIContainer {
    */
   private static final String SEARCH_ALL = "All";
   
-  /**
-   * The first page
-   */
-  private static final int FIRST_PAGE = 1;
-
   static public final Integer LEADER = 1, MEMBER = 2;
 
-  private UIPageIterator iterator;
-  private final Integer SPACES_PER_PAGE = 4;
-  private final String ITERATOR_ID = "UIIteratorInvitationSpaces";
+  private final Integer SPACES_PER_PAGE = 20;
   private List<Space> spaces; // for search result
   private UISpaceSearch uiSpaceSearch = null;
-
+  private SpaceService spaceService = null;
+  private String userId = null;
+  private boolean loadAtEnd = false;
+  private boolean hasUpdatedSpace = false;
+  private int currentLoadIndex;
+  private boolean enableLoadNext;
+  private int loadingCapacity;
+  private String spaceNameSearch;
+  private List<Space> invitedSpacesList;
+  private ListAccess<Space> invitedSpacesListAccess;
+  private int invitedSpacesNum;
+  
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup.
    *
@@ -89,38 +94,309 @@ public class UIManageInvitationSpaces extends UIContainer {
     uiSpaceSearch = createUIComponent(UISpaceSearch.class, null, "UISpaceSearch");
     uiSpaceSearch.setTypeOfRelation(INCOMING_STATUS);
     addChild(uiSpaceSearch);
-    iterator = addChild(UIPageIterator.class, null, ITERATOR_ID);
+    init();
   }
 
   /**
-   * Gets uiPageIterator.
-   *
-   * @return uiPageIterator
+   * Inits at the first loading.
+   * @since 1.2.2
    */
-  public UIPageIterator getUIPageIterator() {
-    return iterator;
+  public void init() {
+    try {
+      setHasUpdatedSpace(false);
+      setLoadAtEnd(false);
+      enableLoadNext = false;
+      currentLoadIndex = 0;
+      loadingCapacity = SPACES_PER_PAGE;
+      invitedSpacesList = new ArrayList<Space>();
+      setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
+  }
+  
+  /**
+   * Sets loading capacity.
+   * 
+   * @param loadingCapacity
+   */
+  public void setLoadingCapacity(int loadingCapacity) {
+    this.loadingCapacity = loadingCapacity;
   }
 
   /**
-   * Gets all user's spaces.
-   *
-   * @return space list
-   * @throws Exception
+   * Gets flag to display LoadNext button or not.
+   * 
+   * @return the enableLoadNext
    */
-  public List<Space> getInvitationSpaces() throws Exception {
-    List<Space> userSpaces = Utils.getSpaceService().getInvitedSpaces(Utils.getViewerRemoteId());
-    return SpaceUtils.getOrderedSpaces(userSpaces);
+  public boolean isEnableLoadNext() {
+    return enableLoadNext;
   }
 
   /**
-   * Gets paginated spaces in which user is member or leader.
-   *
-   * @return paginated spaces list
-   * @throws Exception
+   * Sets flag to display LoadNext button or not.
+   * 
+   * @param enableLoadNext
    */
-  public List<Space> getInvitedSpaces() throws Exception {
+  public void setEnableLoadNext(boolean enableLoadNext) {
+    this.enableLoadNext = enableLoadNext;
+  }
+
+  /**
+   * Gets flags to clarify that load at the last space or not. 
+   * 
+   * @return the loadAtEnd
+   */
+  public boolean isLoadAtEnd() {
+    return loadAtEnd;
+  }
+
+  /**
+   * Sets flags to clarify that load at the last space or not. 
+   * 
+   * @param loadAtEnd
+   */
+  public void setLoadAtEnd(boolean loadAtEnd) {
+    this.loadAtEnd = loadAtEnd;
+  }
+
+  /**
+   * Gets information that clarify one space is updated or not.
+   * 
+   * @return the hasUpdatedSpace
+   */
+  public boolean isHasUpdatedSpace() {
+    return hasUpdatedSpace;
+  }
+
+  /**
+   * Sets information that clarify one space is updated or not.
+   * 
+   * @param hasUpdatedSpace
+   */
+  public void setHasUpdatedSpace(boolean hasUpdatedSpace) {
+    this.hasUpdatedSpace = hasUpdatedSpace;
+  }
+
+  /**
+   * Gets list of invited space.
+   * 
+   * @return the invitedSpacesList
+   * @throws Exception 
+   * @since 1.2.2
+   */
+  public List<Space> getInvitedSpacesList() throws Exception {
+    if (isHasUpdatedSpace()) {
+      setHasUpdatedSpace(false);
+      setInvitedSpacesList(loadInvitedSpaces(0, this.invitedSpacesList.size()));
+    }
+    
     uiSpaceSearch.setSpaceNameForAutoSuggest(getInvitedSpaceNames());
-    return getDisplayInvitedSpace(iterator);
+    setEnableLoadNext(this.invitedSpacesList.size() < getInvitedSpacesNum());
+    return this.invitedSpacesList;
+  }
+
+  /**
+   * Sets list of invited space.
+   * 
+   * @param invitedSpacesList the invitedSpacesList to set
+   */
+  public void setInvitedSpacesList(List<Space> invitedSpacesList) {
+    this.invitedSpacesList = invitedSpacesList;
+  }
+  
+  /**
+   * Gets number of invited space.
+   * 
+   * @return the invitedSpacesNum
+   */
+  public int getInvitedSpacesNum() {
+    return invitedSpacesNum;
+  }
+
+  /**
+   * Sets number of invited space.
+   * 
+   * @param invitedSpacesNum the invitedSpacesNum to set
+   */
+  public void setInvitedSpacesNum(int invitedSpacesNum) {
+    this.invitedSpacesNum = invitedSpacesNum;
+  }
+
+  /**
+   * Gets name of searched space.
+   * 
+   * @return the spaceNameSearch
+   */
+  public String getSpaceNameSearch() {
+    return spaceNameSearch;
+  }
+
+  /**
+   * Sets name of searched space.
+   * 
+   * @param spaceNameSearch the spaceNameSearch to set
+   */
+  public void setSpaceNameSearch(String spaceNameSearch) {
+    this.spaceNameSearch = spaceNameSearch;
+  }
+  
+  /**
+   * Gets spaces with ListAccess type. 
+   * 
+   * @return the invitedSpacesListAccess
+   */
+  public ListAccess<Space> getInvitedSpacesListAccess() {
+    return invitedSpacesListAccess;
+  }
+
+  /**
+   * Sets spaces with ListAccess type.
+   * 
+   * @param invitedSpacesListAccess the invitedSpacesListAccess to set
+   */
+  public void setInvitedSpacesListAccess(ListAccess<Space> invitedSpacesListAccess) {
+    this.invitedSpacesListAccess = invitedSpacesListAccess;
+  }
+
+  /**
+   * Loads more space.
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void loadNext() throws Exception {
+    currentLoadIndex += loadingCapacity;
+    if (currentLoadIndex <= getInvitedSpacesNum()) {
+      this.invitedSpacesList.addAll(new ArrayList<Space>(Arrays.asList(getInvitedSpacesListAccess()
+                                                              .load(currentLoadIndex, loadingCapacity))));
+    }
+  }
+  
+  /**
+   * Loads space when searching.
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void loadSearch() throws Exception {
+    currentLoadIndex = 0;
+    setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
+  }
+
+  private List<Space> loadInvitedSpaces(int index, int length) throws Exception {
+    String charSearch = uiSpaceSearch.getSelectedChar();
+    String searchCondition = uiSpaceSearch.getSpaceNameSearch();
+    if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+      setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesWithListAccess(getUserId()));
+    } else {
+      SpaceFilter spaceFilter = null;
+      if (charSearch != null) {
+        spaceFilter = new SpaceFilter(charSearch.charAt(0));
+      } else {
+        spaceFilter = new SpaceFilter(searchCondition);
+      }
+      setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesByFilter(getUserId(), spaceFilter));
+    }
+    
+    setInvitedSpacesNum(getInvitedSpacesListAccess().getSize());
+    uiSpaceSearch.setSpaceNum(getInvitedSpacesNum());
+    Space[] spaces = getInvitedSpacesListAccess().load(index, length);
+    
+    return new ArrayList<Space>(Arrays.asList(spaces));
+  }
+  
+  /**
+   * Listeners loading more space action.
+   * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
+   * @since Aug 18, 2011
+   * @since 1.2.2
+   */
+  static public class LoadMoreSpaceActionListener extends EventListener<UIManageInvitationSpaces> {
+    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
+      UIManageInvitationSpaces uiManageInvitedSpaces = event.getSource();
+      uiManageInvitedSpaces.loadNext();
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
+    }
+  }
+  
+  /**
+   * Listens event that broadcast from UISpaceSearch.
+   * 
+   * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
+   * @since Aug 19, 2011
+   */
+  static public class SearchActionListener extends EventListener<UIManageInvitationSpaces> {
+    @Override
+    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
+      UIManageInvitationSpaces uiManageInvitedSpaces = event.getSource();
+      uiManageInvitedSpaces.loadSearch();
+      uiManageInvitedSpaces.setLoadAtEnd(false);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
+    }
+  }
+
+  /**
+   * This action is triggered when user clicks on Accept Space Invitation. When accepting, that user
+   * will be the member of the space.
+   */
+  public static class AcceptActionListener extends EventListener<UIManageInvitationSpaces> {
+
+    @Override
+    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
+      UIManageInvitationSpaces uiManageInvitationSpaces = event.getSource();
+      SpaceService spaceService = Utils.getSpaceService();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
+      String spaceId = ctx.getRequestParameter(OBJECTID);
+      String userId = Utils.getViewerRemoteId();
+
+      Space space = spaceService.getSpaceById(spaceId);
+      uiManageInvitationSpaces.setLoadAtEnd(false);
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+
+      if (!spaceService.isInvitedUser(space, userId)) {
+        uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+
+      spaceService.addMember(space, userId);
+      uiManageInvitationSpaces.setHasUpdatedSpace(true);
+      SpaceUtils.updateWorkingWorkSpace();
+    }
+  }
+
+  /**
+   * This action is triggered when user clicks on Deny Space Invitation. When denying, that space
+   * will remove the user from pending list.
+   */
+  public static class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
+
+    @Override
+    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
+      UIManageInvitationSpaces uiManageInvitationSpaces = event.getSource();
+      SpaceService spaceService = Utils.getSpaceService();
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIApplication uiApp = ctx.getUIApplication();
+      String spaceId = ctx.getRequestParameter(OBJECTID);
+      String userId = Utils.getViewerRemoteId();
+      Space space = spaceService.getSpaceById(spaceId);
+      uiManageInvitationSpaces.setLoadAtEnd(false);
+      
+      if (space == null) {
+        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+
+      if (!spaceService.isInvitedUser(space, userId)) {
+        uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      uiManageInvitationSpaces.setHasUpdatedSpace(true);
+      spaceService.removeInvitedUser(space, userId);
+   }
   }
   
   /**
@@ -140,6 +416,19 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
+   * Gets spaceService.
+   *
+   * @return spaceService
+   * @see SpaceService
+   */
+  private SpaceService getSpaceService() {
+    if (spaceService == null) {
+      spaceService = getApplicationComponent(SpaceService.class);
+    }
+    return spaceService;
+  }
+  
+  /**
    * Sets space list.
    *
    * @param spaces
@@ -158,66 +447,6 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
-   * This action is triggered when user clicks on Accept Space Invitation. When accepting, that user
-   * will be the member of the space.
-   */
-  public static class AcceptActionListener extends EventListener<UIManageInvitationSpaces> {
-
-    @Override
-    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
-      SpaceService spaceService = Utils.getSpaceService();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = Utils.getViewerRemoteId();
-
-      Space space = spaceService.getSpaceById(spaceId);
-     
-      if (space == null) {
-        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      if (!spaceService.isInvitedUser(space, userId)) {
-        uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      spaceService.addMember(space, userId);
-      SpaceUtils.updateWorkingWorkSpace();
-    }
-  }
-
-  /**
-   * This action is triggered when user clicks on Deny Space Invitation. When denying, that space
-   * will remove the user from pending list.
-   */
-  public static class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
-
-    @Override
-    public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
-      SpaceService spaceService = Utils.getSpaceService();
-      WebuiRequestContext ctx = event.getRequestContext();
-      UIApplication uiApp = ctx.getUIApplication();
-      String spaceId = ctx.getRequestParameter(OBJECTID);
-      String userId = Utils.getViewerRemoteId();
-      Space space = spaceService.getSpaceById(spaceId);
-      
-      if (space == null) {
-        uiApp.addMessage(new ApplicationMessage(SPACE_DELETED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      if (!spaceService.isInvitedUser(space, userId)) {
-        uiApp.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-
-      spaceService.removeInvitedUser(space, userId);
-   }
-  }
-
-  /**
    * Gets image source url.
    *
    * @param space
@@ -229,60 +458,30 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
+   * Gets remote user Id.
+   *
+   * @return remote userId
+   */
+  private String getUserId() {
+    if (userId == null) {
+      userId = Util.getPortalRequestContext().getRemoteUser();
+    }
+    return userId;
+  }
+  
+  /**
    * Gets invited space name list.
    *
    * @return invited space name list
    * @throws Exception
    */
   private List<String> getInvitedSpaceNames() throws Exception {
-    List<Space> invitedSpaces = getInvitationSpaces();
-    List<String> invitedSpaceNames = new ArrayList<String>();
-    for (Space space : invitedSpaces) {
-      invitedSpaceNames.add(space.getDisplayName());
+    List<String> spaceNames = new ArrayList<String>();
+    for (Space space : this.invitedSpacesList) {
+      spaceNames.add(space.getDisplayName());
     }
 
-    return invitedSpaceNames;
+    return spaceNames;
   }
 
-  /**
-   * Gets displayed invited space list.
-   *
-   * @param spaces
-   * @param pageIterator_
-   * @return invited space list
-   * @throws Exception
-   */
-  @SuppressWarnings("unchecked")
-  private List<Space> getDisplayInvitedSpace(UIPageIterator pageIterator_) throws Exception {
-    int currentPage = pageIterator_.getCurrentPage();
-    SpaceService spaceService = Utils.getSpaceService();
-    String userId = Utils.getViewerRemoteId();
-    String selectedChar = this.uiSpaceSearch.getSelectedChar();
-    String spaceNameSearch = this.uiSpaceSearch.getSpaceNameSearch();
-    LazyPageList<Space> pageList = null;
-    
-    if ((selectedChar == null && spaceNameSearch == null) || (selectedChar != null && selectedChar.equals(SEARCH_ALL))) {
-      pageList = new LazyPageList<Space>(spaceService.getInvitedSpacesWithListAccess(userId), SPACES_PER_PAGE);
-    } else {
-      SpaceFilter spaceFilter = null;
-      if (selectedChar != null) {
-        spaceFilter = new SpaceFilter(selectedChar.charAt(0));
-      } else {
-        spaceFilter = new SpaceFilter(spaceNameSearch);
-      }
-      pageList = new LazyPageList<Space>(spaceService.getInvitedSpacesByFilter(userId, spaceFilter), SPACES_PER_PAGE);
-    }
-    
-    pageIterator_.setPageList(pageList);
-    int availablePage = pageIterator_.getAvailablePage();
-    if (this.uiSpaceSearch.isNewSearch()) {
-      pageIterator_.setCurrentPage(FIRST_PAGE);
-    } else if (currentPage > availablePage) {
-      pageIterator_.setCurrentPage(availablePage);
-    } else {
-      pageIterator_.setCurrentPage(currentPage);
-    }
-    this.uiSpaceSearch.setNewSearch(false);
-    return pageIterator_.getCurrentPageData();
-  }
 }

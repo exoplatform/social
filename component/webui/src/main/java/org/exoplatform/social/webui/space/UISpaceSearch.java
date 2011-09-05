@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
@@ -108,6 +108,11 @@ public class UISpaceSearch extends UIForm {
   String spaceNameSearch = null;
 
   /**
+   * Number of matching spaces.
+   */
+  int spaceNum;
+  
+  /**
    * Contains all space name in individual context for auto suggesting.
    */
   List<String> spaceNameForAutoSuggest = null;
@@ -143,6 +148,24 @@ public class UISpaceSearch extends UIForm {
    */
   public void setSpaceNameSearch(String spaceNameSearch) {
     this.spaceNameSearch = spaceNameSearch;
+  }
+
+  /**
+   * Gets number of matching spaces.
+   * 
+   * @return the spaceNum
+   */
+  public int getSpaceNum() {
+    return spaceNum;
+  }
+
+  /**
+   * Sets number of matching spaces.
+   * 
+   * @param spaceNum the spaceNum to set
+   */
+  public void setSpaceNum(int spaceNum) {
+    this.spaceNum = spaceNum;
   }
 
   /**
@@ -259,7 +282,7 @@ public class UISpaceSearch extends UIForm {
   public void setSelectedChar(String selectedChar) {
     this.selectedChar = selectedChar;
   }
-
+  
   /**
    * Initializes search form fields.
    *
@@ -271,6 +294,7 @@ public class UISpaceSearch extends UIForm {
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
+    setSelectedChar(ALL);
   }
 
   /**
@@ -295,6 +319,7 @@ public class UISpaceSearch extends UIForm {
         if (searchCondition != null) {
           searchCondition = searchCondition.trim();
         }
+        
         if (charSearch != null) {
           ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
         }
@@ -337,5 +362,33 @@ public class UISpaceSearch extends UIForm {
 
   public void setNewSearch(boolean isNewSearch) {
     this.isNewSearch = isNewSearch;
+  }
+  
+  /**
+   * Gets label to display the number of matching spaces.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  protected String getLabelSpaceFound() {
+    String labelArg = "UISpaceSearch.label.SpaceFoundListingFilter"; 
+    
+    if (getSpaceNum() > 1) {
+      labelArg = "UISpaceSearch.label.SpacesFoundListingFilter";
+    }
+    
+    String searchCondition = getSelectedChar();
+    if (selectedChar == null) {
+      labelArg = "UISpaceSearch.label.SpaceFoundListingSearch";
+      if (getSpaceNum() > 1) {
+        labelArg = "UISpaceSearch.label.SpacesFoundListingSearch";
+      }
+      searchCondition = getSpaceNameSearch();
+    }
+    
+    return ResourceBundleUtil.
+    replaceArguments(WebuiRequestContext.getCurrentInstance()
+                     .getApplicationResourceBundle().getString(labelArg), new String[] {
+                 Integer.toString(getSpaceNum()), searchCondition != null ? searchCondition : " " });
   }
 }

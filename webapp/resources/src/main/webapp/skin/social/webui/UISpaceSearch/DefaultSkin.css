@@ -17,106 +17,62 @@
 
  @import url('/social-resources/skin/social/webui/UIAutoSuggestControl/DefaultSkin.css');
 
-.UISpaceSearch .LeftBoxInput {
-  background: #f3f3f3 url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/BoxInput.gif') no-repeat left top;
-  padding-left: 6px;
-  margin-bottom: 8px;
-  margin-top: 3px;
-}
 
-.UISpaceSearch .RightBoxInput {
-  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/BoxInput.gif') no-repeat right top;
-  padding-right: 6px;
-}
+.UISpaceSearch .SpaceSearchContainer {
+  background: #f8f8f8;
+   width: 100%;
+   padding: 10px 0px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #e1e1e1;
+ }
 
-.UISpaceSearch .CenterBoxInput {
-  background: #f3f3f3;
-  width: 100%;
-  padding: 10px 0px;
-}
-
-.UISpaceSearch .LeftContentInput {
+.UISpaceSearch .SpaceSearchContainer .LeftContentInput {
   float: left;
-  width: 20%;
+  width: 10%;
   text-align: right;
   line-height: 22px;
   margin-top: 8px;
+  font-weight: bold;
+  color: #4d4d4d;
 }
 
-.UISpaceSearch .CenterContentSearchInput {
-  float: left;
-  width: 60%;
+.UISpaceSearch .SpaceSearchContainer .UIAction{
+  float: right;
+  margin-right: 18px;
+}
+
+.UISpaceSearch .SpaceSearchContainer .UIAction .LightBlueStyle{
+  background: url("DefaultSkin/background/ButtonAddSpace.gif") repeat-x;
+  border: 1px solid #e1e1e1;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
   padding: 0px 10px;
 }
 
-.UISpaceSearch .RightContentInput {
-  float: left;
-  width: 20%;
-  line-height: 22px;
-}
-
-.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput {
-  background-color: #fff;
-  border:1px solid #B7B7B7;
-  float:left;
-  font-size:11px;
-  width:273px;
-  margin-top: 8px;
-}
- 
- .UISpaceSearch .CenterContentSearchInput .UIAction {
-  text-align: left;
-}
-
-.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput input {
-  border:1px solid white;
-  color:#C7C7C7;
-  float:left;
-  font-size:11px;
-  height:14px;
-  width:253px;
-}
-
-.UISpaceSearch .CenterContentSearchInput .SpaceSearchInput .SearchIcon {
-  background:url("/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/IconSearch.gif") no-repeat scroll right center white;
-  cursor:pointer;
-  float:left;
-  font-size:11px;
-  width:14px;
-}
-
-.UISpaceSearch .BoxSpaceList {
-  margin-bottom: 8px;
-}
-
-.UISpaceSearch .CenterTitleBox {
-  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') repeat-x left -52px;
-  height: 26px;
-}
-
-.UISpaceSearch .LeftTitleBox {
-  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') no-repeat left top;
+.UISpaceSearch .SpaceSearchContainer .UIAction .LightBlueStyle .AddSpaceIcon{
+  background: url("DefaultSkin/background/AddSpaceIcon.gif") no-repeat left center;
   padding-left: 15px;
+  line-height: 18px;
 }
 
-.UISpaceSearch .RightTitleBox {
-  background: url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/TitleBox.gif') no-repeat right -26px;
-  padding-right: 4px;
-  color: #fff;
-  line-height: 18px;
-  height: 26px;
-  font-weight: bold;
+.UISpaceSearch .SpaceSearchContainer  input {
+  color:#808080;
+  font-size:11px;
+  height:15px;
+  width:150px;
+  border: 1px solid white;
+}
+
+
+.UIMySpacesPortlet .UISpaceSearch .BoxSpaceList .SpaceListTitle{
+	border-bottom: none;
 }
 
 .UISpaceSearch .NormalBox .ABC a {
   margin-right: 3px;
-}
-
-.UISpaceSearch .DirectoryNormalBox {
-  background: #fbfbfb;
-  padding: 2px 6px;
-  color: #3a3a3a;
-  margin-bottom: 1px;
 }
 
 .UISpaceSearch .BoxSpaceList ul.LetterList {
@@ -127,6 +83,7 @@
   overflow: hidden;
   padding: 0;
   width: 100%;
+  padding: 2px 6px;
 }
 
 .UISpaceSearch .BoxSpaceList ul.LetterList li {
@@ -137,25 +94,70 @@
   margin: 0 3px 3px 0;
   min-width: 15px;
   padding: 0;
-  width: 3.2%;
+  width: 2.5%;
 }
 
-.UISpaceSearch .BoxSpaceList ul.LetterList li a {
-  background: #EEEEEE none repeat scroll 0 0;
-  color: inherit;
-  display: block;
-  font-size: 12px;
-  padding: 3px 5px;
-  text-align: center;
-  text-decoration: none;
+ .UISpaceSearch .BoxSpaceList ul.LetterList li a {
+  background: #f8f8f8;
+   color: inherit;
+   display: block;
+   font-size: 12px;
+   padding: 3px 5px;
+   text-align: center;
+   text-decoration: none;
+  border: 1px solid #e1e1e1;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  
 }
 
 .UISpaceSearch .BoxSpaceList ul.LetterList li a:hover {
-  background: #FFF8DC none repeat scroll 0 0;
-  color: #F57A00;
+  background: #757575;
+  color: white;
 }
 
 .UISpaceSearch .BoxSpaceList ul.LetterList li a.selected {
-  background: #AAAAAA none repeat scroll 0 0;
-  color: #FFFFFF;
+  background: #757575;
+  color: white;
+  border: 1px solid #e1e1e1;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
+
+.UISpaceSearch .MenuSpace {
+  border-bottom: 1px solid #e1e1e1;
+  margin-bottom: 4px;
+  padding: 4px 0 15px 0px;
+}
+
+.UISpaceSearch .MenuSpace .SelectedTab{
+  background: #757575;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  padding: 4px 12px;
+  margin: 0px 6px;
+}
+
+.UISpaceSearch .MenuSpace .NotSelectedTab {
+  padding: 4px 12px;
+  margin: 0px 6px;
+}
+
+.UISpaceSearch .MenuSpace a:hover{
+	background: #757575;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  padding: 4px 12px;
+  margin: 0px 6px;
+}
+
+.UISpaceSearch .MenuSpace .Line{
+  border-right: 1px solid #757575;
+}
+

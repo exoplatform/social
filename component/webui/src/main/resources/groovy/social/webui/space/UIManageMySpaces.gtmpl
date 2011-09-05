@@ -2,28 +2,26 @@
 /*
 <!--
 
-    Copyright (C) 2003-2009 eXo Platform SAS.
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
 */
 %>
 <%
   import org.exoplatform.social.webui.Utils
-  import org.exoplatform.webui.core.UIPageIterator
-  import org.exoplatform.webui.core.UIVirtualList
   import org.exoplatform.social.core.space.SpaceUtils
   import org.exoplatform.social.webui.space.UIManageMySpaces
   import org.exoplatform.social.webui.space.UISpaceSearch
@@ -31,7 +29,6 @@
 
   def uicomponentId = uicomponent.id
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
-  def labelSpaceListing = _ctx.appRes("${uicomponentId}.label.SpaceListing")
   def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
   def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.action_add_space")
@@ -45,26 +42,32 @@
   def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
   def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
-  def iterator = uicomponent.getMySpacesUIPageIterator()
-  def userSpaces = uicomponent.getUserSpaces()
   def mySpaceIdx = 0
   def hasInvited = false
   def style="display:none;"
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def userSpaces = uicomponent.getMySpacesList()
+  
+  if (userSpaces.size() == uicomponent.getMySpacesNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
+  
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
-  <div class="BoxSpaceList">
-    <div class="CenterTitleBox">
-      <div class="LeftTitleBox">
-        <div class="RightTitleBox">$labelSpaceListing</div>
-      </div>
-    </div>
+  <div class="BoxSpaceList ClearFix">
     <%if ((userSpaces.size() == 0)) {%>
-    <div class="NormalBox">
+    <div class="NoneBox">
       <div class="NotYet"><%= labelNoSpaces %></div>
     </div>
     <%}%>
     <%for (space in userSpaces) {
+        def iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
+        def iconImgSource = LinkProvider.SPACE_MANAGER_ICON
         def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
         def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
         def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
@@ -97,62 +100,81 @@
     %>
 
     <% if (mySpaceIdx % 2 == 0) { %>
-    <div class="GrayBox">
+    <div class="GrayBox ClearFix FL">
     <% } else { %>
-    <div class="NormalBox">
+    <div class="NormalBox ClearFix FL">
     <% } %>
       <!-- Leader -->
       <% if (role == 1) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
           <img alt="#" src="$imageSource" />
+          <span class="BorderTop"></span>
+          <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
-            <a href="#" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Icon IconDel"><span></span></a>
-            <% if (hasMembership) { %>
-            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:block;"><span></span></a>
-            <% } else { %>
-            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace" style="display:none;"><span></span></a>
-            <% } %>
-            <a href="<%=editSpaceLink%>" title="<%= labelActionEditSpace %>" class="Icon IconEditSpace"><span></span></a>
-            <div class="Text"><a href="<%= spaceUrl %>"><%= space.displayName %></a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
-            <div class="ClearBoth"><span></span></div>
+            <a class="Text" href="<%= spaceUrl %>"><%= space.displayName %></a>
+            <img title="$iconImgLabel" src="$iconImgSource" />
           </div>
+          <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">
             $space.description<br/>
-            <span class="SpaceStatus">$status</span>
           </div>
+			  <ul class="ActionContent ClearFix">
+			    <li class="FL"><a href="<%= editSpaceLink %>" title="<%= labelActionEditSpace %>" class="Action">$labelActionEditSpace</a></li>
+				<% if (hasMembership) { %>
+					<li class="FL Line">&nbsp;</li>
+					<li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Action" style="display:block;">$labelActionLeaveSpace</a></li>
+				<% } else { %>
+					<li class="FL Line">&nbsp;</li>
+					<li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Action" style="display:none;">$labelActionLeaveSpace</a></li>
+				<% } %>
+					<li class="FL Line">&nbsp;</li>
+					<li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Action">$labelActionDeleteSpace</a></li>
+			  </ul>
         </div>
-        <div class="ClearBoth"><span></span></div>
       </div>
       <% }%>
       <!-- Member -->
-      <%if (role == 2) {%>
+      <%if (role == 2) {
+        iconImgSource = LinkProvider.SPACE_MEMBER_ICON
+      %>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
           <img alt="#" src="$imageSource" />
+          <span class="BorderTop"></span>
+          <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
-            <a href="#" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Icon IconLeaveSpace"><span></span></a>
-            <div class="Text"><a href="<%= spaceUrl %>">$space.displayName</a> <span class="MembersCount">- $fieldLabelMembers <%= SpaceUtils.countMembers(space) %> </div>
-            <div class="ClearBoth"><span></span></div>
+            <a class="Text" href="<%= spaceUrl %>">$space.displayName</a> 
+            <img title="$iconImgLabel" src="$iconImgSource" />
           </div>
+          <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">
             $space.description<br/>
-            <span class="SpaceStatus">$status</span>
           </div>
+		      <ul class="ActionContent ClearFix">
+			      <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Action">$labelActionLeaveSpace</a></li>
+		      </ul>
         </div>
-      <div class="ClearBoth"><span></span></div>
     </div>
     <%}%>
   <%}%>
-    <div>
-  <%
-    if (iterator.getAvailablePage() > 1) {
-      _ctx.renderUIComponent(iterator)
-    }
-  %>
-    </div>
     
   </div>
+  <%
+   if(uicomponent.isEnableLoadNext()) {
+  %>
+      <div id="LoadMoreMySpacesButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+        $labelShowMoreSpace
+      </div>
+    <%
+   } else {
+   %>
+        <script type="text/javascript">
+          try{document.getElementById("LoadMoreMySpacesButton").style.display = "none";}catch(e){};
+        </script>
+    <%
+    }
+    %>
 </div>

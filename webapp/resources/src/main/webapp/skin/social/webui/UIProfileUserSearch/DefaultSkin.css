@@ -68,11 +68,7 @@ a:ACTIVE {
 }
 
 .UIProfileUserSearch .SearchSpaces .SearchIcon {
-  width: 14px;
-  float: left;
   background: white url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchIcon.gif" ) no-repeat right center;
-  font-size: 11px;
-  cursor: pointer;
 }
 
 .UIProfileUserSearch .SearchSpaces .FilterInput {
