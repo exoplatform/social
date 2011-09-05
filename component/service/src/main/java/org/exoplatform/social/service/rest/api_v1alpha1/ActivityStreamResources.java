@@ -15,7 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.service.rest.api;
+package org.exoplatform.social.service.rest.api_v1alpha1;
+
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -27,18 +38,9 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.Activity;
-import org.exoplatform.social.service.rest.api.models.ActivityList;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.List;
+import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.Activity;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.ActivityList;
 
 /**
  * Activity Stream Resources end point.
@@ -46,7 +48,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-@Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/activity_stream")
+@Path("api/social/" + VersionResources.V1_ALPHA1 + "/{portalContainerName}/activity_stream")
 public class ActivityStreamResources implements ResourceContainer {
 
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};

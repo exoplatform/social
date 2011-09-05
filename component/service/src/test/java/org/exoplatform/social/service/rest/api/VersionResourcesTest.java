@@ -19,7 +19,7 @@ package org.exoplatform.social.service.rest.api;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.social.service.rest.api.models.Versions;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.Versions;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 /**
@@ -63,7 +63,7 @@ public class VersionResourcesTest extends AbstractResourceTest {
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
-    final String expectedResponse = "{\"version\": \"v1-alpha1\"}";
+    final String expectedResponse = "{\"version\": \"v1-alpha2\"}";
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 
@@ -106,7 +106,7 @@ public class VersionResourcesTest extends AbstractResourceTest {
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
-    final String expectedResponse = "{\"versions\": [\"v1-alpha1\"]}";
+    final String expectedResponse = "{\"versions\": [\"v1-alpha2\", \"v1-alpha1\"]}";
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 
@@ -125,7 +125,7 @@ public class VersionResourcesTest extends AbstractResourceTest {
     assertNotNull("entity must not be null", entity);
 
     final String expectedResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-            "<versions><version>v1-alpha1</version></versions>";
+            "<versions><version>v1-alpha2</version><version>v1-alpha1</version></versions>";
     assertXmlStringEqualsEntity(expectedResponse, entity);
   }
 

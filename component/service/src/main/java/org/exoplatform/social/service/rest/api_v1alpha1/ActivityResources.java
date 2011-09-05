@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest.api;
+package org.exoplatform.social.service.rest.api_v1alpha1;
 
 import java.util.HashMap;
 
@@ -44,9 +44,10 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.Activity;
-import org.exoplatform.social.service.rest.api.models.ActivityStream;
-import org.exoplatform.social.service.rest.api.models.Comment;
+import org.exoplatform.social.service.rest.api.VersionResources;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.Activity;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.ActivityStream;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.Comment;
 
 
 /**
@@ -55,7 +56,7 @@ import org.exoplatform.social.service.rest.api.models.Comment;
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since Jun 15, 2011
  */
-@Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/")
+@Path("api/social/" + VersionResources.V1_ALPHA1+ "/{portalContainerName}/")
 public class ActivityResources implements ResourceContainer {
 
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
@@ -100,7 +101,7 @@ public class ActivityResources implements ResourceContainer {
         
               //
               if (isPassed(showPosterIdentity)) {
-                model.setPosterIdentity(new org.exoplatform.social.service.rest.api.models.Identity(
+                model.setPosterIdentity(new org.exoplatform.social.service.rest.api_v1alpha1.models.Identity(
                     identityManager.getIdentity(activity.getUserId(), false)));
               }
         

@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.service.rest.api.models;
+package org.exoplatform.social.service.rest.api_v1alpha1.models;
 
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.Util;

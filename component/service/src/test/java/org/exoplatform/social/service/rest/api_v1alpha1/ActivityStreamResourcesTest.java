@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.service.rest.api;
+package org.exoplatform.social.service.rest.api_v1alpha1;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -28,7 +28,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.api.models.ActivityList;
+import org.exoplatform.social.service.rest.api_v1alpha1.models.ActivityList;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 import javax.ws.rs.core.Response;
@@ -59,7 +59,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   //
   private Space space;
-  
+
   /**
    * Adds {@link ActivityStreamResources}.
    *
@@ -140,7 +140,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(10, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + johnIdentity.getId() + "/user/default.json", "", null, null);
     assertEquals(401, response.getStatus());
@@ -152,7 +152,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    */
   public void testgetActivityStreamDefaultLimit() throws Exception {
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response = service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/user/default.json?limit=4", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -165,7 +165,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(4, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + johnIdentity.getId() + "/user/default.json?limit=4", "", null, null);
     assertEquals(401, response.getStatus());
@@ -178,7 +178,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamDefaultData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/user/default.json?limit=3", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -195,7 +195,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("title 7", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + johnIdentity.getId() + "/user/default.json?limit=3", "", null, null);
     assertEquals(401, response.getStatus());
@@ -208,9 +208,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamNewerNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 4);
-    
+
     ContainerResponse response = service(
         "GET",
         RESOURCE_URL + "/" + rootIdentity.getId() +  "/user/newer/" + activites.get(3).getId() + ".json", "", null,
@@ -226,7 +226,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(3, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -242,7 +242,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamNewerLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 6);
 
     ContainerResponse response = service(
@@ -260,7 +260,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -276,7 +276,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamNewerData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 6);
 
     ContainerResponse response = service(
@@ -297,7 +297,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("title 7", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -313,7 +313,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamOlderNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 4);
 
     ContainerResponse response = service(
@@ -330,7 +330,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(6, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/user/older/" + activites.get(3).getId() + ".json", "",
@@ -345,7 +345,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamOlderLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 6);
 
     ContainerResponse response = service(
@@ -362,7 +362,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/user/older/" + activites.get(5).getId() + ".json?limit=2",
@@ -377,7 +377,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamOlderData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 6);
 
     ContainerResponse response = service(
@@ -397,7 +397,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("title 1", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/user/older/" + activites.get(5).getId() + ".json?limit=3",
@@ -413,9 +413,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(1);
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/connections/default.json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -427,9 +427,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(1, got.getActivities().size());
-    
+
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/connections/default.json", "", null, null);
     assertEquals(401, response.getStatus());
@@ -443,9 +443,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(10);
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/default.json?limit=2", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -459,7 +459,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/default.json?limit=2", "", null, null);
     assertEquals(401, response.getStatus());
@@ -475,7 +475,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     startSessionAs(maryIdentity.getRemoteId());
 
     this.maryPostActivityToRootWall(10);
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/connections/default.json?limit=3", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -487,13 +487,13 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(3, got.getActivities().size());
-    
+
     assertEquals("mary posts activiy " + 9 + " to root'wall", got.getActivities().get(0).getTitle());
     assertEquals("mary posts activiy " + 8 + " to root'wall", got.getActivities().get(1).getTitle());
     assertEquals("mary posts activiy " + 7 + " to root'wall", got.getActivities().get(2).getTitle());
-    
+
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/connections/default.json?limit=3", "", null, null);
     assertEquals(401, response.getStatus());
@@ -507,9 +507,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(3);
-    
+
     List<ExoSocialActivity> activities =
         activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 3);
 
@@ -525,9 +525,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(2, got.getActivities().size());
-    
+
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/newer/" + activities.get(2).getId() + ".json",
@@ -543,9 +543,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(4);
-    
+
     List<ExoSocialActivity> activities =
         activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 4);
 
@@ -564,7 +564,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -581,9 +581,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(4);
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 4);
 
     ContainerResponse response = service(
@@ -604,7 +604,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("mary posts activiy " + 1 + " to root'wall", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -621,9 +621,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(3);
-    
+
     List<ExoSocialActivity> activities =
         activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -641,7 +641,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(1, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/older/" + activities.get(1).getId() + ".json",
@@ -657,9 +657,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(3);
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -678,7 +678,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(1, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -695,9 +695,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(5);
-    
+
     List<ExoSocialActivity> activities =
         activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -716,7 +716,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(3, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -732,7 +732,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesDefaultNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/spaces/default.json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -746,7 +746,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(7, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/spaces/default.json", "", null, null);
     assertEquals(401, response.getStatus());
@@ -759,7 +759,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesDefaultLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/spaces/default.json?limit=2", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -773,7 +773,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/spaces/default.json?limit=2", "", null, null);
     assertEquals(401, response.getStatus());
@@ -786,7 +786,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesDefaultData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/spaces/default.json?limit=3", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -803,7 +803,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("space title 4", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/spaces/default.json?limit=3", "", null, null);
     assertEquals(401, response.getStatus());
@@ -816,7 +816,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesNewerNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 3);
 
@@ -835,7 +835,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET",
             RESOURCE_URL + "/" + rootIdentity.getId() +  "/spaces/newer/" + activites.get(2).getId() + ".json", "",
@@ -850,7 +850,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesNewerLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 4);
 
@@ -869,7 +869,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -885,7 +885,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesNewerData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 4);
 
@@ -907,7 +907,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("space title 4", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -923,7 +923,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesOlderNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -941,7 +941,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(5, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/spaces/older/" + activites.get(1).getId() + ".json",
@@ -956,7 +956,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesOlderLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -975,7 +975,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -991,7 +991,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamSpacesOlderData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites =
         activityManager.getActivitiesOfUserSpacesWithListAccess(rootIdentity).loadAsList(0, 2);
 
@@ -1013,7 +1013,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("space title 2", got.getActivities().get(2).getTitle());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -1029,7 +1029,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedDefaultNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/feed/default.json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -1043,7 +1043,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(7, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/feed/default.json", "", null, null);
     assertEquals(401, response.getStatus());
@@ -1056,7 +1056,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedDefaultLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/default.json?limit=12", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -1070,7 +1070,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(7, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/default.json?limit=12", "", null, null);
     assertEquals(401, response.getStatus());
@@ -1083,7 +1083,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedDefaultData() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/feed/default.json?limit=8", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -1104,7 +1104,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals("space title 0", got.getActivities().get(6).getTitle());
 
     endSession();
-    
+
     response =
       service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/feed/default.json?limit=8", "", null, null);
     assertEquals(401, response.getStatus());
@@ -1117,7 +1117,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedNewerNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 3);
 
     ContainerResponse response = service(
@@ -1135,7 +1135,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET",
@@ -1151,7 +1151,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedNewerLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 4);
 
     ContainerResponse response = service(
@@ -1168,7 +1168,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(2, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/newer/" + activites.get(3).getId() + ".json?limit=2",
@@ -1184,9 +1184,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(10);
-    
+
     List<ExoSocialActivity> activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
 
     ContainerResponse response = service(
@@ -1201,19 +1201,19 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(8, got.getActivities().size());
-    
+
     for (int i = 9, j = 0; i >= 2; i --, j ++) {
       assertEquals("mary posts activiy " + i + " to root'wall", got.getActivities().get(j).getTitle());
     }
-    
+
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/newer/" + activities.get(9).getId() + ".json?limit=8",
         "", null, null);
     assertEquals(401, response.getStatus());
-    
+
   }
 
   /**
@@ -1223,7 +1223,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedOlderNoLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 2);
 
     ContainerResponse response = service(
@@ -1240,7 +1240,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     assertEquals(5, got.getActivities().size());
 
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/older/" + activites.get(1).getId() + ".json", "",
@@ -1255,7 +1255,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   public void testgetActivityStreamFeedOlderLimit() throws Exception {
 
     startSessionAs(rootIdentity.getRemoteId());
-    
+
     List<ExoSocialActivity> activites = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 2);
 
     ContainerResponse response = service(
@@ -1270,9 +1270,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(2, got.getActivities().size());
-    
+
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/older/" + activites.get(1).getId() + ".json?limit=2",
@@ -1288,9 +1288,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
-    
+
     this.maryPostActivityToRootWall(10);
-    
+
     List<ExoSocialActivity> activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
 
     ContainerResponse response = service(
@@ -1309,9 +1309,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     for (int i = 6, j = 0; i >= 0; i --, j ++) {
       assertEquals("space title" + " " + i, got.getActivities().get(j).getTitle());
     }
-    
+
     endSession();
-    
+
     response =
       service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/older/" + activities.get(9).getId() + ".json?limit=8",
@@ -1401,10 +1401,10 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       activityManager.saveComment(activity, comment2);
     }
   }
-  
+
   /**
    * Mary posts activities to Root's wall.
-   * 
+   *
    * @param number
    * @since 1.2.2
    */

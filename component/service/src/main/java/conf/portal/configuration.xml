@@ -48,19 +48,23 @@
   </component>
 <!-- REST service -->
 
-<!-- Social Rest API resources -->
+<!-- Social Rest API resources for latest -->
   <component>
     <type>org.exoplatform.social.service.rest.api.VersionResources</type>
   </component>
+<!-- Social Rest API resources for latest -->
+
+
+<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
   <component>
-    <type>org.exoplatform.social.service.rest.api.ActivityResources</type>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityResources</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.api.ActivityStreamResources</type>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityStreamResources</type>
   </component>
   <component>
-    <type>org.exoplatform.social.service.rest.api.IdentityResources</type>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.IdentityResources</type>
   </component>
-<!-- Social Rest API resources -->
+<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
 
 </configuration>

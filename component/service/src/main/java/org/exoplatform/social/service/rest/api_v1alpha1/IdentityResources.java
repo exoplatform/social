@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest.api;
+package org.exoplatform.social.service.rest.api_v1alpha1;
 
 import java.util.HashMap;
 import javax.ws.rs.GET;
@@ -33,8 +33,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.service.rest.api.VersionResources;
 
 
 /**
@@ -43,7 +43,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @since Jun 29, 2011
  */
-@Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/identity/")
+@Path("api/social/" + VersionResources.V1_ALPHA1+ "/{portalContainerName}/identity/")
 public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   private IdentityManager identityManager;

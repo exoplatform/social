@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest.api.models;
+package org.exoplatform.social.service.rest.api_v1alpha1.models;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.Util;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
