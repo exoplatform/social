@@ -41,7 +41,7 @@ import java.util.Map;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityStreamResourcesTest extends AbstractResourceTest {
+public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
 
   private final String RESOURCE_URL = "/api/social/v1-alpha1/portal/activity_stream";
 

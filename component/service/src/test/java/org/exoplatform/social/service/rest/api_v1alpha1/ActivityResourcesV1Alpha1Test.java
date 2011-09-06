@@ -55,7 +55,7 @@ import org.json.JSONWriter;
  * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @since Jun 16, 2011
  */
-public class ActivityResourcesTest extends AbstractResourceTest {
+public class ActivityResourcesV1Alpha1Test extends AbstractResourceTest {
 
   private final String RESOURCE_URL = "/api/social/v1-alpha1/portal/activity";
 
