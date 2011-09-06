@@ -172,8 +172,8 @@ public class UISpaceAddForm extends UIFormTabPane {
       uiPopup.setShow(false);
       Utils.updateWorkingWorkSpace();
       // TODO Re-check and re-confirm that navigation is ok then re-direct into Home of space.
-      JavascriptManager jsManager = ctx.getJavascriptManager();
-      jsManager.addJavascript("window.location.href='" + Utils.getURI("spaces") + "'");
+      //JavascriptManager jsManager = ctx.getJavascriptManager();
+      //jsManager.addJavascript("window.location.href='" + Utils.getURI("spaces") + "'");
     }
   }
 
