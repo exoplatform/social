@@ -27,5 +27,6 @@
   <import>war:/conf/social-extension/portal/portal-configuration.xml</import>
   <import>war:/conf/social-extension/social/social-configuration.xml</import>
   <import>war:/conf/social-extension/social/component-plugins-configuration.xml</import>
+  <import>war:/conf/social-extension/social/cache-configuration.xml</import>
 
 </configuration>

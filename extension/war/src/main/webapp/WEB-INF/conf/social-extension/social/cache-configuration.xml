@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2010 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+
+<configuration
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.cache.CacheService</target-component>
+    <component-plugin>
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description></description>
+      <init-params>
+
+        <!-- Identities -->
+        <object-param>
+          <name>IdentityCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>IdentityCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.IdentityCache.Capacity:200}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.IdentityCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>IdentityIndexCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>IdentityIndexCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.IdentityIndexCache.Capacity:300}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.IdentityIndexCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>ProfileCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>ProfileCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.ProfileCache.Capacity:300}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.ProfileCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>IdentitiesCountCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>IdentitiesCountCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.IdentitiesCountCache.Capacity:2000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.IdentitiesCountCache.TimeToLive:86400}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>IdentitiesCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>IdentitiesCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.IdentitiesCache.Capacity:2000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.IdentitiesCache.TimeToLive:86400}</long></field>
+          </object>
+        </object-param>
+
+        <!-- Relationships -->
+        <object-param>
+          <name>RelationshipCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>RelationshipCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.RelationshipCache.Capacity:10000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.RelationshipCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>RelationshipFromIdentityCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>RelationshipFromIdentityCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.RelationshipFromIdentityCache.Capacity:10000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.RelationshipFromIdentityCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>RelationshipsCountCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>RelationshipsCountCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.RelationshipsCountCache.Capacity:800}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.RelationshipsCountCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>RelationshipsCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>RelationshipsCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.RelationshipsCache.Capacity:800}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.RelationshipsCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+
+        <!-- Activities -->
+        <object-param>
+          <name>ActivityCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>ActivityCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.ActivityCache.Capacity:6000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.ActivityCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>ActivitiesCountCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>ActivitiesCountCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.ActivitiesCountCache.Capacity:4000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.ActivitiesCountCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>ActivitiesCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>ActivitiesCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.ActivitiesCache.Capacity:4000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.ActivitiesCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+
+        <!-- Spaces -->
+        <object-param>
+          <name>SpaceCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SpaceCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SpaceCache.Capacity:100}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SpaceCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>SpaceRefCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SpaceRefCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SpaceRefCache.Capacity:400}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SpaceRefCache.TimeToLive:-1}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>SpacesCountCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SpacesCountCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SpacesCountCache.Capacity:2000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SpacesCountCache.TimeToLive:86400}</long></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>SpacesCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SpacesCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SpacesCache.Capacity:2000}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SpacesCache.TimeToLive:86400}</long></field>
+          </object>
+        </object-param>
+
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+</configuration>
