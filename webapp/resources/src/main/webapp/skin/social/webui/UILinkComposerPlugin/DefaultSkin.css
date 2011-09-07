@@ -139,8 +139,3 @@
   margin-left: 10px; /* orientation=rt */
   width: 110px;
 }
-
-.LinkShare .Content {
-  float: left; /* orientation=lt */
-  float: right; /* orientation=rt */
-}

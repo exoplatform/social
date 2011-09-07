@@ -173,7 +173,7 @@
           if (linkImage.equals("")) {
             linkClass = "";
           } else {
-            link = "<img width=\"150px\" title=\"$linkTitle\" src=\"$linkImage\" />";
+            link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" />";
           }
         %>
       <p class="Content">$linkComment</p>
