@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -84,6 +85,13 @@ public class UISpaceSetting extends UIContainer {
     UISpacePermission uiSpacePermission = getChild(UITabPane.class).getChild(UISpacePermission.class);
     uiSpacePermission.setValue(space);
     this.space = space;
+    
+    PortalRequestContext pContext = Util.getPortalRequestContext();
+    UISpaceNavigationManagement uiSpaceNavigation = getChild(UITabPane.class).getChild(UISpaceNavigationManagement.class);
+    uiSpaceNavigation.reloadTreeData();
+    UISpaceSetting uiSpaceSetting = (UISpaceSetting)getChild(UITabPane.class).getParent();
+    uiSpaceNavigation.setSpace(uiSpaceSetting.getSpace());
+    pContext.addUIComponentToUpdateByAjax(uiSpaceNavigation);
   }
 
   /**
