@@ -41,6 +41,8 @@ public class LinkProvider {
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript";
   public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
   public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  public static final String HAS_CONNECTION_ICON = RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/StatusIcon.png";
+  public static final String WAITING_CONFIRMATION_ICON = RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/WaittingConfirm.png";
   public static final String SPACE_MANAGER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Manager.png";
   public static final String SPACE_MEMBER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
   public static final String SPACE_WAITING_CONFIRM_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
@@ -158,7 +160,7 @@ public class LinkProvider {
    * @return
    */
   public static String getUserConnectionsUri(final String remoteId) {
-    return getBaseUri(null, null) + "/connections/myConnections" + ROUTE_DELIMITER + remoteId;
+    return getBaseUri(null, null) + "/connections/all-people" + ROUTE_DELIMITER + remoteId;
   }
 
   /**

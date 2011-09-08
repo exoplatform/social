@@ -1,6 +1,27 @@
 <%
+/*
+<!--
+
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.webui.core.UIVirtualList;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.social.core.identity.model.Profile;
@@ -10,79 +31,104 @@
   import org.exoplatform.social.webui.Utils;
 
   def isEditable = uicomponent.isEditable();
-  def myRelation = uicomponent.getMyRelation();
   def currIdentity = Utils.getOwnerIdentity(true);
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-  UIPageIterator iteratorContact = uicomponent.getUIPageIteratorContact();
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
+  def deleteLabel = _ctx.appRes(uicomponent.getId() + ".label.Delete")
+      
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def myRelation = uicomponent.getPeopleList();
+
+  if (myRelation.size() == uicomponent.getPeopleNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
 %>
-<h5 class="CommonTitleBar">
- <% if (isOwner) {%>
-	<%=_ctx.appRes(uicomponent.id + ".label.MyRelationsList")%>
- <%} else {
-	def userRelationList = _ctx.appRes(uicomponent.id + ".label.UserRelationList");
-	userRelationList = userRelationList.replace("{0}", currIdentity.profile.fullName);
- %>
-  <%= userRelationList %>
 
- <%}%>
-
-</h5>
-<div class="UIMyRelations UITabPane ContainerSpace" id="$uicomponent.id">
+<div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
-       <div class="UISocTitleBar">
-            <h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
-      </div>
-      <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
-        <div class="ContentSpace">
+        <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
+
+        <div class="NoneContentSpace">
             <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
             <% def peopleURL = Utils.getURI("people") %>
             </p>
-        <% if (isOwner) {%>
-        <div class="UIAction">
-          <a href="<%=peopleURL%>" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%></a>
-        </div>
-        
-         <% } %>
          </div>
       <%}%>
-
-      <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
-
-      <%  for(id in myRelation) {
+      
+        <%if ((myRelation != null) && (myRelation.size() > 0)) {%>
+        <div class="ClearFix">
+        <%  for(id in myRelation) {
             profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
             fullName = id.profile.fullName;
             def actionLink = uicomponent.event("Remove",id.getId());
             position = id.profile.position;
             relationIdx += 1;
             if (!position) position = "";
-
+            def email="";
             String imageSource = id.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
             if (relationIdx % 2 == 0) { %>
           <div class="ContentSpaceGray ClearFix">
          <% } else {%>
-          <div class="ContentSpace ClearFix">
-       <% }%>
-		  <img class="ImgAvatar" src="$imageSource" alt="#"/>
-		  <div class="CommunityMane ClearFix">
-			  <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-			   <% if (isEditable) {%>
-						 <a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
-			   <% } %>
-		  </div>
-       <% if(position.length() > 0) { %>
-        <div class="CommunityContent">
-          <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-        </div>
-       <% } %>
-      </div>
-    <%  }
-      }
-      if (iteratorContact.getAvailablePage() > 1) {
-        uicomponent.renderUIComponent(iteratorContact);
-      }
-     %>
+          <div class="ContentSpace ClearFix"><% }%>
+            <a class="AvatarUser">
+              <img title="${fullName}" src="$imageSource" alt="#"/>
+              <span class="BorderTop"></span>
+              <span class="BorderBottom"></span>
+            </a>
+            <div class="CommunityMane">
+              <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
+              <img src="$LinkProvider.HAS_CONNECTION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
+              <%if ((position.length() + email.length()) == 0 ) {%>
+                  <span class="NonePositionAndEmail"></span>
+                <% } else {%>
+	                <% if(position.length() > 0) { %>
+	                <div class="Position">
+	                  ${position}
+	                </div>
+	                <%  } else {%>
+	                <span class="NonePosition"></span>
+	                <%  } %>
+	                <% if(email.length() > 0) { %>
+	                <div class="Email">
+	                  ${email}
+	                </div>
+	                <%  } else {%>
+	                <span class="NoneEmail"></span>
+	                <%  } %>
+                <% } %>
+
+			<% if (isEditable) {%>
+			   <ul class="InviteTitle">
+		         <li class="FL"><a href="javascript:void(0)" onclick="$actionLink" title="$deleteLabel" class="Delete">$deleteLabel</a></li>
+		       </ul>
+		    <% } %>
+			   
+	         </div>
+	   </div>
+    <%  } %>
+    
     </div>
+     <% } %>
+  
+   <% if(uicomponent.isEnableLoadNext()) { %>
+      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+      </div>
+  <% } else { %>
+      <script type="text/javascript">
+        var loadMoreButton = document.getElementById("LoadMoreButton");
+        if (loadMoreButton) {
+          try {
+            loadMoreButton.style.display = "none";
+          }catch(e){};
+        }	          
+      </script>
+  <%  }	%>
+  
+</div>

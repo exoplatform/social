@@ -589,6 +589,29 @@
   </portlet>
 
   <portlet>
+    <description xml:lang="EN">All People Portlet</description>
+    <portlet-name>AllPeoplePortlet</portlet-name>
+    <display-name xml:lang="EN">All People Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/AllPeoplePortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>help</portlet-mode>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.AllPeoplePortlet</resource-bundle>
+    <portlet-info>
+      <title>All People Portlet</title>
+      <short-title>All People Portlet</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
+  
+  <portlet>
     <description xml:lang="EN">Connections Portlet</description>
     <portlet-name>ConnectionsPortlet</portlet-name>
     <display-name xml:lang="EN">Connections Portlet</display-name>

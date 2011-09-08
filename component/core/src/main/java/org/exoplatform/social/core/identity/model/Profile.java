@@ -333,6 +333,15 @@ public class Profile {
   }
 
   /**
+   * Gets email address of this profile.
+   * 
+   * @return email in String format
+   */
+  public final String getEmail() {
+	return (String)getProperty(EMAIL);
+  }
+  
+  /**
    * Add or modify properties of the profile
    * 
    * @param props

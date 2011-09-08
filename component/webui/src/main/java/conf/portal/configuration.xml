@@ -67,6 +67,7 @@
           <value>locale.social.webui.composer.UIComposer</value>
           <value>locale.social.webui.connections.UIInvitations</value>
           <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIAllPeople</value>
           <value>locale.social.webui.connections.UIPendingRelation</value>
           <value>locale.social.webui.profile.UIBasicInfoSection</value>
           <value>locale.social.webui.profile.UIContactSection</value>
@@ -107,6 +108,7 @@
           <value>locale.social.webui.composer.UIComposer</value>
           <value>locale.social.webui.connections.UIInvitations</value>
           <value>locale.social.webui.connections.UIMyConnections</value>
+          <value>locale.social.webui.connections.UIAllPeople</value>
           <value>locale.social.webui.connections.UIPendingRelation</value>
           <value>locale.social.webui.profile.UIBasicInfoSection</value>
           <value>locale.social.webui.profile.UIContactSection</value>

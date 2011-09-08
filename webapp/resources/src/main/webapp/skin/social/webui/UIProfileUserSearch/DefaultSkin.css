@@ -21,16 +21,6 @@ a:ACTIVE {
 	outline: none;
 }
 
-.UIProfileUserSearch .SearchSpaces {
-  background: url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchSpaces.gif" ) no-repeat left top;
-  padding-left: 7px;
-}
-
-.UIProfileUserSearch .SearchSpacesR {
-  background: #f3f3f3 url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchSpacesR.gif" ) no-repeat right top;
-  padding: 10px 7px 8px 7px;
-}
-
 .UIProfileUserSearch .SearchSpaces .Lable {
   float: left;
   padding: 4px 4px 4px 16px;
@@ -46,25 +36,16 @@ a:ACTIVE {
   color: black;
 }
 
-.UIProfileUserSearch .SearchSpaces .Search {
-  width: 275px;
-  float: left;
-  border: 1px solid #b7b7b7;
-  font-size: 11px;
-  background: white;
-}
-
 .UIProfileUserSearch .SearchSpaces .Filter {
   padding-top: 4px;
 }
 
-.UIProfileUserSearch .SearchSpaces .Search input {
+.UIProfileUserSearch .SearchSpaces input {
   width: 255px;
   height: 14px;
   font-size:11px;
   float: left;
   color: #C7C7C7;
-  border: 1px solid white;
 }
 
 .UIProfileUserSearch .SearchSpaces .SearchIcon {
@@ -89,14 +70,14 @@ a:ACTIVE {
   margin: 0px;
 }
 
-.UIProfileUserSearch .SearchSpaces .FilterGender select{
+.UIProfileUserSearch .SearchSpaces .FilterGender select {
   height: 20px;
   width: 72px;
   font-size:11px;
   float: left;
 }
 
-.UIProfileUserSearch .SearchSpaces .Filter .Input{
+.UIProfileUserSearch .SearchSpaces .Filter .Input {
   width: 82px;
   float: left;
   border: 1px solid #b7b7b7;
@@ -104,20 +85,20 @@ a:ACTIVE {
   font-size: 11px;
 }
 
-.UIProfileUserSearch .SearchSpaces .AdvanceSearchLable{
+.UIProfileUserSearch .SearchSpaces .AdvanceSearchLable {
   float: left;
   padding: 4px;
   cursor: pointer;
 }
 
-.UIProfileUserSearch .SearchSpaces .Select{
+.UIProfileUserSearch .SearchSpaces .Select {
   float: left;
   width: 82px;
   border: 1px solid #b7b7b7;
   font-size: 11px;
 }
 
-.UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable{
+.UIProfileUserSearch .SearchSpaces .HideAdvanceSearchLable {
   line-height: 18px;
   cursor: pointer;
   float: left;
@@ -128,63 +109,61 @@ a:ACTIVE {
 .UIProfileUserSearch .SearchSpacesBG {
   background: #f3f3f3;
   padding: 10px 14px 8px 14px;
-  border-radius: 7px 7px 0px 0px;
-  -moz-border-radius: 7px 7px 0px 0px;
-  -webkit-border-radius: 7px 7px 0px 0px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border: 1px solid #e1e1e1;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .Lable {
   float: left;
-  padding: 4px 4px 4px 16px;
-  width: 100px;
+  padding: 4px 4px 4px px;
+  width: 114px;
   text-align: right;
-}
-
-.UIProfileUserSearch .SearchSpacesBG .Search {
-  width: 275px;
-  float: left;
-  border: 1px solid #b7b7b7;
-  font-size: 11px;
-  background: white;
+  font-weight: bold;
+  color: #4d4d4d;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .Filter {
   padding-top: 4px;
+  display: block;
 }
 
-.UIProfileUserSearch .SearchSpacesBG .Search input {
-  width: 250px;
-  height: 14px;
-  font-size:11px;
-  color: #C7C7C7;
-  border: 1px solid white;
+.UIProfileUserSearch .SearchSpacesBG .HideFilter {
+  display: none;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .SearchIcon {
-  padding: 0px 7px;
+  padding: 1px 7px;
   background: white url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchIcon.gif" ) no-repeat right center;
-  font-size: 11px;
-  cursor: pointer;
+}
+
+.UIProfileUserSearch .SearchSpacesBG .SearchContent {
+  float: left; 
+  border: 1px solid rgb(161, 161, 161); 
+  background: none repeat scroll 0% 0% white; 
+  height: 19px; 
+  width: 235px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
 
 .UIProfileUserSearch .SearchSpacesBG input {
-  height: 16px;
-  width: 99px;
+  height: 15px;
+  width: 215px;
   font-size:11px;
-  color: #C7C7C7;
-  border: 1px solid #b7b7b7;
-  margin-right: 2px;
-  float: left;
+  border: 1px solid white;
 }
 
-.UIProfileUserSearch .SearchSpacesBG select{
+.UIProfileUserSearch .SearchSpacesBG select {
   height: 20px;
   width: 72px;
   font-size:11px;
   float: left;
 }
 
-.UIProfileUserSearch .SearchSpacesBG .Filter .Input{
+.UIProfileUserSearch .SearchSpacesBG .Filter .Input {
   width: 82px;
   float: left;
   border: 1px solid #b7b7b7;
@@ -192,28 +171,42 @@ a:ACTIVE {
   font-size: 11px;
 }
 
-.UIProfileUserSearch .SearchSpacesBG .AdvanceSearchLable{
+.UIProfileUserSearch .SearchSpacesBG .AdvanceSearchLableBlock {
+  padding: 4px 0px 4px 16px;
+  text-decoration: underline;
+  display: block;
   float: left;
-  padding: 4px;
-  cursor: pointer;
 }
 
-.UIProfileUserSearch .SearchSpacesBG .Select{
+.UIProfileUserSearch .SearchSpacesBG .AdvanceSearchLableNone {
+  padding: 4px 0px 4px 16px;
+  text-decoration: underline;
+  display: none;
+  float: left;
+}
+
+.UIProfileUserSearch .SearchSpacesBG .Select {
   float: left;
   width: 82px;
   border: 1px solid #b7b7b7;
   font-size: 11px;
 }
 
-.UIProfileUserSearch .SearchSpacesBG .HideAdvanceSearchLable{
-  line-height: 18px;
-  cursor: pointer;
+.UIProfileUserSearch .SearchSpacesBG .HideAdvanceSearchLableBlock {
+  padding: 4px 0px 4px 16px;
+  text-decoration: underline;
+  display: block;
   float: left;
-  padding: 4px;
+}
+
+.UIProfileUserSearch .SearchSpacesBG .HideAdvanceSearchLableNone {
+  padding: 4px 0px 4px 16px;
+  text-decoration: underline;
+  display: none;
+  float: left;
 }
 
 .UIProfileUserSearch .DirectorySpaces {
-  background: #fbfbfb;
   padding: 2px 0px 3px 6px;
 }
 
@@ -230,32 +223,55 @@ a:ACTIVE {
   list-style-image: none;
   list-style-position: outside;
   list-style-type: none;
-  margin: 0 2px 3px 0;
+  margin: 0 4px 3px 0;
   min-width: 15px;
   padding: 0;
-  width: 3.2%;
+  width: 2%;
 }
 
 .UIProfileUserSearch ul.LetterList li a {
-  background: #EEEEEE none repeat scroll 0 0;
+  background: #f8f8f8;
   color: inherit;
   display: block;
   font-size: 12px;
   padding: 3px 5px;
   text-align: center;
   text-decoration: none;
+  border: 1px solid #e1e1e1;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
 
 .UIProfileUserSearch ul.LetterList li a:hover {
-  background: #FFF8DC none repeat scroll 0 0;
-  color: #F57A00;
+  background: #757575;
+  color: white;
 }
 
 .UIProfileUserSearch ul.LetterList li a.selected {
-  background: #AAAAAA none repeat scroll 0 0;
-  color: #FFFFFF;
+  background: #757575;
+  color: white;
+  border: 1px solid #e1e1e1;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
 
 .UIProfileUserSearch ul.LetterList li a:active {
   outline: none;
+}
+
+.UIProfileUserSearch .MenuSpace .SelectedTab {
+  background: #757575;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+  padding: 4px 12px;
+  margin: 0px 6px;
+}
+
+.UIProfileUserSearch .MenuSpace .NotSelectedTab {
+  padding: 4px 12px;
+  margin: 0px 6px;
 }

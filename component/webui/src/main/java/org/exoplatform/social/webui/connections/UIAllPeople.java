@@ -24,57 +24,62 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 
 /**
- * Manages connection invitations of all existing users. Manages actions
- * such as accept or deny invitation and search action.<br>
- *   - Get all users that have invited connection.<br>
- *   - Check the status of each user with current user then display the list.<br>
- *   - Listens to event: accept, deny contact and search action.<br>
- *
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Aug 25, 2009
+ * Displays the list of all existing users and their information. By using this UIAllPeople component, users could manage
+ * his connections: invite to connect, revoke invitations, validate invited requests or remove connections.
+ * 
+ * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
+ * @since Aug 25, 2011
+ * @since 1.2.2
  */
-@ComponentConfigs({
-  @ComponentConfig(
-    template =  "classpath:groovy/social/webui/connections/UIInvitations.gtmpl",
-    events = {
-      @EventConfig(listeners = UIInvitations.AcceptActionListener.class),
-      @EventConfig(listeners = UIInvitations.DenyActionListener.class),
-      @EventConfig(listeners = UIInvitations.SearchActionListener.class, phase = Phase.DECODE),
-      @EventConfig(listeners = UIInvitations.LoadMorePeopleActionListener.class)
-    }
-  )
-})
-public class UIInvitations extends UIContainer {
-  private static final Log LOG = ExoLogger.getLogger(UIInvitations.class);
+@ComponentConfig(
+  template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
+  events = {
+    @EventConfig(listeners = UIAllPeople.AddContactActionListener.class),
+    @EventConfig(listeners = UIAllPeople.AcceptContactActionListener.class),
+    @EventConfig(listeners = UIAllPeople.DenyContactActionListener.class),
+    @EventConfig(listeners = UIAllPeople.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIAllPeople.LoadMorePeopleActionListener.class)
+  }
+)
+public class UIAllPeople extends UIContainer {
   
-  /** Label displays revoked information. */
-  private static final String INVITATION_REVOKED_INFO = "UIInvitations.label.RevokedInfo";
-
-  /** Stores UIProfileUserSearch object. */
-  UIProfileUserSearch uiProfileUserSearch = null;
+  private static final Log LOG = ExoLogger.getLogger(UIAllPeople.class);
+  
+  /**
+   * Label for display invoke action
+   */
+  private static final String INVITATION_REVOKED_INFO = "UIAllPeople.label.RevokedInfo";
 
   /**
-   * Default the number of relationships per page.
-   * 
-   * @since 1.2.0-Beta3
+   * Label for display established invitation
    */
-  private static final int RECEIVED_INVITATION_PER_PAGE = 3;
-  
+  private static final String INVITATION_ESTABLISHED_INFO = "UIAllPeople.label.InvitationEstablishedInfo";
+
+  /**
+   * Number element per page.
+   */
+  private static final Integer PEOPLE_PER_PAGE = 3; // for testing
+
+  /**
+   * The search object variable.
+   */
+  UIProfileUserSearch uiProfileUserSearch = null;
+
   private boolean loadAtEnd = false;
   private boolean hasUpdated = false;
   private int currentLoadIndex;
@@ -89,16 +94,14 @@ public class UIInvitations extends UIContainer {
    *
    * @throws Exception
    */
-  public UIInvitations() throws Exception {
-    uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
-    uiProfileUserSearch.setHasPeopleTab(true);
-	addChild(uiProfileUserSearch);
+  public UIAllPeople() throws Exception {
+	uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+	uiProfileUserSearch.setHasPeopleTab(true);
     init();
   }
   
   /**
    * Inits at the first loading.
-   * @since 1.2.2
    */
   public void init() {
     try {
@@ -106,7 +109,7 @@ public class UIInvitations extends UIContainer {
       setLoadAtEnd(false);
       enableLoadNext = false;
       currentLoadIndex = 0;
-      loadingCapacity = RECEIVED_INVITATION_PER_PAGE;
+      loadingCapacity = PEOPLE_PER_PAGE;
       peopleList = new ArrayList<Identity>();
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
@@ -121,7 +124,6 @@ public class UIInvitations extends UIContainer {
    * Sets loading capacity.
    * 
    * @param loadingCapacity
-   * @since 1.2.2
    */
   public void setLoadingCapacity(int loadingCapacity) {
     this.loadingCapacity = loadingCapacity;
@@ -131,7 +133,6 @@ public class UIInvitations extends UIContainer {
    * Gets flag to display LoadNext button or not.
    * 
    * @return the enableLoadNext
-   * @since 1.2.2
    */
   public boolean isEnableLoadNext() {
     return enableLoadNext;
@@ -141,7 +142,6 @@ public class UIInvitations extends UIContainer {
    * Sets flag to display LoadNext button or not.
    * 
    * @param enableLoadNext the enableLoadNext to set
-   * @since 1.2.2
    */
   public void setEnableLoadNext(boolean enableLoadNext) {
     this.enableLoadNext = enableLoadNext;
@@ -151,7 +151,6 @@ public class UIInvitations extends UIContainer {
    * Gets flags to clarify that load at the last element or not. 
    * 
    * @return the loadAtEnd
-   * @since 1.2.2
    */
   public boolean isLoadAtEnd() {
     return loadAtEnd;
@@ -161,7 +160,6 @@ public class UIInvitations extends UIContainer {
    * Sets flags to clarify that load at the last element or not.
    * 
    * @param loadAtEnd the loadAtEnd to set
-   * @since 1.2.2
    */
   public void setLoadAtEnd(boolean loadAtEnd) {
     this.loadAtEnd = loadAtEnd;
@@ -171,7 +169,6 @@ public class UIInvitations extends UIContainer {
    * Gets information that clarify one element is updated or not.
    * 
    * @return the hasUpdatedIdentity
-   * @since 1.2.2
    */
   public boolean isHasUpdatedIdentity() {
     return hasUpdated;
@@ -181,7 +178,6 @@ public class UIInvitations extends UIContainer {
    * Sets information that clarify one element is updated or not.
    * 
    * @param hasUpdatedIdentity the hasUpdatedIdentity to set
-   * @since 1.2.2
    */
   public void setHasUpdatedIdentity(boolean hasUpdatedIdentity) {
     this.hasUpdated = hasUpdatedIdentity;
@@ -192,13 +188,13 @@ public class UIInvitations extends UIContainer {
    * 
    * @return the peopleList
    * @throws Exception 
-   * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
     if (isHasUpdatedIdentity()) {
       setHasUpdatedIdentity(false);
       setPeopleList(loadPeople(0, this.peopleList.size()));
     }
+    
     setEnableLoadNext(this.peopleList.size() < getPeopleNum());
     return this.peopleList;
   }
@@ -207,7 +203,6 @@ public class UIInvitations extends UIContainer {
    * Sets list of all type of people.
    * 
    * @param peopleList the peopleList to set
-   * @since 1.2.2
    */
   public void setPeopleList(List<Identity> peopleList) {
     this.peopleList = peopleList;
@@ -217,7 +212,6 @@ public class UIInvitations extends UIContainer {
    * Gets number of people for displaying.
    * 
    * @return the peopleNum
-   * @since 1.2.2
    */
   public int getPeopleNum() {
     return peopleNum;
@@ -226,7 +220,6 @@ public class UIInvitations extends UIContainer {
   /**
    * Sets number of people for displaying.
    * @param peopleNum the peopleNum to set
-   * @since 1.2.2
    */
   public void setPeopleNum(int peopleNum) {
     this.peopleNum = peopleNum;
@@ -236,7 +229,6 @@ public class UIInvitations extends UIContainer {
    * Gets people with ListAccess type.
    * 
    * @return the peopleListAccess
-   * @since 1.2.2
    */
   public ListAccess<Identity> getPeopleListAccess() {
     return peopleListAccess;
@@ -246,7 +238,6 @@ public class UIInvitations extends UIContainer {
    * Sets people with ListAccess type.
    * 
    * @param peopleListAccess the peopleListAccess to set
-   * @since 1.2.2
    */
   public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
     this.peopleListAccess = peopleListAccess;
@@ -254,9 +245,7 @@ public class UIInvitations extends UIContainer {
 
   /**
    * Loads more people.
-   * 
    * @throws Exception
-   * @since 1.2.2
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
@@ -266,9 +255,7 @@ public class UIInvitations extends UIContainer {
   
   /**
    * Loads people when searching.
-   * 
    * @throws Exception
-   * @since 1.2.2
    */
   public void loadSearch() throws Exception {
     currentLoadIndex = 0;
@@ -276,14 +263,16 @@ public class UIInvitations extends UIContainer {
   }
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
-    setPeopleListAccess(Utils.getRelationshipManager().getIncomingWithListAccess(Utils.getOwnerIdentity()));
+    ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
+    setPeopleListAccess(Utils.getIdentityManager().getIdentitiesByProfileFilter(
+         	            OrganizationIdentityProvider.NAME, filter, true));
     
     setPeopleNum(getPeopleListAccess().getSize());
     uiProfileUserSearch.setPeopleNum(getPeopleNum());
     Identity[] people = getPeopleListAccess().load(index, length);
     
-//  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.
-//    if (uiProfileUserSearch.getProfileFilter().getSkills().length() >  0) {
+//  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.    
+//    if (filter.getSkills().length() > 0) { 
 //      return uiProfileUserSearch.getIdentitiesBySkills(
 //    		  new ArrayList<Identity>(Arrays.asList(people)));
 //    }
@@ -296,72 +285,99 @@ public class UIInvitations extends UIContainer {
    * 
    * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
    * @since Aug 18, 2011
-   * @since 1.2.2
    */
-  static public class LoadMorePeopleActionListener extends EventListener<UIInvitations> {
-    public void execute(Event<UIInvitations> event) throws Exception {
-      UIInvitations uiInvitations = event.getSource();
-      if (uiInvitations.currentLoadIndex <= uiInvitations.peopleNum) {
-        uiInvitations.loadNext();
+  static public class LoadMorePeopleActionListener extends EventListener<UIAllPeople> {
+    public void execute(Event<UIAllPeople> event) throws Exception {
+      UIAllPeople uiAllPeople = event.getSource();
+      if (uiAllPeople.currentLoadIndex <= uiAllPeople.peopleNum) {
+        uiAllPeople.loadNext();
       } else {
-    	uiInvitations.setEnableLoadNext(false);
+    	uiAllPeople.setEnableLoadNext(false);
       }
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }
   
   /**
-   * Listens to accept actions then make relation to accepted person.<br>
-   *   - Gets information of user who made request.<br>
-   *   - Checks the relation to confirm that there still got invited relation.<br>
-   *   - Makes and Save the new relation.<br>
+   * Listens to add action then make request to invite person to make connection.<br> - Gets
+   * information of user is invited.<br> - Checks the relationship to confirm that there have not
+   * got connection yet.<br> - Saves the new connection.<br>
    */
-  public static class AcceptActionListener extends EventListener<UIInvitations> {
-    @Override
-    public void execute(Event<UIInvitations> event) throws Exception {
-      UIInvitations   uiInvitations = event.getSource();
-      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
-      Identity invitingIdentity = Utils.getOwnerIdentity();
+  public static class AddContactActionListener extends EventListener<UIAllPeople> {
+    public void execute(Event<UIAllPeople> event) throws Exception {
+      UIAllPeople uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
 
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      uiAllPeople.setLoadAtEnd(false);
       
-	  uiInvitations.setLoadAtEnd(false);
-      if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
+      if (relationship != null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      uiAllPeople.setHasUpdatedIdentity(true);
+      Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+    }
+  }
+
+  /**
+   * Listens to accept actions then make connection to accepted person.<br> - Gets information of
+   * user who made request.<br> - Checks the relationship to confirm that there still got invited
+   * connection.<br> - Makes and Save the new relationship.<br>
+   */
+  public static class AcceptContactActionListener extends EventListener<UIAllPeople> {
+    public void execute(Event<UIAllPeople> event) throws Exception {
+      UIAllPeople uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
+
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      uiAllPeople.setLoadAtEnd(false);
+      
+      if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      uiInvitations.setHasUpdatedIdentity(true);
+      
+      uiAllPeople.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
     }
   }
 
   /**
-   * Listens to deny action then delete the invitation.<br>
-   *   - Gets information of user is invited or made request.<br>
-   *   - Checks the relation to confirm that there have not got relation yet.<br>
-   *   - Removes the current relation and save the new relation.<br>
-   *
+   * Listens to deny action then delete the invitation.<br> - Gets information of user is invited or
+   * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
+   * Removes the current relation and save the new relation.<br>
    */
-  public static class DenyActionListener extends EventListener<UIInvitations> {
-    @Override
-    public void execute(Event<UIInvitations> event) throws Exception {
-      UIInvitations uiInvitations = event.getSource();
-      String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
-      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
+  public static class DenyContactActionListener extends EventListener<UIAllPeople> {
+    public void execute(Event<UIAllPeople> event) throws Exception {
+      UIAllPeople   uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity inviIdentityIdentity = Utils.getIdentityManager().getIdentity(userId, true);
       Identity invitingIdentity = Utils.getViewerIdentity();
 
-      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
-      uiInvitations.setLoadAtEnd(false);
-      if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, inviIdentityIdentity);
+      
+      uiAllPeople.setLoadAtEnd(false);
+      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
+        Utils.getRelationshipManager().delete(relationship);
+        return;
+      }
+      
+      if (relationship == null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
       
-      uiInvitations.setHasUpdatedIdentity(true);
-      Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
+      uiAllPeople.setHasUpdatedIdentity(true);
+      Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
     }
   }
 
@@ -370,24 +386,26 @@ public class UIInvitations extends UIContainer {
    * 
    * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
    * @since Aug 25, 2011
-   * @since 1.2.2
    */
-  static public class SearchActionListener extends EventListener<UIInvitations> {
+  static public class SearchActionListener extends EventListener<UIAllPeople> {
     @Override
-    public void execute(Event<UIInvitations> event) throws Exception {
-      UIInvitations uiInvitations = event.getSource();
-      uiInvitations.loadSearch();
-      uiInvitations.setLoadAtEnd(false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
+    public void execute(Event<UIAllPeople> event) throws Exception {
+      UIAllPeople uiAllPeople = event.getSource();
+      uiAllPeople.loadSearch();
+      uiAllPeople.setLoadAtEnd(false);
     }
   }
 
   /**
-   * Return true to accept user is viewing can edit.
-   *
-   * @return true if current user is current login user.
+   * @param identity
+   * @return
+   * @throws Exception
    */
-  public boolean isEditable () {
-    return Utils.isOwner();
+  public Relationship getRelationship(Identity identity) throws Exception {
+    if (identity.equals(Utils.getViewerIdentity())) {
+      return null;
+    }
+    return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
   }
+
 }

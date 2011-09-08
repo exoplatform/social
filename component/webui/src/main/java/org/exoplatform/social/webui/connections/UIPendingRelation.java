@@ -1,26 +1,28 @@
 /*
- * Copyright (C) 2003-2007 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.exoplatform.social.webui.connections;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
@@ -30,7 +32,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
@@ -50,109 +51,268 @@ import org.exoplatform.webui.event.Event.Phase;
   template =  "classpath:groovy/social/webui/connections/UIPendingRelation.gtmpl",
   events = {
     @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
-    @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE)
+    @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIPendingRelation.LoadMorePeopleActionListener.class)
   }
 )
 public class UIPendingRelation extends UIContainer {
-  /** UIPageIterator ID. */
-  private static final String iteratorID_ = "UIPageIteratorPendingRelation";
-
+  private static final Log LOG = ExoLogger.getLogger(UIPendingRelation.class);
+  
   /** Label for display invitation is revoked information */
   private static final String INVITATION_REVOKED_INFO = "UIPendingRelation.label.RevokedInfo";
 
   /** Pending Status information */
   private static final String PENDING_STATUS = "pending";
   
-  /** Stores UIPageIterator instance. */
-  UIPageIterator uiPageIterator_;
-
   /** Stores UIProfileUserSearch instance. */
-  UIProfileUserSearch uiProfileUserSearchPending = null;
-
-  /** Stores identities. */
-  private List<Identity> identityList;
-  
-  /** The first page. */
-  private static final int FIRST_PAGE = 1;
+  UIProfileUserSearch uiProfileUserSearch = null;
 
   /**
    * Default the number of relationships per page.
    * 
    * @since 1.2.0-Beta3
    */
-  private static final int RELATIONSHIP_PER_PAGE = 5;
+  private static final int SENT_INVITATION_PER_PAGE = 3;
   
-  /**
-   * Gets identities.
-   *
-   * @return one list of identity.
-   */
-  public List<Identity> getIdentityList() {
-    return identityList;
-  }
-
-  /**
-   * Sets list identity.
-   *
-   * @param identityList
-   *        Identities for setting to list.
-   */
-  public void setIdentityList(List<Identity> identityList) {
-    this.identityList = identityList;
-  }
-
-  /**
-   * Gets iterator for display.
-   *
-   * @return an iterator contains information for display.
-   */
-  public UIPageIterator getUIPageIterator() {
-    return uiPageIterator_;
-  }
-
+  private boolean loadAtEnd = false;
+  private boolean hasUpdated = false;
+  private int currentLoadIndex;
+  private boolean enableLoadNext;
+  private int loadingCapacity;
+  private List<Identity> peopleList;
+  private ListAccess<Identity> peopleListAccess;
+  private int peopleNum;
+  
   /**
    * Initializes components and add as child of form.<br>
    *
    * @throws Exception
    */
   public UIPendingRelation() throws Exception {
-    uiPageIterator_ = createUIComponent(UIPageIterator.class, null, iteratorID_);
-    addChild(uiPageIterator_);
-    uiProfileUserSearchPending = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
-    uiProfileUserSearchPending.setTypeOfRelation(PENDING_STATUS);
-    addChild(uiProfileUserSearchPending);
-    this.identityList = new ArrayList<Identity> ();
+    uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
+    uiProfileUserSearch.setTypeOfRelation(PENDING_STATUS);
+    uiProfileUserSearch.setHasPeopleTab(true);
+    addChild(uiProfileUserSearch);
+    init();
+  }
+  
+  /**
+   * Inits at the first loading.
+   * 
+   * @since 1.2.2
+   */
+  public void init() {
+    try {
+      setHasUpdatedIdentity(false);
+      setLoadAtEnd(false);
+      enableLoadNext = false;
+      currentLoadIndex = 0;
+      loadingCapacity = SENT_INVITATION_PER_PAGE;
+      peopleList = new ArrayList<Identity>();
+      List<Identity> excludedIdentityList = new ArrayList<Identity>();
+      excludedIdentityList.add(Utils.getViewerIdentity());
+      uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
+      setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
+  }
+  
+  /**
+   * Sets loading capacity.
+   * 
+   * @param loadingCapacity
+   */
+  public void setLoadingCapacity(int loadingCapacity) {
+    this.loadingCapacity = loadingCapacity;
   }
 
   /**
-   * Get list of relationship that has status is PENDING.
-   *
-   * @return
-   * @throws Exception
+   * Gets flag to display LoadNext button or not.
+   * 
+   * @return the enableLoadNext
+   * @since 1.2.2
    */
-  @SuppressWarnings("unchecked")
-  public List<Identity> getPendingRelationList() throws Exception {
-    ListAccess<Identity> incomingListAccess = Utils.getRelationshipManager().getOutgoing(Utils.getOwnerIdentity());
-    
-    if (incomingListAccess != null && incomingListAccess.getSize() == 0) {
-      return new ArrayList<Identity> (); 
-    }
-    
-    int currentPage = uiPageIterator_.getCurrentPage();
-    LazyPageList<Identity> pageList = new LazyPageList<Identity>(incomingListAccess, RELATIONSHIP_PER_PAGE);
-    uiPageIterator_.setPageList(pageList);
-    int availablePage = uiPageIterator_.getAvailablePage();
-    if (this.uiProfileUserSearchPending.isNewSearch()) {
-      uiPageIterator_.setCurrentPage(FIRST_PAGE);
-    } else if (currentPage > availablePage) {
-      uiPageIterator_.setCurrentPage(availablePage);
-    } else {
-      uiPageIterator_.setCurrentPage(currentPage);
-    }
-    this.uiProfileUserSearchPending.setNewSearch(false);
-    return uiPageIterator_.getCurrentPageData();
+  public boolean isEnableLoadNext() {
+    return enableLoadNext;
   }
 
+  /**
+   * Sets flag to display LoadNext button or not.
+   * 
+   * @param enableLoadNext the enableLoadNext to set
+   * @since 1.2.2
+   */
+  public void setEnableLoadNext(boolean enableLoadNext) {
+    this.enableLoadNext = enableLoadNext;
+  }
+
+  /**
+   * Gets flags to clarify that load at the last element or not. 
+   * 
+   * @return the loadAtEnd
+   * @since 1.2.2
+   */
+  public boolean isLoadAtEnd() {
+    return loadAtEnd;
+  }
+
+  /**
+   * Sets flags to clarify that load at the last element or not.
+   * 
+   * @param loadAtEnd the loadAtEnd to set
+   * @since 1.2.2
+   */
+  public void setLoadAtEnd(boolean loadAtEnd) {
+    this.loadAtEnd = loadAtEnd;
+  }
+
+  /**
+   * Gets information that clarify one element is updated or not.
+   * 
+   * @return the hasUpdatedIdentity
+   * @since 1.2.2
+   */
+  public boolean isHasUpdatedIdentity() {
+    return hasUpdated;
+  }
+
+  /**
+   * Sets information that clarify one element is updated or not.
+   * 
+   * @param hasUpdatedIdentity the hasUpdatedIdentity to set
+   * @since 1.2.2
+   */
+  public void setHasUpdatedIdentity(boolean hasUpdatedIdentity) {
+    this.hasUpdated = hasUpdatedIdentity;
+  }
+
+  /**
+   * Gets list of all type of people.
+   * 
+   * @return the peopleList
+   * @throws Exception 
+   * @since 1.2.2
+   */
+  public List<Identity> getPeopleList() throws Exception {
+    if (isHasUpdatedIdentity()) {
+      setHasUpdatedIdentity(false);
+      setPeopleList(loadPeople(0, this.peopleList.size()));
+    }
+    
+    setEnableLoadNext(this.peopleList.size() < getPeopleNum());
+    return this.peopleList;
+  }
+
+  /**
+   * Sets list of all type of people.
+   * 
+   * @param peopleList the peopleList to set
+   * @since 1.2.2
+   */
+  public void setPeopleList(List<Identity> peopleList) {
+    this.peopleList = peopleList;
+  }
+  
+  /**
+   * Gets number of people for displaying.
+   * 
+   * @return the peopleNum
+   * @since 1.2.2
+   */
+  public int getPeopleNum() {
+    return peopleNum;
+  }
+
+  /**
+   * Sets number of people for displaying.
+   * 
+   * @param peopleNum the peopleNum to set
+   * @since 1.2.2
+   */
+  public void setPeopleNum(int peopleNum) {
+    this.peopleNum = peopleNum;
+  }
+
+  /**
+   * Gets people with ListAccess type.
+   * 
+   * @return the peopleListAccess
+   * @since 1.2.2
+   */
+  public ListAccess<Identity> getPeopleListAccess() {
+    return peopleListAccess;
+  }
+
+  /**
+   * Sets people with ListAccess type.
+   * 
+   * @param peopleListAccess the peopleListAccess to set
+   * @since 1.2.2
+   */
+  public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
+    this.peopleListAccess = peopleListAccess;
+  }
+
+  /**
+   * Loads more people.
+   * 
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void loadNext() throws Exception {
+    currentLoadIndex += loadingCapacity;
+    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                                                 .load(currentLoadIndex, loadingCapacity))));
+  }
+  
+  /**
+   * Loads people when searching.
+   * 
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void loadSearch() throws Exception {
+    currentLoadIndex = 0;
+    setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+  }
+  
+  private List<Identity> loadPeople(int index, int length) throws Exception {
+	setPeopleListAccess(Utils.getRelationshipManager().getOutgoing(Utils.getOwnerIdentity()));
+    
+    setPeopleNum(getPeopleListAccess().getSize());
+    uiProfileUserSearch.setPeopleNum(getPeopleNum());
+    Identity[] people = getPeopleListAccess().load(index, length);
+
+//  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.
+    
+//    if (uiProfileUserSearch.getProfileFilter().getSkills().length() >  0) {
+//      return uiProfileUserSearch.getIdentitiesBySkills(
+//      		  new ArrayList<Identity>(Arrays.asList(people)));
+//    }
+    
+    return new ArrayList<Identity>(Arrays.asList(people));
+  }
+  
+  /**
+   * Listeners loading more people action.
+   * 
+   * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
+   * @since Aug 18, 2011
+   * @since 1.2.2
+   */
+  public static class LoadMorePeopleActionListener extends EventListener<UIPendingRelation> {
+    public void execute(Event<UIPendingRelation> event) throws Exception {
+      UIPendingRelation uiPendingRelation = event.getSource();
+      if (uiPendingRelation.currentLoadIndex <= uiPendingRelation.peopleNum) {
+    	uiPendingRelation.loadNext();
+      } else {
+    	uiPendingRelation.setEnableLoadNext(false);
+      }
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPendingRelation);
+    }
+  }
+  
   /**
    * Listens to deny action then delete the invitation.<br>
    *   - Gets information of user is invited or made request.<br>
@@ -162,33 +322,36 @@ public class UIPendingRelation extends UIContainer {
    */
   public static class DenyContactActionListener extends EventListener<UIPendingRelation> {
     public void execute(Event<UIPendingRelation> event) throws Exception {
+      UIPendingRelation uiPendingRelation = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
       Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
       Identity invitingIdentity = Utils.getViewerIdentity();
-
+      uiPendingRelation.setLoadAtEnd(false);
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
       if (relationship ==null || relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-
+      
+      uiPendingRelation.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
     }
   }
 
   /**
-   * Listens to search action that broadcasted from search form then set to current form.<br>
-   *   - Gets search result from search form.<br>
-   *   - Sets the search result to the current form that added search form as child.<br>
+   * Listens event that broadcast from UIProfileUserSearch.
+   * 
+   * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
+   * @since Aug 25, 2011
    */
   public static class SearchActionListener extends EventListener<UIPendingRelation> {
     @Override
     public void execute(Event<UIPendingRelation> event) throws Exception {
-      UIPendingRelation uiPending = event.getSource();
-      UIProfileUserSearch uiProfileUserSearch = uiPending.getChild(UIProfileUserSearch.class);
-      List<Identity> identityList = uiProfileUserSearch.getIdentityList();
-      uiPending.setIdentityList(identityList);
+      UIPendingRelation uiPendingRelation = event.getSource();
+      uiPendingRelation.loadSearch();
+      uiPendingRelation.setLoadAtEnd(false);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPendingRelation);
     }
   }
 

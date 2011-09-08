@@ -1,11 +1,32 @@
 <%
+/*
+<!--
+
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.container.PortalContainer;
   import org.exoplatform.services.jcr.RepositoryService;
   import org.exoplatform.portal.application.PortalRequestContext;
-  import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.core.service.LinkProvider;
@@ -17,26 +38,35 @@
   String repository = rService.getCurrentRepository().getConfiguration().getName() ;
 
   def isEditable = uicomponent.isEditable();
-  def myInvitations = uicomponent.getInvitation();
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
-  UIPageIterator iteratorInvitation = uicomponent.getUIPageIteratorInvitation();
   def invitationRelationIdx = 0
+  
+  def denyLabel = _ctx.appRes(uicomponent.getId() + ".label.Deny")
+  def acceptLabel = _ctx.appRes(uicomponent.getId() + ".label.Accept")
+      
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def myInvitations = uicomponent.getPeopleList();
+
+  if (myInvitations.size() == uicomponent.getPeopleNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
+  
 %>
-<h5 class="CommonTitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.MyInvitationsList")%></h5>
-<div class="UIInvitationRelation" id="$uicomponent.id">
-  <div class="UITabPane">
+<div class="$uicomponent.id" id="$uicomponent.id">
     <div class="ContainerSpace">
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-      <div class="UISocTitleBar">
-            <h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
-      </div>
+
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
-        <div class="ContentSpace">
+        <div class="NoneContentSpace">
             <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
          </div>
       <%}%>
 
     <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
+      <div class="ClearFix">
       <% for (identity in myInvitations) {
             profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
             fullName = identity.profile.fullName;
@@ -45,6 +75,7 @@
             actionDeny = uicomponent.event("Deny",identity.getId());
             invitationRelationIdx += 1;
             if (!position) position = "";
+            def email="";
 
             String imageSource = identity.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -54,30 +85,64 @@
     <% } else {%>
        <div class="ContentSpace ClearFix">
     <% }%>
-
-		<img class="ImgAvatar" src="$imageSource"/>
+        <a class="AvatarUser">
+          <img title="${fullName}" src="$imageSource" alt="#"/>
+          <span class="BorderTop"></span>
+          <span class="BorderBottom"></span>
+        </a>
 
 		<div class="CommunityMane ClearFix">
 			<a class="CommunityName" href="${profileURL}">${fullName}</a>
+			<img src="$LinkProvider.WAITING_CONFIRMATION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
+			
+                <%if ((position.length() + email.length()) == 0 ) {%>
+                  <span class="NonePositionAndEmail"></span>
+                <% } else {%>
+	                <% if(position.length() > 0) { %>
+	                <div class="Position">
+	                  ${position}
+	                </div>
+	                <%  } else {%>
+	                <span class="NonePosition"></span>
+	                <%  } %>
+	                <% if(email.length() > 0) { %>
+	                <div class="Email">
+	                  ${email}
+	                </div>
+	                <%  } else {%>
+	                <span class="NoneEmail"></span>
+	                <%  } %>
+                <% } %>
 			<% if (isEditable) {%>
-			<a href="#" class="StopIcon" title="Deny" onclick="$actionDeny" >&nbsp;</a>
-			<a href="#" class="SelectIcon" title="Accept" onclick="$actionAccept" >&nbsp;</a>
+			<ul class="InviteTitle" ClearFix>
+			  <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$acceptLabel" onclick="$actionAccept" >$acceptLabel</a></li>
+			  <li class="Line FL">&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$denyLabel" onclick="$actionDeny" >$denyLabel</a></li>			  
+			</ul>
 			<% } %>
 		</div>
-		<% if(position.length() > 0) { %>
-		<div class="CommunityContent">
-			<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-		</div>
-		<%  } %>
 
     </div>
-  <% } %>
-    <% } %>
-    <%
-         if (iteratorInvitation.getAvailablePage() > 1) {
-           uicomponent.renderUIComponent(iteratorInvitation) ;
-         }
-     %>
-    </div>
+  <% } %> 
   </div>
+  <% } %>
+    
+      
+   <% if(uicomponent.isEnableLoadNext()) { %>
+      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+      </div>
+  <% } else { %>
+      <script type="text/javascript">
+        var loadMoreButton = document.getElementById("LoadMoreButton");
+        if (loadMoreButton) {
+          try {
+            loadMoreButton.style.display = "none";
+          }catch(e){};
+        }	          
+      </script>
+  <%  }	%>
+  
+  </div>
+
 </div>

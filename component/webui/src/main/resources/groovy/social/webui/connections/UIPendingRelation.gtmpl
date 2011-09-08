@@ -1,6 +1,27 @@
 <%
+/*
+<!--
+
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
@@ -9,32 +30,33 @@
   import org.exoplatform.social.core.identity.model.Profile;
 
   def isEditable = uicomponent.isEditable();
-  def list = uicomponent.getPendingRelationList();
   def currIdentity = Utils.getOwnerIdentity();
-  UIPageIterator iterator = uicomponent.getUIPageIterator();
   def pendingRelationIdx = 0;
+  def cancelLabel = _ctx.appRes(uicomponent.getId() + ".label.Cancel")
+  
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def list = uicomponent.getPeopleList();
+
+  if (list.size() == uicomponent.getPeopleNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
 %>
 
-<div class="UIPendingRelation UISocApplication" id="$uicomponent.id">
-	<h5 class="CommonTitleBar">
-			<%=_ctx.appRes(uicomponent.getId() + ".label.MyRequestsList")%>
-	</h5>
+<div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
 	<div class="ContainerSpace">
 		<% uicomponent.renderChild(UIProfileUserSearch.class); %>
-		<div class="UISocTitleBar">
-			<h5 class="TitleBar"><%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
-		</div>
+
       <%if ((list == null) || (list.size() == 0)) {%>
-		<div class="ContentSpace">
+		<div class="NoneContentSpace">
 			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
 			<% def peopleURL = Utils.getURI("people") %>
 			</div>
-			<div class="UIAction">
-              <a href="<%=peopleURL%>" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.AddConnections")%></a>
-            </div>
-					
-				</div>
+		</div>
       <%}%>
+      <div class="ClearFix">
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
@@ -42,34 +64,67 @@
           def position = identity.profile.position;
           pendingRelationIdx += 1;
           if (!position) position = "";
-
+          def email="";
           String imageSource = identity.profile.avatarUrl;
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
         <% if (pendingRelationIdx % 2 == 0) { %>
 		<div class="ContentSpaceGray ClearFix">
 	<% } else {%>
-			<div class="ContentSpace ClearFix">
-		<% }%>
-				<img class="ImgAvatar" alt="" src="$imageSource"/>
-				<div class="CommunityMane ClearFix">
-				 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-					 <% if (isEditable) {%>
-				 <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
-				 <a href="#" class="WaitingIcon" title="Revoke" onclick="$actionLink" >&nbsp;</a>
-					<% } %>
-				</div>
-				<% if(position.length() > 0) { %>
-				<div class="CommunityContent">
-					<%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-				</div>
-				<% } %>
+	    <div class="ContentSpace ClearFix">
+	<% }%>
+				
+            <a class="AvatarUser">
+              <img title="${fullName}" src="$imageSource" alt="#"/>
+              <span class="BorderTop"></span>
+              <span class="BorderBottom"></span>
+            </a>
+			<div class="CommunityMane ClearFix">
+			 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
+			 <img src="$LinkProvider.WAITING_CONFIRMATION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
+		      <%if ((position.length() + email.length()) == 0 ) {%>
+                  <span class="NonePositionAndEmail"></span>
+                <% } else {%>
+	                <% if(position.length() > 0) { %>
+	                <div class="Position">
+	                  ${position}
+	                </div>
+	                <%  } else {%>
+	                <span class="NonePosition"></span>
+	                <%  } %>
+	                <% if(email.length() > 0) { %>
+	                <div class="Email">
+	                  ${email}
+	                </div>
+	                <%  } else {%>
+	                <span class="NoneEmail"></span>
+	                <%  } %>
+                <% } %>
+			 <% if (isEditable) {%>
+			 <ul class="InviteTitle">
+		       <li class="FL"><a href="javascript:void(0)" class="WaitingIcon" title="$cancelLabel" onclick="$actionLink" >$cancelLabel</a></li>
+		     </ul>
+			<% } %>
 			</div>
-<% } %>
-<%
-	 if (iterator.getAvailablePage() > 1) {
-		 uicomponent.renderUIComponent(iterator) ;
-	 }
- %>
+
 		</div>
-	</div>
+  <% } %>
+  
+  </div>
+    
+  <% if(uicomponent.isEnableLoadNext()) { %>
+      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+      </div>
+  <% } else { %>
+      <script type="text/javascript">
+        var loadMoreButton = document.getElementById("LoadMoreButton");
+        if (loadMoreButton) {
+          try {
+            loadMoreButton.style.display = "none";
+          }catch(e){};
+        }	          
+      </script>
+  <%  }	%>
+  </div>
+</div>

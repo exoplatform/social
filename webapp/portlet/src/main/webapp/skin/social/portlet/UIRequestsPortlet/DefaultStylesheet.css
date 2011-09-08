@@ -16,21 +16,6 @@
  */
 
 @import url('/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin.css');
+@import url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin.css');
 
-.UIPendingRelation .ContainerSpace  img {
-	width: 47px;
-	height: 47px;
-}
 
-.ContainerSpace .WaitingConfirmation {
-	padding-left:5px;
-	color: ##0D6E8F;
-	font-size: 11px;
-}
-
-.ContainerSpace .WaitingIcon {
-  background: url('DefaultSkin/background/WaitingIcon.gif') no-repeat left center ;
-  float: right;
-  padding: 5px 8px 5px 6px;
-  margin-left: 4px;
-}

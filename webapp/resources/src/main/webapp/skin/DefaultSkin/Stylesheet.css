@@ -94,20 +94,15 @@ ul {
 }
 
 .UISocApplication .UISocTitleBar {
-	background: url("/social-portlet/skin/social/portlet/UIPeoplePortlet/DefaultSkin/background/ATitleBarC.gif") no-repeat 20px top;
 	padding-bottom: 4px;
 	margin-top: 8px;
 }
 
 .UISocApplication .UISocTitleBar .TitleBar {
-	background: #9d9d9d;
-	border-radius: 5px 5px 0px 0px;
-	-moz-border-radius: 5px 5px 0px 0px;
-	-webkit-border-radius: 5px 5px 0px 0px;
 	height: 21px;
-	padding: 0px 15px;
+	padding: 0px 8px;
 	line-height: 21px;
-	color: white;
+	color: #7e7e7e;
 	margin: 0px;
 	font-size: 12px;
 }
@@ -149,43 +144,44 @@ ul {
 }
 
 .UISocApplication .ContainerSpace .ContentSpace {
-    background: #FBFBFB;
-    margin-bottom: 1px;
-    padding: 8px;
+    border-top: 1px solid #e1e1e1;
+    margin-right: 20px;
+    float: left;
+    width: 31%;
+    padding: 8px 0px;
 }
 
 .UISocApplication .ContainerSpace .ContentSpaceGray {
-	background: white;
-	padding: 8px;
-	margin-bottom: 1px;
-	background: #f3f3f3;
+    border-top: 1px solid #e1e1e1;
+    margin-right: 20px;
+    float: left;
+    width: 31%;
+    padding: 8px 0px;
 }
 
 .UISocApplication .ContainerSpace .InviteTitle {
-    color: #AFAFAF;
+    color: #115ead;
     cursor: pointer;
-    float: left;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane {
-	color: #0d6e8f;
-	height: 20px;
-	font-size: 12px;
-	font-weight: bold;
-	margin: 0px 0px 5px 92px;
-	border-bottom:1px solid #B7B7B7;
+  color: #0d6e8f;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0px 0px 5px 92px;
 }
 
 .UISocApplication .ContainerSpace .WaitingConfirmation {
-    font-size: 11px;
-    padding-left: 5px;
+  font-size: 11px;
+  padding-left: 5px;
 }
 
 .UISocApplication .ContainerSpace .NotYet {
-	color:gray;
-	text-align:center;
+  color:gray; 
+  text-align:center;
 }
 
 .UISocApplication .ContainerSpace .CommunityContent {
-	margin: 0px 0px 0px 92px;
+  margin: 0px 0px 0px 92px;
 }

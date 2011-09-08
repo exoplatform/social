@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,15 +25,16 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -112,6 +112,9 @@ public class UIProfileUserSearch extends UIForm {
   /** Empty character. */
   private static final char EMPTY_CHARACTER = '\u0000';
   
+  /** All people filter. */
+  private static final String ALL_FILTER = "All";
+  
   /**
    * List used for identities storage.
    */
@@ -148,6 +151,52 @@ public class UIProfileUserSearch extends UIForm {
   long identitiesCount;
 
   /**
+   * Clarifies that Spaces tab is included or not.
+   */
+  private boolean hasPeopleTab;
+  
+  /**
+   * Number of matching people.
+   */
+  private int peopleNum;
+  
+  /**
+   * Gets the flags to clarify including people tab or not. 
+   * @return
+   */
+  public boolean isHasPeopleTab() {
+	return hasPeopleTab;
+  }
+
+  /**
+   * Sets the flags to clarify including people tab or not.
+   * @param hasPeopleTab
+   */
+  public void setHasPeopleTab(boolean hasPeopleTab) {
+	this.hasPeopleTab = hasPeopleTab;
+  }
+
+  /**
+   * Gets number of matching people.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  public int getPeopleNum() {
+	return peopleNum;
+  }
+  
+  /**
+   * Sets number of matching people.
+   * 
+   * @param peopleNum
+   * @since 1.2.2
+   */
+  public void setPeopleNum(int peopleNum) {
+	this.peopleNum = peopleNum;
+  }
+
+/**
    * Sets list identity.
    *
    * @param identityList <code>List</code>
@@ -268,19 +317,20 @@ public class UIProfileUserSearch extends UIForm {
     addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, Profile.POSITION));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS));
     addUIFormInput(new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options));
+    profileFilter = new ProfileFilter();
+    setHasPeopleTab(false);
+    setSelectedChar(ALL_FILTER);
   }
 
   /**
-   * Gets number of identities.
+   * Returns the current selected node.<br>
    *
-   * @return Number of identities.
+   * @return selected node.
+   * @since 1.2.2
    */
-  private long getIdentitiesCount() {
-    if (identitiesCount == 0L) {
-      identitiesCount = Utils.getIdentityManager().getIdentitiesCount(OrganizationIdentityProvider.NAME);
-    }
-
-    return identitiesCount;
+  public String getSelectedNode() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    return pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
   }
 
   /**
@@ -294,8 +344,6 @@ public class UIProfileUserSearch extends UIForm {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
       String charSearch = ctx.getRequestParameter(OBJECTID);
-      List<Identity> identitiesSearchResult;
-      List<Identity> identities;
       ProfileFilter filter = new ProfileFilter();
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
@@ -317,16 +365,15 @@ public class UIProfileUserSearch extends UIForm {
           ((UIFormStringInput) uiSearch.getChildById(Profile.GENDER)).setValue(defaultGenderVal);
           filter.setName(charSearch);
           filter.setPosition("");
+          filter.setSkills("");
           filter.setGender("");
           filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
-          if ("All".equals(charSearch)) {
+          if (ALL_FILTER.equals(charSearch)) {
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
             filter.setName("");
           }
           
-          identitiesSearchResult = Arrays.asList(Utils.getIdentityManager().getIdentitiesByProfileFilter
-            (OrganizationIdentityProvider.NAME, filter, false).load(0, (int)uiSearch.getIdentitiesCount()));
-          uiSearch.setIdentityList(identitiesSearchResult);
+          uiSearch.setProfileFilter(filter);
         } else {
           uiSearch.setSelectedChar(null);
           if (!isValidInput(filter)) { // is invalid condition input
@@ -347,13 +394,8 @@ public class UIProfileUserSearch extends UIForm {
 
             String skills = null;
 
-            // uiSearch.setSelectedChar(charSearch);
-            
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
-            identitiesSearchResult = Arrays.asList(Utils.getIdentityManager().getIdentitiesByProfileFilter
-              (OrganizationIdentityProvider.NAME, filter, false).load(0, (int)uiSearch.getIdentitiesCount()));
-            uiSearch.setIdentityList(identitiesSearchResult);
-
+            uiSearch.setProfileFilter(filter);
             // Using regular expression for search
             skills = filter.getSkills();
             if (skills.length() > 0) {
@@ -363,8 +405,8 @@ public class UIProfileUserSearch extends UIForm {
               skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;
               skills = (skills.indexOf("%") >= 0) ? skills.replace("%", ".*") : skills;
               Pattern.compile(skills);
-              identities = uiSearch.getIdentitiesBySkills(skills, identitiesSearchResult);
-              uiSearch.setIdentityList(identities);
+              filter.setSkills(skills);
+              uiSearch.setProfileFilter(filter);
             }
           }
         }
@@ -412,11 +454,11 @@ public class UIProfileUserSearch extends UIForm {
    * @return List of identities that has skills information match.
    */
   @SuppressWarnings("unchecked")
-  private List<Identity> getIdentitiesBySkills(final String skills, final List<Identity> identities) {
+  public List<Identity> getIdentitiesBySkills(final List<Identity> identities) {
     List<Identity> identityLst = new ArrayList<Identity>();
     String prof = null;
     ArrayList<HashMap<String, Object>> experiences;
-    String skill = skills.trim().toLowerCase();
+    String skill = getProfileFilter().getSkills().trim().toLowerCase();
 
     if (identities.size() == 0) {
       return identityLst;
@@ -447,6 +489,34 @@ public class UIProfileUserSearch extends UIForm {
     return GetUniqueIdentities(identityLst);
   }
 
+  /**
+   * Gets label to display the number of matching spaces.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  protected String getPeopleFoundLabel() {
+    String labelArg = "UIProfileUserSearch.label.FoundPersonFilter"; 
+    
+    if (getPeopleNum() > 1) {
+      labelArg = "UIProfileUserSearch.label.FoundPeopleFilter";
+    }
+    
+    String searchCondition = getSelectedChar();
+    if (selectedChar == null) {
+      labelArg = "UIProfileUserSearch.label.FoundPersonSearch";
+      if (getPeopleNum() > 1) {
+        labelArg = "UIProfileUserSearch.label.FoundPeopleSearch";
+      }
+      searchCondition = getProfileFilter().getName();
+    }
+    
+    return ResourceBundleUtil.
+    replaceArguments(WebuiRequestContext.getCurrentInstance()
+                     .getApplicationResourceBundle().getString(labelArg), new String[] {
+                 Integer.toString(getPeopleNum()), searchCondition != null ? searchCondition : " " });
+  }
+  
   /**
    * Unions to collection to make one collection.
    *

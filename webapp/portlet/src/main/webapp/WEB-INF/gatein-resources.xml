@@ -189,6 +189,13 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
+    <portlet-name>AllPeoplePortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/social/portlet/UIAllPeoplePortlet/DefaultStylesheet.css</css-path>
+  </portlet-skin>
+  
+  <portlet-skin>
+    <application-name>social-portlet</application-name>
     <portlet-name>RequestsPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UIRequestsPortlet/DefaultStylesheet.css</css-path>
