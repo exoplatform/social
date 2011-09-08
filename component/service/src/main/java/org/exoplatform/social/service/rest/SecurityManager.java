@@ -17,6 +17,7 @@
 package org.exoplatform.social.service.rest;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -221,5 +222,20 @@ public class SecurityManager {
       return true;
     }
     return false;
+  }
+  /**
+   * <p>Gets the current logged in Identity, if not logged in return null</p>
+   * @return logged in Identity or null
+   * @since 1.2.2
+   */
+  public static Identity getAuthenticatedUserIdentity() {
+    if(ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
+              ConversationState.getCurrent().getIdentity().getUserId() != null){
+      IdentityManager identityManager =  Util.getIdentityManager();
+      String authenticatedUserRemoteId = ConversationState.getCurrent().getIdentity().getUserId(); 
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUserRemoteId, false);
+    } else {
+      return null;
+    }
   }
 }

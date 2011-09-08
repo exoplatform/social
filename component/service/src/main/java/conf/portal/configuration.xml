@@ -52,6 +52,9 @@
   <component>
     <type>org.exoplatform.social.service.rest.api.VersionResources</type>
   </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api.IdentityResources</type>
+  </component>  
 <!-- Social Rest API resources for latest -->
 
 
