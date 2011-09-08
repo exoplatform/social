@@ -19,9 +19,9 @@ package org.exoplatform.social.opensocial.auth;
 import java.util.Map;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
-import org.apache.shindig.auth.BlobCrypterSecurityTokenDecoder;
+import org.apache.shindig.auth.BlobCrypterSecurityTokenCodec;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.auth.SecurityTokenDecoder;
+import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.auth.SecurityTokenException;
 import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypterException;
@@ -31,7 +31,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ExoBlobCrypterSecurityDecoder extends BlobCrypterSecurityTokenDecoder {
+public class ExoBlobCrypterSecurityDecoder extends BlobCrypterSecurityTokenCodec {
 
   @Inject
   public ExoBlobCrypterSecurityDecoder(ContainerConfig config) {
@@ -44,7 +44,7 @@ public class ExoBlobCrypterSecurityDecoder extends BlobCrypterSecurityTokenDecod
   @Override
   public SecurityToken createToken(Map<String, String> tokenParameters)
       throws SecurityTokenException {
-    String token = tokenParameters.get(SecurityTokenDecoder.SECURITY_TOKEN_NAME);
+    String token = tokenParameters.get(SecurityTokenCodec.SECURITY_TOKEN_NAME);
     if (token == null || token.trim().length() == 0) {
       // No token is present, assume anonymous access
       return new AnonymousSecurityToken();
@@ -59,7 +59,7 @@ public class ExoBlobCrypterSecurityDecoder extends BlobCrypterSecurityTokenDecod
       throw new SecurityTokenException("Unknown container " + token);
     }
     String domain = domains.get(container);
-    String activeUrl = tokenParameters.get(SecurityTokenDecoder.ACTIVE_URL_NAME);
+    String activeUrl = tokenParameters.get(SecurityTokenCodec.ACTIVE_URL_NAME);
     String crypted = fields[1];
     try {
       return ExoBlobCrypterSecurityToken.decrypt(crypter, container, domain, crypted, activeUrl);

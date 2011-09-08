@@ -36,7 +36,8 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
   @Inject
   public ExoOAuthAuthenticationHandler(OAuthDataStore store,
                                        @Named("shindig.oauth.legacy-body-signing") boolean allowLegacyBodySigning) {
-    super(store, allowLegacyBodySigning);
+	// TODO Check the side effects as if we remove allowLegacyBodySigning from constructor.
+    super(store);
   }
 
   public String getName() {

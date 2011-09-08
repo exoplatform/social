@@ -18,9 +18,9 @@ package org.exoplatform.social.opensocial.auth;
 
 import java.util.Map;
 
-import org.apache.shindig.auth.BasicSecurityTokenDecoder;
+import org.apache.shindig.auth.BasicSecurityTokenCodec;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.auth.SecurityTokenDecoder;
+import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.auth.SecurityTokenException;
 import org.apache.shindig.config.ContainerConfig;
 
@@ -28,18 +28,18 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ExoSecurityTokenDecoder implements SecurityTokenDecoder {
+public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
 
   private static final String        SECURITY_TOKEN_TYPE = "gadgets.securityTokenType";
 
-  private final SecurityTokenDecoder decoder;
+  private final SecurityTokenCodec decoder;
 
   @Inject
   public ExoSecurityTokenDecoder(ContainerConfig config) {
 
     String tokenType = config.getString(ContainerConfig.DEFAULT_CONTAINER, SECURITY_TOKEN_TYPE);
     if ("insecure".equals(tokenType)) {
-      decoder = new BasicSecurityTokenDecoder();
+      decoder = new BasicSecurityTokenCodec();
     } else if ("secure".equals(tokenType)) {
       decoder = new ExoBlobCrypterSecurityDecoder(config);
     } else {
@@ -52,6 +52,16 @@ public class ExoSecurityTokenDecoder implements SecurityTokenDecoder {
 
   public SecurityToken createToken(Map<String, String> tokenParameters) throws SecurityTokenException {
     return decoder.createToken(tokenParameters);
+  }
+  
+  public String encodeToken(final SecurityToken token) throws SecurityTokenException {
+	// TODO Need to check gadget (Activity Stream ... ) for this change.
+    throw new RuntimeException();
+  }
+
+  public Long getTokenExpiration(final SecurityToken token) throws SecurityTokenException {
+	// TODO Need to check gadget (Activity Stream ... ) for this change.
+    throw new RuntimeException();
   }
 
 }

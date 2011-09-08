@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.opensocial.auth;
 
-import org.apache.shindig.auth.SecurityTokenDecoder;
+import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 
 import com.google.inject.Inject;
@@ -25,8 +25,8 @@ import com.google.inject.name.Named;
 public class ExoUrlAuthenticationHandler extends UrlParameterAuthenticationHandler {
 
   @Inject
-  public ExoUrlAuthenticationHandler(@Named("exo.auth.decoder") SecurityTokenDecoder securityTokenDecoder) {
-    super(securityTokenDecoder);
+  public ExoUrlAuthenticationHandler(@Named("exo.auth.decoder") SecurityTokenCodec securityTokenCodec) {
+    super(securityTokenCodec);
   }
 
 }

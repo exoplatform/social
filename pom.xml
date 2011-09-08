@@ -70,7 +70,7 @@
     <javassist.version>3.14.0-GA</javassist.version>
     <junit.version>3.8.1</junit.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
-    <rome.version>0.9</rome.version>
+    <rome.version>1.0</rome.version>
     <stax.version>1.0</stax.version>
     <xerces.version>2.9.1</xerces.version>
     <xml-apis.version>1.3.04</xml-apis.version>
@@ -94,7 +94,7 @@
     <org.gatein.pc.version>2.2.0-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
     <org.gatein.mop.version>1.1.0-Beta05</org.gatein.mop.version>
-    <org.shindig.version>1.0-r790473-Patch05</org.shindig.version>
+    <org.shindig.version>2.0.2-Beta02</org.shindig.version>
     <org.chromattic.version>1.1.0-beta6</org.chromattic.version>
 
     <org.fontbox.version>0.1.0</org.fontbox.version>
@@ -106,13 +106,22 @@
     <org.jvnet.jaxb2.maven2.version>0.1</org.jvnet.jaxb2.maven2.version>
     <org.jsecurity.version>0.9.0</org.jsecurity.version>
 
-    <net.oauth.core.version>20090531</net.oauth.core.version>
+    <net.oauth.core.version>20100527</net.oauth.core.version>
     <net.oauth.version>20080621</net.oauth.version>
 
-    <com.google.collections.version>1.0-rc2</com.google.collections.version>
+    <com.google.guava.version>r07</com.google.guava.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
     <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
+    <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
+    <org.apache.httpcomponents.httpclient.version>4.0</org.apache.httpcomponents.httpclient.version>
+    <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
+    <commons.beanutils.version>1.8.0</commons.beanutils.version>
+    <commons.chain.version>1.0</commons.chain.version>
+    <commons.codec.version>1.4</commons.codec.version>
+    <commons.fileupload.version>1.2.1</commons.fileupload.version>
+    <commons.logging.version>1.0.4</commons.logging.version>
+    <commons.pool.version>1.2</commons.pool.version>
 
 
     <!-- ************** -->
@@ -269,12 +278,12 @@
       </dependency>
 
       <dependency>
-        <groupId>com.google.collections</groupId>
-        <artifactId>google-collections</artifactId>
-        <version>${com.google.collections.version}</version>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${com.google.guava.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.code.guice</groupId>
+        <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>${com.google.code.guice.version}</version>
       </dependency>
@@ -282,6 +291,69 @@
         <groupId>com.ibm.icu</groupId>
         <artifactId>icu4j</artifactId>
         <version>${com.ibm.icu.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+	<artifactId>guice-multibindings</artifactId>
+        <version>${com.google.inject.extensions.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+	<artifactId>httpclient</artifactId>
+        <version>${org.apache.httpcomponents.httpclient.version}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.apache.httpcomponents</groupId>
+	<artifactId>httpcore</artifactId>
+        <version>${org.apache.httpcomponents.httpcore.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons.beanutils.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-chain</groupId>
+        <artifactId>commons-chain</artifactId>
+        <version>${commons.chain.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons.codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>${commons.fileupload.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons.logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-pool</groupId>
+        <artifactId>commons-pool</artifactId>
+        <version>${commons.pool.version}</version>
+        <exclusions>
+          <exclusion>
+             <groupId>xerces</groupId>
+             <artifactId>xerces</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- eXo JCR stack -->
@@ -519,17 +591,6 @@
         <groupId>org.gatein.shindig</groupId>
         <artifactId>shindig-common</artifactId>
         <version>${org.shindig.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.shindig</groupId>
-        <artifactId>shindig-server</artifactId>
-        <version>${org.shindig.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.shindig</groupId>
-        <artifactId>shindig-server</artifactId>
-        <version>${org.shindig.version}</version>
-        <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.gatein.shindig</groupId>

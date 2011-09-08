@@ -32,7 +32,7 @@ import org.apache.shindig.social.opensocial.model.Activity;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.SocialSpiException;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -69,7 +69,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                                            String appId,
                                                            Set<String> fields,
                                                            CollectionOptions options,
-                                                           SecurityToken token) throws SocialSpiException {
+                                                           SecurityToken token) throws ProtocolException {
     List<Activity> result = Lists.newArrayList();
 
     PortalContainer pc = getPortalContainer(token);
@@ -104,7 +104,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                                            Set<String> fields,
                                                            CollectionOptions options,
                                                            Set<String> activityIds,
-                                                           SecurityToken token) throws SocialSpiException {
+                                                           SecurityToken token) throws ProtocolException {
     List<Activity> result = Lists.newArrayList();
     try {
       if (token instanceof AnonymousSecurityToken) {
@@ -147,7 +147,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                       String appId,
                                       Set<String> fields,
                                       String activityId,
-                                      SecurityToken token) throws SocialSpiException {
+                                      SecurityToken token) throws ProtocolException {
     throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
@@ -163,7 +163,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                        GroupId groupId,
                                        String appId,
                                        Set<String> activityIds,
-                                       SecurityToken token) throws SocialSpiException {
+                                       SecurityToken token) throws ProtocolException {
     throw new ProtocolException(HttpServletResponse.SC_NOT_IMPLEMENTED, null);
   }
 
@@ -181,7 +181,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
                                      String appId,
                                      Set<String> fields,
                                      Activity activity,
-                                     SecurityToken token) throws SocialSpiException {
+                                     SecurityToken token) throws ProtocolException {
     try {
       activity.setAppId(appId); //groupId = new GroupId(GroupId.Type.groupId, "space:qsdsqd")
 
