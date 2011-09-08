@@ -72,7 +72,7 @@ public class UIPendingRelation extends UIContainer {
    * 
    * @since 1.2.0-Beta3
    */
-  private static final int SENT_INVITATION_PER_PAGE = 3;
+  private static final int SENT_INVITATION_PER_PAGE = 45;
   
   private boolean loadAtEnd = false;
   private boolean hasUpdated = false;

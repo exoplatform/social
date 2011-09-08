@@ -73,7 +73,7 @@ public class UIAllPeople extends UIContainer {
   /**
    * Number element per page.
    */
-  private static final Integer PEOPLE_PER_PAGE = 3; // for testing
+  private static final Integer PEOPLE_PER_PAGE = 45; // for testing
 
   /**
    * The search object variable.
