@@ -78,10 +78,10 @@
     def portalURI = Utils.getURI("");
     def ownerIdentity = Utils.getOwnerIdentity();
     def ownerId = ownerIdentity.getRemoteId();
-    def allPeopleURL = "${portalURI}connections/all-people@${ownerId}";
-    def networkURL = "${portalURI}connections/network@${ownerId}";
-    def receivedInvitationsURL = "${portalURI}connections/receivedInvitations@${ownerId}";
-    def sentInvitationURL = "${portalURI}connections/pendingRequests@${ownerId}";
+    def allPeopleURL = "${portalURI}connections/all-people/${ownerId}";
+    def networkURL = "${portalURI}connections/network/${ownerId}";
+    def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
+    def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
     def selectedNode = uicomponent.getSelectedNode();
  
     def allPeopleDisplayModeStyle = "NotSelectedTab";
@@ -89,13 +89,13 @@
     def receivedInvitationsDisplayModeStyle = "NotSelectedTab";
     def pendingRequestsDisplayModeStyle = "NotSelectedTab";
     
-    if (selectedNode.equals("connections/all-people")) {
+    if (selectedNode.equals("all-people")) {
       allPeopleDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("connections/network")) {
+    } else if (selectedNode.equals("network")) {
       networkDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("connections/receivedInvitations")) {
+    } else if (selectedNode.equals("receivedInvitations")) {
       receivedInvitationsDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("connections/pendingRequests")) {
+    } else if (selectedNode.equals("pendingRequests")) {
       pendingRequestsDisplayModeStyle = "SelectedTab";
     }
  

@@ -17,7 +17,7 @@ def peopleLink = Utils.getURI("people");
 def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 
 def directoryLink = Utils.getURI("people");
-def connectionsLink = Utils.getURI("connections") + "/all-people@" + remoteUser;
+def connectionsLink = Utils.getURI("connections") + "/all-people/" + remoteUser;
 %>
 <ul class="UIPeopleToolBarPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
 	<li class="UITab NormalToolbarTab">

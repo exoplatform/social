@@ -40,8 +40,9 @@ public class URLUtils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     PortalRequestContext request = Util.getPortalRequestContext() ;
-    String currentUserName = request.getControllerContext().getParameter(QualifiedName.parse("soc:user"));
-    
+    String currentPath = request.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    String []splitCurrentUser = currentPath.split("/");
+    String currentUserName = currentPath.split("/")[splitCurrentUser.length - 1];
     if (currentUserName != null) {
       Identity id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
       if (id != null) return currentUserName;

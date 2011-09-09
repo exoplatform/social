@@ -26,9 +26,9 @@
   def portalURI = Utils.getURI("");
   def ownerIdentity = Utils.getOwnerIdentity();
   def ownerId = ownerIdentity.getRemoteId();
-  def myRelationsURL = "${portalURI}connections/myConnections@${ownerId}";
-  def invitationsURL = "${portalURI}connections/myInvitations@${ownerId}";
-  def requestsURL = "${portalURI}connections/myRequests@${ownerId}";
+  def myRelationsURL = "${portalURI}connections/myConnections/${ownerId}";
+  def invitationsURL = "${portalURI}connections/myInvitations/${ownerId}";
+  def requestsURL = "${portalURI}connections/myRequests/${ownerId}";
   def selectedNode = uicomponent.getSelectedNode();
   def isOwner = Utils.isOwner();
 %>

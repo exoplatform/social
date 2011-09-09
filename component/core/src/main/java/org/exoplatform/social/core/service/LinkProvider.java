@@ -47,7 +47,7 @@ public class LinkProvider {
   public static final String SPACE_MEMBER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
   public static final String SPACE_WAITING_CONFIRM_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
   
-  public static final String ROUTE_DELIMITER = "@";
+  public static final String ROUTE_DELIMITER = "/";
   
   private static IdentityManager identityManager;
   private static Log             LOG = ExoLogger.getLogger(LinkProvider.class);

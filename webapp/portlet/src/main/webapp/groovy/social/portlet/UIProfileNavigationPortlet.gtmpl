@@ -22,10 +22,8 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.core.relationship.model.Relationship;
-  import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.relationship.model.Relationship.Type;
   import org.exoplatform.social.core.identity.model.Profile;
-  import org.exoplatform.social.core.service.LinkProvider;
 
   def ownerIdentity = Utils.getOwnerIdentity(true);
   def viewerIdentity = Utils.getViewerIdentity();
@@ -71,15 +69,15 @@
       </a>
       <div class="ConnectionArea">
         <% if (contactStatus == null) { %>
-             <a href="#" title="$inviteToConnectTitle"  onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
+             <a href="javascript:void(0)" title="$inviteToConnectTitle"  onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
         <% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
-             <a href="#" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>
+             <a href="javascript:void(0)" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>
              <span> | </span>
-             <a href="#" title="$denyTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
+             <a href="javascript:void(0)" title="$denyTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
         <% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
-             <a href="#" title="$revokeTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
+             <a href="javascript:void(0)" title="$revokeTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
         <% } else if (contactStatus == Type.CONFIRMED) { %>
-             <a href="#" title="$disconnectTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectTitle</a>
+             <a href="javascript:void(0)" title="$disconnectTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectTitle</a>
         <% } %>
       </div>
   <% } %>
