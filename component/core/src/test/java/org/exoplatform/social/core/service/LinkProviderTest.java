@@ -54,7 +54,7 @@ public class LinkProviderTest extends AbstractCoreTest {
     assertNotNull("rootFullName must not be null.", rootFullName);
     // but when we have the identity we generate a link
     String actualLink = LinkProvider.getProfileLink(rootIdentity.getRemoteId(), portalOwner);
-    String expected =  "<a href=\"/portal/" + portalOwner + "/profile@" +
+    String expected =  "<a href=\"/portal/" + portalOwner + "/profile/" +
                         rootIdentity.getRemoteId()+"\" target=\"_parent\">"+rootFullName+"</a>";
     assertEquals(expected, actualLink);
 
