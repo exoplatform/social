@@ -33,8 +33,7 @@
       org.exoplatform.social.opensocial.ExoSocialApiGuiceModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
       org.exoplatform.portal.gadget.core.ExoOAuthModule:
-      org.apache.shindig.common.cache.ehcache.EhCacheModule:
-      org.exoplatform.portal.gadget.core.ExoModule
+      org.apache.shindig.common.cache.ehcache.EhCacheModule
     </param-value>
   </context-param>
 
@@ -45,11 +44,11 @@
 
   <filter-mapping>
     <filter-name>authFilter</filter-name>
-    <url-pattern>/social/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <listener>
-    <listener-class>org.apache.shindig.common.servlet.GuiceServletContextListener</listener-class>
+    <listener-class>org.exoplatform.portal.gadget.core.GateInGuiceServletContextListener</listener-class>
   </listener>
 
   <!-- Serve social REST api -->
@@ -78,11 +77,11 @@
 
   <servlet-mapping>
     <servlet-name>socialRestapiServlet</servlet-name>
-    <url-pattern>/social/rest/*</url-pattern>
+    <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>socialJsonRpcServlet</servlet-name>
-    <url-pattern>/social/rpc/*</url-pattern>
+    <url-pattern>/rpc/*</url-pattern>
   </servlet-mapping>
 </web-app>
