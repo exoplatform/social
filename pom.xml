@@ -122,6 +122,7 @@
     <commons.fileupload.version>1.2.1</commons.fileupload.version>
     <commons.logging.version>1.0.4</commons.logging.version>
     <commons.pool.version>1.2</commons.pool.version>
+    <org.staxnav.version>0.9.5</org.staxnav.version>
 
 
     <!-- ************** -->
@@ -143,7 +144,7 @@
     <module>server</module>
     <module>docs</module>
     <module>packaging</module>
-	<module>testsuite</module>
+	  <module>testsuite</module>
   </modules>
 
   <dependencyManagement>
@@ -743,6 +744,11 @@
         <artifactId>exo.platform.commons.webui.ext</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>exo.platform.commons.component.upgrade</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
 
       <!-- eXo Social -->
       <dependency>
@@ -866,6 +872,12 @@
         <artifactId>exo.social.webapp.resources</artifactId>
         <type>war</type>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.staxnav</groupId>
+        <artifactId>staxnav.core</artifactId>
+        <version>${org.staxnav.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

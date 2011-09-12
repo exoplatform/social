@@ -42,5 +42,6 @@
     <module>widget</module>
     <module>link-composer-plugin</module>
     <module>document-composer-plugin</module>
+    <module>migration</module>
   </modules>
 </project>

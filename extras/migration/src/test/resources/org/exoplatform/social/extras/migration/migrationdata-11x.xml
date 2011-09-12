@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data xmlns:exo="http://www.exoplatform.com/jcr/exo/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:loader="loader">
+  <exo:applications>
+
+    <!-- User identity -->
+    <Social_Identity>
+      
+      <exo:identity loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_idA"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:identity>
+
+      <exo:identity loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_idB"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:identity>
+      <exo:identity loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_idC"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:identity>
+      <exo:identity loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_idD"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:identity>
+      <exo:identity loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_idE"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:identity>
+
+      <user_a loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_a"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </user_a>
+      <user_b loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_b"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </user_b>
+      <user_c loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_c"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </user_c>
+      <user_d loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_d"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </user_d>
+      <user_e loader:type="exo:identity"
+          exo:providerId="organization"
+          exo:remoteId="user_e"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+      </user_e>
+
+    </Social_Identity>
+
+    <!-- Spaces -->
+    <Social_Space>
+      <Space>
+        <exo:space loader:type="exo:space"
+            exo:description="foo a"
+            exo:name="Name a"
+            exo:groupId="/spaces/namea"
+            exo:pendingUsers="user_a,user_b,user_d"
+            exo:priority="2"
+            exo:registration="validation"
+            exo:type="classic"
+            exo:url="namea"
+            exo:visibility="private"
+        >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:space>
+        <exo:space loader:type="exo:space"
+            exo:description="foo b"
+            exo:name="Name b"
+            exo:groupId="/spaces/nameb"
+            exo:priority="2"
+            exo:registration="validation"
+            exo:type="classic"
+            exo:url="nameb"
+            exo:visibility="private"
+        >
+          <loader:membership members="user_a,user_b" managers="user_c"/>
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:space>
+        <exo:space loader:type="exo:space"
+            exo:description="foo c"
+            exo:name="Name c"
+            exo:groupId="/spaces/namec"
+            exo:priority="2"
+            exo:invitedUsers="user_a,user_d"
+            exo:registration="validation"
+            exo:type="classic"
+            exo:url="namec"
+            exo:visibility="private"
+        >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:space>
+        <exo:space loader:type="exo:space"
+            exo:description="foo d"
+            exo:name="Name d"
+            exo:groupId="/spaces/named"
+            exo:priority="2"
+            exo:invitedUsers="user_a,user_d"
+            exo:registration="validation"
+            exo:type="classic"
+            exo:url="named"
+            exo:visibility="private"
+        >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:space>
+        <exo:space loader:type="exo:space"
+            exo:description="foo e"
+            exo:name="Name e"
+            exo:groupId="/spaces/namee"
+            exo:priority="2"
+            exo:pendingUsers="user_c"
+            exo:invitedUsers="user_a,user_d"
+            exo:registration="validation"
+            exo:type="classic"
+            exo:url="namee"
+            exo:visibility="private"
+        >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:space>
+      </Space>
+    </Social_Space>
+
+    <!-- Space Identities -->
+    <Social_Identity loader:reuse="true">
+      <exo:identity loader:type="exo:identity" loader:overridename="#/exo:applications/Social_Space/Space/exo:space"
+          exo:providerId="space"
+          exo:remoteId="#/exo:applications/Social_Space/Space/exo:space"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:identity>
+      <exo:identity loader:type="exo:identity" loader:overridename="#/exo:applications/Social_Space/Space/exo:space[2]"
+          exo:providerId="space"
+          exo:remoteId="#/exo:applications/Social_Space/Space/exo:space[2]"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:identity>
+      <exo:identity loader:type="exo:identity" loader:overridename="#/exo:applications/Social_Space/Space/exo:space[3]"
+          exo:providerId="space"
+          exo:remoteId="#/exo:applications/Social_Space/Space/exo:space[3]"
+          >
+          <loader:mixin>mix:referenceable</loader:mixin>
+        </exo:identity>
+    </Social_Identity>
+
+    <Social_Profile>
+      <exo:profile loader:type="exo:profile"
+          Url="/portal/private/classic/profile/user_a"
+          firstName="User a"
+          lastName="Foobar"
+          position="My position"
+          username="user_a"
+          exo:identity="#/exo:applications/Social_Identity/user_a"
+          >
+        <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:profile>
+      <exo:profile loader:type="exo:profile"
+          Url="/portal/private/classic/profile/user_b"
+          firstName="User b"
+          lastName="Foobar"
+          position="My position"
+          username="user_b"
+          exo:identity="#/exo:applications/Social_Identity/user_b"
+          >
+        <loader:mixin>mix:referenceable</loader:mixin>
+      </exo:profile>
+    </Social_Profile>
+
+    <!-- Relationship -->
+    <Social_Relationship>
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/exo:identity[3]"
+          exo:identity2Id="#/exo:applications/Social_Identity/exo:identity[2]"
+          exo:status="CONFIRM"
+          />
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/exo:identity[3]"
+          exo:identity2Id="#/exo:applications/Social_Identity/exo:identity[4]"
+          exo:status="PENDING"
+          />
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/user_a"
+          exo:identity2Id="#/exo:applications/Social_Identity/exo:identity[4]"
+          exo:status="CONFIRM"
+          />
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/user_d"
+          exo:identity2Id="#/exo:applications/Social_Identity/exo:identity"
+          exo:status="CONFIRM"
+          />
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/user_b"
+          exo:identity2Id="#/exo:applications/Social_Identity/user_a"
+          exo:status="PENDING"
+          />
+      <exo:relationship loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/user_c"
+          exo:identity2Id="#/exo:applications/Social_Identity/user_d"
+          exo:status="CONFIRM"
+          />
+      <ec1bbdea2e8902a901cf62bd95f0bdc8 loader:type="exo:relationship"
+          exo:identity1Id="#/exo:applications/Social_Identity/user_c"
+          exo:identity2Id="#/exo:applications/Social_Identity/user_a"
+          exo:status="CONFIRM"
+          />
+    </Social_Relationship>
+
+    <!-- Profiles -->
+    <Social_Profile>
+      <exo:profile
+          Url="/portal/private/classic/profile/user_a"
+          firstName="a"
+          lastName="a"
+          position="position a"
+          username="user_a"
+          exo:identity="#/exo:applications/Social_Identity/user_a"
+          >
+        <emails loader:type="exo:profileKeyValue"
+            key="work"
+            value="user_a@foo.com"
+         />
+        <ims loader:type="exo:profileKeyValue"
+            key="Gtalk"
+            value="user_a1"
+            />
+        <ims loader:type="exo:profileKeyValue"
+            key="Msn"
+            value="user_a2"
+            />
+        <urls loader:type="exo:profileKeyValue"
+            key="http://foo.com"
+            value="http://foo.com"
+            />
+        <urls loader:type="exo:profileKeyValue"
+            key="http://bar.com"
+            value="http://bar.com"
+            />
+        <phones loader:type="exo:profileKeyValue"
+            key="Work"
+            value="0000000000"
+            />
+        <phones loader:type="exo:profileKeyValue"
+            key="Home"
+            value="0000000001"
+            />
+        <experiences loader:type="exo:profileExperience"
+            company="foo"
+            description="bar"
+            startDate="01/08/2011"
+            endDate="02/08/2011"
+            isCurrent="false"
+            position="foobar"
+            skills="foo, bar"
+            />
+        <experiences loader:type="exo:profileExperience"
+            company="foo"
+            description="bar"
+            startDate="01/08/2011"
+            isCurrent="true"
+            position="foobar"
+            skills="foo, bar"
+            />
+      </exo:profile>
+    </Social_Profile>
+
+    <!-- Activities -->
+    <Social_Activity>
+      <organization>
+        <user_a>
+          <published>
+            <ad25a8622e8902a9004557b913a2982b loader:type="exo:activity"
+                exo:hidden="false"
+                exo:params="SENDER=user_b,RECEIVER=user_a"
+                exo:postedTime="1298642872377"
+                exo:title="@user_b has invited @user_a to connect"
+                exo:titleTemplate="CONNECTION_REQUESTED"
+                exo:type="exosocial:relationship"
+                exo:updatedTimestamp="1298642872377"
+                exo:userId="#/exo:applications/Social_Identity/user_a"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2982b>
+            <ad25a8622e8902a9004557b913a2982c loader:type="exo:activity"
+                exo:hidden="false"
+                exo:params="SENDER=user_c,RECEIVER=user_a"
+                exo:postedTime="1298642872378"
+                exo:title="@user_c has invited @user_a to connect"
+                exo:titleTemplate="CONNECTION_REQUESTED"
+                exo:body="body"
+                exo:bodyTemplate="template"
+                exo:url="url"
+                exo:priority="1"
+                exo:externalId="external id"
+                exo:type="exosocial:relationship"
+                exo:likeIdentityIds="#/exo:applications/Social_Identity/user_a,#/exo:applications/Social_Identity/user_b"
+                exo:updatedTimestamp="1298642872378"
+                exo:userId="#/exo:applications/Social_Identity/user_a"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2982c>
+            <ad25a8622e8902a9004557b913a2982e loader:type="exo:activity"
+                exo:hidden="false"
+                exo:postedTime="1298642872380"
+                exo:title="foo"
+                exo:type="exosocial:relationship"
+                exo:replyToId="IS_COMMENT"
+                exo:updatedTimestamp="1298642872380"
+                exo:userId="#/exo:applications/Social_Identity/user_a"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2982e>
+            <ad25a8622e8902a9004557b913a2982d loader:type="exo:activity"
+                exo:hidden="false"
+                exo:params="SENDER=user_d,RECEIVER=user_a"
+                exo:postedTime="1298642872379"
+                exo:title="@user_d has invited @user_a to connect"
+                exo:titleTemplate="CONNECTION_REQUESTED"
+                exo:type="exosocial:relationship"
+                exo:replyToId="#/exo:applications/Social_Activity/organization/user_a/published/ad25a8622e8902a9004557b913a2982e"
+                exo:updatedTimestamp="1298642872379"
+                exo:userId="#/exo:applications/Social_Identity/user_a"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2982d>
+          </published>
+        </user_a>
+      </organization>
+      <space>
+        <uuid loader:overridename="#/exo:applications/Social_Space/Space/exo:space">
+          <published>
+            <ad25a8622e8902a9004557b913a2983b loader:type="exo:activity"
+                exo:hidden="false"
+                exo:postedTime="1298642872387"
+                exo:title="@user_a has joined."
+                exo:type="exosocial:spaces"
+                exo:updatedTimestamp="1298642872387"
+                exo:userId="#/exo:applications/Social_Identity/user_a"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2983b>
+            <ad25a8622e8902a9004557b913a2983c loader:type="exo:activity"
+                exo:hidden="false"
+                exo:postedTime="1298642872388"
+                exo:title="@user_b has joined."
+                exo:type="exosocial:spaces"
+                exo:updatedTimestamp="1298642872388"
+                exo:userId="#/exo:applications/Social_Identity/user_b"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2983c>
+            <ad25a8622e8902a9004557b913a2983d loader:type="exo:activity"
+                exo:hidden="false"
+                exo:postedTime="1298642872389"
+                exo:title="@user_c has joined."
+                exo:type="exosocial:spaces"
+                exo:updatedTimestamp="1298642872389"
+                exo:userId="#/exo:applications/Social_Identity/user_c"
+              >
+                <loader:mixin>mix:referenceable</loader:mixin>
+            </ad25a8622e8902a9004557b913a2983d>
+          </published>
+        </uuid>
+      </space>
+    </Social_Activity>
+    
+  </exo:applications>
+</data>
