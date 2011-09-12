@@ -38,7 +38,7 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
-     template = "classpath:groovy/social/plugin/doc/UIDocActivity.gtmpl",
+   template = "classpath:groovy/social/plugin/doc/UIDocActivity.gtmpl",
    events = {
      @EventConfig(listeners = UIDocActivity.ViewDocumentActionListener.class),
      @EventConfig(listeners = BaseUIActivity.ToggleDisplayLikesActionListener.class),

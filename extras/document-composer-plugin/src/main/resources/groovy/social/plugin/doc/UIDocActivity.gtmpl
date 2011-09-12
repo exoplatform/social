@@ -161,7 +161,7 @@
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
-      <div class="TitleContent ClearFix">
+      <h5 class="TitleContent ClearFix">
         <div class="Text">
           <a title="$ownerName" href="$ownerUri">$ownerName</a>
           <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
@@ -176,7 +176,7 @@
       <% if (activityDeletable) {%>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
       <%}%>
-      </div>
+      </h5>
       <div class="Content">
         <%
           if (!dMessage.equals(null) && !dMessage.equals("")){
@@ -185,10 +185,7 @@
             <%
           }
         %>
-        <img src="/social-resources/skin/ShareImages/activity_file.png" alt="" style="padding: 0 4px 6px 10px;"/>$dName
-        <a class="ColorLink" target="_blank" href="$dLink">$downloadDocumentLabel</a>
-        &nbsp;|&nbsp;
-        <a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a>
+        $dName
       </div>
       <div class="DocActivityIcon">
         <span class="DateTime">$activityPostedTime *</span>
@@ -202,13 +199,15 @@
       <% if (uicomponent.isLiked()) { %>
         <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
           $labelUnlike
-        </a>
+        </a> |
       <% } else { %>
         <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
           $labelLike
-        </a>
+        </a> |
       <% }%>
      <% }%>
+        <a class="ColorLink" target="_blank" href="$dLink">$downloadDocumentLabel</a> |
+        <a class="ColorLink" href="<%= uicomponent.event("ViewDocument", uicomponent.getId(), "")%>">$viewDocumentLabel</a>
       </div>
     </div>
 

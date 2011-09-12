@@ -135,18 +135,26 @@
     %>
       <script type="text/javascript">
         function setShareButtonDisable(state){
-          document.getElementById("ShareButton").disabled = state;
+          var shareButton = document.getElementById("ShareButton");
+          
+          shareButton.disabled = state;
+          if (state) shareButton.className = 'ShareButtonDisable';
+          else shareButton.className = 'ShareButton'; 
         }
 
         function handleShareButton(){
+          var shareButton = document.getElementById("ShareButton");
           <%
             if(currentActivityComposer.isReadyForPostingActivity()){
+            
           %>
-              document.getElementById("ShareButton").disabled = false;
+              shareButton.disabled = false;
+              shareButton.className = 'ShareButton'; 
           <%
             } else {
           %>
-            document.getElementById("ShareButton").disabled = true;
+            shareButton.disabled = true;
+            shareButton.className = 'ShareButtonDisable'; 
           <%
             }
           %>

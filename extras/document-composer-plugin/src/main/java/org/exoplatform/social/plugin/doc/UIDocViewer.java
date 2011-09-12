@@ -26,6 +26,7 @@ import javax.jcr.Node;
 import org.exoplatform.ecm.resolver.JCRResourceResolver;
 import org.exoplatform.ecm.webui.presentation.UIBaseNodePresentation;
 import org.exoplatform.ecm.webui.utils.Utils;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.resolver.ResourceResolver;
 import org.exoplatform.services.cms.impl.DMSConfiguration;
 import org.exoplatform.services.cms.templates.TemplateService;
@@ -90,27 +91,30 @@ public class UIDocViewer extends UIBaseNodePresentation {
   }
 
   public String getTemplate() {
+    TemplateService templateService = getApplicationComponent(TemplateService.class);
+    String userName = Util.getPortalRequestContext().getRemoteUser() ;
     try {
-      return getTemplatePath();
+      String nodeType = getOriginalNode().getPrimaryNodeType().getName();
+      if(templateService.isManagedNodeType(nodeType)) {
+        return templateService.getTemplatePathByUser(false, nodeType, userName);
+      }
     } catch (Exception e) {
       LOG.warn(e.getMessage(), e);
-      return null;
     }
+    return null;
   }
 
   /* (non-Javadoc)
    * @see org.exoplatform.ecm.webui.presentation.UIBaseNodePresentation#getTemplatePath()
    */
   public String getTemplatePath() throws Exception {
-    TemplateService templateService = getApplicationComponent(TemplateService.class);
-    return templateService.getTemplatePath(getOriginalNode(), false);
+    return getRepository();
   }
 
   public ResourceResolver getTemplateResourceResolver(WebuiRequestContext context, String template) {
-    String repository = getRepositoryName();
     DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
     String workspace = dmsConfiguration.getConfig().getSystemWorkspace();
-    return new JCRResourceResolver(repository, workspace);
+    return new JCRResourceResolver(workspace);
   }
 
   public String getNodeType() {

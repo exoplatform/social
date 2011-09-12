@@ -87,7 +87,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   private String documentPath;
   private String documentName;
   private boolean isDocumentReady;
-
+  private String currentUser;
+  
   /**
    * constructor
    */
@@ -109,11 +110,26 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     return documentName;
   }
 
+  /**
+   * @return the currentUser
+   */
+  public String getCurrentUser() {
+    return currentUser;
+  }
+
+  /**
+   * @param currentUser the currentUser to set
+   */
+  public void setCurrentUser(String currentUser) {
+    this.currentUser = currentUser;
+  }
+
   @Override
   protected void onActivate(Event<UIActivityComposer> event) {
     isDocumentReady = false;
     //SOC-1912
-    rootpath = getPathForCurrentUser(event.getRequestContext().getRemoteUser());
+    setCurrentUser(event.getRequestContext().getRemoteUser());
+    rootpath = getPathForCurrentUser(getCurrentUser());
     final UIDocActivityComposer docActivityComposer = (UIDocActivityComposer) event.getSource();
     showDocumentPopup(docActivityComposer);
   }
@@ -304,16 +320,15 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   }
 
   public String buildDocumentPath(String rawPath){
-    return new StringBuilder().append(rootpath).append("/").append(rawPath).toString();
+    return getPathForCurrentUser(getCurrentUser()) + "/" + rawPath;
   }
 
   public static class SelectDocumentActionListener  extends EventListener<UIDocActivityComposer> {
     @Override
     public void execute(Event<UIDocActivityComposer> event) throws Exception {
       final UIDocActivityComposer docActivityComposer = event.getSource();
-      docActivityComposer.rootpath = new StringBuilder().append("/Users/").
-                                                         append(event.getRequestContext().getRemoteUser()).
-                                                         append("/").toString();
+      docActivityComposer.rootpath = docActivityComposer.getPathForCurrentUser(event.getRequestContext()
+              .getRemoteUser());
       UIPopupWindow uiPopup = docActivityComposer.showDocumentPopup(docActivityComposer);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
