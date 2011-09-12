@@ -47,7 +47,8 @@
 
 .ProfileNavigationPortletTDContainer {
 	width: 162px;
-	background: #ededed;
+	background: #f8f8f8;
+	border-right: 1px solid #e1e1e1;
 }
 
 .ProfileActivityTDContainer {
@@ -58,7 +59,7 @@
 }
 
 .UIProfileNavigationPortlet{
-	background: #EDEDED;
+	padding: 12px 0px 12px 0px;
 }
 
 .UIProfileNavigationPortlet .ProfTitle {
@@ -71,21 +72,48 @@
 }
 
 .UIProfileNavigationPortlet .Avartar {
-  background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
   display: block;
-  height: 64px;
-  margin-top: 30px;
-  margin-left: 40px;
-  padding: 6px 0;
-  text-align: center;
-  vertical-align: middle;
-  width: 79px;
+  height: 118px;
+  margin:auto;
+  width: 118px;
+  position: relative;
 }
 
 .UIProfileNavigationPortlet .Avartar img {
-  height: 65px;
-  width: 65px;
+  height: 118px;
+  width: 118px;
 }
+
+.UIProfileNavigationPortlet .Avartar .BorderTopLanger {
+  background: url(DefaultSkin/background/BorderTopLanger.png) no-repeat center top;
+  height: 4px;
+  width: 118px;
+  left: 0;
+  position: absolute;
+}
+
+.UIProfileNavigationPortlet .Avartar .BorderBottomLanger {
+  background: url(DefaultSkin/background/BorderBottomLanger.png) no-repeat center bottom;
+  height: 4px;
+  width: 118px;
+  left: 0;
+  position: absolute;
+  bottom: 0px;
+}
+
+.UIProfileNavigationPortlet .ChangeAvatar {
+  text-align: center;
+  padding-top: 3px;
+}
+
+.UIProfileNavigationPortlet .ChangeAvatar a {
+  color: #115EAE; 
+}
+
+.UIProfileNavigationPortlet .Editable {
+  cursor: pointer;
+}
+
 
 .UIProfileNavigationPortlet .ConnectionArea {
   text-align: center;
@@ -101,20 +129,27 @@
 }
 
 .UIVerclTab {
-	width: 168px;
-	position: relative;
-	margin: 10px 0 30px;
+	width: 118px;
+	margin: auto;
+	padding-top: 8px;
 }
 
 .UIVerclTab .Tab {
 	height: 23px;
 	line-height: 23px;
-	padding-right: 20px;
+	padding-right: 6px;
 	text-align: right;
 }
 
 .UIVerclTab .SelectedTab {
-	background: url(DefaultSkin/background/SelectedTab.gif) no-repeat left top;
+	background: #757575;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.UIVerclTab .SelectedTab .ArowIcon{
+	background: url(DefaultSkin/background/ArowIcon.png) no-repeat right center;
 }
 
 .UIVerclTab .SelectedTab a {
@@ -122,19 +157,8 @@
 }
 
 .UIVerclTab .Tab a {
-	padding-right: 25px;
+	padding-right: 10px;
 	display: block;
 	font-weight: bold;
 }
 
-.UIVerclTab .ActivityIcon {
-	background: url('DefaultSkin/background/ActivityIcon.gif') no-repeat right center;
-}
-
-.UIVerclTab .ProfileIcon {
-	background: url('DefaultSkin/background/ProfileIcon.gif') no-repeat right center;
-}
-
-.UIVerclTab .RelationIcon {
-	background: url('DefaultSkin/background/RelationIcon.gif') no-repeat right center;
-}

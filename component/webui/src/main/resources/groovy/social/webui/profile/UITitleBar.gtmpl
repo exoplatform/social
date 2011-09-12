@@ -17,17 +17,22 @@
 
 -->
 <%
+  def componentId = uicomponent.id;
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
+  def editLabel = _ctx.appRes(componentId + ".label.Edit");
+  def cancelLabel = _ctx.appRes(componentId + ".label.Cancel");
+  def saveLabel = _ctx.appRes(componentId + ".label.Save");
 %>
 <div class="UISocTitleBar" id="$uicomponent.id">
 	<h5 class="TitleBar ClearFix">
 	  <% if (isEditable) { %>
 		<% if (!isEdit) { %>
-		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="#" class="EditIcon TitIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" class="ColorLink TitIcon" href="javascript:void(0)">$editLabel</a>
 		<% } else { %>
-		  <a onclick="<%=uicomponent.event("Cancel")%>; return false;" href="#" class="CancelIcon TitIcon">&nbsp;</a>
-		  <a onclick="<%=uicomponent.event("Save")%>; return false;" href="#" class="SaveIcon TitIcon">&nbsp;</a>
+		  <a onclick="<%=uicomponent.event("Cancel")%>; return false;" class="ColorLink TitIcon" href="javascript:void(0)">$cancelLabel</a>
+		  <span class="ActionSparator"> | </span>
+		  <a onclick="<%=uicomponent.event("Save")%>; return false;" class="ColorLink TitIcon" href="javascript:void(0)">$saveLabel</a>
 		 <% } %>
 	  <% } %>
 	  <%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%>

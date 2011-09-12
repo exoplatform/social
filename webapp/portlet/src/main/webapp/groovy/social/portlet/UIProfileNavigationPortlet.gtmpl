@@ -1,29 +1,33 @@
+<%
+/*
 <!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
 <%
-  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.relationship.model.Relationship.Type;
   import org.exoplatform.social.core.identity.model.Profile;
+  import org.exoplatform.webui.core.UIPopupWindow;
 
   def ownerIdentity = Utils.getOwnerIdentity(true);
   def viewerIdentity = Utils.getViewerIdentity();
@@ -35,51 +39,31 @@
 
   def selectedNode = uicomponent.getSelectedNode();
   def componentId = uicomponent.id;
-  def contactStatus = uicomponent.getContactStatus();
   def relationship = uicomponent.getRelationship();
-
-  def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
-  def connectLabel = _ctx.appRes(componentId + ".label.Connect");
-  def denyLabel = _ctx.appRes(componentId + ".label.Deny");
-  def revokeLabel = _ctx.appRes(componentId + ".label.Revoke");
-  def disconnectLabel = _ctx.appRes(componentId + ".label.Disconnect");
-  def inviteToConnectTitle = (_ctx.appRes(componentId + ".label.InviteToConnectTitle")).replace("{0}", currentUser + "");
-  def connectTitle = (_ctx.appRes(componentId + ".label.ConnectTitle")).replace("{0}", currentUser + "");
-  def denyTitle = (_ctx.appRes(componentId + ".label.DenyTitle")).replace("{0}", currentUser + "");
-  def revokeTitle = (_ctx.appRes(componentId + ".label.RevokeTitle")).replace("{0}", currentUser + "");
-  def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
 
   def imageSource = ownerIdentity.profile.avatarUrl;
   if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+
+  def changeAvatar = uicomponent.event('ChangeAvatar');
+  def changeAvatarLabel = _ctx.appRes(componentId + ".label.ChangeAvatar");
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
+  <% uicomponent.renderChild(UIPopupWindow.class); %>
   <%if (Utils.isOwner()) { %>
-      <div class="ProfTitle">
-        <%=_ctx.appRes(uicomponent.getId() + ".label.Me")%>
-      </div>
-      <a class="Avartar">
+      <a onclick="<%=uicomponent.event("ChangeAvatar")%>; return false;" href="javascript:void(0)" class="Avartar Editable" title="$changeAvatarLabel">
         <img alt="$currentUser" src="$imageSource"/>
+		<span class="BorderTopLanger"></span>
+        <span class="BorderBottomLanger"></span>
       </a>
+      <div class="ChangeAvatar">
+        <a onclick="<%=uicomponent.event("ChangeAvatar")%>; return false;" href="javascript:void(0)">$changeAvatarLabel</a>
+      </div>
   <% } else {%>
-      <div class="ProfTitle">
-        ${currentUser}
-      </div>
       <a class="Avartar">
         <img alt="$currentUser" src="$imageSource"/>
+		<span class="BorderTopLanger"></span>
+        <span class="BorderBottomLanger"></span>
       </a>
-      <div class="ConnectionArea">
-        <% if (contactStatus == null) { %>
-             <a href="javascript:void(0)" title="$inviteToConnectTitle"  onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
-        <% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
-             <a href="javascript:void(0)" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>
-             <span> | </span>
-             <a href="javascript:void(0)" title="$denyTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
-        <% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
-             <a href="javascript:void(0)" title="$revokeTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
-        <% } else if (contactStatus == Type.CONFIRMED) { %>
-             <a href="javascript:void(0)" title="$disconnectTitle"  onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectTitle</a>
-        <% } %>
-      </div>
   <% } %>
   <div class="UIVerclTab">
     <% if (selectedNode == "activities")  {%>
@@ -87,21 +71,21 @@
     <% } else {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${actititesURL}" class="ActivityIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
+        <a href="${actititesURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
     </div>
     <% if (selectedNode == "profile")  {%>
     <div class="SelectedTab Tab">
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${profileURL}" class="ProfileIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
+        <a href="${profileURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
     </div>
     <% if (selectedNode == "connections")  {%>
     <div class="SelectedTab Tab">
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${relationURL}" class="RelationIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+        <a href="${relationURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
     </div>
   </div>
 </div>

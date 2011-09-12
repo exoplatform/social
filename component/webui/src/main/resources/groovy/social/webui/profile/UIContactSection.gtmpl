@@ -34,6 +34,9 @@
   def noContact = _ctx.appRes("${uicomponentId}.label.noContact");
   def noContactCurrent = _ctx.appRes("${uicomponentId}.label.noContactCurrent");
 
+  def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
+  def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
@@ -168,7 +171,7 @@
                      if (i % 2 != 0) {
                        uiform.renderField(phoneChilds.get(i));
                      %>
-            <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;">&nbsp</a>
+            (<a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;">$removeActionLabel</a>)
                      <%
                      } else {
                        if (i != 0) {
@@ -199,7 +202,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", phoneChild)%>">&nbsp</a>
+                (<a class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>)
             <% } %>
             </td>
           </tr>
@@ -234,7 +237,7 @@
                          if (i % 2 != 0) {
                            uiform.renderField(imsChilds.get(i));
                            %>
-                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;">&nbsp</a>
+                             (<a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;">$removeActionLabel</a>)
                            <%
                          } else {
                            if (i != 0) {
@@ -268,7 +271,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", imChild)%>">&nbsp</a>
+                (<a class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>)
             <% } %>
             </td>
           </tr>
@@ -303,7 +306,7 @@
                          if (i % 2 != 0) {
                            uiform.renderField(urlChilds.get(i));
                            %>
-                             <a class="DeleteIcon" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;">&nbsp</a>
+                             (<a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;">$removeActionLabel</a>)
                            <%
                          } else {
                            if (i != 0) { %>
@@ -333,7 +336,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="AddIcon" onclick="<%=uicomponent.event("Add", urlChild)%>">&nbsp</a>
+                (<a class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>)
             <% } %>
             </td>
           </tr>

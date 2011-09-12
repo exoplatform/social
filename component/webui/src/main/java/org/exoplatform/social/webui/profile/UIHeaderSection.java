@@ -17,9 +17,12 @@
 package org.exoplatform.social.webui.profile;
 
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -36,13 +39,22 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/profile/UIHeaderSection.gtmpl",
   events = {
+    @EventConfig(listeners = UIHeaderSection.AddContactActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIHeaderSection.AcceptContactActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIHeaderSection.DenyContactActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase = Phase.DECODE),
-    @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
+    @EventConfig(listeners = UIHeaderSection.SaveActionListener.class, phase = Phase.DECODE)
   }
 )
 public class UIHeaderSection extends UIProfileSection {
 
+  /** Label for display invoke action */
+  private static final String INVITATION_REVOKED_INFO = "UIProfileNavigationPortlet.label.RevokedInfo";
+
+  /** Label for display established invitation */
+  private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
+	  
   /**
    * Initializes components for header form.<br>
    */
@@ -94,6 +106,100 @@ public class UIHeaderSection extends UIProfileSection {
     }
   }
 
+  /**
+   * Listens to add action then make request to invite person to make connection.<br>
+   *   - Gets information of user is invited.<br>
+   *   - Checks the relationship to confirm that there have not got connection yet.<br>
+   *   - Saves the new connection.<br>
+   *
+   */
+  public static class AddContactActionListener extends EventListener<UIHeaderSection> {
+    @Override
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeaderSection = event.getSource();
+      // Check if invitation is established by another user
+      Relationship relationship = uiHeaderSection.getRelationship();
+      if (relationship != null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      Utils.getRelationshipManager().inviteToConnect(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiHeaderSection);
+    }
+  }
+
+  /**
+   * Listens to accept actions then make connection to accepted person.<br>
+   *   - Gets information of user who made request.<br>
+   *   - Checks the relationship to confirm that there still got invited connection.<br>
+   *   - Makes and Save the new relationship.<br>
+   */
+  public static class AcceptContactActionListener extends EventListener<UIHeaderSection> {
+    @Override
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeaderSection = event.getSource();
+      // Check if invitation is revoked or deleted by another user
+      Relationship relationship = uiHeaderSection.getRelationship();
+      if (relationship == null || relationship.getStatus().equals(Relationship.Type.IGNORED)) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      Utils.getRelationshipManager().confirm(relationship.getReceiver(), relationship.getSender());
+      Utils.updateWorkingWorkSpace();
+    }
+  }
+
+  /**
+   * Listens to deny action then delete the invitation.<br>
+   *   - Gets information of user is invited or made request.<br>
+   *   - Checks the relation to confirm that there have not got relation yet.<br>
+   *   - Removes the current relation and save the new relation.<br> 
+   *
+   */
+  public static class DenyContactActionListener extends EventListener<UIHeaderSection> {
+    @Override
+    public void execute(Event<UIHeaderSection> event) throws Exception {
+      UIHeaderSection uiHeaderSection = event.getSource();
+      // Check if invitation is revoked or deleted by another user
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      Relationship relationship = uiHeaderSection.getRelationship();
+      if (relationship == null) {
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      Utils.getRelationshipManager().delete(relationship);
+      Utils.updateWorkingWorkSpace();
+    }
+  }
+  
+  /**
+   * Gets contact status between current user and identity that is checked.<br>
+   * 
+   * @return type of relationship status that equivalent the relationship.
+   * 
+   * @throws Exception
+   */
+  protected Relationship.Type getContactStatus() throws Exception {
+    Relationship rl = getRelationship();
+    if(rl == null) {
+      return null;
+    }
+    return rl.getStatus();
+  }
+  
+  /**
+   * Gets relationship between current user and viewer identity.<br>
+   * 
+   * @return relationship.
+   * 
+   * @throws Exception
+   */
+  protected Relationship getRelationship() throws Exception {
+    return Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
+  }
+  
   /**
    * Gets position information from profile and set value into uicomponent.<br>
    *

@@ -17,10 +17,14 @@
 package org.exoplatform.social.webui;
 
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.portal.webui.container.UIContainer;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -125,22 +129,49 @@ public class UIAvatarUploadContent extends UIContainer {
     private void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
       UIComponent parent =uiAvatarUploadContent.getParent();
       while (parent != null) {
-         if (UIProfile.class.isInstance(parent)) {
-           ((UIProfile)parent).saveAvatar(uiAvatarUploadContent);
-           return;
-         } else if (UISpaceInfo.class.isInstance(parent)) {
+         if (UISpaceInfo.class.isInstance(parent)) {
            UISpaceInfo uiSpaceInfo = ((UISpaceInfo)parent);
            SpaceService spaceService = uiSpaceInfo.getSpaceService();
            String id = uiSpaceInfo.getUIStringInput("id").getValue();
            Space space = spaceService.getSpaceById(id);
-           uiSpaceInfo.saveAvatar(uiAvatarUploadContent, space);
-           return;
+           if (space != null) {
+             uiSpaceInfo.saveAvatar(uiAvatarUploadContent, space);
+             return;
+           }
          }
          parent = parent.getParent();
       }
+      
+      // Save user avatar
+      uiAvatarUploadContent.saveUserAvatar(uiAvatarUploadContent);
+      return;
     }
   }
 
+  /**
+   * Saves avatar of users.
+   * 
+   * @param uiAvatarUploadContent
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void saveUserAvatar(UIAvatarUploadContent uiAvatarUploadContent) throws Exception {
+    AvatarAttachment attacthment = uiAvatarUploadContent.getAvatarAttachment();
+    
+    Profile p = Utils.getOwnerIdentity().getProfile();
+    p.setProperty(Profile.AVATAR, attacthment);
+    Map<String, Object> props = p.getProperties();
+
+    // Removes avatar url and resized avatar
+    for (String key : props.keySet()) {
+      if (key.startsWith(Profile.AVATAR + ImageUtils.KEY_SEPARATOR)) {
+        p.removeProperty(key);
+      }
+    }
+
+    Utils.getIdentityManager().updateProfile(p);
+  }
+  
   /**
    * Aborts, close the popup window.
    *

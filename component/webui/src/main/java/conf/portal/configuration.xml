@@ -73,6 +73,7 @@
           <value>locale.social.webui.profile.UIContactSection</value>
           <value>locale.social.webui.profile.UIDisplayProfileList</value>
           <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UITitleBar</value>
           <value>locale.social.webui.profile.UIHeaderSection</value>
           <value>locale.social.webui.profile.UIProfile</value>
           <value>locale.social.webui.profile.UIProfileUserSearch</value>
@@ -114,6 +115,7 @@
           <value>locale.social.webui.profile.UIContactSection</value>
           <value>locale.social.webui.profile.UIDisplayProfileList</value>
           <value>locale.social.webui.profile.UIExperienceSection</value>
+          <value>locale.social.webui.profile.UITitleBar</value>
           <value>locale.social.webui.profile.UIHeaderSection</value>
           <value>locale.social.webui.profile.UIProfile</value>
           <value>locale.social.webui.profile.UIProfileUserSearch</value>

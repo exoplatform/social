@@ -23,16 +23,10 @@ import java.util.Map;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
-import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
-import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 
 /**
  * Component is used for profile managing, it is the
@@ -41,14 +35,9 @@ import org.exoplatform.webui.event.EventListener;
  */
 
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/profile/UIProfile.gtmpl",
-  events = {
-    @EventConfig(listeners=UIProfile.ChangeAvatarActionListener.class)
-  }
+  template = "classpath:groovy/social/webui/profile/UIProfile.gtmpl"
 )
 public class UIProfile extends UIContainer {
-
-  private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
 
   /**
    * Constructor to initialize UIAvatarUploader popup and info sections
@@ -63,9 +52,6 @@ public class UIProfile extends UIContainer {
       Class sect = (Class)it.next();
       addChild(sect, null, null);
     }
-    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
-    uiPopup.setWindowSize(500, 0);
-    addChild(uiPopup);
   }
 
   /**
@@ -105,24 +91,6 @@ public class UIProfile extends UIContainer {
     }
 
     Utils.getIdentityManager().updateProfile(p);
-  }
-
-  /**
-   * Action trigger for editting avatar. An UIAvatarUploader popup should be displayed.
-   * @author hoatle
-   *
-   */
-  public static class ChangeAvatarActionListener extends EventListener<UIProfile> {
-
-    @Override
-    public void execute(Event<UIProfile> event) throws Exception {
-      UIProfile uiProfile = event.getSource();
-      UIPopupWindow uiPopup = uiProfile.getChild(UIPopupWindow.class);
-      UIAvatarUploader uiAvatarUploader = uiProfile.createUIComponent(UIAvatarUploader.class, null, null);
-      uiPopup.setUIComponent(uiAvatarUploader);
-      uiPopup.setShow(true);
-    }
-
   }
 
  /**

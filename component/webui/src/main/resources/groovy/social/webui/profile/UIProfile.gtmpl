@@ -16,37 +16,8 @@
     along with this program; if not, see<http://www.gnu.org/licenses/>.
 
 -->
-<%
-  import org.exoplatform.webui.core.UIPopupWindow
-  import org.exoplatform.social.core.service.LinkProvider;
-
-  def imageSource = uicomponent.getProfile().avatarUrl;
-  if (!imageSource) {
-    imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-  }
-
-  def changeAvatar = "return false;";
-  def isEditable = uicomponent.isEditable();
-  if (isEditable) changeAvatar = uicomponent.event('ChangeAvatar') + ";return false;";
-%>
-  <div class="UIProfile" id="$uicomponent.id">
-    <div class="LeftColumn">
-     <div class="Avatar" style="cursor: pointer;">
-      <div class="Image" onclick="$changeAvatar" title="Click to change avatar">
-         <img src="$imageSource" alt=""/>
-       </div>
-     </div>
-    <% if (isEditable) { %>
-    <div class="UIAction">
-      <a href="javascript:void(0);" onclick="$changeAvatar" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-    </div>
-        
-    <% } %>
-  </div>
+<div class="UIProfile" id="$uicomponent.id">
   <div class="Container" >
-
-          <% uicomponent.renderChildren(); %>
-
+    <% uicomponent.renderChildren(); %>
   </div>
-  <div style="clear: left;"><span></span></div>
 </div>

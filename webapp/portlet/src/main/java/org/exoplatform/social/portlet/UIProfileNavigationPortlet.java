@@ -19,12 +19,12 @@ package org.exoplatform.social.portlet;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -40,24 +40,22 @@ import org.exoplatform.webui.event.EventListener;
  lifecycle = UIApplicationLifecycle.class,
  template = "app:/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl",
  events = {
-   @EventConfig(listeners = UIProfileNavigationPortlet.AddContactActionListener.class),
-   @EventConfig(listeners = UIProfileNavigationPortlet.AcceptContactActionListener.class),
-   @EventConfig(listeners = UIProfileNavigationPortlet.DenyContactActionListener.class)
+   @EventConfig(listeners = UIProfileNavigationPortlet.ChangeAvatarActionListener.class)
  }
 )
 public class UIProfileNavigationPortlet extends UIPortletApplication {
-  /** Label for display invoke action */
-  private static final String INVITATION_REVOKED_INFO = "UIProfileNavigationPortlet.label.RevokedInfo";
-
-  /** Label for display established invitation */
-  private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
-
+  private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+  
   /**
    * Default Constructor.<br>
    * 
    * @throws Exception
    */
-  public UIProfileNavigationPortlet() throws Exception { }
+  public UIProfileNavigationPortlet() throws Exception {
+    UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
+	uiPopup.setWindowSize(500, 0);
+	addChild(uiPopup);
+  }
 
   /**
    * Returns the current selected node.<br>
@@ -87,85 +85,18 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
   }
 
   /**
-   * Gets contact status between current user and identity that is checked.<br>
-   * 
-   * @return type of relationship status that equivalent the relationship.
-   * 
-   * @throws Exception
+   * Action trigger for editting avatar. An UIAvatarUploader popup should be displayed.
+   * @since 1.2.2
    */
-  public Relationship.Type getContactStatus() throws Exception {
-    Relationship rl = getRelationship();
-    if(rl == null) {
-      return null;
-    }
-    return rl.getStatus();
-  }
+  public static class ChangeAvatarActionListener extends EventListener<UIProfileNavigationPortlet> {
 
-  /**
-   * Listens to add action then make request to invite person to make connection.<br>
-   *   - Gets information of user is invited.<br>
-   *   - Checks the relationship to confirm that there have not got connection yet.<br>
-   *   - Saves the new connection.<br>
-   *
-   */
-  public static class AddContactActionListener extends EventListener<UIProfileNavigationPortlet> {
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
-      UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      // Check if invitation is established by another user
-      Relationship relationship = profileNavigationportlet.getRelationship();
-      if (relationship != null) {
-        UIApplication uiApplication = event.getRequestContext().getUIApplication();
-        uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-      Utils.getRelationshipManager().invite(Utils.getViewerIdentity(), Utils.getOwnerIdentity());
-      Utils.updateWorkingWorkSpace();
-    }
-  }
-
-  /**
-   * Listens to accept actions then make connection to accepted person.<br>
-   *   - Gets information of user who made request.<br>
-   *   - Checks the relationship to confirm that there still got invited connection.<br>
-   *   - Makes and Save the new relationship.<br>
-   */
-  public static class AcceptContactActionListener extends EventListener<UIProfileNavigationPortlet> {
-    @Override
-    public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
-      UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      // Check if invitation is revoked or deleted by another user
-      Relationship relationship = profileNavigationportlet.getRelationship();
-      if (relationship == null || relationship.getStatus().equals(Relationship.Type.IGNORED)) {
-        UIApplication uiApplication = event.getRequestContext().getUIApplication();
-        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-      Utils.getRelationshipManager().confirm(relationship);
-      Utils.updateWorkingWorkSpace();
-    }
-  }
-
-  /**
-   * Listens to deny action then delete the invitation.<br>
-   *   - Gets information of user is invited or made request.<br>
-   *   - Checks the relation to confirm that there have not got relation yet.<br>
-   *   - Removes the current relation and save the new relation.<br> 
-   *
-   */
-  public static class DenyContactActionListener extends EventListener<UIProfileNavigationPortlet> {
-    @Override
-    public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {
-      UIProfileNavigationPortlet profileNavigationportlet = event.getSource();
-      // Check if invitation is revoked or deleted by another user
-      UIApplication uiApplication = event.getRequestContext().getUIApplication();
-      Relationship relationship = profileNavigationportlet.getRelationship();
-      if (relationship == null) {
-        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
-        return;
-      }
-      Utils.getRelationshipManager().remove(relationship);
-      Utils.updateWorkingWorkSpace();
+      UIProfileNavigationPortlet uiProfileNavigation = event.getSource();
+      UIPopupWindow uiPopup = uiProfileNavigation.getChild(UIPopupWindow.class);
+      UIAvatarUploader uiAvatarUploader = uiProfileNavigation.createUIComponent(UIAvatarUploader.class, null, null);
+      uiPopup.setUIComponent(uiAvatarUploader);
+      uiPopup.setShow(true);
     }
   }
 }
