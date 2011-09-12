@@ -34,6 +34,7 @@
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
+  def streamOwner = activity.getStreamOwner();
 %>
 
 <% if (activity) { //process if not null
@@ -163,6 +164,14 @@
       <div class="TitleContent ClearFix">
         <div class="Text">
           <a title="$ownerName" href="$ownerUri">$ownerName</a>
+          <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
+	        	<%
+	          	Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+	    				def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+	          %>
+		        <div class="Delimiter">&gt;</div>
+		        <a class="Text" title="$streamOwner" href="$spaceSourceURI">$streamOwner</a>
+        	<%}%>
         </div>
       <% if (activityDeletable) {%>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>

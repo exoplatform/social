@@ -241,6 +241,16 @@
 	float: right; /* orientation=rt */
 }
 
+.UIActivity .TitleContent .Delimiter {
+	font-weight: bold;
+	display: block;
+	line-height:24px;
+	margin-right:10px; /* orientation=lt */
+	margin-left:10px; /* orientation=rt */
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
+}
+
 .UIActivity .ContentBox .Content a {
 	color: #115ead;
 }

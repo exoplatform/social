@@ -27,6 +27,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceException;
@@ -37,6 +38,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
+import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
@@ -428,6 +430,28 @@ public class BaseUIActivity extends UIForm {
     return ownerIdentity;
   }
 
+  /**
+   * Checks stream owner is space or user.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  protected boolean isSpaceStreamOwner() {
+    Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
+                                                                                  this.getActivity().getStreamOwner(), false);
+    return (identityStreamOwner != null);
+  }
+  
+  /**
+   * Checks this activity is child of UISpaceActivitiesDisplay or not.
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  protected boolean isUISpaceActivitiesDisplay() {
+    return (getParent().getParent().getParent() instanceof UISpaceActivitiesDisplay);
+  }
+  
   public static class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
