@@ -16,8 +16,14 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,6 +36,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.collections.map.HashedMap;
+import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -40,6 +48,13 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.web.WebAppController;
+import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.web.controller.metadata.ControllerDescriptor;
+import org.exoplatform.web.controller.metadata.DescriptorBuilder;
+import org.exoplatform.web.controller.router.Router;
+import org.exoplatform.web.controller.router.RouterConfigException;
+import org.exoplatform.web.controller.router.URIWriter;
 
 /**
  * SpacesRestService.java <br />
@@ -77,6 +92,34 @@ public class SpacesRestService implements ResourceContainer {
   private String portalContainerName;
 
   /**
+   * Qualified name path for rendering url.
+   * 
+   * @since 1.2.2
+   */
+  private static final QualifiedName PATH = QualifiedName.create("gtn", "path");
+
+  /**
+   * Qualified name site type for rendering url.
+   * 
+   * @since 1.2.2
+   */
+  private static final QualifiedName REQUEST_SITE_TYPE = QualifiedName.create("gtn", "sitetype");
+  
+  /**
+   * Qualified name handler for rendering url.
+   * 
+   * @since 1.2.2
+   */
+  private static final QualifiedName REQUEST_HANDLER = QualifiedName.create("gtn", "handler");
+  
+  /**
+   * Qualified name site name for rendering url.
+   * 
+   * @since 1.2.2
+   */
+  private static final QualifiedName REQUEST_SITE_NAME = QualifiedName.create("gtn", "sitename");
+  
+  /**
    * constructor
    */
   public SpacesRestService() {
@@ -92,13 +135,27 @@ public class SpacesRestService implements ResourceContainer {
   private SpaceList showMySpaceList(String userId) {
     SpaceList spaceList = new SpaceList();
     _spaceService = getSpaceService();
-    List<Space> mySpaces;
+    List<Space> mySpaces = null;
+    List<SpaceRest> mySpacesRest = new ArrayList<SpaceRest>();
     try {
       mySpaces = _spaceService.getSpaces(userId);
+      
+      for (Space space : mySpaces) {
+        SpaceRest spaceRest = new SpaceRest(space);
+        mySpacesRest.add(spaceRest);
+      }
+      
+      //fix for issue SOC-2039, sets the space url with new navigation controller
+      Router router = this.getRouter(this.getConfigurationPath());
+      
+      this.fillSpacesURI(mySpacesRest, router);
     } catch (SpaceException e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    spaceList.setSpaces(mySpaces);
+    
+    spaceList.setSpaces(mySpacesRest);
     return spaceList;
   }
 
@@ -113,12 +170,17 @@ public class SpacesRestService implements ResourceContainer {
     SpaceList spaceList = new SpaceList();
     _spaceService = getSpaceService();
     List<Space> pendingSpaces;
+    List<SpaceRest> pendingSpacesRest = new ArrayList<SpaceRest>();
     try {
       pendingSpaces = _spaceService.getPendingSpaces(userId);
+      for (Space space : pendingSpaces) {
+        SpaceRest spaceRest = new SpaceRest(space);
+        pendingSpacesRest.add(spaceRest);
+      }
     } catch (SpaceException e) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    spaceList.setSpaces(pendingSpaces);
+    spaceList.setSpaces(pendingSpacesRest);
     return spaceList;
   }
 
@@ -230,14 +292,14 @@ public class SpacesRestService implements ResourceContainer {
    */
   @XmlRootElement
   static public class SpaceList {
-    private List<Space> _spaces;
+    private List<SpaceRest> _spaces;
 
     /**
      * sets space list
      *
      * @param spaces space list
      */
-    public void setSpaces(List<Space> spaces) {
+    public void setSpaces(List<SpaceRest> spaces) {
       _spaces = spaces;
     }
 
@@ -246,7 +308,7 @@ public class SpacesRestService implements ResourceContainer {
      *
      * @return space list
      */
-    public List<Space> getSpaces() {
+    public List<SpaceRest> getSpaces() {
       return _spaces;
     }
 
@@ -256,9 +318,9 @@ public class SpacesRestService implements ResourceContainer {
      * @param space
      * @see Space
      */
-    public void addSpace(Space space) {
+    public void addSpace(SpaceRest space) {
       if (_spaces == null) {
-        _spaces = new ArrayList<Space>();
+        _spaces = new ArrayList<SpaceRest>();
       }
       _spaces.add(space);
     }
@@ -323,5 +385,82 @@ public class SpacesRestService implements ResourceContainer {
 
   private PortalContainer getPortalContainer() {
     return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
+  }
+
+  /**
+   * Fills the spaces uri.
+   * 
+   * @param mySpaces
+   * @param router
+   * @since 1.2.2
+   */
+  @SuppressWarnings("unchecked")
+  private void fillSpacesURI(List<SpaceRest> mySpaces, Router router) {
+    try {
+      Map<QualifiedName, String> qualifiedName = new HashedMap ();
+      qualifiedName.put(REQUEST_HANDLER, "portal");
+      qualifiedName.put(REQUEST_SITE_TYPE, "group");
+      
+      for (SpaceRest space : mySpaces) {
+        StringBuilder urlBuilder = new StringBuilder();
+        qualifiedName.put(REQUEST_SITE_NAME, space.getGroupId());
+        qualifiedName.put(PATH, space.getUrl());
+        router.render(qualifiedName, new URIWriter(urlBuilder));
+        space.setSpaceUrl(urlBuilder.toString());
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  /**
+   * Gets the configuration path of file controller.xml
+   * 
+   * @return
+   * @since 1.2.2
+   */
+  private String getConfigurationPath() {
+    PortalContainer portalContainer= this.getPortalContainer();
+    WebAppController webAppController = (WebAppController) portalContainer.getComponentInstanceOfType(WebAppController.class);
+    return webAppController.getConfigurationPath();
+  }
+  
+  /**
+   * Gets the router from path of file controller.xml
+   * 
+   * @param path
+   * @return
+   * @throws IOException
+   * @throws RouterConfigException
+   * @since 1.2.2
+   */
+  private Router getRouter(String path) throws IOException, RouterConfigException {
+     File f = new File(path);
+     if (!f.exists()) {
+        throw new MalformedURLException("Could not resolve path " + path);
+     }
+     if (!f.isFile()) {
+        throw new MalformedURLException("Could not resolve path " + path + " to a valid file");
+     }
+     return this.getRouter(f.toURI().toURL());
+  }
+  
+  /**
+   * Gets the router from url.
+   * 
+   * @param url
+   * @return
+   * @throws RouterConfigException
+   * @throws IOException
+   * @since 1.2.2
+   */
+  private Router getRouter(URL url) throws RouterConfigException, IOException {
+     InputStream in = url.openStream();
+     try {
+        ControllerDescriptor routerDesc = new DescriptorBuilder().build(in);
+        return new Router(routerDesc);
+     } finally {
+        Safe.close(in);
+     }
   }
 }

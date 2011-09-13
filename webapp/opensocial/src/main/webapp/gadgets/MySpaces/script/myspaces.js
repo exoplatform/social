@@ -1,5 +1,8 @@
   var eXo = eXo || {};
   eXo.social = eXo.social || {};
+  
+  //When run in socialdemo, need to change this config to /classsic/all-spaces
+  ALL_SPACES_URL = "/private/intranet/spaces";
 
 	function MySpaces() {
 	  this.viewer = null;
@@ -29,15 +32,13 @@
 	      var hostName = this.viewer.getField('hostName');
 	      var portalName = this.viewer.getField('portalName');
 	      var restContext = this.viewer.getField('restContextName');
-	      var address = window.top.location.href;
 	      var moreSpaceEl = _gel("more_spaces");
 	      var titleContent = '';
-	      var baseContext = hostName + "/" + portalName + "/";
-        var extensionContext = address.replace(baseContext, "");
-        var extensionParts = extensionContext.split("/");
-        this.context = baseContext + extensionParts[0] + "/" + extensionParts[1];
 	      
-	      this.moreSpaces = this.context + '/spaces';
+	      this.context = hostName + "/" + portalName;
+	      
+	      //TODO hardcode
+	      this.moreSpaces = this.context + ALL_SPACES_URL;
 	      
 	      titleContent += '<div class="TitGad ClearFix">';
 	      titleContent += '<a href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
@@ -95,7 +96,7 @@
 	    for (var i = 0; i < spaceData.length; i++) {
 	      var space = spaceData[i];
 	      var spaceItem = document.createElement('div');
-	      var spaceDetail = this.context + "/" + space.url;
+	      var spaceDetail = this.context + space.spaceUrl;
 	      spaceItem.innerHTML = '<a href="' + spaceDetail + '" target="_parent" class="IconLink">' + space.name + '</a>';
 	      mySpacesEl.appendChild(spaceItem);
 	    }
