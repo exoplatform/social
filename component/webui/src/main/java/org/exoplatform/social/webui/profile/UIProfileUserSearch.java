@@ -308,20 +308,58 @@ public class UIProfileUserSearch extends UIForm {
    * @throws Exception
    */
   public UIProfileUserSearch() throws Exception {
+	ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+	
+	String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+	String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+	String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+	String defaultGender = resourceBudle.getString("UIProfileUserSearch.label.AllGender");
+	String defaultMale = resourceBudle.getString("UIProfileUserSearch.label.Male");
+	String defaultFeMale = resourceBudle.getString("UIProfileUserSearch.label.FeMale");
+	
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(GENDER_DEFAULT));
-    options.add(new SelectItemOption<String>(MALE));
-    options.add(new SelectItemOption<String>(FEMALE));
+    options.add(new SelectItemOption<String>(defaultGender));
+    options.add(new SelectItemOption<String>(defaultMale));
+    options.add(new SelectItemOption<String>(defaultFeMale));
 
-    addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, USER_CONTACT));
-    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, Profile.POSITION));
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS));
-    addUIFormInput(new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options));
+    addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, defaultName));
+    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos));
+    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills));
+    addUIFormInput(new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options)).setId("GenderList");
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
     setSelectedChar(ALL_FILTER);
   }
 
+  protected void resetUIComponentValues() {
+	UIFormStringInput uiName = getChildById(SEARCH);
+	UIFormStringInput uiPos = getChildById(Profile.POSITION);
+	UIFormStringInput uiSkills = getChildById(Profile.EXPERIENCES_SKILLS);
+	UIFormSelectBox uiGender = getChildById(Profile.GENDER);
+
+	//
+	ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+	
+	String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+	String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+	String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+	String defaultGender = resourceBudle.getString("UIProfileUserSearch.label.AllGender");
+	String defaultMale = resourceBudle.getString("UIProfileUserSearch.label.Male");
+	String defaultFeMale = resourceBudle.getString("UIProfileUserSearch.label.FeMale");
+	
+	//
+	uiName.setValue(defaultName);
+	uiPos.setValue(defaultPos);
+	uiSkills.setValue(defaultSkills);
+	uiGender.setDefaultValue(defaultGender);
+	uiGender.getOptions().get(0).setValue(defaultGender);
+	uiGender.getOptions().get(1).setValue(defaultMale);
+	uiGender.getOptions().get(2).setValue(defaultFeMale);
+	uiGender.getOptions().get(0).setLabel(defaultGender);
+	uiGender.getOptions().get(1).setLabel(defaultMale);
+	uiGender.getOptions().get(2).setLabel(defaultFeMale);
+  }
+  
   /**
    * Returns the current selected node.<br>
    *

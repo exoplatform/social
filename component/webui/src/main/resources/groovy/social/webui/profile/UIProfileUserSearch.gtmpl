@@ -38,8 +38,8 @@
 
 	def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
 	def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
-	def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreLabel");
-	def hideLabel = _ctx.appRes("${uicomponentId}.label.HideLabel");
+	def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreOptionLabel");
+	def hideLabel = _ctx.appRes("${uicomponentId}.label.HideOptionLabel");
 	def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
 	def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
 	def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
@@ -65,7 +65,9 @@
       defaultUserContact: '${nameDefaultVal}',
       defaultPos: '${positionDefaultVal}',
       defaultSkills: '${skillsDefaultVal}',
-      defaultGender: '${allGenderLabel}'
+      defaultGender: '${allGenderLabel}',
+      defaultMale: '${maleLabel}',
+      defaultFeMale: '${femaleLabel}' 
     } """
   
     jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
@@ -101,6 +103,7 @@
  
     def searchAction = uicomponent.event('Search');
     def peopleFoundLabel = uicomponent.getPeopleFoundLabel();
+	uicomponent.resetUIComponentValues();
 	
 %>
 <div class="UIProfileUserSearch">
@@ -118,21 +121,23 @@
         <% uiform.renderField(childs.get(0));%>
         <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>"><span></span></a>
       </div> 
-      
-      <a id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
+    </div>
+	<div class="ClearFix">
+      <a href="#" id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
 
       <div class="HideFilter ClearFix" id="$filterId">
        <div class="Lable">${filterByLabel} :</div>
-       <% uiform.renderField(childs.get(1))%>
-       <% uiform.renderField(childs.get(2))%>
-       <% uiform.renderField(childs.get(3))%>
-       
-       <a id="$hideMoreSearchId" class="HideAdvanceSearchLableNone">${hideLabel}</a>
+	   <div class="MoreContent">
+		   <% uiform.renderField(childs.get(1))%>
+		   <% uiform.renderField(childs.get(2))%>
+		   <% uiform.renderField(childs.get(3))%>
+       </div>
+       <a href="#" id="$hideMoreSearchId" class="HideAdvanceSearchLableNone">${hideLabel}</a>
       </div>
-           
+    </div>       
       <input id="searchAll" type="hidden" value="$searchAll">
-     </div>
-    </div>
+   </div>
+    
     <div class="UISocTitleBar">
         <h5 class="TitleBar">
 		  ${relationDirectory}

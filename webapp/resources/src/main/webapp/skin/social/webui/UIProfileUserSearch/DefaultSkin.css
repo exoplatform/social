@@ -115,6 +115,12 @@ a:ACTIVE {
   border: 1px solid #e1e1e1;
 }
 
+.UIProfileUserSearch .SearchSpacesBG .HideFilter .MoreContent input{
+	width: 100px;
+  border: 1px solid #d5d5d5;
+  height: 18px;
+}
+
 .UIProfileUserSearch .SearchSpacesBG .Lable {
   float: left;
   padding: 4px 4px 4px px;
@@ -131,6 +137,7 @@ a:ACTIVE {
 
 .UIProfileUserSearch .SearchSpacesBG .HideFilter {
   display: none;
+  margin: 4px 0px;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .SearchIcon {
@@ -140,10 +147,10 @@ a:ACTIVE {
 
 .UIProfileUserSearch .SearchSpacesBG .SearchContent {
   float: left; 
-  border: 1px solid rgb(161, 161, 161); 
+  border: 1px solid #d5d5d5; 
   background: none repeat scroll 0% 0% white; 
   height: 19px; 
-  width: 235px;
+  width: 281px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -151,16 +158,15 @@ a:ACTIVE {
 
 .UIProfileUserSearch .SearchSpacesBG input {
   height: 15px;
-  width: 215px;
+  width: 258px;
   font-size:11px;
   border: 1px solid white;
 }
 
 .UIProfileUserSearch .SearchSpacesBG select {
-  height: 20px;
+  height: 21px;
   width: 72px;
-  font-size:11px;
-  float: left;
+  font-size:12px;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .Filter .Input {

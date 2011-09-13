@@ -1,103 +1,154 @@
+<%
+/*
 <!--
 
-    Copyright (C) 2003-2007 eXo Platform SAS.
+  Copyright (C) 2003-2011 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Affero General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see<http://www.gnu.org/licenses/>.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
+*/
+%>
+
 <%
-  import org.exoplatform.portal.webui.util.Util ;
+  import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
-  import org.exoplatform.webui.core.UIPageIterator;
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.core.service.LinkProvider;
-  import org.exoplatform.social.common.ResourceBundleUtil;
-  
-  def uicomponentId = uicomponent.id;
 
-  def list = uicomponent.getList();
-  def iterator = uicomponent.getUIPageIterator();
+  def inviteTitle = _ctx.appRes(uicomponent.getId() + ".label.Invite")
+  def denyTitle = _ctx.appRes(uicomponent.getId() + ".label.Deny")
+  def acceptTitle = _ctx.appRes(uicomponent.getId() + ".label.Accept")
+  def revokeTitle = _ctx.appRes(uicomponent.getId() + ".label.Cancel")
+  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.Delete")
+      
   def peopleIdx = 0
+  
+  if (uicomponent.isLoadAtEnd()) {
+    uicomponent.init();
+  }
+
+  def list = uicomponent.getPeopleList();
+
+  if (list.size() == uicomponent.getPeopleNum()) {
+    uicomponent.setLoadAtEnd(true)
+  }
 %>
-<div class="UIProfileList UITabPane ContainerSpace" id="$uicomponent.id">
+<div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
+  
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-    <div class="UISocTitleBar">
-	   <h5 class="TitleBar"> <%=_ctx.appRes(uicomponent.getId() + ".label.RelationsListing")%></h5>
-    </div>
+
   <% if ((list == null) || (list.size() == 0)) {%>
-    <div class="ContentSpace">
+    <div class="NoneContentSpace">
       <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
     </div>
   <%}%>
-
+  <div class="ClearFix">
+  
   <% list.each {
       def identity = it;
-      def profileURL = LinkProvider.getUserProfileUri(it.getRemoteId());
+      def profileURL = identity.profile.url;
       def fullName = identity.profile.fullName;
+      def email = identity.profile.email;
       def addAction = uicomponent.event("AddContact", identity.getId());
       def relationship = uicomponent.getRelationship(identity);
       def contactStatus = null;
       if (relationship != null) {
         contactStatus = relationship.status;
       }
-      def inviteTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.Invite"), ["$fullName"]);
-      def denyTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.DenyInvitation"), ["$fullName"]);
-      def acceptTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.AcceptInvitation"), ["$fullName"]);
-      def revokeTitle = _ctx.appRes("${uicomponentId}.label.RevokeInvitation");
-      def removeTitle = _ctx.appRes("${uicomponentId}.label.RemoveConnection");
-
+      
       peopleIdx += 1;
-
       def position = identity.profile.position;
       if (!position) { position = ""; }
       String imageSource = identity.profile.avatarUrl;
       if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+      
+      def statusIconSrc = LinkProvider.HAS_CONNECTION_ICON;
+      if (contactStatus == null) {
+        statusIconSrc = null;
+      } else if (contactStatus == Relationship.Type.PENDING) {
+        statusIconSrc = LinkProvider.WAITING_CONFIRMATION_ICON;
+      }
   %>
     <% if (peopleIdx % 2 == 0) { %>
        <div class="ContentSpaceGray ClearFix">
     <% } else {%>
        <div class="ContentSpace ClearFix">
     <% }%>
-         <img class="ImgAvatar" alt="#" src="$imageSource"/>
+         <a class="AvatarUser">
+           <img title="${fullName}" src="$imageSource" alt="#"/>
+           <span class="BorderTop"></span>
+           <span class="BorderBottom"></span>
+         </a>
 
-          <div class="CommunityMane ClearFix">
-                <a class="CommunityName InviteTitle" href="${profileURL}" style="color: #afafaf;">${fullName}</a>
+          <div class="CommunityMane">
+                <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
+                <%if (statusIconSrc != null) { %>
+                  <img src="$statusIconSrc" alt="" width='14px' height='14px' class="StatusIcon"/>
+                <%}%>
+                <%if ((position.length() + email.length()) == 0 ) {%>
+                  <span class="NonePositionAndEmail"></span>
+                <% } else {%>
+	                <% if(position.length() > 0) { %>
+	                <div class="Position">
+	                  ${position}
+	                </div>
+	                <%  } else {%>
+	                <span class="NonePosition"></span>
+	                <%  } %>
+	                <% if((email != null) && (email.length() > 0)) { %>
+	                <div class="Email">
+	                  ${email}
+	                </div>
+	                <%  } else {%>
+	                <span class="NoneEmail"></span>
+	                <%  } %>
+                <% } %>
+                
+                <ul class="InviteTitle">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-						  <a href="#" class="StopIcon" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-						   <a href="#" class="SelectIcon" title="$acceptTitle" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" >&nbsp;</a>
-				<%  } else if (contactStatus == Relationship.Type.PENDING) { %>
-						  <a href="#" class="WaitingIcon" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
-						  <span class="WaitingConfirmation">[<%=_ctx.appRes(uicomponent.getId() + ".label.WaitForConfirmation")%>]</span>
-				<%  } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-						  <a href="#" class="RemoveIcon" title="$removeTitle" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" >&nbsp;</a>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$denyTitle">$denyTitle</a></li>
+				      <li class="Line FL">&nbsp;</li>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" title="$acceptTitle">$acceptTitle</a></li>
+				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$revokeTitle">$revokeTitle</a></li>
+				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$removeTitle">$removeTitle</a></li>
 				<% } else if (contactStatus == null) { %>
-						  <a href="#" class="AddIcon" title="$inviteTitle" onclick="$addAction" >&nbsp;</a>
+				      <li class="FL"><a href="javascript:void(0)" onclick="$addAction" title="$inviteTitle">$inviteTitle</a></li>
 				<% } %>
+				</ul>
           </div>
-          <% if(position.length() > 0) { %>
-            <div class="CommunityContent">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-            </div>
-          <%  } %>
+
     </div>
   <% } %>
-    <%
-        if (iterator.getAvailablePage() > 1) {
-            _ctx.renderUIComponent(iterator)
-        }
-    %>
+  </div>
+  <% if(uicomponent.isEnableLoadNext()) { %>
+	    <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+	    </div>
+  <% } else { %>
+	      <script type="text/javascript">
+	        var loadMoreButton = document.getElementById("LoadMoreButton");
+	        if (loadMoreButton) {
+	          try {
+	            loadMoreButton.style.display = "none";
+	          }catch(e){};
+            }	          
+	      </script>
+  <%  }	%>
 </div>

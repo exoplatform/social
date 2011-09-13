@@ -31,6 +31,8 @@
 	    this.defaultPos = params.defaultPos || null;
 	    this.defaultSkills = params.defaultSkills || null;
 	    this.defaultGender = params.defaultGender || null;
+	    this.defaultMale = params.defaultMale || null;
+	    this.defaultFeMale = params.defaultFeMale || null;
 	    
 	    var profileSearch = document.getElementById(params.uicomponentId);
 	    this.nameTextObj = DOMUtil.findDescendantById(profileSearch, 'Search');
@@ -57,10 +59,6 @@
         searchEl.style.color = BLUR_COLOR;
         posEl.style.color = BLUR_COLOR;
         skillEl.style.color = BLUR_COLOR;
-        
-        searchEl.value = this.defaultUserContact;
-        posEl.value = this.defaultPos;
-        skillEl.value = this.defaultSkills;
         
         this.initTextBox();
         this.initToggleFilter();
