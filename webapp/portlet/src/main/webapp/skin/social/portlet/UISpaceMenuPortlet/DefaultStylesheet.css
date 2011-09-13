@@ -15,9 +15,6 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-/*TODO dang.tung have to move eXoSocialResource*/
-/*--------------------------------------------------------------------*/
-
 .TRContainer .MenuTDContainer .UIContainer {
   padding: 0;
 }
@@ -75,127 +72,8 @@
   background: none;
 }
 
-.TRContainer .MenuTDContainer .ProfTitle {
-  background: url(DefaultSkin/background/ProfTitle.gif) no-repeat center top;
-  color: #2f2f2f;
-  font-weight:bold;
-  height: 26px;
-  line-height: 20px;
-  text-align: center;
-}
-
-.TRContainer .MenuTDContainer .Avartar {
-  background: url(DefaultSkin/background/BgProfAvartar.gif) no-repeat left top;
-  display: block;
-  height: 64px;
-  margin: 30px auto;
-  padding: 6px 0;
-  text-align: center;
-  vertical-align: middle;
-  width: 79px;
-}
-
-/*---------------------------------------------------------------------*/
-
 #UISpaceMenuPortlet {
-  background: #ededed;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .Home{
-  background: none;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .Home .HomeSelect{
-  color: white;
-  background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
-  padding-right: 50px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-  position:relative;
-  width: 117px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .Home .HomeSpace{
-  background: url('DefaultSkin/background/HomeMenuBG.gif') no-repeat left center;
-  padding-right: 45px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .Home a:hover{
-  background: url('DefaultSkin/background/HomeMenuHover.gif') no-repeat left center;
-  padding-right: 50px;
-  position:relative;
-  width: 117px;
-}
-
-
-.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingBG {
-  background: url('DefaultSkin/background/SpaceSettingBG.gif') no-repeat left center;
-  padding-right: 45px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting .SpaceSettingSelect{
-  background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
-  color: white;
-  padding:0px 50px 0px 4px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-  position:relative;
-  width: 117px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet span{
-  overflow: hidden;
-  white-space: nowrap;
-  width: 113px;
-  display: block;
-}
-
-
-.MenuTDContainer .UISpaceMenuPortlet .UserListApp .UserListAppBG {
-  background: url('DefaultSkin/background/UserListAppBG.gif') no-repeat left center;
-  padding-right: 45px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .UserListApp .UserListAppSelect {
-  background: url('DefaultSkin/background/UserListAppHover.gif') no-repeat left center;
-  color: white;
-  padding-right: 50px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-  position:relative;
-  width: 117px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .SpaceSetting a:hover{
-  background: url('DefaultSkin/background/SpaceSettingHover.gif') no-repeat left center;
-  padding-right: 50px;
-  position:relative;
-  width: 117px;
-}
-
-.MenuTDContainer .UISpaceMenuPortlet .UserListApp a:hover{
-  background: url('DefaultSkin/background/UserListAppHover.gif') no-repeat left center;
-  padding-right: 50px;
-  position:relative;
-  width: 117px;
+  background: #fff;
 }
 
 .ToggleElement {
@@ -203,16 +81,6 @@
   cursor: pointer;
   border: none;
   vertical-align: middle;
-}
-
-.ToggleElement .CloseSpaceMenuPortlet {
-  background: url('DefaultSkin/background/CloseContent.gif') no-repeat center center;
-  width: 5px;
-}
-
-.ToggleElement .OpenSpaceMenuPortlet {
-  background: url('DefaultSkin/background/OpenContent.gif') no-repeat center center;
-  width: 5px;
 }
 
 
@@ -228,30 +96,60 @@
   width: 97%;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddBG {
-  background: url('DefaultSkin/background/ApplicationAddBG.gif') no-repeat left center;
-  padding-right: 45px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
+.SpaceMenuPortlet  .UIHorizontalTabs {
+	padding-top: 20px;
+	border-bottom: 1px solid #AEAEAE;
+	text-align: right;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd .ApplicationAddSelect {
-  background: url('DefaultSkin/background/ApplicationAddHover.gif') no-repeat left center;
-  color: white;
-  padding-right: 50px;
-  font-weight: bold;
-  line-height: 23px;
-  display: block;
-  text-align: right;
-  position:relative;
-  width: 117px;
+
+.SpaceMenuPortlet .UIHorizontalTabs .UITab {
+    float: none;
+	display:inline-block;
 }
 
-.MenuTDContainer .UISpaceMenuPortlet .ApplicationAdd a:hover{
-  background: url('DefaultSkin/background/ApplicationAddHover.gif') no-repeat left center;
-  padding-right: 50px;
-  position:relative;
-  width: 117px;
+*+html .SpaceMenuPortlet .UIHorizontalTabs .UITab {
+	display:inline;/*strick IE7*/
+}
+
+*+html .SpaceMenuPortlet .UIHorizontalTabs .UITab  div {
+	display: inline-block;/*strick IE7*/
+}
+
+.SpaceMenuPortlet  .UIHorizontalTabs .TabsContainer  {
+	padding: 0 10px;
+	border: none;
+}
+
+.SpaceMenuPortlet .UISpaceName {
+	padding:8px 0 0 10px;
+}
+
+.SpaceMenuPortlet .UISpaceName a {
+	display: inline-block;
+}
+
+.SpaceMenuPortlet .UISpaceName .ProfTitle {
+	color: #0053A7;
+    font-size: 18px;
+	cursor:pointer;
+	padding: 0 5px;
+}
+
+.SpaceMenuPortlet .UISpaceName .Avartar img {
+	vertical-align: -6px;
+}
+
+.SpaceMenuPortlet .UISpaceName .ProfTitle:hover {
+	text-decoration:underline;
+}
+
+.SpaceMenuPortlet  .UISpaceName .SpaceSettingIcon {
+	background: url('DefaultSkin/background/SpaceSettingIcon.gif') no-repeat left center;
+	width: 15px;
+	height: 15px;
+}
+
+.SpaceMenuPortlet  .UISpaceName .SpaceSettingIcon span {
+	display:none;
 }
