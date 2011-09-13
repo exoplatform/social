@@ -445,12 +445,23 @@
       <type>jar</type>
     </dependency>
 
-    <dependency>
-      <groupId>net.oauth</groupId>
-      <artifactId>core</artifactId>
-      <version>${net.oauth.version}</version>
-      <type>jar</type>
-    </dependency>
+      <dependency>
+        <groupId>net.oauth.core</groupId>
+        <artifactId>oauth</artifactId>
+        <version>${net.oauth.core.oauth.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.oauth.core</groupId>
+        <artifactId>oauth-provider</artifactId>
+        <version>${net.oauth.core.oauth-provider.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.oauth.core</groupId>
+        <artifactId>oauth-httpclient4</artifactId>
+        <version>${net.oauth.core.oauth-httpclient4.version}</version>
+      </dependency>
 
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

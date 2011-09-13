@@ -106,8 +106,9 @@
     <org.jvnet.jaxb2.maven2.version>0.1</org.jvnet.jaxb2.maven2.version>
     <org.jsecurity.version>0.9.0</org.jsecurity.version>
 
-    <net.oauth.core.version>20100527</net.oauth.core.version>
-    <net.oauth.version>20080621</net.oauth.version>
+    <net.oauth.core.oauth.version>20100527</net.oauth.core.oauth.version>
+    <net.oauth.core.oauth-provider.version>20100527</net.oauth.core.oauth-provider.version>
+    <net.oauth.core.oauth-httpclient4.version>20090913</net.oauth.core.oauth-httpclient4.version>
 
     <com.google.guava.version>r07</com.google.guava.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
@@ -275,7 +276,17 @@
       <dependency>
         <groupId>net.oauth.core</groupId>
         <artifactId>oauth</artifactId>
-        <version>${net.oauth.core.version}</version>
+        <version>${net.oauth.core.oauth.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.oauth.core</groupId>
+        <artifactId>oauth-provider</artifactId>
+        <version>${net.oauth.core.oauth-provider.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.oauth.core</groupId>
+        <artifactId>oauth-httpclient4</artifactId>
+        <version>${net.oauth.core.oauth-httpclient4.version}</version>
       </dependency>
 
       <dependency>
@@ -293,23 +304,21 @@
         <artifactId>icu4j</artifactId>
         <version>${com.ibm.icu.version}</version>
       </dependency>
-
       <dependency>
         <groupId>com.google.inject.extensions</groupId>
-	<artifactId>guice-multibindings</artifactId>
+        <artifactId>guice-multibindings</artifactId>
         <version>${com.google.inject.extensions.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpclient</artifactId>
+        <artifactId>httpclient</artifactId>
         <version>${org.apache.httpcomponents.httpclient.version}</version>
       </dependency>
       <dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpcore</artifactId>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
         <version>${org.apache.httpcomponents.httpcore.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
