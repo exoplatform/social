@@ -53,7 +53,7 @@
            adminName = admin.getFirstName();
            adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
            def adminIdentity = uicomponent.getIdentity(admin.getUserName());
-           adminProfileURL = uicomponent.getPath() + "/activities/" + adminIdentity.getRemoteId();
+           adminProfileURL = adminIdentity.profile.url;
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
 				<img class="ImgAvatarRoot" src="$adminImageSource" alt=""/>
@@ -75,7 +75,7 @@
           def userName = user.getFullName();
           def leaderIdentity = uicomponent.getIdentity(user.getUserName());
           position = leaderIdentity.profile.position;
-          def profileURL = uicomponent.getPath() + "/activities/" + leaderIdentity.getRemoteId();
+          def profileURL = leaderIdentity.profile.url;
           if (!position) position = "";
           def leaderImageSource = leaderIdentity.profile.avatarUrl;
           if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -83,7 +83,7 @@
           clzz = "ContentSpace";
           if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
       %>
-
+      <div class="ClearFix">
         <div class="$clzz ClearFix">
 					<img class="ImgAvatar" src="$leaderImageSource" alt=""/>
 					<div class="CommunityMane ClearFix">
@@ -102,6 +102,8 @@
       } else { %>
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
       <% } %>
+      
+      </div>
       <!-- End leaders section -->
       <!-- Members section -->
       <div class="UISocTitleBar">
@@ -114,7 +116,7 @@
           def memberIdentity = uicomponent.getIdentity(user.getUserName());
           position = memberIdentity.profile.position;
           if (!position) position = "";
-          def profileURL = uicomponent.getPath() + "/activities/" + memberIdentity.getRemoteId();
+          def profileURL = memberIdentity.profile.url;
           def memberImageSource = memberIdentity.profile.avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
@@ -123,6 +125,7 @@
 					cssClass = "ContentSpaceGray";
 				  }
       %>
+       <div class="ClearFix">  
         <div class="$cssClass ClearFix">
 					<img class="ImgAvatar" src="$memberImageSource" alt=""/>
 					<div class="CommunityMane ClearFix">
@@ -142,6 +145,7 @@
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
       <% } %>
       <!-- End members section -->
+     </div>
     </div>
     <!-- End Right section -->
   </div>
