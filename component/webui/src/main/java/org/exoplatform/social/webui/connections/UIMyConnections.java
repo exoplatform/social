@@ -94,7 +94,11 @@ public class UIMyConnections extends UIContainer {
   public UIMyConnections() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setTypeOfRelation(CONFIRMED_STATUS);
-    uiProfileUserSearch.setHasPeopleTab(true);
+    if (Utils.isOwner()) {
+      uiProfileUserSearch.setHasPeopleTab(true);
+    } else {
+      uiProfileUserSearch.setHasPeopleTab(false);
+    }
     addChild(uiProfileUserSearch);
     init();
   }
@@ -116,6 +120,11 @@ public class UIMyConnections extends UIContainer {
       excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
       setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      if (Utils.isOwner()) {
+        uiProfileUserSearch.setHasPeopleTab(true);
+      } else {
+        uiProfileUserSearch.setHasPeopleTab(false);
+      }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }

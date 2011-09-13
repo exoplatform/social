@@ -28,7 +28,6 @@
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
   import org.exoplatform.social.core.service.LinkProvider;
-  import org.exoplatform.social.webui.Utils;
 
   def isEditable = uicomponent.isEditable();
   def currIdentity = Utils.getOwnerIdentity(true);
@@ -83,7 +82,9 @@
             </a>
             <div class="CommunityMane">
               <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-              <img src="$LinkProvider.HAS_CONNECTION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
+              <% if (Utils.isOwner()) { %>
+                <img src="$LinkProvider.HAS_CONNECTION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
+              <% } %>
               <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>

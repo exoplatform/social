@@ -21,6 +21,7 @@
 */
 %>
 <%
+  import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.portal.application.PortalRequestContext;
@@ -36,7 +37,11 @@
   def actititesURL = LinkProvider.getUserActivityUri(ownerIdentity.getRemoteId());
   def profileURL = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
   def relationURL = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
-
+  
+  if (!Utils.isOwner()) {
+    relationURL = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
+  }
+  
   def selectedNode = uicomponent.getSelectedNode();
   def componentId = uicomponent.id;
   def relationship = uicomponent.getRelationship();

@@ -86,27 +86,6 @@
         <label>#{portal.classic.requests}</label>
         <page-reference>portal::classic::pendingRequests</page-reference>
       </node>
-      
-      <node>
-        <uri>connections/yours</uri>
-        <name>yours</name>
-        <label>#{portal.classic.yours}</label>
-        <page-reference>portal::classic::connections</page-reference>
-      </node>
-      
-      <node>
-        <uri>connections/invitations</uri>
-        <name>invitations</name>
-        <label>#{portal.classic.invitations}</label>
-        <page-reference>portal::classic::invitations</page-reference>
-      </node>
-      
-      <node>
-        <uri>connections/requests</uri>
-        <name>requests</name>
-        <label>#{portal.classic.requests}</label>
-        <page-reference>portal::classic::requests</page-reference>
-      </node>
     </node>
     
     <node>
