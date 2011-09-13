@@ -31,6 +31,11 @@
   def pastExp = uicomponent.getPastExperience();
   def currentExp = uicomponent.getCurrentExperience();
   def currentUser = profile.getPropertyValue(Profile.FIRST_NAME);
+  
+  def uicomponentId = uicomponent.id;
+  def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
+  def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  def addExperience = uicomponent.event("Add") + "; return false";
 %>
 <div class="experience">
 <%uiform.begin()%>
@@ -40,7 +45,6 @@
       <%if (childSize > 1) {%>
          <%for (int i=1; i < childSize; i +=7) {
              def removeExperience = uicomponent.event("Remove", uicomponent.id, "" + i) + "; return false";
-             def addExperience = uicomponent.event("Add") + "; return false";
          %>
 
             <table class="UIFormGrid">
@@ -53,10 +57,10 @@
                   }%>
                 *
                 <% if ((i + 7) >= childSize) {%>
-                    <a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
-                    <a class="AddIcon" href="#" onclick="<%= addExperience%>">&nbsp</a>
+                    (<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>)
+                    (<a class="ColorLink" onclick="<%= addExperience%>">$addActionLabel</a>)
 				 <% } else {%>
-					<a class="DeleteIcon" href="#" onclick="<%= removeExperience%>">&nbsp</a>
+					(<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>)
                   </td>
                 <% } %>
               </tr>
@@ -113,10 +117,10 @@
     <table class="UIFormGrid">
       <tbody>
         <tr>
-          <td width="60%">&nbsp</td>
+          <td>&nbsp</td>
           <td class="FieldComponent">
             <%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
-            <a class="AddIcon" onclick="<%=uicomponent.event("Add")%>">&nbsp</a>
+            (<a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>)
           </td>
         </tr>
        </tbody>

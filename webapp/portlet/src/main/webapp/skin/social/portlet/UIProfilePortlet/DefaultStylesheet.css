@@ -205,10 +205,10 @@
 }
 
 .UIProfile .Container .FieldLabel {
-	text-align: right;
-	padding: 4px;
-	font-weight: bold;
-	width: 170px;
+    font-weight: bold;
+    padding: 4px;
+    text-align: right;
+    width: 130px;
 }
 
 .UIProfile .Container .FieldComponent {
@@ -294,7 +294,8 @@ input.hint,textarea.hint {
 }
 
 .Container .NoneExperience {
-	text-align: center;
+	margin-left: 10px;
+    text-align: left;
 }
 
 
@@ -424,13 +425,14 @@ input.hint,textarea.hint {
 }
 
 .UIProfile .UIContactSection .UIForm td.FieldLabel {
-  padding: 2px;
-  line-height: 16px;
-  width: 20%;
+    line-height: 16px;
+    padding: 2px;
+    width: 85px;
 }
 
 .UIProfile .UIContactSection .NoContactInformation {
-  text-align: center;
+  margin-left: 10px;
+  text-align: left;
 }
 
 .UIProfile .UIBasicInfoSection .UIForm td.FieldComponent {
