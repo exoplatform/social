@@ -283,6 +283,10 @@ public class Read11x12xTestCase extends AbstractMigrationTestCase {
     assertEquals(rootNode.getNode(path.substring(1)).getUUID(), dis.readUTF());
 
     assertEquals(MigrationTool.PROPERTY_SINGLE, dis.readInt());
+    assertEquals("exo:app", dis.readUTF());
+    assertEquals("foo " + suffix, dis.readUTF());
+
+    assertEquals(MigrationTool.PROPERTY_SINGLE, dis.readInt());
     assertEquals("exo:description", dis.readUTF());
     assertEquals("foo " + suffix, dis.readUTF());
     

@@ -74,6 +74,7 @@
     <Social_Space>
       <Space>
         <exo:space loader:type="exo:space"
+            exo:app="foo a"
             exo:description="foo a"
             exo:name="Name a"
             exo:groupId="/spaces/namea"
@@ -87,6 +88,7 @@
           <loader:mixin>mix:referenceable</loader:mixin>
         </exo:space>
         <exo:space loader:type="exo:space"
+            exo:app="foo b"
             exo:description="foo b"
             exo:name="Name b"
             exo:groupId="/spaces/nameb"
@@ -100,6 +102,7 @@
           <loader:mixin>mix:referenceable</loader:mixin>
         </exo:space>
         <exo:space loader:type="exo:space"
+            exo:app="foo c"
             exo:description="foo c"
             exo:name="Name c"
             exo:groupId="/spaces/namec"
@@ -113,6 +116,7 @@
           <loader:mixin>mix:referenceable</loader:mixin>
         </exo:space>
         <exo:space loader:type="exo:space"
+            exo:app="foo d"
             exo:description="foo d"
             exo:name="Name d"
             exo:groupId="/spaces/named"
@@ -126,6 +130,7 @@
           <loader:mixin>mix:referenceable</loader:mixin>
         </exo:space>
         <exo:space loader:type="exo:space"
+            exo:app="foo e"
             exo:description="foo e"
             exo:name="Name e"
             exo:groupId="/spaces/namee"
