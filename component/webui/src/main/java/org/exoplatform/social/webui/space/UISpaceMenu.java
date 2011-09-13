@@ -268,7 +268,7 @@ public class UISpaceMenu extends UIContainer {
   }
 
   /**
-   * Application compargetator.
+   * Application comparator.
    *
    * @author hoatle
    */
