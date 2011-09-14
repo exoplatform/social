@@ -203,7 +203,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
       //
       try {
         User user = organizationService.getUserHandler().findUserByName(remote);
-        if (user == null) {
+        if (user == null && PROVIDER_ORGANIZATION.equals(provider)) {
           continue;
         }
       }
