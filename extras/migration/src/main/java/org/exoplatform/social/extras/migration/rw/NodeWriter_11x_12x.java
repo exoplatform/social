@@ -23,6 +23,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -198,6 +199,17 @@ public class NodeWriter_11x_12x implements NodeWriter {
       String provider = (String) currentData.get(PROP_PROVIDER_ID);
       String uuid = (String) currentData.get(JCR_UUID);
       String remote = (String) currentData.get(PROP_REMOTE_ID);
+
+      //
+      try {
+        User user = organizationService.getUserHandler().findUserByName(remote);
+        if (user == null) {
+          continue;
+        }
+      }
+      catch (Exception e) {
+        LOG.error(e.getMessage());
+      }
 
       // Add space to context
       if (PROVIDER_SPACE.equals(provider)) {
