@@ -55,7 +55,7 @@
     <javax.xml.bind.version>2.1</javax.xml.bind.version>
     <asm.version>1.5.3</asm.version>
     <antlr.version>2.7.6rc1</antlr.version>
-    <bouncycastle.version>136</bouncycastle.version>
+    <bouncycastle.version>1.45</bouncycastle.version>
     <bsh.version>2.0b1</bsh.version>
     <c3p0.version>0.9.1.2</c3p0.version>
     <cglib.version>2.2</cglib.version>
