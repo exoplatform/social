@@ -363,6 +363,7 @@ public class Write11x12xTestCase extends AbstractMigrationTestCase {
     Node profileNode = rootNode.getNode("production/soc:providers/soc:organization/soc:user_" + suffix + "/soc:profile");
     assertEquals("/portal/private/classic/profile/user_" + suffix, profileNode.getProperty("void-Url").getValues()[0].getString());
     assertEquals("User " + suffix, profileNode.getProperty("void-firstName").getValues()[0].getString());
+    assertEquals("user_" + suffix + "@mail.com", profileNode.getProperty("void-email").getValues()[0].getString());
     assertEquals("Foobar", profileNode.getProperty("void-lastName").getValues()[0].getString());
     assertEquals("My position", profileNode.getProperty("void-position").getValues()[0].getString());
     assertEquals("user_" + suffix, profileNode.getProperty("void-username").getValues()[0].getString());

@@ -241,6 +241,7 @@ public class DataLoader {
       if (nav.getAttribute(new QName(EXO_NS, PROVIDER_ID_NODE)).equals("organization")) {
         String username = nav.getAttribute(new QName(EXO_NS, REMOTE_ID_NODE));
         User u = organizationService.getUserHandler().createUserInstance(username);
+        u.setEmail(username + "@mail.com");
         organizationService.getUserHandler().createUser(u, true);
         LOG.trace("Create user : " + u.getUserName());
       }

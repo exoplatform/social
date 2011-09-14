@@ -109,7 +109,10 @@ public class MigrationTool {
     PipedInputStream is = new PipedInputStream(os);
 
     reader.readIdentities(os, ctx);
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     writer.writeIdentities(is, ctx);
+    RequestLifeCycle.end();
 
   }
 
@@ -130,7 +133,10 @@ public class MigrationTool {
     PipedInputStream is = new PipedInputStream(os);
 
     reader.readProfiles(os, ctx);
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     writer.writeProfiles(is, ctx);
+    RequestLifeCycle.end();
 
   }
 
@@ -175,7 +181,10 @@ public class MigrationTool {
     PipedInputStream is = new PipedInputStream(os);
 
     reader.readRelationships(os, ctx);
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     writer.writeRelationships(is, ctx);
+    RequestLifeCycle.end();
 
   }
 
@@ -196,7 +205,10 @@ public class MigrationTool {
     PipedInputStream is = new PipedInputStream(os);
 
     reader.readActivities(os, ctx);
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     writer.writeActivities(is, ctx);
+    RequestLifeCycle.end();
 
   }
 

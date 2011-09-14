@@ -42,7 +42,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Workspace;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -908,6 +907,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
     String identityId = ctx.get(identityOld + "-" + CTX_UUID);
     if (identityId != null) {
       currentIdentity = identityStorage.findIdentityById(identityId);
+      username = currentIdentity.getRemoteId();
       try {
         avatarContent = session.getRootNode().getNode(currentData.getPath().substring(1) + "/avatar/jcr:content");
       }
@@ -959,6 +959,15 @@ public class NodeWriter_11x_12x implements NodeWriter {
     profile.setProperty(Profile.CONTACT_IMS, new ArrayList<Map<String, String>>());
     profile.setProperty(Profile.CONTACT_PHONES, new ArrayList<Map<String, String>>());
     profile.setProperty(Profile.CONTACT_URLS, new ArrayList<Map<String, String>>());
+
+    //
+    try {
+      String email = organizationService.getUserHandler().findUserByName(username).getEmail();
+      profile.setProperty(Profile.EMAIL, email);
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage());
+    }
 
     //
     try {
@@ -1023,13 +1032,6 @@ public class NodeWriter_11x_12x implements NodeWriter {
     }
     else if (path.endsWith(PROP_URLS)) {
       contactType = Profile.CONTACT_URLS;
-    }
-    else if (path.endsWith(PROP_EMAILS)) {
-
-      profile.setProperty(Profile.EMAIL, value);
-      identityStorage.saveProfile(profile);
-      return;
-
     }
     if (contactType == null) {
       return;
