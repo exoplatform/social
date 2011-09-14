@@ -213,7 +213,11 @@ public class UIMyConnections extends UIContainer {
       setPeopleList(loadPeople(0, this.peopleList.size()));
     }
     
-    setEnableLoadNext(this.peopleList.size() < getPeopleNum());
+    int realPeopleListSize = this.peopleList.size();
+    
+    setEnableLoadNext((realPeopleListSize >= MY_CONNECTION_PER_PAGE) 
+    		&& (realPeopleListSize < getPeopleNum()));
+    
     return this.peopleList;
   }
 
@@ -316,7 +320,7 @@ public class UIMyConnections extends UIContainer {
   public static class LoadMorePeopleActionListener extends EventListener<UIMyConnections> {
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
-      if (uiMyConnections.currentLoadIndex <= uiMyConnections.peopleNum) {
+      if (uiMyConnections.currentLoadIndex < uiMyConnections.peopleNum) {
     	uiMyConnections.loadNext();
       } else {
     	uiMyConnections.setEnableLoadNext(false);

@@ -200,7 +200,11 @@ public class UIPendingRelation extends UIContainer {
       setPeopleList(loadPeople(0, this.peopleList.size()));
     }
     
-    setEnableLoadNext(this.peopleList.size() < getPeopleNum());
+    int realPeopleListSize = this.peopleList.size();
+    
+    setEnableLoadNext((realPeopleListSize >= SENT_INVITATION_PER_PAGE) 
+    		&& (realPeopleListSize < getPeopleNum()));
+    
     return this.peopleList;
   }
 
@@ -304,7 +308,7 @@ public class UIPendingRelation extends UIContainer {
   public static class LoadMorePeopleActionListener extends EventListener<UIPendingRelation> {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPendingRelation = event.getSource();
-      if (uiPendingRelation.currentLoadIndex <= uiPendingRelation.peopleNum) {
+      if (uiPendingRelation.currentLoadIndex < uiPendingRelation.peopleNum) {
     	uiPendingRelation.loadNext();
       } else {
     	uiPendingRelation.setEnableLoadNext(false);

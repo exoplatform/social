@@ -199,7 +199,12 @@ public class UIInvitations extends UIContainer {
       setHasUpdatedIdentity(false);
       setPeopleList(loadPeople(0, this.peopleList.size()));
     }
-    setEnableLoadNext(this.peopleList.size() < getPeopleNum());
+    
+    int realPeopleListSize = this.peopleList.size();
+    
+    setEnableLoadNext((realPeopleListSize >= RECEIVED_INVITATION_PER_PAGE) 
+    		&& (realPeopleListSize < getPeopleNum()));
+    
     return this.peopleList;
   }
 
@@ -301,7 +306,7 @@ public class UIInvitations extends UIContainer {
   static public class LoadMorePeopleActionListener extends EventListener<UIInvitations> {
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();
-      if (uiInvitations.currentLoadIndex <= uiInvitations.peopleNum) {
+      if (uiInvitations.currentLoadIndex < uiInvitations.peopleNum) {
         uiInvitations.loadNext();
       } else {
     	uiInvitations.setEnableLoadNext(false);

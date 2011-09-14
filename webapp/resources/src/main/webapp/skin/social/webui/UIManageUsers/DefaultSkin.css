@@ -77,6 +77,7 @@
   -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
+  height: 56px;
   width: 56px;
 }
 
@@ -137,16 +138,16 @@
 .UISocApplication .ContainerSpace .CommunityMane .Position{
     font-weight: normal;
     color: #939191;
-    line-height: 18px;
+    line-height: 14px;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NonePosition {
-	height: 15px;
+	height: 14px;
 	display: block;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NoneEmail {
-	height: 15px;
+	height: 14px;
 	display: block;
 }
 
@@ -158,7 +159,7 @@
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NonePositionAndEmail {
-	height: 30px;
+	height: 28px;
 	display: block;
 }
 

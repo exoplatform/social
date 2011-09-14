@@ -73,7 +73,7 @@ public class UIAllPeople extends UIContainer {
   /**
    * Number element per page.
    */
-  private static final Integer PEOPLE_PER_PAGE = 45; // for testing
+  private static final Integer PEOPLE_PER_PAGE = 45;
 
   /**
    * The search object variable.
@@ -195,7 +195,11 @@ public class UIAllPeople extends UIContainer {
       setPeopleList(loadPeople(0, this.peopleList.size()));
     }
     
-    setEnableLoadNext(this.peopleList.size() < getPeopleNum());
+    int realPeopleListSize = this.peopleList.size();
+    
+    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE) 
+    		&& (realPeopleListSize < getPeopleNum()));
+    
     return this.peopleList;
   }
 
@@ -289,7 +293,7 @@ public class UIAllPeople extends UIContainer {
   static public class LoadMorePeopleActionListener extends EventListener<UIAllPeople> {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople uiAllPeople = event.getSource();
-      if (uiAllPeople.currentLoadIndex <= uiAllPeople.peopleNum) {
+      if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
         uiAllPeople.loadNext();
       } else {
     	uiAllPeople.setEnableLoadNext(false);

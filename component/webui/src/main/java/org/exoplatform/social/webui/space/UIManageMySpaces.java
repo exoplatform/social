@@ -198,7 +198,10 @@ public class UIManageMySpaces extends UIContainer {
     }
     
     uiSpaceSearch.setSpaceNameForAutoSuggest(getMySpaceNames());
-    setEnableLoadNext(this.mySpacesList.size() < getMySpacesNum());
+
+    setEnableLoadNext((this.mySpacesList.size() >= SPACES_PER_PAGE) 
+    		&& (this.mySpacesList.size() < getMySpacesNum()));
+    
     return this.mySpacesList;
   }
 

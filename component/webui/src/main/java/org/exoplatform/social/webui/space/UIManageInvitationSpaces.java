@@ -192,7 +192,10 @@ public class UIManageInvitationSpaces extends UIContainer {
     }
     
     uiSpaceSearch.setSpaceNameForAutoSuggest(getInvitedSpaceNames());
-    setEnableLoadNext(this.invitedSpacesList.size() < getInvitedSpacesNum());
+    
+    setEnableLoadNext((this.invitedSpacesList.size() >= SPACES_PER_PAGE) 
+    		&& (this.invitedSpacesList.size() < getInvitedSpacesNum()));
+    
     return this.invitedSpacesList;
   }
 
