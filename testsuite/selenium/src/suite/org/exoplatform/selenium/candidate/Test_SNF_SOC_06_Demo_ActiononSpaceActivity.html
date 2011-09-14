@@ -103,7 +103,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>1000</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -113,11 +113,6 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space06</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
 	<td>link=Space06</td>
 	<td></td>
 </tr>
@@ -158,12 +153,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
+	<td>//a[@title='Share Link']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UIComposer']/div[2]/div[2]/div/a</td>
+	<td>//a[@title='Share Link']</td>
 	<td></td>
 </tr>
 <!---- enter link-->
@@ -224,8 +219,8 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
+	<td>Source : http://google.com</td>
 	<td></td>
-	<td>Source : http://www.google.com</td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -243,14 +238,24 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- Type comment --</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//div[3]/div/textarea</td>
+	<td>document.forms[1].elements[1]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>//div[3]/div/textarea</td>
+	<td>document.forms[1].elements[1]</td>
 	<td>This is Comment for Activity in Space 06</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Press Comment button</td>
+	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -279,12 +284,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[3]/div[1]/span</td>
+	<td>css=span.CloseCMContentHilight</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[3]/div[1]/span</td>
+	<td>css=span.CloseCMContentHilight</td>
 	<td></td>
 </tr>
 <tr>
@@ -359,17 +364,17 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space06']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space06']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>
@@ -385,6 +390,11 @@
 <tr>
 	<td>verifyTextNotPresent</td>
 	<td>Space06</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Sign out</td>
 	<td></td>
 </tr>
 <tr>

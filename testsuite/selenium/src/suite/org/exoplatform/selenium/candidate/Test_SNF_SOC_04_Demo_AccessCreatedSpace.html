@@ -103,22 +103,12 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>1000</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
 	<td>-- Verify space created</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Space04</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space04</td>
 	<td></td>
 </tr>
 <tr>
@@ -143,47 +133,62 @@
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Acesss Space created</td>
+	<td>-- Focus Home items</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Home</td>
+	<td>//div[@class='SelectedTab']//a[@title='Home']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=Home</td>
+	<td>//div[@class='SelectedTab']//a[@title='Home']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--- Dashboard</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
+	<td>//div[@class='NormalTab']//a[@title='Dashboard']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='UISpaceMenu']/div/div[3]/a/span</td>
+	<td>//div[@class='NormalTab']//a[@title='Dashboard']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--- Members</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Members</td>
+	<td>//div[@class='NormalTab']//a[@title='Members']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=Members</td>
+	<td>//div[@class='NormalTab']//a[@title='Members']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>--- Space Settings</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space Settings</td>
+	<td>//div[@class='NormalTab']//a[@title='Space Settings']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=Space Settings</td>
+	<td>//div[@class='NormalTab']//a[@title='Space Settings']</td>
 	<td></td>
 </tr>
 <tr>
@@ -198,17 +203,17 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space04']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space04']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>
@@ -224,6 +229,11 @@
 <tr>
 	<td>verifyTextNotPresent</td>
 	<td>Space04</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Sign out</td>
 	<td></td>
 </tr>
 <tr>

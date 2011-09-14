@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space08</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space08</td>
 	<td></td>
@@ -144,11 +139,6 @@
 <tr>
 	<td>echo</td>
 	<td>--User 1 request&nbsp;&nbsp;to join the Space</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -182,23 +172,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -213,22 +188,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space08']/ancestor::div/ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconAdd']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextNotPresent</td>
-	<td>This is description for Space_08</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>This is description for Space_08</td>
+	<td>//div/a[text()='Space08']/ancestor::div/ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
@@ -238,12 +203,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Pendings</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Pendings</td>
+	<td>clickAndWait</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
@@ -269,11 +234,6 @@
 <tr>
 	<td>echo</td>
 	<td>--User 2 request&nbsp;&nbsp;to join the Space</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -307,18 +267,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Publics</td>
 	<td></td>
 </tr>
 <tr>
@@ -338,22 +288,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space08']/ancestor::div/ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconAdd']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextNotPresent</td>
-	<td>This is description for Space_08</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>This is description for Space_08</td>
+	<td>//div/a[text()='Space08']/ancestor::div/ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
@@ -363,12 +303,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Pendings</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Pendings</td>
+	<td>clickAndWait</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
@@ -394,11 +334,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- Accept Request of User 1--</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -428,47 +363,82 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space Settings</td>
+	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Space Settings</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[3]//div[@class='MiddleTab']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[3]//div[@class='MiddleTab']</td>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceMember']/table[1]/tbody/tr/td[2]/a[1]</td>
+	<td>link=Space08</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UISpaceMember']/table[1]/tbody/tr/td[2]/a[1]</td>
+	<td>link=Space08</td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Deny request of User 2--</td>
+	<td>-- Space Settings</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceMember']/table[1]/tbody/tr/td[2]/a[2]</td>
+	<td>//a[contains(@href,'space08/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UISpaceMember']/table[1]/tbody/tr/td[2]/a[2]</td>
+	<td>//a[contains(@href,'space08/settings')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Member tabs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[text()='Members']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[text()='Members']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Accept Mary</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//td[text()='mary']/following-sibling::td/a[@title='Validate']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//td[text()='mary']/following-sibling::td/a[@title='Validate']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Deny request of Demo--</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//td[text()='demo']/following-sibling::td/a[@title='Decline']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//td[text()='demo']/following-sibling::td/a[@title='Decline']</td>
 	<td></td>
 </tr>
 <tr>
@@ -478,12 +448,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Members</td>
+	<td>//a[contains(@href,'space08/members')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Members</td>
+	<td>//a[contains(@href,'space08/members')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -517,11 +487,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Sign in</td>
 	<td></td>
@@ -552,8 +517,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=My Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=My Spaces</td>
 	<td></td>
 </tr>
 <tr>
@@ -579,11 +554,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -617,28 +587,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Publics</td>
+	<td>link=My Spaces</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Publics</td>
+	<td>clickAndWait</td>
+	<td>link=My Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>This is description for Space_08</td>
+	<td>You do not have any spaces yet</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>This is description for Space_08</td>
+	<td>You do not have any spaces yet</td>
 	<td></td>
 </tr>
 <tr>
@@ -654,11 +624,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Sign out</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -692,23 +657,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space08']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space08']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>
