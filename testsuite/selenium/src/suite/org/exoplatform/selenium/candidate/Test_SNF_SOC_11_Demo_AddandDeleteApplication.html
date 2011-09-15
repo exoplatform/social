@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space11</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space11</td>
 	<td></td>
@@ -138,32 +133,32 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=Space Settings</td>
+	<td>//a[contains(@href,'space11/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Space Settings</td>
+	<td>//a[contains(@href,'space11/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[4]//div[@class='MiddleTab']</td>
+	<td>//div[text()='Applications']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[4]//div[@class='MiddleTab']</td>
+	<td>//div[text()='Applications']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@class='AddAplicationButton']</td>
+	<td>css=div.IconButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@class='AddAplicationButton']//div[@class='IconButton']</td>
+	<td>css=div.IconButton</td>
 	<td></td>
 </tr>
 <tr>
@@ -188,17 +183,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='AddApplication']//div[@class='CloseButton']</td>
+	<td>//div[@id='AddApplication']/div/a[@title='Close Window']</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>//div[@id='UISpaceMenu']/div/div[4]/a/span</td>
-	<td>Gadget Wrapper</td>
-</tr>
-<tr>
 	<td>pause</td>
-	<td>500</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -207,18 +197,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>1000</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceApplication']/div[2]/div[2]/div[2]/div[1]/div[2]/div/div/div</td>
+	<td>//div[text()='Gadget Wrapper']/following-sibling::div//div[@title='Remove']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UISpaceApplication']/div[2]/div[2]/div[2]/div[1]/div[2]/div/div/div</td>
+	<td>//div[text()='Gadget Wrapper']/following-sibling::div//div[@title='Remove']</td>
 	<td></td>
 </tr>
 <tr>
@@ -242,23 +227,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space11']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space11']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>
