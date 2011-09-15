@@ -80,7 +80,9 @@
     <div class="UISpaceName FL ">
       <a class="Avartar" href="$homeUrl"><img alt="Avatar" src="$imageSource" width="35" height="35" /></a>
       <a title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
+      <% if (uicomponent.hasSettingPermission()) { %>
       <a class="SpaceSettingIcon" href='$homeUrl/settings' title="$settingsLabel"><span>&nbsp</span></a>
+      <% }%>
     </div>
 
     <div class="UIHorizontalTabs">
@@ -118,6 +120,7 @@
                 if(nodeName.equals(appSelected)) {
                   appTabClass = "SelectedTab";
                 }
+                if (!nodeName.equals("settings")) {
               %>
               <div class="UITab NormalTabStyle">
                 <div class="$appTabClass">
@@ -131,6 +134,7 @@
                 </div>
               </div>
               <%
+                }
               }
               %>
             </div>
