@@ -94,7 +94,7 @@
 }
 
 .UIActivity .NormalBox {
-	padding: 4px 0px;
+	padding: 10px 0px;
 	border-bottom: 1px solid #e2ddc7;
 	*margin-left: -74px;
 	margin-left: 1px;
@@ -147,6 +147,36 @@
 	padding: 7px 0px;
 }
 
+.UIActivity .QuoterBox ,.UIActivity .BoxGray{
+	padding: 15px 25px;
+	background: #f8f8f8 ;
+	border: 1px solid #e1e1e1;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	margin: 7px 0;
+} 
+
+.UIActivity .BoxGray {
+	padding:10px 15px;
+	
+}
+
+.UIActivity .QuoterClose {
+	background: #f8f8f8 url('/social-resources/skin/social/webui/activity/UIDefaultActivity/background/quoterClose.png') no-repeat right bottom;
+	margin:0;	
+	display:inline-block;
+	padding-right: 15px;
+}
+
+.UIActivity .QuoterBox  {
+	background: #f8f8f8  url('/social-resources/skin/social/webui/activity/UIDefaultActivity/background/quoterOpen.png') no-repeat 10px 12px;
+}
+
+*+html .UIActivity .QuoterClose {
+	display:inline;
+}
+
 .UIActivity .CommentFormBox {
 	border-bottom: none;
 }
@@ -179,13 +209,12 @@
 }
 
 .UIActivity .ContentBox h5 {
-	height: 24px;
 	color: #f68a2f;
 	overflow: hidden;
 	margin: 0;
 }
 
-.UIActivity .ContentBox .Content {
+.UIActivity .ContentBox .Content ,.AnswerActivity  .BoxGray p{
 	margin: 0;
 }
 
@@ -197,19 +226,45 @@
 
 
 .UIActivity .ContentBox .DefaultActivityIcon {
-	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -444px;
-	margin: 0px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -448px;
 	padding-left: 20px;
 }
 
+.UIActivity .ContentBox .ActivityIcon  {
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat ;	
+	padding-left: 25px;
+}
+.UIActivity .ContentBox  .WikiActivityIcon {
+	background-position: left -502px;
+}
+
+.UIActivity .ContentBox  .ForumActivityIcon {
+	background-position: left -468px;
+}
+
+.UIActivity .ContentBox  .AnswerActivityIcon {
+	background-position: left -449px;
+}
+
+.UIActivity .ContentBox  .AskedActivityIcon {
+	background-position: left -527px;
+}
+
+.UIActivity .ContentBox  .EventActivityIcon {
+	background-position: left -600px;
+}
+.UIActivity .ContentBox  .TaskActivityIcon {
+	background-position: left -551px;
+}
+
 .UIActivity .ContentBox .LinkShareActivityIcon {
-	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -382px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -387px;
 	margin: 0px;
 	padding-left: 20px;
 }
 
 .UIActivity .ContentBox .DocActivityIcon {
-	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -300px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -304px;
 	margin: 0px;
 	padding-left: 20px;
 }
@@ -228,31 +283,28 @@
 
 .UIActivity .ContentBox a {
 	color: #115ead;
-	line-height: 24px;
+	line-height: 16px;
+	cursor: pointer;
+	text-decoration: none;
 }
 
-.UIActivity .TitleContent .Text {
+.UIActivity .TitleContent .Text ,.UIActivity .TitleContent .Delimiter{
 	font-weight: bold;
 	display: block;
-	line-height:24px;
-	margin-right:50px; /* orientation=lt */
-	margin-left:50px; /* orientation=rt */
-	float: left; /* orientation=lt */
-	float: right; /* orientation=rt */
-}
-
-.UIActivity .TitleContent .Delimiter {
-	font-weight: bold;
-	display: block;
-	line-height:24px;
+	line-height:16px;
 	margin-right:10px; /* orientation=lt */
 	margin-left:10px; /* orientation=rt */
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
 }
 
+.UIActivity  .TextBold a {
+	font-weight: bold;
+}
+
 .UIActivity .ContentBox .Content a {
 	color: #115ead;
+	text-decoration:none;
 }
 
 .UIActivity .ListPeopleLikeBG {
@@ -319,4 +371,20 @@
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
+}
+
+.UIActivity  .LinkShare .Thumbnail  img{
+	width: 108px;
+	height:108px;
+}
+
+.UIActivity .LinkShare  {
+	padding: 10px 15px;
+}
+
+.UIDisplaySpaceActivities .UIActivitiesLoadButton {
+	text-align:center;
+	padding: 5px 0;
+	background-color:#f8f8f8;
+	border-bottom: 1px solid #E1E1E1;
 }

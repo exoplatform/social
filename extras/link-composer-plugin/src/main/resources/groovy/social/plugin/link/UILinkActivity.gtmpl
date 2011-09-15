@@ -185,11 +185,11 @@
             link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" />";
           }
         %>
-      <p class="Content">$linkComment</p>
+      <div class="TitleBlock">$linkComment</div>
       <%
         if(UILinkUtil.isImageLink(linkSource)){
           %>
-              <a href="$linkSource" target="_blank"><img src="$linkSource" alt=" " height="120"/></a>
+            <div class="BoxGray">  <a href="$linkSource" target="_blank"><img src="$linkSource" alt=" " height="120"/></a></div>
           <%
         }
         else{

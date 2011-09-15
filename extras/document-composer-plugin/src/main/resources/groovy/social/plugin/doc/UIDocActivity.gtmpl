@@ -177,14 +177,14 @@
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
       <%}%>
       </h5>
-      <div class="Content">
-        <%
+		 <%
           if (!dMessage.equals(null) && !dMessage.equals("")){
             %>
-              <p>$dMessage</p>
+              <div class="TitleBlock">$dMessage</div>
             <%
           }
         %>
+	  <div class="BoxGray">       
         $dName
       </div>
       <div class="DocActivityIcon">
