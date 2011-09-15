@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space16</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space16</td>
 	<td></td>
@@ -144,11 +139,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- - Verify space is displayed in Space Public List of ther user</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -182,23 +172,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -213,12 +188,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space16']/following::ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space16']/following::ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
@@ -234,11 +209,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- Delete Space created</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -272,23 +242,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space16']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space16']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>

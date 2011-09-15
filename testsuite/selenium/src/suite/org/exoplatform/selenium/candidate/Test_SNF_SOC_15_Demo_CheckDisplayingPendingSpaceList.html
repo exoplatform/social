@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space15</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space15</td>
 	<td></td>
@@ -144,11 +139,6 @@
 <tr>
 	<td>echo</td>
 	<td>--Request&nbsp;&nbsp;to join the Space</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -182,23 +172,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Publics</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -212,13 +187,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>-- Join</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space15']/following::ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconAdd']</td>
+	<td>//div/a[text()='Space15']/following::ul//a[@title='Join']</td>
 	<td></td>
 </tr>
 <tr>
@@ -228,12 +208,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Pendings</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Pendings</td>
+	<td>clickAndWait</td>
+	<td>link=Pending Requests</td>
 	<td></td>
 </tr>
 <tr>
@@ -259,11 +239,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- Delete Space created</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -297,68 +272,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>mary</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>mary</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space15']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space15']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Sign out</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>

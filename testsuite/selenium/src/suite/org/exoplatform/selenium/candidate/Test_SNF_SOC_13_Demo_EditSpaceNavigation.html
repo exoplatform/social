@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space13</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space13</td>
 	<td></td>
@@ -138,12 +133,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td>//a[contains(@href,'space13/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='UISpaceMenu']/div/div[5]/a/span</td>
+	<td>//a[contains(@href,'space13/settings')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -153,12 +148,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[5]/div/div/div/div</td>
+	<td>//div [text()='Space Navigation']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[5]/div/div/div/div</td>
+	<td>//div [text()='Space Navigation']</td>
 	<td></td>
 </tr>
 <tr>
@@ -168,17 +163,22 @@
 </tr>
 <tr>
 	<td>mouseDownRight</td>
-	<td>//a[@title=&quot;Space13&quot;]</td>
+	<td>//a[contains(@onmousedown,'SpaceNavigationNodePopupMenu')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Select Add new node</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='SpaceNavigationNodePopupMenu']//a</td>
+	<td>//div[@id='SpaceNavigationNodePopupMenu']//a[contains(text(),'Add new Node')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='SpaceNavigationNodePopupMenu']//a</td>
+	<td>//div[@id='SpaceNavigationNodePopupMenu']//a[contains(text(),'Add new Node')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -188,22 +188,22 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[1]/div/table/tbody/tr[2]/td[2]/input</td>
+	<td>//input[@id='name']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>//div[1]/div/table/tbody/tr[2]/td[2]/input</td>
+	<td>//input[@id='name']</td>
 	<td>test_node_label_13</td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//tr[3]/td[2]/input</td>
+	<td>//input[@id='label']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>//tr[3]/td[2]/input</td>
+	<td>//input[@id='label']</td>
 	<td>test_node_label_13</td>
 </tr>
 <tr>
@@ -213,12 +213,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='AddNode']/div/div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td>//div[@id='AddNode']//div[text()='Page Selector']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='AddNode']/div/div[2]/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div/div/div</td>
+	<td>//div[@id='AddNode']//div[text()='Page Selector']</td>
 	<td></td>
 </tr>
 <tr>
@@ -238,17 +238,27 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIRepeater']//table//tbody/tr/td[5]/div[@class='ActionContainer']/img</td>
+	<td>//td/div[@title='Home Page']/following::td//img[@title='Select Page']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIRepeater']//table//tbody/tr/td[5]/div[@class='ActionContainer']/img</td>
+	<td>//td/div[@title='Home Page']/following::td//img[@title='Select Page']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
 	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>portal::classic::homepage </td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>portal::classic::homepage </td>
 	<td></td>
 </tr>
 <tr>
@@ -258,12 +268,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UIPageNodeForm']/div[3]/div[2]/a[1]</td>
+	<td>//form[@id='UIPageNodeForm']//a[text()='Save']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UIPageNodeForm']/div[3]/div[2]/a[1]</td>
+	<td>//form[@id='UIPageNodeForm']//a[text()='Save']</td>
 	<td></td>
 </tr>
 <tr>
@@ -397,28 +407,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space13']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space13']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>

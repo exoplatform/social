@@ -52,7 +52,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
@@ -112,11 +112,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Space12</td>
-	<td></td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>link=Space12</td>
 	<td></td>
@@ -138,22 +133,22 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Space Settings</td>
+	<td>//a[contains(@href,'space12/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Space Settings</td>
+	<td>//a[contains(@href,'space12/settings')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[3]//div[@class='MiddleTab']</td>
+	<td>//div[text()='Members']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UISpaceSettingPortlet']//div[@class='TabsContainer']/div[3]//div[@class='MiddleTab']</td>
+	<td>//div[text()='Members']</td>
 	<td></td>
 </tr>
 <tr>
@@ -168,12 +163,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//form[@id='UISpaceMember']/div[2]/div/a[2]</td>
+	<td>//a[@title='Invite']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//form[@id='UISpaceMember']/div[2]/div/a[2]</td>
+	<td>//a[@title='Invite']</td>
 	<td></td>
 </tr>
 <tr>
@@ -199,11 +194,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- Accept the Invite</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -237,28 +227,28 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Invitations</td>
+	<td>link=Received Invitations</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Invitations</td>
+	<td>clickAndWait</td>
+	<td>link=Received Invitations</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconAccept']</td>
+	<td>//div/a[text()='Space12']/following::ul//a[@title='Accept']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconAccept']</td>
+	<td>//div/a[text()='Space12']/following::ul//a[@title='Accept']</td>
 	<td></td>
 </tr>
 <tr>
@@ -272,7 +262,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=My Spaces</td>
 	<td></td>
 </tr>
@@ -293,12 +283,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='Icon IconLeaveSpace']</td>
+	<td>//div/a[text()='Space12']/following::ul//a[@title='Leave']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='Icon IconLeaveSpace']</td>
+	<td>//div/a[text()='Space12']/following::ul//a[@title='Leave']</td>
 	<td></td>
 </tr>
 <tr>
@@ -324,11 +314,6 @@
 <tr>
 	<td>echo</td>
 	<td>-- Check member list after user leave</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
 	<td></td>
 </tr>
 <tr>
@@ -362,28 +347,38 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td>//a[text()='Space12']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='UIManageMySpaces']/div[2]/div[2]/div[1]/div[1]/a[3]</td>
+	<td>//a[text()='Space12']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Mary Kelly has left the space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Mary Kelly has left the space</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td>//a[contains(@href,'space12/members')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[@id='UITabPane']/div[1]/div/div[3]/div/div/div/div</td>
+	<td>clickAndWait</td>
+	<td>//a[contains(@href,'space12/members')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -402,23 +397,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space12']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Delete Space']</td>
+	<td>//div//a[text()='Space12']/ancestor::div/ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this space? This can not be undone. All page navigations and this group will be deleted, too.</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
 	<td></td>
 </tr>
 <tr>
