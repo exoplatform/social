@@ -63,22 +63,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@title='Invite Mary Kelly']</td>
+	<td>//a[text()='Mary Kelly']/following::ul//a[@title='Invite']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@title='Invite Mary Kelly']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>[Invited to connect]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>[Invited to connect]</td>
+	<td>//a[text()='Mary Kelly']/following::ul//a[@title='Invite']</td>
 	<td></td>
 </tr>
 <tr>
@@ -97,8 +87,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
 	<td></td>
 </tr>
 <tr>
@@ -138,17 +128,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Incoming</td>
+	<td>link=Received Invitations</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Incoming</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
+	<td>clickAndWait</td>
+	<td>link=Received Invitations</td>
 	<td></td>
 </tr>
 <tr>
@@ -163,12 +148,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='SelectIcon']</td>
+	<td>//a[text()='Root Root']/following::ul//a[@title='Accept']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='SelectIcon']</td>
+	<td>//a[text()='Root Root']/following::ul//a[@title='Accept']</td>
 	<td></td>
 </tr>
 <tr>
@@ -182,13 +167,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Network</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -217,8 +197,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>/socialdemo/public/classic/</td>
+	<td>waitForElementPresent</td>
+	<td>link=Sign in</td>
 	<td></td>
 </tr>
 <tr>
@@ -252,13 +232,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Connections</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -273,12 +248,22 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//a[@class='DeleteIcon']</td>
+	<td>//a[text()='Mary Kelly']/following::ul//a[@title='Delete']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//a[@class='DeleteIcon']</td>
+	<td>//a[text()='Mary Kelly']/following::ul//a[@title='Delete']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Network</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Network</td>
 	<td></td>
 </tr>
 <tr>

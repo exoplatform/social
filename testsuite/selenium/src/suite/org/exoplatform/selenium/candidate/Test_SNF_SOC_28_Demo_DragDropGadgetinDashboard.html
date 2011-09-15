@@ -48,13 +48,78 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Dashboard</td>
+	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Dashboard</td>
-	<td>1,1</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Add a new Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Add New Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Add New Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>displayName</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>displayName</td>
+	<td>Space28</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>description</td>
+	<td>This is description for Space_28</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space28</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space28</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//a[contains(@href,'space28/dashboard')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//a[contains(@href,'space28/dashboard')]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
@@ -104,12 +169,12 @@
 <tr>
 	<td>waitForElementPresent</td>
 	<td>xpath=//img[@class='AddNewNodeIcon']</td>
-	<td>1,1</td>
+	<td></td>
 </tr>
 <tr>
 	<td>click</td>
 	<td>xpath=//img[@class='AddNewNodeIcon']</td>
-	<td>1,1</td>
+	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
@@ -128,12 +193,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIDashboard']/div/div/div/div/div/div/div/div[2]</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIDashboard']/div/div/div/div/div/div/div/div[2]</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
@@ -143,12 +208,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@class='CloseGadget IconControl']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@class='CloseGadget IconControl']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
@@ -178,11 +243,6 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>xpath=//div[@class='UIDashboardContainer']/div/div/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
 	<td>xpath=//div[@class='GadgetTitle' and @title='Calculator']</td>
 	<td></td>
 </tr>
@@ -198,17 +258,17 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIDashboard']//div[@class='CloseButton']</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIDashboard']//div[@class='CloseButton']</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>xpath=//div[@class='UIDashboardContainer']/div/div/div[3]</td>
+	<td>waitForTextPresent</td>
+	<td>Calculator</td>
 	<td></td>
 </tr>
 <tr>
@@ -223,12 +283,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@onclick='eXo.gadget.UIGadget.deleteGadget(this)']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@onclick='eXo.gadget.UIGadget.deleteGadget(this)']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
@@ -239,6 +299,46 @@
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Drag your gadgets here.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div//a[text()='Space28']/ancestor::div/ul//a[@title='Delete']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div//a[text()='Space28']/ancestor::div/ul//a[@title='Delete']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForConfirmation</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Verify space deleted</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Space28</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Space28</td>
 	<td></td>
 </tr>
 <tr>

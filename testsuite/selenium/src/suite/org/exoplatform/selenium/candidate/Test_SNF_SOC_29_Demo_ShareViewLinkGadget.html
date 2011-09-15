@@ -48,13 +48,83 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Dashboard</td>
+	<td>link=Spaces</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Dashboard</td>
-	<td>1,1</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Add a new Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Add New Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Add New Space</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>displayName</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>displayName</td>
+	<td>Space29</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>description</td>
+	<td>This is description for Space_29</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Create</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Space29</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Space29</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//a[contains(@href,'space29/dashboard')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//a[contains(@href,'space29/dashboard')]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
@@ -73,47 +143,27 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>xpath=//div[@class='UIDashboardContainer']/div/div/div[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>xpath=//div[@title='Social Rss Reader']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
+	<td>xpath=//div[@title='Rss Reader']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>dragAndDropToObject</td>
-	<td>//div[@title='Social Rss Reader']</td>
+	<td>xpath=//div[@title='Rss Reader']</td>
 	<td>xpath=//div[@class='UIDashboardContainer']</td>
 </tr>
 <tr>
+	<td>echo</td>
+	<td>--Close Dashboard workspace</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@id='UIDashboard']//div[@class='CloseButton']</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@id='UIDashboard']//div[@class='CloseButton']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>eXo Blog</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>eXo Blog</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
+	<td>css=a.CloseButton</td>
 	<td></td>
 </tr>
 <tr>
@@ -132,16 +182,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//div[@id='link_0']/a[1]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='link_0']/a[1]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>echo</td>
 	<td>-- View Share link in Activity</td>
 	<td></td>
@@ -152,13 +192,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Activities</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -169,11 +204,6 @@
 <tr>
 	<td>click</td>
 	<td>link=My Status</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
 	<td></td>
 </tr>
 <tr>
@@ -228,22 +258,22 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>link=Dashboard</td>
+	<td>//a[contains(@href,'space29/dashboard')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=Dashboard</td>
-	<td>1,1</td>
+	<td>//a[contains(@href,'space29/dashboard')]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@onclick='eXo.gadget.UIGadget.deleteGadget(this)']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//div[@onclick='eXo.gadget.UIGadget.deleteGadget(this)']</td>
+	<td>css=span.CloseGadget.IconControl</td>
 	<td></td>
 </tr>
 <tr>
@@ -262,8 +292,43 @@
 	<td></td>
 </tr>
 <tr>
-	<td>pause</td>
-	<td>200</td>
+	<td>waitForElementPresent</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div//a[text()='Space29']/ancestor::div/ul//a[@title='Delete']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div//a[text()='Space29']/ancestor::div/ul//a[@title='Delete']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForConfirmation</td>
+	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>-- Verify space deleted</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Space29</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Space29</td>
 	<td></td>
 </tr>
 <tr>
