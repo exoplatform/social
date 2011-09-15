@@ -22,9 +22,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Sets;
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.protocol.model.FilterOperation;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.ExoContainerContext;
@@ -35,8 +35,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.opensocial.auth.ExoBlobCrypterSecurityToken;
-
-import com.google.common.collect.Sets;
 
 
 /**
@@ -127,8 +125,10 @@ public class ExoService {
   }
 
   protected Identity getIdentity(String id, boolean loadProfile, SecurityToken st) throws Exception {
-
-    PortalContainer pc = (PortalContainer) getPortalContainer(st);
+    if (id.contains(":")) {
+      id = id.split(":")[1];
+    }
+    PortalContainer pc = getPortalContainer(st);
     IdentityManager im = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
     Identity identity = im.getOrCreateIdentity(OrganizationIdentityProvider.NAME, id, loadProfile);
@@ -138,7 +138,7 @@ public class ExoService {
     }
 
     if (identity == null) {
-      throw new Exception("\n\n\n can't find identity \n\n\n");
+      throw new Exception("can't find identity: " + id);
     }
 
     return identity;

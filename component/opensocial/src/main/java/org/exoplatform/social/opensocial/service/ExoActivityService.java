@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -32,17 +33,15 @@ import org.apache.shindig.social.opensocial.model.Activity;
 import org.apache.shindig.social.opensocial.spi.ActivityService;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
-
-import com.google.common.collect.Lists;
 
 /**
  * The Class ExoActivityService.
@@ -197,6 +196,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
       IdentityManager identityManager = (IdentityManager) pc.getComponentInstanceOfType(IdentityManager.class);
 
       String user = userId.getUserId(token); // can be organization:name or organization:UUID
+      if (user.contains(":")) {
+        user = user.split(":")[1];
+      }
+
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, false);
 
       // identity for the stream to post on
@@ -205,7 +208,10 @@ public class ExoActivityService extends ExoService implements ActivityService {
       /// someone posting for a space ?
       if (groupId.getType() == GroupId.Type.groupId) {
         String group = groupId.getGroupId(); // can be space:name or space:UUID
-        targetStream = identityManager.getIdentity(group);
+        if (group.contains(":")) {
+          group = group.split(":")[1];
+        }
+        targetStream = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, group, false);
         // TODO : check that member is allowed to post on group or throw SC_UNAUTHORIZED
       }
 

@@ -134,8 +134,11 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       // we can't support any filters yet. We should fix this.
 
       int totalSize = result.size();
-      int last = collectionOptions.getFirst() + collectionOptions.getMax();
-      result = result.subList(collectionOptions.getFirst(), Math.min(last, totalSize));
+      int fromIndex = collectionOptions.getFirst();
+      int toIndex = fromIndex + collectionOptions.getMax();
+      fromIndex = Math.min(fromIndex, totalSize - 1);
+      toIndex = Math.min(toIndex, totalSize - 1);
+      result = result.subList(fromIndex, toIndex);
 
       return ImmediateFuture.newInstance(new RestfulCollection<Person>(
               result, collectionOptions.getFirst(), totalSize));

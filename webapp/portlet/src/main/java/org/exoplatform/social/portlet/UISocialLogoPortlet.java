@@ -30,7 +30,6 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.CacheUserProfileFilter;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -110,10 +109,12 @@ public class UISocialLogoPortlet extends UIPortletApplication {
    * @return id of current profile.
    */
   private String getCurrentProfileID() {
+    /*
     String username = URLUtils.getCurrentUser();
     if (username != null) {
       return username;
     }
+    */
     // if we are not on the page of a user, we display the profile of the
     // current user
     RequestContext context = RequestContext.getCurrentInstance();
