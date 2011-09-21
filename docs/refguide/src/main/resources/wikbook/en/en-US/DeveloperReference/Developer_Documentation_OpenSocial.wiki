@@ -1,21 +1,21 @@
 eXo Social supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.
-With the support for the OpenSocial standard, eXo Social provides a framework for developers to build gadgets that can display and mashup activity information for contacts, social networks, applications and services.
+With the support for the OpenSocial standard, eXo Social provides a framework for developers to build gadgets that can display and mash up activity information for contacts, social networks, applications and services.
 
 h1. Gadget {anchor:id=Developer_document.Open_social.Gadget}
 
 Gadgets are web-based software components based on HTML, CSS, JavaScript; defined by using an XML declaration syntax. They allow developers to easily write social applications that work on the social networks supporting OpenSocial APIs without modification. See the following links for detailed information:
 
-* [Gadgets Specification | http//code:google.com-apis-gadgets-docs-spec.html]
+* [Gadgets Specification|http//code:google.com-apis-gadgets-docs-spec.html]
 
-* [OpenSocial Core Gadget Specification v0.8 | http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadget-spec.html]
+* [OpenSocial Core Gadget Specification v0.8|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadget-spec.html]
 
-* [Gadgets APIs | http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadgets-reference08]
+* [Gadgets APIs|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadgets-reference08]
 
 To know how to create an OpenSocial gadget, see [here|http://wiki.opensocial.org/index.php?title=Gadget_Developer's_Guide].
 
 {note}
 Gadgets will work out of the box on Dashboard. In eXo, gadgets are wrapped by GadgetWrapperPortlet so they can work as any other portlet applications. 
-At present, eXo Social supports [OpenSocial version 0.8|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08.html].
+At present, eXo Social supports [OpenSocial v0.8.|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08.html]
 {note}
 
 h2. Supported APIs {anchor:id=Developer_document.Open_social.Supported_APIs}
@@ -25,7 +25,7 @@ To get more details about Supported APIs, refer to [Opensocial Specs|http://www.
 
 h3. REST/RPC API {anchor:id=Developer_document.Open_social.REST-RPC_API}
 
-Suppose that you are running local host at port 8080 (http://localhost:8080/), then the path of the API will be:
+Suppose that you are running the local host at port 8080 (http://localhost:8080/), the path of the API will be:
 
 * REST API:
 http://localhost:8080/social/social/rest
@@ -33,27 +33,28 @@ http://localhost:8080/social/social/rest
 * RPC API:
 http://localhost:8080/social/social/rpc
 
-To learn what you can do with this APIs, have a look at the [specification|http://opensocial-resources.googlecode.com/svn/spec/1.0/Social-Data.xml]. If you are developing in Java, you can use the [opensocial-java-client|http://code.google.com/p/opensocial-java-client/].
+To learn what you can do with the APIs, have a look at the [specification|http://opensocial-resources.googlecode.com/svn/spec/1.0/Social-Data.xml]. If you are developing in Java, you can use the [opensocial-java-client|http://code.google.com/p/opensocial-java-client/].
 
 
 h3. Configure the security {anchor:id=Developer_document.Open_social.Configure_the_security}
 
-If you are using OpenSocial, you need to configure the OAuth authentication. With the case of eXo Platform, you need to edit the file: gatein/conf/portal/portal/configuration.xml and add the following configuration:
+If you are using OpenSocial, you need to configure the OAuth authentication. With the case of eXo Platform, you need to edit the file: _gatein/conf/portal/portal/configuration.xml_ and add the following configuration:
 {code:xml}
-        <component>
-                <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
-                <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
-				<init-params>
-                       <properties-param>
-                               <name>grails-book-flow</name>
-                               <description>consumer key and secret for sample oauth provider. </description>
-                               <property name="consumerKey" value="YOUR_KEY_HERE" />
-                               <property name="sharedSecret" value="YOUR_SECRET_KEY_HERE" />
-    				   </properties-param>
-			   </init-params>
-        </component>
+<component>
+  <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
+  <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
+  <init-params>
+    <properties-param>
+      <name>grails-book-flow</name>
+      <description>consumer key and secret for sample oauth provider. </description>
+      <property name="consumerKey" value="YOUR_KEY_HERE" />
+      <property name="sharedSecret" value="YOUR_SECRET_KEY_HERE" />
+    </properties-param>
+  </init-params>
+</component>
 {code}
-The consumerKey and sharedSecret are the keys that need to be shared with the application that is doing the request.
+
+_consumerKey_ and _sharedSecret_ are keys that need to be shared with the application which is doing the request.
 
 h3. Publish an activity into a space  {anchor:id=Developer_document.Open_social.Publish_an_activity_into_a_space}
 
@@ -61,7 +62,7 @@ This functionality is not available in the standard OpenSocial APIs.
 
 Instead of publishing your activities to the group @self as usual, you will publish them to the group "space:spaceId" or "space:spacePrettyName".
 
-After using the OpenSocial java library and groovy, your code will look like this:
+After using the OpenSocial Java library and Groovy, your code will look like this:
 
 {code:groovy}
       def client = getOpenSocialClient()
@@ -82,5 +83,5 @@ After using the OpenSocial java library and groovy, your code will look like thi
 In the example above, the groupId is set to "space:bookflow" and bookflow is the name of the space. 
 
 h1. Tutorial  {anchor:id=Developer_document.Open_social.Tutorial}
-* See [Grails + eXo Social tutorial|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social]
+* See [Grails + eXo Social tutorial.|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social]
 

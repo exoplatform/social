@@ -1,24 +1,24 @@
 h1. About Activity Plugin {anchor:id=Developer_document.Activity_plug-in}
   
-Since eXo Social 1.1, the activity plugin feature was introduced to allow using the activity composer extension and the custom UI component for displaying activity by its type.
+The activity plugin feature was introduced to allow using the activity composer extension and the custom UI component for displaying activity by its type.
 
-h1. How to create activity plugin {anchor:id=Developer_document.Create the activity plug-in}
+h1. How to create activity plugin {anchor:id=Developer_document.Create_activity_plugin}
 
-You should have an idea about UI Extension Framework. If you have already worked with UI Extension Framework, it's really easy to create activity plugin. If no, you have chance to work with it now. You should have a look at [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
+You should have an idea about the UI Extension Framework. If you have already worked with the UI Extension Framework, it is really easy to create an activity plugin. If not, you have chance to work with it now. You should have a look at [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
 
 h2. Create a custom UI component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_component}
 
 {note}
-Project Code is available [here|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip].)
+The Project Code is available [here.|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]
 {note}
 
 When an activity is displayed, UIActivityFactory will look for its registered custom actvity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
 For example, in eXo Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher, but now, you want to display it without own UI component instead of the default one. To do that, follow these steps.
 
-First of all, create a sample project:
+*1.* Create a sample project:
 
-{code}
+{screen}
 mvn archetype:generate
 [INFO] Scanning for projects...
 [INFO] Searching repository for plugin with prefix: 'archetype'.
@@ -65,29 +65,24 @@ artifactId: exo.social.samples.activity-plugin
 version: 1.0.0-SNAPSHOT
 package: org.exoplatform.social.samples.activityPlugin
 Y: y
-{code}
+{screen}
 
-
-Edit the pom.xml file as following. You'll work with Social latest major release: 1.1 as follows:
+*2.* Edit the _pom.xml_ file as below.
 
 {code:xml}
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social-project</artifactId>
     <version>1.1.0-GA</version>
   </parent>
-
   <groupId>org.exoplatform.social.samples</groupId>
   <artifactId>exo.social.samples.activity-plugin</artifactId>
   <packaging>jar</packaging>
   <version>1.1.0-GA</version>
-
   <name>exo.social.samples.activity-plugin</name>
-
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <outputDirectory>target/classes</outputDirectory>
@@ -106,45 +101,39 @@ Edit the pom.xml file as following. You'll work with Social latest major release
       </resource>
     </resources>
   </build>
-
   <dependencies>
-
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.core</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.core</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.webui</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.service</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
-
 </project>
 {code}
 
-To use custom UI component for displaying its activity, you need a class that must be a subclass of {{BaseUIActivity}}. Let's call this {{UISpaceSimpleActivity}}:
+To use the custom UI component for displaying its activity, you need a class that must be a subclass of _BaseUIActivity_. 
+
+*3.* Call _UISpaceSimpleActivity_
 
 {code:java}
 package org.exoplatform.social.samples.activityplugin;
@@ -162,7 +151,7 @@ public class UISpaceSimpleActivity extends BaseUIActivity {
 }
 {code}
 
-The template {{UISpaceSimpleActivity.gtmpl}} should be created under {{main/resources/groovy/social/plugin/space}}:
+The _UISpaceSimpleActivity.gtmpl_ template should be created under _main/resources/groovy/social/plugin/space_:
 
 {code:html}
 <div>This is a space activity UI component displayed for type "exosocial:spaces"</div>
@@ -188,13 +177,11 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 }
 {code}
 
-Now create {{configuration.xml}} under conf/portal:
+*4.* Create the _configuration.xml_ file under _conf/portal_:
 
 {code:xml}
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
-   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd" xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
@@ -205,10 +192,18 @@ Now create {{configuration.xml}} under conf/portal:
         <object-param>
           <name>Simple Space Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>exosocial:spaces</string></field>
-            <field name="component"><string>org.exoplatform.social.samples.activityplugin.UISpaceSimpleActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.samples.activityplugin.SimpleSpaceUIActivityBuilder</string></field>
+            <field name="type">
+              <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
+            </field>
+            <field name="name">
+              <string>exosocial:spaces</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.social.samples.activityplugin.UISpaceSimpleActivity</string>
+            </field>
+            <field name="activityBuiderClass">
+              <string>org.exoplatform.social.samples.activityplugin.SimpleSpaceUIActivityBuilder</string>
+            </field>
           </object>
         </object-param>
       </init-params>
@@ -217,21 +212,19 @@ Now create {{configuration.xml}} under conf/portal:
 </configuration>
 {code}
 
-Note that exosocial:spaces must have its value matching the activity's type that you want to display with your UI component.
+Note that _{noformat}exosocial:spaces{noformat}_ must have its value matching with the activity's type that you want to display with your UI component.
 
-Assume that you have already built the Social project with version 1.1. If you don't know how to, have a look at [Building from Sources|Main.Building from sources] with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see
+Assume that you have already built the Social project with version 1.1. If you do not know how to, have a look at [Building from Sources|Main.Building from sources] with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see the space's activity of type "exosocial:spaces" is displayed by default in Social:
 
-the space's activity of type "exosocial:spaces" is displayed by default in Social:
-
-!SimpleSpaceActivity-default.png!
+!images/SimpleSpaceActivity-default.png!
 
 The custom UI component for displaying activity of type "exosocial:spaces" is like below:
 
-!SimpleSpaceActivity-custom.png!
+!images/SimpleSpaceActivity-custom.png!
 
-Make the custom UI activity display have the look, feel and function like the default one.
+*5.* Make the custom UI activity display have the look, feel and function like the default one.
 
-When displaying an activity, you should make sure that the look and feel of the custom UI component is consistent and match with other activities and have the full functions of *Like*, *Comments*. You're going to create another UI component to display, let's call it: {{UISpaceLookAndFeelActivity}}:
+When displaying an activity, you should make sure that the look and feel of the custom UI component is consistent and match with other activities and have the full functions of *Like*, *Comments*. To create another UI component to display, call _UISpaceLookAndFeelActivity_:
 
 {code:java}
 package org.exoplatform.social.samples.activityplugin;
@@ -259,7 +252,7 @@ public class UISpaceLookAndFeelActivity extends BaseUIActivity {
 }
 {code}
 
-Now create {{UISpaceLookAndFeelActivity}} template. The easiest way is to copy the content of {{UIDefaultActivity.gtmpl}} to this template file:
+*6.* Create the _UISpaceLookAndFeelActivity_ template. The easiest way is to copy the content of _UIDefaultActivity.gtmpl_ to this template file:
 
 {code:groovy}
 <%
@@ -532,13 +525,11 @@ And you should make needed modifications for this template:
 </div>
 {code}
 
-Now, you need to reconfigure the {{configuration.xml}} file:
+*7.* Reconfigure the _configuration.xml_ file:
 
 {code:xml}
-<configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
-   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd" xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
@@ -549,10 +540,18 @@ Now, you need to reconfigure the {{configuration.xml}} file:
         <object-param>
           <name>Look And Feel Space Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>exosocial:spaces</string></field>
-            <field name="component"><string>org.exoplatform.social.samples.activityplugin.UISpaceLookAndFeelActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.samples.activityplugin.SimpleSpaceUIActivityBuilder</string></field>
+            <field name="type">
+              <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
+            </field>
+            <field name="name">
+              <string>exosocial:spaces</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.social.samples.activityplugin.UISpaceLookAndFeelActivity</string>
+            </field>
+            <field name="activityBuiderClass">
+              <string>org.exoplatform.social.samples.activityplugin.SimpleSpaceUIActivityBuilder</string>
+            </field>
           </object>
         </object-param>
       </init-params>
@@ -561,16 +560,16 @@ Now, you need to reconfigure the {{configuration.xml}} file:
 </configuration>
 {code}
 
-Rebuild the sample project, copy jar to tomcat/lib. Re-run server and see the result:
+*8.* Rebuild the sample project, copy the *.jar* file to tomcat/lib. Run the server again and see the result:
 
 !images/LookAndFeelSpaceActivity.png!
 
 {note}
-Currently, you have to copy and paste in template file. By this way, you have full control of the UI but it is not a good way when there are changes in UIDefaultActivity. This will be improved soon so that no copy and paste needed.
+Currently, you have to copy and paste in the template file. By this way, you have full control of the UI but it is not a good way when there are changes in UIDefaultActivity. This will be improved soon so that no copy/paste is needed.
 {note}
 
-h3. What is the ActivityBuilder? {anchor:id=Developer_document.What_is_activity_builder}
-The ActivityBuilder is one class which is used to get values of *ExoSocialActivity* to set to UIActivity for displaying. eXo Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
+h3. What is ActivityBuilder? {anchor:id=Developer_document.What_is_activity_builder}
+ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ to set to UIActivity for displaying. eXo Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
 
 For example, to write your own UILinkActivityBuilder, you just need to extend BaseUIActivityBuilder and then customize attributes and behaviors of the activity builder as below.
 
@@ -591,10 +590,10 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
 {code}
 
 {note}
-To learn more about the ActivityBuilder, refer to the [BaseUIActivity class|http://svn.exoplatform.org/projects/social/trunk/component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java]. 
+To learn more about ActivityBuilder, refer to the [BaseUIActivity class.|http://svn.exoplatform.org/projects/social/trunk/component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java]
 {note}
 
-h2. Create a composer extension for composing activity on the UI composer and display it on the activity stream. {anchor:id=Developer_document.Create_composer_extension}
+h2. Create a composer extension for composing activity on the UI composer and display it on the activity stream {anchor:id=Developer_document.Create_composer_extension}
 The UIActivityComposer is an extended class of UIContainer that is used to display inputs for users to create their own activities. To write your own activity composer, it is recommended that you use the UIActivityComposer available in eXo Social.
 
 For example, to create an input component for inserting video links into your activity, do the following steps:
@@ -804,7 +803,6 @@ public class UIVideoActivityComposer extends UIActivityComposer {
 
 *2.* Use the BaseUIActivity class to write and customize the UIActivity display as below:
 
-
 {code:java}
 package org.exoplatform.social.plugin.videolink;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
@@ -894,7 +892,7 @@ public class UIVideoActivity extends BaseUIActivity {
 }
 {code}
 
-*3.* Use the UIVideoActivityBuilder class to get values of *ExoSocialActivity* that are set to UIVideoActivity for displaying.
+*3.* Use the _UIVideoActivityBuilder_ class to get values of _ExoSocialActivity_ that are set to UIVideoActivity for displaying.
 
 {code:java}
 package org.exoplatform.social.plugin.videolink;

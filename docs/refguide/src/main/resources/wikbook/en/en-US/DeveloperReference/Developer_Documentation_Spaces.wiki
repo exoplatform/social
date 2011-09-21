@@ -1,6 +1,6 @@
 eXo Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.
 
-To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current PortalContainer instance.
+To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current _PortalContainer_ instance.
 
 h1. Spaces Management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_Management}
 
@@ -44,7 +44,7 @@ public class SpaceCreationSample {
 h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
 
 h2. Add an application to a space  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
-You can add portlet or gadget applications into spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
+You can add portlet or gadget applications to spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
 
 {code:java}
 public void addApplicationToSpace() throws SpaceException {
@@ -67,13 +67,13 @@ public void addApplicationToSpace() throws SpaceException {
 {code}
 
 {note}
-appId is the portlet or gadget name as defined in portlet.xml or gadget.xml in the web-app. You can find it in social-portlet.war and social.war.
+_appId_ is the portlet or gadget name as defined in _portlet.xml_ or _gadget.xml_ in the web-app. You can find it in _social-portlet.war_ and _social.war_.
 {note}
 
 
-h2. Remove an application from a space
+h2. Remove an application from a space {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Remove_application_from_space}
 
-You can remove portlet or gadget applications from a space and the members of this space will not see them anymore. The following code shows you how to remove an application from a space :
+You can remove portlet or gadget applications from a space and the members of this space will not see them anymore. The following code shows you how to remove an application from a space:
 {code:java}
 public void removeApplicationFromSpace() throws SpaceException {
   //Your portlet name
@@ -94,7 +94,7 @@ public void removeApplicationFromSpace() throws SpaceException {
 
 
 h1. Space's members management	 {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Members_Management}
-The SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:
+SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:
 {code:java}
 String spacePrettyName = "mySpace";
 
@@ -109,20 +109,20 @@ if (space != null) {
 
 
 h1. Listener to a space lifecycle  {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Listener_to_a_space_lifecycle}
-To receive notifications of what are happening in spaces, you need to extend the SpaceListenerPlugin and register it. Every method takes a SpaceLifeCycleEvent object as a parameter that contains the information about the event and its context.
+To receive notifications of what are happening in spaces, you need to extend _SpaceListenerPlugin_ and register it. Every method takes a _SpaceLifeCycleEvent_ object as a parameter that contains the information about the event and its context.
 
 The available events are:
 
-- spaceCreated: This event is called right after a space is created successfully with its applications.
-- spaceRemoved: This event is called right after the space is removed. It means all the applications of the space are removed, its group and group navigation are removed.
-- applicationAdded: This event is called right after an application is added (installed) to the space.
-- applicationActivated: This event is called right after an application is activated in the space.
-- applicationDeactivated: This event is called right after an application is deactivated.
-- applicationRemoved: This event is called right after an application is removed from the space.
-- joined: This event is called right after a user joins the space.
-- left: This event is called right after a space member leaves its space.
-- grantedLead: This event is called right after a user is grated the space's manager role.
-- revokedLead: This event is called right after the space's manager is revoked his role to be a space member.
+* _spaceCreated_: This event is called right after a space is created successfully with its applications.
+* _spaceRemoved_: This event is called right after the space is removed. It means all the applications of the space are removed, its group and group navigation are removed.
+* _applicationAdded_: This event is called right after an application is added (installed) to the space.
+* _applicationActivated_: This event is called right after an application is activated in the space.
+* _applicationDeactivated_: This event is called right after an application is deactivated.
+* _applicationRemoved_: This event is called right after an application is removed from the space.
+* _joined_: This event is called right after a user joins the space.
+* _left_: This event is called right after a space member leaves its space.
+* _grantedLead_: This event is called right after a user is granted the space's manager role.
+* _revokedLead_: This event is called right after the space's manager is revoked his role to be a space member.
 
 {code:java}
 import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
@@ -132,7 +132,7 @@ public class MySpaceListenerPlugin extends SpaceListenerPlugin {
 }
 {code}
 
-As an example, see the [SpaceActivityPublisher|http://fisheye.exoplatform.org/browse/social/trunk/component/exosocial/src/main/java/org/exoplatform/social/space/SpaceActivityPublisher.java?r=HEAD] that publishes an activity based on an event that happened in a space.
+As an example, see [SpaceActivityPublisher|http://fisheye.exoplatform.org/browse/social/trunk/component/exosocial/src/main/java/org/exoplatform/social/space/SpaceActivityPublisher.java?r=HEAD] that publishes an activity based on an event that happened in a space.
 
 To register your listener, configure it as a plugin to the SpaceService like this:
 

@@ -9,7 +9,7 @@ All the portlets are in the _social-portlet.war_ file.
 | *Invitation Spaces Portlet* | Display the spaces that user is invited. |
 | *Pending Spaces Portlet* | Display the *Space requests to join* page. |
 | *Public Spaces Portlet* | Display the *Public Spaces* page. |
-| *User Activity Stream Portlet* | Update and shares the user's activities and/or status. |
+| *User Activity Stream Portlet* | Update and share the user's activities and/or status. |
 | *People Portlet* | Display the *People* page. |
 | *Connections Portlet* | Display the *Connections* page. |
 | *User Profile Portlet* | Display the *User profile* page. |

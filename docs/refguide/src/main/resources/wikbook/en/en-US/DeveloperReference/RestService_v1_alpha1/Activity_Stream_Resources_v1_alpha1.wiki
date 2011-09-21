@@ -4,18 +4,17 @@ h4. GET {noformat}activity_stream/:identityId/user/default.format{noformat} {anc
 
 *Description*: Gets activities of a defined identity which can be an user identity or a space identity.
 
-*Url*:                                                                              s
+*Url*:
+                                                                             s
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/user/default.{format}{code}
 
 For example:
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json?limit=20]
+* [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/default.json]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/default.json?limit=20]
-
-[http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/default.json]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -25,8 +24,10 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
-** *Response*
+
+*Request*
+
+*Response*:
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/default.json
 {code}
@@ -108,11 +109,10 @@ h4. GET {noformat}activity_stream/:identityId/user/newer/:activityBaseId.format{
 
 For example:
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/newer/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -122,12 +122,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/newer/f98de8aec0a801372dde36ca1cf69c6b.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[
@@ -186,11 +189,10 @@ h4. GET {noformat}activity_stream/:identityId/user/older/:activityBaseId.{noform
 
 For example:
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/user/older/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -199,12 +201,15 @@ For example:
 ** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
 *Examples*
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/user/older/f98e16dec0a801377bfea51ee20d8b66.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[
@@ -239,16 +244,15 @@ h4. GET {noformat}activity_stream/:identityId/feed/default.format{noformat} {anc
 
 *Description*: Gets the latest activity stream feed of a defined user identity.
 
-*URL*
+*URL*:
+
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/default.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/default.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -259,7 +263,9 @@ For example:
 
 *Examples*
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/default.json
 {code}
@@ -398,12 +404,10 @@ h4. *GET* {noformat}activity_stream/:identityId/feed/newer/:activityBaseId.forma
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/newer/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/newer/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -414,11 +418,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/newer/f98ed6f1c0a80137086908621ded6fe3.json
 {code}
-** *Response*
+
+*Response*:
+
 {code}
 {
    "activities":[
@@ -465,21 +473,18 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialde
 }
 {code}
 
-
 h4. GET {noformat}activity_stream/:identityId/feed/older/:activityBaseId.{noformat}format {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed.Getolder}
 
 *Description*: Gets the older activity stream feed on an identity based on an activity Id.
 
-*URL*
+*URL*:
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/feed/older/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/feed/older/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -489,11 +494,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/feed/older/f98e16dec0a801377bfea51ee20d8b66.json
 {code}
-** *Response*
+
+*Response*:
+
 {code}
 {
   "activities":[
@@ -533,12 +542,10 @@ h4. GET {noformat}activity_stream/:identityId/connections/default{noformat}.form
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/default.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/default.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -548,11 +555,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/default.json
 {code}
-** *Response*
+
+*Response*:
+
 {code}
 {
   "activities":[
@@ -649,16 +660,15 @@ h4. GET {noformat}activity_stream/:identityId/connections/newer/:activityBaseId{
 
 *Description*: Gets newer activities of a defined identity's connections based on an activity Id.
 
-*URL*
+*URL*:
+
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/newer/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/newer/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -667,12 +677,15 @@ For example:
 ** *limit*: The number of activities retrieved with the default value of 100. This input value must be less than or equal to its default value (100). The number of the returned results is actually less than or equal to the *limit* value.
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/newer/f9cff39fc0a8013716a77b1ce66864d7.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[
@@ -712,12 +725,10 @@ h4. GET {noformat}activity_stream/:identityId/connections/older/:activityBaseId.
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/connections/older/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/connections/older/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -727,12 +738,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/connections/older/f98e898cc0a801372c958fbfe847e2d3.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[
@@ -774,12 +788,10 @@ h4. GET {noformat}activity_stream/:identityId/spaces/default.format{noformat}   
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/default.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/default.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -789,11 +801,15 @@ For example:
 
 *Examples*:
 * *JSON*
-***Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/default.json
 {code}
-** *Response*
+
+*Response*:
+
 {code}
 {
   "activities":[
@@ -860,8 +876,6 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialde
 }
 {code}
 
-
-
 h4. GET {noformat}activity_stream/:identityId/spaces/newer/:activityBaseId.format{noformat}{anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.Getnewer}
 
 *Description*: Gets newer activities from all spaces that the defined user identity is the member or the manager based on a specified activity Id.
@@ -871,12 +885,10 @@ h4. GET {noformat}activity_stream/:identityId/spaces/newer/:activityBaseId.forma
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/newer/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity_stream/1234567890/spaces/newer/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -887,12 +899,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/newer/f98f121dc0a80137294aeb29d84f202e.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[
@@ -929,12 +944,10 @@ h4. GET {noformat}activity_stream/:identityId/spaces/older/:activityBaseId.forma
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/{identityId}/spaces/older/{activityBaseId}.{format}{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json]
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json?limit=20]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json]
-
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/activity_stream/1234567890/spaces/older/0987654321.json?limit=20]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -945,12 +958,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha1/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766/spaces/older/f98fa222c0a801373d2b094dcc48bf9b.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {
   "activities":[

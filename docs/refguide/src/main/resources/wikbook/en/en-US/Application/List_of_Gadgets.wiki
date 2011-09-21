@@ -1,4 +1,4 @@
-All Social Gadgets are in _opensocial.war_.
+All eXo Social gadgets are in _opensocial.war_.
 
 h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
 * *Description*: Manage activities of users: update status, like/unlike activities, comment activities, delete activities and delete comments. 
@@ -7,16 +7,15 @@ h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
 h1. Social RSS Reader {anchor:id=SOCref.List_Of_Gadget_in_Social.SocialRSSReader}
 
 * *Description*: Fetch, parse and display RSS from a specific URL. 
-* *Description of user preferences*: There are 2 pref fields: URL input box (default value is http://blog.exoplatform.org/feed/) and Number of RSS per page selector (default value is 10).
+* *Description of user preferences*: There are 2 preference fields: URL input box (default value is http://blog.exoplatform.org/feed/) and Number of RSS per page selector (default value is 10).
 * *Used REST services*: N/A.
 
 
 h1. My Connections {anchor:id=SOCref.List_Of_Gadget_in_Social.MyConnections}
 
 * *Description*: Get and display information of the current viewer and his connections.
-* *Description of user preferences*: Connections displayed per page. The number of connections displayed is set to '5' by default.
+* *Description of user preferences*: The number of connections displayed per page. It is set to '5' by default.
 * *Used REST services*: N/A.
-
 
 h1. My Spaces {anchor:id=SOCref.List_Of_Gadget_in_Social.MySpaces}
 * *Description*: Display all spaces that a user has the "member" role.

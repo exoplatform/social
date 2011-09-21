@@ -3,17 +3,14 @@ h4. GET identity/:identityId.format    {anchor:id=SOCref.DevRef.RestService_APIs
 
 *Description*: Gets the identity and its associated profile by the activity Id.
 *Url*:
+
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/identity/:identityId.format{code}
 
 *For example*:
+* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json]
+* [http://localhost:8080/rest-socialdemo/private/api/social/v1/socialdemo/identity/123456789.json]
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json]
-
-[http://localhost:8080/rest-socialdemo/private/api/social/v1/socialdemo/identity/123456789.json]
-
-
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: true
 
@@ -21,11 +18,15 @@ h4. GET identity/:identityId.format    {anchor:id=SOCref.DevRef.RestService_APIs
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json
 {code}
-** *Response*
+
+*Response*:
+
 {code}
 {
   "id" : "123456789",
@@ -50,12 +51,10 @@ h4. GET: {noformat}{rest_context_name}/{portal_container_name}/social/identity/:
 {code}http://{domain_name}/{rest_context_name}/{portal_container_name}/social/identity/{username}/id/show.json{code}
 
 For example:
+* [http://platform35.demo.exoplatform.org/rest/portal/social/identity/demo/id/show.json]
+* [http://localhost:8080/rest-socialdemo/socialdemo/social/identity/demo/id/show.json]
 
-[http://platform35.demo.exoplatform.org/rest/portal/social/identity/demo/id/show.json]
-
-[http://localhost:8080/rest-socialdemo/socialdemo/social/identity/demo/id/show.json]
-
-*Supported Format*: json
+*Supported Format*: JSON
 
 *Requires Authentication*: false
 
@@ -63,12 +62,15 @@ For example:
 
 *Examples*:
 * *JSON*
-** *Request*
+
+*Request*:
+
 {code}
 GET: http://localhost:8080/rest-socialdemo/socialdemo/social/identity/demo/id/show.json
 {code}
 
-** *Response*
+*Response*:
+
 {code}
 {"id":"f92cd6f0c0a80137102696ac26430766"}
 {code}

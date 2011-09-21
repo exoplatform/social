@@ -1,24 +1,23 @@
-
 h1. Objective {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Objective}
 In this section, you will learn how to implement a preprocessor for activities rendering.
 
 h1. Requirements {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Requirements}
-To understand this section, java and eXo Kernel (component model and its XML configuration) knowledge is prerequisite.
+To understand this section, the knowledge of Java and eXo Kernel (component model and its XML configuration) is prerequisite.
 
 h1. Why would you need to do this? {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.what_you_need_to_do_this}
 
-An simple activity is made of simple text. We have created an extension point at the level of activities rendering for two cases:
+A simple activity is made of simple text. An extension point has been created at the level of activities rendering for two cases:
 * support more HTML tags.
 * support @mentions.
 
-But you may want to support a special syntax like:
+But you may want to support a special syntax, for example:
 * #hashtags to feel like Twitter.
 * smileys to look like Skype.
-* [Markdown|http://en.wikipedia.org/wiki/Markdown] to feel like Buzz.
+* [Markdown|http://en.wikipedia.org/wiki/Markdown] to experience Buzz.
 
-You can have more sophisticated cases to process, such as parsing the link that include in the activity's content. Because a process actually has full the access to the Activity, so you can very well process based on the owner, the app, media item.
+You can have more sophisticated cases to process, such as parsing the link that include in the activity's content. Because a process actually has the full access to the Activity, you can very well process based on the owner, app, and media item.
 
-h1. Writing an ActivityProcessor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering._writing_ActivityProcessor}
+h1. Write an ActivityProcessor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering._write_ActivityProcessor}
 eXo Social lets you pre-process an activity before it is returned by the ActivityManager. To do this, you simply need to implement the interface ActivityProcessor:
 
 {code:java}
@@ -44,7 +43,7 @@ public interface ActivityProcessor {
 {code}
 
 
-For example, the following shows you how to implement a SmileyProcessor that will replace text smileys by icons:
+For example, the following shows you how to implement a _SmileyProcessor_ that will replace text smileys by icons:
 
 {code:java}
 public class SmileyProcessor implements ActivityProcessor {
@@ -63,12 +62,12 @@ public class SmileyProcessor implements ActivityProcessor {
 }
 {code}
 
-h1. Configuring the processor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Configuring_the_Processor}
+h1. Configure the processor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Configure_Processor}
 
-Now that you have a nice procesor you need to hook it to the system.
-At runtime, the processors can be attached to ActivityManager via addProcessor(ActivityProcessor) method..
+Now, you have a nice procesor, so need to hook it to the system.
+At runtime, the processors can be attached to _ActivityManager_ via the _addProcessor(ActivityProcessor)_ method.
 
-But there is also a component plugin hooked for it: public void addProcessorPlugin(BaseActivityProcessorPlugin plugin)
+But there is also a component plugin hooked for it: _public void addProcessorPlugin(BaseActivityProcessorPlugin plugin)_.
 
 So, to make your processor easy to hook, you simply need to let him extend the BaseActivityProcessorPlugin.
 
@@ -88,28 +87,28 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 }
 {code}
 
-It will have the additional benefit to make the priority field configurable, so you don't need to implement getPriorty().
+It will have the additional benefit to make the priority field configurable, so you do not need to implement _getPriorty()_.
 
 Then your processor can be configured as a component plugin like this:
 
 {code:xml}
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
-    <component-plugin>
-      <name>SmileyProcessor</name>
-      <set-method>addProcessorPlugin</set-method>
-      <type>org.example.SmileyProcessor</type>
-      <init-params>
-        <value-param>
-          <name>priority</name>
-          <description>priority of this processor (lower are executed first)</description>
-          <value>2</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
+<external-component-plugins>
+  <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
+  <component-plugin>
+    <name>SmileyProcessor</name>
+    <set-method>addProcessorPlugin</set-method>
+    <type>org.example.SmileyProcessor</type>
+    <init-params>
+      <value-param>
+        <name>priority</name>
+        <description>priority of this processor (lower are executed first)</description>
+        <value>2</value>
+      </value-param>
+    </init-params>
+  </component-plugin>
+</external-component-plugins>
 {code}
 
-Restart then place the smiley imagesu on the server and you should see something like that:
+Restart, then place the smiley images on the server and you should see something like that:
 
-!activity-smiley.png!
+!images/activity-smiley.png!

@@ -1,10 +1,10 @@
 *Objectives*:
 
- The 3rd parties want to integrate and extend eXo Social capability and features and eXo Social REST Services APIs are dedicated for them to complete that. By using these REST APIs, the 3rd parties can write any applications (desktop apps, mobile apps, web apps) to integrate with eXo Social services and business.
+ The third parties want to integrate and extend the eXo Social capability and features and eXo Social REST Services APIs are dedicated for them to complete that. By using these REST APIs, the third parties can write any applications (desktop apps, mobile apps, web apps) to integrate with eXo Social services and business.
 
 *Conventions*:
 
-The entry point for Social Rest service must be: {noformat}/{rest_context_name}/private/api/social/{version}/{portalContainerName}/{social_resources}/{noformat}. An example of activities resources: /rest/private/api/social/v1-alpha1/portal/activity/.
+The entry point for Social Rest service must be: _{noformat}/{rest_context_name}/private/api/social/{version}/{portalContainerName}/{social_resources}/{noformat}_. An example of activities resources: /rest/private/api/social/v1-alpha1/portal/activity/.
 
 There are 3 types of parameters on each URL:
 
@@ -12,19 +12,23 @@ There are 3 types of parameters on each URL:
 
 * *:id*: this param is for a specified data object, for example, activity Id and identity Id.
 
-* *format*: this is the supported data format. It can be json, xml, rss, or atom.
+* *format*: this is the supported data format. It can be JSON, XML, RSS, or ATOM.
 
 *Notes*:
 
 Currently, only the basic authentication is supported. Please see more details at http://en.wikipedia.org/wiki/Basic_access_authentication.
 
-JSON support is mandatory. Others format SHOULD be supported, too (XML, RSS, ATOM). The supported formats will be specified by the detailed documentation for REST resources.
+The JSON support is mandatory. The other format SHOULD be supported too (XML, RSS, ATOM). The supported formats will be specified by the detailed documentation for the REST resources.
 
-The *{noformat}rest_context_name{noformat}* and *{noformat}portal_container_name{noformat}* parameters are used as follows:
+The _{noformat}rest_context_name{noformat}_ and _{noformat}portal_container_name{noformat}_ parameters are used as follows:
 
-* On eXo Social standalone: *{noformat}rest_context_name{noformat}*: {noformat}rest-socialdemo{noformat}; *{noformat}portal_container_name{noformat}*: socialdemo.
+* On eXo Social standalone: 
+** _{noformat}rest_context_name{noformat}_: _{noformat}rest-socialdemo{noformat}_; 
+** _{noformat}portal_container_name{noformat}_: _{noformat}socialdemo{noformat}_;
 
-* On eXo Platform: *{noformat}rest_context_name{noformat}*: rest; *{noformat}portal_container_name{noformat}*: portal.
+* On eXo Platform:
+** _{noformat}rest_context_name{noformat}_: _rest_;
+** _{noformat}portal_container_name{noformat}_: _portal_;
 
 h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
 {include:document="RestService_v1_alpha1/Activity_Resources_v1_alpha1.wiki"}

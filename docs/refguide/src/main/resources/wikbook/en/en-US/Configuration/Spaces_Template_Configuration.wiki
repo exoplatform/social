@@ -1,6 +1,6 @@
-In the eXo Social, you may have two space types (classic and webos spaces).
+In eXo Social, you may have two space types (classic and webos spaces).
 
-For the classic space, you can pre-configure the template. You can configure the layout to choose where to display the applications (for example: application's menu on the left, selected application is displayed on the right,etc.)
+For the classic space, you can pre-configure the template. You can configure the layout to select where to display the applications (for example, the application's menu on the left, the selected application is displayed on the right, and more).
 
 Here is an example of the configuration file that displays the menu on the left. The application will be inserted in the container with the ID *Application*:
 
@@ -28,7 +28,7 @@ Here is an example of the configuration file that displays the menu on the left.
 
 In this example, the outer container contains two inner containers: one container has id as *Menu* for your Menu and another has id as *Application* containing your applications.
 
-!spaces.png!
+!images/spaces.png!
 
 If you want to put the menu on the right and the application on the left, you can swap the declared position of these two containers:
 
@@ -55,7 +55,7 @@ If you want to put the menu on the right and the application on the left, you ca
 {code}
 
 
-In Social standalone, this configuration file is at: 
-_$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml_
-In Platform, this configuration file is at:
-_$EXO_TOMCAT/webapps/{noformat}{portal-name}{noformat}/WEB-INF/conf/portal/template/pages/space/page.xml_
+In eXo Social standalone, this configuration file is at:
+* _{noformat}$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml{noformat}_
+In eXo Platform, this configuration file is at:
+* _{noformat}$EXO_TOMCAT/webapps/{portal-name}/WEB-INF/conf/portal/template/pages/space/page.xml{noformat}_

@@ -1,6 +1,5 @@
 eXo Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
-To manipulate activities, you need to use the {{AtivityManager}} service.
-
+To manipulate activities, you need to use the _AtivityManager_ service.
 
 h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
 
@@ -9,7 +8,6 @@ There are two types of activities: activities for a user and activities for a sp
 h2. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
 
 {code:java}
-
 package org.exoplatform.publish.user;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -75,7 +73,6 @@ public class PublishActivityForUser {
 h1. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
 
 {code:java}
-
 package org.exoplatform.publish.space;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -153,15 +150,14 @@ public class PublishActivityForSpace {
     }
   }
 }
-
 {code}
 
 
 h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
-An activity processor is used to modify the content of activities before they are returned from activity manager. For example, create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
+An activity processor is used to modify the content of activities before they are returned from an activity manager. For example, to create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
 
-Firstly, create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}.
+Firstly, create the _SmileyProcessor_ class by extending the _BaseActivityProcessorPlugin_.
 
 {code:java}
 package org.exoplatform.social.core.activitystream;
@@ -190,7 +186,6 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 Then, register this processor by editing the _configuration.xml_ file:
 
 {code:xml}
-
 <external-component-plugins>
   <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
   <component-plugin>
@@ -206,77 +201,75 @@ Then, register this processor by editing the _configuration.xml_ file:
     </init-params>
   </component-plugin>
 </external-component-plugins>
-
 {code}
 
-"init-params" contains all the key-value data which a processor will use to initialize. In the above configuration, the *priority* value indicates the order in which this processor is executed. If the value is 1, this processor will be used before all the remaining processors with the lower priority.
+The "init-params" contains all the key-value data which a processor will use to initialize. In the above configuration, the *priority* value indicates the order in which this processor is executed. If the value is 1, this processor will be used before all the remaining processors with the lower priority.
 
 h2. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
-It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides {{FeedmashJobPlugin}} to publish RSS feeds. As you can see in the project "{{exo.social.extras.feedmash}}", there are the {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named {{exosocial}} in a specific portal container named{{socialdemo}} as in the configuration file:
+It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides _FeedmashJobPlugin_ to publish the RSS feeds. As you can see in the project "_exo.social.extras.feedmash_", there are the _JiraFeedConsumer_ and _HudsonFeedConsumer_ samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named _exosocial_ in a specific portal container named _socialdemo_ as in the configuration file:
 
 {code:xml}
 <external-component-plugins>
-   <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
-    <component-plugin>
-      <name>RepubSocialJiraActivityJob</name>
-      <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
-      <description></description>
-      <init-params>
-        <properties-param>
-          <name>mash.info</name>
-          <property name="feedURL" value="http://jira.exoplatform.org/plugins/servlet/streams?key=SOC"/>
-          <property name="categoryMatch" value="resolved|created"/>
-          <property name="targetActivityStream" value="space:exosocial"/>
-          <property name="portalContainer" value="socialdemo"/>
-        </properties-param>
-        <properties-param>
-          <name>job.info</name>
-          <description>save the monitor data  periodically</description>
-          <property name="jobName" value="JIRAFeedConsumer"/>
-          <property name="groupName" value="Feedmash"/>
-          <property name="job" value="org.exoplatform.social.feedmash.JiraFeedConsumer"/>
-          <property name="repeatCount" value="0"/>
-          <property name="period" value="60000"/>
-          <property name="startTime" value="+45"/>
-          <property name="endTime" value=""/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>WatchSocialBuildStatus</name>
-      <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
-      <description></description>
-      <init-params>
-        <properties-param>
-          <name>mash.info</name>
-           <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll"/>
-           <property name="targetActivityStream" value="space:exosocial"/>
-           <property name="portalContainer" value="socialdemo"/>
-        </properties-param>
-        <properties-param>
-          <name>job.info</name>
-          <description>save the monitor data  periodically</description>
-          <property name="jobName" value="HudsonFeedConsumer"/>
-          <property name="groupName" value="Feedmash"/>
-          <property name="job" value="org.exoplatform.social.feedmash.HudsonFeedConsumer"/>
-          <property name="repeatCount" value="0"/>
-          <property name="period" value="60000"/>
-          <property name="startTime" value="+100"/>
-          <property name="endTime" value=""/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
- </external-component-plugins>
-
+  <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
+  <component-plugin>
+    <name>RepubSocialJiraActivityJob</name>
+    <set-method>addPeriodJob</set-method>
+    <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
+    <description></description>
+    <init-params>
+      <properties-param>
+        <name>mash.info</name>
+        <property name="feedURL" value="http://jira.exoplatform.org/plugins/servlet/streams?key=SOC" />
+        <property name="categoryMatch" value="resolved|created" />
+        <property name="targetActivityStream" value="space:exosocial" />
+        <property name="portalContainer" value="socialdemo" />
+      </properties-param>
+      <properties-param>
+        <name>job.info</name>
+        <description>save the monitor data periodically</description>
+        <property name="jobName" value="JIRAFeedConsumer" />
+        <property name="groupName" value="Feedmash" />
+        <property name="job" value="org.exoplatform.social.feedmash.JiraFeedConsumer" />
+        <property name="repeatCount" value="0" />
+        <property name="period" value="60000" />
+        <property name="startTime" value="+45" />
+        <property name="endTime" value="" />
+      </properties-param>
+    </init-params>
+  </component-plugin>
+  <component-plugin>
+    <name>WatchSocialBuildStatus</name>
+    <set-method>addPeriodJob</set-method>
+    <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
+    <description></description>
+    <init-params>
+      <properties-param>
+        <name>mash.info</name>
+        <property name="feedURL" value="http://builder.exoplatform.org/hudson/view/social/job/social-trunk-ci/rssAll" />
+        <property name="targetActivityStream" value="space:exosocial" />
+        <property name="portalContainer" value="socialdemo" />
+      </properties-param>
+      <properties-param>
+        <name>job.info</name>
+        <description>save the monitor data periodically</description>
+        <property name="jobName" value="HudsonFeedConsumer" />
+        <property name="groupName" value="Feedmash" />
+        <property name="job" value="org.exoplatform.social.feedmash.HudsonFeedConsumer" />
+        <property name="repeatCount" value="0" />
+        <property name="period" value="60000" />
+        <property name="startTime" value="+100" />
+        <property name="endTime" value="" />
+      </properties-param>
+    </init-params>
+  </component-plugin>
+</external-component-plugins>
 {code}
 
-Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the eXo Social project on Jira and Hudson will be automatically published to the {{exosocial}} space.
+Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the eXo Social project on Jira and Hudson will be automatically published to the _exosocial_ space.
 
-h1. Sample Code
-See the following code snippet to know more details how to publish an activity and add comments to an activity:
+h1. Sample Code {anchor:id=SOCref.Developer_references.Sample_code}
+See the following code snippet to know more details about how to publish an activity and add comments to an activity:
 
 {code:java}
 package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
@@ -379,5 +372,4 @@ public class IntroduceActivityStreamAndExoSocialActivity {
     activityManager.saveComment(activity, comment);
   }
 }
-
 {code}

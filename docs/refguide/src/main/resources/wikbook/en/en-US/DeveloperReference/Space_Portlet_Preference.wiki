@@ -4,40 +4,39 @@ Since eXo Social 1.0.1
 {info}
 
 
+h1. Why to save portlet preference? {anchor:id=SOCref.DeveloperReference.Why_save_portlet_preferences}
 
-h1. Why save portlet preference {anchor:id=SOCref.DeveloperReference.Why_save_portlet_preferences}
+When working with space related portlet, we have make sure which space (space context) that portlet is working with to handle and display space's information. For example, _SpaceActivityStreamPortlet_ has to know space context to display space's activity stream. Before (as of 1.0.0-GA), we rely on actual http address to gets space's url and then gets the current space, and that causes a bug here when edit that page node [SOC-715|http://jira.exoplatform.org/browse/SOC-715].
 
-When working with space related portlet, we have make sure which space (space context) that portlet is working with to handle and display space's information. For example, {{SpaceActivityStreamPortlet}} has to know space context to display space's activity stream. Before (as of 1.0.0-GA), we rely on actual http address to gets space's url and then gets the current space, and that causes a bug here when edit that page node [SOC-715|http://jira.exoplatform.org/browse/SOC-715].
+h1. How to save space context? {anchor:id=SOCref.DeveloperReference.how_to_save_space_context}
 
-h1. How to save space context {anchor:id=SOCref.DeveloperReference.how_to_save_space_context}
-
-If you want to register a portlet to be installed when creating a new space, write a portlet and set configuration in <tt>configuration.xml<tt> file of exo.social.component.space project. Just register your portlet here and it will be dynamically created a page with your portlet.
+If you want to register a portlet to be installed when creating a new space, write a portlet and set configuration in <tt>configuration.xml<tt> file of the _exo.social.component.space_ project. Just register your portlet here and it will be dynamically created a page with your portlet.
 
 {code:xml}
-  <component>
-    <key>org.exoplatform.social.space.SpaceService</key>
-    <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
-    <init-params>
-      <!-- Configure the applications to install in a space -->
-      <values-param>
-        <name>space.homeNodeApp</name>
-        <value>SpaceActivityStreamPortlet</value>
-      </values-param>
-      <!-- Configure removable application or not <value>Application:removable</value> -->
-      <values-param>
-        <name>space.apps</name>
-        <value>DashboardPortlet:true</value>
-        <value>SpaceSettingPortlet:false</value>
-        <value>UserListPortlet:true</value>
-        <value>YourPortletName:true</value>
-      </values-param>
-    </init-params>
-  </component>
+<component>
+  <key>org.exoplatform.social.space.SpaceService</key>
+  <type>org.exoplatform.social.space.impl.SpaceServiceImpl</type>
+  <init-params>
+    <!-- Configure the applications to install in a space -->
+    <values-param>
+      <name>space.homeNodeApp</name>
+      <value>SpaceActivityStreamPortlet</value>
+    </values-param>
+    <!-- Configure removable application or not <value>Application:removable</value> -->
+    <values-param>
+      <name>space.apps</name>
+      <value>DashboardPortlet:true</value>
+      <value>SpaceSettingPortlet:false</value>
+      <value>UserListPortlet:true</value>
+      <value>YourPortletName:true</value>
+    </values-param>
+  </init-params>
+</component>
 {code}
 
 Notice your portlet line configuration:
 {code:xml}<value>YourPortletName:true</value>{code}
-{{true}} or {{false}} means that portlet can be uninstalled or mandatory from application settings for space.
+{{true}} or {{false}} means that portlet can be uninstalled or mandatory from the application settings for space.
 
 If your portlet wants to save space context, register your portlet name in SpaceUtils (it should be configured via xml soon):
 

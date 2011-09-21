@@ -14,9 +14,9 @@ spaceName=NAME_OF_YOUR_SPACE&description=DESCRIPTION_OF_THE_SPACE"></iframe>
 {code}
 
 To install this version in your application, replace all the uppercase text below:
-* {noformat}URL_OF_YOUR_EXO_INSTALLATION.COM{noformat}: This is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _localhost:8080_
-* {noformat}NAME_OF_YOUR_SPACE{noformat}: This is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and {noformat}"_"{noformat}, ".", "-" or ".".
-* {noformat}DESCRIPTION_OF_THE_SPACE{noformat}: This will be displayed in the list of spaces.
+* _{noformat}URL_OF_YOUR_EXO_INSTALLATION.COM{noformat}_: This is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _{noformat}localhost:8080{noformat}_.
+* _{noformat}NAME_OF_YOUR_SPACE{noformat}_: This is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and {noformat}"_"{noformat}, ".", "-" or ".".
+* _{noformat}DESCRIPTION_OF_THE_SPACE{noformat}_: This will be displayed in the list of spaces.
 
 h1. Advanced version {anchor:id=SOCref.DeveloperReference.widget_tutorial.advanced_version}
 
@@ -36,9 +36,10 @@ The important function here is:
 spaces.createPopup(link, spaceName, description)
 {code}
 
-* link: link is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you do not need to change this value.
-* spaceName: This is the name of space. It is also used to identify the space. You should use the following format: "MyAppName - my social object"
-* description: A brief introduction about your space.
+In which:
+* _link_ is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you do not need to change this value.
+* _spaceName_ is the name of space. It is also used to identify the space. You should use the following format: "MyAppName - my social object".
+* _description_ is a brief introduction about your space.
 
 h1. Configure {anchor:id=SOCref.DeveloperReference.widget_tutorial.configure}
 
