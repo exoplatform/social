@@ -84,11 +84,25 @@ public class MigrationTool {
   public void runAll(NodeReader reader, NodeWriter writer, WriterContext ctx)
       throws IOException, RepositoryException {
 
-    runIdentities(reader, writer, ctx);
-    runSpaces(reader, writer, ctx);
-    runProfiles(reader, writer, ctx);
-    runRelationships(reader, writer, ctx);
-    runActivities(reader, writer, ctx);
+    if (!ctx.isCompleted(WriterContext.DataType.IDENTITIES)) {
+      runIdentities(reader, writer, ctx);
+    }
+
+    if (!ctx.isCompleted(WriterContext.DataType.SPACES)) {
+      runSpaces(reader, writer, ctx);
+    }
+
+    if (!ctx.isCompleted(WriterContext.DataType.PROFILES)) {
+      runProfiles(reader, writer, ctx);
+    }
+
+    if (!ctx.isCompleted(WriterContext.DataType.RELATIONSHIPS)) {
+      runRelationships(reader, writer, ctx);
+    }
+
+    if (!ctx.isCompleted(WriterContext.DataType.ACTIVITIES)) {
+      runActivities(reader, writer, ctx);
+    }
 
   }
 

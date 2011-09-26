@@ -199,10 +199,19 @@ public class NodeReader_11x_12x implements NodeReader {
           Node publishedNode = currentUser.getNode("published");
           NodeIterator it = publishedNode.getNodes();
 
-          long itSize = it.getSize();
-          it.skip(remaining);
-          remaining -= itSize;
-          readFrom(it, os);
+          long size = it.getSize();
+          if (remaining >= size) {
+            remaining -= size;
+            continue;
+          }
+          else if (remaining > 0) {
+            it.skip(remaining);
+            readFrom(it, os);
+            remaining = 0;
+          }
+          else {
+            readFrom(it, os);
+          }
 
         }
 
@@ -213,10 +222,19 @@ public class NodeReader_11x_12x implements NodeReader {
           Node publishedNode = currentUser.getNode("published");
           NodeIterator it = publishedNode.getNodes();
 
-          if (remaining > 0) {
-            it.skip(remaining);
+          long size = it.getSize();
+          if (remaining >= size) {
+            remaining -= size;
+            continue;
           }
-          readFrom(it, os);
+          else if (remaining > 0) {
+            it.skip(remaining);
+            readFrom(it, os);
+            remaining = 0;
+          }
+          else {
+            readFrom(it, os);
+          }
 
         }
         os.close();

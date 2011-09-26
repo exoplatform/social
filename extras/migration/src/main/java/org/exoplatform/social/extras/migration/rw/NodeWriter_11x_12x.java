@@ -41,6 +41,7 @@ import org.exoplatform.social.extras.migration.io.WriterContext;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.io.InputStream;
@@ -63,6 +64,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
   private final SpaceStorage spaceStorage;
   private final ActivityStorage activityStorage;
   private final OrganizationService organizationService;
+  private final RemoveManager removeManager;
 
   //
   private final Session session;
@@ -182,6 +184,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
     this.activityStorage = activityStorage;
     this.organizationService = organizationService;
     this.session = session;
+    this.removeManager = new RemoveManager(10, session);
 
   }
 
@@ -608,9 +611,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
       while(itActivities.hasNext()) {
         Node activity = itActivities.nextNode();
         LOG.info("Removing activity " + activity.getPath());
-        activity.remove();
-
-        session.save();
+        removeManager.remove(activity);
       }
     }
 
@@ -620,9 +621,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
       while(itActivities.hasNext()) {
         Node activity = itActivities.nextNode();
         LOG.info("Removing activity " + activity.getPath());
-        activity.remove();
-
-        session.save();
+        removeManager.remove(activity);
       }
     }
 
@@ -636,38 +635,31 @@ public class NodeWriter_11x_12x implements NodeWriter {
       
       LOG.info("Removing relationship for " + current.getPath());
 
-      session.save();
     }
 
     NodeIterator itOrganization = session.getRootNode().getNode("production/soc:providers/soc:organization/").getNodes();
     while (itOrganization.hasNext()) {
       Node node = itOrganization.nextNode();
       LOG.info("Removing identity " + node.getPath());
-      node.remove();
-
-      session.save();
+      removeManager.remove(node);
     }
 
     NodeIterator itSpaceIdentitiy = session.getRootNode().getNode("production/soc:providers/soc:space/").getNodes();
     while (itSpaceIdentitiy.hasNext()) {
       Node node = itSpaceIdentitiy.nextNode();
       LOG.info("Removing space identity " + node.getPath());
-      node.remove();
-
-      session.save();
+      removeManager.remove(node);
     }
 
     NodeIterator itSpaces = session.getRootNode().getNode("production/soc:spaces/").getNodes();
     while (itSpaces.hasNext()) {
       Node node = itSpaces.nextNode();
       LOG.info("Removing space " + node.getPath());
-      node.remove();
-
-      session.save();
-
+      removeManager.remove(node);
     }
 
     //
+    removeManager.complete();
     ctx.cleanup();
 
   }
@@ -681,18 +673,29 @@ public class NodeWriter_11x_12x implements NodeWriter {
     while (itActivity.hasNext()) {
       NodeIterator itActivityProvider = itActivity.nextNode().getNodes();
       while (itActivityProvider.hasNext()) {
-        NodeIterator itActivityUser = itActivityProvider.nextNode().getNodes();
-        while (itActivityUser.hasNext()) {
+        Node userNode = itActivityProvider.nextNode();
+        Node publishedNode;
+        try {
 
-          //
-          Node publishedNode = itActivityUser.nextNode();
-          LOG.info("Removing activities " + publishedNode.getPath());
-          publishedNode.remove();
+          publishedNode = userNode.getNode("published");
+          
+          NodeIterator itActivityUser = publishedNode.getNodes();
+          while (itActivityUser.hasNext()) {
 
-          //
-          session.save();
+            //
+            Node activityNode = itActivityUser.nextNode();
+            LOG.info("Removing activities " + activityNode.getPath());
+            removeManager.remove(activityNode);
+
+          }
 
         }
+        catch (PathNotFoundException e) {
+          LOG.error(e.getMessage());
+        }
+
+        //
+        removeManager.remove(userNode);
 
       }
     }
@@ -703,8 +706,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
 
       Node relationshipNode = itRelationship.nextNode();
       LOG.info("Removing relationship " + relationshipNode.getPath());
-      relationshipNode.remove();
-      session.save();
+      removeManager.remove(relationshipNode);
 
     }
 
@@ -713,9 +715,16 @@ public class NodeWriter_11x_12x implements NodeWriter {
     while (itProfile.hasNext()) {
 
       Node profileNode = itProfile.nextNode();
-      LOG.info("Removing profile " + profileNode.getPath());
-      profileNode.remove();
-      session.save();
+      NodeIterator profileDetails = profileNode.getNodes();
+      while (profileDetails.hasNext()) {
+
+        Node profileDetail = profileDetails.nextNode();
+        LOG.info("Removing profile " + profileDetail.getPath());
+        removeManager.remove(profileDetail);
+
+      }
+
+      removeManager.remove(profileNode);
 
     }
 
@@ -725,8 +734,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
 
       Node spaceNode = itSpace.nextNode();
       LOG.info("Removing space " + spaceNode.getPath());
-      spaceNode.remove();
-      session.save();
+      removeManager.remove(spaceNode);
 
     }
 
@@ -736,16 +744,15 @@ public class NodeWriter_11x_12x implements NodeWriter {
 
       Node identityNode = itIdentity.nextNode();
       LOG.info("Removing identity " + identityNode.getPath());
-      identityNode.remove();
-      session.save();
+      removeManager.remove(identityNode);
 
     }
 
     //
-    session.getRootNode().getNode(PATH_EXO_APPLICATION).remove();
-    session.save();
+    removeManager.remove(session.getRootNode().getNode(PATH_EXO_APPLICATION));
 
     //
+    removeManager.complete();
     ctx.cleanup();
 
     //
@@ -785,8 +792,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
   private void removeRelationship(Node relationship) {
 
     try {
-      relationship.getProperty(PROP_RECIPROCAL_REF).getNode().remove();
-      relationship.remove();
+      removeManager.remove(relationship.getProperty(PROP_RECIPROCAL_REF).getNode());
     }
     catch (RepositoryException e) {
       LOG.error(e);
