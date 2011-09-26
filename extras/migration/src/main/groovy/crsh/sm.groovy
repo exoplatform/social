@@ -29,7 +29,8 @@ import org.crsh.command.InvocationContext;
 
 import org.exoplatform.social.extras.migration.MigrationTool;
 import org.exoplatform.social.extras.migration.MigrationException;
-import org.exoplatform.social.extras.migration.io.WriterContext;
+import org.exoplatform.social.extras.migration.io.WriterContext
+import org.exoplatform.social.extras.migration.TemplateTool;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -307,6 +308,14 @@ public class sm extends org.crsh.jcr.command.JCRCommand
 
     //
     return status;
+
+  }
+
+  @Usage("Run template migration")
+  @Command
+  public Object template() {
+
+    new TemplateTool().run();
 
   }
   
