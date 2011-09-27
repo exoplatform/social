@@ -15,31 +15,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.extras.migration;
+package org.exoplatform.social.extras.migration.plugin;
 
-import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
-import org.exoplatform.container.xml.InitParams;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class TemplateUpgraderPlugin extends UpgradeProductPlugin {
+public class VersionUpgradeTestCase extends TestCase {
 
-  public TemplateUpgraderPlugin(InitParams initParams) {
-    super(initParams);
+  public void test106_120GA() throws Exception {
+    assertTrue(VersionUpgrade.from11xTo12x("1.1.6", "1.2.0-GA"));
   }
 
-  @Override
-  public void processUpgrade(final String oldVersion, final String newVersion) {
-
-    new TemplateTool().run();
-
+  public void test106_120() throws Exception {
+    assertTrue(VersionUpgrade.from11xTo12x("1.1.6", "1.2.0"));
   }
 
-  @Override
-  public boolean shouldProceedToUpgrade(final String previousVersion, final String newVersion) {
-    return newVersion.equals("3.5.0");
+  public void test106SNAPSHOT_120SNAPSHOT() throws Exception {
+    assertTrue(VersionUpgrade.from11xTo12x("1.1.6-SNAPSHOT", "1.2.0-SNAPSHOT"));
+  }
+
+  public void test10_123() throws Exception {
+    assertTrue(VersionUpgrade.from11xTo12x("1.1", "1.2.3"));
   }
 
 }

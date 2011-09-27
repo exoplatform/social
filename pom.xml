@@ -838,6 +838,11 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.extras.migration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.extras.feedmash</artifactId>
         <version>${project.version}</version>
       </dependency>

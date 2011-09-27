@@ -15,8 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.extras.migration;
-
+package org.exoplatform.social.extras.migration.plugin;
 
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
@@ -25,6 +24,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.extras.migration.MigrationTool;
 import org.exoplatform.social.extras.migration.io.WriterContext;
 import org.exoplatform.social.extras.migration.rw.NodeReader;
 import org.exoplatform.social.extras.migration.rw.NodeWriter;
@@ -84,7 +84,7 @@ public class Social_11x_12x_UpgradeProductPlugin extends UpgradeProductPlugin {
 
   @Override
   public boolean shouldProceedToUpgrade(final String previousVersion, final String newVersion) {
-    return newVersion.equals("3.5.0");
+    return VersionUpgrade.from11xTo12x(previousVersion, newVersion);
   }
 
 }

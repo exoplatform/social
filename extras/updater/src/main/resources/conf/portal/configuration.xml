@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd http://www.exoplaform.org/xml/ns/kernel_1_0.xsd"
+  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+
+    <component-plugin>
+      <name>UpgradeToMOSPlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.extras.migration.plugin.Social_11x_12x_UpgradeProductPlugin</type>
+      <description>eXo Social Upgrade to MOS</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+
+    <component-plugin>
+      <name>UpgradeTemplatePlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.social.extras.migration.plugin.TemplateUpgraderPlugin</type>
+      <description>eXo Social Upgrade templates</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.social</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+
+  </external-component-plugins>
+</configuration>
