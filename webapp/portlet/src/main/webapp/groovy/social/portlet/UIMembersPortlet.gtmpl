@@ -53,7 +53,7 @@
            adminName = admin.getFirstName();
            adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
            def adminIdentity = uicomponent.getIdentity(admin.getUserName());
-           adminProfileURL = adminIdentity.profile.url;
+           adminProfileURL = LinkProvider.getUserProfileUri(adminIdentity.getRemoteId());
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
 				<img class="ImgAvatarRoot" src="$adminImageSource" alt=""/>
@@ -75,7 +75,7 @@
           def userName = user.getFullName();
           def leaderIdentity = uicomponent.getIdentity(user.getUserName());
           position = leaderIdentity.profile.position;
-          def profileURL = leaderIdentity.profile.url;
+          def profileURL = LinkProvider.getUserProfileUri(leaderIdentity.getRemoteId());
           if (!position) position = "";
           def leaderImageSource = leaderIdentity.profile.avatarUrl;
           if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -116,7 +116,7 @@
           def memberIdentity = uicomponent.getIdentity(user.getUserName());
           position = memberIdentity.profile.position;
           if (!position) position = "";
-          def profileURL = memberIdentity.profile.url;
+          def profileURL = LinkProvider.getUserProfileUri(memberIdentity.getRemoteId());
           def memberImageSource = memberIdentity.profile.avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
