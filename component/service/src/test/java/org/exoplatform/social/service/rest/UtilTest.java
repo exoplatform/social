@@ -16,10 +16,17 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -138,6 +145,126 @@ public class UtilTest extends AbstractServiceTest {
       assertEquals(expected, Util.convertTimestampToTimeString(timestamp));
     }
   }
+
+  /**
+   * Tests {@link Util#getBaseUrl(UriInfo)}.
+   */
+  public void testGetBaseUrl() {
+    String baseUrl1 = "http://localhost:8080";
+
+    String urlRequest1 = baseUrl1 + "/social/rest/v1/identity/123456.json?fields=fullName,avatarUrl";
+    FakeUriInfo fakeUriInfo1 = new FakeUriInfo(urlRequest1);
+    String gotBaseUrl1 = Util.getBaseUrl(fakeUriInfo1);
+    assertEquals("gotBaseUrl1 must be: " + baseUrl1, baseUrl1, gotBaseUrl1);
+
+    String urlRequest2 = baseUrl1 + "/social/rest/v1/identity/123456.json#id?fields=fullName,avatarUrl&limit=20";
+    FakeUriInfo fakeUriInfo2 = new FakeUriInfo(urlRequest2);
+    String gotBaseUrl2 = Util.getBaseUrl(fakeUriInfo2);
+    assertEquals("gotBaseUrl2 must be: " + baseUrl1, baseUrl1, gotBaseUrl2);
+
+    String baseUrl2 = "http://www.social.demo.exoplatform.org";
+    String urlRequest3 = baseUrl2 + "/social/rest/v1/identity/123456.json?fields=fullName,avatarUrl";
+    FakeUriInfo fakeUriInfo3 = new FakeUriInfo(urlRequest3);
+    String gotBaseUrl3 = Util.getBaseUrl(fakeUriInfo3);
+    assertEquals("gotBaseUrl3 must be: " + baseUrl2, baseUrl2, gotBaseUrl3);
+
+    String urlRequest4 = baseUrl2 + "/social/rest/v1/identity/123456.json#id?fields=fullName,avatarUrl&limit=20";
+    FakeUriInfo fakeUriInfo4 = new FakeUriInfo(urlRequest4);
+    String gotBaseUrl4 = Util.getBaseUrl(fakeUriInfo4);
+    assertEquals("gotBaseUrl4 must be: " + baseUrl2, baseUrl2, gotBaseUrl4);
+
+    String baseUrl3 = "http://social.demo.exoplatform.org:80";
+    String urlRequest5 = baseUrl3 + "/social/rest/v1/identity/123456#id?fields=fullName,avatarUrl&limit=20";
+    FakeUriInfo fakeUriInfo5 = new FakeUriInfo(urlRequest5);
+    String gotBaseUrl5 = Util.getBaseUrl(fakeUriInfo5);
+    String expected = "http://social.demo.exoplatform.org";
+    assertEquals("gotBaseUrl5 must return: " + expected, expected, gotBaseUrl5);
+  }
+
+
+  /**
+   * The fake UriInfo implementation.
+   */
+  private class FakeUriInfo implements UriInfo {
+    URI uriRequest;
+
+    public FakeUriInfo(String urlRequest) {
+      try {
+        uriRequest = new URI(urlRequest);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException("Can not create FakeUriInfo", e);
+      }
+    }
+
+    public String getPath() {
+      return uriRequest.getPath();
+    }
+
+    public String getPath(boolean decode) {
+      return uriRequest.getPath();
+    }
+
+    public List<PathSegment> getPathSegments() {
+      return null;
+    }
+
+    public List<PathSegment> getPathSegments(boolean decode) {
+      return null;
+    }
+
+    public URI getRequestUri() {
+      return null;
+    }
+
+    public UriBuilder getRequestUriBuilder() {
+      return null;
+    }
+
+    public URI getAbsolutePath() {
+      return null;
+    }
+
+    public UriBuilder getAbsolutePathBuilder() {
+      return null;
+    }
+
+    public URI getBaseUri() {
+      return uriRequest;
+    }
+
+    public UriBuilder getBaseUriBuilder() {
+      return null;
+    }
+
+    public MultivaluedMap<String, String> getPathParameters() {
+      return null;
+    }
+
+    public MultivaluedMap<String, String> getPathParameters(boolean decode) {
+      return null;
+    }
+
+    public MultivaluedMap<String, String> getQueryParameters() {
+      return null;
+    }
+
+    public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
+      return null;
+    }
+
+    public List<String> getMatchedURIs() {
+      return null;
+    }
+
+    public List<String> getMatchedURIs(boolean decode) {
+      return null;
+    }
+
+    public List<Object> getMatchedResources() {
+      return null;
+    }
+  }
+
 
 
 }

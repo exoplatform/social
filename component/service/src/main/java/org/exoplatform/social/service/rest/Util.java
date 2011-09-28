@@ -31,7 +31,6 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ActivityStream;
-import org.exoplatform.social.core.activity.model.ActivityStream.Type;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -267,6 +266,41 @@ public final class Util {
    return dateFormat.format(new Date(timestamp));
   }
 
+  /**
+   * Gets a Owner IdentityID from Activity
+   *
+   * @param activity Activity which you want to get the owner
+   * @return IdentityID
+   */
+  public static Identity getOwnerIdentityIdFromActivity(ExoSocialActivity activity) {
+    IdentityManager identityManager = getIdentityManager();
+    ActivityStream activityStream=  activity.getActivityStream();
+    ActivityStream.Type activityType =  activityStream.getType();
+    String name = activity.getStreamOwner();
+    if(activityType.equals(ActivityStream.Type.USER)){
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, false);
+    } else {
+      return identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, name, false);
+    }
+  }
+
+
+  /**
+   * Gets base url (host + post) from a context uriInfo.
+   * <p/>
+   * For example: http://localhost:8080
+   *
+   * @param uriInfo the context uri info
+   * @return the base url (host + port)
+   */
+  public static final String getBaseUrl(UriInfo uriInfo) {
+    URI uri = uriInfo.getBaseUri();
+    String port = "";
+    if (!(uri.getPort() == -1 || uri.getPort() == 80)) {
+      port = ":" + uri.getPort();
+    }
+    return uri.getScheme() + "://" + uri.getHost() + port;
+  }
 
 
   /**
@@ -302,22 +336,5 @@ public final class Util {
    */
   private static PortalContainer getPortalContainerByName(String portalContainerName) {
     return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
-  }
-  /**
-   * Gets a Owner IdentityID from Activity
-   *
-   * @param activity Activity which you want to get the owner
-   * @return IdentityID
-   */
-  public static Identity getOwnerIdentityIdFromActivity(ExoSocialActivity activity) {
-    IdentityManager identityManager = getIdentityManager();
-    ActivityStream activityStream=  activity.getActivityStream();
-    Type activityType =  activityStream.getType();
-    String name = activity.getStreamOwner();
-    if(activityType.equals(Type.USER)){
-      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, false);
-    } else {
-      return identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, name, false);
-    }
   }
 }
