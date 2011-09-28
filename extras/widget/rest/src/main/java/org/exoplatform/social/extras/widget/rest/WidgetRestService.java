@@ -55,7 +55,7 @@ public class WidgetRestService implements ResourceContainer {
   @Path("go_to_space")
   public Response goToSpace(@PathParam("containerName") String containerName,
                             @QueryParam("portalName") @DefaultValue("classic") String portalName,
-                            @QueryParam("spaceDisplayName") String spaceDisplayName,
+                            @QueryParam("spaceName") String spaceName,
                             @QueryParam("description") String description) {
     ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
     // we make sure we use the right container
@@ -64,13 +64,13 @@ public class WidgetRestService implements ResourceContainer {
     try {
       SpaceService service = (SpaceService) pc.getComponentInstanceOfType(SpaceService.class);
 
-      Space space = service.getSpaceByPrettyName(SpaceUtils.cleanString(spaceDisplayName));
+      Space space = service.getSpaceByPrettyName(SpaceUtils.cleanString(spaceName));
       String username = ConversationState.getCurrent().getIdentity().getUserId();
 
       if (space == null) {
         // If the space does not exist, we create it
         space = new Space();
-        space.setDisplayName(spaceDisplayName);
+        space.setDisplayName(spaceName);
         space.setRegistration(Space.OPEN);
         space.setDescription(description);
         space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -90,16 +90,13 @@ public class WidgetRestService implements ResourceContainer {
         }
       }
 
-      URI spaceURL = UriBuilder.fromPath("/{containerName}/private/{portalName}/{spaceURL}")
-                               .build(containerName, portalName, space.getUrl());
+      //TODO Find solution to remove the hard code here.
+      URI spaceURL = UriBuilder.fromPath("g/:spaces:{spaceURL}/{spaceURL}").build(space.getUrl(), space.getUrl());
 
       // We need to cleanup the session
       // The parameter portal is not really the portal name but the site name
       // inside the portal
-      URI cleanupURL = UriBuilder.fromPath("/{containerName}/invalidationsession")
-                                 .queryParam("portal", portalName)
-                                 .queryParam("url", "{url}")
-                                 .build(containerName, spaceURL);
+      URI cleanupURL = UriBuilder.fromPath("/{containerName}/{spaceURL}").build(containerName, spaceURL);
 
       // We could move the "classic" to configuration
       return Response.temporaryRedirect(cleanupURL).build();
@@ -116,7 +113,7 @@ public class WidgetRestService implements ResourceContainer {
   @Produces("text/html")
   public String spaceInfo(@PathParam("containerName") String containerName,
                           @QueryParam("portalName") @DefaultValue("classic") String portalName,
-                          @QueryParam("spacePrettyName") String spacePrettyName,
+                          @QueryParam("spaceName") String spaceName,
                           @QueryParam("description") String description,
                           @Context UriInfo uriInfo) {
     ExoContainer pc = ExoContainerContext.getContainerByName(containerName);
@@ -136,9 +133,10 @@ public class WidgetRestService implements ResourceContainer {
                     "no-repeat scroll 0 0 #FFFFFF; margin-bottom:5px;}</style>")
             .append("</head><body><h1>eXo Social</h1>");
 
+    String spacePrettyName = SpaceUtils.cleanString(spaceName);
 
     URI goToSpace = uriInfo.getBaseUriBuilder().path("/spaces/{containerName}/go_to_space")
-                               .queryParam("spacePrettyName", spacePrettyName)
+                               .queryParam("spaceName", spaceName)
                                .queryParam("portalName", portalName)
                                .queryParam("description", description)
                                .build(containerName);
@@ -147,7 +145,7 @@ public class WidgetRestService implements ResourceContainer {
     response.append("<h3 class=\"space_name\"><a href=\"")
             .append(goToSpace.toString())
             .append("\" target=\"_blank\">")
-            .append(space.getDisplayName())
+            .append(spaceName)
             .append("</a></h3>");
     if (space != null) {
       String username = ConversationState.getCurrent().getIdentity().getUserId();
@@ -164,7 +162,7 @@ public class WidgetRestService implements ResourceContainer {
         response.append("You are not member");
       }
     } else {
-      response.append("You are not member");
+      response.append("This space has not been created yet");
     }
 
     return response + "</body></html>";
