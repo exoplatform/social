@@ -55,7 +55,6 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   
   @Override
   public void setUp() throws Exception {
-    super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     mgr = (POMSessionManager)getContainer().getComponentInstanceOfType(POMSessionManager.class);
     authenticator = (Authenticator)getContainer().getComponentInstanceOfType(Authenticator.class);
@@ -69,11 +68,9 @@ public class SpaceUtilsRestTest extends AbstractCoreTest {
   
   @Override
   public void tearDown() throws Exception {
-    begin();
     for (Identity identity : tearDownUserList) {
       identityStorage.deleteIdentity(identity);
     }
-    super.tearDown();
   }
   
   public void testGetUserPortalForRest() throws Exception {
