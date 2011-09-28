@@ -103,7 +103,7 @@
 </tr>
 <tr>
 	<td>pause</td>
-	<td>2000</td>
+	<td>10000</td>
 	<td></td>
 </tr>
 <tr>
@@ -183,12 +183,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//div[@class='NormalTab']//a[@title='Space Settings']</td>
+	<td>//a[contains(@href,'spaces:space04') and @title='Settings']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@class='NormalTab']//a[@title='Space Settings']</td>
+	<td>//a[contains(@href,'spaces:space04') and @title='Settings']</td>
 	<td></td>
 </tr>
 <tr>
@@ -197,7 +197,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
+	<td>clickAndWait</td>
 	<td>link=Spaces</td>
 	<td></td>
 </tr>
