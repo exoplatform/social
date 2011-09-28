@@ -19,6 +19,7 @@ package org.exoplatform.social.service.rest.api.models;
 
 /**
  * The Comment input model for Social Rest APIs.
+ *
  * @author <a href="http://phuonglm.net">phuonglm</a>
  * @since 1.2.3
  */
@@ -28,12 +29,34 @@ public class CommentRestIn {
    */
   private String text;
 
+  /**
+   * Gets the comment text.
+   *
+   * @return the comment text
+   */
   public String getText() {
     return text;
   }
 
+  /**
+   * Sets the comment text.
+   *
+   * @param text the comment text
+   */
   public void setText(String text) {
     this.text = text;
   }
-  
+
+  /**
+   * Checks if this is a valid input, including all required fields.
+   *
+   * @return a boolean value
+   */
+  public boolean isValid() {
+    if (text == null || text.isEmpty()) {
+      return false;
+    }
+    return true;
+  }
+
 }
