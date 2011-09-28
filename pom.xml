@@ -108,12 +108,12 @@
     <net.oauth.core.oauth-provider.version>20100527</net.oauth.core.oauth-provider.version>
     <net.oauth.core.oauth-httpclient4.version>20090913</net.oauth.core.oauth-httpclient4.version>
 
-    <com.google.guava.version>r07</com.google.guava.version>
+    <com.google.guava.version>r09</com.google.guava.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
     <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
-    <org.apache.httpcomponents.httpclient.version>4.0</org.apache.httpcomponents.httpclient.version>
+    <org.apache.httpcomponents.httpclient.version>4.0.1</org.apache.httpcomponents.httpclient.version>
     <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
     <commons.beanutils.version>1.8.0</commons.beanutils.version>
     <commons.chain.version>1.0</commons.chain.version>
