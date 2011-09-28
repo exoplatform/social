@@ -24,7 +24,12 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NodeContext;
+import org.exoplatform.portal.mop.navigation.NodeModel;
+import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
@@ -43,6 +48,7 @@ public class TemplateTool {
 
   private final PortalContainer container;
   private final OrganizationService service;
+  private final NavigationService navigationService;
 
   private final String UI_SPACE_NEW_TEMPLATE = "system:/groovy/portal/webui/container/UIContainer.gtmpl";
 
@@ -52,6 +58,8 @@ public class TemplateTool {
 
     this.container = PortalContainer.getInstance();
     this.service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+    this.navigationService = (NavigationService) container.getComponentInstanceOfType(NavigationService.class);
+
   }
 
   public void run() {
@@ -78,11 +86,11 @@ public class TemplateTool {
             if (modelObject instanceof Container) {
               Container container = (Container) modelObject;
               if (!UI_SPACE_NEW_TEMPLATE.equals(container.getTemplate())) {
-
+  
                 container.setTemplate(UI_SPACE_NEW_TEMPLATE);
                 dataStorage.save(page);
                 LOG.info("Update template for " + group.getId() + " : " + page.getTitle());
-
+  
               }
               else {
                 LOG.info("Skip template for " + group.getId() + " : " + page.getTitle() + " (already done)");
@@ -91,11 +99,30 @@ public class TemplateTool {
           }
         }
 
+        // update settings name
+        NavigationContext pageNavCtx = navigationService.loadNavigation(SiteKey.group(group.getId()));
+        NodeContext nodeCtx = navigationService.loadNode(NodeModel.SELF_MODEL, pageNavCtx, Scope.GRANDCHILDREN, null).getNode();
+        LOG.info("Check navigations for : " + group.getId());
+        for (NodeContext ctx : (Collection<NodeContext>) nodeCtx.getNodes()) {
+          for (NodeContext ctxPage : (Collection<NodeContext>) ctx.getNodes()) {
+            if (
+                "SpaceSettingPortlet".equals(ctxPage.getName()) ||
+                "Space_Settings".equals(ctxPage.getName()) ||
+                "Space_settings".equals(ctxPage.getName())) {
+              
+              ctxPage.setName("settings");
+              navigationService.saveNode(ctxPage, null);
+              LOG.info("Update setting page name : " + ctxPage.getName());
+
+            }
+          }
+        }
+
       }
 
     }
     catch (Exception e) {
-      LOG.error(e.getMessage(), e);
+      LOG.info("Error during template migration : " + e.getMessage(), e);
     }
     finally {
       RequestLifeCycle.end();
