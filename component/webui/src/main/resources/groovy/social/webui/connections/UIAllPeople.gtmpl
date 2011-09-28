@@ -64,6 +64,7 @@
       def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
       def fullName = identity.profile.fullName;
       def email = identity.profile.email;
+      if (!email) { email = ""; }
       def addAction = uicomponent.event("AddContact", identity.getId());
       def relationship = uicomponent.getRelationship(identity);
       def contactStatus = null;
