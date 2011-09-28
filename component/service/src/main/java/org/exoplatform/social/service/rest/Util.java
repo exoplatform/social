@@ -62,7 +62,7 @@ public final class Util {
    * @param status the status code
    * @return response the response object
    */
-  static public Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
+  public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
     return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
                    .entity(entity)
                    .type(mediaType)
@@ -81,7 +81,7 @@ public final class Util {
    *             Will be removed by 1.3.x
    */
   @Deprecated
-  static public MediaType getMediaType(String format) throws WebApplicationException {
+  public static MediaType getMediaType(String format) throws WebApplicationException {
     if (format.equals("json")) {
       return MediaType.APPLICATION_JSON_TYPE;
     } else if(format.equals("xml")) {
@@ -93,7 +93,7 @@ public final class Util {
 
   /**
    * Gets the media type from an expected format string (usually the input) and an array of supported format strings.
-   * If epxectedFormat is not found in the supported format array, Status.UNSUPPORTED_MEDIA_TYPE is thrown.
+   * If expectedFormat is not found in the supported format array, Status.UNSUPPORTED_MEDIA_TYPE is thrown.
    * The supported format must include one of those format: json, xml, atom or rss, otherwise Status.NOT_ACCEPTABLE
    * could be thrown.
    *
@@ -120,12 +120,12 @@ public final class Util {
 
   
   /**
-   * Get viewerId from servlet request data information.
+   * Get viewerId from servlet request data information provided by OpenSocial signed request.
    *  
    * @param uriInfo
    * @return
    */
-  static public String getViewerId (UriInfo uriInfo) {
+  public static String getViewerId (UriInfo uriInfo) {
     URI uri = uriInfo.getRequestUri();
     String requestString = uri.getQuery();
     if (requestString == null) return null;
@@ -146,9 +146,22 @@ public final class Util {
    *
    * @return identity
    * @since 1.2.0 GA
+   * @deprecated Use {@link #getViewerIdentity(String, String)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static Identity getViewerIdentity(String viewerId) {
     return getUserIdentity(viewerId, false);
+  }
+
+  /**
+   * Gets identity of viewer user (logged-in user). Do not load profile.
+   *
+   * @return identity
+   * @since 1.2.3
+   */
+  public static Identity getViewerIdentity(String portalContainerName, String viewerId) {
+    return getUserIdentity(portalContainerName, viewerId, false);
   }
 
   /**
@@ -158,9 +171,26 @@ public final class Util {
    * @param loadProfile
    * @return identity
    * @since 1.2.0 GA
+   * @deprecated Use {@link #getUserIdentity(String, String, boolean)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static Identity getUserIdentity(String userName, boolean loadProfile) {
     return getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
+  }
+
+  /**
+   * Gets identity from the remote id (user name)
+   *
+   * @param portalContainerName
+   * @param userName
+   * @param loadProfile
+   * @return identity
+   * @since 1.2.3
+   */
+  public static Identity getUserIdentity(String portalContainerName, String userName, boolean loadProfile) {
+    return getIdentityManager(portalContainerName).
+           getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, loadProfile);
   }
   
   /**
@@ -168,7 +198,10 @@ public final class Util {
    *
    * @return identityManager
    * @since 1.2.0 GA
+   * @deprecated Use {@link #getIdentityManager(String)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static final IdentityManager getIdentityManager() {
     return (IdentityManager) getDefaultPortalContainer().getComponentInstanceOfType(IdentityManager.class);
   }
@@ -191,7 +224,10 @@ public final class Util {
    *
    * @return the space service
    * @since  1.2.0-GA
+   * @deprecated Use {@link #getSpaceService(String)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static final SpaceService getSpaceService() {
     return (SpaceService) getDefaultPortalContainer().getComponentInstanceOfType(SpaceService.class);
   }
@@ -213,7 +249,10 @@ public final class Util {
    *
    * @return the activity manager
    * @since  1.2.0-GA
+   * @deprecated Use {@link #getActivityManager(String)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static final ActivityManager getActivityManager() {
     return (ActivityManager) getDefaultPortalContainer().getComponentInstanceOfType(ActivityManager.class);
   }
@@ -235,7 +274,10 @@ public final class Util {
    *
    * @return the relationship manager
    * @since  1.2.0-GA
+   * @deprecated Use {@link #getRelationshipManager(String)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static final RelationshipManager getRelationshipManager() {
     return (RelationshipManager) getDefaultPortalContainer().getComponentInstanceOfType(RelationshipManager.class);
   }
@@ -253,11 +295,22 @@ public final class Util {
                                  getComponentInstanceOfType(RelationshipManager.class);
   }
 
+  /**
+   * Gets a portal container by its name.
+   *
+   * @param portalContainerName the specified portal container name
+   * @return the portal container name
+   * @since  1.2.3
+   */
+  public static final PortalContainer getPortalContainerByName(String portalContainerName) {
+    return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
+  }
+
 
   /**
    * Converts a timestamp string to time string by the pattern: EEE MMM d HH:mm:ss Z yyyy.
    *
-   * @param timestamp the timstamp to convert
+   * @param timestamp the timestamp to convert
    * @return the time string
    */
   public static final String convertTimestampToTimeString(long timestamp) {
@@ -267,13 +320,37 @@ public final class Util {
   }
 
   /**
-   * Gets a Owner IdentityID from Activity
+   * Gets a owner identity Id from a provided activity.
    *
-   * @param activity Activity which you want to get the owner
-   * @return IdentityID
+   * @param activity the activity to gets its owner identity
+   * @return the owner identity
+   * @since  1.2.0-GA
+   * @deprecated Use {@link #getOwnerIdentityIdFromActivity(ExoSocialActivity)} instead.
+   *             Will be removed by 1.3.x
    */
+  @Deprecated
   public static Identity getOwnerIdentityIdFromActivity(ExoSocialActivity activity) {
     IdentityManager identityManager = getIdentityManager();
+    ActivityStream activityStream=  activity.getActivityStream();
+    ActivityStream.Type activityType =  activityStream.getType();
+    String name = activity.getStreamOwner();
+    if(activityType.equals(ActivityStream.Type.USER)){
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, false);
+    } else {
+      return identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, name, false);
+    }
+  }
+
+  /**
+   * Gets a owner identity Id from a provided activity.
+   *
+   * @param portalContainerName the portal container name
+   * @param activity the activity to gets its owner identity
+   * @return the owner identity
+   * @since  1.2.0-GA
+   */
+  public static Identity getOwnerIdentityIdFromActivity(String portalContainerName, ExoSocialActivity activity) {
+    IdentityManager identityManager = getIdentityManager(portalContainerName);
     ActivityStream activityStream=  activity.getActivityStream();
     ActivityStream.Type activityType =  activityStream.getType();
     String name = activity.getStreamOwner();
@@ -292,6 +369,9 @@ public final class Util {
    *
    * @param uriInfo the context uri info
    * @return the base url (host + port)
+   * @author <a href="http://hoatle">hoatle (hoatlevan at gmail dot com)</a>
+   * @since  1.2.3
+   *
    */
   public static final String getBaseUrl(UriInfo uriInfo) {
     URI uri = uriInfo.getBaseUri();
@@ -326,15 +406,5 @@ public final class Util {
    */
   private static PortalContainer getDefaultPortalContainer() {
     return PortalContainer.getInstance();
-  }
-
-  /**
-   * Gets a portal container by its name.
-   *
-   * @param portalContainerName the specified portal container name
-   * @return the portal container name
-   */
-  private static PortalContainer getPortalContainerByName(String portalContainerName) {
-    return (PortalContainer) ExoContainerContext.getContainerByName(portalContainerName);
   }
 }

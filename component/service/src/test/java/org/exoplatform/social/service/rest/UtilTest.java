@@ -28,6 +28,7 @@ import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -133,6 +134,17 @@ public class UtilTest extends AbstractServiceTest {
     RelationshipManager relationshipManager = Util.getRelationshipManager("portal");
     assertNotNull("relationshipManager must not be null", relationshipManager);
   }
+
+  /**
+   * Tests {@link Util#getPortalContainerByName(String)}.
+   */
+  public void testGetPortalContainerByName() {
+    PortalContainer portalContainer1 = Util.getPortalContainerByName("wrong");
+    assertNull("portalContainer1 must be null", portalContainer1);
+    PortalContainer portalContainer2 = Util.getPortalContainerByName("portal");
+    assertNotNull("portalContainer2 must not be null", portalContainer2);
+  }
+
 
   /**
    * Tests {@link Util#convertTimestampToTimeString(long)}.
