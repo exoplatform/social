@@ -24,6 +24,7 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
@@ -44,7 +45,6 @@ public class TemplateTool {
   private final OrganizationService service;
 
   private final String UI_SPACE_NEW_TEMPLATE = "system:/groovy/portal/webui/container/UIContainer.gtmpl";
-  private final String UI_SPACE_OLD_TEMPLATE = "system:/groovy/portal/webui/container/UITableColumnContainer.gtmpl";
 
   private static final Log LOG = ExoLogger.getLogger(TemplateTool.class);
 
@@ -52,7 +52,6 @@ public class TemplateTool {
 
     this.container = PortalContainer.getInstance();
     this.service = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
-
   }
 
   public void run() {
@@ -74,15 +73,20 @@ public class TemplateTool {
         DataStorage dataStorage = SpaceUtils.getDataStorage();
         List<Page> pages = dataStorage.find(query).getAll();
         for (Page page : pages) {
-          ModelObject modelObject = page.getChildren().get(0);
-          if (modelObject instanceof Container) {
-            Container container = (Container) modelObject;
-            if (UI_SPACE_OLD_TEMPLATE.equals(container.getTemplate())) {
+          if (page.getChildren().size() > 0) {
+            ModelObject modelObject = page.getChildren().get(0);
+            if (modelObject instanceof Container) {
+              Container container = (Container) modelObject;
+              if (!UI_SPACE_NEW_TEMPLATE.equals(container.getTemplate())) {
 
-              container.setTemplate(UI_SPACE_NEW_TEMPLATE);
-              dataStorage.save(page);
-              LOG.info("Update template for " + group.getId() + " : " + page.getTitle());
+                container.setTemplate(UI_SPACE_NEW_TEMPLATE);
+                dataStorage.save(page);
+                LOG.info("Update template for " + group.getId() + " : " + page.getTitle());
 
+              }
+              else {
+                LOG.info("Skip template for " + group.getId() + " : " + page.getTitle() + " (already done)");
+              }
             }
           }
         }
@@ -91,7 +95,7 @@ public class TemplateTool {
 
     }
     catch (Exception e) {
-      LOG.info("Error during template migration : " + e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
     finally {
       RequestLifeCycle.end();
