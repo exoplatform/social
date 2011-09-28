@@ -185,7 +185,6 @@
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.apt</artifactId>
         <version>${org.chromattic.version}</version>
-        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
