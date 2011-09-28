@@ -92,9 +92,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAt</td>
+	<td>click</td>
 	<td>link=Create</td>
-	<td>2,2</td>
+	<td></td>
 </tr>
 <tr>
 	<td>pause</td>
@@ -138,12 +138,12 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>xpath=//div[@title='Rss Reader']</td>
+	<td>xpath=//div[@title='Social Rss Reader']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>dragAndDropToObject</td>
-	<td>xpath=//div[@title='Rss Reader']</td>
+	<td>xpath=//div[@title='Social Rss Reader']</td>
 	<td>xpath=//div[@class='UIDashboardContainer']</td>
 </tr>
 <tr>
@@ -177,6 +177,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>link=Share</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Share</td>
+	<td></td>
+</tr>
+<tr>
 	<td>echo</td>
 	<td>-- View Share link in Activity</td>
 	<td></td>
@@ -202,128 +212,18 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>//p[@class='Content']//a</td>
-	<td>Shared a link</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//p[@class='Content']//a</td>
-	<td>Shared a link</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>--Delete Activity</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//h5/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//h5/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertConfirmation</td>
-	<td>Are you sure to delete this activity?</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextNotPresent</td>
-	<td>Shared a link</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>Shared a link</td>
-	<td></td>
-</tr>
-<tr>
-	<td>pause</td>
-	<td>500</td>
-	<td></td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>-- Delete Drag and drop Gadget</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//a[contains(@href,'space29/dashboard')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//a[contains(@href,'space29/dashboard')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>css=span.CloseGadget.IconControl</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=span.CloseGadget.IconControl</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForConfirmation</td>
-	<td>Are you sure to delete this gadget?</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForTextPresent</td>
-	<td>Drag your gadgets here.</td>
+	<td>Shared a link: eXo JCR 1.14: New Features for eXo Platform 3.5 </td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Drag your gadgets here.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>//div//a[text()='Space29']/ancestor::div/ul//a[@title='Delete']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div//a[text()='Space29']/ancestor::div/ul//a[@title='Delete']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForConfirmation</td>
-	<td>Cannot undo one deleted space with all its page navigations and group. Are you sure to delete this space?</td>
+	<td>Shared a link: eXo JCR 1.14: New Features for eXo Platform 3.5 </td>
 	<td></td>
 </tr>
 <tr>
 	<td>echo</td>
-	<td>-- Verify space deleted</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextNotPresent</td>
-	<td>Space29</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>Space29</td>
+	<td>--Log out</td>
 	<td></td>
 </tr>
 <tr>
