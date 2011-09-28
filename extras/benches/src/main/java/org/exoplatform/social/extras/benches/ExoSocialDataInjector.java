@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.extras.benches;
 
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +26,8 @@ import java.util.Set;
 import org.exoplatform.services.bench.DataInjector;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.space.model.Space;
 /**
  * Created by The eXo Platform SAS
  * Author : eXoPlatform
@@ -36,9 +40,13 @@ public class ExoSocialDataInjector extends DataInjector {
   private long       numberOfUser;
   private long       numberOfRelation;
   private long       numberOfActivity;
+  private int        numberOfSpace;
+  private int        numberOfActivitySpace;
   private ExoSocialDataInjectionExecutor injector;
   
   private Map<String, Long> userActivities = new HashMap<String,Long>();
+  private Collection<Identity> identities = null;
+  Map<Identity, Set<Space>> identitySpacesMap = null;
   
   public ExoSocialDataInjector(ExoSocialDataInjectionExecutor injector) {
     this.injector = injector;
@@ -70,7 +78,7 @@ public class ExoSocialDataInjector extends DataInjector {
     if (numberOfUser > 0) {
       nothingWasDone = false;
       LOG.info("\t> about to inject " + numberOfUser + " people.");
-      injector.generatePeople(numberOfUser);
+      identities = injector.generatePeople(numberOfUser);
     }
     if (numberOfRelation > 0) {
       nothingWasDone = false;
@@ -92,6 +100,18 @@ public class ExoSocialDataInjector extends DataInjector {
         injector.generateActivities(username, count);
       }
 
+    }
+    
+    if (numberOfSpace > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + numberOfSpace + " spaces.");
+      identitySpacesMap = injector.generateSpaces(identities, numberOfSpace);
+    }
+    
+    if (numberOfActivitySpace > 0) {
+      nothingWasDone = false;
+      LOG.info("\t> about to inject " + numberOfActivity + " activity spaces.");
+      injector.generateActivitySpace(identitySpacesMap, numberOfActivitySpace);
     }
 
 
@@ -117,6 +137,14 @@ public class ExoSocialDataInjector extends DataInjector {
       //Gets the maximum the Activity using for creating Activities
       value = paramsMap.get("mA");
       numberOfActivity = longValue("mA", value);
+      
+     //Gets the maximum the Space using for creating Spaces
+      value = paramsMap.get("mS");
+      numberOfSpace = intValue("mS", value);
+     
+      //Gets the maximum the Space Activity using for each Space
+      value = paramsMap.get("mSA");
+      numberOfActivitySpace = intValue("mSA", value);
     }
   }
   @Override
@@ -137,6 +165,23 @@ public class ExoSocialDataInjector extends DataInjector {
       }
     } catch (NumberFormatException e) {
       LOG.warn("Long number expected for property " + property);
+    }
+    return 0;
+  }
+  
+  /**
+   * Gets Integer Value from param value.
+   * @param property
+   * @param value
+   * @return
+   */
+  private int intValue(String property, String value) {
+    try {
+      if (value != null) {
+        return Integer.valueOf(value);
+      }
+    } catch (NumberFormatException e) {
+      LOG.warn("Integer number expected for property " + property);
     }
     return 0;
   }

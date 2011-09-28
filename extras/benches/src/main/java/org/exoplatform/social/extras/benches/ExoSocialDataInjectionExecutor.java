@@ -18,9 +18,16 @@ package org.exoplatform.social.extras.benches;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -30,10 +37,13 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.extras.benches.util.LoremIpsum4J;
 import org.exoplatform.social.extras.benches.util.NameGenerator;
@@ -48,6 +58,8 @@ import org.exoplatform.social.extras.benches.util.NameGenerator;
 public class ExoSocialDataInjectionExecutor {
 
   private static Log          LOG = ExoLogger.getLogger(ExoSocialDataInjectionExecutor.class);
+  
+  private LoremIpsum4J lorem = new LoremIpsum4J();
 
   private ActivityManager     activityManager;
 
@@ -63,7 +75,7 @@ public class ExoSocialDataInjectionExecutor {
 
   private AtomicInteger       userCount;
   private AtomicInteger       relationshipCount;
-  private AtomicInteger       activityCount;
+  private AtomicInteger       activityUserCount;
   private AtomicInteger       spaceCount;
 
   private NameGenerator nameGenerator;
@@ -81,7 +93,7 @@ public class ExoSocialDataInjectionExecutor {
     userHandler = orgnizationservice.getUserHandler();
     userCount = new AtomicInteger(0);
     relationshipCount = new AtomicInteger(0);
-    activityCount = new AtomicInteger(0);
+    activityUserCount = new AtomicInteger(0);
     spaceCount = new AtomicInteger(0);
     nameGenerator = new NameGenerator();
   }
@@ -100,6 +112,7 @@ public class ExoSocialDataInjectionExecutor {
         identities.add(identity);
       }
     }
+    
     return identities;
   }
 
@@ -172,7 +185,7 @@ public class ExoSocialDataInjectionExecutor {
     ExoSocialActivity activity = null;
     if (id1 != null) {
       try {
-        int idx = activityCount.getAndIncrement();
+        int idx = activityUserCount.getAndIncrement();
         activity = generateRandomActivity();
         activity.setExternalId("benches:"+ idx);
         activityManager.saveActivity(id1, activity);
@@ -213,11 +226,10 @@ public class ExoSocialDataInjectionExecutor {
 
       try {
         int idx = relationshipCount.getAndIncrement();
-        relationship = relationshipManager.create(pple[0], pple[1]);
-        relationshipManager.confirm(relationship);
+        relationship = relationshipManager.inviteToConnect(pple[0], pple[1]);
+        relationshipManager.confirm(pple[0], pple[1]);
       } catch (Exception e) {
-        LOG.error("failed to create connection between " + pple[0] + " and " + pple[1] + ": "
-            + e.getMessage());
+        LOG.error("failed to create connection between " + pple[0] + " and " + pple[1] + ": " + e.getMessage());
       }
       LOG.info("created connection " + relationship + ".");
     }
@@ -333,6 +345,116 @@ public class ExoSocialDataInjectionExecutor {
     }
     return user;
   }
+  
+  /**
+   * Generates a variable amount of Spaces
+   * 
+   * @param count
+   * @return
+   */
+  public Map<Identity, Set<Space>> generateSpaces(Collection<Identity> identities, int count) {
+    //ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
+    ExoContainer pc = ExoContainerContext.getCurrentContainer();
+    RequestLifeCycle.begin(pc);
+    
+    Map<Identity, Set<Space>> identitySpacesMap = new HashMap<Identity, Set<Space>>();
+    Set<Space> spaces = new HashSet<Space>(count);
+    Identity identity = null;
+    for (int i = 0; i < count; i++) {
+      identity = selectRandomUser(null);
+      Space space = generateSpace(identity.getRemoteId());
+      LOG.info("creating space : " + space.getDisplayName() + " for: " + identity.getRemoteId());
+      if (space != null) {
+        spaces.add(space);
+      }
+
+      Set<Space> oldSpaces = identitySpacesMap.get(identity);
+      //adds more space which belongs to the identity(key for hashmap)
+      if (oldSpaces != null) {
+        oldSpaces.addAll(spaces);
+        identitySpacesMap.put(identity, oldSpaces);
+      } else {
+        identitySpacesMap.put(identity, spaces);
+      }
+      
+      
+      spaces = new HashSet<Space>(count);
+    }
+    
+    RequestLifeCycle.end();
+    return identitySpacesMap;
+  }
+  
+  /**
+   * Generate the activity for Space.
+   * @param identitySpacesMap
+   * @param count
+   */
+  public void generateActivitySpace(Map<Identity, Set<Space>> identitySpacesMap, long count) {
+    Set<Identity> keys = identitySpacesMap.keySet();
+    Space space = null;
+    for (Identity key : keys) {
+      String activityMessage = lorem.getWords(10);
+      Set<Space> spaces = identitySpacesMap.get(key);
+      
+      if (spaces.size() > 0) {
+        space = spaces.iterator().next();
+      }
+        
+      for (int i = 0; i < count; i++) {
+        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                     space.getPrettyName(),
+                                                                     false);
+        activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
+        LOG.info("creating activity of  : " + key.getRemoteId() + " with space: " + space.getDisplayName());
+      }
+      
+    }
+  }
+  
+  /**
+   * Generate a new or Space with name as bench.spaceXXX where XXX is an internal
+   * counter. The method checks if the space exists and will attempt to find a
+   * new name by incrementing the counter.
+   * @return
+   */
+  public Space generateSpace(String username) {
+    Space space = null;
+    boolean avail = false;
+    while (!avail) {
+      int idx = spaceCount.getAndIncrement();
+      String spacename = spacename(idx);
+
+      LOG.info("creating space : " + spacename);
+      try {
+
+        space = spaceService.getSpaceByDisplayName(spacename);
+      } catch (Exception e) {
+        LOG.warn("failed to check existence of  " + spacename + ": " + e.getMessage());
+      }
+      if (space != null) {
+        LOG.info(spacename + " already exists, skipping");
+      } else {
+        try {
+          avail = true;
+          space = new Space();
+          space.setGroupId("organization");
+          space.setDisplayName(spacename);
+          space.setRegistration(Space.OPEN);
+          LoremIpsum4J lorem = new LoremIpsum4J();
+          space.setDescription(lorem.getWords(10));
+          space.setType(DefaultSpaceApplicationHandler.NAME);
+          space.setVisibility(Space.PUBLIC);
+          space.setPriority(Space.INTERMEDIATE_PRIORITY);
+          space = spaceService.createSpace(space, username, null);
+        } catch (Exception e) {
+          LOG.warn("failed to create space " + spacename + ": " + e.getMessage());
+          return null;
+        }
+      }
+    }
+    return space;
+  }
 
   /**
    * Builds the User information
@@ -349,6 +471,10 @@ public class ExoSocialDataInjectionExecutor {
   private String username(int idx) {
     return "bench.user" + (idx);
   }
+  
+  private String spacename(int idx) {
+    return "bench.space" + (idx);
+  }
 
   public AtomicInteger getUserCount() {
     return userCount;
@@ -359,7 +485,7 @@ public class ExoSocialDataInjectionExecutor {
   }
 
   public AtomicInteger getActivityCount() {
-    return activityCount;
+    return activityUserCount;
   }
 
   public AtomicInteger getSpaceCount() {

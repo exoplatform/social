@@ -160,6 +160,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   }
   
   
+  
+  
+  
   /**
    * {@inheritDoc}
    */
@@ -402,7 +405,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
       
     }
-    getUserPortal().updateNode(parentNode, Scope.CHILDREN, null);
+    UserPortal userPortal = SpaceUtils.getUserPortal();
+    userPortal.updateNode(parentNode, Scope.CHILDREN, null);
     UserNode childNode = parentNode.addChild(pageName);
     //when apply Navigation, can not need to setName for childNode. It's automatically.
     //childNode.setName(pageName);
@@ -414,7 +418,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     
     try {
       //only save with type is transient status
-      getUserPortal().saveNode(parentNode, null);
+      userPortal.saveNode(parentNode, null);
     } catch (NavigationServiceException nex) {
       LOG.info("Could not create page node from Application " + nex.toString());
       return null;
@@ -424,6 +428,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     }
     return childNode;
   }
+  
+  
 
   /**
    * Retrieving the UserPortal

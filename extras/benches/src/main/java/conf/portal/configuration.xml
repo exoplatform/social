@@ -68,10 +68,42 @@
 					<value>500</value>
 				</value-param>
 				<value-param>
-					<name>mS</name> <!-- maximum spaces -->
-					<value>10</value>
-				</value-param>
+          <name>mS</name> <!-- maximum spaces -->
+          <value>10</value>
+        </value-param>
+        <value-param>
+          <name>mSA</name> <!-- maximum spaces activities -->
+          <value>10</value>
+        </value-param>
 			</init-params>
 		</component-plugin>
+		<component-plugin>
+      <name>ExoSocialExtensionDataInjector</name>
+      <set-method>addInjector</set-method>
+      <type>org.exoplatform.social.extras.benches.ExoSocialExtensionDataInjector</type>
+      <description>inject data for eXo Social</description>
+      <init-params>
+        <value-param>
+          <name>mU</name> <!-- maximum peoples -->
+          <value>100</value>
+        </value-param>
+        <value-param>
+          <name>mR</name> <!-- maximum size of relationships -->
+          <value>10,20,30</value> <!-- [0,33] has [10] relations; [33,66] has [20] relations ; [66, 99] has [30] relations -->
+        </value-param>
+        <value-param>
+          <name>mA</name> <!-- maximum activities -->
+          <value>10,20,30</value> <!-- [0,33] has [10] space activities; [33,66] has [20] space activities ; [66, 99] has [30] space activities -->
+        </value-param>
+        <value-param>
+          <name>mS</name> <!-- maximum spaces -->
+          <value>10</value>
+        </value-param>
+        <value-param>
+          <name>mSA</name> <!-- maximum space activities: [0,4] has [10] space activities; [5,9] has [20] space activities -->
+          <value>10,20</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
 	</external-component-plugins>
 </configuration>

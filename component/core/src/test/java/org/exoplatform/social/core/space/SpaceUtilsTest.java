@@ -16,11 +16,10 @@
  */
 package org.exoplatform.social.core.space;
 
+import junit.framework.TestCase;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.space.spi.SpaceService;
-
-import junit.framework.TestCase;
 
 /**
  * Unit Test for {@link SpaceUtilsTest}
@@ -72,4 +71,6 @@ public class SpaceUtilsTest extends TestCase {
                  ));
     */
   }
+  
+ 
 }

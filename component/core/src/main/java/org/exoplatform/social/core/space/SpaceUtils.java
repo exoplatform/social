@@ -23,7 +23,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,10 +39,12 @@ import org.exoplatform.application.registry.ApplicationRegistryService;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
@@ -55,6 +59,7 @@ import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
+import org.exoplatform.portal.mop.user.UserPortalContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -68,6 +73,7 @@ import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -808,6 +814,7 @@ public class SpaceUtils {
     //14-june-2011 Apply UserNavigation
     //PageNavigation spaceNav;
     UserNavigation spaceNav = null;
+    UserPortal userPortal = getUserPortal();
     try {
       //spaceNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
       spaceNav = getUserPortal().getNavigation(SiteKey.group(groupId));
@@ -815,7 +822,14 @@ public class SpaceUtils {
         // creates new space navigation
         NavigationContext navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
         navService.saveNavigation(navContext);
-        spaceNav = getUserPortal().getNavigation(SiteKey.group(groupId));
+        spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
+      }
+      
+      //SOC-2016 this fragment code makes sure SpaceNavigation can not be NULL when it returns.
+      if (spaceNav == null) {
+        RequestLifeCycle.end();
+        userPortal.refresh();
+        spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
       }
       return spaceNav;
     } catch (Exception e) {
@@ -823,14 +837,48 @@ public class SpaceUtils {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
     }
   }
+  
   /**
    * Using this method to get the UserPortal make sure that the data is latest.
    * It's will remove the caching.
    * @return
    */
   public static UserPortal getUserPortal() {
-    UIPortalApplication uiApp = Util.getUIPortalApplication();
-    return uiApp.getUserPortalConfig().getUserPortal();
+    try {
+      UIPortalApplication uiApp = Util.getUIPortalApplication();
+      return uiApp.getUserPortalConfig().getUserPortal();
+    } catch (Exception e) {
+      //Makes sure that in the RestService still gets the UserPortal.
+      try {
+        return getUserPortalForRest();
+      } catch (Exception e1) {
+        return null;
+      }
+    }
+  }
+ 
+  /**
+   * Gets the UserPortal when uses the RestService.
+   * @return
+   * @throws Exception
+   */
+  public static UserPortal getUserPortalForRest() throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
+
+    UserPortalContext NULL_CONTEXT = new UserPortalContext() {
+      public ResourceBundle getBundle(UserNavigation navigation) {
+        return null;
+      }
+
+      public Locale getUserLocale() {
+        return Locale.ENGLISH;
+      }
+    };
+    
+    String remoteId = ConversationState.getCurrent().getIdentity().getUserId();
+    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+    return userPortalCfg.getUserPortal();
   }
 
   /**
