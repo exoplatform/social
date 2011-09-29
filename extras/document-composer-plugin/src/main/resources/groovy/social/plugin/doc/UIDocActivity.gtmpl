@@ -126,7 +126,7 @@
 
   def ownerIdentity = uicomponent.ownerIdentity;
   if (uicomponent.isUserActivity()) {
-    ownerUri = ownerIdentity.profile.url;
+    ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = ownerIdentity.profile.avatarUrl;
     ownerName = ownerIdentity.profile.fullName;
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
@@ -223,7 +223,7 @@
             displayedIdentityLikes.each({
               def id = Utils.getIdentityManager().getIdentity(it);
               personLikeFullName = id.profile.fullName;
-              personLikeProfileUri = id.profile.url;
+              personLikeProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               %>
@@ -266,7 +266,7 @@
     }
     def id = Utils.getIdentityManager().getIdentity(it.userId);
     commenterFullName = id.profile.fullName;
-    commenterProfileUri = id.profile.url;
+    commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
     commentMessage = it.title;
     commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
   %>
@@ -290,7 +290,7 @@
 
     <%
       def currentCommenterIdentity = Utils.getOwnerIdentity();
-      def currentCommenterUri = currentCommenterIdentity.profile.url;
+      def currentCommenterUri = LinkProvider.getUserProfileUri(currentCommenterIdentity.getRemoteId());
       def currentCommenterAvatar = currentCommenterIdentity.profile.avatarUrl;
       def currentCommenterName = currentCommenterIdentity.profile.fullName;
       if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
