@@ -17,6 +17,8 @@
 package org.exoplatform.social.service.rest;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -39,6 +41,11 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 public class SecurityManager {
 
   /**
+   * The logger
+   */
+  private static Log LOG = ExoLogger.getLogger(SecurityManager.class);
+
+  /**
    * <p>Checks if an authenticated remoteId of user can access an existing activity.</p>
    *
    * If the authenticated identity is the one who posted that existing activity, return true.<br />
@@ -48,7 +55,7 @@ public class SecurityManager {
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
-   * @param authenticatedIdentity the authenticated identity to check
+   * @param userIdentity the authenticated identity to check
    * @param existingActivity the existing activity to check
    * @return true or false
    */
@@ -193,7 +200,7 @@ public class SecurityManager {
   public static boolean canCommentToActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                        ExoSocialActivity existingActivity) {
     IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-    Identity ownerIdentityStream = identityManager.getIdentity(existingActivity.getUserId(),false);
+    Identity ownerIdentityStream = identityManager.getIdentity(existingActivity.getUserId(), false);
     if(canPostActivity(portalContainer, authenticatedIdentity, ownerIdentityStream)){
       return true;
     }
@@ -237,5 +244,35 @@ public class SecurityManager {
     } else {
       return null;
     }
+  }
+
+   /**
+   * Checks if an authenticated identity could access the activity stream of an owner stream identity.
+   * If the owner stream is a user identity, return true.
+   * If the owner stream is a space identity, return true only if the authenticated identity is the space member.
+   *
+   * Note that: this can work only with access permission of user - user, user - space.
+   * If there is other identity type, this will return true.
+   *
+   * @param portalContainer       the portal container
+   * @param authenticatedIdentity the authenticated identity
+   * @param ownerStream           the stream owner identity
+   * @return true or false to indicate access permission
+   * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+   * @since  1.2.3
+   */
+  public static boolean canAccessActivityStream(PortalContainer portalContainer, Identity authenticatedIdentity,
+                                                Identity ownerStream) {
+    if (ownerStream.getProviderId().equals(SpaceIdentityProvider.NAME)) {
+      SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+      Space targetSpace = spaceService.getSpaceByPrettyName(ownerStream.getRemoteId());
+      if (targetSpace == null) {
+        LOG.warn("targetSpace is null with prettyName: " + ownerStream.getRemoteId());
+        return true;
+      }
+      return spaceService.isMember(targetSpace, authenticatedIdentity.getRemoteId()) ||
+             spaceService.isManager(targetSpace, authenticatedIdentity.getRemoteId());
+    }
+    return true;
   }
 }

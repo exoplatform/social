@@ -20,6 +20,7 @@ package org.exoplatform.social.service.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -338,6 +339,28 @@ public class SecurityManagerTest extends AbstractServiceTest {
 
   }
 
+
+  /**
+   * Unit Test for {@link SecurityManager#canAccessActivityStream(PortalContainer, Identity, Identity)}.
+   */
+  public void testCanAccessActivityStream() {
+    assertTrue("SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, johnIdentity) must return true",
+               SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, johnIdentity));
+
+    createSpaces(1);
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+
+    assertFalse("SecurityManager.canAccessActivityStream(getContainer(), johnIdentity, spaceIdentity) must return false",
+                SecurityManager.canAccessActivityStream(getContainer(), johnIdentity, spaceIdentity));
+
+    assertTrue("SecurityManager.canAccessActivityStream(getContainer(), maryIdentity, spaceIdentity) must return true",
+               SecurityManager.canAccessActivityStream(getContainer(), maryIdentity, spaceIdentity));
+
+    assertTrue("SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, spaceIdentity) musts return true",
+               SecurityManager.canAccessActivityStream(getContainer(), demoIdentity, spaceIdentity));
+  }
+
   /**
    * An identity posts an activity to an identity's activity stream with a number of activities.
    *
@@ -389,10 +412,10 @@ public class SecurityManagerTest extends AbstractServiceTest {
       space.setRegistration(Space.VALIDATION);
       space.setPriority(Space.INTERMEDIATE_PRIORITY);
       space.setGroupId("/space/space" + number);
-      String[] managers = new String[]{"demo", "tom"};
-      String[] members = new String[]{"raul", "ghost", "dragon", "demo", "mary"};
-      String[] invitedUsers = new String[]{"register1", "john"};
-      String[] pendingUsers = new String[]{"jame", "paul", "hacker"};
+      String[] managers = new String[]{"demo"};
+      String[] members = new String[]{"demo", "mary"};
+      String[] invitedUsers = new String[]{"john"};
+      String[] pendingUsers = new String[]{"root"};
       space.setInvitedUsers(invitedUsers);
       space.setPendingUsers(pendingUsers);
       space.setManagers(managers);
@@ -410,7 +433,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
    * Connects 2 identities, if toConfirm = true, they're connected. If false, in pending connection type.
    *
    * @param senderIdentity the identity who sends connection request
-   * @param receiverIdentity the identity who receives connnection request
+   * @param receiverIdentity the identity who receives connection request
    * @param beConfirmed boolean value
    */
   private void connectIdentities(Identity senderIdentity, Identity receiverIdentity, boolean beConfirmed) {
