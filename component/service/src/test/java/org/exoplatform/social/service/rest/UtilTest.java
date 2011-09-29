@@ -16,19 +16,27 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.security.Principal;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
@@ -159,124 +167,277 @@ public class UtilTest extends AbstractServiceTest {
   }
 
   /**
-   * Tests {@link Util#getBaseUrl(UriInfo)}.
+   * Tests {@link Util#getBaseUrl()}.
    */
   public void testGetBaseUrl() {
     String baseUrl1 = "http://localhost:8080";
 
     String urlRequest1 = baseUrl1 + "/social/rest/v1/identity/123456.json?fields=fullName,avatarUrl";
-    FakeUriInfo fakeUriInfo1 = new FakeUriInfo(urlRequest1);
-    String gotBaseUrl1 = Util.getBaseUrl(fakeUriInfo1);
+    setFakeCurrentEnvironmentContext(urlRequest1);
+    String gotBaseUrl1 = Util.getBaseUrl();
     assertEquals("gotBaseUrl1 must be: " + baseUrl1, baseUrl1, gotBaseUrl1);
 
     String urlRequest2 = baseUrl1 + "/social/rest/v1/identity/123456.json#id?fields=fullName,avatarUrl&limit=20";
-    FakeUriInfo fakeUriInfo2 = new FakeUriInfo(urlRequest2);
-    String gotBaseUrl2 = Util.getBaseUrl(fakeUriInfo2);
+    setFakeCurrentEnvironmentContext(urlRequest2);
+    String gotBaseUrl2 = Util.getBaseUrl();
     assertEquals("gotBaseUrl2 must be: " + baseUrl1, baseUrl1, gotBaseUrl2);
 
     String baseUrl2 = "http://www.social.demo.exoplatform.org";
     String urlRequest3 = baseUrl2 + "/social/rest/v1/identity/123456.json?fields=fullName,avatarUrl";
-    FakeUriInfo fakeUriInfo3 = new FakeUriInfo(urlRequest3);
-    String gotBaseUrl3 = Util.getBaseUrl(fakeUriInfo3);
+    setFakeCurrentEnvironmentContext(urlRequest3);
+    String gotBaseUrl3 = Util.getBaseUrl();
     assertEquals("gotBaseUrl3 must be: " + baseUrl2, baseUrl2, gotBaseUrl3);
 
     String urlRequest4 = baseUrl2 + "/social/rest/v1/identity/123456.json#id?fields=fullName,avatarUrl&limit=20";
-    FakeUriInfo fakeUriInfo4 = new FakeUriInfo(urlRequest4);
-    String gotBaseUrl4 = Util.getBaseUrl(fakeUriInfo4);
+    setFakeCurrentEnvironmentContext(urlRequest4);
+    String gotBaseUrl4 = Util.getBaseUrl();
     assertEquals("gotBaseUrl4 must be: " + baseUrl2, baseUrl2, gotBaseUrl4);
 
     String baseUrl3 = "http://social.demo.exoplatform.org:80";
     String urlRequest5 = baseUrl3 + "/social/rest/v1/identity/123456#id?fields=fullName,avatarUrl&limit=20";
-    FakeUriInfo fakeUriInfo5 = new FakeUriInfo(urlRequest5);
-    String gotBaseUrl5 = Util.getBaseUrl(fakeUriInfo5);
-    String expected = "http://social.demo.exoplatform.org";
-    assertEquals("gotBaseUrl5 must return: " + expected, expected, gotBaseUrl5);
+    setFakeCurrentEnvironmentContext(urlRequest5);
+    String gotBaseUrl5 = Util.getBaseUrl();
+    assertEquals("gotBaseUrl5 must return: " + baseUrl3, baseUrl3, gotBaseUrl5);
+  }
+
+  private void setFakeCurrentEnvironmentContext(String urlRequest) {
+    EnvironmentContext envctx = new EnvironmentContext();
+    HttpServletRequest httpRequest = new FakeHttpServletRequest(urlRequest);
+    envctx.put(HttpServletRequest.class, httpRequest);
+    EnvironmentContext.setCurrent(envctx);
   }
 
 
   /**
-   * The fake UriInfo implementation.
+   * Fake HttpServletRequest
    */
-  private class FakeUriInfo implements UriInfo {
+  private class FakeHttpServletRequest implements HttpServletRequest {
     URI uriRequest;
-
-    public FakeUriInfo(String urlRequest) {
+    
+    public FakeHttpServletRequest(String urlRequest) {
       try {
         uriRequest = new URI(urlRequest);
       } catch (URISyntaxException e) {
-        throw new RuntimeException("Can not create FakeUriInfo", e);
+        throw new RuntimeException("Failed to create FakeHttpServletRequest");
       }
     }
-
-    public String getPath() {
-      return uriRequest.getPath();
+    
+    public String getAuthType() {
+      return null;  
     }
 
-    public String getPath(boolean decode) {
-      return uriRequest.getPath();
+    public Cookie[] getCookies() {
+      return new Cookie[0];  
     }
 
-    public List<PathSegment> getPathSegments() {
+    public long getDateHeader(String name) {
+      return 0;  
+    }
+
+    public String getHeader(String name) {
+      return null;  
+    }
+
+    public Enumeration getHeaders(String name) {
+      return null;  
+    }
+
+    public Enumeration getHeaderNames() {
+      return null;  
+    }
+
+    public int getIntHeader(String name) {
+      return 0;  
+    }
+
+    public String getMethod() {
+      return null;  
+    }
+
+    public String getPathInfo() {
+      return null;  
+    }
+
+    public String getPathTranslated() {
+      return null;  
+    }
+
+    public String getContextPath() {
+      return null;  
+    }
+
+    public String getQueryString() {
+      return null;  
+    }
+
+    public String getRemoteUser() {
+      return null;  
+    }
+
+    public boolean isUserInRole(String role) {
+      return false;  
+    }
+
+    public Principal getUserPrincipal() {
+      return null;  
+    }
+
+    public String getRequestedSessionId() {
+      return null;  
+    }
+
+    public String getRequestURI() {
+      return null;  
+    }
+
+    public StringBuffer getRequestURL() {
+      return null;  
+    }
+
+    public String getServletPath() {
+      return null;  
+    }
+
+    public HttpSession getSession(boolean create) {
+      return null;  
+    }
+
+    public HttpSession getSession() {
+      return null;  
+    }
+
+    public boolean isRequestedSessionIdValid() {
+      return false;  
+    }
+
+    public boolean isRequestedSessionIdFromCookie() {
+      return false;  
+    }
+
+    public boolean isRequestedSessionIdFromURL() {
+      return false;  
+    }
+
+    public boolean isRequestedSessionIdFromUrl() {
+      return false;  
+    }
+
+    public Object getAttribute(String name) {
+      return null;  
+    }
+
+    public Enumeration getAttributeNames() {
+      return null;  
+    }
+
+    public String getCharacterEncoding() {
+      return null;  
+    }
+
+    public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
+      
+    }
+
+    public int getContentLength() {
+      return 0;  
+    }
+
+    public String getContentType() {
+      return null;  
+    }
+
+    public ServletInputStream getInputStream() throws IOException {
+      return null;  
+    }
+
+    public String getParameter(String name) {
+      return null;  
+    }
+
+    public Enumeration getParameterNames() {
+      return null;  
+    }
+
+    public String[] getParameterValues(String name) {
+      return new String[0];  
+    }
+
+    public Map getParameterMap() {
+      return null;  
+    }
+
+    public String getProtocol() {
+      return null;  
+    }
+
+    public String getScheme() {
+      return uriRequest.getScheme();
+    }
+
+    public String getServerName() {
+      return null;  
+    }
+
+    public int getServerPort() {
+      return 0;  
+    }
+
+    public BufferedReader getReader() throws IOException {
+      return null;  
+    }
+
+    public String getRemoteAddr() {
       return null;
     }
 
-    public List<PathSegment> getPathSegments(boolean decode) {
-      return null;
+    public String getRemoteHost() {
+      return uriRequest.getHost();
     }
 
-    public URI getRequestUri() {
-      return null;
+    public void setAttribute(String name, Object o) {
+      
     }
 
-    public UriBuilder getRequestUriBuilder() {
-      return null;
+    public void removeAttribute(String name) {
+      
     }
 
-    public URI getAbsolutePath() {
-      return null;
+    public Locale getLocale() {
+      return null;  
     }
 
-    public UriBuilder getAbsolutePathBuilder() {
-      return null;
+    public Enumeration getLocales() {
+      return null;  
     }
 
-    public URI getBaseUri() {
-      return uriRequest;
+    public boolean isSecure() {
+      return false;  
     }
 
-    public UriBuilder getBaseUriBuilder() {
-      return null;
+    public RequestDispatcher getRequestDispatcher(String path) {
+      return null;  
     }
 
-    public MultivaluedMap<String, String> getPathParameters() {
-      return null;
+    public String getRealPath(String path) {
+      return null;  
     }
 
-    public MultivaluedMap<String, String> getPathParameters(boolean decode) {
-      return null;
+    public int getRemotePort() {
+      return uriRequest.getPort();
     }
 
-    public MultivaluedMap<String, String> getQueryParameters() {
-      return null;
+    public String getLocalName() {
+      return null;  
     }
 
-    public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
-      return null;
+    public String getLocalAddr() {
+      return null;  
     }
 
-    public List<String> getMatchedURIs() {
-      return null;
-    }
-
-    public List<String> getMatchedURIs(boolean decode) {
-      return null;
-    }
-
-    public List<Object> getMatchedResources() {
-      return null;
+    public int getLocalPort() {
+      return 0;  
     }
   }
-
 
 
 }

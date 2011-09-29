@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -367,21 +369,30 @@ public final class Util {
    * <p/>
    * For example: http://localhost:8080
    *
-   * @param uriInfo the context uri info
    * @return the base url (host + port)
    * @author <a href="http://hoatle">hoatle (hoatlevan at gmail dot com)</a>
    * @since  1.2.3
    *
    */
-  public static final String getBaseUrl(UriInfo uriInfo) {
-    URI uri = uriInfo.getBaseUri();
+  public static final String getBaseUrl() {
+    HttpServletRequest currentServletRequest = getCurrentServletRequest();
     String port = "";
-    if (!(uri.getPort() == -1 || uri.getPort() == 80)) {
-      port = ":" + uri.getPort();
+    if (currentServletRequest.getRemotePort() != -1) {
+      port = ":" + currentServletRequest.getRemotePort();
     }
-    return uri.getScheme() + "://" + uri.getHost() + port;
+    return currentServletRequest.getScheme() + "://" + currentServletRequest.getRemoteHost() + port;
   }
 
+
+  /**
+   * Gets current http servlet request provided by Rest Service Framework.
+   *
+   * @return the current http servlet request
+   */
+  private static HttpServletRequest getCurrentServletRequest() {
+    EnvironmentContext environmentContext = EnvironmentContext.getCurrent();
+    return (HttpServletRequest) environmentContext.get(HttpServletRequest.class);
+  }
 
   /**
    * Checks if an expected format is supported not not.
