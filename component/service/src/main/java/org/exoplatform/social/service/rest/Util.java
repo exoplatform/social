@@ -40,7 +40,10 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
+import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 
 /**
  * Util.java: utility class for rest <br />.
@@ -417,5 +420,29 @@ public final class Util {
    */
   private static PortalContainer getDefaultPortalContainer() {
     return PortalContainer.getInstance();
+  }
+  
+  /**
+   * Build absolute AvatarURL from in IndentityRestOut if avatar == null or "" use default avatar base on Identity's type
+   * @param resultIdentity
+   */
+  
+  public static void buildAbsoluteAvatarURL(IdentityRestOut resultIdentity){
+    if(resultIdentity.getProfile() != null && 
+        resultIdentity.getProviderId() != null){
+      ProfileRestOut resultProfile =  resultIdentity.getProfile();
+      if(resultProfile.getAvatarUrl() == null || resultProfile.getAvatarUrl().trim().equals("") ){
+        if(resultIdentity.getProviderId().
+            equals(SpaceIdentityProvider.NAME)){
+          resultProfile.setAvatarUrl(getBaseUrl() + LinkProvider.SPACE_DEFAULT_AVATAR_URL);
+        } else {
+          resultProfile.setAvatarUrl(getBaseUrl() + LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
+        }
+      } else {
+        if(!resultProfile.getAvatarUrl().startsWith("http://") && !resultProfile.getAvatarUrl().startsWith("https://")){
+          resultProfile.setAvatarUrl(getBaseUrl() + resultProfile.getAvatarUrl());
+        }
+      }
+    }
   }
 }

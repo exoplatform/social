@@ -32,8 +32,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.models.IdentityRest;
-import org.exoplatform.social.service.rest.api.models.ProfileRest;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
+import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 
 /**
  * Identity Resources end point. 
@@ -80,12 +80,8 @@ public class IdentityResources implements ResourceContainer {
 
     try{
       Identity identity = identityManager.getIdentity(identityId, true);
-      IdentityRest resultIdentity = new IdentityRest(identity);
-      
-      String restBaseURI = uriInfo.getBaseUri().toString();
-      String restPathURI = uriInfo.getBaseUri().getPath();
-      buildAbsoluteAvatarURL(restBaseURI.substring(0,restBaseURI.length() - restPathURI.length()), resultIdentity);
-      
+      IdentityRestOut resultIdentity = new IdentityRestOut(identity);      
+      Util.buildAbsoluteAvatarURL(resultIdentity);
       return Util.getResponse(resultIdentity, uriInfo, mediaType, Response.Status.OK);
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -128,11 +124,10 @@ public class IdentityResources implements ResourceContainer {
     
     try{
       Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
-      IdentityRest resultIdentity = new IdentityRest(identity);
+      IdentityRestOut resultIdentity = new IdentityRestOut(identity);
       
-      String restBaseURI = uriInfo.getBaseUri().toString();
-      String restPathURI = uriInfo.getBaseUri().getPath();
-      buildAbsoluteAvatarURL(restBaseURI.substring(0,restBaseURI.length() - restPathURI.length()), resultIdentity);
+
+      Util.buildAbsoluteAvatarURL(resultIdentity);
       
       return Util.getResponse(resultIdentity, uriInfo, mediaType, Response.Status.OK);
     } catch (Exception e) {
@@ -140,22 +135,6 @@ public class IdentityResources implements ResourceContainer {
     }
   }
   
-  private void buildAbsoluteAvatarURL(String baseURL, IdentityRest resultIdentity){
-    if(resultIdentity.containsKey(IdentityRest.PROFILE) && 
-        resultIdentity.containsKey(IdentityRest.PROVIDER_ID)){
-      ProfileRest resultProfile =  (ProfileRest) resultIdentity.get(IdentityRest.PROFILE);
-      if(!resultProfile.containsKey(ProfileRest.AVATARURL)){
-        if(resultIdentity.get(IdentityRest.PROVIDER_ID).
-            equals(SpaceIdentityProvider.NAME)){
-          resultProfile.put(ProfileRest.AVATARURL, baseURL + LinkProvider.SPACE_DEFAULT_AVATAR_URL);
-        } else {
-          resultProfile.put(ProfileRest.AVATARURL, baseURL + LinkProvider.PROFILE_DEFAULT_AVATAR_URL);
-        }
-      } else if(!((String)resultProfile.get(ProfileRest.AVATARURL)).startsWith("http://") && 
-                    !((String)resultProfile.get(ProfileRest.AVATARURL)).startsWith("https://")){
-        resultProfile.put(ProfileRest.AVATARURL, baseURL + (String)resultProfile.get(ProfileRest.AVATARURL));
-      }
-    }
-  }
+
 
 }

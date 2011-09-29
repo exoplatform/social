@@ -28,6 +28,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.api.IdentityResources;
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 /**
@@ -104,7 +105,7 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     assertEquals(demoIdentity.getRemoteId(), entityHashMap.get("remoteId"));
     
     assertEquals(demoIdentity.getProfile().getFullName(), profileHashMap.get("fullName"));
-    assertEquals(LinkProvider.PROFILE_DEFAULT_AVATAR_URL, profileHashMap.get("avatarUrl"));
+    assertEquals(Util.getBaseUrl() + LinkProvider.PROFILE_DEFAULT_AVATAR_URL, profileHashMap.get("avatarUrl"));
   }
   
   /**
@@ -162,7 +163,7 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     assertEquals(demoIdentity.getRemoteId(), entityHashMap.get("remoteId"));
     
     assertEquals(demoIdentity.getProfile().getFullName(), profileHashMap.get("fullName"));
-    assertEquals(LinkProvider.PROFILE_DEFAULT_AVATAR_URL, profileHashMap.get("avatarUrl"));
+    assertEquals(Util.getBaseUrl() + LinkProvider.PROFILE_DEFAULT_AVATAR_URL, profileHashMap.get("avatarUrl"));
   }
   
   /**
