@@ -27,7 +27,7 @@ import org.exoplatform.social.service.rest.Util;
  * The Identity model for Social Rest APIs.
  * 
  * @author <a href="http://phuonglm.net">phuonglm</a>
- * @since 1.2.2
+ * @since 1.2.3
  */
 public class IdentityRestOut extends HashMap<String, Object> {
 
@@ -68,7 +68,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
    * Construct the Identity model from Social's identityId.
    * @param identityId
    * @param portalContainerName
-   * @since 1.2.2
    */
   public IdentityRestOut(String identityId, String portalContainerName) {
     IdentityManager identityManager =  Util.getIdentityManager(portalContainerName);
@@ -96,7 +95,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   
   /**
    * Gets Id of Identity
-   * @since 1.2.2
    */
   public String getId() {
     return (String) this.get(Field.REMOTE_ID.toString());
@@ -117,7 +115,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   /**
    * Gets remoteId of Identity
    * @return
-   * @since 1.2.2
    */
   public String getRemoteId() {
     return (String) this.get(Field.REMOTE_ID.toString());
@@ -139,7 +136,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   /**
    * Gets providerId of Identity
    * @param remoteId
-   * @since 1.2.2
    */
   public String getProviderId() {
     return (String) this.get(Field.PROVIDER_ID.toString());
@@ -148,7 +144,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   /**
    * Sets providerId of Identity
    * @param remoteId
-   * @since 1.2.2
    */  
   public void setProviderId(String providerId) {
     if(providerId != null){
@@ -161,7 +156,6 @@ public class IdentityRestOut extends HashMap<String, Object> {
   /**
    * Gets profile of Identity
    * @param remoteId
-   * @since 1.2.2
    */
   public ProfileRestOut getProfile(){
     return (ProfileRestOut) this.get(Field.PROFILE.toString());
@@ -170,7 +164,7 @@ public class IdentityRestOut extends HashMap<String, Object> {
   /**
    * Sets profile of Identity
    * @param remoteId
-   * @since 1.2.2
+   * 
    */  
   public void setProfile(ProfileRestOut profile){
     if(profile != null){
