@@ -25,10 +25,10 @@ import org.exoplatform.commons.version.util.VersionComparator;
  */
 public class VersionUpgrade {
 
-  public static boolean from11xTo12x(String from, String to) {
+  public static boolean from11xTo12x(String to, String from) {
     return
         to.startsWith("1.2") &&
-        from.startsWith("1.1");
+        ("0".equals(from) || from.startsWith("1.1"));
   }
 
 }

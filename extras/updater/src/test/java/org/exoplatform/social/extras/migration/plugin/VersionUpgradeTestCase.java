@@ -25,20 +25,24 @@ import junit.framework.TestCase;
  */
 public class VersionUpgradeTestCase extends TestCase {
 
+  public void testNone_120GA() throws Exception {
+    assertTrue(VersionUpgrade.from11xTo12x("1.2.0-GA", "0"));
+  }
+
   public void test106_120GA() throws Exception {
-    assertTrue(VersionUpgrade.from11xTo12x("1.1.6", "1.2.0-GA"));
+    assertTrue(VersionUpgrade.from11xTo12x("1.2.0-GA", "1.1.6"));
   }
 
   public void test106_120() throws Exception {
-    assertTrue(VersionUpgrade.from11xTo12x("1.1.6", "1.2.0"));
+    assertTrue(VersionUpgrade.from11xTo12x("1.2.0", "1.1.6"));
   }
 
   public void test106SNAPSHOT_120SNAPSHOT() throws Exception {
-    assertTrue(VersionUpgrade.from11xTo12x("1.1.6-SNAPSHOT", "1.2.0-SNAPSHOT"));
+    assertTrue(VersionUpgrade.from11xTo12x("1.2.0-SNAPSHOT", "1.1.6-SNAPSHOT"));
   }
 
   public void test10_123() throws Exception {
-    assertTrue(VersionUpgrade.from11xTo12x("1.1", "1.2.3"));
+    assertTrue(VersionUpgrade.from11xTo12x("1.2.3", "1.1"));
   }
 
 }

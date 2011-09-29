@@ -20,6 +20,7 @@ package org.exoplatform.social.extras.migration.plugin;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -56,6 +57,7 @@ public class Social_11x_12x_UpgradeProductPlugin extends UpgradeProductPlugin {
         (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
 
     //
+    RequestLifeCycle.begin(PortalContainer.getInstance());
     Session session = lifeCycle.getSession().getJCRSession();
 
     try {
@@ -78,6 +80,7 @@ public class Social_11x_12x_UpgradeProductPlugin extends UpgradeProductPlugin {
     }
     finally {
       session.logout();
+      RequestLifeCycle.end();
     }
 
   }
