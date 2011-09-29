@@ -21,12 +21,15 @@ package org.exoplatform.social.service.test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.services.rest.ContainerResponseWriter;
 import org.exoplatform.services.rest.impl.ContainerRequest;
 import org.exoplatform.services.rest.impl.ContainerResponse;
@@ -35,6 +38,12 @@ import org.exoplatform.services.rest.impl.InputHeadersMap;
 import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.DummyContainerResponseWriter;
 import org.exoplatform.services.test.mock.MockHttpServletRequest;
+import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.ws.frameworks.json.impl.JsonDefaultHandler;
 import org.exoplatform.ws.frameworks.json.impl.JsonException;
 import org.exoplatform.ws.frameworks.json.impl.JsonGeneratorImpl;
@@ -152,8 +161,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    * @throws Exception
    */
   protected void testAccessResourceAsAnonymous(String method, String resourceUrl, MultivaluedMap<String,String> h, byte[] data) throws Exception {
-    ContainerResponse containerResponse = service(method, resourceUrl, "", h, data);
-    assertEquals(401, containerResponse.getStatus());
+    testStatusCodeOfResource(null, method, resourceUrl, h, data, 401);
+
   }
 
 
@@ -168,9 +177,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    */
   protected void testAccessResourceWithoutPermission(String username, String method, String resourceUrl, byte[] data)
                                                   throws Exception {
-    startSessionAs(username);
-    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
-    assertEquals(403, containerResponse.getStatus());
+    testStatusCodeOfResource(username, method, resourceUrl, null, data, 403);
   }
 
 
@@ -185,9 +192,169 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
    */
   protected void testAccessNotFoundResourceWithAuthentication(String username, String method, String resourceUrl,
                                                               byte[] data) throws Exception {
-    startSessionAs(username);
-    ContainerResponse containerResponse = service(method, resourceUrl, "", null, data);
-    assertEquals(404, containerResponse.getStatus());
+    testStatusCodeOfResource(username, method, resourceUrl, null, data, 404);
   }
+  
+  /**
+   * Tests if the return status code matches the response of the request with provided username, method, resourceUrl, headers, and data.
+   *
+   * @param username the portal user name if userName == null mean not authenticated.
+   * @param method the http method string
+   * @param resourceUrl the resource url to access
+   * @param h the header MultivalueMap
+   * @param data the data if any
+   * @param statusCode the expected status code of response
+   * @throws Exception
+   */
+  protected void testStatusCodeOfResource(String username, String method, String resourceUrl, 
+                                                              MultivaluedMap<String,String> h,
+                                                              byte[] data, int statusCode) throws Exception {
+    if(username != null){
+      startSessionAs(username);
+    } else {
+      endSession();
+    }
+    ContainerResponse containerResponse = service(method, resourceUrl, "", h, data);
 
+    assertEquals("The response code of resource("+resourceUrl+") is not expected.)",statusCode, containerResponse.getStatus());
+  }
+  /**
+   * Comare ExoSocialActivity with entity HashMap
+   * @param activity
+   * @param entity
+   */
+  protected void compareActivity(ExoSocialActivity activity, HashMap<String, Object> entity){
+    assertNotNull("entity must not be null", entity);
+    
+    assertEquals("activity.getId() must equal:", activity.getId(), entity.get("id"));
+    
+    assertEquals("activity.getTitle() must equal: " + activity.getTitle() == null ? "" :activity.getTitle(),
+                  activity.getTitle() == null ? "" : activity.getTitle(),
+                  entity.get("title"));
+    
+    assertEquals("activity.getLikedByIdentities() size be equal:",
+                    activity.getLikeIdentityIds() == null ? 0 : activity.getLikeIdentityIds().length, 
+                    ((ArrayList<HashMap<String, Object>>)entity.get("likedByIdentities")).size());
+    
+    String[] identityIds = activity.getLikeIdentityIds();
+    ArrayList<HashMap<String, Object>> likedIdentities = (ArrayList<HashMap<String, Object>>)entity.get("likedByIdentities");
+    if(identityIds != null){
+      for(int i = 0; i < identityIds.length; i++){
+        IdentityManager identityManager =  Util.getIdentityManager();
+        Identity likedIdentity = identityManager.getIdentity(identityIds[i],true);
+        compareIdentity(likedIdentity, likedIdentities.get(i));
+      }
+    }
+    
+    assertEquals("entity.getAppId() must equal: " + activity.getAppId() == null ? "" :activity.getAppId(),
+                  activity.getAppId() == null ? "" :activity.getAppId(), entity.get("appId"));
+    
+    assertEquals("activity.getType() must equal: " + activity.getType() == null ? "" : activity.getType(),
+                  activity.getType() == null ? "" : activity.getType(), entity.get("type"));
+    
+    assertEquals("entity.PostedTime() must equal: " + activity.getPostedTime() == null ? 0 : activity.getPostedTime(),
+                  activity.getPostedTime() == null ? 0 : activity.getPostedTime(),
+                  (Long) entity.get("postedTime"));
+    
+    assertNotNull("entity.get(\"createdAt\"): ", entity.get("createdAt"));
+    
+    Float expectedPriority;
+    if(activity.getPriority() == null){
+      expectedPriority = new Float(0);
+    } else {
+      expectedPriority = activity.getPriority();
+    }
+    
+    assertEquals("activity.getPriority() must equal:",
+                  expectedPriority,
+                  entity.get("priority"));
+    assertEquals("activity.getTemplateParams() must return: " +
+                  activity.getTemplateParams() == null ? new HashMap().toString() : activity.getTemplateParams().toString(),
+                  activity.getTemplateParams() == null ? new HashMap() : activity.getTemplateParams(),
+                  entity.get("templateParams"));
+    assertEquals("activity.getTitleId() must return: " + activity.getTitleId() == null ? "" : activity.getTitleId(),
+                  activity.getTitleId() == null ? "" : activity.getTitleId() ,
+                  entity.get("titleId"));
+    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(activity);
+    assertEquals("activity.getIdentityId() must return: " + streamOwnerIdentity.getId() == null ? "" : streamOwnerIdentity.getId(),
+                  streamOwnerIdentity.getId() == null ? "" : streamOwnerIdentity.getId(),
+                  entity.get("identityId"));
+    
+    assertEquals("TotalNumberOfComments must be equal:",
+                  Util.getActivityManager().getCommentsWithListAccess(activity).getSize(),
+                  entity.get("totalNumberOfComments"));
+  }
+  /**
+   * Comare ActivityStream with entity HashMap
+   * @param activity
+   * @param entity
+   */
+  protected void compareActivityStream(ActivityStream activityStream, HashMap<String, Object> entity){
+    assertNotNull("entity must not be null", entity);
+    assertEquals("activityStream.getPrettyId() must equal: " + activityStream.getPrettyId() == null ? "" :activityStream.getPrettyId(),
+        activityStream.getPrettyId() == null ? "" : activityStream.getPrettyId(),
+        entity.get("prettyId"));
+    assertEquals("activityStream.getFaviconUrl() must equal: " + activityStream.getFaviconUrl() == null ? "" :activityStream.getPrettyId(),
+        activityStream.getFaviconUrl() == null ? "" : activityStream.getFaviconUrl(),
+        entity.get("faviconUrl"));
+    assertEquals("activityStream.getTitle() must equal: " + activityStream.getTitle() == null ? "" :activityStream.getTitle(),
+        activityStream.getTitle() == null ? "" : activityStream.getTitle(),
+        entity.get("title"));
+    assertEquals("activityStream.getPermaLink() must equal: " + activityStream.getPermaLink() == null ? "" :activityStream.getPermaLink(),
+        activityStream.getPermaLink() == null ? "" : activityStream.getPermaLink(),
+        entity.get("permaLink"));
+  }
+  
+  /**
+   * Comare Identity with entity HashMap
+   * @param activity
+   * @param entity
+   */
+  protected void compareIdentity(Identity identity, HashMap<String, Object> entity){
+    assertNotNull("entity must not be null", entity);
+    assertEquals("identity.Id() must equal: " + identity.getId() == null ? "" :identity.getId(),
+        identity.getId() == null ? "" : identity.getId(),
+        entity.get("id"));
+    assertEquals("identity.getProviderId() must equal: " + identity.getProviderId() == null ? "" :identity.getProviderId(),
+        identity.getProviderId() == null ? "" : identity.getProviderId(),
+        entity.get("providerId"));
+    assertEquals("identity.getRemoteId() must equal: " + identity.getRemoteId() == null ? "" :identity.getRemoteId(),
+        identity.getRemoteId() == null ? "" : identity.getRemoteId(),
+        entity.get("remoteId"));
+    
+    HashMap<String, Object > profileEntity = (HashMap<String, Object>) entity.get("profile");
+    compareProfile(identity.getProfile(),profileEntity);
+  }
+  
+  /**
+   * Comare Profile with entity HashMap
+   * @param activity
+   * @param entity
+   */
+  protected void compareProfile(Profile profile, HashMap<String, Object> entity){
+    assertNotNull("entity must not be null", entity);
+    assertEquals("profile.getPrettyId() must equal: " + profile.getFullName() == null ? "" :profile.getFullName(),
+        profile.getFullName() == null ? "" : profile.getFullName(),
+        entity.get("fullName"));
+    assertTrue("profile.getAvatarUrl() must be start with \"http\" " + profile.getAvatarUrl() == null ? "" :profile.getAvatarUrl(),
+        ((String)entity.get("avatarUrl")).startsWith("http"));
+    //TODO: compare full default avatar URL/ absolute avatar URL
+  }
+  /**
+   * Comare ExoSocialActivity's comment with entity HashMap
+   * @param activity
+   * @param entity
+   */
+  protected void compareComment(ExoSocialActivity activity, HashMap<String, Object> entity){
+    assertNotNull("entity must not be null", entity);
+    assertEquals("activity.getId() must be equal:" + activity.getId() == null ? "" :activity.getId(),
+        activity.getId() == null ? "" :activity.getId(), entity.get("id"));
+    Identity posterIdentity = Util.getOwnerIdentityIdFromActivity(activity);
+    compareIdentity(posterIdentity, (HashMap<String, Object>) entity.get("posterIdentity"));
+    assertEquals("activity.getId() must be equal:" + activity.getTitle() == null ? "" :activity.getTitle(),
+        activity.getTitle() == null ? "" :activity.getTitle(), entity.get("text"));
+
+    assertEquals("activity.getId() must be equal:" + activity.getPostedTime() == null ? 0 :activity.getPostedTime(),
+        activity.getPostedTime() == null ? 0 :activity.getPostedTime(), (Long) entity.get("postedTime"));
+  }  
 }
