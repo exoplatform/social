@@ -402,6 +402,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
     RealtimeListAccess<ExoSocialActivity> rcla = activityManager.getCommentsWithListAccess(activity);
     ExoSocialActivity[] comments = rcla.load(0, numberOfComments);
+    numberOfComments = Math.min(comments.length, numberOfComments);
     ArrayList<CommentRestOut> commentRests = new ArrayList<CommentRestOut>(numberOfComments);
     for (int i = 0; i < numberOfComments; i++) {
       commentRests.add(new CommentRestOut(comments[i], portalContainerName));
