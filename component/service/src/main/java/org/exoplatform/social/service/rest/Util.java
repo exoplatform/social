@@ -32,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -443,6 +444,22 @@ public final class Util {
           resultProfile.setAvatarUrl(getBaseUrl() + resultProfile.getAvatarUrl());
         }
       }
+    }
+  }
+  
+  /**
+   * Gets UserIdentity of authenticated user.
+   * @param portalContainerName current portal container name
+   * @return Identity of user, if not authenticated return null
+   */
+  public static Identity authenticatedUserIdentity(String portalContainerName) {
+    if(ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
+              ConversationState.getCurrent().getIdentity().getUserId() != null){
+      IdentityManager identityManager =  Util.getIdentityManager(portalContainerName);
+      String authenticatedUserRemoteID = ConversationState.getCurrent().getIdentity().getUserId(); 
+      return identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, authenticatedUserRemoteID, false);
+    } else {
+      return null;
     }
   }
 }
