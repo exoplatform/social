@@ -200,8 +200,67 @@ public class ActivityStreamResources implements ResourceContainer {
                                                 @QueryParam("max_id") String maxId,
                                                 @QueryParam("number_of_comments") int numberOfComments,
                                                 @QueryParam("number_of_likes") int numberOfLikes) {
-    //TODO implement this (Vien)
-    return null;
+    checkAuthenticatedRequest();
+    PortalContainer portalContainer = checkValidPortalContainerName(portalContainerName);
+    MediaType mediaType = checkSupportedFormat(format, SUPPORTED_FORMATS);
+
+    Identity sourceIdentity = Util.getAuthenticatedUserIdentity(portalContainerName);
+    if (sourceIdentity == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    //check permission
+    boolean canAccess = SecurityManager.canAccessActivityStream(portalContainer,
+                                                                Util.getAuthenticatedUserIdentity(portalContainerName),
+                                                                sourceIdentity);
+    if (!canAccess) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+
+    int maxLimit = Math.min(limit, MAX_LIMIT);
+    
+    ActivityManager activityManager = null;
+    try{
+      activityManager = Util.getActivityManager(portalContainerName);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    
+    ExoSocialActivity newerActivity = null;
+    ExoSocialActivity olderActivity = null;
+
+    try {
+      if (sinceId != null && !sinceId.trim().equals("")) {
+        newerActivity = activityManager.getActivity(sinceId);
+      } else if (maxId != null && !maxId.trim().equals("")) {
+        olderActivity = activityManager.getActivity(maxId);
+      }
+    } catch (UndeclaredThrowableException e) {
+      if (e.getCause() instanceof ActivityStorageException) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    
+    RealtimeListAccess<ExoSocialActivity> listAccess = null;
+    List<ExoSocialActivity> activities = null;
+    
+    try {
+      listAccess = activityManager.getActivityFeedWithListAccess(sourceIdentity);
+      if (newerActivity != null) {
+        activities = listAccess.loadNewer(newerActivity, maxLimit);
+      } else if (olderActivity != null) {
+        activities = listAccess.loadOlder(olderActivity, maxLimit);
+      } else {
+        activities = listAccess.loadAsList(0, maxLimit);
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    ActivityRestListOut activityRestListOut = new ActivityRestListOut(activities, numberOfComments,
+                                                       numberOfLikes, portalContainerName);
+    return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
   }
 
   /**

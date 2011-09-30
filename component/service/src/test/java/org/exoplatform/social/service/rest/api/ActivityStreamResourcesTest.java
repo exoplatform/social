@@ -22,6 +22,7 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -554,6 +555,536 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     }
   }
 
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testGetActivityFeedOfAnIdentitiyIdGeneralCase() throws Exception {
+    String resourceUrl = RESOURCE_URL + "feed.json";
+    testAccessResourceAsAnonymous("GET", resourceUrl, null, null);
+    
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "feed.xml", null, null,
+                             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "feed.rss", null, null,
+                             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "feed.atom", null, null,
+                             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/feed.json",
+                             null, null, Response.Status.BAD_REQUEST.getStatusCode());
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testDefaultGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+    String resourceUrl = RESOURCE_URL + "feed.json";
+    // user identity
+    {
+      startSessionAs("demo");
+
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
+      
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 15);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
+
+      assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
+      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+
+      ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
+      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
+                                                                loadAsList(0, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testLimitGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    int limit = 10;
+    List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+    String resourceUrl = RESOURCE_URL + "feed.json?limit=" + limit;
+    
+    // user identity
+    {
+      startSessionAs("demo");
+
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
+      
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
+
+      assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
+      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+
+      ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
+      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
+                                                                loadAsList(0, limit);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testSinceIdGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    // user identity
+    {
+      startSessionAs("demo");
+      
+      //Wrong since_id => not found
+      String resourceUrl = RESOURCE_URL + "feed.json?since_id=" + 123456;
+      testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
+      
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                      .loadAsList(0, 20).get(14);
+      resourceUrl = RESOURCE_URL + "feed.json?since_id=" + baseActivity.getId();
+
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                                  .loadNewer(baseActivity, 20);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                      .loadAsList(0, 20).get(14);
+      String resourceUrl = RESOURCE_URL + "feed.json?since_id=" + baseActivity.getId();
+      
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, 20);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+
+      baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                    .loadAsList(0, 40).get(29);
+      
+      resourceUrl = RESOURCE_URL + "feed.json?since_id=" + baseActivity.getId();
+      
+      ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
+      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testMaxIdGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    // user identity
+    {
+      startSessionAs("demo");
+      
+      //Wrong since_id => not found
+      String resourceUrl = RESOURCE_URL + "feed.json?max_id=" + 123456;
+      testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
+      
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+
+      ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                      .loadAsList(0, 20).get(0);
+      
+      resourceUrl = RESOURCE_URL + "feed.json?max_id=" + baseActivity.getId();
+      
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                                  .loadOlder(baseActivity, 20);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+
+      ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40).get(0);
+      String resourceUrl = RESOURCE_URL + "feed.json?max_id=" + baseActivity.getId();
+      
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadOlder(baseActivity, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testNumberOfCommentsGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+    int numberOfComments = 5;
+    String resourceUrl = RESOURCE_URL + "feed.json?number_of_comments=" + numberOfComments;
+    // user identity
+    {
+      startSessionAs("demo");
+      
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
+
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
+      for (ExoSocialActivity activity : demoActivitiesFeed) {
+        this.createComment(activity, demoIdentity, 10);
+      }
+      
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
+      
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
+                              numberOfComments);
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
+
+      assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
+      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+      
+      ListAccess<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
+      for (ExoSocialActivity activity : spaceActivities.load(0, 20)) {
+        this.createComment(activity, demoIdentity, 10);
+      }
+      
+      ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
+      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
+                                                                loadAsList(0, 40);
+      
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity(), 
+                              numberOfComments);
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testNumberOfLikesGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+    int numberOfLikes = 2;
+    String resourceUrl = RESOURCE_URL + "feed.json?number_of_likes=" + numberOfLikes;
+    // user identity
+    {
+      startSessionAs("demo");
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
+
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      connectIdentities(demoIdentity, maryIdentity, true);
+      connectIdentities(demoIdentity, rootIdentity, true);
+      connectIdentities(johnIdentity, maryIdentity, true);
+      connectIdentities(johnIdentity, rootIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      // John gets activity stream of Demo's which has 15 activities
+
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
+      for (ExoSocialActivity activity : demoActivitiesFeed) {
+        activityManager.saveLike(activity, demoIdentity);
+        activityManager.saveLike(activity, johnIdentity);
+        activityManager.saveLike(activity, maryIdentity);
+        activityManager.saveLike(activity, rootIdentity);
+      }
+      
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
+      
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+      compareNumberOfLikes(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
+                           numberOfLikes);
+    }
+    
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
+
+      assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
+      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      spaceService.addMember(space, "john");
+      spaceService.addMember(space, "mary");
+      spaceService.addMember(space, "root");
+
+      createActivities(demoIdentity, spaceIdentity, 5);
+      
+      ListAccess<ExoSocialActivity> demoSpaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
+      for (ExoSocialActivity activity : demoSpaceActivities.load(0, 20)) {
+        activityManager.saveLike(activity, demoIdentity);
+        activityManager.saveLike(activity, johnIdentity);
+        activityManager.saveLike(activity, maryIdentity);
+        activityManager.saveLike(activity, rootIdentity);
+      }
+      
+      ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
+      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
+                                                                loadAsList(0, 40);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
+      compareNumberOfLikes(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity(), 
+                           numberOfLikes);
+    }
+  }
+  
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * 
+   * @throws Exception
+   */
+  public void testAllQueryParamsGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+    int limit = 10;
+    int since_id = 123456;
+    int numberOfComments = 5;
+    int numberOfLikes = 2;
+    String resourceUrl = RESOURCE_URL + "feed.json?limit=" + limit
+                         + "&since_id=" + since_id + "&number_of_comments=" + numberOfComments
+                         + "@number_of_likes=" + numberOfLikes;
+    // user identity
+    {
+      startSessionAs("demo");
+      
+      //Wrong since_id => not found
+      testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
+
+      createActivities(demoIdentity, demoIdentity, 10);
+      connectIdentities(demoIdentity, johnIdentity, true);
+      connectIdentities(demoIdentity, maryIdentity, true);
+      connectIdentities(demoIdentity, rootIdentity, true);
+      connectIdentities(johnIdentity, maryIdentity, true);
+      connectIdentities(johnIdentity, rootIdentity, true);
+      
+      createActivities(johnIdentity, demoIdentity, 5);
+
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
+
+      for (ExoSocialActivity activity : demoActivitiesFeed) {
+        this.createComment(activity, demoIdentity, 10);
+        
+        activityManager.saveLike(activity, demoIdentity);
+        activityManager.saveLike(activity, johnIdentity);
+        activityManager.saveLike(activity, maryIdentity);
+        activityManager.saveLike(activity, rootIdentity);
+      }
+      
+      ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                                      .loadAsList(0, 20).get(14);
+      resourceUrl = RESOURCE_URL + "feed.json?limit=" + limit
+                                 + "&since_id=" + baseActivity.getId() + "&number_of_comments=" + numberOfComments
+                                 + "&number_of_likes=" + numberOfLikes;
+      ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
+      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
+      
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity(), 
+                              numberOfComments);
+      compareNumberOfLikes(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity(), 
+                           numberOfLikes);
+    }
+
+    // space identity
+    {
+      createSpaces(1);
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "my_space_1", false);
+
+      createActivities(spaceIdentity, spaceIdentity, 10);
+      
+      Space space = spaceService.getSpaceByPrettyName("my_space_1");
+      spaceService.addMember(space, "demo");
+      spaceService.addMember(space, "john");
+      spaceService.addMember(space, "mary");
+      spaceService.addMember(space, "root");
+      
+      createActivities(demoIdentity, spaceIdentity, 5);
+
+      ListAccess<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
+      for (ExoSocialActivity activity : spaceActivities.load(0, 20)) {
+        this.createComment(activity, demoIdentity, 10);
+        activityManager.saveLike(activity, demoIdentity);
+        activityManager.saveLike(activity, johnIdentity);
+        activityManager.saveLike(activity, maryIdentity);
+        activityManager.saveLike(activity, rootIdentity);
+      }
+      
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
+                                          .loadAsList(0, limit);
+      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
+                              numberOfComments);
+      compareNumberOfLikes(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
+                           numberOfLikes);
+    }
+  }
+  
   /**
    * An identity posts an activity to an identity's activity stream with a number of activities.
    *
