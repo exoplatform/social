@@ -452,7 +452,7 @@ public final class Util {
    * @param portalContainerName current portal container name
    * @return Identity of user, if not authenticated return null
    */
-  public static Identity authenticatedUserIdentity(String portalContainerName) {
+  public static Identity getAuthenticatedUserIdentity(String portalContainerName) {
     if(ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
               ConversationState.getCurrent().getIdentity().getUserId() != null){
       IdentityManager identityManager =  Util.getIdentityManager(portalContainerName);
