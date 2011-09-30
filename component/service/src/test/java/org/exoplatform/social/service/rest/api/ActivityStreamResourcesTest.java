@@ -682,8 +682,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      
+
       createActivities(demoIdentity, spaceIdentity, 5);
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
@@ -747,8 +746,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      
+
       createActivities(demoIdentity, spaceIdentity, 5);
 
       baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity)
@@ -805,8 +803,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      
+
       createActivities(demoIdentity, spaceIdentity, 5);
 
       ExoSocialActivity baseActivity = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40).get(0);
@@ -876,8 +873,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      
+
       createActivities(demoIdentity, spaceIdentity, 5);
       
       ListAccess<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
@@ -962,10 +958,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      spaceService.addMember(space, "john");
-      spaceService.addMember(space, "mary");
-      spaceService.addMember(space, "root");
 
       createActivities(demoIdentity, spaceIdentity, 5);
       
@@ -1055,11 +1047,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       createActivities(spaceIdentity, spaceIdentity, 10);
       
       Space space = spaceService.getSpaceByPrettyName("my_space_1");
-      spaceService.addMember(space, "demo");
-      spaceService.addMember(space, "john");
-      spaceService.addMember(space, "mary");
-      spaceService.addMember(space, "root");
-      
+
       createActivities(demoIdentity, spaceIdentity, 5);
 
       ListAccess<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
