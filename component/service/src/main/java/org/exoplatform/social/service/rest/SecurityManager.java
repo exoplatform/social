@@ -16,10 +16,13 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.Iterator;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -55,14 +58,33 @@ public class SecurityManager {
    * Otherwise, return false.
    *
    * @param portalContainer the specified portal container
-   * @param userIdentity the authenticated identity to check
+   * @param userIdentityId the authenticated identity to check
    * @param existingActivity the existing activity to check
    * @return true or false
    */
-  public static boolean canAccessActivity(PortalContainer portalContainer, String userIdentity,
+  public static boolean canAccessActivity(PortalContainer portalContainer, String userIdentityId,
                                           ExoSocialActivity existingActivity) {
-    //currently, anyone can access an existing activity.
-    if(userIdentity !=null && existingActivity !=null){
+    
+    SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+    IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
+    
+    Identity authenticateIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userIdentityId, false);
+    
+    if(authenticateIdentity == null || existingActivity == null){
+      return false;
+    }
+    ActivityStream activityStream = existingActivity.getActivityStream();
+    if(activityStream.getType().equals(ActivityStream.Type.SPACE)){
+      Space spaceOfActivity = spaceService.getSpaceByPrettyName(existingActivity.getStreamOwner());
+      String[] memberRemoteIds = spaceOfActivity.getMembers();
+      for (String memberRemoteId : memberRemoteIds) {
+        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, memberRemoteId, false);
+        if(identity.getId().equals(existingActivity.getId())){
+          return true;
+        }
+      }
+    } else if (activityStream.getType().equals(ActivityStream.Type.USER)){
       return true;
     }
     return false;
@@ -83,8 +105,20 @@ public class SecurityManager {
    */
   public static boolean canAccessActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
-    //currently, anyone can access an existing activity.
-    if(authenticatedIdentity !=null && existingActivity !=null){
+    SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+    IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
+    
+    if(authenticatedIdentity == null || existingActivity == null){
+      return false;
+    }
+    ActivityStream activityStream = existingActivity.getActivityStream();
+    if(activityStream.getType().equals(ActivityStream.Type.SPACE)){
+      Space spaceOfActivity = spaceService.getSpaceByPrettyName(existingActivity.getStreamOwner());
+      return spaceService.isMember(spaceOfActivity, authenticatedIdentity.getRemoteId()) ||
+          spaceService.isManager(spaceOfActivity, authenticatedIdentity.getRemoteId());
+    } else if (activityStream.getType().equals(ActivityStream.Type.USER)){
       return true;
     }
     return false;
@@ -234,6 +268,7 @@ public class SecurityManager {
    * <p>Gets the current logged in Identity, if not logged in return null</p>
    * @return logged in Identity or null
    * @since 1.2.2
+   * @deprecated use {@link Util#getAuthenticatedUserIdentity(String)} instead.
    */
   public static Identity getAuthenticatedUserIdentity() {
     if(ConversationState.getCurrent()!=null && ConversationState.getCurrent().getIdentity() != null &&
