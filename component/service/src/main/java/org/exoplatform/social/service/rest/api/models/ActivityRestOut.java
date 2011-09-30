@@ -18,6 +18,7 @@ package org.exoplatform.social.service.rest.api.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -286,7 +287,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     return (ArrayList<IdentityRestOut>) this.get(Field.LIKED_BY_IDENTITIES.toString());
   }
 
-  public void setLikedByIdentities(ArrayList<IdentityRestOut> likedByIdentities) {
+  public void setLikedByIdentities(List<IdentityRestOut> likedByIdentities) {
     if(likedByIdentities != null){
       this.put(Field.LIKED_BY_IDENTITIES.toString(), likedByIdentities);
     } else {
@@ -294,11 +295,11 @@ public class ActivityRestOut extends HashMap<String, Object>{
     }
   }
 
-  public ArrayList<CommentRestOut> getComments() {
-    return (ArrayList<CommentRestOut>) this.get(Field.COMMENTS.toString());
+  public List<CommentRestOut> getComments() {
+    return (List<CommentRestOut>) this.get(Field.COMMENTS.toString());
   }
 
-  public void setComments(ArrayList<CommentRestOut> comments) {
+  public void setComments(List<CommentRestOut> comments) {
     if(comments != null){
       this.put(Field.COMMENTS.toString(), comments);
     } else {
@@ -380,7 +381,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     }
     String[] likeIdentityIds = activity.getLikeIdentityIds();
     numberOfLikes = Math.min(numberOfLikes, likeIdentityIds.length);
-    ArrayList<IdentityRestOut> identityRests = new ArrayList<IdentityRestOut>(numberOfLikes);
+    List<IdentityRestOut> identityRests = new ArrayList<IdentityRestOut>(numberOfLikes);
     for (int i = 0; i < numberOfLikes; i++) {
       // got the latest at the end to the top
       identityRests.add(new IdentityRestOut(likeIdentityIds[likeIdentityIds.length - i - 1], portalContainerName));
@@ -403,7 +404,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     RealtimeListAccess<ExoSocialActivity> rcla = activityManager.getCommentsWithListAccess(activity);
     ExoSocialActivity[] comments = rcla.load(0, numberOfComments);
     numberOfComments = Math.min(comments.length, numberOfComments);
-    ArrayList<CommentRestOut> commentRests = new ArrayList<CommentRestOut>(numberOfComments);
+    List<CommentRestOut> commentRests = new ArrayList<CommentRestOut>(numberOfComments);
     for (int i = 0; i < numberOfComments; i++) {
       commentRests.add(new CommentRestOut(comments[i], portalContainerName));
     }

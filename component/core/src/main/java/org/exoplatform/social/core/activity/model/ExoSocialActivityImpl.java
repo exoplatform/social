@@ -19,6 +19,7 @@ package org.exoplatform.social.core.activity.model;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.shindig.social.core.model.ActivityImpl;
 
 /**
@@ -181,7 +182,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * {@inheritDoc}
    *
-   * @return the activify type
+   * @return the activity type
    */
   public final String getType() {
     return type;
@@ -235,13 +236,13 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * {@inheritDoc}
    *
-   * @return arrary of identity ids
+   * @return array of identity ids
    */
   public final String[] getLikeIdentityIds() {
     if (likeIdentityIds != null) {
       return Arrays.copyOf(likeIdentityIds, likeIdentityIds.length);
     }
-    return likeIdentityIds; //null
+    return ArrayUtils.EMPTY_STRING_ARRAY;
   }
 
   /**
