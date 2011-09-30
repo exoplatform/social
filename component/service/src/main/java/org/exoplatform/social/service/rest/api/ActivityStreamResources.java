@@ -218,7 +218,7 @@ public class ActivityStreamResources implements ResourceContainer {
       throw new WebApplicationException(Response.Status.FORBIDDEN);
     }
 
-    int maxLimit = Math.min(limit, MAX_LIMIT);
+    int maxLimit = limit == 0 ? MAX_LIMIT : limit;
     
     ActivityManager activityManager = null;
     try{
