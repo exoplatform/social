@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest.api;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,11 +27,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
@@ -44,7 +51,6 @@ import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 @Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/identity/")
 public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
-  private IdentityManager identityManager;
   
   /**
    * Gets the identity and its associated profile by the identityId.
@@ -62,27 +68,28 @@ public class IdentityResources implements ResourceContainer {
                                    @PathParam("portalContainerName") String portalContainerName,
                                    @PathParam("identityId") String identityId,
                                    @PathParam("format") String format) {
-    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
-    
-    try{
-      identityManager = Util.getIdentityManager(portalContainerName);
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
+    RestChecker.checkAuthenticatedRequest();
+
+    RestChecker.checkValidPortalContainerName(portalContainerName);
     
     if(identityId == null || identityId.equals("")){
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
-    if(SecurityManager.getAuthenticatedUserIdentity() == null){ 
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }    
-
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
+    
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
     try{
       Identity identity = identityManager.getIdentity(identityId, true);
       IdentityRestOut resultIdentity = new IdentityRestOut(identity);      
       Util.buildAbsoluteAvatarURL(resultIdentity);
       return Util.getResponse(resultIdentity, uriInfo, mediaType, Response.Status.OK);
+    } catch (UndeclaredThrowableException undeclaredThrowableException) {
+      if(undeclaredThrowableException.getCause() instanceof IdentityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -106,35 +113,32 @@ public class IdentityResources implements ResourceContainer {
                                                    @PathParam("providerId") String providerId,
                                                    @PathParam("remoteId") String remoteId,
                                                    @PathParam("format") String format){
-    MediaType mediaType = Util.getMediaType(format, SUPPORTED_FORMAT);
-    
-    try{
-      identityManager = Util.getIdentityManager(portalContainerName);
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
+    RestChecker.checkAuthenticatedRequest();
+
+    RestChecker.checkValidPortalContainerName(portalContainerName);
     
     if(providerId == null || providerId.equals("") || remoteId == null || remoteId.equals("")){
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     
-    if(SecurityManager.getAuthenticatedUserIdentity() == null){ 
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
+
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
     
     try{
       Identity identity = identityManager.getOrCreateIdentity(providerId, remoteId, true);
       IdentityRestOut resultIdentity = new IdentityRestOut(identity);
-      
-
       Util.buildAbsoluteAvatarURL(resultIdentity);
       
       return Util.getResponse(resultIdentity, uriInfo, mediaType, Response.Status.OK);
+    } catch (UndeclaredThrowableException undeclaredThrowableException) {
+      if(undeclaredThrowableException.getCause() instanceof IdentityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
   }
-  
-
-
 }

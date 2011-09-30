@@ -112,20 +112,27 @@ public class IdentityResourcesTest extends AbstractResourceTest {
    * Test {@link IdentityResources#getIdentityById(javax.ws.rs.core.UriInfo, String, String, String)}
    */
   public void testGetIdentityByIdWithAnonymous() throws Exception {
-    ContainerResponse response = service("GET", RESOURCE_URL+"identity/" + demoIdentity.getProviderId() + "/" +
+    //not authenticated
+    ContainerResponse response = service("GET", RESOURCE_URL+"identity/" +
                                           demoIdentity.getId() + ".json", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    //wrong portalContainer
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" +
+        demoIdentity.getId() + ".json", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    //Not supported type
+    response = service("GET", RESOURCE_URL+"identity/" +
+        demoIdentity.getId() + ".xml", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    //IdentityId not exist
+    response = service("GET", RESOURCE_URL+"identity/notExistIdentity.json", "", null, null);
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
   }
   
-  /**
-   * Test {@link IdentityResources#getIdentityById(javax.ws.rs.core.UriInfo, String, String, String)}
-   */
-  public void testGetIdentityByIdWithWrongIdentityId() throws Exception {
-    startSessionAs("demo");
-    ContainerResponse response = service("GET", RESOURCE_URL + "identity/notExistIdentityId.json", "", 
-        null, null);
-    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
-  }
+
   
   /**
    * Test {@link IdentityResources#getIdentityById(javax.ws.rs.core.UriInfo, String, String, String)}
@@ -134,6 +141,15 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     startSessionAs("demo");
     ContainerResponse response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
                                          demoIdentity.getId() +".json", "", null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    
+    //Not supported type
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" +
+        demoIdentity.getId() + ".xml", "", null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    
+    //IdentityId not exist
+    response = service("GET","/api/social/v1-alpha2/notExistPortalContainer/identity/notExistIdentity.json", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
   }
 
@@ -145,6 +161,20 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", RESOURCE_URL + "identity/" + 
                                          demoIdentity.getId() +".xml", "", null, null);
     assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+    
+    //IdentityId not exist
+    response = service("GET", RESOURCE_URL+"identity/notExistIdentity.xml", "", null, null);
+    assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+  }
+
+  /**
+   * Test {@link IdentityResources#getIdentityById(javax.ws.rs.core.UriInfo, String, String, String)}
+   */
+  public void testGetIdentityByIdWithWrongIdentityId() throws Exception {
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", RESOURCE_URL + "identity/notExistIdentityId.json", "", 
+        null, null);
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
   }
   
   /**
@@ -173,6 +203,79 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", RESOURCE_URL+"identity/" + demoIdentity.getProviderId() + "/" + 
                                           demoIdentity.getRemoteId() + ".json", "", null, null);
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    // wrong portal Container
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+        demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
+        ".json", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    //not supported media type
+    response = service("GET", RESOURCE_URL + "identity/" + 
+        demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
+        ".xml", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    // not exist providerId
+    response = service("GET", RESOURCE_URL+"identity/notExistProvider/notExistRemoteId.json", "", 
+        null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+    // not exist remoteId
+    response = service("GET", RESOURCE_URL+"identity/" + demoIdentity.getProviderId() + 
+        "/notExistRemoteId.json", "", null, null);
+    assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
+    
+
+  }
+  
+  /**
+   * Test {@link IdentityResources#getIdentityProviderIDAndRemoteID(javax.ws.rs.core.UriInfo, String, String, String, String)}
+   */  
+  public void testGetIdentityByProviderIdAndRemoteIdWithWrongPortalContainerName() throws Exception {
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+                                         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
+                                         ".json", "", null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    
+    //not supported media type
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+        demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
+        ".xml", "", null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    
+    // not exist providerId
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/notExistProviderId/demo.json", "", 
+        null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    
+    // not exist remoteId
+    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + demoIdentity.getProviderId() + 
+        "/notExistRemoteId.json", "", null, null);
+    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+  }
+
+
+  /**
+   * Test {@link IdentityResources#getIdentityProviderIDAndRemoteID(javax.ws.rs.core.UriInfo, String, String, String, String)}
+   */
+  public void testGetIdentityByProviderIdAndRemoteIdWithWrongSupportedFormat() throws Exception {
+    startSessionAs("demo");
+    ContainerResponse response = service("GET", RESOURCE_URL + "identity/" + 
+                                         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
+                                         ".xml", "", null, null);
+    assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+    
+    // not exist providerId
+    response = service("GET", RESOURCE_URL + "identity/notExistProviderId/" + demoIdentity.getRemoteId() + ".xml", "", 
+        null, null);
+    assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
+    
+    // not exist remoteId
+    response = service("GET", RESOURCE_URL + "identity/" + demoIdentity.getProviderId() + 
+        "/notExistRemoteId.xml", "", null, null);
+    assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
   }
   
   /**
@@ -180,8 +283,12 @@ public class IdentityResourcesTest extends AbstractResourceTest {
    */
   public void testGetIdentityByProviderIdAndRemoteIdWithWrongProviderId() throws Exception {
     startSessionAs("demo");
-    ContainerResponse response = service("GET", RESOURCE_URL+"identity/notExistProvider/notExistRemoteId.json", "", 
+    ContainerResponse response = service("GET", RESOURCE_URL+"identity/notExistProvider/"+demoIdentity.getRemoteId()+".json", "", 
         null, null);
+    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus()); 
+    
+    // not exist remoteId
+    response = service("GET", RESOURCE_URL + "identity/notExistProvider/notExistRemoteId.json", "", null, null);
     assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
   }
   
@@ -195,25 +302,5 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
   }
   
-  /**
-   * Test {@link IdentityResources#getIdentityProviderIDAndRemoteID(javax.ws.rs.core.UriInfo, String, String, String, String)}
-   */  
-  public void testGetIdentityByProviderIdAndRemoteIdWithWrongPortalContainerName() throws Exception {
-    startSessionAs("demo");
-    ContainerResponse response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
-                                         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
-                                         ".json", "", null, null);
-    assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-  }
-
-  /**
-   * Test {@link IdentityResources#getIdentityProviderIDAndRemoteID(javax.ws.rs.core.UriInfo, String, String, String, String)}
-   */
-  public void testGetIdentityByProviderIdAndRemoteIdWithWrongSupportedFormat() throws Exception {
-    startSessionAs("demo");
-    ContainerResponse response = service("GET", RESOURCE_URL + "identity/" + 
-                                         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
-                                         ".xml", "", null, null);
-    assertEquals(Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
-  }
+  
 }

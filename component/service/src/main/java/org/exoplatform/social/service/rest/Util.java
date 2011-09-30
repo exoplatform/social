@@ -330,8 +330,8 @@ public final class Util {
    *
    * @param activity the activity to gets its owner identity
    * @return the owner identity
-   * @since  1.2.0-GA
-   * @deprecated Use {@link #getOwnerIdentityIdFromActivity(ExoSocialActivity)} instead.
+   * @since  1.2.3
+   * @deprecated Use {@link #getOwnerIdentityIdFromActivity(String, ExoSocialActivity)} instead.
    *             Will be removed by 1.3.x
    */
   @Deprecated

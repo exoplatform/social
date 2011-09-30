@@ -53,6 +53,9 @@
     <type>org.exoplatform.social.service.rest.api.VersionResources</type>
   </component>
   <component>
+    <type>org.exoplatform.social.service.rest.api.ActivityResources</type>
+  </component>   
+  <component>
     <type>org.exoplatform.social.service.rest.api.IdentityResources</type>
   </component>
   <component>

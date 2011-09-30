@@ -44,6 +44,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.ActivityRestListOut;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.ws.frameworks.json.impl.JsonDefaultHandler;
 import org.exoplatform.ws.frameworks.json.impl.JsonException;
 import org.exoplatform.ws.frameworks.json.impl.JsonGeneratorImpl;
@@ -398,7 +399,7 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
       ActivityRestOut entity = entityList.get(i);
       assertEquals("entity.getComments().size() must return: " + commentNumber,
               commentNumber,
-              entity.getComments().size());
+              entity.getComments().size()); 
     }
   }
 
@@ -421,6 +422,39 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
       assertEquals("entity.getLikedByIdentities().size() must return: " + likeNumber,
               likeNumber,
               entity.getLikedByIdentities().size());
+      int activityLikedIdentityIdLength = activity.getLikeIdentityIds().length;
+      List<IdentityRestOut> likedByIdentities = entity.getLikedByIdentities();
+
+      for (int j = 0; j < likedByIdentities.size(); j++) {
+        assertEquals("likedByIdentities.get(j).getId() must return: " +
+                activity.getLikeIdentityIds()[activityLikedIdentityIdLength - j - 1],
+                activity.getLikeIdentityIds()[activityLikedIdentityIdLength - j - 1], likedByIdentities.get(j).getId());
+      }
+
     }
+  }
+  
+  /**
+   * Compare number of likes.
+   *
+   * @param activity
+   * @param responseEntity
+   * @param numberOfLikes
+   */
+  protected void compareNumberOfLikes(ExoSocialActivity activity, ActivityRestOut responseEntity,
+                                      int numberOfLikes) {
+    int likeNumber = Math.min(numberOfLikes, activity.getLikeIdentityIds().length);
+    assertEquals("entity.getLikedByIdentities().size() must return: " + likeNumber,
+            likeNumber,
+            responseEntity.getLikedByIdentities().size());
+    int activityLikedIdentityIdLength = activity.getLikeIdentityIds().length;
+    List<IdentityRestOut> likedByIdentities = responseEntity.getLikedByIdentities();
+    for (int i = 0; i < likedByIdentities.size(); i++) {
+      assertEquals("likedByIdentities.get(i).getId() must return: " +
+                   activity.getLikeIdentityIds()[activityLikedIdentityIdLength - i - 1],
+                   activity.getLikeIdentityIds()[activityLikedIdentityIdLength - i - 1],
+                   likedByIdentities.get(i).getId());
+    }
+
   }
 }

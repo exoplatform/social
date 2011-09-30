@@ -153,10 +153,10 @@ public class ActivityRestOut extends HashMap<String, Object>{
       this.setTotalNumberOfLikes(null);
     }
     
-    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess= Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
+    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
     this.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
     
-    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(activity);
+    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
     if(streamOwnerIdentity != null){
       this.put(Field.IDENTITY_ID.toString(),streamOwnerIdentity.getId());
     }

@@ -97,7 +97,7 @@ public class IdentityRestOut extends HashMap<String, Object> {
    * Gets Id of Identity
    */
   public String getId() {
-    return (String) this.get(Field.REMOTE_ID.toString());
+    return (String) this.get(Field.ID.toString());
   }
   
   /**
