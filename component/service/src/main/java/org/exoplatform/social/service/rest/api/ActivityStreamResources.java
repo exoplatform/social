@@ -303,8 +303,56 @@ public class ActivityStreamResources implements ResourceContainer {
                                                   @QueryParam("max_id") String maxId,
                                                   @QueryParam("number_of_comments") int numberOfComments,
                                                   @QueryParam("number_of_likes") int numberOfLikes) {
-    //TODO implement this (Thanh)
-    return null;
+    checkAuthenticatedRequest();
+    PortalContainer portalContainer = checkValidPortalContainerName(portalContainerName);
+    MediaType mediaType = checkSupportedFormat(format, SUPPORTED_FORMATS);
+
+    Identity targetIdentity = Util.getAuthenticatedUserIdentity(portalContainerName);
+    if (targetIdentity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+
+    //check permission
+    boolean canAccess = SecurityManager.canAccessActivityStream(portalContainer,
+                                                                SecurityManager.getAuthenticatedUserIdentity(),
+                                                                targetIdentity);
+    if (!canAccess) {
+      throw new WebApplicationException(Response.Status.FORBIDDEN);
+    }
+
+    int maxLimit = limit == 0 ? MAX_LIMIT : limit;
+    ExoSocialActivity baseActivity = null;
+    boolean getOlder = false;
+    //if sinceId and maxId is both passed, sinceId is chosen
+    ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+    try {
+      if (sinceId != null) {
+        baseActivity = activityManager.getActivity(sinceId);
+      } else if (maxId != null) {
+        getOlder = true;
+        baseActivity = activityManager.getActivity(maxId);
+      }
+    } catch (UndeclaredThrowableException udte) { //bad thing from cache service that we have to handle like this :(
+      if (udte.getCause() instanceof ActivityStorageException) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    RealtimeListAccess<ExoSocialActivity> rala = activityManager.getActivitiesOfUserSpacesWithListAccess(targetIdentity);
+    List<ExoSocialActivity> activityList;
+    if (getOlder) {
+      activityList = rala.loadOlder(baseActivity, maxLimit);
+    } else if (sinceId != null) {
+      activityList = rala.loadNewer(baseActivity, maxLimit);
+    } else {
+      activityList = rala.loadAsList(0, maxLimit);
+    }
+   
+   ActivityRestListOut arlo = new ActivityRestListOut(activityList, numberOfComments, numberOfLikes, portalContainerName);
+
+   return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
   }
 
   /**
