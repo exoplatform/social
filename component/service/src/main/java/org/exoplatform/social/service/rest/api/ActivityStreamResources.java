@@ -38,6 +38,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.ActivityRestListOut;
@@ -307,46 +308,104 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Gets activities of connections of the authenticated user identity who makes this request.
+   * Gets activities of connections of a specified identity.
    *
-   * @param uriInfo             The uri info
+   * @param uriInfo The uri info
    * @param portalContainerName The portal container name
-   * @param format              The response format type, for example: json, xml...
-   * @param limit               Specifies the number of activities to retrieve. Must be less than or equal to 100.
-   *                            The value you pass as limit is a maximum number of activities to be returned.
-   *                            The actual number of activities you receive maybe less than limit.
-   *                            If no specified, 100 will be the default value.
-   * @param sinceId             Returns the activities having the created timestamps greater than
-   *                            the specified sinceId's created timestamp
-   * @param maxId               Returns the activities having the created timestamp less than the specified maxId's created
-   *                            timestamp. Note that sinceId and maxId must not be defined in one request,
-   *                            if they are, the sinceId query param is chosen.
-   * @param numberOfComments    Specifies the latest number of comments to be displayed along with each activity.
-   *                            By default, numberOfComments=0. If numberOfComments is a positive number, this number is
-   *                            considered as a limit number that must be equal or less than 100. If the actual number of
-   *                            comments is less than the provided positive number, the number of actual comments must be
-   *                            returned. If the total number of comments is more than 100,
-   *                            it's recommended to use: "activity/:activityId/comments.format" instead
-   * @param numberOfLikes       Specifies the latest number of detailed likes to be returned along with this activity.
-   *                            By default, numberOfLikes=0. If numberOfLikes is a positive number, this number is
-   *                            considered as a limit number that must be equal or less than 100. If the actual number
-   *                            of likes is less than the provided positive number, the number of actual likes must be
-   *                            returned. If the total number of likes is more than 100, it's recommended to use:
-   *                            "activity/:activityId/likes.format" instead.
+   * @param format The response format type, for example: json, xml...
+   * @param limit Specifies the number of activities to retrieve. Must be less than or equal to 100.
+   * The value you pass as limit is a maximum number of activities to be returned.
+   * The actual number of activities you receive maybe less than limit.
+   * If no specified, 100 will be the default value.
+   * @param sinceId Returns the activities having the created timestamps greater than
+   * the specified sinceId's created timestamp
+   * @param maxId Returns the activities having the created timestamp less than the specified maxId's created
+   * timestamp. Note that sinceId and maxId must not be defined in one request,
+   * if they are, the sinceId query param is chosen.
+   * @param numberOfComments Specifies the latest number of comments to be displayed along with each activity.
+   * By default, numberOfComments=0. If numberOfComments is a positive number, this number is
+   * considered as a limit number that must be equal or less than 100. If the actual number of
+   * comments is less than the provided positive number, the number of actual comments must be
+   * returned. If the total number of comments is more than 100,
+   * it's recommended to use: "activity/:activityId/comments.format" instead
+   * @param numberOfLikes Specifies the latest number of detailed likes to be returned along with this activity.
+   * By default, numberOfLikes=0. If numberOfLikes is a positive number, this number is
+   * considered as a limit number that must be equal or less than 100. If the actual number
+   * of likes is less than the provided positive number, the number of actual likes must be
+   * returned. If the total number of likes is more than 100, it's recommended to use:
+   * "activity/:activityId/likes.format" instead.
    * @return the response
    */
-  @GET
-  @Path("connections.{format}")
-  public Response getActivityConnectionsOfAnIdentityId(@Context UriInfo uriInfo,
-                                                       @PathParam("portalContainerName") String portalContainerName,
-                                                       @PathParam("format") String format,
-                                                       @QueryParam("limit") int limit,
-                                                       @QueryParam("since_id") String sinceId,
-                                                       @QueryParam("max_id") String maxId,
-                                                       @QueryParam("number_of_comments") int numberOfComments,
-                                                       @QueryParam("number_of_likes") int numberOfLikes) {
-    //TODO implement this (Hanh)
-    return null;
-  }
+   @GET
+   @Path("connections.{format}")
+   public Response getActivityConnectionsOfAnIdentityId(@Context UriInfo uriInfo,
+ 	                                                   @PathParam("portalContainerName") String portalContainerName,
+ 	                                                   @PathParam("format") String format,
+ 	                                                   @QueryParam("limit") int limit,
+ 	                                                   @QueryParam("since_id") String sinceId,
+ 	                                                   @QueryParam("max_id") String maxId,
+ 	                                                   @QueryParam("number_of_comments") int numberOfComments,
+ 	                                                   @QueryParam("number_of_likes") int numberOfLikes) {
+ 	  
+ 	  RestChecker.checkAuthenticatedRequest();
+ 	  
+ 	  PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
+ 	  ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+ 	  String identityId = SecurityManager.getAuthenticatedUserIdentity().getId();
+ 	  
+ 	  MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMATS);
+ 	
+ 	  Identity targetIdentity = Util.getIdentityManager(portalContainerName).getIdentity(identityId, false);
+ 	  if (targetIdentity == null) {
+ 	    throw new WebApplicationException(Response.Status.NOT_FOUND);
+ 	  }
+ 	
+ 	  //check permission
+ 	  boolean canAccess = SecurityManager.canAccessActivityStream(portalContainer,
+ 	                                                              SecurityManager.getAuthenticatedUserIdentity(),
+ 	                                                              targetIdentity);
+ 	  if (!canAccess) {
+ 	    throw new WebApplicationException(Response.Status.FORBIDDEN);
+ 	  }
+ 	
+ 	  ExoSocialActivity baseActivity = null;
+ 	  boolean getOlder = false;
+
+ 	  // sinceId and maxId. If both of sinceId and maxId is added then sinceId is chosen.
+ 	  try {
+ 	    if (sinceId != null) {
+ 	      baseActivity = activityManager.getActivity(sinceId);
+ 	    } else if (maxId != null) {
+ 	      getOlder = true;
+ 	      baseActivity = activityManager.getActivity(maxId);
+ 	    }
+ 	  } catch (UndeclaredThrowableException udte) { 
+ 	    if (udte.getCause() instanceof ActivityStorageException) {
+ 	      throw new WebApplicationException(Response.Status.NOT_FOUND);
+ 	    } else {
+ 	      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+ 	    }
+ 	  }
+ 	  
+ 	  RealtimeListAccess<ExoSocialActivity> realtimeListAccess = null;
+ 	  
+       realtimeListAccess = activityManager.getActivitiesOfConnectionsWithListAccess(targetIdentity);
+       
+ 	  List<ExoSocialActivity> activityList;
+ 	  int maxLimit = limit == 0 ? MAX_LIMIT : limit;
+ 	  
+ 	  if (getOlder) {
+ 	    activityList = realtimeListAccess.loadOlder(baseActivity, maxLimit);
+ 	  } else if (sinceId != null) {
+ 	    activityList = realtimeListAccess.loadNewer(baseActivity, maxLimit);
+ 	  } else {
+ 	    activityList = realtimeListAccess.loadAsList(0, maxLimit);
+ 	  }
+
+ 	  ActivityRestListOut activityRestListOut = new ActivityRestListOut(activityList, numberOfComments,
+ 	                                                     numberOfLikes, portalContainerName);
+
+ 	  return Util.getResponse(activityRestListOut, uriInfo, mediaType, Response.Status.OK);
+   }
 
 }

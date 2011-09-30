@@ -1086,6 +1086,349 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
+   * General test cases:
+   * - Not authenticated
+   * - Wrong portal container
+   * - UnSupported format
+   * - Normal with the right format (JSON)
+   *
+   * @throws Exception
+   */
+  public void testGeneralCaseGetActivityConnectionsOfAnIdentityId() throws Exception {
+    String resourceUrl = RESOURCE_URL + "xyz.json";
+    testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
+    
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "connections.xml", null, null,
+            Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "connections.rss", null, null,
+            Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "connections.atom", null, null,
+            Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
+    
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/" + 
+    		"connections.json", null, null, Response.Status.BAD_REQUEST.getStatusCode());
+    
+    // Johns gets activity stream of Demo which has 0 activities
+    resourceUrl = RESOURCE_URL + "connections.json";
+    
+    startSessionAs("john");
+    
+    // Make connection between demo and john
+    connectIdentities(demoIdentity, johnIdentity, true);
+    
+    ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
+    assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+    		.OK.getStatusCode(), rsp.getStatus());
+    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+                 MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    
+    compareActivities(new ArrayList<ExoSocialActivity>(), (ActivityRestListOut)rsp.getEntity());
+    endSession();
+  }
+
+  /**
+   * Tests default get activity stream of connection without any optional query parameters.
+   *
+   * @throws Exception
+   */
+  public void testDefaultGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+    // user identity
+    {
+      String resourceUrl = RESOURCE_URL + "connections.json";
+      
+      // John gets activity stream of Demo which has 0 activities
+      startSessionAs("demo");
+
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      // John gets activity stream of Demo's which has 15 activities
+      ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp1.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      
+      List<ExoSocialActivity> demoActivities = activityManager
+        .getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+      
+      endSession();
+    }
+
+  }
+  
+  /**
+   * Tests: get activity stream of connection with limit parameter.
+   *
+   * @throws Exception
+   */
+  public void testLimitGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+      List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+      int limit = 10;
+      
+	  String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
+	  
+	  // Johns gets activity stream of Demo which has 0 activities
+	  startSessionAs("demo");
+	  ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
+	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+	  		.OK.getStatusCode(), rsp.getStatus());
+	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+	  compareActivities(emptyList, (ActivityRestListOut) rsp.getEntity());
+	
+	  // Demo creates 10 activities to his stream
+	  createActivities(demoIdentity, demoIdentity, 10);
+	  
+	  // Make connection between demo and john
+	  connectIdentities(demoIdentity, johnIdentity, true);
+	  
+	  // John creates 5 activities to Demo's stream
+	  createActivities(johnIdentity, demoIdentity, 5);
+	  
+	  // John gets activity stream of Demo's which has 15 activities
+	  ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+	  		.OK.getStatusCode(), rsp1.getStatus());
+	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+	  
+	  List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+	  compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+	  
+	  limit = 3;
+	  resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
+	  rsp1 = service("GET", resourceUrl, "", null, null);
+	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+	  		.OK.getStatusCode(), rsp1.getStatus());
+	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+	  demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+	  compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+	  
+	  endSession();
+  }
+
+  /**
+   * Tests get activity of connection with since_id parameter.
+   *
+   * @throws Exception
+   */
+  public void testSinceIdGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+      //Wrong since_id => not found
+      String resourceUrl = RESOURCE_URL + "connections.json?since_id=" + 123456;
+
+      testAccessNotFoundResourceWithAuthentication("john", "GET", resourceUrl, null);
+
+      startSessionAs("demo");
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // Make connection between demo and mary
+      connectIdentities(demoIdentity, maryIdentity, true);
+      
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // John creates 10 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 10);
+      
+      // Mary creates 10 activities to Demo's stream
+      createActivities(maryIdentity, demoIdentity, 10);
+      
+      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20).get(0);
+      resourceUrl = RESOURCE_URL + "connections.json?since_id=" + baseActivity.getId();
+      
+      // Demo gets activities in of his connections base on the first connection's activity => 20
+      ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+      
+      List<ExoSocialActivity> newerActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).
+                                                                loadNewer(baseActivity, 20);
+
+      compareActivities(newerActivities, (ActivityRestListOut) rsp.getEntity());
+      
+      endSession();
+  }
+
+  /**
+   * Tests get activity of connection with max_id parameter.
+   *
+   * @throws Exception
+   */
+  public void testMaxIdGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+      //Wrong since_id => not found
+      String resourceUrl = RESOURCE_URL + "connections.json?max_id=" + 123456;
+
+      testAccessNotFoundResourceWithAuthentication("john", "GET", resourceUrl, null);
+
+      startSessionAs("demo");
+      
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+      resourceUrl = RESOURCE_URL + "connections.json?max_id=" + baseActivity.getId();
+
+      ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+      List<ExoSocialActivity> olderActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).
+                                                                loadOlder(baseActivity, 20);
+
+      compareActivities(olderActivities, (ActivityRestListOut) rsp.getEntity());
+
+      endSession();
+  }
+
+  /**
+   * Tests get activity of connection with number_of_comments parameter.
+   *
+   * @throws Exception
+   */
+  public void testNumberOfCommentsGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+      int numberOfComments = 3;
+      startSessionAs("demo");
+      
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      // Demo comments on john's activities
+      List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      for (ExoSocialActivity act : demoActivities) {
+        createComment(act, johnIdentity, 5);
+      }
+      
+      String resourceUrl = RESOURCE_URL + "connections.json?number_of_comments=" + numberOfComments;
+      ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp1.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+      compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
+	  
+      endSession();
+  }
+
+  /**
+   * Tests get activity of connection with number_of_likes parameter.
+   *
+   * @throws Exception
+   */
+  public void testNumberOfLikesGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+	  int numberOfLikes = 3;
+      startSessionAs("demo");
+      
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      // Demo comments on john's activities
+      List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      for (ExoSocialActivity act : demoActivities) {
+        activityManager.saveLike(act, demoIdentity);
+        activityManager.saveLike(act, johnIdentity);
+        activityManager.saveLike(act, maryIdentity);
+        activityManager.saveLike(act, rootIdentity);
+      }
+      
+      String resourceUrl = RESOURCE_URL + "connections.json?number_of_likes=" + numberOfLikes;
+      ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp1.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+      compareNumberOfLikes(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfLikes);
+	  
+      endSession();
+  }
+
+  /**
+   * Tests get activity of connection with full parameters in url request.
+   *
+   * @throws Exception
+   */
+  public void testFullParamsGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+	  int limit = 3;
+	  int numberOfComments = 3;
+      int numberOfLikes = 3;
+      
+      startSessionAs("demo");
+      
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      
+      // Make connection between demo and john
+      connectIdentities(demoIdentity, johnIdentity, true);
+      
+      // John creates 5 activities to Demo's stream
+      createActivities(johnIdentity, demoIdentity, 5);
+      
+      // Demo comments on john's activities
+      List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+      for (ExoSocialActivity act : demoActivities) {
+    	createComment(act, johnIdentity, 5);
+        activityManager.saveLike(act, demoIdentity);
+        activityManager.saveLike(act, johnIdentity);
+        activityManager.saveLike(act, maryIdentity);
+        activityManager.saveLike(act, rootIdentity);
+      }
+      
+      ExoSocialActivity baseSinceIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+      ExoSocialActivity baseMaxIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+      
+      String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit + "&since_id=" + baseSinceIdActivity.getId()
+        + "&max_id=" + baseMaxIdActivity.getId() + "&number_of_comments=" + numberOfComments 
+        + "&number_of_likes=" + numberOfLikes;
+      ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+      		.OK.getStatusCode(), rsp1.getStatus());
+      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+      
+      compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+      compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
+      compareNumberOfLikes(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfLikes);
+      
+      endSession();
+  }
+  
+  /**
    * An identity posts an activity to an identity's activity stream with a number of activities.
    *
    * @param posterIdentity the identity who posts activity
