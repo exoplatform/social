@@ -485,7 +485,8 @@ public class ActivityManagerTest extends AbstractCoreTest {
     tearDownActivityList.add(demoActivity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
-    assertNull("demoActivity.getLikeIdentityIds() must be null", demoActivity.getLikeIdentityIds());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+                 0, demoActivity.getLikeIdentityIds().length);
     
     activityManager.saveLike(demoActivity, johnIdentity);
     
@@ -507,7 +508,8 @@ public class ActivityManagerTest extends AbstractCoreTest {
     tearDownActivityList.add(demoActivity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
-    assertNull("demoActivity.getLikeIdentityIds() must be null", demoActivity.getLikeIdentityIds());
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+                 0, demoActivity.getLikeIdentityIds().length);
     
     activityManager.saveLike(demoActivity, johnIdentity);
     
@@ -1050,7 +1052,9 @@ this.populateActivityMass(johnIdentity, 10);
     tearDownActivityList.add(demoActivity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
-    assertNull("demoActivity.getLikeIdentityIds() must be null", demoActivity.getLikeIdentityIds());
+
+    assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
+                 0, demoActivity.getLikeIdentityIds().length);
     
     activityManager.saveLike(demoActivity, johnIdentity);
     
