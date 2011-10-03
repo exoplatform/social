@@ -22,7 +22,6 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.lifecycle.LifeCycleCompletionService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -434,6 +433,21 @@ public class IdentityManagerTest extends AbstractCoreTest {
       assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());
     }
 
+    //Tests with the case: add new identity and delete it after that to check
+    {
+      ProfileFilter profileFilter = new ProfileFilter();
+      ListAccess<Identity> identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
+      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+      Identity testIdentity = populateIdentity("test", false);
+      ListAccess<Identity> identityListAccess1 = identityManager.getIdentitiesByProfileFilter("organization", new ProfileFilter(), false);
+      assertEquals("identityListAccess1.getSize() must return 11", 11, identityListAccess1.getSize());
+      identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
+      assertEquals("identityListAccess.getSize() must return 11", 11, identityListAccess.getSize());
+      identityManager.deleteIdentity(testIdentity);
+      identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
+      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+    }
+
     //Test with excluded identity list
     {
       Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
@@ -483,13 +497,23 @@ public class IdentityManagerTest extends AbstractCoreTest {
   }
   
   /**
-   * Populate list of idenity.
+   * Populate list of identities.
    *
    */
   private void populateData() {
+    populateIdentities(10, true);
+  }
+
+  /**
+   * Populates the list of identities by specifying the number of items and to indicate if they are added to
+   * the tear-down list.
+   *
+   * @param numberOfItems
+   * @param addedToTearDownList
+   */
+  private void populateIdentities(int numberOfItems, boolean addedToTearDownList) {
     String providerId = "organization";
-    int total = 10;
-    for (int i = 0; i < total; i++) {
+    for (int i = 0; i < numberOfItems; i++) {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
       identityManager.saveIdentity(identity);
@@ -502,7 +526,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
       identityManager.saveProfile(profile);
       identity.setProfile(profile);
-      tearDownIdentityList.add(identity);
+      if (addedToTearDownList) {
+        tearDownIdentityList.add(identity);
+      }
     }
   }
   
@@ -513,9 +539,14 @@ public class IdentityManagerTest extends AbstractCoreTest {
    * @return
    */
   private Identity populateIdentity(String remoteId) {
+    return populateIdentity(remoteId, true);
+  }
+
+  private Identity populateIdentity(String remoteId, boolean addedToTearDownList) {
     String providerId = "organization";
     Identity identity = new Identity(providerId, remoteId);
-    
+    identityManager.saveIdentity(identity);
+
     Profile profile = new Profile(identity);
     profile.setProperty(Profile.FIRST_NAME, remoteId);
     profile.setProperty(Profile.LAST_NAME, "gtn");
@@ -523,9 +554,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
     profile.setProperty(Profile.POSITION, "developer");
     profile.setProperty(Profile.GENDER, "male");
 
-    identity.setProfile(profile);
-    identityManager.saveIdentity(identity);
-    tearDownIdentityList.add(identity);
+    identityManager.saveProfile(profile);
+
+    if (addedToTearDownList) {
+      tearDownIdentityList.add(identity);
+    }
     return identity;
   }
   
