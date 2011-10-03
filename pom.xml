@@ -73,7 +73,7 @@
     <stax.version>1.0</stax.version>
     <xerces.version>2.9.1</xerces.version>
     <xml-apis.version>1.3.04</xml-apis.version>
-    <quartz.version>1.8.4</quartz.version>
+    <quartz.version>1.5.2</quartz.version>
     <picocontainer.version>1.1</picocontainer.version>
 
     <org.exoplatform.kernel.version>2.3.1-GA</org.exoplatform.kernel.version>
@@ -92,9 +92,9 @@
     <org.gatein.wci.version>2.0.2-GA</org.gatein.wci.version>
     <org.gatein.pc.version>2.2.0-GA</org.gatein.pc.version>
     <org.gatein.wsrp.version>1.1.1-GA</org.gatein.wsrp.version>
-    <org.gatein.mop.version>1.1.0-Beta06</org.gatein.mop.version>
+    <org.gatein.mop.version>1.1.0-Beta07</org.gatein.mop.version>
     <org.shindig.version>2.0.2-Beta03</org.shindig.version>
-    <org.chromattic.version>1.1.0-beta7</org.chromattic.version>
+    <org.chromattic.version>1.1.0</org.chromattic.version>
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
@@ -249,7 +249,7 @@
       </dependency>
 
       <dependency>
-        <groupId>org.quartz-scheduler</groupId>
+        <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>${quartz.version}</version>
       </dependency>
