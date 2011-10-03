@@ -31,6 +31,7 @@ import org.exoplatform.social.extras.migration.MigrationTool;
 import org.exoplatform.social.extras.migration.MigrationException;
 import org.exoplatform.social.extras.migration.io.WriterContext
 import org.exoplatform.social.extras.migration.TemplateTool;
+import org.exoplatform.social.extras.migration.PLF35HomesTool;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -316,6 +317,14 @@ public class sm extends org.crsh.jcr.command.JCRCommand
   public Object template() {
 
     new TemplateTool().run();
+
+  }
+
+  @Usage("Run pltaform 3.5 homes migration")
+  @Command
+  public Object plf35homes() {
+
+    new PLF35HomesTool().run();
 
   }
   
