@@ -27,6 +27,7 @@
     <skin-name>Default</skin-name>
     <skin-module>SocialDemoSkin</skin-module>
     <css-path>/skin/DefaultSkin/Stylesheet.css</css-path>
+    <css-priority>1</css-priority>
   </portal-skin>
 
   <!--portlet-skin>
