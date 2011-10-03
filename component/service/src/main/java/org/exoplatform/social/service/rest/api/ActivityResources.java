@@ -122,21 +122,7 @@ public class ActivityResources implements ResourceContainer {
     //
     ActivityRestOut model = new ActivityRestOut(activity, portalContainerName);
     
-    //
-    int numberOfLikeLimited = numberOfLikes >= 0 ? numberOfLikes : 0;
-    
-    ArrayList<IdentityRestOut> likedIdentitiesLimited = null ;
-    if(activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0){
-      numberOfLikeLimited = Math.min(numberOfLikeLimited, activity.getLikeIdentityIds().length);
-      String[] getLikeIdentityIds = activity.getLikeIdentityIds();
-      likedIdentitiesLimited = new ArrayList<IdentityRestOut>(numberOfLikeLimited);
-      for (int i = 0; i < numberOfLikeLimited; i++) {
-        likedIdentitiesLimited.add(
-            new IdentityRestOut(getLikeIdentityIds[getLikeIdentityIds.length - i - 1], portalContainerName)
-        );
-      }
-    }
-    model.setLikedByIdentities(likedIdentitiesLimited);
+    model.setNumberOfLikes(numberOfLikes, activity, portalContainerName);
     
     //
     if (isPassed(showPosterIdentity)) {
@@ -148,29 +134,7 @@ public class ActivityResources implements ResourceContainer {
       model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
     }
     
-    ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
-    int numberOfCommentLimited = numberOfComments >= 0 ? numberOfComments : 0;
-    numberOfCommentLimited = Math.min(numberOfCommentLimited, MAX_NUMBER_OF_COMMENT);
-    
-    try {
-      numberOfCommentLimited = Math.min(numberOfCommentLimited, comments.getSize());
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    
-    try {
-      ExoSocialActivity[] commentsLimited =  comments.load(0, numberOfCommentLimited);
-      ArrayList<CommentRestOut> commentWrapers = new ArrayList<CommentRestOut>(numberOfCommentLimited);
-      
-      for(int i = 0; i < numberOfCommentLimited; i++){
-        commentWrapers.add(new CommentRestOut(commentsLimited[i],portalContainerName));      
-      }
-      
-      model.setComments(commentWrapers);
-      model.setTotalNumberOfComments(comments.getSize());
-    } catch (Exception e){
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
+    model.setNumberOfComments(numberOfComments, activity, portalContainerName);
 
     if(isLikedByIdentity(authenticatedIdentity.getId(),activity)){
       model.setLiked(true);
@@ -539,8 +503,7 @@ public class ActivityResources implements ResourceContainer {
     HashMap<String, Object> hashmapResult = new HashMap<String, Object>();
 
     if(activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0){
-      int numberOfLikeLimited = activity.getLikeIdentityIds().length > MAX_NUMBER_OF_LIKE ? 
-                                MAX_NUMBER_OF_LIKE : activity.getLikeIdentityIds().length;
+      int numberOfLikeLimited = Math.min(MAX_NUMBER_OF_LIKE, activity.getLikeIdentityIds().length);
       
       List<IdentityRestOut> likedIdentitiesLimited = null ;
       String[] getLikeIdentityIds = activity.getLikeIdentityIds();

@@ -376,7 +376,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
   * @param portalContainerName the portal container name
   */
   public void setNumberOfLikes(int numberOfLikes, ExoSocialActivity activity, String portalContainerName) {
-    if (numberOfLikes == 0) {
+    if (numberOfLikes <= 0) {
       return;
     }
     String[] likeIdentityIds = activity.getLikeIdentityIds();
@@ -397,7 +397,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
   * @param portalContainerName the portal container name
   */
   public void setNumberOfComments(int numberOfComments, ExoSocialActivity activity, String portalContainerName) {
-    if (numberOfComments == 0) {
+    if (numberOfComments <= 0) {
       return;
     }
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
