@@ -84,17 +84,13 @@ public class ActivityResources implements ResourceContainer {
                                   @PathParam("activityId") String activityId,
                                   @PathParam("format") String format,
                                   @QueryParam("poster_identity") String showPosterIdentity,
-                                  @QueryParam("number_of_comments") Integer numberOfComments,
+                                  @QueryParam("number_of_comments") int numberOfComments,
                                   @QueryParam("activity_stream") String showActivityStream,
-                                  @QueryParam("number_of_likes") Integer numberOfLikes) {
+                                  @QueryParam("number_of_likes") int numberOfLikes) {
 
     RestChecker.checkAuthenticatedRequest();
 
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-
-    if(activityId == null || activityId.trim().equals("")){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
     
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
 
@@ -127,7 +123,7 @@ public class ActivityResources implements ResourceContainer {
     ActivityRestOut model = new ActivityRestOut(activity, portalContainerName);
     
     //
-    int numberOfLikeLimited = (numberOfLikes == null ? MAX_NUMBER_OF_LIKE : numberOfLikes);
+    int numberOfLikeLimited = numberOfLikes >= 0 ? numberOfLikes : 0;
     
     ArrayList<IdentityRestOut> likedIdentitiesLimited = null ;
     if(activity.getLikeIdentityIds() != null && activity.getLikeIdentityIds().length > 0){
@@ -153,7 +149,7 @@ public class ActivityResources implements ResourceContainer {
     }
     
     ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
-    int numberOfCommentLimited = numberOfComments == null ? MAX_NUMBER_OF_COMMENT : numberOfComments;
+    int numberOfCommentLimited = numberOfComments >= 0 ? numberOfComments : 0;
     numberOfCommentLimited = Math.min(numberOfCommentLimited, MAX_NUMBER_OF_COMMENT);
     
     try {
@@ -266,10 +262,6 @@ public class ActivityResources implements ResourceContainer {
     RestChecker.checkAuthenticatedRequest();
     
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-
-    if(activityId == null || activityId.trim().equals("")){      
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }  
     
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
     
@@ -318,8 +310,8 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Get Comment from existing activity by GET method from a specified activity id. Just returns the Comment List and total number of Comment
-   * in activity.
+   * Get Comment from existing activity by GET method from a specified activity id. Just returns the Comment List and total 
+   * number of Comment in activity.
    *
    * @param uriInfo the uri request uri
    * @param portalContainerName the associated portal container name
@@ -336,10 +328,6 @@ public class ActivityResources implements ResourceContainer {
     RestChecker.checkAuthenticatedRequest();
     
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-    
-    if(activityId == null || activityId.trim().equals("")){      
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
     
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
 
@@ -526,11 +514,7 @@ public class ActivityResources implements ResourceContainer {
       @PathParam("format") String format) {
     RestChecker.checkAuthenticatedRequest();
 
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-
-    if(activityId == null || activityId.trim().equals("")){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }        
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);     
 
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
 
@@ -595,10 +579,6 @@ public class ActivityResources implements ResourceContainer {
     RestChecker.checkAuthenticatedRequest();
 
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-
-    if(activityId == null || activityId.trim().equals("")){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
     
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
 
@@ -642,10 +622,6 @@ public class ActivityResources implements ResourceContainer {
     RestChecker.checkAuthenticatedRequest();
 
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-
-    if(activityId ==null || activityId.trim().equals("") || portalContainer==null){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
     
     MediaType mediaType = RestChecker.checkSupportedFormat(format, SUPPORTED_FORMAT);
 

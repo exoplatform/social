@@ -555,7 +555,25 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       
       testStatusCodeOfResource("john", "GET", RESOURCE_URL+"/" + activity.getId() + ".json", null, null,
           Response.Status.FORBIDDEN.getStatusCode());
-      
+    }
+    
+    {
+      {//Tests with full optional params
+        startSessionAs("john");
+        String allOfOptionalParamsResourceUrl = resourceUrl + "?poster_identity=true&number_of_comments=-10&activity_stream=1&?number_of_likes=-10";
+        ContainerResponse containerResponse = service("GET", allOfOptionalParamsResourceUrl, "", null, null);
+        assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
+        HashMap<String, Object> entity = (HashMap<String, Object>) containerResponse.getEntity();
+        compareActivity(demoActivity, entity);
+        
+        //assert the activityStream
+        HashMap<String, Object> activityStream = (HashMap<String, Object>) entity.get("activityStream");
+        compareActivityStream(demoActivity.getActivityStream() ,activityStream);
+        
+        ArrayList<HashMap<String,Object>> comments = (ArrayList<HashMap<String,Object>>) entity.get("comments");
+        assertEquals(0, comments.size());
+        compareNumberOfLikes(demoActivity, (ActivityRestOut)entity, 0);
+      }      
     }
   }
 
