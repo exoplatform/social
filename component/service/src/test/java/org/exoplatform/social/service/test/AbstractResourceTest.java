@@ -304,8 +304,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
     assertEquals("activityStream.getTitle() must equal: " + activityStream.getTitle() == null ? "" :activityStream.getTitle(),
         activityStream.getTitle() == null ? "" : activityStream.getTitle(),
         entity.get("title"));
-    assertEquals("activityStream.getPermaLink() must equal: " + activityStream.getPermaLink() == null ? "" :activityStream.getPermaLink(),
-        activityStream.getPermaLink() == null ? "" : activityStream.getPermaLink(),
+    assertEquals("activityStream.getPermaLink() must equal: " + activityStream.getPermaLink() == null ? "" : Util.getBaseUrl() + activityStream.getPermaLink(),
+        activityStream.getPermaLink() == null ? "" : Util.getBaseUrl() +  activityStream.getPermaLink(),
         entity.get("permaLink"));
   }
   

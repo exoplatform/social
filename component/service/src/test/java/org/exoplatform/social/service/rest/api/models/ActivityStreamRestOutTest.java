@@ -20,6 +20,7 @@ package org.exoplatform.social.service.rest.api.models;
 import junit.framework.TestCase;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ActivityStreamImpl;
+import org.exoplatform.social.service.rest.Util;
 
 /**
  * Unit Test for {@link ActivityStreamRestOut}.
@@ -46,10 +47,10 @@ public class ActivityStreamRestOutTest extends TestCase {
    * Tests gets and sets values
    */
   public void testSetValues() {
-    String faviconUrl = "http://localhost:8808/abc/def";
+    String faviconUrl = "/abc/def";
     String prettyId = "demo";
     String title = "Activity Stream of Demo Gtn";
-    String permaLink = "http://localhost:8080/social/u/demo";
+    String permaLink = "/social/u/demo";
 
     ActivityStream as = new ActivityStreamImpl();
     as.setType(ActivityStream.Type.USER);
@@ -61,10 +62,10 @@ public class ActivityStreamRestOutTest extends TestCase {
     ActivityStreamRestOut activityStreamRestOut = new ActivityStreamRestOut(as);
 
     assertEquals(ActivityStream.Type.USER.toString(), activityStreamRestOut.getType());
-    assertEquals(faviconUrl, activityStreamRestOut.getFaviconUrl());
+    assertEquals(Util.getBaseUrl() + faviconUrl, activityStreamRestOut.getFaviconUrl());
     assertEquals(prettyId, activityStreamRestOut.getPrettyId());
     assertEquals(title, activityStreamRestOut.getTitle());
-    assertEquals(permaLink, activityStreamRestOut.getPermaLink());
+    assertEquals(Util.getBaseUrl() + permaLink, activityStreamRestOut.getPermaLink());
 
     activityStreamRestOut.setType(null);
     activityStreamRestOut.setFaviconUrl(null);

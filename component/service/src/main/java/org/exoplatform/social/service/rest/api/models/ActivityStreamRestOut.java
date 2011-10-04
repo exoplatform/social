@@ -19,6 +19,7 @@ package org.exoplatform.social.service.rest.api.models;
 import java.util.HashMap;
 
 import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.service.rest.Util;
 
 
 /**
@@ -169,7 +170,7 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
     if (permalink == null) {
       put(Field.PERMA_LINK.toString(), "");
     } else {
-      put(Field.PERMA_LINK.toString(), permalink);
+      put(Field.PERMA_LINK.toString(), Util.getBaseUrl() + permalink);
     }
   }
 
@@ -191,7 +192,7 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
     if (faviconUrl == null) {
       put(Field.FAVICON_URL.toString(), "");
     } else {
-      put(Field.FAVICON_URL.toString(), faviconUrl);
+      put(Field.FAVICON_URL.toString(), Util.getBaseUrl() + faviconUrl);
     }
   }
 
@@ -202,9 +203,9 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
   private void initialize() {
     setType("");
     setPrettyId("");
-    setFaviconUrl("");
+    setFaviconUrl(null);
     setTitle("");
-    setPermaLink("");
+    setPermaLink(null);
   }
 
 }
