@@ -1,300 +1,134 @@
 h1. Overview {anchor:id=SOCref.Social_JCR_Structure.Overview}
-As any other eXo's products, eXo Social fully complies with the JCR standard to store data (identity, profile, activity, space and relationship).
-The Social JCR structure is organized to conform the data storage for the individual purpose of eXo Social. With this structure, it is easy for us to manage and access the data properly.
+As any other eXo's products, eXo Social fully complies the JCR standard to store data (identity, profile, activity, space and relationship).
+The eXo Social JCR structure is organized to conform the data storage for the individual purpose of eXo Social. With this structure, it is easy for you to manage and access the data properly.
 
-See the Social JCR structure in the chart below:
-[image:social-jcr-structure.png]
+See the eXo Social JCR structure in the chart below:
 
-The root node of Social workspace is _{noformat}exo:applications{noformat}_ which includes child nodes, such as _{noformat}Social_Space/Space{noformat}_, _{noformat},Social_Activity{noformat}_, _{noformat}Social_Identity{noformat}_, _{noformat}Social_Profile{noformat}_, _{noformat}Social_Relationship{noformat}_.
-
-h1. {noformat}Social_Space/Space{noformat} {anchor:id=SOCref.Social_JCR_Structure.Social_Space}
-_{noformat}Social_Space/Space{noformat}_ is used to store data of eXo Social spaces. It includes nodes of the _{noformat}exo:space{noformat}_ type. This node type is defined as follows:
-
-{code:xml}
-<nodeType name="exo:space" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  <supertypes>
-    <supertype>nt:base</supertype>
-  </supertypes>
-  <propertyDefinitions>
-    <propertyDefinition name="exo:name" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:groupId" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:pendingUsers" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="true">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:invitedUsers" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="true">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:app" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:parent" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:description" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:tag" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:type" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:url" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:visibility" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:registration" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:priority" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:prettyName" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:avatarUrl" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-  </propertyDefinitions>
-  <childNodeDefinitions>
-    <childNodeDefinition name="*" defaultPrimaryType="nt:file" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" sameNameSiblings="false">
-      <requiredPrimaryTypes>
-        <requiredPrimaryType>nt:file</requiredPrimaryType>
-      </requiredPrimaryTypes>
-    </childNodeDefinition>
-  </childNodeDefinitions>
-</nodeType>
-{code}
-
-The _{noformat}exo:space{noformat}_ node type has the following properties:
-
-||Properties||requiredType||Description||
-|exo:name| String| The space name.|
-|exo:groupId|String| The group associated with a corresponding space.|
-|exo:pendingUsers|String| The string contains a list of usernames which are pending for validation to join a space. |
-|exo:invitedUsers|String|The string contains a list of usernames which are invited to join a space. |
-|exo:app|String|The string contains a list of applications with portlet id, application name, and its state (installed, active, deactive). |
-|exo:parent|String|The parent group of a space. |
-|exo:description|String| The description of a space.|
-|exo:tag|String|The string contains a list of keywords to tag a space.|
-|exo:type|String|The type of space is used to run in the classic or webOS mode. |
-|exo:url|String|The link to access a space. |
-|exo:visibility|String|The string contains three values: public, private, and hidden. |
-|exo:registration|String| The string contains three values: open, validation, and close. |
-|exo:priority|String|The string is used to sort spaces in a spaces list. It contains three values: 1, 2 and 3. The smaller value has the higher priority.|
-|exo:prettyName|String| The pretty name of a space.|
-|exo:avatarUrl|String|The link to the avatar of a space. |
-
- 
-h1. {noformat}Social_Activity{noformat} {anchor:id=SOCref.Social_JCR_Structure.Social_Activity}
-
-_{noformat}Social_Activity{noformat}_ contains all the child nodes with the path name of the identity provider name. The identity provider name contains all the child nodes that have the path name of the remote id. The remote id path has one node with the path name as "published" that includes all the nodes of the _{noformat}exo:activity{noformat}_ type.
-This node type stores data about the activity associated with a remote id. It is defined as follows:
-
-{code:xml}
-<nodeType name="exo:activity" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  <supertypes>
-    <supertype>nt:unstructured</supertype>
-  </supertypes>
-  <propertyDefinitions>
-    <propertyDefinition name="exo:body" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:bodyTemplate" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:externalId" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:title" requiredType="String" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:titleTemplate" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:updatedTimestamp" requiredType="Long" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:postedTime" requiredType="Long" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:priority" requiredType="Long" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:url" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:userId" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:type" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:replyToId" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:hidden" requiredType="Boolean" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:like" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="true">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:params" requiredType="String" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="true">
-      <valueConstraints />
-    </propertyDefinition>
-  </propertyDefinitions>
-</nodeType>
-{code}
-
-The _{noformat}exo:activity{noformat}_ node type has the following properties:
-
-||Properties||requiredType||Description||
-|exo:body|String|The string specifies the body template message ID in the gadget spec. The body is an optional extended version of an activity.|
-|exo:bodyTemplate|String| The body template is used to replace the parameters in the body.|
-|exo:externalId|String|An optional string ID is generated by the posting application. |
-|exo:title|String|The string specifies the primary text of an activity.|
-|exo:titleTemplate|String|The template for the activity title.|
-|exo:updatedTime|Long|The string specifies the time at which this activity is updated in milliseconds since the epoch.|
-|exo:postedTime|Long|The string specifies the time at which this activity took place in milliseconds since the epoch.|
-|exo:priority|Long|A number between 0 and 1 represents the relative priority of this activity in relation to other activities from the same source.|
-|exo:url|String|The string specifies the stream's URL.|
-|exo:userId|String|The string ID of the user who this activity is for.|
-|exo:type|String|The application id which creates an activity.|
-|exo:replyToId|String|The string contains the identity id which the activity uses.|
-|exo:hidden|Boolen|The boolen denotes the activity display. If "true", the activity is not displayed.|
-|exo:like|String| The list of identity ids who like the activity.|
-|exo:params|String|A map of custom key/value pairs is associated with this activity. |
-
-h1. {noformat}Social_Identity{noformat} {anchor:id=SOCref.Social_JCR_Structure.Social_Identity}
-
-_{noformat}Social_Identity{noformat}_ includes nodes of the _{noformat}exo:identity{noformat}_ type. This node type stores data about any identities with removeId and providerId. This node type is defined as follows:
-
-{code:xml}
-<nodeType name="exo:identity" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  <supertypes>
-    <supertype>nt:base</supertype>
-  </supertypes>
-  <propertyDefinitions>
-    <propertyDefinition name="exo:remoteId" requiredType="String" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:providerId" requiredType="String" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-  </propertyDefinitions>
-</nodeType>
-{code}
-
-The _{noformat}exo:identity{noformat}_ node type has the following properties:
-
-||Properties||requiredType||Description||
-|exo:remoteId|String|The local id from a providerId. |
-|exo:providerId|String|The providerId is considered as a namespace for remoteId. |
+!Social-Workspace.png|align="center"!
 
 
-h1. {noformat}Social_Profile{noformat} {anchor:id=SOCref.Social_JCR_Structure.Social_Profile}
+The root node of Social workspace is _/production/_ which consists of two child nodes including _{noformat}soc:providers{noformat}_, and _{noformat}soc:spaces{noformat}_.
 
-_{noformat}Social_Profile{noformat}_ includes nodes of the _{noformat}exo:profile{noformat}_ type. This node type stores data about identities. Each identiy has its own profile that stores information of this identity. This node type is defined as follows:
+h1. soc:providers  {anchor:id=SOCref.Social_JCR_Structure.socproviders}
+The _{noformat}soc:providers{noformat}_ node is used to store the provider entities. In eXo Social, there are two built-in provider entities, including _organization_, and _space_.
+Its type is _{noformat}soc:providers{noformat}_ that has child nodes of the _{noformat}soc:providerdefinition{noformat}_ type.
 
-{code:xml}
-<nodeType name="exo:profile" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  <supertypes>
-    <supertype>nt:unstructured</supertype>
-  </supertypes>
-  <propertyDefinitions>
-    <propertyDefinition name="exo:identity" requiredType="REFERENCE" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-  </propertyDefinitions>
-  <childNodeDefinitions>
-    <childNodeDefinition name="*" defaultPrimaryType="" autoCreated="false" mandatory="false" onParentVersion="COPY"
-      protected="false" sameNameSiblings="true">
-      <requiredPrimaryTypes>
-        <requiredPrimaryType>nt:unstructured</requiredPrimaryType>
-      </requiredPrimaryTypes>
-    </childNodeDefinition>
-  </childNodeDefinitions>
-</nodeType>
-{code}
+h2. soc:<provider_name>   {anchor:id=SOCref.Social_JCR_Structure.socproviders.provider_Name}
+The <provider_name> parameter in the _{noformat}soc:<provider_name>{noformat}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
 
-The node type has the following properties:
-||Properties||requiredType||Description||
-|exo:identity|REFERENCE| The reference to the exo:identity node. |
+The _{noformat}soc:<provider_name>{noformat}_ node of the _{noformat}soc:providerdefinition{noformat}_ type has the _{noformat}soc:<identityRemoteId>{noformat}_ child nodes that have the _{noformat}soc:identitydefinition{noformat}_ type.
 
-h1. {noformat}Social_Relationship{noformat} {anchor:id=SOCref.Social_JCR_Structure.Social_Relatationship}
-_{noformat}Social_Relationship{noformat}_ includes nodes of the _{noformat}exo:relationship{noformat}_ type. This node type stores information about the connection type between identities. It is defined as follows:
+The _{noformat}soc:identitydefinition{noformat}_ node type has the following properties:
+|| Property Name || Required Type ||Mutiple|| Description ||
+|soc:providerId|String|false|The provider Id is considered as a namespace for the remote Id. |
+|soc:isDeleted|Boolean|false|Show that if the provider Id is deleted or not via the provider.|
+|soc:remoteId|String|false|The local Id from a provider Id. |
 
-{code:xml}
-<nodeType name="exo:relationship" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-  <supertypes>
-    <supertype>nt:base</supertype>
-  </supertypes>
-  <propertyDefinitions>
-    <propertyDefinition name="exo:sender" requiredType="REFERENCE" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:receiver" requiredType="REFERENCE" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:status" requiredType="String" autoCreated="false" mandatory="true"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-    <propertyDefinition name="exo:isSymetric" requiredType="boolean" autoCreated="false" mandatory="false"
-      onParentVersion="COPY" protected="false" multiple="false">
-      <valueConstraints />
-    </propertyDefinition>
-  </propertyDefinitions>
-</nodeType>
-{code}
+and has the following child nodes:
+|| Child Nodes || Default Primary Type || Description ||
+|soc:profile|soc:profiledefinition|Store the detailed information of an identity. |
+|soc:relationship|soc:relationship|Store all the relationships of an identity that is in connection with other identities. |
+|soc:receiver|soc:relationship|Store all the relationships which contain an identity invited to connect by other identities.|
+|soc:sender|soc:relationship|Store all the relationships which contain an identity inviting other identities to connect with himself. |
+|soc:ignored|soc:relationship|Store all the relationships which contain an identity ignored by other identities.|
+|soc:ignore|soc:relationship|Store all the relationships which contain an identity ignoring other identities.|
+|soc:activities|soc:activitylist|Store all activities in the activity stream of an identity. |
+|soc:spacemember|soc:spaceslist| Store all spaces of which an identity is a member.|
+|soc:spacependingmember|soc:spaceslist|Store all spaces which an identity is pending for validation to join. |
+|soc:spaceinvitedmember|soc:spaceslist|Store all spaces which an identity is invited to join. |
+|soc:spacemanagermember|soc:spaceslist|Store all spaces of which an identity is a manager. |
 
-This node type has the following properties:
 
-||Properties||requiredType||Description||
-|exo:sender|REFERENCE| The sender identity. Its value is exo:identiy |
-|exo:receiver|REFERENCE| The receiver identity. Its value is exo:identity|
-|exo:status|String| The string has three values: PENDING, CONFIRMED, and IGNORED.|
-|exo:isSymetric|boolean| Denote if the connection is one way or two way. |
+The _{noformat}soc:relationship{noformat}_ node type has the child nodes of the _{noformat}soc:relationshipdefinition{noformat}_ type that has the following properties:
+||Property Name ||Required Type || Multiple ||Description ||
+|soc:to|Reference|false| The sender identity. It refers to the _soc:identity_ node type.|
+|soc:status|String|false|The status of the relationship, including three values: PENDING, CONFIRMED, and IGNORED.|
+|soc:reciprocal|Reference|false|Denotes if the relationship is one way or two ways. It refers to the_soc:relationshipdefinition_ node type. |
+|soc:from|Reference|false|The receiver identity. It refers to the _soc:identity_ node type.|
+|soc:createdTime|Long|false|The time when the relationship is created.|
+
+
+The _{noformat}soc:spaceslist{noformat}_ node type contains the child nodes of the _{noformat}soc:spaceref{noformat}_ type that has the following properties:
+||Property Name ||Required Type || Multiple ||Description ||
+|soc:target|Reference|false|Refer to a space entity.|
+
+
+The _{noformat}soc:profiledefinition{noformat}_ node type contains the _{noformat}soc:avatar{noformat}_ child node of the nt:file type and other child nodes of the _{noformat}soc:profilexp{noformat}_ type.
+
+The _{noformat}soc:profiledefinition{noformat}_ node type has the following properties:
+|| Property Name || Required Type || Multiple|| Description ||
+|soc:parentId|String|false|The identity Id of the profile. |
+|void-Url|undefined | true| The URL to access the profile of an identity.|
+|void-email|undefined | true| The email of an identity in his the profile. |
+|void-firstName|undefined |true |The first name of an identity in his profile. |
+|void-fullName|undefined | true| The full name of an identity in his profile.|
+|void-lastName|undefined | true|The last name of an identity in his profile. |
+|void-username|undefined | true| The username of an identity in his profile. |
+
+
+The _{noformat}soc:profilexp{noformat}_ node type has the following properties:
+|| Property Name || Required Type || Multiple|| Description ||
+|soc:position|String|false|The job position of an identity at an organization. |
+|soc:company|String|false|The company where an identity works. |
+|soc:skills|String|false|The work skills of an identity. |
+|soc:description|String|false|The description of an identity's position at an organization. |
+|soc:endDate|String|false|The date when an identity stops working at an organization. |
+|soc:startDate|String|false|The date when an identity starts working at an organization. |
+
+
+
+The _{noformat}soc:activitylist{noformat}_ node type has the child nodes of the _{noformat}soc:activityyear{noformat}_.
+The _{noformat}soc:activitylist{noformat}_ node type has the following properties:
+|| Property Name || Required Type || Multiple|| Description ||
+|soc:number|Long|false|The number of activities in the activities list. The default value is set to 0.|
+
+The _{noformat}soc:activityyear{noformat}_ node type has the child nodes of the _{noformat}soc:activitymonth{noformat}_ type which has the same properties as its parent node type (_{noformat}soc:activitylist{noformat}_).
+
+The _{noformat}soc:activitymonth{noformat}_ node type has the child nodes of the _{noformat}soc:activityday{noformat}_ type that has the same properties as its parent node type (_{noformat}soc:activitymonth{noformat}_).
+
+The _{noformat}soc:activityday{noformat}_ node type has the child nodes of the _{noformat}soc:activity{noformat}_ type that has the following properties:
+|| Property Name || Required Type || Multiple|| Description ||
+|soc:isComment|Boolean|false|Specify if an activity is a comment or not. The default value is false, meaning that it is a normal activity. |
+|soc:likes|String|true|The list of identity Ids who like the activity. |
+|soc:priority|Float|false| A float number between '0' and '1' represents the relative priority level of an activity in relation to other activities from the same source.|
+|soc:postedTime|Long|false|The number which specifies the time at which an activity took place in milliseconds since the epoch.|
+|soc:title|String|false|The string which specifies the primary text of an activity. |
+|soc:titleId|String|false| The title Id of an activity.|
+|soc:body|String|false|The string which specifies the body template message Id in the gadget spec. The body is an optional extended version of an activity. |
+|soc:bodyId|String|false| The body Id of an activity. |
+|soc:type|String|false| The application Id which creates an activity.|
+|soc:externalId|String|false|An optional string Id which is generated by the posting application. |
+|soc:url|String|false|The URL to access an activity. |
+|soc:appId|String|false|The application Id which creates an activity. |
+|soc:identity|Reference|false|The identity whose activity stream contain an activity.|
+|soc:posterIdentity|Reference|false|The identity who creates an activity.|
+
+The _{noformat}soc:activity{noformat}_ node type has the _{noformat}soc:params{noformat}_ child node of the _{noformat}soc:activityparam{noformat}_ type and other child nodes of the _{noformat}soc:activity{noformat}_ type.
+
+The _{noformat}soc:activityparam{noformat}_ node type has the following property:
+|| Property Name || Required Type || Multiple|| Description ||
+|*|String|false|A map of key-values. |
+
+
+h1. soc:spaces    {anchor:id=SOCref.Social_JCR_Structure.socspaces}
+The _{noformat}soc:spaces{noformat}_ node is used to store data of eXo Social spaces. Its node type is _{noformat}soc:spaces{noformat}_ that includes child nodes of the _{noformat}soc:spacedefinition{noformat}_ type.
+
+The _{noformat}soc:spacedefinition{noformat}_ type has the following properties:
+
+|| Property Name || Required Type || Multiple|| Description||
+|soc:type|String|false|The type of space which is used to run in the Classic or WebOS mode.|
+|soc:membersId|String|true|The list of usernames which are members of a space. |
+|soc:pendingMembersId|String|true| The list of usernames which are pending for validation to join a space. |
+|soc:managerMembersId|String|true|The list of usernames which are managers of a space. |
+|soc:invitedMembersId|String|true|The list of usernames which are invited to join a space. |
+|soc:visibility|String|false|The space visibility: public, private, and hidden. |
+|soc:name|String|false|The space name.|
+|soc:avatarLastUpdated |Long|false|The last time when the avatar is updated. |
+|soc:displayName|String|false|The display name of a space.|
+|soc:registration|String|false|The space registration status: open, validation, and close. |
+|soc:description|String|false|The description of a space.  |
+|soc:priority|String|false|The space priority level that is used to sort spaces in the spaces list. It contains three values: 1, 2 and 3. The smaller value has the higher priority level. |
+|soc:app|String|false|The list of applications with portlet Id, application name, and its state (installed, activated, deactivated). |
+|soc:groupId|String|false| The group associated with the corresponding space.|
+|soc:url|String|false|The link to access a space.  |
 
