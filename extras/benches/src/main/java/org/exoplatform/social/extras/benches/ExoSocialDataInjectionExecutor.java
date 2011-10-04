@@ -150,6 +150,23 @@ public class ExoSocialDataInjectionExecutor {
     }
     return activities;
   }
+  
+  /**
+   * Generates a variable amount of activity
+   * @param count
+   * @return
+   */
+  public Collection<ExoSocialActivity> generateActivities(Identity identity, long count) {
+
+    Collection<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+    for (int i = 0; i < count; i++) {
+      ExoSocialActivity activity = generateActivity(identity);
+      if (activity != null) {
+        activities.add(activity);
+      }
+    }
+    return activities;
+  }
 
   /**
    * Generates activity for User
@@ -199,6 +216,11 @@ public class ExoSocialDataInjectionExecutor {
   }
 
   private ExoSocialActivity generateActivity() {
+    Identity id1 = selectRandomUser(null);
+    return generateActivity(id1);
+  }
+  
+  private ExoSocialActivity generateRandomUserActivity() {
     Identity id1 = selectRandomUser(null);
     return generateActivity(id1);
   }
@@ -352,7 +374,7 @@ public class ExoSocialDataInjectionExecutor {
    * @param count
    * @return
    */
-  public Map<Identity, Set<Space>> generateSpaces(Collection<Identity> identities, int count) {
+  public Map<Identity, Set<Space>> generateSpacesForRandomIdentity(Collection<Identity> identities, int count) {
     //ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
     ExoContainer pc = ExoContainerContext.getCurrentContainer();
     RequestLifeCycle.begin(pc);
@@ -386,29 +408,45 @@ public class ExoSocialDataInjectionExecutor {
   }
   
   /**
+   * Generates a variable amount of Spaces
+   * 
+   * @param count
+   * @return
+   */
+  public Map<Space, Identity> generateSpaces(Collection<Identity> identities, long count) {
+    //ExoContainer pc = ExoContainerContext.getContainerByName(portalName);
+    ExoContainer pc = ExoContainerContext.getCurrentContainer();
+    RequestLifeCycle.begin(pc);
+    
+    Map<Space, Identity> spaceIdentityMap = new HashMap<Space, Identity>();
+    for (Identity identity : identities) {
+      for (int i = 0; i < count; i++) {
+        Space space = generateSpace(identity.getRemoteId());
+        LOG.info("creating space : " + space.getDisplayName() + " for: " + identity.getRemoteId());
+        if (space != null) {
+          spaceIdentityMap.put(space, identity);
+        }        
+      }
+      
+    }
+    
+    RequestLifeCycle.end();
+    return spaceIdentityMap;
+  }
+  
+  /**
    * Generate the activity for Space.
-   * @param identitySpacesMap
+   * @param spaceIdentityMap
    * @param count
    */
-  public void generateActivitySpace(Map<Identity, Set<Space>> identitySpacesMap, long count) {
-    Set<Identity> keys = identitySpacesMap.keySet();
-    Space space = null;
-    for (Identity key : keys) {
+  public void generateActivitySpace(Space space, Identity identity, long count) {
+    for (int i = 0; i < count; i++) {
       String activityMessage = lorem.getWords(10);
-      Set<Space> spaces = identitySpacesMap.get(key);
-      
-      if (spaces.size() > 0) {
-        space = spaces.iterator().next();
-      }
-        
-      for (int i = 0; i < count; i++) {
-        Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                     space.getPrettyName(),
-                                                                     false);
-        activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
-        LOG.info("creating activity of  : " + key.getRemoteId() + " with space: " + space.getDisplayName());
-      }
-      
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                   space.getPrettyName(),
+                                                                   false);
+      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
+      LOG.info("creating activity of  : " + identity.getRemoteId() + " with space: " + space.getDisplayName());
     }
   }
   

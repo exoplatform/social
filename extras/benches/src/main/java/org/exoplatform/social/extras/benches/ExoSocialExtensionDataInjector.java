@@ -41,12 +41,12 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
   private long       numberOfUser;
   private long[]     relationRanks;
   private long[]     activityRanks;
-  private int        numberOfSpace;
+  private long        numberOfSpace;
   private long[]     activitySpaceRanks;
   private ExoSocialDataInjectionExecutor injector;
   
   private Collection<Identity> identities = null;
-  private Map<Identity, Set<Space>> identitySpacesMap = null;
+  private Map<Space, Identity> identitySpacesMap = null;
   
   public ExoSocialExtensionDataInjector(ExoSocialDataInjectionExecutor injector) {
     this.injector = injector;
@@ -92,16 +92,22 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
   private boolean executeAcivitySpaceInjector(boolean nothingWasDone) {
     if (activitySpaceRanks.length > 0) {
       nothingWasDone = false;
+      //Eache space have numberOfSpace spaces.
+      numberOfSpace = numberOfSpace * numberOfUser;
       Range[] activitySpaceRanges = RangeCalculator.calculateRange(numberOfSpace, activitySpaceRanks);
-      
+      Space[] spaceArray = identitySpacesMap.keySet().toArray(new Space[0]);
+      if (numberOfSpace != spaceArray.length) {
+        throw new IllegalArgumentException("Wrong::the space array's length is not equals numberOfSpace.");
+      }
       for(int i = 0; i < activitySpaceRanges.length; i++) {
         long low = activitySpaceRanges[i].getLow();
         long high = activitySpaceRanges[i].getHigh();
         long amount = activitySpaceRanges[i].getAmount();
-        
         for (long j = low; j< high; j++) {
+          Space space = spaceArray[(int)j];
+          Identity identity = identitySpacesMap.get(space);
           LOG.info("\t> about to inject " + amount + " activity spaces.");
-          injector.generateActivitySpace(identitySpacesMap, amount);
+          injector.generateActivitySpace(space, identity, amount);
         }
       }
     }
@@ -121,6 +127,11 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
     if (activityRanks.length > 0) {
       nothingWasDone = false;
       Range[] activityRanges = RangeCalculator.calculateRange(numberOfUser, activityRanks);
+      Identity[] identityArr = identities.toArray(new Identity[0]);
+      //verifying the identity array.
+      if (numberOfUser != identityArr.length) {
+        throw new IllegalArgumentException("Wrong::the identity array's length is not equals numberOfUser.");
+      }
       
       for(int i = 0; i < activityRanges.length; i++) {
         long low = activityRanges[i].getLow();
@@ -128,8 +139,10 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
         long amount = activityRanges[i].getAmount();
         
         for (long j = low; j< high; j++) {
-          LOG.info("\t> about to inject " + amount + " activities.");
-          injector.generateActivities(amount);
+          Identity identity = identityArr[(int)j];
+          LOG.info("\t> about to inject " + amount + " activities for identity = " + identity.getRemoteId());
+          //can keep the Map<identity, activities> here.
+          injector.generateActivities(identity, amount);
         }
       }
     }

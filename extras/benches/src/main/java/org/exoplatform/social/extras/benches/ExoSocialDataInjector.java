@@ -46,7 +46,7 @@ public class ExoSocialDataInjector extends DataInjector {
   
   private Map<String, Long> userActivities = new HashMap<String,Long>();
   private Collection<Identity> identities = null;
-  Map<Identity, Set<Space>> identitySpacesMap = null;
+  Map<Space, Identity> spaceIdentityMap = null;
   
   public ExoSocialDataInjector(ExoSocialDataInjectionExecutor injector) {
     this.injector = injector;
@@ -105,13 +105,18 @@ public class ExoSocialDataInjector extends DataInjector {
     if (numberOfSpace > 0) {
       nothingWasDone = false;
       LOG.info("\t> about to inject " + numberOfSpace + " spaces.");
-      identitySpacesMap = injector.generateSpaces(identities, numberOfSpace);
+      spaceIdentityMap = injector.generateSpaces(identities, numberOfSpace);
     }
     
     if (numberOfActivitySpace > 0) {
       nothingWasDone = false;
       LOG.info("\t> about to inject " + numberOfActivity + " activity spaces.");
-      injector.generateActivitySpace(identitySpacesMap, numberOfActivitySpace);
+      Set<Space> spaceSet = spaceIdentityMap.keySet();
+      for(Space space : spaceSet) {
+        Identity identity = spaceIdentityMap.get(space);
+        injector.generateActivitySpace(space, identity, numberOfActivitySpace);        
+      }
+      
     }
 
 
