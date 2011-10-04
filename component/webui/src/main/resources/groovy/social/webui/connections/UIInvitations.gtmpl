@@ -61,7 +61,7 @@
 
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%></p>
          </div>
       <%}%>
 

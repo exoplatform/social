@@ -282,6 +282,59 @@ public class BaseUIActivity extends UIForm {
     }
   }
 
+  /**
+   * Gets prettyTime by timestamp of activities in space.
+   * 
+   * @param resourceBundle
+   * @param postedTime
+   * @return String
+   */
+  public String getPostedTimeInSpaceString(WebuiBindingContext resourceBundle, long postedTime) throws Exception {
+    long time = (new Date().getTime() - postedTime) / 1000;
+    long value;
+    if (time < 60) {
+      return resourceBundle.appRes("UIActivity.label.Less_Than_A_Minute_In_Space");
+    } else {
+      if (time < 120) {
+        return resourceBundle.appRes("UIActivity.label.About_A_Minute_In_Space");
+      } else {
+        if (time < 3600) {
+          value = Math.round(time / 60);
+          return resourceBundle.appRes("UIActivity.label.About_?_Minutes_In_Space").
+                  replaceFirst("\\{0\\}", String.valueOf(value));
+        } else {
+          if (time < 7200) {
+            return resourceBundle.appRes("UIActivity.label.About_An_Hour_In_Space");
+          } else {
+            if (time < 86400) {
+              value = Math.round(time / 3600);
+              return resourceBundle.appRes("UIActivity.label.About_?_Hours_In_Space").
+                      replaceFirst("\\{0\\}", String.valueOf(value));
+            } else {
+              if (time < 172800) {
+                return resourceBundle.appRes("UIActivity.label.About_A_Day_In_Space");
+              } else {
+                if (time < 2592000) {
+                  value = Math.round(time / 86400);
+                  return resourceBundle.appRes("UIActivity.label.About_?_Days_In_Space").
+                          replaceFirst("\\{0\\}", String.valueOf(value));
+                } else {
+                  if (time < 5184000) {
+                    return resourceBundle.appRes("UIActivity.label.About_A_Month_In_Space");
+                  } else {
+                    value = Math.round(time / 2592000);
+                    return resourceBundle.appRes("UIActivity.label.About_?_Months_In_Space").
+                            replaceFirst("\\{0\\}", String.valueOf(value));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
   private String getFormId() {
      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
      if (context instanceof PortletRequestContext) {

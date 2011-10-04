@@ -29,10 +29,13 @@
 	float:left; /* orientation=lt */
 	float:right; /* orientation=rt */
 	width:56px;
+	position: relative;
 }
 
 .UIActivity .Avatar img {
 	width:56px;
+	height:56px;
+	-moz-border-radius: 3px 3px 3px 3px;
 }
 
 .UIActivity .Avatar span {
@@ -63,7 +66,8 @@
 }
 
 .UIActivity .AvatarCM img {
-	width:37px;
+	width:38px;
+	height:37px;
 }
 
 .UIActivity .CommentInputBox{
@@ -123,7 +127,7 @@
     float: right;
     font-size: 12px;
     font-weight: bold;
-    margin: 5px 5px 0px 0px;
+    margin: 5px 0px 0px 0px;
     padding: 3px 15px;
 }
 
@@ -145,6 +149,15 @@
 .UIActivity .CommentBox {
 	border-bottom: 1px solid #e1e1e1;
 	padding: 7px 0px;
+}
+
+.UIActivity .InputArea {
+	border-bottom: none;
+}
+
+.UIActivity .CommentBoxNoneBottomLine {
+	border-bottom: none;
+	padding: 7px 0 0;
 }
 
 .UIActivity .QuoterBox ,.UIActivity .BoxGray{
@@ -178,7 +191,12 @@
 }
 
 .UIActivity .CommentFormBox {
-	border-bottom: none;
+	border-top: 1px solid #E1E1E1;
+	margin-top: 7px;
+}
+
+.UIActivity .CommentFormBoxNone {
+	border-top: none;
 }
 
 .UIActivity .CommentBox .ContentBox h5 {
@@ -187,7 +205,7 @@
 }
 
 .UIActivity .CommentBox .ContentBox .ContentBlock {
-	padding-top: 5px;
+	margin-top: 2px;
 }
 
 .UIActivity .ContentBox {
@@ -203,7 +221,7 @@
 	margin: 0 0 0 4px; /* orientation=lt */
 	margin: 0 4px 0 0; /* orientation=rt */
 	padding:0;
-	width: 93%;
+	width: 88%;
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
 }
@@ -288,16 +306,6 @@
 	text-decoration: none;
 }
 
-.UIActivity .TitleContent .Text ,.UIActivity .TitleContent .Delimiter{
-	font-weight: bold;
-	display: block;
-	line-height:16px;
-	margin-right:10px; /* orientation=lt */
-	margin-left:10px; /* orientation=rt */
-	float: left; /* orientation=lt */
-	float: right; /* orientation=rt */
-}
-
 .UIActivity  .TextBold a {
 	font-weight: bold;
 }
@@ -325,6 +333,10 @@
 
 .UIActivity .CommentListInfo {
 	border-bottom: 1px solid #e1e1e1;
+}
+
+.UIActivity .HideBottomLine {
+  border-bottom: none;
 }
 
 .UIActivity .CommentListInfo a {

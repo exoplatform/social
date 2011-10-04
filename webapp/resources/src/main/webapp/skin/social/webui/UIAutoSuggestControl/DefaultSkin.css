@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-
 div.suggestions {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -36,6 +35,56 @@ div.suggestions div {
 }
 
 div.suggestions div.current {
+    background-color: #4169e1;
+    color: white;
+}
+
+div.peoplesuggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #cdcdc1;
+    border-top: 1px solid #b7b7b7;
+    position: absolute;   
+    min-width: 283px;
+    *width: 285px;
+    background: white; 
+    color: #3A3A3A;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-y: hidden;
+}
+
+div.peoplesuggestions div {
+    cursor: default;
+    padding: 0px 3px;
+}
+
+div.peoplesuggestions div.current {
+    background-color: #4169e1;
+    color: white;
+}
+
+div.spacesuggestions {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #cdcdc1;
+    border-top: 1px solid #b7b7b7;
+    position: absolute;   
+    min-width: 177px;
+    *width: 179px;
+    background: white; 
+    color: #3A3A3A;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-y: hidden;
+}
+
+div.spacesuggestions div {
+    cursor: default;
+    padding: 0px 3px;
+}
+
+div.spacesuggestions div.current {
     background-color: #4169e1;
     color: white;
 }

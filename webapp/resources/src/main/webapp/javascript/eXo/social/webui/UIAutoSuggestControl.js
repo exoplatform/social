@@ -67,13 +67,18 @@ UIAutoSuggestControl.prototype.load = function(oTextbox /*:HTMLInputElement*/,
  * @scope private
  */
 UIAutoSuggestControl.prototype.createDropDown = function () {
-
+    var typeOfSuggest = eXo.social.webui.typeOfSuggest;
     var oThis = this;
 
     //create the layer and assign styles
     this.layer = document.createElement("div");
     this.layer.id = "UIAutoSuggestControl";
-    this.layer.className = "suggestions";
+    if (typeOfSuggest == 'people') {
+      this.layer.className = "peoplesuggestions";
+	  } else if (typeOfSuggest == 'space') {
+		  this.layer.className = "spacesuggestions";
+	  }
+    
     this.layer.style.visibility = "hidden";
     this.layer.style.width = this.textbox.offsetWidth;
     
@@ -437,7 +442,7 @@ UIAutoSuggestControl.prototype.showSuggestions = function (aSuggestions /*:Array
         this.layer.appendChild(oDiv);
     }
     
-    this.layer.style.left = this.getLeft() + "px";
+    this.layer.style.left = this.getLeft() - 1 + "px";
     this.layer.style.top = (this.getTop()+this.textbox.offsetHeight) + "px";
     var thisLayer = this.layer;
     

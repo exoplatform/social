@@ -53,7 +53,7 @@
         <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
 
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
             <% def peopleURL = Utils.getURI("people") %>
             </p>
          </div>

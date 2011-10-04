@@ -156,12 +156,10 @@
   </div>
 <% } else { %>
   <div class="UIComposerExtensionContainer">
-    <div class="UIComposerLinkExtension">
-      <input id="AttachButton" class="AttachButton" type="submit" value="$labelAttach" />
+  	<span class="TopInputLink"></span>
+    <div class="UIComposerLinkExtension ClearFix">
+      <a href="#" id="AttachButton" class="AttachButton" >&nbsp;</a>
       <div class="InputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
-      <div class="ClearBoth">
-        <span></span>
-      </div>
     </div>
   </div>
 <% } %>

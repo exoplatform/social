@@ -140,10 +140,23 @@
 }
 
 .UIProfile .Container .PortletContent .checkbox {
+  float: left;
 	width: 16px;
-	margin-top: 6px;
+	margin: 6px 0px 0px;
 }
 
+.UIProfile .Container .PortletContent .BlockSeparator {
+  border-top: 1px solid  #e1e1e1; 
+  padding-top: 6px; 
+  margin-top: 6px;
+}
+
+.UIProfile .Container .PortletContent .StillPositionLabel {
+  height: 25px;
+  line-height: 27px;
+  vertical-align: middle;
+}
+    
 .UIProfile .Container .PortletContent textarea {
 	font-size: 12px;
 	width: 243px;
@@ -428,6 +441,11 @@ input.hint,textarea.hint {
     line-height: 16px;
     padding: 2px;
     width: 85px;
+}
+
+.UIProfile .PortletContent .UIFormGrid .FieldLabel {
+  padding-top: 10px;
+	font-weight: bold;
 }
 
 .UIProfile .UIContactSection .NoContactInformation {

@@ -44,19 +44,26 @@
 }
 
 .UIComposer .BlastContainer .UILinkActivityComposer {
-  padding: 0px 7px;
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -388px;
   margin-right: 0px;
+  padding: 0px 7px 0px 20px;
+}
+
+.UIComposer .BlastContainer .DottedLine {
+  background-position: 8px -300px !important;
+  border-left: 1px dotted #B7B7B7;
+  padding-left: 24px !important;
 }
 
 .UIComposer .BlastContainer .UIDocActivityComposer {
-  padding: 4px 6px;
+  padding: 4px 6px 4px 15px;
   background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -301px;
   margin-right: 8px;
 }
 
 .UIComposer .BlastContainer .BlastShare .AttachMents {
   padding-top: 8px;
+  font-weight: bold;
 }
 
 .UIComposer .BlastContainer .BlastShare .ShareButton {
@@ -68,7 +75,7 @@
   padding: 3px 15px;
   float: right;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0px;
   font-size: 12px;
   font-weight: bold;
   color: #fff;
@@ -83,7 +90,7 @@
   padding: 3px 15px;
   float: right;
   cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0px;
   font-size: 12px;
   font-weight: bold;
   color: #fff;

@@ -51,7 +51,7 @@
 
       <%if ((list == null) || (list.size() == 0)) {%>
 		<div class="NoneContentSpace">
-			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%>
+			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
 			<% def peopleURL = Utils.getURI("people") %>
 			</div>
 		</div>

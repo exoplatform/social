@@ -121,16 +121,16 @@
         <% uiform.renderField(childs.get(0));%>
         <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>"><span></span></a>
       </div> 
+       <a href="#" id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
     </div>
 	<div class="ClearFix">
-      <a href="#" id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
-
-      <div class="HideFilter ClearFix" id="$filterId">
+     <div class="HideFilter ClearFix" id="$filterId">
        <div class="Lable">${filterByLabel} :</div>
-	   <div class="MoreContent">
-		   <% uiform.renderField(childs.get(1))%>
-		   <% uiform.renderField(childs.get(2))%>
-		   <% uiform.renderField(childs.get(3))%>
+		   <div class="MoreContent">
+			   <% uiform.renderField(childs.get(1))%>
+			   <% uiform.renderField(childs.get(2))%>
+			   <% uiform.renderField(childs.get(3))%>
+
        </div>
        <a href="#" id="$hideMoreSearchId" class="HideAdvanceSearchLableNone">${hideLabel}</a>
       </div>

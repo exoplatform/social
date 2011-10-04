@@ -54,7 +54,7 @@
 
   <% if ((list == null) || (list.size() == 0)) {%>
     <div class="NoneContentSpace">
-      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotYet")%></p>
+      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%></p>
     </div>
   <%}%>
   <div class="ClearFix">

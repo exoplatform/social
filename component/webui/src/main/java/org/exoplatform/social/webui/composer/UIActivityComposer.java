@@ -36,6 +36,25 @@ public abstract class UIActivityComposer extends UIContainer {
   private UIContainer activityDisplay;
   private UIActivityComposerManager activityComposerManager;
   private boolean isReady = false;
+  private boolean isDisplayed = false;
+  
+  /**
+   * Gets displayed information of component.
+   * 
+   * @return the isDisplayed
+   */
+  public boolean isDisplayed() {
+    return isDisplayed;
+  }
+
+  /**
+   * Sets displayed information of component.
+   * 
+   * @param isDisplayed the isDisplayed to set
+   */
+  public void setDisplayed(boolean isDisplayed) {
+    this.isDisplayed = isDisplayed;
+  }
 
   public boolean isReadyForPostingActivity() {
     return isReady;
@@ -65,6 +84,7 @@ public abstract class UIActivityComposer extends UIContainer {
                            WebuiRequestContext requestContext, String postedMessage) throws Exception {
     onPostActivity(postContext, source, requestContext, postedMessage);
     setReadyForPostingActivity(false);
+    setDisplayed(false);
     activityComposerManager.setDefaultActivityComposer();
   }
 
@@ -76,7 +96,7 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposerManager.setDefaultActivityComposer();
 
       activityComposer.onClose(event);
-
+      activityComposer.setDisplayed(false);
       final UIComposer composer = activityComposerManager.getUIComposer();
       event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }
@@ -98,7 +118,7 @@ public abstract class UIActivityComposer extends UIContainer {
       activityComposerManager.setCurrentActivityComposer(activityComposer);
 
       activityComposer.onActivate(event);
-
+      activityComposer.setDisplayed(true);
       final UIComposer composer = activityComposerManager.getUIComposer();
       event.getRequestContext().addUIComponentToUpdateByAjax(composer);
     }

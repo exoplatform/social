@@ -104,13 +104,24 @@
       <div class="AttachMents">
       $addLabel:
       <%
-        def simpleName, labelSimpleName;
+        def simpleName, labelSimpleName, actionEvent;
+        def counter = 0;
         for(acComposer in uicomponent.getActivityComposers()) {
+          counter++;
           simpleName = acComposer.getClass().getSimpleName();
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+          if (acComposer.isDisplayed()) {
+            actionEvent = "Close";
+          } else {
+            actionEvent = "Activate";
+          }
+          if (counter > 1) {
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("Activate")%>; uicomposer.setCurrentValue();" >&nbsp;</a>
+        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; uicomposer.setCurrentValue();" >$labelSimpleName</a>
+      <% } else { %>
+        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; uicomposer.setCurrentValue();" >$labelSimpleName</a>
       <%
+         }
         }
       %>
       </div>
@@ -122,8 +133,6 @@
       if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
     %>
       <div class="ComposerExtensionContainer">
-        <div class="Button" onclick="<%=currentActivityComposer.event("Close")%>; uicomposer.setCurrentValue();">x</div>
-        <div style="clear:right"><span></span></div>
         <div id="ComposerContainer" class="ClearFix">
           <%
             uicomponent.renderChild(UIActivityComposerContainer.class);

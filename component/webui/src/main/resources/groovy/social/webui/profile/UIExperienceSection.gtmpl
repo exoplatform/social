@@ -36,6 +36,7 @@
   def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
   def addExperience = uicomponent.event("Add") + "; return false";
+  def expCounter = 0;
 %>
 <div class="experience">
 <%uiform.begin()%>
@@ -44,9 +45,15 @@
     <%if (isEdit && isEditable) {%>
       <%if (childSize > 1) {%>
          <%for (int i=1; i < childSize; i +=7) {
+             expCounter++;
              def removeExperience = uicomponent.event("Remove", uicomponent.id, "" + i) + "; return false";
          %>
-
+         
+         <% if (expCounter > 1) { %>
+          <div class="BlockSeparator">
+        <% } else {%>
+          <div>
+        <% } %>
             <table class="UIFormGrid">
               <tbody>
               <tr>
@@ -57,10 +64,11 @@
                   }%>
                 *
                 <% if ((i + 7) >= childSize) {%>
-                    (<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>)
-                    (<a class="ColorLink" onclick="<%= addExperience%>">$addActionLabel</a>)
+                    <a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>&nbsp;
+                    <span class="ActionSparator"> | </span>
+                    <a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>
 				 <% } else {%>
-					(<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>)
+					<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>
                   </td>
                 <% } %>
               </tr>
@@ -105,12 +113,16 @@
                     *<br/>
                   <%}%>
 				  <%if (childs.get(i + 6).isRendered()) {%>
-                  <%uiform.renderField(childs.get(i + 6));%>&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%>
+				        <div class="ClearFix">
+                  <%uiform.renderField(childs.get(i + 6));%>
+                  <div class="StillPositionLabel">&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></div>
+                </div>
                   <%}%>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
    <%} //end for
      } else {
   %>
@@ -120,7 +132,7 @@
           <td>&nbsp</td>
           <td class="FieldComponent">
             <%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
-            (<a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>)
+            <a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>
           </td>
         </tr>
        </tbody>
@@ -145,7 +157,7 @@
           def startDateYear = uicomponent.getYear(startDate);
           def startDateDate = uicomponent.getDate(startDate);
           def endDateDate = uicomponent.getDate(endDate);
-    %>  <div class="Experience">
+    %>  <div class="Experience"><%=uicomponent.stringToDate(startDate)%>
           <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br />
           <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
           <%if(description != null) {%>${description} <%}%><br>
@@ -172,7 +184,7 @@
           def startDateDate = uicomponent.getDate(startDate);
           def endDateDate = uicomponent.getDate(endDate);
       %>
-        <div class="Experience">
+        <div class="Experience"><%=uicomponent.stringToDate(startDate)%>
           <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br/>
           <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + startDateMonth)%> ${startDateDate} ${startDateYear} <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%> <%=_ctx.appRes(uicomponent.getName() + ".label.month_" + endDateMonth)%> ${endDateDate} ${endDateYear} <% } %><br />
           <%if(description != null) {%>${description} <%}%>

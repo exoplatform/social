@@ -115,6 +115,11 @@ a:ACTIVE {
   border: 1px solid #e1e1e1;
 }
 
+.UIProfileUserSearch .SearchSpacesBG .HideFilter .MoreContent {
+  float: left;
+  margin-right: 6px;
+}
+    
 .UIProfileUserSearch .SearchSpacesBG .HideFilter .MoreContent input{
 	width: 100px;
   border: 1px solid #d5d5d5;
@@ -178,7 +183,7 @@ a:ACTIVE {
 }
 
 .UIProfileUserSearch .SearchSpacesBG .AdvanceSearchLableBlock {
-  padding: 4px 0px 4px 16px;
+  padding: 4px 0px 4px 6px;
   text-decoration: underline;
   display: block;
   float: left;
@@ -202,14 +207,12 @@ a:ACTIVE {
   padding: 4px 0px 4px 16px;
   text-decoration: underline;
   display: block;
-  float: left;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .HideAdvanceSearchLableNone {
   padding: 4px 0px 4px 16px;
   text-decoration: underline;
   display: none;
-  float: left;
 }
 
 .UIProfileUserSearch .DirectorySpaces {

@@ -100,7 +100,7 @@
   jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
-  def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime;
+  def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime, activityPostedTimeInSpace;
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (!likesDisplayed) {
@@ -185,7 +185,17 @@
            }%>
       </p>
       <div class="LinkCM">
-        <span class="DateTime">$activityPostedTime *</span>
+        <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
+        	<%
+          	Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+    				def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+    				def spaceName = spaceSource.displayName;
+    				activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
+          %>
+          <span class="DateTime">$activityPostedTimeInSpace <a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a> *</span>
+        <%} else {%>
+          <span class="DateTime">$activityPostedTime *</span>
+        <% } %>
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
          def commentLink = "";
       %>
@@ -235,7 +245,11 @@
       def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
       %>
+      <% if (commentListStatus.getStatus().equals("none")) {%>
+      <div class="CommentListInfo HideBottomLine">
+      <% } else {%>
       <div class="CommentListInfo">
+      <% } %>
             <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
               <a onclick="$showAllCommentsAction" href="#show-all-comments">
                 $labelShowAllComments
@@ -249,9 +263,11 @@
     <% } %>
 
     <%
-    def commenterFullName, commenterProfileUri, commentMessage, commentPostedTime;
+    def commenterFullName, commenterProfileUri, commentMessage, commentPostedTime, commenterAvatarImgSrc;
     def first = true, commentContentClass;
+    def commentCounter = 0;
     commentList.each({
+      commentCounter++;
       if (first & !uicomponent.commentListToggleable()) {
         commentContentClass = "CommentContent";
         first = false;
@@ -263,8 +279,19 @@
       commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
       commentMessage = it.title;
       commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
+      commenterAvatarImgSrc = id.profile.avatarUrl;
+      if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     %>
+      <% if (commentCounter == commentList.size()) {%>
+      <div id="CommentBlock${activity.id}" class="CommentBox CommentBoxNoneBottomLine ClearFix">
+      <% } else { %>
       <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
+      <% } %>
+        <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
+          <img width="38px" height="36px" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+          <span class="BorderTopCM"></span>
+          <span class="BorderBottomCM"></span>
+        </a>
         <div class="ContentBox">
             <h5><a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a></h5>
             <p class="ContentBlock">
@@ -289,7 +316,11 @@
       def currentCommenterName = currentCommenterIdentity.profile.fullName;
       if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     %>
-      <div class="CommentBox CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
+    <% if (commentList.size() == 0) { %>
+      <div class="CommentBox InputArea CommentFormBoxNone ClearFix" id="CommentFormBlock${activity.id}">
+    <% } else { %>
+      <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
+    <% } %>
         <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
           <img src="$currentCommenterAvatar">
 		      <span class="BorderTopCM"></span>
