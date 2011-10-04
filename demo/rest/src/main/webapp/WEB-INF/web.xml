@@ -56,19 +56,19 @@
   </filter-mapping>
 
   <servlet>
-    <servlet-name>RestServer</servlet-name>
+    <servlet-name>socialdemo</servlet-name>
     <description>eXo - Platform REST Server</description>
     <servlet-class>org.exoplatform.services.rest.servlet.RestServlet</servlet-class>
     <load-on-startup>4</load-on-startup>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>RestServer</servlet-name>
+    <servlet-name>socialdemo</servlet-name>
     <url-pattern>/private/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>RestServer</servlet-name>
+    <servlet-name>socialdemo</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 

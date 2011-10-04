@@ -87,7 +87,9 @@ public class ActivityRestListOut extends HashMap<String, Object> {
     } else if (activityList.size() > MAX_LIMIT) {
       activityList = activityList.subList(0, MAX_LIMIT - 1);
     }
+    numberOfComments = numberOfComments >= 0 ? numberOfComments : 0;
     numberOfComments = Math.min(numberOfComments, MAX_NUMBER_OF_COMMENTS);
+    numberOfLikes = numberOfLikes >= 0 ? numberOfLikes : 0;
     numberOfLikes = Math.min(numberOfLikes, MAX_NUMBER_OF_LIKES);
     initialize(activityList, numberOfComments, numberOfLikes, portalContainerName);
   }

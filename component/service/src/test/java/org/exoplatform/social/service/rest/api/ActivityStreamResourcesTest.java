@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.service.rest.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -39,6 +33,12 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.ActivityRestListOut;
 import org.exoplatform.social.service.test.AbstractResourceTest;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Unit Test for {@link ActivityStreamResources}.
@@ -216,6 +216,29 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
 
   /**
+   * Tests get activity stream with short hand "me" param as the authenticated user who makes the request.
+   *
+   * @throws Exception
+   */
+  public void testMeParamGetActivityStreamByIdentityIdWithJsonFormat() throws Exception {
+    String resourceUrl = RESOURCE_URL + "me.json";
+    startSessionAs("demo");
+
+    // Demo creates 10 activities to his stream
+    createActivities(demoIdentity, demoIdentity, 10);
+    connectIdentities(demoIdentity, johnIdentity, true);
+    // John creates 5 activities to Demo's stream
+    createActivities(johnIdentity, demoIdentity, 5);
+    // Demo gets activity stream of his which has 15 activities
+    ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+    assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+    assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+    List<ExoSocialActivity> demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
+    compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
+  }
+
+  /**
    * Tests: get activity stream with "limit" query parameter.
    *
    * @throws Exception
@@ -231,7 +254,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
       assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       // Demo creates 10 activities to his stream
@@ -451,7 +474,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
       assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -556,11 +579,56 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
 
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
-   * 
+   * Tests get activity stream with all query parameters
+   *
    * @throws Exception
    */
-  public void testGetActivityFeedOfAnIdentitiyIdGeneralCase() throws Exception {
+  public void testAllInvalidOptionalQueryParamsGetActivityStreamByIdentityIdWithJsonFormat() throws Exception {
+    // user identity
+    {
+      startSessionAs("john");
+      // Demo creates 10 activities to his stream
+      createActivities(demoIdentity, demoIdentity, 10);
+      // John creates 5 activities to Demo's stream
+      connectIdentities(demoIdentity, johnIdentity, true);
+      connectIdentities(demoIdentity, maryIdentity, true);
+      createActivities(johnIdentity, demoIdentity, 5);
+      List<ExoSocialActivity> demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).
+                                               loadAsList(0, 20);
+      createComment(demoActivities.get(3), demoIdentity, 2);
+      createComment(demoActivities.get(3), johnIdentity, 2);
+      createComment(demoActivities.get(3), maryIdentity, 2);
+
+      createComment(demoActivities.get(4), johnIdentity, 1);
+
+      createComment(demoActivities.get(6), maryIdentity, 7);
+      createComment(demoActivities.get(6), johnIdentity, 4);
+
+      activityManager.saveLike(demoActivities.get(3), demoIdentity);
+      activityManager.saveLike(demoActivities.get(3), johnIdentity);
+      activityManager.saveLike(demoActivities.get(3), maryIdentity);
+
+      activityManager.saveLike(demoActivities.get(5), maryIdentity);
+      // John gets activity stream of Demo's which has 15 activities
+      String resourceUrl = RESOURCE_URL + demoIdentity.getId() + ".json?limit=-1" +
+                                                                        "&number_of_likes=-1" +
+                                                                        "&number_of_comments=-1";
+      ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
+      assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
+      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
+      compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
+      compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
+    }
+  }
+
+  /**
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(UriInfo, String, String, int, String, String, int, int)}
+   *
+   * @throws Exception
+   */
+  public void testGetActivityFeedOfAuthenticatedGeneralCase() throws Exception {
     String resourceUrl = RESOURCE_URL + "feed.json";
     testAccessResourceAsAnonymous("GET", resourceUrl, null, null);
     
@@ -575,11 +643,11 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testDefaultGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testDefaultGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     String resourceUrl = RESOURCE_URL + "feed.json";
     // user identity
@@ -589,7 +657,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
       assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
       
       createActivities(demoIdentity, demoIdentity, 10);
@@ -635,11 +703,11 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testLimitGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testLimitGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     int limit = 10;
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     String resourceUrl = RESOURCE_URL + "feed.json?limit=" + limit;
@@ -651,7 +719,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
       assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
       
       createActivities(demoIdentity, demoIdentity, 10);
@@ -675,7 +743,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
       assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -696,11 +764,11 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testSinceIdGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testSinceIdGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     // user identity
     {
       startSessionAs("demo");
@@ -739,7 +807,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, 20);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
 
@@ -764,11 +832,11 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testMaxIdGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testMaxIdGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     // user identity
     {
       startSessionAs("demo");
@@ -812,18 +880,18 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadOlder(baseActivity, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
     }
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testNumberOfCommentsGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testNumberOfCommentsGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     int numberOfComments = 5;
     String resourceUrl = RESOURCE_URL + "feed.json?number_of_comments=" + numberOfComments;
@@ -834,7 +902,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
       assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       createActivities(demoIdentity, demoIdentity, 10);
@@ -853,8 +921,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
-      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
-                              numberOfComments);
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(),
+              numberOfComments);
     }
 
     // space identity
@@ -866,7 +934,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
       assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -889,17 +957,17 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                                                                 loadAsList(0, 40);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
-      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity(), 
-                              numberOfComments);
+      compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity(),
+              numberOfComments);
     }
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testNumberOfLikesGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testNumberOfLikesGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     int numberOfLikes = 2;
     String resourceUrl = RESOURCE_URL + "feed.json?number_of_likes=" + numberOfLikes;
@@ -982,11 +1050,11 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
   
   /**
-   * Test {@link ActivityStreamResources#getActivityFeedOfAnIdentityId(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
+   * Test {@link ActivityStreamResources#getActivityFeedOfAuthenticated(javax.ws.rs.core.UriInfo, String, String, int, String, String, int, int)}
    * 
    * @throws Exception
    */
-  public void testAllQueryParamsGetActivityFeedOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testAllQueryParamsGetActivityFeedOfAuthenticatedWithJsonFormat() throws Exception {
     int limit = 10;
     int since_id = 123456;
     int numberOfComments = 5;
@@ -1072,7 +1140,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                            numberOfLikes);
     }
   }
-  
+
   /**
    * General test cases:
    * - Not authenticated
@@ -1082,7 +1150,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testGeneralCaseGetActivityConnectionsOfAnIdentityId() throws Exception {
+  public void testGeneralCaseGetActivityConnectionsOfAuthenticated() throws Exception {
     String resourceUrl = RESOURCE_URL + "xyz.json";
     testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
     
@@ -1119,7 +1187,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testDefaultGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testDefaultGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
     // user identity
     {
       String resourceUrl = RESOURCE_URL + "connections.json";
@@ -1138,8 +1206,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       // John gets activity stream of Demo's which has 15 activities
       ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
-      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
-      		.OK.getStatusCode(), rsp1.getStatus());
+      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(),
+                   Response.Status.OK.getStatusCode(), rsp1.getStatus());
       assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
               MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
       
@@ -1151,57 +1219,57 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     }
 
   }
-  
+
   /**
    * Tests: get activity stream of connection with limit parameter.
    *
    * @throws Exception
    */
-  public void testLimitGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
-      List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
-      int limit = 10;
-      
-	  String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
-	  
-	  // Johns gets activity stream of Demo which has 0 activities
-	  startSessionAs("demo");
-	  ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
-	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
-	  		.OK.getStatusCode(), rsp.getStatus());
-	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
-	  compareActivities(emptyList, (ActivityRestListOut) rsp.getEntity());
-	
-	  // Demo creates 10 activities to his stream
-	  createActivities(demoIdentity, demoIdentity, 10);
-	  
-	  // Make connection between demo and john
-	  connectIdentities(demoIdentity, johnIdentity, true);
-	  
-	  // John creates 5 activities to Demo's stream
-	  createActivities(johnIdentity, demoIdentity, 5);
-	  
-	  // John gets activity stream of Demo's which has 15 activities
-	  ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
-	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
-	  		.OK.getStatusCode(), rsp1.getStatus());
-	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
-	  
-	  List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
-	  compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
-	  
-	  limit = 3;
-	  resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
-	  rsp1 = service("GET", resourceUrl, "", null, null);
-	  assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
-	  		.OK.getStatusCode(), rsp1.getStatus());
-	  assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-	          MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
-	  demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
-	  compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
-	  
-	  endSession();
+  public void testLimitGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
+    List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
+    int limit = 10;
+
+    String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
+
+    // Johns gets activity stream of Demo which has 0 activities
+    startSessionAs("demo");
+    ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
+    assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+            .OK.getStatusCode(), rsp.getStatus());
+    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    compareActivities(emptyList, (ActivityRestListOut) rsp.getEntity());
+
+    // Demo creates 10 activities to his stream
+    createActivities(demoIdentity, demoIdentity, 10);
+
+    // Make connection between demo and john
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    // John creates 5 activities to Demo's stream
+    createActivities(johnIdentity, demoIdentity, 5);
+
+    // John gets activity stream of Demo's which has 15 activities
+    ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+    assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+            .OK.getStatusCode(), rsp1.getStatus());
+    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+
+    List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+    compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+
+    limit = 3;
+    resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit;
+    rsp1 = service("GET", resourceUrl, "", null, null);
+    assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+            .OK.getStatusCode(), rsp1.getStatus());
+    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+    compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+
+    endSession();
   }
 
   /**
@@ -1209,7 +1277,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testSinceIdGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testSinceIdGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
       //Wrong since_id => not found
       String resourceUrl = RESOURCE_URL + "connections.json?since_id=" + 123456;
 
@@ -1255,7 +1323,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testMaxIdGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testMaxIdGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
       //Wrong since_id => not found
       String resourceUrl = RESOURCE_URL + "connections.json?max_id=" + 123456;
 
@@ -1293,7 +1361,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testNumberOfCommentsGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testNumberOfCommentsGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
       int numberOfComments = 3;
       startSessionAs("demo");
       
@@ -1330,7 +1398,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testNumberOfLikesGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
+  public void testNumberOfLikesGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
 	  int numberOfLikes = 3;
       startSessionAs("demo");
       
@@ -1370,52 +1438,52 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testFullParamsGetActivityConnectionsOfAnIdentityIdWithJsonFormat() throws Exception {
-	  int limit = 3;
-	  int numberOfComments = 3;
-      int numberOfLikes = 3;
-      
-      startSessionAs("demo");
-      
-      // Demo creates 10 activities to his stream
-      createActivities(demoIdentity, demoIdentity, 10);
-      
-      // Make connection between demo and john
-      connectIdentities(demoIdentity, johnIdentity, true);
-      
-      // John creates 5 activities to Demo's stream
-      createActivities(johnIdentity, demoIdentity, 5);
-      
-      // Demo comments on john's activities
-      List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
-      for (ExoSocialActivity act : demoActivities) {
-    	createComment(act, johnIdentity, 5);
-        activityManager.saveLike(act, demoIdentity);
-        activityManager.saveLike(act, johnIdentity);
-        activityManager.saveLike(act, maryIdentity);
-        activityManager.saveLike(act, rootIdentity);
-      }
-      
-      ExoSocialActivity baseSinceIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
-      ExoSocialActivity baseMaxIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
-      
-      String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit + "&since_id=" + baseSinceIdActivity.getId()
-        + "&max_id=" + baseMaxIdActivity.getId() + "&number_of_comments=" + numberOfComments 
-        + "&number_of_likes=" + numberOfLikes;
-      ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
-      assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
-      		.OK.getStatusCode(), rsp1.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
-      demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
-      
-      compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
-      compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
-      compareNumberOfLikes(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfLikes);
-      
-      endSession();
+  public void testFullParamsGetActivityConnectionsOfAuthenticatedWithJsonFormat() throws Exception {
+    int limit = 3;
+    int numberOfComments = 3;
+    int numberOfLikes = 3;
+
+    startSessionAs("demo");
+
+    // Demo creates 10 activities to his stream
+    createActivities(demoIdentity, demoIdentity, 10);
+
+    // Make connection between demo and john
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    // John creates 5 activities to Demo's stream
+    createActivities(johnIdentity, demoIdentity, 5);
+
+    // Demo comments on john's activities
+    List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
+    for (ExoSocialActivity act : demoActivities) {
+      createComment(act, johnIdentity, 5);
+      activityManager.saveLike(act, demoIdentity);
+      activityManager.saveLike(act, johnIdentity);
+      activityManager.saveLike(act, maryIdentity);
+      activityManager.saveLike(act, rootIdentity);
+    }
+
+    ExoSocialActivity baseSinceIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+    ExoSocialActivity baseMaxIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+
+    String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit + "&since_id=" + baseSinceIdActivity.getId()
+            + "&max_id=" + baseMaxIdActivity.getId() + "&number_of_comments=" + numberOfComments
+            + "&number_of_likes=" + numberOfLikes;
+    ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
+    assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
+            .OK.getStatusCode(), rsp1.getStatus());
+    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+
+    compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
+    compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
+    compareNumberOfLikes(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfLikes);
+
+    endSession();
   }
-  
+
   /**
    * General test cases:
    * - Not authenticated
@@ -1424,7 +1492,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testGetActivitySpacesByIdentityIdGeneralCase() throws Exception {
+  public void testGetActivitySpacesOfAuthenticatedGeneralCase() throws Exception {
     String resourceUrl = RESOURCE_URL + "12356/spaces.json";
     //testAccessResourceAsAnonymous("GET", resourceUrl, null, null);
     
@@ -1449,7 +1517,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   *
    * @throws Exception
    */
-  public void testDefaultGetActivitySpacesByIdentityIdWithJsonFormat() throws Exception {
+  public void testDefaultGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     // user identity
     {
@@ -1504,7 +1572,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
    *
    * @throws Exception
    */
-  public void testLimitGetActivitySpacesByIdentityIdWithJsonFormat() throws Exception {
+  public void testLimitGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     int limit = 10;
     // user identity
@@ -1554,7 +1622,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
   }
 
-  public void testSinceIdGetActivitySpacesByIdentityIdWithJsonFormat() throws Exception {
+  public void testSinceIdGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
     // space identity
     {
       // Creates a space with 0 activities
@@ -1587,7 +1655,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
 
 
-  public void testMaxIdGetActivitySpacesByIdentityIdWithJsonFormat() throws Exception {
+  public void testMaxIdGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
 
     // space identity
     {
@@ -1606,7 +1674,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                                                       .loadAsList(0, 5)
                                                       .get(4);
       String resourceUrl = RESOURCE_URL + "spaces.json?max_id=" + baseActivity.getId();
-      ;
 
       List<ExoSocialActivity> olderActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity)
                                                                .loadOlder(baseActivity, 20);
@@ -1622,7 +1689,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
   }
 
 
-  public void testNumberOfCommentsGetActivitySpacesByIdentityWithJsonFormat() throws Exception {
+  public void testNumberOfCommentsGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
     List<ExoSocialActivity> emptyList = new ArrayList<ExoSocialActivity>();
     // user identity
     int numberOfComments = 3;
@@ -1663,7 +1730,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     endSession();
   }
 
-  public void testNumberOfLikesGetActivitySpacesByIdentityIdWithJsonFormat() throws Exception {
+  public void testNumberOfLikesGetActivitySpacesOfAuthenticatedWithJsonFormat() throws Exception {
     int numberOfLikes = 2;
     // user identity
     {
@@ -1700,7 +1767,6 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
     }
-    endSession();
   }
   
   /**
