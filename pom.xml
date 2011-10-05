@@ -116,7 +116,7 @@
     <org.jsecurity.version>0.9.0</org.jsecurity.version>
     <org.apache.httpcomponents.httpclient.version>4.0.1</org.apache.httpcomponents.httpclient.version>
     <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
-    <org.staxnav.version>0.9.4</org.staxnav.version>
+    <org.staxnav.version>0.9.5</org.staxnav.version>
 
 
     <net.sf.ehcache.version>1.6.0</net.sf.ehcache.version>
