@@ -16,32 +16,19 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.Principal;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
+import org.exoplatform.services.test.mock.MockHttpServletRequest;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.test.AbstractServiceTest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import java.util.TimeZone;
 
 
 /**
@@ -182,7 +169,7 @@ public class UtilTest extends AbstractServiceTest {
     String gotBaseUrl2 = Util.getBaseUrl();
     assertEquals("gotBaseUrl2 must be: " + baseUrl1, baseUrl1, gotBaseUrl2);
 
-    String baseUrl2 = "http://www.social.demo.exoplatform.org";
+    String baseUrl2 = "http://www.social.demo.exoplatform.org:8000";
     String urlRequest3 = baseUrl2 + "/social/rest/v1/identity/123456.json?fields=fullName,avatarUrl";
     setFakeCurrentEnvironmentContext(urlRequest3);
     String gotBaseUrl3 = Util.getBaseUrl();
@@ -202,241 +189,9 @@ public class UtilTest extends AbstractServiceTest {
 
   private void setFakeCurrentEnvironmentContext(String urlRequest) {
     EnvironmentContext envctx = new EnvironmentContext();
-    HttpServletRequest httpRequest = new FakeHttpServletRequest(urlRequest);
+    HttpServletRequest httpRequest = new MockHttpServletRequest(urlRequest, null, 0, "GET", null);
     envctx.put(HttpServletRequest.class, httpRequest);
     EnvironmentContext.setCurrent(envctx);
-  }
-
-
-  /**
-   * Fake HttpServletRequest
-   */
-  private class FakeHttpServletRequest implements HttpServletRequest {
-    URI uriRequest;
-    
-    public FakeHttpServletRequest(String urlRequest) {
-      try {
-        uriRequest = new URI(urlRequest);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException("Failed to create FakeHttpServletRequest");
-      }
-    }
-    
-    public String getAuthType() {
-      return null;  
-    }
-
-    public Cookie[] getCookies() {
-      return new Cookie[0];  
-    }
-
-    public long getDateHeader(String name) {
-      return 0;  
-    }
-
-    public String getHeader(String name) {
-      return null;  
-    }
-
-    public Enumeration getHeaders(String name) {
-      return null;  
-    }
-
-    public Enumeration getHeaderNames() {
-      return null;  
-    }
-
-    public int getIntHeader(String name) {
-      return 0;  
-    }
-
-    public String getMethod() {
-      return null;  
-    }
-
-    public String getPathInfo() {
-      return null;  
-    }
-
-    public String getPathTranslated() {
-      return null;  
-    }
-
-    public String getContextPath() {
-      return null;  
-    }
-
-    public String getQueryString() {
-      return null;  
-    }
-
-    public String getRemoteUser() {
-      return null;  
-    }
-
-    public boolean isUserInRole(String role) {
-      return false;  
-    }
-
-    public Principal getUserPrincipal() {
-      return null;  
-    }
-
-    public String getRequestedSessionId() {
-      return null;  
-    }
-
-    public String getRequestURI() {
-      return null;  
-    }
-
-    public StringBuffer getRequestURL() {
-      return null;  
-    }
-
-    public String getServletPath() {
-      return null;  
-    }
-
-    public HttpSession getSession(boolean create) {
-      return null;  
-    }
-
-    public HttpSession getSession() {
-      return null;  
-    }
-
-    public boolean isRequestedSessionIdValid() {
-      return false;  
-    }
-
-    public boolean isRequestedSessionIdFromCookie() {
-      return false;  
-    }
-
-    public boolean isRequestedSessionIdFromURL() {
-      return false;  
-    }
-
-    public boolean isRequestedSessionIdFromUrl() {
-      return false;  
-    }
-
-    public Object getAttribute(String name) {
-      return null;  
-    }
-
-    public Enumeration getAttributeNames() {
-      return null;  
-    }
-
-    public String getCharacterEncoding() {
-      return null;  
-    }
-
-    public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-      
-    }
-
-    public int getContentLength() {
-      return 0;  
-    }
-
-    public String getContentType() {
-      return null;  
-    }
-
-    public ServletInputStream getInputStream() throws IOException {
-      return null;  
-    }
-
-    public String getParameter(String name) {
-      return null;  
-    }
-
-    public Enumeration getParameterNames() {
-      return null;  
-    }
-
-    public String[] getParameterValues(String name) {
-      return new String[0];  
-    }
-
-    public Map getParameterMap() {
-      return null;  
-    }
-
-    public String getProtocol() {
-      return null;  
-    }
-
-    public String getScheme() {
-      return uriRequest.getScheme();
-    }
-
-    public String getServerName() {
-      return null;  
-    }
-
-    public int getServerPort() {
-      return 0;  
-    }
-
-    public BufferedReader getReader() throws IOException {
-      return null;  
-    }
-
-    public String getRemoteAddr() {
-      return null;
-    }
-
-    public String getRemoteHost() {
-      return uriRequest.getHost();
-    }
-
-    public void setAttribute(String name, Object o) {
-      
-    }
-
-    public void removeAttribute(String name) {
-      
-    }
-
-    public Locale getLocale() {
-      return null;  
-    }
-
-    public Enumeration getLocales() {
-      return null;  
-    }
-
-    public boolean isSecure() {
-      return false;  
-    }
-
-    public RequestDispatcher getRequestDispatcher(String path) {
-      return null;  
-    }
-
-    public String getRealPath(String path) {
-      return null;  
-    }
-
-    public int getRemotePort() {
-      return uriRequest.getPort();
-    }
-
-    public String getLocalName() {
-      return null;  
-    }
-
-    public String getLocalAddr() {
-      return null;  
-    }
-
-    public int getLocalPort() {
-      return 0;  
-    }
   }
 
 

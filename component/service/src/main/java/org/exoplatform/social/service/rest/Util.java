@@ -16,19 +16,6 @@
  */
 package org.exoplatform.social.service.rest;
 
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
@@ -45,6 +32,18 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Util.java: utility class for rest <br />.
@@ -380,11 +379,11 @@ public final class Util {
    */
   public static final String getBaseUrl() {
     HttpServletRequest currentServletRequest = getCurrentServletRequest();
-    String port = "";
-    if (currentServletRequest.getRemotePort() != -1) {
-      port = ":" + currentServletRequest.getRemotePort();
-    }
-    return currentServletRequest.getScheme() + "://" + currentServletRequest.getRemoteHost() + port;
+    //always returns the port, even the request has no explicit port => avatarUrl always return with 80 port.
+    //need to improve this: if no port is specified => the return link should have no port specified as
+    // 80 is the default port.
+    return currentServletRequest.getScheme() + "://" + currentServletRequest.getServerName() +
+                                                 ":" + currentServletRequest.getServerPort();
   }
 
 
