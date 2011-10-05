@@ -124,6 +124,13 @@
     </dependency>
 
     <dependency>
+      <groupId>caja</groupId>
+      <artifactId>json_simple</artifactId>
+      <version>${caja.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib</artifactId>
       <version>${cglib.version}</version>
@@ -138,9 +145,37 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>${commons-beanutils.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-chain</groupId>
+      <artifactId>commons-chain</artifactId>
+      <version>${commons-chain.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>${commons-dbcp.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>${commons-httpclient.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>${commons-logging.version}</version>
       <type>jar</type>
     </dependency>
 
@@ -166,6 +201,27 @@
     </dependency>
 
     <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel-api</artifactId>
+      <version>${de.odysseus.juel.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>de.odysseus.juel</groupId>
+      <artifactId>juel-impl</artifactId>
+      <version>${de.odysseus.juel.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>${net.sf.ehcache.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <version>${javassist.version}</version>
@@ -176,6 +232,20 @@
       <groupId>stax</groupId>
       <artifactId>stax-api</artifactId>
       <version>${stax.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.staxnav</groupId>
+      <artifactId>staxnav.core</artifactId>
+      <version>${org.staxnav.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jsecurity</groupId>
+      <artifactId>jsecurity</artifactId>
+      <version>${org.jsecurity.version}</version>
       <type>jar</type>
     </dependency>
 

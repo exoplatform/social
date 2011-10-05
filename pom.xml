@@ -56,12 +56,23 @@
     <asm.version>1.5.3</asm.version>
     <antlr.version>2.7.6rc1</antlr.version>
     <bsh.version>2.0b1</bsh.version>
+    <caja.version>r1</caja.version>
     <c3p0.version>0.9.1.2</c3p0.version>
     <cglib.version>2.2</cglib.version>
+    <commons.beanutils.version>1.8.0</commons.beanutils.version>
+    <commons.chain.version>1.0</commons.chain.version>
+    <commons.codec.version>1.4</commons.codec.version>
+    <commons.fileupload.version>1.2.1</commons.fileupload.version>
+    <commons-httpclient.version>3.1</commons-httpclient.version>
+    <commons.logging.version>1.0.4</commons.logging.version>
+    <commons.pool.version>1.2</commons.pool.version>
+    <commons-chain.version>1.2</commons-chain.version>
     <commons-digester.version>1.7</commons-digester.version>
     <commons-lang.version>2.6</commons-lang.version>
+    <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <commons-collections.version>3.2.1</commons-collections.version>
     <commons-dbcp.version>1.2.2</commons-dbcp.version>
+    <commons-logging.version>1.1.1</commons-logging.version>
     <commons-pool.version>1.5.5</commons-pool.version>
     <findbugs.version>1.0.0</findbugs.version>
     <html-parser.version>1.6</html-parser.version>
@@ -103,7 +114,12 @@
     <org.testng.version>5.10</org.testng.version>
     <org.jvnet.jaxb2.maven2.version>0.1</org.jvnet.jaxb2.maven2.version>
     <org.jsecurity.version>0.9.0</org.jsecurity.version>
+    <org.apache.httpcomponents.httpclient.version>4.0.1</org.apache.httpcomponents.httpclient.version>
+    <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
+    <org.staxnav.version>0.9.4</org.staxnav.version>
 
+
+    <net.sf.ehcache.version>1.6.0</net.sf.ehcache.version>
     <net.oauth.core.oauth.version>20100527</net.oauth.core.oauth.version>
     <net.oauth.core.oauth-provider.version>20100527</net.oauth.core.oauth-provider.version>
     <net.oauth.core.oauth-httpclient4.version>20090913</net.oauth.core.oauth-httpclient4.version>
@@ -113,15 +129,8 @@
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
     <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
-    <org.apache.httpcomponents.httpclient.version>4.0.1</org.apache.httpcomponents.httpclient.version>
-    <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
-    <commons.beanutils.version>1.8.0</commons.beanutils.version>
-    <commons.chain.version>1.0</commons.chain.version>
-    <commons.codec.version>1.4</commons.codec.version>
-    <commons.fileupload.version>1.2.1</commons.fileupload.version>
-    <commons.logging.version>1.0.4</commons.logging.version>
-    <commons.pool.version>1.2</commons.pool.version>
-    <org.staxnav.version>0.9.5</org.staxnav.version>
+
+    <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
 
 
     <!-- ************** -->
