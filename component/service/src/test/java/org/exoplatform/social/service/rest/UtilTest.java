@@ -24,6 +24,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.test.AbstractServiceTest;
+import org.exoplatform.social.service.test.SocialMockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
@@ -189,7 +190,7 @@ public class UtilTest extends AbstractServiceTest {
 
   private void setFakeCurrentEnvironmentContext(String urlRequest) {
     EnvironmentContext envctx = new EnvironmentContext();
-    HttpServletRequest httpRequest = new MockHttpServletRequest(urlRequest, null, 0, "GET", null);
+    HttpServletRequest httpRequest = new SocialMockHttpServletRequest(urlRequest, null, 0, "GET", null);
     envctx.put(HttpServletRequest.class, httpRequest);
     EnvironmentContext.setCurrent(envctx);
   }

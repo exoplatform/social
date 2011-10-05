@@ -87,11 +87,11 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
     }
 
     EnvironmentContext envctx = new EnvironmentContext();
-    HttpServletRequest httpRequest = new MockHttpServletRequest("",
-                                                                in,
-                                                                in != null ? in.available() : 0,
-                                                                method,
-                                                                headers);
+    HttpServletRequest httpRequest = new SocialMockHttpServletRequest("",
+                                                                      in,
+                                                                      in != null ? in.available() : 0,
+                                                                      method,
+                                                                      headers);
     envctx.put(HttpServletRequest.class, httpRequest);
     EnvironmentContext.setCurrent(envctx);
     ContainerRequest request = new ContainerRequest(method,
