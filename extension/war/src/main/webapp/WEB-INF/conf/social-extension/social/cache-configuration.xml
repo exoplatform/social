@@ -38,7 +38,7 @@
           <description></description>
           <object type="org.exoplatform.services.cache.ExoCacheConfig">
             <field name="name"><string>IdentityCache</string></field>
-            <field name="maxSize"><int>${cache.exo.social.IdentityCache.Capacity:200}</int></field>
+            <field name="maxSize"><int>${cache.exo.social.IdentityCache.Capacity:300}</int></field>
             <field name="liveTime"><long>${cache.exo.social.IdentityCache.TimeToLive:-1}</long></field>
           </object>
         </object-param>
