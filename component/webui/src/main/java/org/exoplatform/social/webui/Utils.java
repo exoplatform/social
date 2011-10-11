@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
@@ -259,7 +260,7 @@ public class Utils {
   public static String getSpaceHomeURL(Space space) {
     RequestContext ctx = RequestContext.getCurrentInstance();
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/" + space.getPrettyName(), space.getPrettyName());
     return nodeURL.setResource(resource).toString(); 
   }
 }
