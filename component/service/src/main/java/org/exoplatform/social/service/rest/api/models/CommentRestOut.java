@@ -106,7 +106,7 @@ public class CommentRestOut extends HashMap<String, Object>{
   
   public void setPosterIdentity(IdentityRestOut posterIdentity) {
     if(posterIdentity != null){
-      this.put(Field.POSTER_IDENTITY.toString(), new IdentityRestOut());
+      this.put(Field.POSTER_IDENTITY.toString(), posterIdentity);
     } else {
       this.put(Field.POSTER_IDENTITY.toString(), new HashMap<String, Object>());
     }

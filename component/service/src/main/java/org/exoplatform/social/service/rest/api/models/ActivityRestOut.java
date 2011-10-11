@@ -25,6 +25,7 @@ import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.Util;
 
 
@@ -401,12 +402,16 @@ public class ActivityRestOut extends HashMap<String, Object>{
       return;
     }
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
     RealtimeListAccess<ExoSocialActivity> rcla = activityManager.getCommentsWithListAccess(activity);
     ExoSocialActivity[] comments = rcla.load(0, numberOfComments);
     numberOfComments = Math.min(comments.length, numberOfComments);
     List<CommentRestOut> commentRests = new ArrayList<CommentRestOut>(numberOfComments);
     for (int i = 0; i < numberOfComments; i++) {
-      commentRests.add(new CommentRestOut(comments[i], portalContainerName));
+      ExoSocialActivity currentComment = comments[i];
+      CommentRestOut commentRestOut = new CommentRestOut(comments[i], portalContainerName);
+      commentRestOut.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(currentComment.getUserId(), false)));
+      commentRests.add(commentRestOut);
     }
     setComments(commentRests);
   }

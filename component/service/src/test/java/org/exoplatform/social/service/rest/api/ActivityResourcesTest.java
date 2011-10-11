@@ -45,6 +45,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.service.rest.api.ActivityResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 import org.json.JSONWriter;
 
@@ -531,6 +532,11 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       
       ArrayList<HashMap<String,Object>> comments = (ArrayList<HashMap<String,Object>>) entity.get("comments");
       assertEquals(20, comments.size());
+      for (HashMap<String, Object> comment : comments) {
+        IdentityRestOut identityRestOut = (IdentityRestOut) comment.get("posterIdentity");
+        assertEquals("demo", identityRestOut.getRemoteId());
+      }
+
     }
     //forbidden
     {
