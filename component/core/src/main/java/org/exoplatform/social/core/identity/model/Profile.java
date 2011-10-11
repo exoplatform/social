@@ -21,7 +21,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.service.LinkProvider;
 
 /**
  * The Class Profile.
@@ -329,7 +332,15 @@ public class Profile {
    * @return this profile URL
    */
   public final String getUrl() {
-    return (String) getProperty(URL);
+
+    if (OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
+      return LinkProvider.getUserProfileUri(identity.getRemoteId());
+    } else if (SpaceIdentityProvider.NAME.equals(identity.getProviderId())) {
+      return LinkProvider.getSpaceUri(identity.getRemoteId());
+    }
+
+    return null;
+
   }
 
   /**
