@@ -29,6 +29,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
@@ -378,17 +379,22 @@ public class SpaceServiceImpl implements SpaceService {
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
     saveSpace(space, true);
+
     spaceLifeCycle.spaceCreated(space, creator);
     try {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
       spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
       for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
-        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(),
-               spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
+        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
       }
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
     }
+    RequestLifeCycle.end();
+    //SOC-2124 too long wait for executing these handlers which handles when space created.
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    //Need to begin here for RequestLifeCycle.end(); if is not existing, an exception will be appeared. 
+    RequestLifeCycle.begin(container);
     return space;
   }
 
