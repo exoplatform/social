@@ -461,4 +461,22 @@ public final class Util {
       return null;
     }
   }
+  
+  /**
+   * Check if identityId contained in liked Identity, if yes return true else return false.
+   * @param identityID
+   * @param activity
+   * @return
+   */
+  public static boolean isLikedByIdentity(String identityID, ExoSocialActivity activity){
+    String[] likedIdentityIds = activity.getLikeIdentityIds();
+    if(activity.getLikeIdentityIds()!=null && likedIdentityIds.length > 0 ){
+      for (int i = 0; i < likedIdentityIds.length; i++) {
+        if (identityID.equals(likedIdentityIds[i])){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }

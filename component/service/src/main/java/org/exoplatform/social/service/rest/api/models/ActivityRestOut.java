@@ -154,6 +154,12 @@ public class ActivityRestOut extends HashMap<String, Object>{
       this.setTotalNumberOfLikes(null);
     }
     
+    if(Util.isLikedByIdentity(Util.getAuthenticatedUserIdentity(portalContainerName).getId(),activity)){
+      this.setLiked(true);
+    } else {
+      this.setLiked(false);
+    }
+    
     RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
     this.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
     

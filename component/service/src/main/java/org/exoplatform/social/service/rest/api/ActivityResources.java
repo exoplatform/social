@@ -135,12 +135,6 @@ public class ActivityResources implements ResourceContainer {
     }
     
     model.setNumberOfComments(numberOfComments, activity, portalContainerName);
-
-    if(isLikedByIdentity(authenticatedIdentity.getId(),activity)){
-      model.setLiked(true);
-    } else {
-      model.setLiked(false);
-    }
     
     return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
   }
@@ -629,18 +623,6 @@ public class ActivityResources implements ResourceContainer {
                                            @PathParam("activityId") String activityId,
                                            @PathParam("format") String format) {
     return deleteLikeActivityById(uriInfo, portalContainerName, activityId, format);
-  }
-  
-  private boolean isLikedByIdentity(String identityID, ExoSocialActivity activity){
-    String[] likedIdentityIds = activity.getLikeIdentityIds();
-    if(activity.getLikeIdentityIds()!=null && likedIdentityIds.length > 0 ){
-      for (int i = 0; i < likedIdentityIds.length; i++) {
-        if (identityID.equals(likedIdentityIds[i])){
-          return true;
-        }
-      }
-    }
-    return false;
   }
   
   private boolean isPassed(String value) {
