@@ -456,6 +456,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     activityManager.saveLike(demoActivity, rootIdentity);
     
     createComment(demoActivity, demoIdentity, 30);
+    connectIdentities(demoIdentity, johnIdentity, true);
     
     String resourceUrl = RESOURCE_URL+"/" + demoActivity.getId() + ".json";
     

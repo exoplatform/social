@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -64,31 +67,20 @@ public class SecurityManager {
    */
   public static boolean canAccessActivity(PortalContainer portalContainer, String userIdentityId,
                                           ExoSocialActivity existingActivity) {
-    
-    SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+
     IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
     
     Identity authenticateIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userIdentityId, false);
     
     if(authenticateIdentity == null || existingActivity == null){
       return false;
     }
-    ActivityStream activityStream = existingActivity.getActivityStream();
-    if(activityStream.getType().equals(ActivityStream.Type.SPACE)){
-      Space spaceOfActivity = spaceService.getSpaceByPrettyName(existingActivity.getStreamOwner());
-      String[] memberRemoteIds = spaceOfActivity.getMembers();
-      for (String memberRemoteId : memberRemoteIds) {
-        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, memberRemoteId, false);
-        if(identity.getId().equals(existingActivity.getId())){
-          return true;
-        }
-      }
-    } else if (activityStream.getType().equals(ActivityStream.Type.USER)){
-      return true;
+    else {
+      return canAccessActivity(portalContainer, authenticateIdentity, existingActivity);
     }
-    return false;
+    
   }
+
   /**
    * <p>Checks if an authenticated identity can access an existing activity.</p>
    *
@@ -105,23 +97,55 @@ public class SecurityManager {
    */
   public static boolean canAccessActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
+
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-    
     RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
-    
+
     if(authenticatedIdentity == null || existingActivity == null){
       return false;
     }
-    ActivityStream activityStream = existingActivity.getActivityStream();
-    if(activityStream.getType().equals(ActivityStream.Type.SPACE)){
-      Space spaceOfActivity = spaceService.getSpaceByPrettyName(existingActivity.getStreamOwner());
-      return spaceService.isMember(spaceOfActivity, authenticatedIdentity.getRemoteId()) ||
-          spaceService.isManager(spaceOfActivity, authenticatedIdentity.getRemoteId());
-    } else if (activityStream.getType().equals(ActivityStream.Type.USER)){
+
+    // My activity
+    if (authenticatedIdentity.getId().equals(existingActivity.getUserId())) {
       return true;
     }
+
+    switch (existingActivity.getActivityStream().getType()) {
+
+      case SPACE:
+
+        // member or manager
+        String spaceName = existingActivity.getActivityStream().getPrettyId();
+        Space space = spaceService.getSpaceByPrettyName(spaceName);
+        List<String> allIds = new ArrayList<String>();
+        allIds.addAll(Arrays.asList(space.getMembers()));
+        allIds.addAll(Arrays.asList(space.getManagers()));
+        if (allIds.contains(authenticatedIdentity.getRemoteId())) {
+          return true;
+        }
+
+        break;
+
+      case USER:
+
+        // My stream
+        if (authenticatedIdentity.getId().equals(existingActivity.getActivityStream().getId())) {
+          return true;
+        }
+
+        // My netword stream
+        String contactId = existingActivity.getActivityStream().getId();
+        Relationship relationship = relationshipManager.get(authenticatedIdentity, new Identity(contactId));
+        if (relationship != null && Relationship.Type.CONFIRMED.equals(relationship.getStatus())) {
+          return true;
+        }
+
+        break;
+
+    }
+
     return false;
+
   }
   
   /**

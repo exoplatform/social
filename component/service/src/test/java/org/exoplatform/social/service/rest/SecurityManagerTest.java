@@ -124,16 +124,64 @@ public class SecurityManagerTest extends AbstractServiceTest {
     super.tearDown();
   }
 
+  /**
+   * Tests {@link SecurityManager#canAccessActivity(PortalContainer, Identity, ExoSocialActivity)}.
+   */
+  public void testCanAccessActivityUnknown() {
+    createActivities(demoIdentity, demoIdentity, 2);
+    ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
+  }
 
   /**
    * Tests {@link SecurityManager#canAccessActivity(PortalContainer, Identity, ExoSocialActivity)}.
    */
-  public void testCanAccessActivity() {
+  public void testCanAccessActivityMine() {
     createActivities(demoIdentity, demoIdentity, 2);
     ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
-    assertTrue(SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity.getRemoteId(), activity));
   }
 
+  /**
+   * Tests {@link SecurityManager#canAccessActivity(PortalContainer, Identity, ExoSocialActivity)}.
+   */
+  public void testCanAccessActivityNetwork() {
+    createActivities(demoIdentity, demoIdentity, 2);
+    connectIdentities(demoIdentity, johnIdentity, true);
+    ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
+
+    // In network stream
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
+
+    // Out network stream
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
+  }
+
+  /**
+   * Tests {@link SecurityManager#canAccessActivity(PortalContainer, Identity, ExoSocialActivity)}.
+   */
+  public void testCanAccessActivitySpace() throws SpaceException {
+
+    createSpaces(1);
+
+    //
+    Space space1 = spaceService.getAllSpaces().get(0);
+    Identity spaceIdentity = identityManager.getIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);
+    createActivities(spaceIdentity, spaceIdentity, 2);
+    ExoSocialActivity activity = activityManager.getActivities(spaceIdentity).get(0);
+
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity.getRemoteId(), activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
+
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
+  }
 
   /**
    * Tests {@link SecurityManager#canPostActivity(PortalContainer, Identity, Identity)}.

@@ -156,6 +156,7 @@ public class ActivityResourcesV1Alpha1Test extends AbstractResourceTest {
    */
   public void testGetActivityByIdWithJsonFormat() throws Exception {
     createActivities(demoIdentity, demoIdentity, 1);
+    connectIdentities(demoIdentity, johnIdentity, true);
     ExoSocialActivity demoActivity = activityManager.getActivitiesWithListAccess(demoIdentity).load(0, 1)[0];
     String resourceUrl = RESOURCE_URL+"/" + demoActivity.getId() + ".json";
     { // get activity by id without any query param
