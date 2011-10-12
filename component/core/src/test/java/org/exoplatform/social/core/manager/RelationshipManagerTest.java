@@ -428,9 +428,9 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     Identity[] identities = demoIncoming.load(0, 10);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
 
-    assertEquals(7, identities[0].getProfile().getProperties().size());
-    assertEquals(8, identities[1].getProfile().getProperties().size());
-    assertEquals(7, identities[2].getProfile().getProperties().size());
+    assertEquals(6, identities[0].getProfile().getProperties().size());
+    assertEquals(7, identities[1].getProfile().getProperties().size());
+    assertEquals(6, identities[2].getProfile().getProperties().size());
     
     for (Identity identity : demoIncoming.load(0, 10)) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -481,8 +481,8 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     Identity[] identities = rootOutgoing.load(0, 10);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
 
-    assertEquals(8, identities[0].getProfile().getProperties().size());
-    assertEquals(7, identities[1].getProfile().getProperties().size());
+    assertEquals(7, identities[0].getProfile().getProperties().size());
+    assertEquals(6, identities[1].getProfile().getProperties().size());
     
     for (Identity identity : rootOutgoing.load(0, 10)) {
       Identity identityLoadProfile = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId(), true);
@@ -1375,9 +1375,9 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      Identity[] identities = contactsList.load(0, 10);
      demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, demoIdentity.getRemoteId(), true);
 
-     assertEquals(8, identities[0].getProfile().getProperties().size());
-     assertEquals(7, identities[1].getProfile().getProperties().size());
-     assertEquals(7, identities[2].getProfile().getProperties().size());
+     assertEquals(7, identities[0].getProfile().getProperties().size());
+     assertEquals(6, identities[1].getProfile().getProperties().size());
+     assertEquals(6, identities[2].getProfile().getProperties().size());
      
      for (Identity identity : contactsList.load(0, 10)) {
        assertNotNull("identity.getProfile() must not be null", identity.getProfile());

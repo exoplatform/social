@@ -339,11 +339,9 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     assertNotNull(relationshipList.get(0).getSender().getProfile().getId());
     assertEquals("p1 first", relationshipList.get(0).getSender().getProfile().getProperty(Profile.FIRST_NAME));
     assertEquals("p1 last", relationshipList.get(0).getSender().getProfile().getProperty(Profile.LAST_NAME));
-    assertEquals("p1 url", relationshipList.get(0).getSender().getProfile().getProperty(Profile.URL));
     assertNotNull(relationshipList.get(0).getReceiver().getProfile().getId());
     assertEquals("p2 first", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.FIRST_NAME));
     assertEquals("p2 last", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.LAST_NAME));
-    assertEquals("p2 url", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.URL));
 
     //
     tearDownIdentityList.add(tmp1.getId());
@@ -428,11 +426,9 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     assertNotNull(relationshipList.get(0).getSender().getProfile().getId());
     assertEquals("p1 first", relationshipList.get(0).getSender().getProfile().getProperty(Profile.FIRST_NAME));
     assertEquals("p1 last", relationshipList.get(0).getSender().getProfile().getProperty(Profile.LAST_NAME));
-    assertEquals("p1 url", relationshipList.get(0).getSender().getProfile().getProperty(Profile.URL));
     assertNotNull(relationshipList.get(0).getReceiver().getProfile().getId());
     assertEquals("p2 first", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.FIRST_NAME));
     assertEquals("p2 last", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.LAST_NAME));
-    assertEquals("p2 url", relationshipList.get(0).getReceiver().getProfile().getProperty(Profile.URL));
 
 
     //

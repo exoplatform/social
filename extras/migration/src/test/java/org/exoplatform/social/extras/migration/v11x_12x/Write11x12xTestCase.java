@@ -309,7 +309,6 @@ public class Write11x12xTestCase extends AbstractMigrationTestCase {
     assertEquals("2", spaceNode.getProperty("soc:priority").getString());
     assertEquals("validation", spaceNode.getProperty("soc:registration").getString());
     assertEquals("classic", spaceNode.getProperty("soc:type").getString());
-    assertEquals("name" + suffix, spaceNode.getProperty("soc:url").getString());
     assertEquals("private", spaceNode.getProperty("soc:visibility").getString());
     assertEquals("validation", spaceNode.getProperty("soc:registration").getString());
 
@@ -361,7 +360,6 @@ public class Write11x12xTestCase extends AbstractMigrationTestCase {
     String parentId = rootNode.getNode("production/soc:providers/soc:organization/soc:user_" + suffix).getUUID();
 
     Node profileNode = rootNode.getNode("production/soc:providers/soc:organization/soc:user_" + suffix + "/soc:profile");
-    assertEquals("/portal/private/classic/profile/user_" + suffix, profileNode.getProperty("void-Url").getValues()[0].getString());
     assertEquals("User " + suffix, profileNode.getProperty("void-firstName").getValues()[0].getString());
     assertEquals("user_" + suffix + "@mail.com", profileNode.getProperty("void-email").getValues()[0].getString());
     assertEquals("Foobar", profileNode.getProperty("void-lastName").getValues()[0].getString());

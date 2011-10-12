@@ -89,6 +89,7 @@ public class Profile {
   /**
    * An optional url for this profile
    */
+  @Deprecated
   public static final String        URL            = "Url";
 
   /** PHONES key. */
@@ -267,9 +268,16 @@ public class Profile {
    * @param value the value
    */
   public final void setProperty(final String name, final Object value) {
+
+    // TODO : remove with Profile.URL
+    if (URL.equals(name)) {
+      return;
+    }
+
     properties.put(name, value);
     setHasChanged(true);
     setUpdateType(name);
+
   }
 
   /**
