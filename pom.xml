@@ -153,6 +153,7 @@
     <module>docs</module>
     <module>packaging</module>
 	  <module>testsuite</module>
+    <module>config</module>
   </modules>
 
   <dependencyManagement>
@@ -891,6 +892,11 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.webapp.resources</artifactId>
         <type>war</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.config</artifactId>
         <version>${project.version}</version>
       </dependency>
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2011 eXo Platform SAS.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<configuration
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+<!-- REST service -->
+  <component>
+    <type>org.exoplatform.social.service.rest.AppsRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.SpacesRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.ActivitiesRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.IdentityRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.LinkShareRestService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.social.service.rest.PeopleRestService</type>
+  </component>
+<!-- REST service -->
+
+<!-- Social Rest API resources for latest -->
+  <component>
+    <type>org.exoplatform.social.service.rest.api.VersionResources</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api.ActivityResources</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api.IdentityResources</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api.ActivityStreamResources</type>
+  </component>
+<!-- Social Rest API resources for latest -->
+
+
+<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
+  <component>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityResources</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityStreamResources</type>
+  </component>
+  <component>
+    <type>org.exoplatform.social.service.rest.api_v1alpha1.IdentityResources</type>
+  </component>
+<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
+
+</configuration>

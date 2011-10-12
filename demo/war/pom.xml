@@ -34,7 +34,46 @@
   <packaging>war</packaging>
   <name>eXo Social Demo WAR</name>
   <description>eXo Social Demo WAR</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.config</artifactId>
+    </dependency>
+  </dependencies>
+
   <build>
     <finalName>socialdemo</finalName>
+
+    <plugins>
+      <plugin>
+        <groupId>com.goldin.plugins</groupId>
+        <artifactId>maven-copy-plugin</artifactId>
+        <version>0.2.3</version>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <resource>
+                <zipEntry>**/*-configuration.xml</zipEntry>
+                <targetPath>${project.build.directory}/socialdemo/WEB-INF/conf/socialdemo/social/</targetPath>
+                <dependencies>
+                  <dependency>
+                    <groupId>org.exoplatform.social</groupId>
+                    <artifactId>exo.social.config</artifactId>
+                  </dependency>
+                </dependencies>
+                <unpack>true</unpack>
+              </resource>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
 </project>

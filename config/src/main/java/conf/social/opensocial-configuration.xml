@@ -21,19 +21,25 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+  <component>
+    <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
+    <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
+  </component>
 
-  <import>war:/conf/social-extension/jcr/jcr-configuration.xml</import>
-  <import>war:/conf/social-extension/organization/organization-configuration.xml</import>
-  <import>war:/conf/social-extension/portal/portal-configuration.xml</import>
-  <import>war:/conf/social-extension/social/social-configuration.xml</import>
-  <import>war:/conf/social-extension/social/component-plugins-configuration.xml</import>
+  <component>
+    <key>org.exoplatform.social.opensocial.service.ExoPeopleService</key>
+    <type>org.exoplatform.social.opensocial.service.ExoPeopleService</type>
+  </component>
 
-  <!-- Comes from config module -->
-  <import>war:/conf/social-extension/social/cache-configuration.xml</import>
-  <import>war:/conf/social-extension/social/common-configuration.xml</import>
-  <import>war:/conf/social-extension/social/core-configuration.xml</import>
-  <import>war:/conf/social-extension/social/opensocial-configuration.xml</import>
-  <import>war:/conf/social-extension/social/service-configuration.xml</import>
-  <import>war:/conf/social-extension/social/webui-configuration.xml</import>
+  <component>
+    <key>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</key>
+    <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+    <init-params>
+      <value-param>
+        <name>rest-container-name</name>
+        <value>portal</value>
+      </value-param>
+    </init-params>
+  </component>
 
 </configuration>
