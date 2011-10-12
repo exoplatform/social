@@ -199,6 +199,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     identityStorage.getIdentitiesByProfileFilterCount("p", new ProfileFilter());
     assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
 
+    Identity i2 = new Identity("p", "id2");
+    identityStorage.saveIdentity(i2);
+    tearDownIdentityList.add(i2.getId());
+
+    assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
+
   }
 
   public void testGetIdentitiesByFilter() throws Exception {
@@ -212,6 +218,12 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
     identityStorage.getIdentitiesByProfileFilter("p", new ProfileFilter(), 0, 10, false);
     assertEquals(1, cacheService.getIdentitiesCache().getCacheSize());
+
+    Identity i2 = new Identity("p", "id2");
+    identityStorage.saveIdentity(i2);
+    tearDownIdentityList.add(i2.getId());
+
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
 
   }
 

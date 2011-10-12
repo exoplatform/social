@@ -130,6 +130,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.put(key, new IdentityData(identity));
     exoIdentitiesCountCache.clearCache();
+    exoIdentitiesCache.clearCache();
   }
 
   /**
