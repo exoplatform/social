@@ -26,6 +26,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -39,15 +40,14 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @since     Oct 17, 2010
  * @copyright eXo SAS
  */
-public class
-
-    RelationshipStorageTest extends AbstractCoreTest {
+public class RelationshipStorageTest extends AbstractCoreTest {
 
   private final Log LOG = ExoLogger.getLogger(RelationshipStorageTest.class);
 
   private RelationshipStorage relationshipStorage;
 
   private IdentityStorage identityStorage;
+  private List<Identity> tearDownIdentityList;
 
   private Identity rootIdentity,
                    johnIdentity,
@@ -73,6 +73,8 @@ public class
     identityStorage.saveIdentity(johnIdentity);
     identityStorage.saveIdentity(maryIdentity);
     identityStorage.saveIdentity(demoIdentity);
+    
+    tearDownIdentityList = new ArrayList<Identity>();
   }
 
   @Override
@@ -85,6 +87,10 @@ public class
     identityStorage.deleteIdentity(johnIdentity);
     identityStorage.deleteIdentity(maryIdentity);
     identityStorage.deleteIdentity(demoIdentity);
+    
+    for (Identity identity : tearDownIdentityList) {
+      identityStorage.deleteIdentity(identity);
+    }
     super.tearDown();
   }
 
@@ -567,4 +573,206 @@ public class
     tearDownRelationshipList.add(rootToMaryRelationship);
     tearDownRelationshipList.add(rootToDemoRelationship);
   }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.3
+   */
+  public void testGetConnectionsByFilter() throws Exception {
+    populateData();
+    populateRelationshipData(Type.CONFIRMED);
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    List<Identity> identities = relationshipStorage.getConnectionsByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName9");
+    identities = relationshipStorage.getConnectionsByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.3
+   */
+  public void testGetIncomingByFilter() throws Exception {
+    populateData();
+    populateRelationshipIncommingData();
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    List<Identity> identities = relationshipStorage.getIncomingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName6");
+    identities = relationshipStorage.getIncomingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getOutgoingByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.3
+   */
+  public void testGetOutgoingByFilter() throws Exception {
+    populateData();
+    populateRelationshipData(Type.PENDING);
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    List<Identity> identities = relationshipStorage.getOutgoingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be 8", 8, identities.size());
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName8");
+    identities = relationshipStorage.getOutgoingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be 1", 1, identities.size());
+  }
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingCountByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.3
+   */
+  public void testGetIncomingCountByFilter() throws Exception {
+    populateData();
+    populateRelationshipIncommingData();
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    int countIdentities = relationshipStorage.getIncomingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 8", 8, countIdentities);
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName6");
+    countIdentities = relationshipStorage.getIncomingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 1", 1, countIdentities);
+  }
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsCountByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.2
+   */
+  public void testGetConnectionsCountByFilter() throws Exception {
+    populateData();
+    populateRelationshipData(Type.CONFIRMED);
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    int countIdentities = relationshipStorage.getConnectionsCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 8", 8, countIdentities);
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName6");
+    countIdentities = relationshipStorage.getConnectionsCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 1", 1, countIdentities);
+  }
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getOutgoingCountByFilter(providerId, Identity, ProfileFilter)}
+   * 
+   * @throws Exception
+   * @since 1.2.3
+   */
+  public void testGetOutgoingCountByFilter() throws Exception {
+    populateData();
+    populateRelationshipData(Type.PENDING);
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    int countIdentities = relationshipStorage.getOutgoingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 8", 8, countIdentities);
+    
+    pf.setPosition("developer");
+    pf.setGender("male");
+    pf.setName("FirstName8");
+    countIdentities = relationshipStorage.getOutgoingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    assertEquals("Number of identities must be 1", 1, countIdentities);
+  }
+
+  /**
+   * Builds the ProfileFilter and exclude the Identity.
+   * @param filter
+   * @return
+   */
+  private ProfileFilter buildProfileFilterWithExcludeIdentities(ProfileFilter filter) {
+
+    ProfileFilter result = filter;
+    if (result == null) {
+      result = new ProfileFilter();
+    }
+
+    List<Identity> excludeIdentities = new ArrayList<Identity>();
+    if (tearDownIdentityList.size() > 1) {
+      Identity identity0 = tearDownIdentityList.get(0);
+      excludeIdentities.add(identity0);
+      result.setExcludedIdentityList(excludeIdentities);
+    }
+
+    return result;
+
+  }
+  /**
+   * Creates the relationship to connect from 0 to [2, 9].
+   * @param type
+   */
+  private void populateRelationshipData(Relationship.Type type) {
+    if (tearDownIdentityList.size() > 1) {
+      Identity identity0 = tearDownIdentityList.get(0);
+      
+      Relationship firstToSecondRelationship = null;
+      for (int i = 2; i< tearDownIdentityList.size(); i++) {
+        firstToSecondRelationship = new Relationship(identity0, tearDownIdentityList.get(i), type);
+        tearDownRelationshipList.add(firstToSecondRelationship);
+        relationshipStorage.saveRelationship(firstToSecondRelationship);
+      }
+    }
+  }
+  
+  /**
+   * Creates the relationship to connect from 0 to [2, 9].
+   * @param type
+   */
+  private void populateRelationshipIncommingData() {
+    if (tearDownIdentityList.size() > 1) {
+      Identity identity0 = tearDownIdentityList.get(0);
+      
+      Relationship firstToSecondRelationship = null;
+      for (int i = 2; i< tearDownIdentityList.size(); i++) {
+        firstToSecondRelationship = new Relationship(tearDownIdentityList.get(i), identity0, Relationship.Type.PENDING);
+        tearDownRelationshipList.add(firstToSecondRelationship);
+        relationshipStorage.saveRelationship(firstToSecondRelationship);
+      }
+    }
+  }
+  /**
+   * Creates the identity data index in range [0,9]  
+   */
+  private void populateData() {
+    String providerId = "organization";
+    int total = 10;
+    for (int i = 0; i < total; i++) {
+      String remoteId = "username" + i;
+      Identity identity = new Identity(providerId, remoteId);
+      identityStorage.saveIdentity(identity);
+
+      Profile profile = new Profile(identity);
+      profile.setProperty(Profile.FIRST_NAME, "FirstName" + i);
+      profile.setProperty(Profile.LAST_NAME, "LastName" + i);
+      profile.setProperty(Profile.FULL_NAME, "FirstName" + i + " " +  "LastName" + i);
+      profile.setProperty("position", "developer");
+      profile.setProperty("gender", "male");
+      identity.setProfile(profile);
+      tearDownIdentityList.add(identity);
+      identityStorage.saveProfile(profile);
+    }
+  }
+  
 }

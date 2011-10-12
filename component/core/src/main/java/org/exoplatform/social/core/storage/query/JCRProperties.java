@@ -24,4 +24,5 @@ package org.exoplatform.social.core.storage.query;
 public class JCRProperties {
 
   public static final PropertyLiteralExpression<String> path = new PropertyLiteralExpression<String>(String.class, "jcr:path");
+  public static final PropertyLiteralExpression<String> id = new PropertyLiteralExpression<String>(String.class, "jcr:uuid");
 }

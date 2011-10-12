@@ -20,22 +20,18 @@ package org.exoplatform.social.core.storage.cache;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
-import org.exoplatform.social.core.storage.cache.model.key.ListRelationshipsKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipType;
+import org.exoplatform.social.core.storage.cache.model.key.*;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
 import org.exoplatform.social.core.storage.cache.model.data.RelationshipData;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipIdentityKey;
-import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +114,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     this.storage = storage;
+    this.storage.setStorage(this);
     this.identityStorage = identityStorage;
 
     //
@@ -284,7 +281,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(identity);
-    ListRelationshipsKey listKey = new ListRelationshipsKey(key, RelationshipType.RELATIONSHIP, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.RELATIONSHIP, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -307,7 +304,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(receiver);
-    ListRelationshipsKey listKey = new ListRelationshipsKey(key, RelationshipType.INCOMMING, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.INCOMMING, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -329,7 +326,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey iKey = new IdentityKey(receiver);
-    RelationshipCountKey key = new RelationshipCountKey(iKey, RelationshipType.INCOMMING);
+    RelationshipCountKey<IdentityKey> key = new RelationshipCountKey<IdentityKey>(iKey, RelationshipType.INCOMMING);
 
     //
     return relationshipsCount.get(
@@ -351,7 +348,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(sender);
-    ListRelationshipsKey listKey = new ListRelationshipsKey(key, RelationshipType.OUTGOING, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.OUTGOING, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -373,7 +370,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey iKey = new IdentityKey(sender);
-    RelationshipCountKey key = new RelationshipCountKey(iKey, RelationshipType.OUTGOING);
+    RelationshipCountKey<IdentityKey> key = new RelationshipCountKey<IdentityKey>(iKey, RelationshipType.OUTGOING);
 
     //
     return relationshipsCount.get(
@@ -394,7 +391,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey iKey = new IdentityKey(identity);
-    RelationshipCountKey key = new RelationshipCountKey(iKey, RelationshipType.RELATIONSHIP);
+    RelationshipCountKey<IdentityKey> key = new RelationshipCountKey<IdentityKey>(iKey, RelationshipType.RELATIONSHIP);
 
     //
     return relationshipsCount.get(
@@ -416,7 +413,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(identity);
-    ListRelationshipsKey listKey = new ListRelationshipsKey(key, RelationshipType.CONNECTION, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.CONNECTION, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -445,7 +442,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey iKey = new IdentityKey(identity);
-    RelationshipCountKey key = new RelationshipCountKey(iKey, RelationshipType.CONNECTION);
+    RelationshipCountKey<IdentityKey> key = new RelationshipCountKey<IdentityKey>(iKey, RelationshipType.CONNECTION);
 
     //
     return relationshipsCount.get(
@@ -458,4 +455,145 @@ public class CachedRelationshipStorage implements RelationshipStorage {
         .build();
 
   }
+
+  public List<Identity> getConnectionsByFilter(final String providerId,
+                                               final Identity existingIdentity,
+                                               final ProfileFilter profileFilter,
+                                               final long offset,
+                                               final long limit) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    ListRelationshipsKey<IdentityFilterKey> listKey =
+        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.CONNECTION_WITH_FILTER, offset, limit);
+
+    //
+    ListIdentitiesData keys = relationshipsCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getConnectionsByFilter(providerId, existingIdentity, profileFilter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildRelationships(keys);
+
+  }
+
+  public List<Identity> getIncomingByFilter(final String providerId,
+                                            final Identity existingIdentity,
+                                            final ProfileFilter profileFilter,
+                                            final long offset,
+                                            final long limit) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    ListRelationshipsKey<IdentityFilterKey> listKey =
+        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.INCOMMING_WITH_FILTER, offset, limit);
+
+    //
+    ListIdentitiesData keys = relationshipsCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getIncomingByFilter(providerId, existingIdentity, profileFilter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildRelationships(keys);
+
+  }
+
+  public List<Identity> getOutgoingByFilter(final String providerId,
+                                            final Identity existingIdentity,
+                                            final ProfileFilter profileFilter,
+                                            final long offset,
+                                            final long limit) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    ListRelationshipsKey<IdentityFilterKey> listKey =
+        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.OUTGOING_WITH_FILTER, offset, limit);
+
+    //
+    ListIdentitiesData keys = relationshipsCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getOutgoingByFilter(providerId, existingIdentity, profileFilter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildRelationships(keys);
+
+  }
+
+  public int getConnectionsCountByFilter(final String providerId,
+                                         final Identity existingIdentity,
+                                         final ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    RelationshipCountKey<IdentityFilterKey> key =
+        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.CONNECTION_WITH_FILTER);
+
+    //
+    return relationshipsCount.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getConnectionsCountByFilter(providerId, existingIdentity, profileFilter));
+          }
+        },
+        key).build();
+
+  }
+
+  public int getIncomingCountByFilter(final String providerId,
+                                      final Identity existingIdentity,
+                                      final ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    RelationshipCountKey<IdentityFilterKey> key =
+        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.INCOMMING_WITH_FILTER);
+
+    //
+    return relationshipsCount.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getIncomingCountByFilter(providerId, existingIdentity, profileFilter));
+          }
+        },
+        key).build();
+
+  }
+
+  public int getOutgoingCountByFilter(final String providerId,
+                                      final Identity existingIdentity,
+                                      final ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    //
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
+    RelationshipCountKey<IdentityFilterKey> key =
+        new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.OUTGOING_WITH_FILTER);
+
+    //
+    return relationshipsCount.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getOutgoingCountByFilter(providerId, existingIdentity, profileFilter));
+          }
+        },
+        key).build();
+
+  }
+
+
+  
 }

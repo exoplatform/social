@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * IdentityStorage implementation.
@@ -444,85 +443,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
    * Private
    */
 
-  private String addPositionSearchPattern(final String position) {
-    if (position.length() != 0) {
-      if (position.indexOf(ASTERISK_STR) == -1) {
-        return ASTERISK_STR + position + ASTERISK_STR;
-      }
-      return position;
-    }
-    return EMPTY_STR;
-  }
-
-  private String processUsernameSearchPattern(final String userName) {
-    String modifiedUserName = userName;
-    if (modifiedUserName.length() > 0) {
-      modifiedUserName =
-          ((EMPTY_STR.equals(modifiedUserName)) || (modifiedUserName.length() == 0))
-              ? ASTERISK_STR
-              : modifiedUserName;
-
-      modifiedUserName =
-          (modifiedUserName.charAt(0) != ASTERISK_CHAR) ? ASTERISK_STR + modifiedUserName : modifiedUserName;
-
-      modifiedUserName =
-          (modifiedUserName.charAt(modifiedUserName.length() - 1) != ASTERISK_CHAR)
-              ? modifiedUserName += ASTERISK_STR
-              : modifiedUserName;
-
-      modifiedUserName =
-          (modifiedUserName.indexOf(ASTERISK_STR) >= 0)
-              ? modifiedUserName.replace(ASTERISK_STR, "." + ASTERISK_STR)
-              : modifiedUserName;
-      
-      modifiedUserName =
-          (modifiedUserName.indexOf(PERCENT_STR) >= 0)
-              ? modifiedUserName.replace(PERCENT_STR, "." + ASTERISK_STR)
-              : modifiedUserName;
-
-      Pattern.compile(modifiedUserName);
-    }
-    return userName;
-  }
-
-  private void applyFilter(final WhereExpression whereExpression, final  ProfileFilter profileFilter) {
-    //
-    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
-    processUsernameSearchPattern(inputName.trim());
-    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String gender = profileFilter.getGender().trim();
-    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
-    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
-
-    //
-    if (nameForSearch.trim().length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
-          PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
-      );
-    }
-
-    if (position.length() != 0) {
-      whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
-          PERCENT_STR + position.toLowerCase() + PERCENT_STR
-      );
-    }
-
-    if (gender.length() != 0) {
-      whereExpression.and().equals(ProfileEntity.gender, gender);
-    }
-  }
-
-  private void applyExcludes(final WhereExpression whereExpression, final List<Identity> excludedIdentityList) {
-
-    if (excludedIdentityList != null & excludedIdentityList.size() > 0) {
-      for (Identity identity : excludedIdentityList) {
-        whereExpression.and().not().equals(ProfileEntity.parentId, identity.getId());
-      }
-    }
-  }
-
   private Identity createIdentityFromEntity(final IdentityEntity identityEntity) {
 
     //
@@ -763,8 +683,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       offset = 0;
     }
 
-    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
-    processUsernameSearchPattern(inputName.trim());
+    String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
+    StorageUtils.processUsernameSearchPattern(inputName.trim());
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
     List<Identity> listIdentity = new ArrayList<Identity>();
 
@@ -772,10 +692,10 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + SLASH_STR + PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
-    applyExcludes(whereExpression, excludedIdentityList);
-    applyFilter(whereExpression, profileFilter);
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyFilter(whereExpression, profileFilter);
 
     whereExpression.orderBy(ProfileEntity.fullName, Order.ASC);
 
@@ -806,10 +726,10 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + SLASH_STR + PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
-    applyExcludes(whereExpression, excludedIdentityList);
-    applyFilter(whereExpression, profileFilter);
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
 
@@ -829,13 +749,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + SLASH_STR + PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
-    applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
 
     whereExpression.and().like(
         whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR
+        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + StorageUtils.PERCENT_STR
     );
 
     builder.where(whereExpression.toString());
@@ -858,13 +778,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + SLASH_STR + PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
-    applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
 
     whereExpression.and().like(
         whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + PERCENT_STR
+        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + StorageUtils.PERCENT_STR
     );
 
     QueryResult<ProfileEntity> results = builder.where(whereExpression.toString()).get().objects(offset, limit);

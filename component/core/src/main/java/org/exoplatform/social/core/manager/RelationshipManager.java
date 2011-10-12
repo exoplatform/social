@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
@@ -594,4 +595,43 @@ public interface RelationshipManager {
   @Deprecated
   List<Relationship> getAll(Identity identity, Relationship.Type type,
                             List<Identity> identities) throws RelationshipStorageException;
+  
+  
+  /**
+   * Gets the list access to get a list of identities who is connected with the provided identity
+   * and filtered by profile filter.
+   * 
+   * @param providerId the providerId for Identity
+   * @param existingIdentity the provided identity.
+   * @param profileFilter the provided profile filter.
+   * @return the list access
+   * @since 1.2.3
+   * 
+   */
+  ListAccess<Identity> getConnectionsByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  
+  /**
+   * Gets the list access to get a list of identities who invited to connect to the provided identity
+   * and filtered by profile filter.
+   *
+   * @param providerId the providerId for Identity
+   * @param existingIdentity the provided identity
+   * @param profileFilter    the provided profile filter
+   * @return the list access
+   * @since  1.2.3
+   */
+  ListAccess<Identity> getIncomingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  
+  /**
+   * Gets the list access to get a list of identities who was invited by the provided identity to connect
+   * and filtered by profile filter.
+   *
+   * @param providerId the providerId for Identity
+   * @param existingIdentity the provided identity
+   * @param profileFilter    the provided profile filter
+   * @return the list access
+   * @since  1.2.3
+   */
+  ListAccess<Identity> getOutgoingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  
 }

@@ -27,6 +27,7 @@ import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -51,6 +52,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private static final Log LOG = ExoLogger.getLogger(RelationshipStorage.class);
 
   private final IdentityStorage identityStorage;
+  private RelationshipStorage relationshipStorage;
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
    this.identityStorage = identityStorage;
@@ -154,6 +156,56 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     return identity;
 
+  }
+
+  private List<Identity> getIdentitiesRelationsByFilter(final List<Identity> relations, final ProfileFilter filter, final long offset, final long limit) {
+
+    //
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    StorageUtils.applyWhereFromIdentity(whereExpression, relations);
+
+    //
+    StorageUtils.applyFilter(whereExpression, filter);
+
+    //
+    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString()).get().objects(offset, limit);
+    List<Identity> found = new ArrayList<Identity>();
+    while(result.hasNext()) {
+      IdentityEntity current = result.next().getIdentity();
+      Identity i = new Identity(current.getProviderId(), current.getRemoteId());
+      i.setId(current.getId());
+      found.add(i);
+    }
+
+    //
+    return found;
+
+  }
+
+  private int getIdentitiesRelationsByFilterCount(final List<Identity> relations, final ProfileFilter filter) {
+
+    if (relations.size() == 0) {
+      return 0;
+    }
+
+    //
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+
+    //
+    WhereExpression whereExpression = new WhereExpression();
+    StorageUtils.applyWhereFromIdentity(whereExpression, relations);
+
+    //
+    StorageUtils.applyFilter(whereExpression, filter);
+
+    //
+    return builder.where(whereExpression.toString()).get().objects().size();
+
+  }
+
+  private RelationshipStorage getStorage() {
+    return (relationshipStorage != null ? relationshipStorage : this);
   }
 
   /*
@@ -620,7 +672,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       QueryBuilder<RelationshipEntity> builder = getSession().createQueryBuilder(RelationshipEntity.class);
 
       WhereExpression whereExpression = new WhereExpression();
-      whereExpression.like(JCRProperties.path, identityEntity.getPath() + SLASH_STR + PERCENT_STR);
+      whereExpression.like(JCRProperties.path, identityEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
       whereExpression.orderBy(RelationshipEntity.createdTime, Order.DESC);
 
       QueryResult<RelationshipEntity> results = builder.where(whereExpression.toString()).get().objects(offset, limit);
@@ -804,4 +856,80 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       throw new RelationshipStorageException(RelationshipStorageException.Type.ILLEGAL_ARGUMENTS);
     }
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getConnectionsByFilter(
+      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getConnections(existingIdentity);
+    return getIdentitiesRelationsByFilter(identities, profileFilter, offset, limit);
+    
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getIncomingByFilter(
+      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
+    return getIdentitiesRelationsByFilter(identities, profileFilter, offset, limit);
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getOutgoingByFilter(
+      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
+    return getIdentitiesRelationsByFilter(identities, profileFilter, offset, limit);
+
+  }
+  /**
+   * {@inheritDoc}
+   */
+  public int getIncomingCountByFilter(String providerId,
+                                      Identity existingIdentity,
+                                      ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
+    return getIdentitiesRelationsByFilterCount(identities, profileFilter);
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getConnectionsCountByFilter(String providerId,
+                                         Identity existingIdentity,
+                                         ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getConnections(existingIdentity);
+    return getIdentitiesRelationsByFilterCount(identities, profileFilter);
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getOutgoingCountByFilter(String providerId,
+                                 Identity existingIdentity,
+                                 ProfileFilter profileFilter) throws RelationshipStorageException {
+
+    List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
+    return getIdentitiesRelationsByFilterCount(identities, profileFilter);
+
+  }
+
+  public void setStorage(RelationshipStorage storage) {
+    this.relationshipStorage = storage;
+  }
+
 }

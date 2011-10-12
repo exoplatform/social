@@ -50,14 +50,6 @@ public abstract class AbstractStorage {
   protected static final String SENDER = "sender";
   protected static final String RECEIVER = "receiver";
 
-  //
-  protected static final String ASTERISK_STR = "*";
-  protected static final String PERCENT_STR = "%";
-  protected static final char   ASTERISK_CHAR = '*';
-  protected static final String SPACE_STR = " ";
-  protected static final String EMPTY_STR = "";
-  protected static final String SLASH_STR = "/";
-
   private CachedActivityStorage cachedActivityStorage;
 
   protected AbstractStorage() {

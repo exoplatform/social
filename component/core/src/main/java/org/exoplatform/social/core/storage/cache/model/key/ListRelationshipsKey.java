@@ -24,12 +24,12 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ListRelationshipsKey extends ListCacheKey {
+public class ListRelationshipsKey <T> extends ListCacheKey {
 
-  private final IdentityKey key;
+  private final T key;
   private final RelationshipType type;
 
-  public ListRelationshipsKey(final IdentityKey key, final RelationshipType type, final long offset, final long limit) {
+  public ListRelationshipsKey(final T key, final RelationshipType type, final long offset, final long limit) {
     super(offset, limit);
     this.type = type;
     this.key = key;

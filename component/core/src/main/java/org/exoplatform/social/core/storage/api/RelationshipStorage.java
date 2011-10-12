@@ -18,6 +18,7 @@
 package org.exoplatform.social.core.storage.api;
 
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
@@ -221,4 +222,92 @@ public interface RelationshipStorage {
    */
   public int getConnectionsCount(Identity identity) throws RelationshipStorageException;
 
+
+  /**
+   * Gets the list access to get a list of identities who is connected with the provided identity
+   * and filtered by profile filter.
+   * 
+   * @param providerId the provided providerId
+   * @param existingIdentity the provided identity.
+   * @param profileFilter the provided profile filter.
+   * @param offset
+   * @param limit
+   * @return the list of identity
+   * @since 1.2.3
+   * 
+   */
+  public List<Identity> getConnectionsByFilter(final String providerId, Identity existingIdentity,
+                                               final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  
+  /**
+   * Gets the list access to get a list of identities who invited to connect to the provided identity
+   * and filtered by profile filter.
+   *
+   * @param providerId the provided providerId
+   * @param existingIdentity the provided identity
+   * @param profileFilter    the provided profile filter
+   * @param offset
+   * @param limit
+   * @return the list of identity
+   * @since  1.2.3
+   */
+  public List<Identity> getIncomingByFilter(final String providerId, Identity existingIdentity,
+                                            final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  
+  /**
+   * Gets the list access to get a list of identities who was invited by the provided identity to connect
+   * and filtered by profile filter.
+   *
+   * @param providerId the provided providerId
+   * @param existingIdentity the provided identity
+   * @param profileFilter    the provided profile filter
+   * @param offset
+   * @param limit
+   * @return the list of identity
+   * @since  1.2.3
+   */
+  public List<Identity> getOutgoingByFilter(final String providerId, Identity existingIdentity,
+                                            final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  
+  
+  /**
+   * Gets the count of identities who is connected with the provided identity and filtered by profile filter.
+   * 
+   * @param providerId
+   * @param existingIdentity
+   * @param profileFilter
+   * @return count of identities
+   * @throws RelationshipStorageException
+   * @since  1.2.3
+   */
+  public int getConnectionsCountByFilter(final String providerId, Identity existingIdentity,
+                                               final ProfileFilter profileFilter) throws RelationshipStorageException;
+  /**
+   * 
+   * Gets count of identities who invited to connect to the provided identity
+   * and filtered by profile filter.
+   * 
+   * @param providerId
+   * @param existingIdentity
+   * @param profileFilter
+   * @return count of identities
+   * @throws RelationshipStorageException
+   * @since  1.2.3
+   */
+  public int getIncomingCountByFilter(final String providerId, Identity existingIdentity,
+                                            final ProfileFilter profileFilter) throws RelationshipStorageException;
+  
+  /**
+   * Gets count of identities who was invited by the provided identity to connect
+   * and filtered by profile filter.
+   * 
+   * @param providerId
+   * @param existingIdentity
+   * @param profileFilter
+   * @return count of identities
+   * @throws RelationshipStorageException
+   * @since  1.2.3
+   */
+  public int getOutgoingCountByFilter(final String providerId, Identity existingIdentity,
+                                            final ProfileFilter profileFilter) throws RelationshipStorageException;
 }

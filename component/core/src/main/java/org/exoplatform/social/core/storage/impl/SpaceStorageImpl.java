@@ -290,7 +290,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
         spaceNameSearchCondition = this.processSearchCondition(spaceNameSearchCondition);
 
-        if (spaceNameSearchCondition.contains(PERCENT_STR)) {
+        if (spaceNameSearchCondition.contains(StorageUtils.PERCENT_STR)) {
           whereExpression.startGroup();
           whereExpression
               .like(SpaceEntity.name, spaceNameSearchCondition)
@@ -310,7 +310,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
     else if (!Character.isDigit(firstCharacterOfName)) {
       String firstCharacterOfNameString = Character.toString(firstCharacterOfName);
-      String firstCharacterOfNameLowerCase = firstCharacterOfNameString.toLowerCase() + PERCENT_STR;
+      String firstCharacterOfNameLowerCase = firstCharacterOfNameString.toLowerCase() + StorageUtils.PERCENT_STR;
       whereExpression
           .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), firstCharacterOfNameLowerCase);
     }
@@ -330,16 +330,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   private String processSearchCondition(String searchCondition) {
     StringBuffer searchConditionBuffer = new StringBuffer();
-    if (!searchCondition.contains(ASTERISK_STR) && !searchCondition.contains(PERCENT_STR)) {
-      if (searchCondition.charAt(0) != ASTERISK_CHAR) {
-        searchConditionBuffer.append(ASTERISK_STR).append(searchCondition);
+    if (!searchCondition.contains(StorageUtils.ASTERISK_STR) && !searchCondition.contains(StorageUtils.PERCENT_STR)) {
+      if (searchCondition.charAt(0) != StorageUtils.ASTERISK_CHAR) {
+        searchConditionBuffer.append(StorageUtils.ASTERISK_STR).append(searchCondition);
       }
-      if (searchCondition.charAt(searchCondition.length() - 1) != ASTERISK_CHAR) {
-        searchConditionBuffer.append(ASTERISK_STR);
+      if (searchCondition.charAt(searchCondition.length() - 1) != StorageUtils.ASTERISK_CHAR) {
+        searchConditionBuffer.append(StorageUtils.ASTERISK_STR);
       }
     } else {
-      searchCondition = searchCondition.replace(ASTERISK_STR, PERCENT_STR);
-      searchConditionBuffer.append(PERCENT_STR).append(searchCondition).append(PERCENT_STR);
+      searchCondition = searchCondition.replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
+      searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(searchCondition).append(StorageUtils.PERCENT_STR);
     }
     return searchConditionBuffer.toString();
   }

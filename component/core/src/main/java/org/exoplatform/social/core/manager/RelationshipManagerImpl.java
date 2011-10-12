@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.identity.ConnectionFilterListAccess;
 import org.exoplatform.social.core.identity.ConnectionListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.RelationshipLifeCycle;
 import org.exoplatform.social.core.relationship.RelationshipListener;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
@@ -542,5 +544,21 @@ public class RelationshipManagerImpl implements RelationshipManager {
                                              "the two identity are the same");
     }
     storage.saveRelationship(existingRelationship);
+  }
+  
+  @Override
+  public ListAccess<Identity> getConnectionsByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
+    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
+  }
+  
+  @Override
+  public ListAccess<Identity> getIncomingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
+    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
+  }
+  
+  @Override
+  public ListAccess<Identity> getOutgoingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
+    
+    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 }
