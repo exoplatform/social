@@ -136,8 +136,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       int totalSize = result.size();
       int fromIndex = collectionOptions.getFirst();
       int toIndex = fromIndex + collectionOptions.getMax();
-      fromIndex = Math.min(fromIndex, totalSize - 1);
-      toIndex = Math.min(toIndex, totalSize - 1);
+      fromIndex = Math.min(fromIndex, totalSize - 1) > 0 ? Math.min(fromIndex, totalSize - 1) : 0;
+      toIndex = Math.min(toIndex, totalSize - 1) > 0 ? Math.min(toIndex, totalSize - 1) : 0;
       result = result.subList(fromIndex, toIndex);
 
       return ImmediateFuture.newInstance(new RestfulCollection<Person>(
