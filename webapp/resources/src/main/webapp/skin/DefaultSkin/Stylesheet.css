@@ -39,11 +39,11 @@
 
 body{
 	background: #eee;
-	font-family: Lucida, arial, tahoma !important;
+	font-family: Lucida, arial, tahoma;
 }
 
 div, table, tr, td, img, form{
-	font-family: Lucida, arial, tahoma !important;
+	font-family: Lucida, arial, tahoma;
 	font-size: 12px;
 }
 
