@@ -379,8 +379,8 @@ public class SpaceServiceImpl implements SpaceService {
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
     saveSpace(space, true);
-
     spaceLifeCycle.spaceCreated(space, creator);
+    
     try {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
       spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
@@ -390,11 +390,7 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
     }
-    RequestLifeCycle.end();
-    //SOC-2124 too long wait for executing these handlers which handles when space created.
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    //Need to begin here for RequestLifeCycle.end(); if is not existing, an exception will be appeared. 
-    RequestLifeCycle.begin(container);
+    
     return space;
   }
 

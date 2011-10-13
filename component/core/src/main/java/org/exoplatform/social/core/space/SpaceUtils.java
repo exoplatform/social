@@ -452,6 +452,16 @@ public class SpaceUtils {
   }
 
   /**
+   * end the request and push data to JCR.
+   */
+  public static void endRequest() {
+    RequestLifeCycle.end();
+    //SOC-2124 too long wait for executing these handlers which handles when space created.
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    //Need to begin here for RequestLifeCycle.end(); if is not existing, an exception will be appeared. 
+    RequestLifeCycle.begin(container);
+  }
+  /**
    * Finds container by id
    *
    * @param children
@@ -827,7 +837,7 @@ public class SpaceUtils {
       
       //SOC-2016 this fragment code makes sure SpaceNavigation can not be NULL when it returns.
       if (spaceNav == null) {
-        RequestLifeCycle.end();
+        SpaceUtils.endRequest();
         userPortal.refresh();
         spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
       }
