@@ -276,7 +276,6 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * Get relationships by identity and status from cache or activityStorage
    * 
    * @param identity
-   * @param status
    * @param identities
    * @return list of relationship
    * @throws RelationshipStorageException
@@ -290,7 +289,6 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * Get relationships by identity and status and identities from activityStorage
    * 
    * @param sender
-   * @param status
    * @return list of relationship
    * @throws RelationshipStorageException
    */
@@ -303,7 +301,6 @@ public class RelationshipManagerImpl implements RelationshipManager {
    * Get relationships by identity and status from cache or activityStorage
    * 
    * @param receiver
-   * @param status
    * @param identities
    * @return list of relationship
    * @throws RelationshipStorageException
@@ -545,20 +542,17 @@ public class RelationshipManagerImpl implements RelationshipManager {
     }
     storage.saveRelationship(existingRelationship);
   }
-  
-  @Override
-  public ListAccess<Identity> getConnectionsByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
+
+  public ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
   }
-  
-  @Override
-  public ListAccess<Identity> getIncomingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
+
+  public ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
   }
-  
-  @Override
-  public ListAccess<Identity> getOutgoingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter) {
+
+  public ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
     
-    return new ConnectionFilterListAccess(this.storage, providerId, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 }

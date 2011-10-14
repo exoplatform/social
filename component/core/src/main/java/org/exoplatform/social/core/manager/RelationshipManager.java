@@ -601,37 +601,34 @@ public interface RelationshipManager {
    * Gets the list access to get a list of identities who is connected with the provided identity
    * and filtered by profile filter.
    * 
-   * @param providerId the providerId for Identity
    * @param existingIdentity the provided identity.
    * @param profileFilter the provided profile filter.
    * @return the list access
    * @since 1.2.3
    * 
    */
-  ListAccess<Identity> getConnectionsByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
    * Gets the list access to get a list of identities who invited to connect to the provided identity
    * and filtered by profile filter.
    *
-   * @param providerId the providerId for Identity
    * @param existingIdentity the provided identity
    * @param profileFilter    the provided profile filter
    * @return the list access
    * @since  1.2.3
    */
-  ListAccess<Identity> getIncomingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
   /**
    * Gets the list access to get a list of identities who was invited by the provided identity to connect
    * and filtered by profile filter.
    *
-   * @param providerId the providerId for Identity
    * @param existingIdentity the provided identity
    * @param profileFilter    the provided profile filter
    * @return the list access
    * @since  1.2.3
    */
-  ListAccess<Identity> getOutgoingByFilter(String providerId, Identity existingIdentity, ProfileFilter profileFilter);
+  ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
   
 }

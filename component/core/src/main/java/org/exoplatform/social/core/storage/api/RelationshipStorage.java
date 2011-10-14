@@ -226,8 +226,7 @@ public interface RelationshipStorage {
   /**
    * Gets the list access to get a list of identities who is connected with the provided identity
    * and filtered by profile filter.
-   * 
-   * @param providerId the provided providerId
+   *
    * @param existingIdentity the provided identity.
    * @param profileFilter the provided profile filter.
    * @param offset
@@ -236,14 +235,14 @@ public interface RelationshipStorage {
    * @since 1.2.3
    * 
    */
-  public List<Identity> getConnectionsByFilter(final String providerId, Identity existingIdentity,
-                                               final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  public List<Identity> getConnectionsByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
+      throws RelationshipStorageException;
   
   /**
    * Gets the list access to get a list of identities who invited to connect to the provided identity
    * and filtered by profile filter.
    *
-   * @param providerId the provided providerId
    * @param existingIdentity the provided identity
    * @param profileFilter    the provided profile filter
    * @param offset
@@ -251,14 +250,14 @@ public interface RelationshipStorage {
    * @return the list of identity
    * @since  1.2.3
    */
-  public List<Identity> getIncomingByFilter(final String providerId, Identity existingIdentity,
-                                            final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  public List<Identity> getIncomingByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
+      throws RelationshipStorageException;
   
   /**
    * Gets the list access to get a list of identities who was invited by the provided identity to connect
    * and filtered by profile filter.
    *
-   * @param providerId the provided providerId
    * @param existingIdentity the provided identity
    * @param profileFilter    the provided profile filter
    * @param offset
@@ -266,48 +265,46 @@ public interface RelationshipStorage {
    * @return the list of identity
    * @since  1.2.3
    */
-  public List<Identity> getOutgoingByFilter(final String providerId, Identity existingIdentity,
-                                            final ProfileFilter profileFilter, long offset, long limit) throws RelationshipStorageException;
+  public List<Identity> getOutgoingByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
+      throws RelationshipStorageException;
   
   
   /**
    * Gets the count of identities who is connected with the provided identity and filtered by profile filter.
-   * 
-   * @param providerId
+   *
    * @param existingIdentity
    * @param profileFilter
    * @return count of identities
    * @throws RelationshipStorageException
    * @since  1.2.3
    */
-  public int getConnectionsCountByFilter(final String providerId, Identity existingIdentity,
-                                               final ProfileFilter profileFilter) throws RelationshipStorageException;
+  public int getConnectionsCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException;
   /**
    * 
    * Gets count of identities who invited to connect to the provided identity
    * and filtered by profile filter.
-   * 
-   * @param providerId
+   *
    * @param existingIdentity
    * @param profileFilter
    * @return count of identities
    * @throws RelationshipStorageException
    * @since  1.2.3
    */
-  public int getIncomingCountByFilter(final String providerId, Identity existingIdentity,
-                                            final ProfileFilter profileFilter) throws RelationshipStorageException;
+  public int getIncomingCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException;
   
   /**
    * Gets count of identities who was invited by the provided identity to connect
    * and filtered by profile filter.
-   * 
-   * @param providerId
+   *
    * @param existingIdentity
    * @param profileFilter
    * @return count of identities
    * @throws RelationshipStorageException
    * @since  1.2.3
    */
-  public int getOutgoingCountByFilter(final String providerId, Identity existingIdentity,
-                                            final ProfileFilter profileFilter) throws RelationshipStorageException;
+  public int getOutgoingCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException;
 }

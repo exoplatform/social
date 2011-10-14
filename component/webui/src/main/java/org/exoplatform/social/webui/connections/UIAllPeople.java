@@ -267,21 +267,20 @@ public class UIAllPeople extends UIContainer {
   }
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
+
+	  Identity owner = Utils.getOwnerIdentity();
+
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
-    setPeopleListAccess(Utils.getIdentityManager().getIdentitiesByProfileFilter(
-         	            OrganizationIdentityProvider.NAME, filter, true));
-    
-    setPeopleNum(getPeopleListAccess().getSize());
-    uiProfileUserSearch.setPeopleNum(getPeopleNum());
-    Identity[] people = getPeopleListAccess().load(index, length);
-    
-//  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.    
-//    if (filter.getSkills().length() > 0) { 
-//      return uiProfileUserSearch.getIdentitiesBySkills(
-//    		  new ArrayList<Identity>(Arrays.asList(people)));
-//    }
-    
-    return new ArrayList<Identity>(Arrays.asList(people));
+
+    ListAccess<Identity> listAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(owner.getProviderId(), filter, false);
+    Identity[] identities = listAccess.load(index, length);
+
+    setPeopleNum(identities.length);
+    setPeopleListAccess(listAccess);
+    uiProfileUserSearch.setPeopleNum(identities.length);
+
+    return Arrays.asList(identities);
+
   }
   
   /**

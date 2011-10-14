@@ -32,9 +32,16 @@ public class StorageUtils {
     String gender = profileFilter.getGender().trim();
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
+    char firstChar = profileFilter.getFirstCharacterOfName();
 
     //
-    if (nameForSearch.trim().length() != 0) {
+    if (firstChar != '\u0000') {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
+          nameForSearch.toLowerCase() + PERCENT_STR
+      );
+    }
+    else if (nameForSearch.trim().length() != 0) {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
           PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR

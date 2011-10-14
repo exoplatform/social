@@ -75,10 +75,9 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * @param relationshipStorage Storage object of Relationship.
    * @param identity Identity to get connection. 
    */
-  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, String providerId, Identity identity, ProfileFilter filter) {
+  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter) {
     this.relationshipStorage = relationshipStorage;
     this.identity = identity;
-    this.providerId = providerId;
     this.profileFilter = filter;
   }
   
@@ -90,8 +89,8 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    * @param type
    * @since 1.2.3
    */
-  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, String providerId, Identity identity, ProfileFilter filter, Type type) {
-    this(relationshipStorage, providerId, identity, filter);
+  public ConnectionFilterListAccess(RelationshipStorage relationshipStorage, Identity identity, ProfileFilter filter, Type type) {
+    this(relationshipStorage, identity, filter);
     this.type = type;
   }
   
@@ -102,11 +101,11 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = null;
     switch (type) {
-      case PROFILE_FILTER_CONNECTION: identities = relationshipStorage.getConnectionsByFilter(providerId, identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_CONNECTION: identities = relationshipStorage.getConnectionsByFilter(identity, profileFilter, offset, limit);
         break;
-      case PROFILE_FILTER_INCOMMING: identities = relationshipStorage.getIncomingByFilter(providerId, identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_INCOMMING: identities = relationshipStorage.getIncomingByFilter(identity, profileFilter, offset, limit);
         break;
-      case PROFILE_FILTER_OUTGOING: identities = relationshipStorage.getOutgoingByFilter(providerId, identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_OUTGOING: identities = relationshipStorage.getOutgoingByFilter(identity, profileFilter, offset, limit);
         break;
     }
     return identities.toArray(new Identity[identities.size()]);
@@ -117,9 +116,9 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
    */
   public int getSize() throws Exception {
     switch (type) {
-      case PROFILE_FILTER_CONNECTION: return relationshipStorage.getConnectionsCountByFilter(providerId, identity, profileFilter);
-      case PROFILE_FILTER_INCOMMING: return relationshipStorage.getIncomingCountByFilter(providerId, identity, profileFilter);
-      case PROFILE_FILTER_OUTGOING: return relationshipStorage.getOutgoingCountByFilter(providerId, identity, profileFilter);
+      case PROFILE_FILTER_CONNECTION: return relationshipStorage.getConnectionsCountByFilter(identity, profileFilter);
+      case PROFILE_FILTER_INCOMMING: return relationshipStorage.getIncomingCountByFilter(identity, profileFilter);
+      case PROFILE_FILTER_OUTGOING: return relationshipStorage.getOutgoingCountByFilter(identity, profileFilter);
       default:
         return 0;
     }

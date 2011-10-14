@@ -861,7 +861,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    * {@inheritDoc}
    */
   public List<Identity> getConnectionsByFilter(
-      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
       throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getConnections(existingIdentity);
@@ -873,7 +873,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    * {@inheritDoc}
    */
   public List<Identity> getIncomingByFilter(
-      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
       throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
@@ -885,7 +885,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
    * {@inheritDoc}
    */
   public List<Identity> getOutgoingByFilter(
-      final String providerId, Identity existingIdentity, final ProfileFilter profileFilter, long offset, long limit)
+      final Identity existingIdentity, final ProfileFilter profileFilter, final long offset, final long limit)
       throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
@@ -895,9 +895,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   /**
    * {@inheritDoc}
    */
-  public int getIncomingCountByFilter(String providerId,
-                                      Identity existingIdentity,
-                                      ProfileFilter profileFilter) throws RelationshipStorageException {
+  public int getIncomingCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getIncomingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
@@ -907,9 +906,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   /**
    * {@inheritDoc}
    */
-  public int getConnectionsCountByFilter(String providerId,
-                                         Identity existingIdentity,
-                                         ProfileFilter profileFilter) throws RelationshipStorageException {
+  public int getConnectionsCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getConnections(existingIdentity);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);
@@ -919,9 +917,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   /**
    * {@inheritDoc}
    */
-  public int getOutgoingCountByFilter(String providerId,
-                                 Identity existingIdentity,
-                                 ProfileFilter profileFilter) throws RelationshipStorageException {
+  public int getOutgoingCountByFilter(
+      final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     List<Identity> identities = getStorage().getOutgoingRelationships(existingIdentity, 0, -1);
     return getIdentitiesRelationsByFilterCount(identities, profileFilter);

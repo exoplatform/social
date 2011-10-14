@@ -585,13 +585,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipData(Type.CONFIRMED);
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    List<Identity> identities = relationshipStorage.getConnectionsByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    List<Identity> identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName9");
-    identities = relationshipStorage.getConnectionsByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
   }
   
@@ -606,13 +606,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipIncommingData();
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    List<Identity> identities = relationshipStorage.getIncomingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    List<Identity> identities = relationshipStorage.getIncomingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName6");
-    identities = relationshipStorage.getIncomingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    identities = relationshipStorage.getIncomingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
   }
   
@@ -627,13 +627,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipData(Type.PENDING);
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    List<Identity> identities = relationshipStorage.getOutgoingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    List<Identity> identities = relationshipStorage.getOutgoingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be 8", 8, identities.size());
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName8");
-    identities = relationshipStorage.getOutgoingByFilter("organization", tearDownIdentityList.get(0), pf, 0, 20);
+    identities = relationshipStorage.getOutgoingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be 1", 1, identities.size());
   }
   /**
@@ -647,13 +647,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipIncommingData();
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    int countIdentities = relationshipStorage.getIncomingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    int countIdentities = relationshipStorage.getIncomingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName6");
-    countIdentities = relationshipStorage.getIncomingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    countIdentities = relationshipStorage.getIncomingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
   }
   /**
@@ -667,13 +667,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipData(Type.CONFIRMED);
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    int countIdentities = relationshipStorage.getConnectionsCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    int countIdentities = relationshipStorage.getConnectionsCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName6");
-    countIdentities = relationshipStorage.getConnectionsCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    countIdentities = relationshipStorage.getConnectionsCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
   }
   /**
@@ -687,13 +687,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     populateRelationshipData(Type.PENDING);
     ProfileFilter pf = new ProfileFilter();
     pf = buildProfileFilterWithExcludeIdentities(pf);
-    int countIdentities = relationshipStorage.getOutgoingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    int countIdentities = relationshipStorage.getOutgoingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
     pf.setGender("male");
     pf.setName("FirstName8");
-    countIdentities = relationshipStorage.getOutgoingCountByFilter("organization", tearDownIdentityList.get(0), pf);
+    countIdentities = relationshipStorage.getOutgoingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
   }
 
@@ -738,7 +738,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   
   /**
    * Creates the relationship to connect from 0 to [2, 9].
-   * @param type
    */
   private void populateRelationshipIncommingData() {
     if (tearDownIdentityList.size() > 1) {

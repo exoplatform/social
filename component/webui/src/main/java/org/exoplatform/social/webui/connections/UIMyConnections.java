@@ -18,12 +18,14 @@ package org.exoplatform.social.webui.connections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
@@ -295,19 +297,20 @@ public class UIMyConnections extends UIContainer {
   }
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
-    setPeopleListAccess(Utils.getRelationshipManager().getConnections(Utils.getOwnerIdentity()));
-    
-    setPeopleNum(getPeopleListAccess().getSize());
-    uiProfileUserSearch.setPeopleNum(getPeopleNum());
-    Identity[] people = getPeopleListAccess().load(index, length);
-    
-//  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.
-//    if (uiProfileUserSearch.getProfileFilter().getSkills().length() >  0) {
-//        return uiProfileUserSearch.getIdentitiesBySkills(
-//      		  new ArrayList<Identity>(Arrays.asList(people)));
-//    }
-    
-    return new ArrayList<Identity>(Arrays.asList(people));
+
+    Identity owner = Utils.getOwnerIdentity();
+
+    ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
+
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(owner, filter);
+    Identity[] identities = listAccess.load(index, length);
+
+    setPeopleNum(identities.length);
+    setPeopleListAccess(listAccess);
+    uiProfileUserSearch.setPeopleNum(identities.length);
+
+    return Arrays.asList(identities);
+
   }
   
   /**
