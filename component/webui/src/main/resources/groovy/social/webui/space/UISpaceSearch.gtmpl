@@ -82,7 +82,7 @@ if (selectedNode.equals("all-spaces")) {
     <!--search by name-->   
     <div class="SpaceSearchContainer ClearFix">
 		   <div class="LeftContentInput">
-		     $findSpaceLabel : 
+		     $findSpaceLabel:&nbsp; 
 		   </div>
 		   <div class="SearchContent">
 		     <%uiform.renderField(childs.get(0)); %>

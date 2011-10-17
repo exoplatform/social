@@ -134,7 +134,7 @@
       <tbody>
       <% if (isEditable) { %>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:&nbsp</td>
           <td class="FieldComponent">
           <%
             if (isEdit) { %>
@@ -152,7 +152,7 @@
       <% } else { // isEditable
              if((gender != null) && (gender != "")) { %>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%> :</td>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:&nbsp</td>
           <td class="FieldComponent">
             <%=gender %>
           </td>
@@ -162,7 +162,7 @@
     <!--              phones          -->
     <% if (isEditable) { %>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%> :</td>
+          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:&nbsp</td>
           <td class="FieldComponent">
           <% if (isEdit) {
                if (phoneCount > 0) {
@@ -194,7 +194,7 @@
                       def phone = it.get(value);
                       def type = it.get(key);
                 %>
-                    <%=type%>: <%=phone%><br>
+                    <%=type%>:&nbsp<%=phone%><br>
                  <% }
                   } else { %>
                     $noPhoneLabel
@@ -210,14 +210,14 @@
         <% } else { %>
           <% if(phoneSize > 0) { %>
             <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%> :</td>
+              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:&nbsp</td>
               <td class="FieldComponent">
               <%     phones.each() {
                       def phone = it.get(value);
                       def type = it.get(key);
 
                     %>
-                    <%=type%>: <%=phone%><br>
+                    <%=type%>:&nbsp<%=phone%><br>
                  <%	} %>
               </td>
             </tr>
@@ -227,7 +227,7 @@
         <!--              ims          -->
         <% if (isEditable) {%>
           <tr>
-            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%> :</td>
+            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:&nbsp</td>
             <td class="FieldComponent">
               <%
                 if (isEdit) { %>
@@ -263,7 +263,7 @@
                           def type = it.get(key);
 
                       %>
-                      <%=type%>: <%=im%><br>
+                      <%=type%>:&nbsp<%=im%><br>
                       <%}
                      } else { %>
                        $noImsLabel
@@ -280,14 +280,14 @@
         <% } else {%>
              <%if (imsSize > 0) { %>
              <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%> :</td>
+              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:&nbsp</td>
               <td class="FieldComponent">
               <%    ims.each() {
                     def im = it.get(value);
                     def type = it.get(key);
 
                     %>
-                    <%=type%>: <%=im%><br>
+                    <%=type%>:&nbsp<%=im%><br>
                  <%	} %>
               </td>
             </tr>
@@ -297,7 +297,7 @@
         <!--              URL          -->
         <% if (isEditable) {%>
           <tr>
-            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%> :</td>
+            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:&nbsp</td>
             <td class="FieldComponent">
               <%
                 if (isEdit) { %>
@@ -346,7 +346,7 @@
       <% } else { %>
           <%if (urlSize > 0) { %>
              <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%> :</td>
+              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:&nbsp</td>
               <td class="FieldComponent">
               <%    urls.each() {
                     def url = it.get(value);

@@ -116,7 +116,7 @@
 <% uiform.begin() %>
    <div class="SearchSpacesBG ClearFix" name="SearchSpaces">	
     <div class="ClearFix">
-      <div class="Lable">${findContactLabel} :</div>
+      <div class="Lable">${findContactLabel}:&nbsp</div>
       <div class="SearchContent">
         <% uiform.renderField(childs.get(0));%>
         <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>"><span></span></a>
@@ -125,7 +125,7 @@
     </div>
 	<div class="ClearFix">
      <div class="HideFilter ClearFix" id="$filterId">
-       <div class="Lable">${filterByLabel} :</div>
+       <div class="Lable">${filterByLabel}:&nbsp</div>
 		   <div class="MoreContent">
 			   <% uiform.renderField(childs.get(1))%>
 			   <% uiform.renderField(childs.get(2))%>
