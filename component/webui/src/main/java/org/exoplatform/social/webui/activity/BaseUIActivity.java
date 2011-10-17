@@ -611,4 +611,14 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }
   }
+
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    try {
+      super.processRender(context);
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
+  }
 }
