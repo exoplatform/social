@@ -378,14 +378,20 @@ public class UISpaceSearch extends UIForm {
     }
     
     String searchCondition = getSelectedChar();
+    
     if (selectedChar == null) {
       labelArg = "UISpaceSearch.label.SpaceFoundListingSearch";
       if (getSpaceNum() > 1) {
         labelArg = "UISpaceSearch.label.SpacesFoundListingSearch";
       }
       searchCondition = getSpaceNameSearch();
-    }
-    
+    } 
+      
+    if(ALL.equals(searchCondition)) {
+        searchCondition = WebuiRequestContext.getCurrentInstance()
+            .getApplicationResourceBundle().getString("UISpaceSearch.label.SearchAll");
+      }
+      
     return ResourceBundleUtil.
     replaceArguments(WebuiRequestContext.getCurrentInstance()
                      .getApplicationResourceBundle().getString(labelArg), new String[] {

@@ -552,6 +552,10 @@ public class UIProfileUserSearch extends UIForm {
       }
       searchCondition = getProfileFilter().getName();
     }
+    if(ALL_FILTER.equals(searchCondition)) {
+      searchCondition = WebuiRequestContext.getCurrentInstance()
+          .getApplicationResourceBundle().getString("UIProfileUserSearch.label.SearchAll");
+    }
     
     return ResourceBundleUtil.
     replaceArguments(WebuiRequestContext.getCurrentInstance()

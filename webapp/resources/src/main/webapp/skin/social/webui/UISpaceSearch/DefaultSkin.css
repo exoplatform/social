@@ -92,9 +92,8 @@
   list-style-position: outside;
   list-style-type: none;
   margin: 0 3px 3px 0;
-  min-width: 15px;
+  min-width: 25px;
   padding: 0;
-  width: 2.5%;
 }
 
  .UISpaceSearch .BoxSpaceList ul.LetterList li a {
