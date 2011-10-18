@@ -204,6 +204,13 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(i2.getId());
 
     assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
+    identityStorage.getIdentitiesByProfileFilterCount("p", new ProfileFilter());
+    assertEquals(1, cacheService.getCountIdentitiesCache().getCacheSize());
+
+    i2.setRemoteId("id3");
+    identityStorage.updateIdentity(i2);
+
+    assertEquals(0, cacheService.getCountIdentitiesCache().getCacheSize());
 
   }
 

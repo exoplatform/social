@@ -70,7 +70,6 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.titleId = activity.getTitleId();
     this.bodyId = activity.getBodyId();
     this.type = activity.getType();
-    this.templateParams = Collections.unmodifiableMap(activity.getTemplateParams());
     this.externalId = activity.getExternalId();
     this.url = activity.getUrl();
     this.streamId = activity.getStreamId();
@@ -80,6 +79,13 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.streamTitle = activity.getStreamTitle();
     this.streamUrl = activity.getStreamUrl();
     this.streamType = activity.getActivityStream().getType();
+
+    if (activity.getTemplateParams() != null) {
+      this.templateParams = Collections.unmodifiableMap(activity.getTemplateParams());
+    }
+    else {
+      this.templateParams = Collections.emptyMap();
+    }
 
   }
 
