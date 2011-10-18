@@ -576,6 +576,19 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsByFilter(providerId, Identity, ProfileFilter)}
+   * in case Identity had no connection yet
+   * @throws Exception
+   */
+  public void testGetConnectionsByFilterEmpty() throws Exception {
+    populateData();
+    ProfileFilter pf = new ProfileFilter();
+    pf = buildProfileFilterWithExcludeIdentities(pf);
+    List<Identity> identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
+    assertEquals("Number of identities must be " + identities.size(), 0, identities.size());
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsByFilter(providerId, Identity, ProfileFilter)}
    * 
    * @throws Exception
    * @since 1.2.3
@@ -594,6 +607,8 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
   }
+  
+ 
   
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingByFilter(providerId, Identity, ProfileFilter)}

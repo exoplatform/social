@@ -161,6 +161,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private List<Identity> getIdentitiesRelationsByFilter(final List<Identity> relations, final ProfileFilter filter, final long offset, final long limit) {
 
     //
+    List<Identity> found = new ArrayList<Identity>();
+    if(relations.isEmpty()) return found ;
     QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
     WhereExpression whereExpression = new WhereExpression();
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
@@ -170,7 +172,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     //
     QueryResult<ProfileEntity> result = builder.where(whereExpression.toString()).get().objects(offset, limit);
-    List<Identity> found = new ArrayList<Identity>();
     while(result.hasNext()) {
       IdentityEntity current = result.next().getIdentity();
       Identity i = new Identity(current.getProviderId(), current.getRemoteId());
