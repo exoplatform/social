@@ -71,10 +71,11 @@
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.extras.link-composer-plugin</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extras.document-composer-plugin</artifactId>
+    
+     <dependency>
+      <groupId>org.exoplatform.integration</groupId>
+      <artifactId>integ-social-ecms</artifactId>
+      <version>${org.exoplatform.integ.version}</version>
     </dependency>
     
     <dependency>
@@ -188,8 +189,8 @@
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
              <jarModule>
-              <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extras.document-composer-plugin</artifactId>
+              <groupId>org.exoplatform.integration</groupId>
+              <artifactId>integ-social-ecms</artifactId> 
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
