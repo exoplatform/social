@@ -205,7 +205,7 @@ public class UIAvatarUploader extends UIForm {
                                                                                          null);
         uiAvatarUploadContent.setAvatarAttachment(avatarAttachment);
         uiPopup.setUIComponent(uiAvatarUploadContent);
-        ctx.addUIComponentToUpdateByAjax(uiAvatarUploader.getParent());
+        ctx.addUIComponentToUpdateByAjax(uiPopup);
       }
     }
   }
