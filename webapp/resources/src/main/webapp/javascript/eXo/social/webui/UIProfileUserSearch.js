@@ -171,7 +171,7 @@
         if(keynum == 13) {
           suggestControlObj.hideSuggestions();
           searchBtn.onclick();
-	    } else if (textBox.id == searchId) {
+	    } else if (textBox.id == this.nameTextObj.id) {
 	      // Other keys (up and down key)
 	      suggestControlObj.handleKeyDown(e);
 	    } else {
