@@ -63,11 +63,6 @@
   background: #ededed;
 }
 
-#SpacePage {
-	border: solid 1px #D6D6D6;
-	-moz-border-radius: 3px;
-}
-
 #UIContainer-Menu .UIComponentBlock {
   background: none;
 }
