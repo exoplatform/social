@@ -217,6 +217,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
     this.copyOfTreeNodeData = copyNode;
   }
 
+  public void setRootNode(TreeNode rNode) {
+    rootNode = rNode;  
+  }
+  
   public TreeNode getRootNode() {
     return rootNode;
   }

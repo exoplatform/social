@@ -159,7 +159,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   }
 
   private List<Identity> getIdentitiesRelationsByFilter(final List<Identity> relations, final ProfileFilter filter, final long offset, final long limit) {
-
+    
+    if (relations.isEmpty()) return new ArrayList<Identity>();
+    
     //
     List<Identity> found = new ArrayList<Identity>();
     if(relations.isEmpty()) return found ;

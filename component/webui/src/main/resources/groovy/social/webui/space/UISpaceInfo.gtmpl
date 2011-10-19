@@ -36,24 +36,13 @@
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
-  <div class="HorizontalLayout">
     <div class="SpaceContainer">
       <div class="SpaceInfoLeft">
-        <div class="AvatarSpace">
-          <div class="AvaBorder">
-            <div class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-              <img src="$imageSource" height="64px" width="64px">
-            </div>
-          </div>
-        </div>
+		<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
+		  <img src="$imageSource" height="64px" width="64px"/>
+		</a>
         <div class="ChangeAvaButton">
-          <div class="LeftButton">
-            <div class="RightButton">
-              <div class="MiddleButton">
-                <a href="#" onclick="$changeAvatar"><%=_ctx.appRes(uicomponent.getId() + ".label.ChangeAvatar")%></a>
-              </div>
-            </div>
-          </div>
+            <a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
         </div>
       </div>
       <table class="UIFormGrid">
@@ -80,13 +69,11 @@
           </tr>
         </tbody>
       </table>
-      <div style="clear: left;"><span></span></div>
       <div class="UIAction UISaveButton">
 	      <a href="javascript:void(0);" onclick="$saveAction" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
 	    </div>
       
     </div>
-  </div>
   <% uiform.end(); %>
   <div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

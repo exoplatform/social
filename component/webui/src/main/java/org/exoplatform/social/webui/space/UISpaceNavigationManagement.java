@@ -23,6 +23,7 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -46,7 +47,9 @@ import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
 @ComponentConfig(template = "classpath:groovy/social/webui/space/UISpaceNavigationManagement.gtmpl", events = {
-    @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class) }),
+    @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
+    @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class)
+    }),
     @ComponentConfig(
                      type = UIPageNodeForm.class,
                      lifecycle = UIFormLifecycle.class,
@@ -191,6 +194,29 @@ public class UISpaceNavigationManagement extends UIContainer {
     public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
       UISpaceNavigationManagement uiManagement = event.getSource();
       UISpaceNavigationNodeSelector uiNodeSelector = uiManagement.getChild(UISpaceNavigationNodeSelector.class);
+      UIRightClickPopupMenu menu = uiNodeSelector.getChild(UIRightClickPopupMenu.class);
+      menu.createEvent("AddNode", Phase.PROCESS, event.getRequestContext()).broadcast();
+    }
+
+  }
+
+  static public class AddNodeActionListener extends EventListener<UISpaceNavigationManagement> {
+
+    @Override
+    public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
+      UISpaceNavigationManagement uiManagement = event.getSource();
+      UISpaceNavigationNodeSelector uiNodeSelector = uiManagement.getChild(UISpaceNavigationNodeSelector.class);
+      
+      String spaceUrl = SpaceUtils.getSpaceUrl();
+      Space space = uiManagement.getSpace();
+      UserNavigation pageNav = null;
+      try {
+        pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
+      } catch (Exception e1) {
+      }
+
+      UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, spaceUrl);
+      uiNodeSelector.setRootNode(new TreeNode(pageNav, homeNode));
       UIRightClickPopupMenu menu = uiNodeSelector.getChild(UIRightClickPopupMenu.class);
       menu.createEvent("AddNode", Phase.PROCESS, event.getRequestContext()).broadcast();
     }

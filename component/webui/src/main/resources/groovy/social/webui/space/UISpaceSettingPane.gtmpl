@@ -26,8 +26,8 @@
     
 %>
 
-<div class="UITabPane" id="$uicomponent.id">
-    <div class="UIHorizontalTabs">
+<div class="UITabPane NewTabPane ClearFix" id="$uicomponent.id">
+    <div class="UIHorizontalTabs NewTabs">
         <div class="TabsContainer">
             <%
                 String url = uicomponent.url("SelectTab");
@@ -51,7 +51,7 @@
             <%}%>
         </div>
     </div>
-    <div class="UITabContentContainer GrayTabContainer">
+    <div class="UITabContentContainer NewTabContentContainer GrayTabContainer">
         <%
             for(uiChild in uicomponent.getChildren()) {
                 if(!uiChild.isRendered()) continue; 

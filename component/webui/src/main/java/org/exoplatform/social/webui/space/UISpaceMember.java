@@ -111,7 +111,7 @@ public class UISpaceMember extends UIForm {
   private final String iteratorPendingID = "UIIteratorPendding";
   private final String iteratorInvitedID = "UIIteratorInvited";
   private final String iteratorExistingID = "UIIteratorExisting";
-  private final Integer ITEMS_PER_PAGE = 5;
+  private final Integer ITEMS_PER_PAGE = 3;
   private static final String USER_TO_INVITE = "user_to_invite";
   String typeOfRelation = null;
   String spaceURL = null;

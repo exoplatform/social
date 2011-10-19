@@ -25,6 +25,9 @@
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
 
+  def uicomponentId = uicomponent.id;
+  def addApplicationLabel = _ctx.appRes("${uicomponentId}.label.AddApplication");
+  
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
 %>
@@ -39,47 +42,36 @@
          def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
          def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
   %>
-    <div class="ContentSpace">
+    <div class="ContentSpace ClearFix">
       <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" alt=""/></div>
       <div class="CommunityContainer">
-        <div class="CommunityMane Line">
-          <div style="float: left;" class="CommunityName"><%= appName %></div>
+        <div class="CommunityMane ClearFix Line">
+          <div class="CommunityName FL"><%= appName %></div>
           <% if (isRemovable) { %>
           <div class="SpaceAction">
-            <div class="LeftButton">
-              <div class="RightButton">
               <% def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
-                <div class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>"><span></span></div>
-              </div>
-            </div>
+              <a href="#" class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>">&nbsp;</a>
           </div>
           <% } %>
-          <div style="clear: both;"><span></span></div>
         </div>
         <div class="Text"><%= app.getDescription() %></div>
       </div>
-      <div style="clear: left;"><span></span></div>
     </div>
     <% } %>
   <% } %>
   </div>
-  <div>
+  
+  <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
+  <a href="#" class="AddAplicationButton" onclick="<%= addApplication %>">$addApplicationLabel</a>
+  <div class="FR">
     <%
       if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
         _ctx.renderUIComponent(iterator);
       }
     %>
   </div>
-  <div class="AddAplicationButton">
-    <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-    <div class="LeftButton" onclick="<%= addApplication %>">
-      <div class="RightButton RightButtonAutoWidth">
-        <div class="CenterButton CenterButtonAutoWidth">
-          <div class="IconButton"><%= _ctx.appRes(uicomponent.getId() + ".button.add")%></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  
+  
   <% uiform.end() %>
   <% uicomponent.renderChild(UIPopupContainer.class) %>
 </div>
