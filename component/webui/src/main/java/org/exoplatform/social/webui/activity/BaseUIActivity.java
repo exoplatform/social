@@ -353,6 +353,8 @@ public class BaseUIActivity extends UIForm {
 
   protected void setLike(boolean isLiked, String remoteUser) throws Exception {
     Identity viewerIdentity = Utils.getViewerIdentity();
+    activity.setBody(null);
+    activity.setTitle(null);
     if (isLiked) {
       Utils.getActivityManager().saveLike(activity, viewerIdentity);
     } else {

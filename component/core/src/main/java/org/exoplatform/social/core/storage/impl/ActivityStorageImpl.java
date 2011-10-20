@@ -1188,10 +1188,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /**
    * {@inheritDoc}
    */
-  public void updateActivity(ExoSocialActivity existingActivity) throws ActivityStorageException {
+  public void updateActivity(ExoSocialActivity changedActivity) throws ActivityStorageException {
 
     try {
-      _saveActivity(existingActivity);
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, changedActivity.getId());
+
+      if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
+      if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
+
+      _saveActivity(changedActivity);
+      
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(

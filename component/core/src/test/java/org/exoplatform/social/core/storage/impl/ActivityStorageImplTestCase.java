@@ -113,6 +113,149 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(activity.getTitle(), got.getTitle());
 
   }
+  
+  public void testUpdateActivity() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("&");
+    activity.setBody("test&amp;");
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    
+    got.setBody(null);
+    got.setTitle(null);
+    
+    activityStorage.updateActivity(got);
+    
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(activity.getId(), got.getId());
+    assertEquals(activity.getTitle(), got.getTitle());
+
+  }
+  
+  public void testUpdateActivityForLike() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("&");
+    activity.setBody("test&amp;");
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    
+    got.setBody(null);
+    got.setTitle(null);
+    got.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    activityStorage.updateActivity(got);
+    
+    
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(got.getId(), updatedActivity.getId());
+    assertEquals(got.getTitle(), updatedActivity.getTitle());
+    assertEquals(got.getBody(), updatedActivity.getBody());
+
+  }
+  
+
+  /**
+   * Wrong due to not set:
+   *                   got.setBody(null);
+   *                   got.setTitle(null);
+   * before invokes: activityStorage.updateActivity(got);
+   * @throws Exception
+   */
+  public void testUpdateActivityForWrong() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("&");
+    activity.setBody("test&amp;");
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    
+    got.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    activityStorage.updateActivity(got);
+    
+    
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(got.getId(), updatedActivity.getId());
+    assertNotSame(got.getTitle(), updatedActivity.getTitle());
+    assertNotSame(got.getBody(), updatedActivity.getBody());
+
+  }
+  
+  public void testUpdateActivityForUnLike() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title ");
+    activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    
+    got.setBody(null);
+    got.setTitle(null);
+    got.setLikeIdentityIds(new String[] {});
+    activityStorage.updateActivity(got);
+    
+    
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(got.getId(), updatedActivity.getId());
+    assertEquals(got.getTitle(), updatedActivity.getTitle());
+    assertEquals(got.getBody(), updatedActivity.getBody());
+
+  }
+  
+  /**
+   * Wrong due to not set:
+   *                   got.setBody(null);
+   *                   got.setTitle(null);
+   * before invokes: activityStorage.updateActivity(got);
+   * @throws Exception
+   */
+  public void testUpdateActivityForUnLikeWrong() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("&");
+    activity.setBody("test&amp;");
+    activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    
+    
+    got.setLikeIdentityIds(new String[] {});
+    activityStorage.updateActivity(got);
+    
+    
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    
+    assertEquals(got.getId(), updatedActivity.getId());
+    assertNotSame(got.getTitle(), updatedActivity.getTitle());
+    assertNotSame(got.getBody(), updatedActivity.getBody());
+
+  }
+  
+  
 
   public void testSaveComment() throws Exception {
 
