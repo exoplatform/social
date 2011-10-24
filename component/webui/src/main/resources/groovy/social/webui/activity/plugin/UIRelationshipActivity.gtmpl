@@ -176,13 +176,6 @@
 	  
       <p class="Content">
         $activityContentTitle 
-        <% if (canShowAction) {
-             if (isReceiver) {%>
-          <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
-        <%   } else if (isSender) {%>
-          <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
-        <%   }
-           }%>
       </p>
       <div class="LinkCM">
         <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
@@ -213,6 +206,13 @@
         </a>
       <% }%>
      <% }%>
+     <% if (canShowAction) {
+         if (isReceiver) {%>
+           | <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
+     <%  } else if (isSender) {%>
+           | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
+     <%  }
+        }%>
       </div>
 
     <% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>

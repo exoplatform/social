@@ -239,6 +239,7 @@
 .UIActivity .ContentBox .LinkCM {
 	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -444px;
 	margin: 0px;
+	padding-bottom: 3px;
 	padding-left: 20px;
 }
 
