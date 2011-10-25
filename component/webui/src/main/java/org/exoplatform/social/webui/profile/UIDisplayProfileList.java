@@ -95,8 +95,8 @@ public class UIDisplayProfileList extends UIContainer {
    * @throws Exception
    */
   public UIDisplayProfileList() throws Exception {
-	uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-	uiProfileUserSearch.setHasPeopleTab(false);
+	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+	  uiProfileUserSearch.setHasPeopleTab(false);
     init();
   }
   
@@ -253,8 +253,13 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+    if (currentLoadIndex <= getPeopleNum()) {
+      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
+      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                    .load(currentLoadIndex, loadingCapacity)));
+      currentPeopleList.addAll(loadedPeople);
+      setPeopleList(currentPeopleList);
+    }
   }
   
   /**

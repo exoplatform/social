@@ -267,8 +267,13 @@ public class UIPendingRelation extends UIContainer {
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+    if (currentLoadIndex <= getPeopleNum()) {
+      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
+      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                    .load(currentLoadIndex, loadingCapacity)));
+      currentPeopleList.addAll(loadedPeople);
+      setPeopleList(currentPeopleList);
+    }
   }
   
   /**
@@ -291,9 +296,9 @@ public class UIPendingRelation extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getOutgoingByFilter(owner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(identities.length);
+    setPeopleNum(listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(identities.length);
+    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
     return Arrays.asList(identities);
     
@@ -310,9 +315,9 @@ public class UIPendingRelation extends UIContainer {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPendingRelation = event.getSource();
       if (uiPendingRelation.currentLoadIndex < uiPendingRelation.peopleNum) {
-    	uiPendingRelation.loadNext();
+    	  uiPendingRelation.loadNext();
       } else {
-    	uiPendingRelation.setEnableLoadNext(false);
+    	  uiPendingRelation.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPendingRelation);
     }

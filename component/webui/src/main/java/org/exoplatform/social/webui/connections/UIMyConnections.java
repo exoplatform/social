@@ -281,8 +281,13 @@ public class UIMyConnections extends UIContainer {
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+    if (currentLoadIndex <= getPeopleNum()) {
+      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
+      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                    .load(currentLoadIndex, loadingCapacity)));
+      currentPeopleList.addAll(loadedPeople);
+      setPeopleList(currentPeopleList);
+    }
   }
   
   /**
@@ -305,9 +310,9 @@ public class UIMyConnections extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(owner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(identities.length);
+    setPeopleNum(listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(identities.length);
+    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
     return Arrays.asList(identities);
 
@@ -324,9 +329,9 @@ public class UIMyConnections extends UIContainer {
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
       if (uiMyConnections.currentLoadIndex < uiMyConnections.peopleNum) {
-    	uiMyConnections.loadNext();
+    	  uiMyConnections.loadNext();
       } else {
-    	uiMyConnections.setEnableLoadNext(false);
+    	  uiMyConnections.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiMyConnections);
     }

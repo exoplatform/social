@@ -24,7 +24,6 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
@@ -95,8 +94,8 @@ public class UIAllPeople extends UIContainer {
    * @throws Exception
    */
   public UIAllPeople() throws Exception {
-	uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-	uiProfileUserSearch.setHasPeopleTab(true);
+	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+	  uiProfileUserSearch.setHasPeopleTab(true);
     init();
   }
   
@@ -253,8 +252,13 @@ public class UIAllPeople extends UIContainer {
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+    if (currentLoadIndex <= getPeopleNum()) {
+      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
+      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                    .load(currentLoadIndex, loadingCapacity)));
+      currentPeopleList.addAll(loadedPeople);
+      setPeopleList(currentPeopleList);
+    }
   }
   
   /**
@@ -275,9 +279,9 @@ public class UIAllPeople extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(owner.getProviderId(), filter, false);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(identities.length);
+    setPeopleNum(listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(identities.length);
+    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
     return Arrays.asList(identities);
 
@@ -295,7 +299,7 @@ public class UIAllPeople extends UIContainer {
       if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
         uiAllPeople.loadNext();
       } else {
-    	uiAllPeople.setEnableLoadNext(false);
+    	  uiAllPeople.setEnableLoadNext(false);
       }
     }
   }

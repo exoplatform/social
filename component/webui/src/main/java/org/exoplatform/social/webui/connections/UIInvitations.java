@@ -93,7 +93,7 @@ public class UIInvitations extends UIContainer {
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setHasPeopleTab(true);
-	addChild(uiProfileUserSearch);
+	  addChild(uiProfileUserSearch);
     init();
   }
   
@@ -266,8 +266,13 @@ public class UIInvitations extends UIContainer {
    */
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    this.peopleList.addAll(new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                                                 .load(currentLoadIndex, loadingCapacity))));
+    if (currentLoadIndex <= getPeopleNum()) {
+      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
+      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
+                    .load(currentLoadIndex, loadingCapacity)));
+      currentPeopleList.addAll(loadedPeople);
+      setPeopleList(currentPeopleList);
+    }
   }
   
   /**
@@ -290,9 +295,9 @@ public class UIInvitations extends UIContainer {
     ListAccess<Identity> listAccess = Utils.getRelationshipManager().getIncomingByFilter(owner, filter);
     Identity[] identities = listAccess.load(index, length);
 
-    setPeopleNum(identities.length);
+    setPeopleNum(listAccess.getSize());
     setPeopleListAccess(listAccess);
-    uiProfileUserSearch.setPeopleNum(identities.length);
+    uiProfileUserSearch.setPeopleNum(listAccess.getSize());
 
     return Arrays.asList(identities);
 
