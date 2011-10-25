@@ -25,6 +25,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.extras.migration.IndexTool;
 import org.exoplatform.social.extras.migration.MigrationTool;
 import org.exoplatform.social.extras.migration.io.WriterContext;
 import org.exoplatform.social.extras.migration.rw.NodeReader;
@@ -70,6 +71,9 @@ public class Social_11x_12x_UpgradeProductPlugin extends UpgradeProductPlugin {
 
       //
       tool.runAll(reader, writer, ctx);
+
+      //
+      new IndexTool(session).run();
 
       //
       tool.commit(reader, writer, ctx);

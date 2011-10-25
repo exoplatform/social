@@ -123,6 +123,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
   private final String PROP_URLS = "urls";
   private final String PROP_EMAILS = "emails";
   private final String PROP_POSITION = "position";
+  private final String PROP_SKILLS = "skills";
   private final String PROP_DEPARTMENT = "department";
   private final String PROP_COMPANY = "company";
   private final String PROP_START_DATE = "startDate";
@@ -1085,7 +1086,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
     profile = identityStorage.loadProfile(profile);
 
     String position = (String) currentData.get(PROP_POSITION);
-    String department = (String) currentData.get(PROP_DEPARTMENT);
+    String skills = (String) currentData.get(PROP_SKILLS);
     String company = (String) currentData.get(PROP_COMPANY);
     String startDate = (String) currentData.get(PROP_START_DATE);
     String endDate = (String) currentData.get(PROP_END_DATE);
@@ -1100,7 +1101,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
 
     //
     Map<String, Object> xp = new HashMap<String, Object>();
-    xp.put(Profile.EXPERIENCES_SKILLS, department);
+    xp.put(Profile.EXPERIENCES_SKILLS, skills);
     xp.put(Profile.EXPERIENCES_POSITION, position);
     xp.put(Profile.EXPERIENCES_COMPANY, company);
     xp.put(Profile.EXPERIENCES_DESCRIPTION, description);

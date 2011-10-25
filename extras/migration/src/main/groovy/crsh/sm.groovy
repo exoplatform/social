@@ -31,7 +31,8 @@ import org.exoplatform.social.extras.migration.MigrationTool;
 import org.exoplatform.social.extras.migration.MigrationException;
 import org.exoplatform.social.extras.migration.io.WriterContext
 import org.exoplatform.social.extras.migration.TemplateTool;
-import org.exoplatform.social.extras.migration.PLF35HomesTool;
+import org.exoplatform.social.extras.migration.PLF35HomesTool
+import org.exoplatform.social.extras.migration.IndexTool;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -325,6 +326,19 @@ public class sm extends org.crsh.jcr.command.JCRCommand
   public Object plf35homes() {
 
     new PLF35HomesTool().run();
+
+  }
+
+  @Usage("Index profiles skills")
+  @Command
+  public Object indexprofiles() {
+
+    if (session != null) {
+      new IndexTool(session).run();
+    }
+    else {
+      return "No session started, please login before run this command";
+    }
 
   }
   
