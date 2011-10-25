@@ -433,23 +433,12 @@ public class UIProfileUserSearch extends UIForm {
             if (filter.getGender().equals(defaultGenderVal)) {
               filter.setGender("");
             }
-
-            String skills = null;
-
-            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
-            uiSearch.setProfileFilter(filter);
-            // Using regular expression for search
-            skills = filter.getSkills();
-            if (skills.length() > 0) {
-              skills = skills.isEmpty() ? "*" : skills;
-              skills = (skills.charAt(0) != '*') ? "*" + skills : skills;
-              skills = (skills.charAt(skills.length() - 1) != '*') ? skills += "*" : skills;
-              skills = (skills.indexOf("*") >= 0) ? skills.replace("*", ".*") : skills;
-              skills = (skills.indexOf("%") >= 0) ? skills.replace("%", ".*") : skills;
-              Pattern.compile(skills);
-              filter.setSkills(skills);
-              uiSearch.setProfileFilter(filter);
+            if (filter.getSkills().equals(defaultSkillsVal)) {
+              filter.setSkills("");
             }
+
+            uiSearch.setProfileFilter(filter);
+
           }
         }
         uiSearch.setNewSearch(true);

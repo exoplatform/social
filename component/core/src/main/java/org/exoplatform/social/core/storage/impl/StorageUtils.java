@@ -33,12 +33,13 @@ public class StorageUtils {
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
+    String skills = profileFilter.getSkills();
 
     //
     if (firstChar != '\u0000') {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
-          nameForSearch.toLowerCase() + PERCENT_STR
+          String.valueOf(firstChar).toLowerCase() + PERCENT_STR
       );
     }
     else if (nameForSearch.trim().length() != 0) {
@@ -52,6 +53,13 @@ public class StorageUtils {
       whereExpression.and().like(
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
           PERCENT_STR + position.toLowerCase() + PERCENT_STR
+      );
+    }
+
+    if (skills.length() != 0) {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
+          PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
     }
 

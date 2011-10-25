@@ -71,7 +71,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     VOID("void"),
     IM("im"),
     PHONE("phone"),
-    URL("url");
+    URL("url"),
+    INDEX("index");
 
     private String prefix;
     private static final String SEPARATOR = "-";
@@ -347,7 +348,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           }
 
           // create
+          List<String> skills = new ArrayList<String>();
           for (Map<String, String> currentXp : (List<Map<String, String>>) value) {
+
             ProfileXpEntity xpEntity = profileEntity.createXp();
             profileEntity.getXps().put(String.valueOf(System.currentTimeMillis()), xpEntity);
             xpEntity.setSkills(currentXp.get(Profile.EXPERIENCES_SKILLS));
@@ -356,7 +359,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
             xpEntity.setEndDate(currentXp.get(Profile.EXPERIENCES_END_DATE));
             xpEntity.setCompany(currentXp.get(Profile.EXPERIENCES_COMPANY));
             xpEntity.setDescription(currentXp.get(Profile.EXPERIENCES_DESCRIPTION));
+
+            //
+            skills.add(currentXp.get(Profile.EXPERIENCES_SKILLS));
+
           }
+          profileEntity.setProperty(PropNs.INDEX.nameOf("skills"), skills);
+
         }
         else if (Profile.AVATAR.equals(key)) {
           AvatarAttachment attachement = (AvatarAttachment) value;
@@ -462,6 +471,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       if (isJcrProperty(name)) {
         switch(PropNs.nsOf(name)) {
           case VOID:
+          case INDEX:
             profile.setProperty(PropNs.cleanPrefix(name), profileEntity.getProperty(name).get(0));
             break;
           case PHONE:
@@ -752,11 +762,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
-
-    whereExpression.and().like(
-        whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + StorageUtils.PERCENT_STR
-    );
+    StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
 
@@ -781,11 +787,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
-
-    whereExpression.and().like(
-        whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-        Character.toString(profileFilter.getFirstCharacterOfName()).toLowerCase() + StorageUtils.PERCENT_STR
-    );
+    StorageUtils.applyFilter(whereExpression, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.where(whereExpression.toString()).get().objects(offset, limit);
     while (results.hasNext()) {

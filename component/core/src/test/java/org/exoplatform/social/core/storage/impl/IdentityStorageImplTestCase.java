@@ -220,12 +220,21 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     //
     Profile profile = new Profile(newIdentity);
+    Map<String, String> xp = new HashMap<String, String>();
+    List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
+    xp.put(Profile.EXPERIENCES_SKILLS, "java scrum groovy");
+    xp.put(Profile.EXPERIENCES_POSITION, "dev");
+    xp.put(Profile.EXPERIENCES_COMPANY, "exo");
+    xps.add(xp);
+    profile.setProperty(Profile.EXPERIENCES, xps);
+
     storage._createProfile(profile);
     assertNotNull(profile.getId());
 
     //
     profile = storage._loadProfile(profile);
     assertNotNull(profile.getId());
+    assertEquals("java scrum groovy", profile.getProperty("skills"));
 
     //
     tearDownIdentityList.add(newIdentity.getId());
@@ -472,9 +481,17 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     addIdentity("o", "a3", "male", "");
     addIdentity("o", "a4", "male", "");
     addIdentity("o", "b1", "male", "");
-    addIdentity("o", "b2", "male", "");
+    Identity b2 = addIdentity("o", "b2", "male", "");
     addIdentity("o", "b3", "male", "");
     addIdentity("o", "z", "male", "");
+
+    Profile profile = storage.loadProfile(new Profile(b2));
+    Map<String, String> xp = new HashMap<String, String>();
+    List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
+    xp.put(Profile.EXPERIENCES_SKILLS, "java scrum groovy");
+    xps.add(xp);
+    profile.setProperty(Profile.EXPERIENCES, xps);
+    storage.saveProfile(profile);
 
     ProfileFilter filterA = createFilter('a', "", "", "", null);
     ProfileFilter filterB = createFilter('b', "", "", "", null);
@@ -482,11 +499,15 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     ProfileFilter filterZ = createFilter('z', "", "", "", null);
     ProfileFilter filterA2 = createFilter('a', "", "", "", a2);
 
+    ProfileFilter filterB2Skills = new ProfileFilter();
+    filterB2Skills.setSkills("scrum");
+
     assertEquals(4, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterA));
     assertEquals(3, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterB));
     assertEquals(0, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterC));
     assertEquals(1, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterZ));
     assertEquals(3, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterA2));
+    assertEquals(1, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterB2Skills));
   }
 
   public void testFindIdentityByFirstChar() throws Exception {
@@ -500,11 +521,22 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     addIdentity("o", "b3", "", "");
     addIdentity("o", "z", "", "");
 
+    Profile profile = storage.loadProfile(new Profile(b2));
+    Map<String, String> xp = new HashMap<String, String>();
+    List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
+    xp.put(Profile.EXPERIENCES_SKILLS, "java scrum groovy");
+    xps.add(xp);
+    profile.setProperty(Profile.EXPERIENCES, xps);
+    storage.saveProfile(profile);
+
     ProfileFilter filterA = createFilter('a', "", "", "", null);
     ProfileFilter filterB = createFilter('b', "", "", "", null);
     ProfileFilter filterC = createFilter('c', "", "", "", null);
     ProfileFilter filterZ = createFilter('z', "", "", "", null);
     ProfileFilter filterB2 = createFilter('b', "", "", "", b2);
+
+    ProfileFilter filterB2Skills = new ProfileFilter();
+    filterB2Skills.setSkills("scrum");
 
     assertEquals(4, storage.getIdentitiesByFirstCharacterOfName("o", filterA, 0, -1, false).size());
     assertEquals(4, storage.getIdentitiesByFirstCharacterOfName("o", filterA, 0, 4, false).size());
@@ -515,6 +547,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(0, storage.getIdentitiesByFirstCharacterOfName("o", filterC, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByFirstCharacterOfName("o", filterZ, 0, 10, false).size());
     assertEquals(2, storage.getIdentitiesByFirstCharacterOfName("o", filterB2, 0, 10, false).size());
+    assertEquals(1, storage.getIdentitiesByFirstCharacterOfName("o", filterB2Skills, 0, 10, false).size());
+    assertEquals("b2", storage.getIdentitiesByFirstCharacterOfName("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
   public void testFindIdentityWithFilterCount() throws Exception {
@@ -522,6 +556,14 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     addIdentity("o", "toto", "male", "cadre");
     Identity itotota = addIdentity("o", "totota", "female", "dev");
     addIdentity("o", "tata", "male", "cadre");
+
+    Profile profile = storage.loadProfile(new Profile(itotota));
+    Map<String, String> xp = new HashMap<String, String>();
+    List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
+    xp.put(Profile.EXPERIENCES_SKILLS, "java scrum groovy");
+    xps.add(xp);
+    profile.setProperty(Profile.EXPERIENCES, xps);
+    storage.saveProfile(profile);
 
     ProfileFilter t = createFilter('\u0000', "t", "", "", null);
     ProfileFilter to = createFilter('\u0000', "to", "", "", null);
@@ -541,6 +583,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     ProfileFilter t2 = createFilter('\u0000', "t", "", "", itotota);
 
+    ProfileFilter filterB2Skills = new ProfileFilter();
+    filterB2Skills.setSkills("scrum");
 
     assertEquals(3, storage.getIdentitiesByProfileFilterCount("o", t));
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", to));
@@ -556,6 +600,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", tmalecadre));
 
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", t2));
+    assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", filterB2Skills));
   }
 
   public void testFindIdentityWithFilter() throws Exception {
@@ -563,6 +608,14 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     addIdentity("o", "toto", "male", "cadre");
     Identity itotota = addIdentity("o", "totota", "female", "dev");
     addIdentity("o", "tata", "male", "cadre");
+
+    Profile profile = storage.loadProfile(new Profile(itotota));
+    Map<String, String> xp = new HashMap<String, String>();
+    List<Map<String, String>> xps = new ArrayList<Map<String, String>>();
+    xp.put(Profile.EXPERIENCES_SKILLS, "java scrum groovy");
+    xps.add(xp);
+    profile.setProperty(Profile.EXPERIENCES, xps);
+    storage.saveProfile(profile);
 
     ProfileFilter t = createFilter('\u0000', "t", "", "", null);
     ProfileFilter to = createFilter('\u0000', "to", "", "", null);
@@ -582,6 +635,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     ProfileFilter t2 = createFilter('\u0000', "t", "", "", itotota);
 
+    ProfileFilter filterB2Skills = new ProfileFilter();
+    filterB2Skills.setSkills("scrum");
 
     assertEquals(3, storage.getIdentitiesByProfileFilter("o", t, 0, 10, false).size());
     assertEquals(3, storage.getIdentitiesByProfileFilter("o", t, 0, 3, false).size());
@@ -601,6 +656,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", tmalecadre, 0, 10, false).size());
 
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", t2, 0, 10, false).size());
+    assertEquals(1, storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).size());
+    assertEquals("totota", storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
   public void testAvatar() throws Exception {

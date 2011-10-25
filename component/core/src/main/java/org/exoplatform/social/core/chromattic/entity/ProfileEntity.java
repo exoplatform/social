@@ -83,6 +83,9 @@ public abstract class ProfileEntity {
   public static final PropertyLiteralExpression<String> gender =
       new PropertyLiteralExpression<String>(String.class, "void-gender");
 
+  public static final PropertyLiteralExpression<String> skills =
+      new PropertyLiteralExpression<String>(String.class, "index-skills");
+
   @Create
   public abstract NTFile createAvatar();
 
