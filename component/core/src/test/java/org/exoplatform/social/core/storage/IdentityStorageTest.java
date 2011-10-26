@@ -3,11 +3,20 @@ package org.exoplatform.social.core.storage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
+import org.exoplatform.social.core.storage.cache.CachedSpaceStorage;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
+import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -17,19 +26,26 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * Time: 9:34:56 AM
  */
 public class IdentityStorageTest extends AbstractCoreTest {
-  private CachedIdentityStorage identityStorage;
+  private IdentityStorage identityStorage;
+  private SpaceStorage spaceStorage;
   private List<Identity> tearDownIdentityList;
+  private List<Space> tearDownSpaceList;
 
   public void setUp() throws Exception {
     super.setUp();
-    identityStorage = (CachedIdentityStorage) getContainer().getComponentInstanceOfType(CachedIdentityStorage.class);
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    spaceStorage = (SpaceStorage) getContainer().getComponentInstanceOfType(SpaceStorageImpl.class);
     assertNotNull("identityStorage must not be null", identityStorage);
     tearDownIdentityList = new ArrayList<Identity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   public void tearDown() throws Exception {
     for (Identity identity : tearDownIdentityList) {
       identityStorage.deleteIdentity(identity);
+    }
+    for (Space space : tearDownSpaceList) {
+      spaceStorage.deleteSpace(space.getId());
     }
     super.tearDown();
   }
@@ -497,6 +513,44 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identitiesCount, 10, identitiesCount);
   }
 
+  public void testGetSpaceMemberByProfileFilter() throws Exception {
+    populateData();
+    
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space");
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space ");
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space");
+    String[] managers = new String[] {};
+    String[] members = new String[] {"username1", "username2", "username3"};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+
+    spaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
+    
+    ProfileFilter profileFilter = new ProfileFilter();
+    
+    List<Identity> identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(2, identities.size());
+    
+    profileFilter.setName("0");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(0, identities.size());
+    
+    profileFilter.setName("3");
+    identities = identityStorage.getSpaceMemberIdentitiesByProfileFilter(space, profileFilter, Type.MEMBER, 0, 2);
+    assertEquals(1, identities.size());
+  }
+  
   /**
    * Populate one identity with remoteId.
    * 

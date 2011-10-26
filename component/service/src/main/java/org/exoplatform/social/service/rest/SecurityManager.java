@@ -179,7 +179,8 @@ public class SecurityManager {
     if(ownerIdentityStream.getProviderId().equals(SpaceIdentityProvider.NAME)){
       //if space identity, check if is a member of
       Space space = spaceService.getSpaceByPrettyName(ownerIdentityStream.getRemoteId());
-      if(spaceService.isMember(space, authenticatedIdentity.getRemoteId())){
+      if(spaceService.isMember(space, authenticatedIdentity.getRemoteId()) ||
+            spaceService.isManager(space, authenticatedIdentity.getRemoteId()) ){
         return true;
       }
     } else {

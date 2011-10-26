@@ -28,18 +28,22 @@ import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileXpEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
+import org.exoplatform.social.core.storage.IdentityStorageException.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.Order;
-import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 import javax.jcr.PropertyType;
@@ -723,7 +727,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     return listIdentity;
   }
-
+  
   /**
    * {@inheritDoc}
    */
@@ -747,6 +751,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   }
 
+  
+  
   /**
    * {@inheritDoc}
    */
@@ -846,4 +852,100 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   public void setStorage(IdentityStorage storage) {
     this.identityStorage = storage;
   }
+  
+  /**
+   * {@inheritDoc}
+   * 
+   */
+  public QueryResult<ProfileEntity> getSpaceMemberIdentitiesByProfileFilterQueryBuilder(Space space,
+      final ProfileFilter profileFilter, SpaceMemberFilterListAccess.Type type,  long offset, long limit, boolean count)
+      throws IdentityStorageException {
+
+    if (offset < 0) {
+      offset = 0;
+    }
+
+    String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
+    StorageUtils.processUsernameSearchPattern(inputName.trim());
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
+
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    whereExpression.startGroup();
+    whereExpression
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyFilter(whereExpression, profileFilter);
+    
+    List<Identity> relations = new ArrayList<Identity>();
+    
+    try {
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
+      
+
+      String[] members = null;
+      switch (type) {
+        case MEMBER:
+          if(spaceEntity != null && spaceEntity.getMembersId() != null){
+            members = spaceEntity.getMembersId();
+          }
+          break;
+        case MANAGER:
+          if(spaceEntity != null && spaceEntity.getManagerMembersId() != null){
+            members = spaceEntity.getManagerMembersId();
+          }
+          break;
+      }
+      
+      for (int i = 0; i <  members.length; i++){
+        relations.add(_findIdentity(OrganizationIdentityProvider.NAME, members[i]));
+      }
+
+    } catch (NodeNotFoundException e){
+      throw new IdentityStorageException(Type.FAIL_TO_FIND_IDENTITY);
+    }
+    whereExpression.endGroup();
+    whereExpression.and();
+    StorageUtils.applyWhereFromIdentity(whereExpression, relations);
+    
+    whereExpression.orderBy(ProfileEntity.fullName, Order.ASC);
+    
+    if(count){
+     return builder.where(whereExpression.toString()).get().objects();
+    } else {
+     return builder.where(whereExpression.toString()).get().objects(offset, limit);
+     
+    }
+  }
+
+  public List<Identity> getSpaceMemberIdentitiesByProfileFilter(
+      Space space,
+      ProfileFilter profileFilter,
+      org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type,
+      long offset, long limit) throws IdentityStorageException {
+    List<Identity> listIdentity = new ArrayList<Identity>();
+    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, false);
+    while (results.hasNext()) {
+      ProfileEntity profileEntity = results.next();
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      Profile profile = getStorage().loadProfile(new Profile(identity));
+      identity.setProfile(profile);
+      listIdentity.add(identity);
+    }
+    return listIdentity;
+  }
+  
+  public int getSpaceMemberIdentitiesByProfileFilterCount(
+      Space space,
+      ProfileFilter profileFilter,
+      org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type type,
+      long offset, long limit) throws IdentityStorageException {
+    
+    return getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, true).size();
+
+  }
+  
+
 }

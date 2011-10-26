@@ -28,12 +28,15 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.IdentityProviderPlugin;
 import org.exoplatform.social.core.identity.ProfileFilterListAccess;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.profile.ProfileLifeCycle;
 import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
@@ -97,6 +100,15 @@ public class IdentityManagerImpl implements IdentityManager {
     return (new ProfileFilterListAccess(identityStorage, providerId, profileFilter, forceLoadProfile));
   }
 
+  
+  /**
+   * {@inheritDoc}
+   */
+  public ListAccess<Identity> getSpaceIdentityByProfileFilter(Space space, ProfileFilter profileFilter, Type type,
+                                                           boolean forceLoadProfile) {
+    return (new SpaceMemberFilterListAccess(identityStorage, space, profileFilter, type));
+  }
+  
   /**
    * {@inheritDoc}
    */

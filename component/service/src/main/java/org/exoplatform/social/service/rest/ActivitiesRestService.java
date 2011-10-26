@@ -16,8 +16,10 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -25,6 +27,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -33,6 +36,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -47,6 +51,10 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
+import org.exoplatform.social.service.rest.api.models.ActivityStreamRestOut;
+import org.exoplatform.social.service.rest.api.models.CommentRestOut;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
  * ActivitiesRestService.java <br />
@@ -479,6 +487,151 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
+   * Shows comment list by json/xml format with limit and offset.
+   * 
+   * @param uriInfo
+   * @param activityId
+   * @param format
+   * @param offset
+   * @param limit
+   * @return response
+   * @throws Exception
+   */
+  @GET
+  @Path("{activityId}/comments.{format}")
+  public Response showComments(@Context UriInfo uriInfo,
+                               @PathParam("portalName") String portalName,
+                               @PathParam("activityId") String activityId,
+                               @PathParam("format") String format,
+                               @QueryParam("offset") Integer offset,
+                               @QueryParam("limit") Integer limit) throws Exception {
+    //RestChecker.checkAuthenticatedRequest();
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+    //Identity authenticatedIdentity = Util.getAuthenticatedUserIdentity(portalName);
+    
+    ActivityManager activityManager = Util.getActivityManager(portalName);
+    
+    if(offset == null || limit == null ){
+      offset = 0;
+      limit = 10;
+    }
+    
+    if(offset < 0 || limit < 0){
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    
+    ExoSocialActivity activity = null;
+    try {
+      activity = activityManager.getActivity(activityId);
+//      if(!SecurityManager.canAccessActivity(portalContainer, authenticatedIdentity, activity)){
+//        throw new WebApplicationException(Response.Status.FORBIDDEN);
+//      }
+      
+      int total;
+      List<CommentRestOut> commentWrapers = null;
+      ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
+      
+      if(offset > comments.getSize()){
+        offset = 0;
+        limit = 0;
+      } else if(offset + limit > comments.getSize()){
+        limit = comments.getSize() - offset;
+      }
+      
+      total = limit;
+      
+      ExoSocialActivity[] commentsLimited =  comments.load(offset, total);
+      commentWrapers = new ArrayList<CommentRestOut>(total);
+      for(int i = 0; i < total; i++){
+        CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
+        commentRestOut.setPosterIdentity(commentsLimited[i], portalName);
+        commentWrapers.add(commentRestOut);      
+      }
+      
+      HashMap<String, Object> resultJson = new HashMap<String, Object>();
+      resultJson.put("totalNumberOfComments", commentWrapers.size());
+      resultJson.put("comments", commentWrapers);
+      return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+      
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    } catch (Exception e){
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Gets an activity by its id.
+   *
+   * @param uriInfo the uri request info
+   * @param portalContainerName the associated portal container name
+   * @param activityId the specified activity Id
+   * @param format the expected returned format
+   * @return a response object
+   */
+  @GET
+  @Path("{activityId}.{format}")
+  public Response getActivityById(@Context UriInfo uriInfo,
+                                  @PathParam("portalContainerName") String portalContainerName,
+                                  @PathParam("activityId") String activityId,
+                                  @PathParam("format") String format,
+                                  @QueryParam("poster_identity") String showPosterIdentity,
+                                  @QueryParam("number_of_comments") int numberOfComments,
+                                  @QueryParam("activity_stream") String showActivityStream,
+                                  @QueryParam("number_of_likes") int numberOfLikes) {
+
+    RestChecker.checkAuthenticatedRequest();
+
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
+    
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+
+    Identity authenticatedIdentity = Util.getAuthenticatedUserIdentity(portalContainerName);
+    ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
+    //
+    ExoSocialActivity activity = null;
+    
+    try{
+      activity = activityManager.getActivity(activityId);
+    } catch (UndeclaredThrowableException undeclaredThrowableException) {
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    
+    if(activity.isComment()){
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    
+    //
+    ActivityRestOut model = new ActivityRestOut(activity, portalContainerName);
+    
+    model.setNumberOfLikes(numberOfLikes, activity, portalContainerName);
+    
+    //
+    if (isPassed(showPosterIdentity)) {
+      model.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(activity.getUserId(), false)));
+    }
+
+    //
+    if (isPassed(showActivityStream)) {
+      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
+    }
+    
+    model.setNumberOfComments(numberOfComments, activity, portalContainerName);
+    
+    return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  /**
    * updates comment by json/xml format
    * @param uriInfo
    * @param activityId
@@ -715,5 +868,9 @@ public class ActivitiesRestService implements ResourceContainer {
       list.add(str);
       return list.toArray(new String[list.size()]);
     } else return new String[] {str};
+  }
+  
+  private boolean isPassed(String value) {
+    return value != null && ("true".equals(value) || "t".equals(value) || "1".equals(value));
   }
 }

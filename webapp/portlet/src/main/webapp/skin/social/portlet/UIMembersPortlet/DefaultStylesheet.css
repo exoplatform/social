@@ -79,3 +79,13 @@
 	text-align: center;
 	color: #afafaf;
 }
+
+.UIProfileSpace .ShowMoreAction{
+  background: #f8f8f8;
+  border-top: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+  color: #535656;
+  padding: 4px 0px;
+  text-align: center;
+  cursor: pointer;
+}

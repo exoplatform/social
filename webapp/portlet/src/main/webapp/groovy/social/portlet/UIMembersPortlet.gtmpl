@@ -24,17 +24,15 @@
     import org.exoplatform.social.webui.profile.UIProfileUserSearch;
     import org.exoplatform.social.core.service.LinkProvider;
     import org.exoplatform.social.core.identity.model.Profile;
-
-    UIPageIterator iteratorLeaders = uicomponent.getIteratorLeaders()
-    UIPageIterator iteratorMembers = uicomponent.getIteratorMembers()
+    
+    def memberList = uicomponent.getMemberList();
+    def managerList = uicomponent.getManagerList();
+    
     def uicomponentId = uicomponent.getId()
     def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
     def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
     def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
     def labelUserList = _ctx.appRes("${uicomponentId}.label.UserList")
-    def leaderList = uicomponent.getLeaders()
-    def memberList = uicomponent.getMembers()
-    def leaders = uicomponent.getLeaderList()
     def space = uicomponent.getSpace();
     def visibility = space.getVisibility();
     def spaceName = space.getDisplayName();
@@ -44,16 +42,14 @@
     def adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
 <div class="UIMembersPortlet UISocApplication" id="$uicomponentId">
-  <h5 class="CommonTitleBar">$labelUserList</h5>
   <div class="UIProfileSpace">
     <!-- Left section (Admin information) -->
     <div class="LeftColumn">
-      <% if (leaders.size() > 0) {
-           def admin = leaders.get(0);
-           adminName = admin.getFirstName();
-           adminImageSource = uicomponent.getUserAvatar(admin.getUserName());
-           def adminIdentity = uicomponent.getIdentity(admin.getUserName());
-           adminProfileURL = LinkProvider.getUserProfileUri(adminIdentity.getRemoteId());
+      <% if (managerList.size() > 0) {
+           def admin = managerList.get(0);
+           adminName = admin.getProfile().getFullName();
+           adminImageSource = admin.getProfile().getAvatarUrl();
+           adminProfileURL = LinkProvider.getUserProfileUri(admin.getRemoteId());
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
 				<img class="ImgAvatarRoot" src="$adminImageSource" alt=""/>
@@ -70,14 +66,13 @@
       <div class="UISocTitleBar">
 				<h5 class="TitleBar">$administratorLabel</h5>
       </div>
-      <% if (leaderList.size() > 0) {
-        for(user in leaderList) {
-          def userName = user.getFullName();
-          def leaderIdentity = uicomponent.getIdentity(user.getUserName());
-          position = leaderIdentity.profile.position;
-          def profileURL = LinkProvider.getUserProfileUri(leaderIdentity.getRemoteId());
+      <% if (managerList.size() > 0) {
+        for(user in managerList) {
+          def userName = user.getProfile().getFullName();
+          position = user.getProfile().getPosition();
+          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
           if (!position) position = "";
-          def leaderImageSource = leaderIdentity.profile.avatarUrl;
+          def leaderImageSource = user.profile.avatarUrl;
           if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           leaderIdx += 1;
           clzz = "ContentSpace";
@@ -96,9 +91,6 @@
 					<% } %>
         </div>
       <% }
-        if (iteratorLeaders.getAvailablePage() > 1) {
-          uicomponent.renderUIComponent(iteratorLeaders) ;
-        }
       } else { %>
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
       <% } %>
@@ -110,14 +102,14 @@
 				<h5 class="TitleBar">$spaceMemberLabel</h5>
       </div>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+      <div class="ClearFix">
       <% if(memberList.size() > 0)  {
         for(user in memberList) {
-          def memberUserName = user.getFullName();
-          def memberIdentity = uicomponent.getIdentity(user.getUserName());
-          position = memberIdentity.profile.position;
+          def memberUserName = user.getProfile().getFullName();
+          position = user.getProfile().position;
           if (!position) position = "";
-          def profileURL = LinkProvider.getUserProfileUri(memberIdentity.getRemoteId());
-          def memberImageSource = memberIdentity.profile.avatarUrl;
+          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+          def memberImageSource = user.getProfile().avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
 					cssClass = "ContentSpace"; 
@@ -125,7 +117,6 @@
 					cssClass = "ContentSpaceGray";
 				  }
       %>
-       <div class="ClearFix">  
         <div class="$cssClass ClearFix">
 					<img class="ImgAvatar" src="$memberImageSource" alt=""/>
 					<div class="CommunityMane ClearFix">
@@ -138,12 +129,24 @@
 					 <% } %>
         </div>
         <% }
-        if(iteratorMembers.getAvailablePage() > 1) {
-          uicomponent.renderUIComponent(iteratorMembers) ;
-        }
       } else { %>
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
       <% } %>
+       </div>
+       <% if(uicomponent.isEnableLoadNext()) { %>
+         <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
+           <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+         </div>
+     <% } else { %>
+           <script type="text/javascript">
+             var loadMoreButton = document.getElementById("LoadMoreButton");
+             if (loadMoreButton) {
+               try {
+                 loadMoreButton.style.display = "none";
+               }catch(e){};
+               }
+           </script>
+     <%  } %>
       <!-- End members section -->
      </div>
     </div>

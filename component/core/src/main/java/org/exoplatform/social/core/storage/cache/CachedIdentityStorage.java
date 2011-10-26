@@ -18,9 +18,12 @@
 package org.exoplatform.social.core.storage.cache;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
@@ -33,6 +36,7 @@ import org.exoplatform.social.core.storage.cache.model.data.ProfileData;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityCompositeKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
+import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -392,5 +396,12 @@ public class CachedIdentityStorage implements IdentityStorage {
 
     storage.addOrModifyProfileProperties(profile);
     
+  }
+
+
+  public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space,
+      final ProfileFilter profileFilter, final Type type, final long offset, final long limit)
+      throws IdentityStorageException {
+      return storage.getSpaceMemberIdentitiesByProfileFilter(space , profileFilter, type, offset, limit);
   }
 }
