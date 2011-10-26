@@ -21,8 +21,10 @@ import org.chromattic.api.ChromatticSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
@@ -98,12 +100,12 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     String[] managers = entity.getManagerMembersId();
 
     //
-    List<String> membersList = new ArrayList<String>();
+    Set<String> membersList = new HashSet<String>();
     if (members != null) membersList.addAll(Arrays.asList(members));
     if (managers != null) membersList.addAll(Arrays.asList(managers));
 
     //
-    space.setMembers(entity.getMembersId());
+    space.setMembers(membersList.toArray(new String[]{}));
     space.setManagers(entity.getManagerMembersId());
 
 

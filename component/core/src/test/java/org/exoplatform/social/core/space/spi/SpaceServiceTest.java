@@ -1874,7 +1874,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.addMember(savedSpace, "mary");
     spaceService.addMember(savedSpace, "john");
     savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
-    assertEquals("savedSpace.getMembers().length must return 3", 3, savedSpace.getMembers().length);
+    assertEquals("savedSpace.getMembers().length must return 4", 4, savedSpace.getMembers().length);
     // Wait 3 secs to have activity stored
     try {
       IdentityManager identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -1924,12 +1924,12 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.addMember(savedSpace, "mary");
     spaceService.addMember(savedSpace, "john");
     savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
-    assertEquals("savedSpace.getMembers().length must return 3", 3, savedSpace.getMembers().length);
+    assertEquals("savedSpace.getMembers().length must return 4", 4, savedSpace.getMembers().length);
 
     spaceService.removeMember(savedSpace, "root");
     spaceService.removeMember(savedSpace, "mary");
     spaceService.removeMember(savedSpace, "john");
-    assertEquals("savedSpace.getMembers().length must return 0", 0, savedSpace.getMembers().length);
+    assertEquals("savedSpace.getMembers().length must return 1", 1, savedSpace.getMembers().length);
     // Wait 3 secs to have activity stored
     try {
       IdentityManager identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -2330,7 +2330,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.acceptInvitation(savedSpace, "mary");
     spaceService.acceptInvitation(savedSpace, "john");
     savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
-    assertEquals("savedSpace.getMembers().length must return 3", 3, savedSpace.getMembers().length);
+    assertEquals("savedSpace.getMembers().length must return 4", 4, savedSpace.getMembers().length);
     // Wait 3 secs to have activity stored
     try {
       IdentityManager identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
@@ -2408,7 +2408,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     spaceService.validateRequest(savedSpace, "mary");
     spaceService.validateRequest(savedSpace, "john");
     savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
-    assertEquals("savedSpace.getMembers().length must return 3", 3, savedSpace.getMembers().length);
+    assertEquals("savedSpace.getMembers().length must return 4", 4, savedSpace.getMembers().length);
     // Wait 3 secs to have activity stored
     try {
       IdentityManager identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
