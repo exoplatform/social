@@ -90,10 +90,22 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     space.setPriority(entity.getPriority());
     space.setGroupId(entity.getGroupId());
     space.setUrl(entity.getURL());
-    space.setMembers(entity.getMembersId());
-    space.setManagers(entity.getManagerMembersId());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
+
+    //
+    String[] members = entity.getMembersId();
+    String[] managers = entity.getManagerMembersId();
+
+    //
+    List<String> membersList = new ArrayList<String>();
+    if (members != null) membersList.addAll(Arrays.asList(members));
+    if (managers != null) membersList.addAll(Arrays.asList(managers));
+
+    //
+    space.setMembers(entity.getMembersId());
+    space.setManagers(entity.getManagerMembersId());
+
 
     if (entity.getAvatarLastUpdated() != null) {
       try {
