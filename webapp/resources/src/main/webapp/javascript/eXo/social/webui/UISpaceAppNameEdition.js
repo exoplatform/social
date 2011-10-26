@@ -79,7 +79,9 @@ UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, c
 		inputElement.name = selectedElementId; // To store old value
 		inputElement.value = currentContent;
 		inputElement.style.border = "1px solid #b7b7b7";
-		inputElement.style.width = "95px";
+		inputElement.style.height = "14px";
+		inputElement.style.minWidth = "50px";
+		inputElement.style.width = (selectedElement.offsetWidth - 2 ) + "px";
 		inputElement.onkeypress = eXo.social.webui.UISpaceAppNameEdition.renameAppLabel;
 		inputElement.setAttribute('maxLength', 50);
 		inputElement.onblur = function() {
