@@ -384,13 +384,6 @@
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>gatein.portal.component.wsrp</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>jar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.management</artifactId>
       <version>${org.exoplatform.portal.version}</version>
       <type>jar</type>
