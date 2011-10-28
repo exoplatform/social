@@ -862,11 +862,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
-        <artifactId>exo.social.extras.document-composer-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.extras.widget.rest</artifactId>
         <version>${project.version}</version>
       </dependency>
