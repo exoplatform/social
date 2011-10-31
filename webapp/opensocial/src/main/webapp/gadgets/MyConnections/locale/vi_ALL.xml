@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Message bundle for vi_ALL
+-->
+<messageBundle>
+  <msg name="loading">Đang tải trang... Chờ trong giây lát...</msg>
+</messageBundle>

@@ -471,6 +471,17 @@ eXo.social.Util.stripHtml = function(/*Array*/ allowedTags, /*String*/ escapedHt
 }
 
 /**
+ * Sorts activities based on its postedTime.
+ *
+ * @param activities
+ */
+Util.sortActivities = function(activities) {
+  activities.sort(function(act1, act2) {
+    return act2.postedTime - act1.postedTime;
+  });
+};
+
+/**
  * converts timestamp to pretty time
  * Use resource bundle
  * //TODO about (?) days ago?

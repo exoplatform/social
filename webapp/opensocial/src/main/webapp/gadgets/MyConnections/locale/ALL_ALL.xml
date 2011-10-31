@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default message bundle
+-->
+<messageBundle>
+  <msg name="loading">Loading... Please wait...</msg>
+  <msg name="just_now">Just now</msg>
+  <msg name="less_than_a_minute_ago">Less than a minute ago.</msg>
+  <msg name="about_a_minute_ago">About a minute ago.</msg>
+  <msg name="about_0_minutes_ago">About {0} minutes ago.</msg>
+  <msg name="about_an_hour_ago">About an hour ago.</msg>
+  <msg name="about_0_hours_ago">About {0} hours ago.</msg>
+  <msg name="sunday">Sunday</msg>
+  <msg name="monday">Monday</msg>
+  <msg name="tuesday">Tuesday</msg>
+  <msg name="wednesday">Wednesday</msg>
+  <msg name="thursday">Thursday</msg>
+  <msg name="friday">Friday</msg>
+  <msg name="saturday">Saturday</msg>
+  <msg name="january">January</msg>
+  <msg name="february">February</msg>
+  <msg name="march">March</msg>
+  <msg name="april">April</msg>
+  <msg name="may">May</msg>
+  <msg name="june">June</msg>
+  <msg name="july">July</msg>
+  <msg name="august">August</msg>
+  <msg name="september">September</msg>
+  <msg name="october">October</msg>
+  <msg name="november">November</msg>
+  <msg name="december">December</msg>
+  <msg name="am">AM</msg>
+  <msg name="pm">PM</msg>
+  <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
+</messageBundle>

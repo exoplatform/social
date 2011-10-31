@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2003-2011 eXo Platform SAS.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<Module>
+  <ModulePrefs  title="My Connections"
+                description="My Connections Gadget"
+                author_email="vienlv@exoplatform.com"
+                author_affiliation="eXo Platform">
+    <Locale messages="locale/ALL_ALL.xml" />
+    <Locale lang="en" messages="locale/en_ALL.xml" />
+    <Locale lang="fr" messages="locale/fr_ALL.xml" />
+    <Locale lang="vi" messages="locale/vi_ALL.xml" />
+    <Require feature="opensocial" />
+    <Require feature="dynamic-height" />
+    <Require feature="settitle" />
+    <Require feature="views" />
+    <Require feature="minimessage" />
+    <Require feature="setprefs"/>
+  </ModulePrefs>
+  <Content type="html" view="default, home, profile">
+  <![CDATA[
+  	<link rel="stylesheet" type="text/css" href="style/style.css" />
+    <link rel="stylesheet" type="text/css" href="style/home.css" />
+  
+  	<script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
+  	<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
+  	
+  	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
+  	
+  	<script type="text/javascript" src="script/eXo/social/Configuration.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/User.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Util.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Comment.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Like.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/ActivityStream.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UISearch.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UITextList.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UIIconList.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UISetting.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/MyConnectionsGadget.js"></script>
+  	
+    <!--<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
+    <script type="text/javascript" src="script/eXo/social/Setting.js"></script>
+  	-->
+    <div id="message"></div>
+    <div id="loading" class="Loading" id="UILoading" style="display: none;">__MSG_loading__</div>
+    
+    <div class="GadgetConnectionBar ClearFix">
+			<div class="Label FL">My connections</div>
+			<a class="FR SettingIcon" href="#" id="ModeSetting">&nbsp;</a>
+			<a class="FR ListIcon" href="#" id="ModeTextList">&nbsp;</a>
+			<a class="FR NumberListSelected" href="#" id="ModeIconList">&nbsp;</a>
+		</div>
+    
+    <div class="SearchContent ClearFix" id="UISearchContent">
+			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
+			<a href="#" id="SearchButton" class="IconSearch"></a>
+		</div>
+    
+    <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
+			<ul class="ListContent" id="UITextListListContent"></ul>
+			<a href="#" class="Link" id="UITextListPeopleDirectory">People Directory</a>			
+    </div>
+    
+    <div class="GadgetConnection GadgetConnectionDetail" id="GadgetUIIconList">
+			<ul class="ListContent" id="UIIconListListContent"></ul>
+			<a href="#" class="Link" id="UIIconListPeopleDirectory">People Directory</a>
+		</div>
+		
+		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting" style="width: 300px;"></div>
+		
+		<div class="GadgetConnection GadgetMember" id="GadgetMemberMore" style="display: none;">
+			<div class="SearchContent ClearFix">
+				<input type="text" value="Quick Search" class="Search">
+				<a href="#" class="IconSearch">&nbsp;</a>
+			</div>
+		</div>
+    
+  ]]>
+  </Content>
+
+  <Content type="html" view="canvas">
+  <![CDATA[
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+    <link rel="stylesheet" type="text/css" href="style/canvas.css" />
+    <script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
+    <script type="text/javascript" src="script/eXo/social/Locale.js"></script>
+    <div id="loading" class="Loading">__MSG_loading__</div>
+  ]]>
+  </Content>
+</Module>

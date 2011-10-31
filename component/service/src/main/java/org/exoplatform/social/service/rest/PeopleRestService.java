@@ -18,6 +18,7 @@ package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -32,9 +33,11 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -47,6 +50,11 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.service.rest.api.models.CommentRestOut;
+import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
+import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
+
+import com.sun.syndication.feed.module.mediarss.types.Hash;
 
 /**
  * PeopleRestService.java < /br>
@@ -87,6 +95,9 @@ public class PeopleRestService implements ResourceContainer{
   private static final String USER_TO_INVITE = "user_to_invite";
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
+  
+  private static final int OFFSET_DEFAULT = 0;
+  private static final int LIMIT_DEFAULT = 10;
   
   private String portalName_;
   private IdentityManager identityManager;
@@ -151,6 +162,243 @@ public class PeopleRestService implements ResourceContainer{
     
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
+  
+
+  /**
+   * Gets and returns list people's information that have had connection with current viewer.
+   * 
+   * @param uriInfo
+   * @param viewerIdentity
+   * @param nameToSearch
+   * @param offset
+   * @param limit
+   * @param format
+   * 
+   * @return list people's information.
+   * @throws Exception
+   */
+  @GET
+  @Path("{portalName}/getConnections.{format}")
+  public Response searchConnection(@Context UriInfo uriInfo,
+                    @PathParam("portalName") String portalName,
+                    @QueryParam("nameToSearch") String nameToSearch,
+                    @QueryParam("offset") int offset,
+                    @QueryParam("limit") int limit,
+                    @PathParam("format") String format) throws Exception {
+    String[] supportedMediaType = { "json" };
+    MediaType mediaType = Util.getMediaType(format,supportedMediaType);
+
+    activityManager = Util.getActivityManager(portalName);
+    relationshipManager = Util.getRelationshipManager(portalName);
+    identityManager = Util.getIdentityManager(portalName);
+    
+    List<Identity> excludedIdentityList = new ArrayList<Identity>();
+    Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    
+    excludedIdentityList.add(currentUser);
+    ProfileFilter filter = new ProfileFilter();
+    
+    filter.setName(nameToSearch);
+    filter.setExcludedIdentityList(excludedIdentityList);
+
+    Identity[] identities;
+    List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String,Object>>();
+    if (nameToSearch == null) { 
+      // default loading, if load more then need to re-calculate offset and limit before going here via rest URL.     
+      identities = identityManager.getConnectionsWithListAccess(currentUser).load(offset, limit);
+      
+      for(Identity identity : identities){
+        HashMap<String, Object> temp = getIdentityInfo(identity);
+        if(temp != null){
+          entitys.add(temp);
+        }
+      }
+    } else { // search
+      identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);// will be getConnectionsByProfileFilter      
+      for(Identity identity : identities){
+        HashMap<String, Object> temp = getIdentityInfo(identity);
+        if(temp != null){
+          entitys.add(temp);
+        }
+      }
+    }
+    
+    return Util.getResponse(entitys, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  
+  private HashMap<String, Object> getIdentityInfo(Identity existingIdentity){
+    RealtimeListAccess<ExoSocialActivity>  activityRealtimeListAccess = 
+                                            activityManager.getActivitiesWithListAccess(existingIdentity);
+    if(activityRealtimeListAccess.getSize() == 0 ){
+      return null;
+    }
+    Activity lastestActivity =  activityRealtimeListAccess.load(0, 1)[0];
+    return new ConnectionInfoRestOut(existingIdentity, lastestActivity);
+  }
+  
+  public static class ConnectionInfoRestOut extends HashMap<String, Object> {
+    public static enum Field {
+      /**
+       * User Displayname
+       */
+      DISPLAY_NAME("displayName"),
+      /**
+       * full url of avatar
+       */
+      AVATAR_URL("avatarURL"),
+      /**
+       * full url of profile
+       */
+      PROFILE_URL("profileURL"),
+      /**
+       * activity text
+       */
+      ACTIVITY_TITLE("activityTitle"),
+      /**
+       * activity text
+       */
+      ACTIVITY_ID("activityId"),
+      /**
+       * activity posted time
+       */
+      POSTED_TIME("postedTime"),
+      /** 
+       * Identity's Position 
+      */
+      POSITION("position");
+      
+      
+     /**
+      * String type.
+      */
+      private final String fieldName;
+
+     /**
+      * private constructor.
+      *
+      * @param string string type
+      */
+      private Field(final String string) {
+        fieldName = string;
+      }
+      
+      public String toString() {
+        return fieldName;
+      }
+    }
+    /**
+     * Default constructor, used by JAX-RS.
+     */
+    public ConnectionInfoRestOut() {
+      initialize();
+    }
+    
+    public ConnectionInfoRestOut(Identity identity, Activity lastestActivity){
+      this.setDisplayName(identity.getProfile().getFullName());
+      this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
+      this.setProfileUrl(identity.getProfile().getUrl());
+      this.setActivityTitle(lastestActivity.getTitle());
+      this.setPostedTime(lastestActivity.getPostedTime());
+      this.setPosition(identity.getProfile().getPosition());
+      this.setActivityId(lastestActivity.getId());
+    }
+    
+    public String getDisplayName() {
+      return (String) this.get(Field.DISPLAY_NAME.toString());
+    }
+
+    public void setDisplayName(final String displayName) {
+      if(displayName != null){
+        this.put(Field.DISPLAY_NAME.toString(), displayName);
+      } else {
+        this.put(Field.DISPLAY_NAME.toString(), "");
+      }
+    }
+    
+    public String getAvatarUrl() {
+      return (String) this.get(Field.AVATAR_URL.toString());
+    }
+
+    public void setAvatarUrl(final String avatarUrl) {
+      if(avatarUrl != null){
+        this.put(Field.AVATAR_URL.toString(), avatarUrl);
+      } else {
+        this.put(Field.AVATAR_URL.toString(), "");
+      }
+    }
+    
+    
+    public String getProfileUrl() {
+      return (String) this.get(Field.PROFILE_URL.toString());
+    }
+
+    public void setProfileUrl(final String profileUrl) {
+      if(profileUrl != null){
+        this.put(Field.PROFILE_URL.toString(), Util.getBaseUrl() + profileUrl);
+      } else {
+        this.put(Field.PROFILE_URL.toString(), "");
+      }
+    }
+    
+    public String getActivityTitle() {
+      return (String) this.get(Field.ACTIVITY_TITLE.toString());
+    }
+
+    public void setActivityTitle(final String activityTitle) {
+      if(activityTitle != null){
+        this.put(Field.ACTIVITY_TITLE.toString(), activityTitle);
+      } else {
+        this.put(Field.ACTIVITY_TITLE.toString(), "");
+      }
+    }
+    
+    public Long getPostedTime() {
+      return  (Long) this.get(Field.POSTED_TIME);
+    }
+
+    public void setPostedTime(final Long postedTime) {
+      if(postedTime != null){
+        this.put(Field.POSTED_TIME.toString(), postedTime);
+      } else {
+        this.put(Field.POSTED_TIME.toString(), new Long(0));
+      }
+    }
+    
+    public String getPosition() {
+      return  (String) this.get(Field.POSITION);
+    }
+
+    public void setPosition(final String position) {
+      if(position != null){
+        this.put(Field.POSITION.toString(), position);
+      } else {
+        this.put(Field.POSITION.toString(), "");
+      }
+    }
+    
+    public String getActivityId() {
+      return  (String) this.get(Field.ACTIVITY_ID);
+    }
+
+    public void setActivityId(final String activityId) {
+      if(activityId != null){
+        this.put(Field.ACTIVITY_ID.toString(), activityId);
+      } else {
+        this.put(Field.ACTIVITY_ID.toString(), "");
+      }
+    }    
+    private void initialize(){
+      this.setActivityTitle("");
+      this.setAvatarUrl("");
+      this.setDisplayName("");
+      this.setPostedTime(null);
+      this.setProfileUrl("");
+      this.setActivityId("");
+      this.setPosition("");
+    }
+  }
+  
   
   /**
    * Gets and returns information of people that are displayed as detail user's information on popup.

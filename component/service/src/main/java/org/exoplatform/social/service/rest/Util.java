@@ -23,6 +23,7 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -444,6 +445,31 @@ public final class Util {
         }
       }
     }
+  }
+  
+  /**
+   * Build absolute AvatarURL from in IndentityRestOut if avatar == null or "" use default avatar base on Identity's type
+   * @param resultIdentity
+   */
+  
+  public static String buildAbsoluteAvatarURL(Identity resultIdentity){
+    if(resultIdentity.getProfile() != null && 
+        resultIdentity.getProviderId() != null){
+      Profile resultProfile =  resultIdentity.getProfile();
+      if(resultProfile.getAvatarUrl() == null || resultProfile.getAvatarUrl().trim().equals("") ){
+        if(resultIdentity.getProviderId().
+            equals(SpaceIdentityProvider.NAME)){
+          return getBaseUrl() + LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+        } else {
+          return getBaseUrl() + LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+        }
+      } else {
+          return getBaseUrl() + resultProfile.getAvatarUrl();
+      }
+    } else {
+      return null;
+    }
+    
   }
   
   /**

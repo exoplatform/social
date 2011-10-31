@@ -37,4 +37,8 @@
   <gadget name="MySpaces">
     <path>/gadgets/MySpaces/MySpaces.xml</path>
   </gadget>
+
+  <gadget name="MyConnections">
+    <path>/gadgets/MyConnections/MyConnections.xml</path>
+  </gadget>
 </gadgets>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Message bundle for en_ALL
+-->
+<messageBundle>
+  <msg name="loading">Loading... Please wait...</msg>
+</messageBundle>

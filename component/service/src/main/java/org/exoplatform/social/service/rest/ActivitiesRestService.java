@@ -43,6 +43,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -55,6 +56,7 @@ import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.ActivityStreamRestOut;
 import org.exoplatform.social.service.rest.api.models.CommentRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
+import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
 
 /**
  * ActivitiesRestService.java <br />
@@ -505,10 +507,8 @@ public class ActivitiesRestService implements ResourceContainer {
                                @PathParam("format") String format,
                                @QueryParam("offset") Integer offset,
                                @QueryParam("limit") Integer limit) throws Exception {
-    //RestChecker.checkAuthenticatedRequest();
     PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-    //Identity authenticatedIdentity = Util.getAuthenticatedUserIdentity(portalName);
     
     ActivityManager activityManager = Util.getActivityManager(portalName);
     
@@ -524,9 +524,6 @@ public class ActivitiesRestService implements ResourceContainer {
     ExoSocialActivity activity = null;
     try {
       activity = activityManager.getActivity(activityId);
-//      if(!SecurityManager.canAccessActivity(portalContainer, authenticatedIdentity, activity)){
-//        throw new WebApplicationException(Response.Status.FORBIDDEN);
-//      }
       
       int total;
       List<CommentRestOut> commentWrapers = null;
@@ -541,7 +538,7 @@ public class ActivitiesRestService implements ResourceContainer {
       
       total = limit;
       
-      ExoSocialActivity[] commentsLimited =  comments.load(offset, total);
+      ExoSocialActivity[] commentsLimited =  comments.load(offset, total + offset);
       commentWrapers = new ArrayList<CommentRestOut>(total);
       for(int i = 0; i < total; i++){
         CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
@@ -564,7 +561,7 @@ public class ActivitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
   }
-
+  
   /**
    * Gets an activity by its id.
    *
@@ -577,27 +574,21 @@ public class ActivitiesRestService implements ResourceContainer {
   @GET
   @Path("{activityId}.{format}")
   public Response getActivityById(@Context UriInfo uriInfo,
-                                  @PathParam("portalContainerName") String portalContainerName,
+                                  @PathParam("portalName") String portalContainerName,
                                   @PathParam("activityId") String activityId,
                                   @PathParam("format") String format,
                                   @QueryParam("poster_identity") String showPosterIdentity,
                                   @QueryParam("number_of_comments") int numberOfComments,
                                   @QueryParam("activity_stream") String showActivityStream,
                                   @QueryParam("number_of_likes") int numberOfLikes) {
-
-    RestChecker.checkAuthenticatedRequest();
-
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
     
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-
-    Identity authenticatedIdentity = Util.getAuthenticatedUserIdentity(portalContainerName);
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
     IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
-    //
-    ExoSocialActivity activity = null;
     
-    try{
+    ExoSocialActivity activity = null;
+    try {
       activity = activityManager.getActivity(activityId);
     } catch (UndeclaredThrowableException undeclaredThrowableException) {
       if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
@@ -607,21 +598,48 @@ public class ActivitiesRestService implements ResourceContainer {
       }
     }
     
-    if(activity.isComment()){
+    if(activity.isComment()) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
+    ActivityRestOut model = new ActivityRestOut();
     
-    //
-    ActivityRestOut model = new ActivityRestOut(activity, portalContainerName);
     
-    model.setNumberOfLikes(numberOfLikes, activity, portalContainerName);
+    model.setId(activity.getId());
+    model.setTitle(activity.getTitle());
+    model.setPriority(activity.getPriority());
+    model.setAppId(activity.getAppId());
+    model.setType(activity.getType());
+    model.setPostedTime(activity.getPostedTime());
+    model.setCreatedAt(Util.convertTimestampToTimeString(activity.getPostedTime()));
+    model.setTitleId(activity.getTitleId());
+    model.setTemplateParams(activity.getTemplateParams());
     
-    //
+    if(activity.getLikeIdentityIds() != null){
+      model.setTotalNumberOfLikes(activity.getLikeIdentityIds().length);
+    } else {
+      model.setTotalNumberOfLikes(null);
+    }
+    
+    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true).getId(),activity)){
+      model.setLiked(true);
+    } else {
+      model.setLiked(false);
+    }
+    
+    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
+    model.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
+    
+    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
+    if(streamOwnerIdentity != null){
+      model.put(Field.IDENTITY_ID.toString(),streamOwnerIdentity.getId());
+    }
+    
+    
+    
     if (isPassed(showPosterIdentity)) {
       model.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(activity.getUserId(), false)));
     }
-
-    //
+    
     if (isPassed(showActivityStream)) {
       model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
     }
@@ -632,7 +650,8 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * updates comment by json/xml format
+   * Updates comment by json/xml format.
+   * 
    * @param uriInfo
    * @param activityId
    * @param format
