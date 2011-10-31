@@ -1,0 +1,70 @@
+Index: webapp/resources/src/main/webapp/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css
+===================================================================
+--- webapp/resources/src/main/webapp/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css	(revision 74361)
++++ webapp/resources/src/main/webapp/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css	(working copy)
+@@ -98,7 +98,8 @@
+ 
+ .UILinkShareDisplay .ContentRight .Title {
+   color: #000000;
+-  width: 550px;
++  width: auto;
++  word-wrap: break-word;
+   font-size: 11px;
+   font-weight: bold;
+ }
+@@ -112,8 +113,9 @@
+ 
+ .UILinkShareDisplay .ContentRight .Source {
+   color: #000000;
+-  width: 550px;
++  width: auto;
+   font-size: 9px;
++  word-wrap: break-word;
+ }
+ 
+ .UILinkShareDisplay .ContentRight .Source a {
+@@ -126,5 +128,5 @@
+ }
+ 
+ .LinkShare .Content {
+-  margin-left: 110px;
++  margin-left: 165px;
+ }
+\ No newline at end of file
+Index: webapp/resources/src/main/webapp/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css
+===================================================================
+--- webapp/resources/src/main/webapp/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css	(revision 74361)
++++ webapp/resources/src/main/webapp/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css	(working copy)
+@@ -84,8 +84,7 @@
+ }
+ 
+ .UIActivity .CommentBox .ContentBox {
+-  padding:0 0 0 4px;
+-  float: left;
++  padding:0 0 0 50px;
+ }
+ 
+ .UIActivity .ContentBox .TitleContent {
+@@ -113,6 +112,15 @@
+   color: #F68A2F;
+ }
+ 
++.UIActivity .ContentBox .LinkShare .ColorLink{
++  word-wrap: break-word;
++}
++
++
++.UIActivity .ContentBox .LinkShare .Source{
++  word-wrap: break-word;
++}
++
+ .UIActivity .TitleContent .Text {
+   font-weight: bold;
+   line-height:24px;
+@@ -200,3 +208,6 @@
+   height: 16px;
+ }
+ 
++.UIActivity .ContentBox .Content{
++	word-wrap: break-word;
++}

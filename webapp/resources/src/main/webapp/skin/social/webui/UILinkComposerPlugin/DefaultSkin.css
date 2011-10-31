@@ -98,7 +98,8 @@
 
 .UILinkShareDisplay .ContentRight .Title {
   color: #000000;
-  width: 550px;
+  width: auto;
+  word-wrap: break-word;
   font-size: 11px;
   font-weight: bold;
 }
@@ -112,8 +113,9 @@
 
 .UILinkShareDisplay .ContentRight .Source {
   color: #000000;
-  width: 550px;
+  width: auto;
   font-size: 9px;
+  word-wrap: break-word;
 }
 
 .UILinkShareDisplay .ContentRight .Source a {
@@ -126,5 +128,5 @@
 }
 
 .LinkShare .Content {
-  margin-left: 110px;
+  margin-left: 165px;
 }
