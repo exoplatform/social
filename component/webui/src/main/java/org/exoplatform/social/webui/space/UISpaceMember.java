@@ -433,7 +433,7 @@ public class UISpaceMember extends UIForm {
         uiSpaceMember.setUsersName(null);
       }
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
 

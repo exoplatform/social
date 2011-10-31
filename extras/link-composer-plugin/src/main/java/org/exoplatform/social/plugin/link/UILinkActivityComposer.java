@@ -36,6 +36,7 @@ import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -121,7 +122,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
     if (linkShare_ == null) {
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage(MSG_ERROR_INVALID_LINK, null, ApplicationMessage.WARNING));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      ((PortalRequestContext) requestContext.getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
+      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       return;
     }
     

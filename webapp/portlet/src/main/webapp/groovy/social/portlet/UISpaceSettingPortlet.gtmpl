@@ -26,6 +26,5 @@
 <div class="UISpaceSettingPortlet" id="$uicomponent.id">
   <% 
   uicomponent.renderChild(UISpaceSetting.class);
-  uicomponent.renderPopupMessages();
   %>
 </div>

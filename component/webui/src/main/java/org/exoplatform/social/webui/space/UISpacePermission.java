@@ -103,7 +103,7 @@ public class UISpacePermission extends UIForm {
       spaceSrc.saveSpace(space, false);
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpacePermission.msg.update-success", null, ApplicationMessage.INFO));
-      requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
       requestContext.addUIComponentToUpdateByAjax(uiSpacePermission);
     }
   }

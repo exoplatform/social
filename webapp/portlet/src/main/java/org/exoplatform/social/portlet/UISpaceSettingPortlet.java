@@ -62,15 +62,4 @@ public class UISpaceSettingPortlet extends UIPortletApplication {
       uiSpaceSetting.setValues(space);
     }
   }
-
-  /**
-   * render popop message, this method is called from template file.
-   * @throws Exception
-   */
-  public void renderPopupMessages() throws Exception {
-    UIPopupMessages uiPopupMsg = getUIPopupMessages();
-    if(uiPopupMsg == null)  return ;
-    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
-    uiPopupMsg.processRender(context);
-  }
 }

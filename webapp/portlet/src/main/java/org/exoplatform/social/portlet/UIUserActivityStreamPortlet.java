@@ -117,10 +117,4 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  protected void renderPopupMessages() throws Exception {
-    UIPopupMessages popupMess = getUIPopupMessages();
-    if(popupMess == null)  return;
-    WebuiRequestContext  context =  WebuiRequestContext.getCurrentInstance() ;
-    popupMess.processRender(context);
-  }
 }
