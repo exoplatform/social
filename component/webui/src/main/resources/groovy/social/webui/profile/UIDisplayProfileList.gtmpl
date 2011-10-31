@@ -23,10 +23,12 @@
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.webui.core.UIPageIterator
+  import org.exoplatform.social.common.ResourceBundleUtil;
 
   def list = uicomponent.getList();
   def iterator = uicomponent.getUIPageIterator();
   def peopleIdx = 0
+  def uicomponentId = uicomponent.id;
 %>
 <div class="UIProfileList" id="$uicomponent.id">
   <div class="ContainerSpace">
@@ -54,11 +56,13 @@
       def addAction = uicomponent.event("AddContact", identity.getId());
       def contactStatus = uicomponent.getContactStatus(identity);
       def position = identity.profile.getPropertyValue("position");
-      def inviteTitle = "Invite " + fullName;
-      def denyTitle = "Deny " + fullName + "'s invitation";
-      def acceptTitle = "Accept " + fullName + "'s invitation";
-      def revokeTitle = "Revoke invitation";
-      def removeTitle = "Remove relation";
+      
+      def inviteTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.Invite"), ["$fullName"]);
+      def denyTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.DenyInvitation"), ["$fullName"]);
+      def acceptTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.AcceptInvitation"), ["$fullName"]);
+      def revokeTitle = _ctx.appRes("${uicomponentId}.label.RevokeInvitation");
+      def removeTitle = _ctx.appRes("${uicomponentId}.label.RemoveConnection");
+      
       peopleIdx += 1;
 
       if (!position) {  position = ""; }

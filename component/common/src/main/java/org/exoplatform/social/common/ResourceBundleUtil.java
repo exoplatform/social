@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.common;
 
+import java.util.List;
+
 /**
  * ResourceBunleUtil
  *
@@ -34,6 +36,19 @@ public class ResourceBundleUtil {
   public static String replaceArguments(String message, String[] messageArguments) {
     for (int i = 0; i < messageArguments.length; i++) {
       message = message.replace("{" + i + "}", messageArguments[i]);
+    }
+    return message;
+  }
+  
+  /**
+   * Replace convention arguments of pattern {index} with messageArguments[index].
+   * @param message
+   * @param messageArguments
+   * @return expected message with replaced arguments
+   */
+  public static String replaceArguments(String message, List<String> messageArguments) {
+    for (int i = 0; i < messageArguments.size(); i++) {
+      message = message.replace("{" + i + "}", messageArguments.get(i));
     }
     return message;
   }

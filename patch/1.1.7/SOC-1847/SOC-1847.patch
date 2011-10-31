@@ -1,0 +1,115 @@
+Index: component/common/src/main/java/org/exoplatform/social/common/ResourceBundleUtil.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/ResourceBundleUtil.java	(revision 72526)
++++ component/common/src/main/java/org/exoplatform/social/common/ResourceBundleUtil.java	(working copy)
+@@ -16,6 +16,8 @@
+  */
+ package org.exoplatform.social.common;
+ 
++import java.util.List;
++
+ /**
+  * ResourceBunleUtil
+  *
+@@ -37,4 +39,17 @@
+     }
+     return message;
+   }
++  
++  /**
++   * Replace convention arguments of pattern {index} with messageArguments[index].
++   * @param message
++   * @param messageArguments
++   * @return expected message with replaced arguments
++   */
++  public static String replaceArguments(String message, List<String> messageArguments) {
++    for (int i = 0; i < messageArguments.size(); i++) {
++      message = message.replace("{" + i + "}", messageArguments.get(i));
++    }
++    return message;
++  }
+ }
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_en.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_en.properties	(revision 72526)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_en.properties	(working copy)
+@@ -14,8 +14,11 @@
+ # You should have received a copy of the GNU General Public License
+ # along with this program; if not, see<http://www.gnu.org/licenses/>.
+ #
+-
+-UIDisplayProfileList.label.Revoke=Revoke
++UIDisplayProfileList.label.Invite=Invite {0}
++UIDisplayProfileList.label.DenyInvitation=Deny {0}'s invitation
++UIDisplayProfileList.label.AcceptInvitation=Accept {0}'s invitation
++UIDisplayProfileList.label.RevokeInvitation=Revoke invitation
++UIDisplayProfileList.label.RemoveConnection=Remove connection
+ UIDisplayProfileList.label.WaitForConfirmation=Invited to connect
+ UIDisplayProfileList.label.Position=Position
+ UIDisplayProfileList.label.NotYet=No person found.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_fr.properties	(revision 72526)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_fr.properties	(working copy)
+@@ -15,7 +15,11 @@
+ # along with this program; if not, see<http://www.gnu.org/licenses/>.
+ #
+ 
+-UIDisplayProfileList.label.Revoke=Retirer
++UIDisplayProfileList.label.Invite={0} à se connecter
++UIDisplayProfileList.label.DenyInvitation=Refuser l'invitation de {0}
++UIDisplayProfileList.label.AcceptInvitation=Accepter l'invitation de {0}
++UIDisplayProfileList.label.RevokeInvitation=Annuler l'invitation
++UIDisplayProfileList.label.RemoveConnection=Supprimer de mon réseau
+ UIDisplayProfileList.label.WaitForConfirmation=invité à se connecter
+ UIDisplayProfileList.label.Position=Position
+ UIDisplayProfileList.label.NotYet=Personne trouvé.
+Index: component/webui/src/main/resources/groovy/social/webui/profile/UIDisplayProfileList.gtmpl
+===================================================================
+--- component/webui/src/main/resources/groovy/social/webui/profile/UIDisplayProfileList.gtmpl	(revision 72526)
++++ component/webui/src/main/resources/groovy/social/webui/profile/UIDisplayProfileList.gtmpl	(working copy)
+@@ -23,10 +23,12 @@
+   import org.exoplatform.social.core.model.AvatarAttachment;
+   import org.exoplatform.portal.application.PortalRequestContext;
+   import org.exoplatform.webui.core.UIPageIterator
++  import org.exoplatform.social.common.ResourceBundleUtil;
+ 
+   def list = uicomponent.getList();
+   def iterator = uicomponent.getUIPageIterator();
+   def peopleIdx = 0
++  def uicomponentId = uicomponent.id;
+ %>
+ <div class="UIProfileList" id="$uicomponent.id">
+   <div class="ContainerSpace">
+@@ -54,11 +56,13 @@
+       def addAction = uicomponent.event("AddContact", identity.getId());
+       def contactStatus = uicomponent.getContactStatus(identity);
+       def position = identity.profile.getPropertyValue("position");
+-      def inviteTitle = "Invite " + fullName;
+-      def denyTitle = "Deny " + fullName + "'s invitation";
+-      def acceptTitle = "Accept " + fullName + "'s invitation";
+-      def revokeTitle = "Revoke invitation";
+-      def removeTitle = "Remove relation";
++      
++      def inviteTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.Invite"), ["$fullName"]);
++      def denyTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.DenyInvitation"), ["$fullName"]);
++      def acceptTitle = ResourceBundleUtil.replaceArguments(_ctx.appRes("${uicomponentId}.label.AcceptInvitation"), ["$fullName"]);
++      def revokeTitle = _ctx.appRes("${uicomponentId}.label.RevokeInvitation");
++      def removeTitle = _ctx.appRes("${uicomponentId}.label.RemoveConnection");
++      
+       peopleIdx += 1;
+ 
+       if (!position) {  position = ""; }
+Index: component/webui/src/main/resources/groovy/social/webui/profile/UIProfileUserSearch.gtmpl
+===================================================================
+--- component/webui/src/main/resources/groovy/social/webui/profile/UIProfileUserSearch.gtmpl	(revision 72526)
++++ component/webui/src/main/resources/groovy/social/webui/profile/UIProfileUserSearch.gtmpl	(working copy)
+@@ -62,7 +62,7 @@
+     <div class="SearchSpacesR ClearFix">
+       <div class="Lable">${findContactLabel} :</div>
+       <div class="Search"><% uiform.renderField(childs.get(0))%>
+-      <div class="SearchIcon" title="Search" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></div>
++      <div class="SearchIcon" title="$filterLabel" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></div>
+       </div>
+       <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
+       

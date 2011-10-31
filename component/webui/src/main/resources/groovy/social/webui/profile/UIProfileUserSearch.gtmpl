@@ -62,7 +62,7 @@ def childs = uicomponent.getChildren();
     <div class="SearchSpacesR ClearFix">
       <div class="Lable">${findContactLabel} :</div>
       <div class="Search"><% uiform.renderField(childs.get(0))%>
-      <div class="SearchIcon" title="Search" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></div>
+      <div class="SearchIcon" title="$filterLabel" onclick="eXo.social.webui.UIProfileUserSearch.clickSearch('${uicomponentId}');"></div>
       </div>
       <div id="$moreSearchId" class="AdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${hideLabel}', '${filterId}', '$hideMoreSearchId', this);">${moreLabel}</div>
       
