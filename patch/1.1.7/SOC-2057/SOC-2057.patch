@@ -1,0 +1,69 @@
+Index: component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties	(revision 75787)
++++ component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_fr.properties	(working copy)
+@@ -15,6 +15,6 @@
+ # along with this program; if not, see<http://www.gnu.org/licenses/>.
+ #
+ 
+-UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet=Aucune activité postée.
++UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet=Il n'y a aucune activité.
+ UIActivitiesLoader.label.More=Plus
+-UIActivitiesLoader.label.Deleted_User=Utilisateur supprimé
+\ No newline at end of file
++UIActivitiesLoader.label.Deleted_User=Utilisateur supprimé
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_fr.properties	(revision 75787)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_fr.properties	(working copy)
+@@ -24,7 +24,7 @@
+ UIContactSection.label.noUrls=pas de lien de contact saisi
+ UIContactSection.label.noIms=pas de compte messagerie instantanée saisi
+ UIContactSection.label.noPhones=pas de numéro de téléphone saisi
+-UIContactSection.label.noContact=aucune information de contact n'a été saisie
++UIContactSection.label.noContact=n'a pas encore saisi d'information de contact
+ UIContactSection.label.noContactCurrent=Vous n'avez encore saisi aucune information de contact.
+ UIContactSect.msg.Invalid-email=L'email n'a pas été reconnu comme une adresse valide.
+ UIContactSect.msg.Invalid-phone=Le téléphone n'a pas été reconnu comme un numéro valide.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_fr.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_fr.properties	(revision 75787)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_fr.properties	(working copy)
+@@ -15,6 +15,6 @@
+ # along with this program; if not, see<http://www.gnu.org/licenses/>.
+ #
+ 
+-UIUserActivitiesDisplay.label.Connections=Connexions
+-UIUserActivitiesDisplay.label.Spaces=Espaces
+-UIUserActivitiesDisplay.label.My_Status=Mon Status
+\ No newline at end of file
++UIUserActivitiesDisplay.label.Connections=Mes connexions
++UIUserActivitiesDisplay.label.Spaces=Mes espaces
++UIUserActivitiesDisplay.label.My_Status=Mon statut
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_fr.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_fr.properties	(revision 75787)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_fr.properties	(working copy)
+@@ -16,4 +16,9 @@
+ #
+ #############################################################################
+ #                      UIUserActivityStreamPortlet                          #
+-#############################################################################
+\ No newline at end of file
++#############################################################################
++
++UIUserActivityStreamPortlet.label.Connections=Mes connections
++UIUserActivityStreamPortlet.label.Spaces=Mes espaces
++UIUserActivityStreamPortlet.label.My_Status=Mon statut
++UIUserActivityStreamPortlet.label.UserActivities=Les activités d'utilisateur
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_fr.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_fr.properties	(revision 75787)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_fr.properties	(working copy)
+@@ -21,4 +21,4 @@
+ UIConnectionsNavigationPortlet.label.RelationTitle=Personnes avec qui vous êtes connecté
+ UIConnectionsNavigationPortlet.label.InvitationTitle=Personnes souhaitant se connecter à vous
+ UIConnectionsNavigationPortlet.label.RequestTitle=Personnes avec qui vous souhaiteriez vous connecter
+-UIConnectionsNavigationPortlet.label.UserConnections = {0}'s CONTACTS
+\ No newline at end of file
++UIConnectionsNavigationPortlet.label.UserConnections = Les contacts de {0}
