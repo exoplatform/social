@@ -1,5 +1,7 @@
 /**
  * The class defines configurations of gadget.
+ * 
+ * @since 1.2.4
  */
 (function() {
 	//refer to window
@@ -32,10 +34,12 @@
 	
 	/**
 	 * Gets the number of activities with each fetch request.
+	 * 
+	 * @return
 	 */
 	Configuration.getNumberOfActivitiesEachFetch = function() {
 		return numberOfActivitiesEachFetch;
-	}
+	};
 	
 	/**
 	 * Sets the number of activities with each fetch request.
@@ -44,7 +48,7 @@
 	 */
 	Configuration.setNumberOfActivitiesEachFetch = function(numberOfActivities) {
 		numberOfActivitiesEachFetch = numberOfActivities;
-	}
+	};
 	
 	/**
 	 * Define portal environment.

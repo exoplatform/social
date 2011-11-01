@@ -110,27 +110,12 @@
 					userConnections = Util.parseUserConnectionActivities(response);
 				}
 				
+				if ($(uiComponent.GadgetConnectionSetting).length > 0) {
+	  			$(uiComponent.GadgetConnectionSetting).empty();
+	  		}
+				
 				if (params.viewType === ActivityStream.VIEW_TYPE.TEXT_LIST) {
 					$(uiComponent.UITextListListContent).empty();
-					
-					if ($('.ListIcon').length > 0) {
-		  			$(uiComponent.ModeTextList).removeClass('ListIcon');
-		  			$(uiComponent.ModeTextList).addClass('ListSelected');
-		  		}
-		  		
-		  		if ($('.ListSelected').length > 0) {
-		  			$(uiComponent.ModeIconList).removeClass('NumberListSelected');
-		  			$(uiComponent.ModeIconList).addClass('NumberListIcon');
-		  		}
-		  		
-		  		if ($('.SettingSelected').length > 0) {
-		  			$(uiComponent.ModeSetting).removeClass('SettingSelected');
-		  			$(uiComponent.ModeSetting).addClass('SettingIcon');
-		  		}
-		  		
-		  		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
-		  			$(uiComponent.GadgetConnectionSetting).empty();
-		  		}
 					
 					UITextList.setOffset(params.offset);
 					UITextList.setLimit(params.limit);
@@ -138,37 +123,13 @@
 					UITextList.setSearchMode(false);
 					UITextList.display();
 				} else if (params.viewType === ActivityStream.VIEW_TYPE.ICON_LIST) {
-					
 					$(uiComponent.UIIconListListContent).empty();
-					
-					if ($('.NumberListIcon').length > 0) {
-		  			$(uiComponent.ModeIconList).removeClass('NumberListIcon');
-		  			$(uiComponent.ModeIconList).addClass('NumberListSelected');
-		  		}
-		  		
-		  		if ($('.ListSelected').length > 0) {
-		  			$(uiComponent.ModeTextList).removeClass('ListSelected');
-		  			$(uiComponent.ModeTextList).addClass('ListIcon');
-		  		}
-		  		
-		  		if ($('.SettingSelected').length > 0) {
-		  			$(uiComponent.ModeSetting).removeClass('SettingSelected');
-		  			$(uiComponent.ModeSetting).addClass('SettingIcon');
-		  		}
-		  		
-		  		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
-		  			$(uiComponent.GadgetConnectionSetting).empty();
-		  		}
 					
 					UIIconList.setOffset(params.offset);
 					UIIconList.setLimit(params.limit);
 					UIIconList.setUserConnectionList(userConnections);
 					UIIconList.setSearchMode(false);
 					UIIconList.display();
-					
-					debug.info("userConnections uiicon:");
-					debug.debug(userConnections);
-					
 				} else if (params.viewType === ActivityStream.VIEW_TYPE.SETTING) {
 					UISetting.display();
 				}

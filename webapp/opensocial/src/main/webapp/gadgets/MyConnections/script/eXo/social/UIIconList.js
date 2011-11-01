@@ -39,9 +39,13 @@
   	BackToUIIconListFromSearch: '#BackToUIIconListFromSearch',
   	UIIconListPeopleDirectory: '#UIIconListPeopleDirectory',
   	BackToListAndPeopleDirectory: '#BackToListAndPeopleDirectory',
-  	UIIconListLoadMoreContent: '#UIIconListLoadMoreContent'
+  	UIIconListLoadMoreContent: '#UIIconListLoadMoreContent',
+  	ModeSetting: '#ModeSetting',
+    ModeIconList: '#ModeIconList',
+    ModeTextList: '#ModeTextList'
   };
 	
+  //Locale = eXo.social.Locale;
 	Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
@@ -189,7 +193,7 @@
   		debug.info("size:");
   		debug.debug($(uiComponent.UIIconListListContent).children().size());
   		if ($(uiComponent.UIIconListListContent).children().size() === 0) {
-  			$(uiComponent.UIIconListListContent).append("No user connection activities");
+  			$(uiComponent.UIIconListListContent).append('No user connection activities update');
   		}
   		
   		if ($(uiComponent.UIIconListLoadMoreContent).length > 0) {
@@ -300,6 +304,23 @@
   	//init search component
   	UISearch.initSearchInput({offset: 0, limit: 10, viewType: "ICON_LIST"});
   	
+  	$(uiComponent.GadgetUIIconList).css('display', 'block');
+  	
+  	if ($('.NumberListIcon').length > 0) {
+			$(uiComponent.ModeIconList).removeClass('NumberListIcon');
+			$(uiComponent.ModeIconList).addClass('NumberListSelected');
+		}
+		
+		if ($('.ListSelected').length > 0) {
+			$(uiComponent.ModeTextList).removeClass('ListSelected');
+			$(uiComponent.ModeTextList).addClass('ListIcon');
+		}
+		
+		if ($('.SettingSelected').length > 0) {
+			$(uiComponent.ModeSetting).removeClass('SettingSelected');
+			$(uiComponent.ModeSetting).addClass('SettingIcon');
+		}
+  	
   	$(uiComponent.GadgetUITextList).hide();
   	
   	if (UIIconList.getSearchMode() === true) {
@@ -400,12 +421,14 @@
   function getMyConnectionDetailBlock() {
   	var userBlock = [];
 		
+  	///social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png
+  	
 		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
-			userBlock.push('<a href="#" class="Avatar"><img alt="" width="44px" height="44px" src="/social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png"/></a>');
+			userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
-				userBlock.push('<a href="#" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
+				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
 				userBlock.push('<div class="Member"> Member</div>');
-				userBlock.push('<a href="#" class="Work" id="MoreActivityDetail">' + Comment.refer.connectionActivity.activityTitle + '</a>');
+				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Work" id="MoreActivityDetail">' + Comment.refer.connectionActivity.activityTitle + '</a>');
 			userBlock.push('</div>');
 		userBlock.push('</div>');
 		userBlock.push('<ul class="ListContent" id="ListContentMoreDetail">');
@@ -476,6 +499,19 @@
   		displayComments(response);
   	});
   };
+  
+  /**
+   * When load image error, change to avatar default.
+   */
+  $(window).bind('load', function() {
+  	$('img').each(function() {
+  	    if((typeof this.naturalWidth != "undefined" &&
+  	        this.naturalWidth == 0 ) 
+  	        || this.readyState == 'uninitialized' ) {
+  	        $(this).attr('src', '/social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png');
+  	    }
+  	}); 
+  })
   
   window_.exo = window_.exo || {};
   window_.exo.social = window_.exo.social || {};

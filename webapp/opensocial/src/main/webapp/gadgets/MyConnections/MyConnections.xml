@@ -44,6 +44,8 @@
   	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
   	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
   	
+		<!--<script type="text/javascript" src="script/eXo/social/Locale.js"></script>-->
+		
   	<script type="text/javascript" src="script/eXo/social/Configuration.js"></script>
   	<script type="text/javascript" src="script/eXo/social/User.js"></script>
   	<script type="text/javascript" src="script/eXo/social/Util.js"></script>
@@ -56,8 +58,7 @@
   	<script type="text/javascript" src="script/eXo/social/UISetting.js"></script>
   	<script type="text/javascript" src="script/eXo/social/MyConnectionsGadget.js"></script>
   	
-    <!--<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
-    <script type="text/javascript" src="script/eXo/social/Setting.js"></script>
+    <!--<script type="text/javascript" src="script/eXo/social/Setting.js"></script>
   	-->
     <div id="message"></div>
     <div id="loading" class="Loading" id="UILoading" style="display: none;">__MSG_loading__</div>

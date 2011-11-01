@@ -1,6 +1,7 @@
 /**
- * UISetting class
+ * UISetting class.
  * 
+ * @since 1.2.4
  */
 
 (function() {
@@ -10,6 +11,7 @@
 			limit = 0,
 	    viewType;
   
+	Locale = eXo.social.Locale;
   Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
@@ -25,7 +27,10 @@
   var uiComponent = {
     GadgetUIIconList: '#GadgetUIIconList',
   	GadgetUITextList: '#GadgetUITextList',
-  	GadgetConnectionSetting: '#GadgetConnectionSetting'
+  	GadgetConnectionSetting: '#GadgetConnectionSetting',
+  	ModeSetting: '#ModeSetting',
+    ModeIconList: '#ModeIconList',
+    ModeTextList: '#ModeTextList'
   }
   
 	/**
@@ -48,6 +53,22 @@
   };
   
   UISetting.initSettingForm = function() {
+  	
+  	if ($('.ListSelected').length > 0) {
+			$(uiComponent.ModeIconList).removeClass('ListSelected');
+			$(uiComponent.ModeIconList).addClass('NumberListIcon');
+		}
+		
+		if ($('.NumberListSelected').length > 0) {
+			$(uiComponent.ModeIconList).removeClass('NumberListSelected');
+			$(uiComponent.ModeIconList).addClass('NumberListIcon');
+		}
+		
+		if ($('.SettingIcon').length > 0) {
+			$(uiComponent.ModeSetting).removeClass('SettingIcon');
+			$(uiComponent.ModeSetting).addClass('SettingSelected');
+		}
+  	
     var settingContentBlock = 
     '<div class="SettingContent">' +
       '<div class="Row ClearFix">' +
@@ -122,7 +143,7 @@
     viewType = values[0];
     updateTime = values[1];
     orderBy = values[2];
-    itemPerViewNum = values[3];
+    itemPerViewNum = parseInt(values[3]);
     
     ActivityStream.initProfiles({offset: 0, limit: itemPerViewNum, viewType: viewType});
     

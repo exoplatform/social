@@ -77,12 +77,12 @@
 				$.each(response.data, function(index, userConnection) {
 					var paramsUser = {
 						displayName: userConnection.displayName,
-						profileUrl: userConnection.profileUrl,
-						avatarUrl: userConnection.avatarUrl,
+						profileUrl: userConnection.profileURL,
+						avatarUrl: userConnection.avatarURL,
 						position: userConnection.position,
 						activityId: userConnection.activityId,
 						activityTitle: userConnection.activityTitle,
-						prettyPostedTime: userConnection.prettyPostedTime
+						prettyPostedTime: userConnection.postedTime
 					};
 					var connectionActivity = new exo.social.User(paramsUser);
 					userConnectionsActivities.push(connectionActivity);
@@ -103,7 +103,7 @@
 		var userBlock = [];
 		$.each(userConnectionActivities, function(index, userConnection) {
 			userBlock.push('<li class="ClearFix">');
-				userBlock.push('<a href="' + userConnection.profileUrl + '" class="Avatar"><img alt="" width="30px" height="30px" src="' + '/social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png' + '"/></a>');
+				userBlock.push('<a href="' + userConnection.profileUrl + '" class="Avatar"><img alt="" width="30px" height="30px" src="' + userConnection.avatarUrl + '"/></a>');
 				userBlock.push('<div class="Content">');
 					userBlock.push('<a href="' + userConnection.profileUrl + '" class="User">' + userConnection.displayName +'</a><span class="Member">' + userConnection.position +'</span>');
 					userBlock.push('<div class="Work">' + userConnection.activityTitle + '</div>');

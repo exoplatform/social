@@ -1,3 +1,8 @@
+/**
+ * The like of current activity.
+ * 
+ * @since 1.2.4
+ */
 (function() {
 	var window_ = this;
 	

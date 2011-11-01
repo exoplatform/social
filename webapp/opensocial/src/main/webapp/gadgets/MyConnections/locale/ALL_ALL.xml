@@ -32,4 +32,5 @@
   <msg name="am">AM</msg>
   <msg name="pm">PM</msg>
   <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
+  <msg name="no_user_connection_activities_update">No user connection activities update</msg>
 </messageBundle>

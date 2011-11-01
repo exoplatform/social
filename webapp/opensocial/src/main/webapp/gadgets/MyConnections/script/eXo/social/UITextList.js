@@ -1,5 +1,5 @@
 /**
- * UITextList class
+ * UITextList class.
  * 
  * @since 1.2.4
  */
@@ -11,6 +11,7 @@
 			offset = 0,
 			limit = 0;
 	
+	//Locale = eXo.social.Locale;
 	Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
@@ -23,6 +24,7 @@
   var uiComponent = {
   	UILoading: '#UILoading',
   	GadgetUIIconList: '#GadgetUIIconList',
+  	GadgetUITextList: '#GadgetUITextList',
   	GadgetConnectionSetting: '#GadgetConnectionSetting',
   	GadgetMemberMore: '#GadgetMemberMore',
   	UITextListListContent: '#UITextListListContent',
@@ -30,7 +32,10 @@
   	BackToUITextListFromSearch: '#BackToUITextListFromSearch',
   	UITextListPeopleDirectory: '#UITextListPeopleDirectory',
   	UITextListLoadMore: '#UITextListLoadMore',
-  	UITextListMoreContent: '#UITextListMoreContent'
+  	UITextListMoreContent: '#UITextListMoreContent',
+  	ModeSetting: '#ModeSetting',
+    ModeIconList: '#ModeIconList',
+    ModeTextList: '#ModeTextList'
   };
   
   /**
@@ -144,7 +149,7 @@
   function getUserTextListBlock(userConnectionList) {
   	var userBlock = [];
   	$.each(userConnectionList, function(index, value) {
-  		userBlock.push('<li><a href="#" class="Icon"> ' + value.displayName + ' </a><span>' + value.activityTitle + '</span></li>'); 
+  		userBlock.push('<li><a href="' + value.profileUrl + '" class="Icon"> ' + value.displayName + ' </a><span>' + value.activityTitle + '</span></li>'); 
   	});
   	return userBlock.join('');
   }
@@ -165,9 +170,9 @@
   		$(uiComponent.UITextListListContent).empty();
   	}
   	
-  	$("#GadgetUITextList").append('<ul class="ListContent" id="UITextListListContent"></ul>');
+  	//$("#GadgetUITextList").append('<ul class="ListContent" id="UITextListListContent"></ul>');
   	if (userConnectionList === null || userConnectionList.length === 0) {
-  		$(uiComponent.UITextListListContent).append("No latest updated activities of connections");
+  		$(uiComponent.UITextListListContent).append('No user connection activities update');
   		if ($(uiComponent.UITextListMoreContent).length > 0) {
   			$(uiComponent.UITextListMoreContent).hide();
   		}
@@ -247,6 +252,23 @@
    */
   UITextList.display = function() {
   	UISearch.initSearchInput({offset: 0, limit: 10, viewType: "TEXT_LIST"});
+  	
+  	$(uiComponent.GadgetUITextList).css('display', 'block');
+  	
+  	if ($('.ListIcon').length > 0) {
+			$(uiComponent.ModeTextList).removeClass('ListIcon');
+			$(uiComponent.ModeTextList).addClass('ListSelected');
+		}
+		
+		if ($('.ListSelected').length > 0) {
+			$(uiComponent.ModeIconList).removeClass('NumberListSelected');
+			$(uiComponent.ModeIconList).addClass('NumberListIcon');
+		}
+		
+		if ($('.SettingSelected').length > 0) {
+			$(uiComponent.ModeSetting).removeClass('SettingSelected');
+			$(uiComponent.ModeSetting).addClass('SettingIcon');
+		}
   	
   	$(uiComponent.UILoading).hide();
   	$(uiComponent.GadgetMemberMore).hide();

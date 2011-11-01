@@ -9,6 +9,8 @@
  * Setting.viewType(Setting.VIEW_TYPE.ICON_LIST);
  * Setting.save();
  * viewType = Setting.getViewType();
+ * 
+ * @since 1.2.4
  */
 
 (function() {

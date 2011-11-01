@@ -1,5 +1,7 @@
 /**
- * The User model
+ * The User model.
+ * 
+ * @since 1.2.4
  */
 
 (function() {

@@ -4,4 +4,5 @@
 -->
 <messageBundle>
   <msg name="loading">Loading... Please wait...</msg>
+  <msg name="no_user_connection_activities_update">No user connection activities update</msg>
 </messageBundle>

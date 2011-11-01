@@ -1,5 +1,7 @@
 /**
  * Class comment for getting comments, displaying comments of an latest activity.
+ * 
+ * @since 1.2.4
  */
 (function() {
 	var window_ = this,

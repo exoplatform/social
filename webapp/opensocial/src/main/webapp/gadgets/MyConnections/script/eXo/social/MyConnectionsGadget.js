@@ -15,6 +15,7 @@
 	var window_ = this;
 	var prefs = new gadgets.Prefs();
 
+	//Locale = eXo.social.Locale;
 	Comment = exo.social.Comment;
 	Like = exo.social.Like;
 	UISearch = exo.social.UISearch;
@@ -50,6 +51,45 @@
   }
   
   /**
+   * Get the setting.
+   * 
+   * @return
+   */
+  function getSetting() {
+  	var settings = prefs.getArray("SETTINGS");
+  	
+  	var settingStored = {
+  		viewType: 'ICON_LIST',
+  		updateTime: 5,
+  		orderBy: 'asc',
+  		itemPerViewNum: 10
+  	};
+  	
+  	debug.info('settings');
+  	debug.debug(settings);
+  	
+  	if (settings !== null) {
+  		if (settings[0] !== undefined)	{
+  			settingStored.viewType = settings[0];
+  		}
+  		if (settings[1] !== undefined) {
+  			settingStored.updateTime = settings[1];
+  		}
+  		if (settings[2] !== undefined) {
+  			settingStored.orderBy = settings[2]; 
+  		}
+  		if (settings[3] !== undefined) {
+  			settingStored.itemPerViewNum = parseInt(settings[3]); 
+  		}
+  	}
+  	
+  	debug.info('setting stored:');
+  	debug.debug(settingStored);
+  	
+  	return settingStored;
+  }
+  
+  /**
    * The view type of gadget.
    */
   MyConnectionsGadget.VIEW_TYPE = {
@@ -59,48 +99,24 @@
   };
   
   /**
-   * Main point of gadget
+   * Main point of gadget.
    */
   MyConnectionsGadget.main = function() {
-  	var settings = prefs.getArray("SETTINGS");
-  	var viewType = "ICON_LIST",
-  			updateTime,
-  			orderBy,
-  			itemPerViewNum = 10;
+  	var settingStored = getSetting();
   	
-  	debug.info('settings');
-  	debug.debug(settings);
-  	
-  	debug.info('viewType:');
-  	debug.debug(settings[0]);
-  	
-  	if (settings !== null) {
-  		if (settings[0] !== undefined)	viewType = settings[0];
-  		if (settings[1] !== undefined) updateTime = settings[1];
-  		if (settings[2] !== undefined) orderBy = settings[2];
-  		if (settings[3] !== undefined) itemPerViewNum = settings[3];
-  	}
-    
-  	ActivityStream.initProfiles({offset: 0, limit: itemPerViewNum, viewType: viewType});
+  	ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: settingStored.viewType});
   	
   	if (viewType === 'TEXT_LIST') {
-  		
-  		if ($('.ListIcon').length > 0) {
-  			$(uiComponent.ModeTextList).removeClass('ListIcon');
-  			$(uiComponent.ModeTextList).addClass('ListSelected');
-  		}
-  		
   		if ($(uiComponent.UITextListListContent).length > 0) {
   			$(uiComponent.UITextListListContent).empty();
+  		}
+  		
+  		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
+  			$(uiComponent.GadgetConnectionSetting).css('display', 'none');
   		}
   	}
   	
   	if (viewType === 'ICON_LIST') {
-  		if ($('.NumberListIcon').length > 0) {
-  			$(uiComponent.ModeIconList).removeClass('NumberListIcon');
-  			$(uiComponent.ModeIconList).addClass('NumberListSelected');
-  		}
-  		
   		if ($(uiComponent.UIIconListListContent).length > 0) {
   			$(uiComponent.UIIconListListContent).empty();
   		}
@@ -115,6 +131,7 @@
    * Event and animation with jquery 
    */
   $(document).ready(function() {
+  	
   	$(uiComponent.ModeIconList).click(function() {
   		$(uiComponent.UIIconListListContent).empty();
   		
@@ -126,21 +143,13 @@
   		$(uiComponent.GadgetUIIconList).css('display', 'block');
   		$(uiComponent.GadgetUITextList).css('display', 'none');
   		$(uiComponent.UISearchContent).css('display', 'block');
-  		ActivityStream.initProfiles({offset: 0, limit: 10, viewType: "ICON_LIST"});
-  		if ($('.NumberListIcon').length > 0) {
-  			$(uiComponent.ModeIconList).removeClass('NumberListIcon');
-  			$(uiComponent.ModeIconList).addClass('NumberListSelected');
-  		}
   		
-  		if ($('.ListSelected').length > 0) {
-  			$(uiComponent.ModeTextList).removeClass('ListSelected');
-  			$(uiComponent.ModeTextList).addClass('ListIcon');
-  		}
+  		var settingStored = getSetting();
   		
-  		if ($('.SettingSelected').length > 0) {
-  			$(uiComponent.ModeSetting).removeClass('SettingSelected');
-  			$(uiComponent.ModeSetting).addClass('SettingIcon');
-  		}
+  		debug.info('settingStored click icon list:');
+  		debug.debug(settingStored);
+  		
+  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: "ICON_LIST"});
   		
   		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
   			$(uiComponent.GadgetConnectionSetting).empty();
@@ -149,6 +158,11 @@
   	});
   	
   	$(uiComponent.ModeTextList).click(function() {
+  		var settingStored = getSetting();
+  		
+  		debug.info('settingStored click text list:');
+  		debug.debug(settingStored);
+  		
   		$(uiComponent.UITextListListContent).empty();
   		
   		$(uiComponent.GadgetUIIconList).css('display', 'none');
@@ -160,22 +174,7 @@
   		$(uiComponent.SearchTextBox).val('Quick Search');
   		$(uiComponent.SearchTextBox).css('color', '#D5D5D5');
   		
-  		ActivityStream.initProfiles({offset: 0, limit: 10, viewType: "TEXT_LIST"});
-  		
-  		if ($('.ListIcon').length > 0) {
-  			$(uiComponent.ModeTextList).removeClass('ListIcon');
-  			$(uiComponent.ModeTextList).addClass('ListSelected');
-  		}
-  		
-  		if ($('.ListSelected').length > 0) {
-  			$(uiComponent.ModeIconList).removeClass('NumberListSelected');
-  			$(uiComponent.ModeIconList).addClass('NumberListIcon');
-  		}
-  		
-  		if ($('.SettingSelected').length > 0) {
-  			$(uiComponent.ModeSetting).removeClass('SettingSelected');
-  			$(uiComponent.ModeSetting).addClass('SettingIcon');
-  		}
+  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: "TEXT_LIST"});
   		
   		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
   			$(uiComponent.GadgetConnectionSetting).empty();
@@ -188,26 +187,9 @@
   		$(uiComponent.GadgetUITextList).css('display', 'none');
   		$(uiComponent.GadgetMemberMore).css('display', 'none');
   		$(uiComponent.UISearchContent).css('display', 'none');
-  		
-  		
-  		
-  		if ($('.ListSelected').length > 0) {
-  			$(uiComponent.ModeIconList).removeClass('ListSelected');
-  			$(uiComponent.ModeIconList).addClass('NumberListIcon');
-  		}
-  		
-  		if ($('.NumberListSelected').length > 0) {
-  			$(uiComponent.ModeIconList).removeClass('NumberListSelected');
-  			$(uiComponent.ModeIconList).addClass('NumberListIcon');
-  		}
-  		
-  		if ($('.SettingIcon').length > 0) {
-  			$(uiComponent.ModeSetting).removeClass('SettingIcon');
-  			$(uiComponent.ModeSetting).addClass('SettingSelected');
-  		}
+  		$(uiComponent.GadgetConnectionSetting).css('display', 'block');
   		
   		UISetting.initSettingForm();
-  		$(uiComponent.GadgetConnectionSetting).css('display', 'block');
   		
   		gadgets.window.adjustHeight();
   	});
