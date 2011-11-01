@@ -30,8 +30,10 @@ h3. Spaces {anchor:id=SOCref.Developers_References.Spaces}
 {include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
 h3. Space widget tutorial {anchor:id=SOCref.Developers_References.Space_widget_tutorial}
 {include:document="DeveloperReference/widget_tutorial.wiki"}
-h3. How to extend the activities rendering
+h3. How to extend the activities rendering {anchor:id=SOCref.Developers_References.Extend_activities_rendering}
 {include:document="DeveloperReference/How_to_extend_the_activities_rendering.wiki"}
+h3. XMLProcessor component {anchor:id=SOCref.Developers_References.XMLProcessor}
+{include:document="DeveloperReference/XMLProcessor.wiki"}
 h2. Public REST APIs {anchor:id=SOCref.DevelopersReferences.PublicREST_APIs}
 {include:document="DeveloperReference/REST_APIs.wiki"}
 h2. Rest Service APIs (v1-alpha1) {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1}

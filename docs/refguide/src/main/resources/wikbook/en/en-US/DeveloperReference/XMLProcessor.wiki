@@ -1,0 +1,97 @@
+h1. Objectives {anchor:id="SOCref_developreference_XMLProcessor_Objectives"}
+This section shows you the way to change the content of input texts by using and extending the XMLProcessor component and its plugins.
+
+h1. XMLProccessor Component {anchor:id="SOCref_developreference_XMLProcessor_Components"}
+This service processes the input texts in the system by pushing it through a filter (plugin) chain and returns a result as the diagram below:
+
+!images/ProcessorAndFilterSquenceDia.png|align="center"!
+
+Each filter is responsible for enriching the content of the input texts. For example, highlight usernames existing in a user's connection or
+remove the forbidden HTML tags.
+
+The XMLProcessor component is configured in the _config/src/main/java/conf/social/common-configuration.xml_ file:
+{code:xml}
+<component>
+    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
+    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
+</component>
+{code}  
+
+To manage the chain of the filters in XMLProcessor, you can use the _addFilterPlugin()_ and _removeFilterPlugin()_ methods.
+XMLProcessor is initialized by IOC (Invesion of Control) via the configuration files defined in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
+
+*Sample code*: {anchor: id="Sample_code"}
+{code:xml}
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
+    <component-plugin>
+      <name>URLConverterFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
+      <init-params>
+        <value-param>
+          <name>urlMaxLength</name>
+          <description>the max length of URL</description>
+          <value>-1</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+{code}
+
+h1. Built-in XMLProcessor Plugins {anchor:id="SOCref_developreference_XMLProcessor_Plugins"}
+In eXo Social, there are the following built-in XMLProcessor plugins (also known as *filters*) that filter the input texts of users.
+|| Filters || Description ||
+|*DOMContentEscapeFilter*|Process the *DOM tree* input and escape all *text nodes*.|
+|*DOMLineBreakerFilter*|Process the *DOM tree* input and add <br /> to all *text nodes* which contain {noformat}\n{noformat}.|
+|*DOMXMLTagFilter*|Process the *DOM tree* input and convert all *tag nodes* which do not exist in whitelist into *text Node*.|
+|*LineBreakerFilter*|Process the String input and replace {noformat}\n{noformat} to <br />.|
+|*XMLBalancer*|Process the String input and add missing close tags to input.|
+|*XMLTagFilter*|Processes the String input and convert all tags which do not exist in whitelist into the escapsed String.|
+
+The following is the general Class diagram of XMLProcesscor in eXo Social:
+
+!images/ProcessorAndFilterClassDiagram.png!
+
+All of these filters implements the Filter interface as follows: {anchor: id="Filter_Interface"}
+{code:java}
+package org.exoplatform.social.common.xmlprocessor;
+public interface Filter {
+  /**
+   * Filters the input data.
+   *
+   * @param input the input data
+   * @return an Object with the result after filtered
+   */
+  public Object doFilter(Object input);
+}
+{code}
+
+These filters will process the input texts in the _doFilter(Object input)_ method and return the result to XMLProcessor. 
+They are initialized via the .xml files found in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
+
+{code:xml}
+<external-component-plugins>
+    <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
+      <component-plugin>
+        <name>setAllowedTagPlugin</name>
+        <set-method>setAllowedTagPlugin</set-method>
+        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
+        <init-params>
+          <object-param>
+            <name>img tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>img</string></field>
+              <field name="tagAttributes">
+                <collection type="java.util.HashSet" item-type="java.lang.String">
+                  <value><string>src</string></value>
+                </collection>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+  </external-component-plugins>  
+{code}
+
+You can write your own filter by implementing the [Filter interface|#Filter_Interface] and add it to XMLProcessor as the [sample code|#Sample_code] in the *XMLProccessor Component* section.
