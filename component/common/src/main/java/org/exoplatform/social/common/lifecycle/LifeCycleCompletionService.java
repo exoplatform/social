@@ -102,6 +102,10 @@ public class LifeCycleCompletionService {
     }
   }
 
+  public boolean isAsync() {
+    return this.configAsyncExecution;
+  }
+
   private class DirectExecutor implements Executor {
 
     public void execute(final Runnable runnable) {

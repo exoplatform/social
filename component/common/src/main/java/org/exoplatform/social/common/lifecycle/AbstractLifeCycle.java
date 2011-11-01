@@ -91,19 +91,31 @@ public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extend
 
     //
     SessionContext ctx = lifeCycle.getContext();
-    ctx.addSynchronizationListener(new SynchronizationListener() {
+    if (completionService.isAsync()) {
+      ctx.addSynchronizationListener(new SynchronizationListener() {
 
-      public void beforeSynchronization() {}
+        public void beforeSynchronization() {}
 
-      public void afterSynchronization(SynchronizationStatus status) {
-        if (status == SynchronizationStatus.SAVED) {
+        public void afterSynchronization(SynchronizationStatus status) {
+          if (status == SynchronizationStatus.SAVED) {
 
-          addTasks(event);
+            addTasks(event);
 
+          }
+        }
+
+      });
+    }
+    else {
+      for (T listener : listeners) {
+        try {
+          dispatchEvent(listener, event);
+        }
+        catch (Exception e) {
+          LOG.error(e);
         }
       }
-
-    });
+    }
     
   }
 
