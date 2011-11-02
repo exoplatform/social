@@ -21,6 +21,35 @@
   overflow: hidden;
 }
 
+.UIActivityComposerContainer .InputDoc {
+  background: none repeat scroll 0 0 white;
+    border: 1px solid #D7D7D7;
+    margin-top: -1px;
+    padding: 4px;
+}
+
+.UIActivityComposerContainer .InputDoc .BrowsedDocument {
+  padding-left: 20px;
+	background: url("/social-resources/skin/ShareImages/activity/SOCIntranetBG.png") no-repeat scroll left -301px transparent;
+}
+
+.UIActivityComposerContainer .InputDoc .CloseIconLink {
+  padding: 2px 5px;
+  margin: 0px 0px;
+	background: url("DefaultSkin/background/CloseIconLink.gif") no-repeat center;
+}
+
+.UIActivityComposerContainer .BrowseFile{
+	color: #b7b7b7;
+}
+
+.UIActivityComposerContainer .TopInputLink{
+	  background: url("DefaultSkin/background/TopInputLink.gif") no-repeat scroll 120px top transparent;
+    display: block;
+    height: 8px;
+    position: relative;
+}
+
 .UIComposerLinkExtension #InputLink {
     border:1px solid white;
     width: 100%;
@@ -32,6 +61,17 @@
     display: block;
     height: 8px;
     position: relative;
+}
+
+.UIComposerDocExtension .InputDoc {
+  margin-right: 25px;
+  overflow: hidden;
+}
+
+.UIComposerDocExtension #InputDoc {
+  border:1px solid white;
+  width: 100%;
+  height: 16px;
 }
 
 .UIComposerLinkExtension .AttachButton {
