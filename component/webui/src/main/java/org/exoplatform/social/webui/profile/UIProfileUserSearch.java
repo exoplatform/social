@@ -437,6 +437,11 @@ public class UIProfileUserSearch extends UIForm {
               filter.setSkills("");
             }
 
+            // Eliminates space characters.
+            filter.setName(filter.getName().trim());
+            filter.setPosition(filter.getPosition().trim());
+            filter.setSkills(filter.getSkills().trim());
+            
             uiSearch.setProfileFilter(filter);
 
           }
