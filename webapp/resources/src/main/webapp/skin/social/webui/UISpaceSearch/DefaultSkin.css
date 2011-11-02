@@ -36,20 +36,16 @@
   margin-top: 8px;
   font-weight: bold;
   color: #4d4d4d;
+  padding-right: 8px;
+}
+
+.UISpaceSearch .SpaceSearchContainer .SearchContent {
+  margin: 8px 0px 0px 0px;
 }
 
 .UISpaceSearch .SpaceSearchContainer .UIAction{
   float: right;
   margin-right: 18px;
-}
-
-.UISpaceSearch .SpaceSearchContainer .UIAction .LightBlueStyle{
-  background: url("DefaultSkin/background/ButtonAddSpace.gif") repeat-x;
-  border: 1px solid #e1e1e1;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  padding: 0px 10px;
 }
 
 .UISpaceSearch .SpaceSearchContainer .UIAction .LightBlueStyle .AddSpaceIcon{
@@ -61,7 +57,7 @@
 .UISpaceSearch .SpaceSearchContainer  input {
   color:#808080;
   font-size:11px;
-  height:15px;
+  height:14px;
   width:150px;
   border: 1px solid white;
 }
