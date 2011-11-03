@@ -11,11 +11,13 @@
 			nameToSearch = null,
 			viewMode;
 	
+	Locale = exo.social.Locale;
+	
 	var OFFSET_DEFAULT = 0,
       LIMIT_DEFAULT = 10,
-      DEFAULT_INPUT_VALUE="Quick Search", // changed resource bundle
-      FOCUS_COLOR="black",
-      BLUR_COLOR="#D5D5D5";
+      DEFAULT_INPUT_VALUE = Locale.getMsg('quick_search'),
+      FOCUS_COLOR = "black",
+      BLUR_COLOR = "#D5D5D5";
 	
 	var uiComponent = {
 		SearchTextBox: '#SearchTextBox',
@@ -227,7 +229,8 @@
         var keynum = e.keyCode || e.which;  
         
         if((keynum === 13) && (textBox.value !== "")) {
-          //searchUserConnectionActivities();
+          searchUserConnectionActivities();
+          UISearch.setOffset(0);
         } 
       });
     }

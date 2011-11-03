@@ -34,6 +34,7 @@
   	ListContentMoreDetail: '#ListContentMoreDetail',
   	LoadMoreComments: '#LoadMoreComments',
   	LikeCurrentLatestActivity: '#LikeCurrentLatestActivity',
+  	CommentCurrentLatestActivity: '#CommentCurrentLatestActivity',
   	MoreActivityDetail: '#MoreActivityDetail',
   	UILoading: '#UILoading',
   	BackToUIIconListFromSearch: '#BackToUIIconListFromSearch',
@@ -42,10 +43,13 @@
   	UIIconListLoadMoreContent: '#UIIconListLoadMoreContent',
   	ModeSetting: '#ModeSetting',
     ModeIconList: '#ModeIconList',
-    ModeTextList: '#ModeTextList'
+    ModeTextList: '#ModeTextList',
+    UISearchContent: '#UISearchContent',
+    NumberOfLike: '#NumberOfLike',
+    SearchTextBox: '#SearchTextBox'
   };
 	
-  //Locale = eXo.social.Locale;
+  Locale = exo.social.Locale;
 	Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
@@ -193,7 +197,11 @@
   		debug.info("size:");
   		debug.debug($(uiComponent.UIIconListListContent).children().size());
   		if ($(uiComponent.UIIconListListContent).children().size() === 0) {
-  			$(uiComponent.UIIconListListContent).append('No user connection activities update');
+  			
+  			debug.info('Locale.getMsg("no_user_connection_activities_update")');
+  			debug.debug(Locale.getMsg("no_user_connection_activities_update"));
+  			
+  			$(uiComponent.UIIconListListContent).append(Locale.getMsg("no_user_connection_activities_update"));
   		}
   		
   		if ($(uiComponent.UIIconListLoadMoreContent).length > 0) {
@@ -202,7 +210,7 @@
   		
   		if (UIIconList.getSearchMode() === true) {
   			var addBlock = '<div id="BackToListAndPeopleDirectory">' + 
-													'<a href="#" class="Link" id="BackToUIIconListFromSearch">Back to List</a> | <a href="#" class="Link">People Directory</a>' +
+													'<a href="#" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
 												'</div>';
   			if ($(uiComponent.BackToListAndPeopleDirectory).length === 0) {
   				$(uiComponent.UIIconListListContent).append(addBlock);
@@ -214,11 +222,11 @@
   		$(uiComponent.UIIconListListContent).append(userBlock);
   		
   		if ($(uiComponent.UIIconListLoadMoreContent).length === 0) {
-  			$(uiComponent.UIIconListListContent).after('<div class="MoreContent" id="UIIconListLoadMoreContent"><a href="#" class="ReadMore" id="UIIconListMoreContent"> Load more ... </a></div>');
+  			$(uiComponent.UIIconListListContent).after('<div class="MoreContent" id="UIIconListLoadMoreContent"><a href="#" class="ReadMore" id="UIIconListMoreContent">' + Locale.getMsg('load_more') + '</a></div>');
   		}
   		if (UIIconList.getSearchMode() === true) {
   			var addBlock = '<div id="BackToListAndPeopleDirectory">' + 
-  												'<a href="#" class="Link" id="BackToUIIconListFromSearch">Back to List</a> | <a href="#" class="Link">People Directory</a>' +
+  												'<a href="#" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
   											'</div>';
   			
   			if ($(uiComponent.BackToListAndPeopleDirectory).length === 0) {
@@ -242,23 +250,30 @@
     	}
   	}
   	
-  	$(uiComponent.More).click(function() {
-  		var id = $(this).attr('id');
-  		debug.info("id activity:");
-  		debug.debug(id);
-  		
-  		if (UIIconList.getSearchMode() === true && userConnectionActivities !== null && userConnectionActivities.length > 0) {
-  			setCurrentActivity(userConnectionActivities, id);
-  		} else {
-  			setCurrentActivity(userConnectionList, id);
-  		}
-  		UIIconList.moreDetail();
-  	});
   	$(uiComponent.GadgetMemberMore).hide();
   	$(uiComponent.GadgetUIIconList).show();
   	gadgets.window.adjustHeight();
   }
   
+  /**
+   * When click to view more detail.
+   */
+  $(uiComponent.More).live("click", function() {
+		var id = $(this).attr('id');
+		debug.info("id activity:");
+		debug.debug(id);
+		
+		if (UIIconList.getSearchMode() === true) {
+			setCurrentActivity(userConnectionSearch, id);
+		} else {
+			setCurrentActivity(userConnectionList, id);
+		}
+		UIIconList.moreDetail();
+	});
+  
+  /**
+   * Click Back To List from search.
+   */
   $(uiComponent.BackToUIIconListFromSearch).live("click", function() {
 		UIIconList.setSearchMode(false);
 		UIIconList.setUserConnectionSearch(null);
@@ -268,6 +283,7 @@
 		$(uiComponent.UIIconListListContent).empty();
 		$(uiComponent.BackToListAndPeopleDirectory).remove();
 		$(uiComponent.UIIconListPeopleDirectory).show();
+		$(uiComponent.UISearchContent).css('display', 'block');
 		
 		var isMore = UIIconList.getUserConnectionList().length % UIIconList.getLimit();
 		if (isMore === 0) {
@@ -276,7 +292,7 @@
 		
 		display(UIIconList.getUserConnectionList());
 		
-		$("#SearchTextBox").val('Quick Search');
+		$(uiComponent.SearchTextBox).val(Locale.getMsg('quick_search'));
 	});
   
   $(uiComponent.UIIconListMoreContent).live("click", function() {
@@ -303,6 +319,8 @@
   UIIconList.display = function() {
   	//init search component
   	UISearch.initSearchInput({offset: 0, limit: 10, viewType: "ICON_LIST"});
+  	
+  	$(uiComponent.UISearchContent).css('display', 'block');
   	
   	$(uiComponent.GadgetUIIconList).css('display', 'block');
   	
@@ -334,6 +352,8 @@
    * Load more user connection activities.
    */
   UIIconList.loadMore = function() {
+  	$(uiComponent.UISearchContent).css('display', 'block');
+  	
   	var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl + 
   											"?offset=" + UIIconList.getOffset() + 
 												"&limit=" + UIIconList.getLimit();
@@ -363,13 +383,10 @@
 		if (response.data !== null && response.data.comments !== null) {
 			var commentsBlock = [];
 			$.each(response.data.comments, function(index, comment) {
-				commentsBlock.push('<li class="ClearFix">');
-					commentsBlock.push('<div class="Commnent">');
-						commentsBlock.push('<div class="Comm">' + comment.posterIdentity.profile.fullName + ": " + comment.text + '</div>');
-						commentsBlock.push('<div class="TimeComm">20 minutes ago</div>');
-					commentsBlock.push('</div>');
-					commentsBlock.push('<div class="Action" id="LikeCurrentLatestActivity"><a href="#" class="CommIcon">&nbsp;</a><a href="#" class="LikeIcon">&nbsp;</a></div>')
-				commentsBlock.push('</li>');
+		   	commentsBlock.push('<li class="ClearFix">');
+		   		commentsBlock.push('<a href="#" class="User">' + comment.posterIdentity.profile.fullName + ': </a>');
+		   		commentsBlock.push('<span>' + comment.text + '</span>');
+		   	commentsBlock.push('</li>');
 			});
 			
 			debug.info("comment block:");
@@ -383,7 +400,10 @@
 				
 				Like.setLikeId(currentActivityId, currentIdentityId, function(response) {
 					if (response.data !== null && response.data.likes !== null) {
-						$(uiComponent.LikeCurrentLatestActivity).append(" ( " + response.data.likes.length + " )");
+						if ($(uiComponent.NumberOfLike).length > 0) {
+							$(uiComponent.NumberOfLike).empty();
+						}
+						$(uiComponent.NumberOfLike).append(" ( " + response.data.likes.length + " )");
 					} else {
 						debug.warn('Like.displayLike: response data is null!!!');
 				    return;
@@ -421,22 +441,38 @@
   function getMyConnectionDetailBlock() {
   	var userBlock = [];
 		
-  	///social-resources/skin/DefaultSkin/portal/background/UserlistAvatar.png
-  	
 		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
 			userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
 				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
 				userBlock.push('<div class="Member"> Member</div>');
-				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Work" id="MoreActivityDetail">' + Comment.refer.connectionActivity.activityTitle + '</a>');
+				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Work" id="MoreActivityDetail">' + Locale.getMsg('profile_page') + '</a>');
 			userBlock.push('</div>');
 		userBlock.push('</div>');
+		
+		userBlock.push('<div class="CurentActivity ClearFix">');
+			userBlock.push('<div class="Commnent">');
+				userBlock.push('<span class="Comm">' + Comment.refer.connectionActivity.activityTitle + '</span>');
+				userBlock.push('<span class="NumberLike" id="NumberOfLike"></span>');
+			userBlock.push('</div>')
+			userBlock.push('<div class="Action">');
+				userBlock.push('<a id="CommentCurrentLatestActivity" href="#" class="CommIcon">&nbsp;</a><a id="LikeCurrentLatestActivity" href="#" class="LikeIcon">&nbsp;</a>');
+			userBlock.push('</div>');
+		userBlock.push('</div>');
+	  
+	  userBlock.push('<div class="QuickCommentBox">');
+	  	userBlock.push('<input type="text" value="' + Locale.getMsg('comment_here') + '"/>');
+	  	userBlock.push('<div class="ShareBT"><a href="#">' + Locale.getMsg('share') + '</a></div>');
+	  userBlock.push('</div>');
+		
 		userBlock.push('<ul class="ListContent" id="ListContentMoreDetail">');
 		userBlock.push('</ul>');
+		
 		userBlock.push('<div class="MoreContent" id="LoadMoreComments">');
-			userBlock.push('<a href="#" class="ReadMore"> Load more ... </a>');
+			userBlock.push('<a href="#" class="ReadMore">' + Locale.getMsg('load_more') + '</a>');
 		userBlock.push('</div>');
-		userBlock.push('<a href="#" class="Link" id="BackToUIIconList">Back to List</a> | <a href="#" class="Link">People Directory</a>');
+		
+		userBlock.push('<a href="#" class="Link" id="BackToUIIconList">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>');
 		
 		return userBlock.join('');
   }
@@ -458,12 +494,6 @@
 	  
 	  $(uiComponent.GadgetMemberMore).append(userBlock);
 	
-	  $(uiComponent.BackToUIIconList).click(function() {
-	  	$(uiComponent.GadgetUIIconList).show();
-  		$(uiComponent.GadgetMemberMore).hide();
-  		gadgets.window.adjustHeight();
-	  });
-	  
 	  Comment.setOffset(0);
 	  Comment.setLimit(10);
 	  
@@ -473,7 +503,10 @@
 	  	debug.debug(response);
 	  	
 	  	if (response.data !== null && response.data.totalNumberOfLikes !== null) {
-	  		$(uiComponent.MoreActivityDetail).append(' (' + response.data.totalNumberOfLikes + ' )');
+	  		if ($(uiComponent.NumberOfLike).length > 0) {
+	  			$(uiComponent.NumberOfLike).empty();
+	  		}
+	  		$(uiComponent.NumberOfLike).append(' (' + response.data.totalNumberOfLikes + ' )');
 	  	}
 	  	displayComments(response);
 	  });
@@ -482,11 +515,23 @@
   }
   
   /**
+   * When click back to list.
+   */
+  $(uiComponent.BackToUIIconList).live("click", function() {
+  	$(uiComponent.GadgetUIIconList).show();
+		$(uiComponent.GadgetMemberMore).hide();
+		$(uiComponent.UISearchContent).css('display', 'block');
+		gadgets.window.adjustHeight();
+  });
+  
+  /**
    * Click more to view detail.
    */
   UIIconList.moreDetail = function() {
   	debug.info("current activity:");
   	debug.debug(Comment.refer.connectionActivity);
+  	
+  	$(uiComponent.UISearchContent).css('display', 'none');
   	
   	initMyConnectionDetail(Comment.refer.connectionActivity.activityId);
   };

@@ -38,12 +38,14 @@
 	  ICON_LIST: "ICON_LIST",
 	  SETTING: "SETTING"
 	};
-	
+
 	/**
-	 * Loads viewer and init connection's activities.
+	 * Init activity stream
+	 * 
+	 * @param params
 	 */
-  ActivityStream.initProfiles = function(params) {
-    var viewerOpts = {};
+	function initActivityStream(params) {
+		var viewerOpts = {};
     viewerOpts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] =
             [opensocial.Person.Field.ID,
              opensocial.Person.Field.NAME,
@@ -99,6 +101,7 @@
 			debug.info("peopleRestUrl:");
 			debug.debug(peopleRestUrl);
 			
+			
 			//get user with latest activities by jquery
 			Util.makeRequest(peopleRestUrl, function(response) {
 				var userConnections = [];
@@ -138,6 +141,22 @@
 				debug.debug(userConnections);
 			});
     });
+	}
+	
+	/**
+	 * Loads viewer and init connection's activities.
+	 * 
+	 * @param params
+	 */
+  ActivityStream.initProfiles = function(params) {
+    initActivityStream(params);
+    
+    // Set the update time.
+		if (params.updateTime > 0) {
+			setInterval(function() {
+				initActivityStream(params);
+			}, params.updateTime);
+		}
   };
 	
 	//name space

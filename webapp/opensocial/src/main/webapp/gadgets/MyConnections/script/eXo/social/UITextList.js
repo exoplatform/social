@@ -11,7 +11,7 @@
 			offset = 0,
 			limit = 0;
 	
-	//Locale = eXo.social.Locale;
+	Locale = exo.social.Locale;
 	Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
@@ -35,7 +35,8 @@
   	UITextListMoreContent: '#UITextListMoreContent',
   	ModeSetting: '#ModeSetting',
     ModeIconList: '#ModeIconList',
-    ModeTextList: '#ModeTextList'
+    ModeTextList: '#ModeTextList',
+    UISearchContent: '#UISearchContent'
   };
   
   /**
@@ -170,15 +171,14 @@
   		$(uiComponent.UITextListListContent).empty();
   	}
   	
-  	//$("#GadgetUITextList").append('<ul class="ListContent" id="UITextListListContent"></ul>');
   	if (userConnectionList === null || userConnectionList.length === 0) {
-  		$(uiComponent.UITextListListContent).append('No user connection activities update');
+  		$(uiComponent.UITextListListContent).append(Locale.getMsg("no_user_connection_activities_update"));
   		if ($(uiComponent.UITextListMoreContent).length > 0) {
   			$(uiComponent.UITextListMoreContent).hide();
   		}
   		if (UITextList.getSearchMode() === true) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-		 											'<a href="#" class="Link" id="BackToUITextListFromSearch">Back to List</a> | <a href="#" class="Link">People Directory</a>'  + 
+		 											'<a href="#" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
 		 										'</div>';
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
   				$(uiComponent.UITextListMoreContent).after(addBlock);
@@ -188,12 +188,12 @@
   	} else {
   		$(uiComponent.UITextListListContent).append(getUserTextListBlock(userConnectionList));
   		if ($(uiComponent.UITextListMoreContent).length === 0) {
-  			$(uiComponent.UITextListListContent).after('<div class="MoreContent" id="UITextListMoreContent"><a href="#" class="ReadMore" id="UITextListLoadMore"> Load more ... </a></div>');
+  			$(uiComponent.UITextListListContent).after('<div class="MoreContent" id="UITextListMoreContent"><a href="#" class="ReadMore" id="UITextListLoadMore">' + Locale.getMsg('load_more') + '</a></div>');
   		}
   		//search mode
   		if (UITextList.getUserConnectionSearch() !== null) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-  										 		'<a href="#" class="Link" id="BackToUITextListFromSearch">Back to List</a> | <a href="#" class="Link">People Directory</a>'  + 
+  										 		'<a href="#" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
   										 	'</div>';
   			
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
@@ -232,7 +232,7 @@
 		}
 		
 		UITextList.display(UITextList.getUserConnection());
-		$("#SearchTextBox").val('Quick Search');
+		$("#SearchTextBox").val(Locale.getMsg('quick_search'));
 	});
   
 	$(uiComponent.UITextListLoadMore).live("click", function() {
@@ -252,6 +252,8 @@
    */
   UITextList.display = function() {
   	UISearch.initSearchInput({offset: 0, limit: 10, viewType: "TEXT_LIST"});
+  	
+  	$(uiComponent.UISearchContent).css('display', 'block');
   	
   	$(uiComponent.GadgetUITextList).css('display', 'block');
   	

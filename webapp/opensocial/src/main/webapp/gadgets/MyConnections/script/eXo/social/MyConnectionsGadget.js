@@ -15,7 +15,7 @@
 	var window_ = this;
 	var prefs = new gadgets.Prefs();
 
-	//Locale = eXo.social.Locale;
+	Locale = exo.social.Locale;
 	Comment = exo.social.Comment;
 	Like = exo.social.Like;
 	UISearch = exo.social.UISearch;
@@ -25,6 +25,9 @@
 	ActivityStream = exo.social.ActivityStream;
 	Configuration = exo.social.Configuration;
 	SocialUtil = eXo.social.SocialUtil;
+	
+	debug.info('Locale');
+	debug.debug(Locale);
 	
 	/**
 	 * UI component.
@@ -60,8 +63,8 @@
   	
   	var settingStored = {
   		viewType: 'ICON_LIST',
-  		updateTime: 5,
-  		orderBy: 'asc',
+  		updateTime: 5 * 60 * 1000,
+  		orderBy: 'RAND',
   		itemPerViewNum: 10
   	};
   	
@@ -73,7 +76,7 @@
   			settingStored.viewType = settings[0];
   		}
   		if (settings[1] !== undefined) {
-  			settingStored.updateTime = settings[1];
+  			settingStored.updateTime = parseInt(settings[1]) * 60 * 1000;
   		}
   		if (settings[2] !== undefined) {
   			settingStored.orderBy = settings[2]; 
@@ -104,9 +107,11 @@
   MyConnectionsGadget.main = function() {
   	var settingStored = getSetting();
   	
-  	ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: settingStored.viewType});
+  	ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum,
+  															viewType: settingStored.viewType, updateTime: settingStored.updateTime,
+  															orderBy: settingStored.orderBy});
   	
-  	if (viewType === 'TEXT_LIST') {
+  	if (settingStored.viewType === 'TEXT_LIST') {
   		if ($(uiComponent.UITextListListContent).length > 0) {
   			$(uiComponent.UITextListListContent).empty();
   		}
@@ -116,7 +121,7 @@
   		}
   	}
   	
-  	if (viewType === 'ICON_LIST') {
+  	if (settingStored.viewType === 'ICON_LIST') {
   		if ($(uiComponent.UIIconListListContent).length > 0) {
   			$(uiComponent.UIIconListListContent).empty();
   		}
@@ -149,7 +154,9 @@
   		debug.info('settingStored click icon list:');
   		debug.debug(settingStored);
   		
-  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: "ICON_LIST"});
+  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, 
+  																viewType: "ICON_LIST", updateTime: settingStored.updateTime,
+  																orderBy: settingStored.orderBy});
   		
   		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
   			$(uiComponent.GadgetConnectionSetting).empty();
@@ -174,7 +181,9 @@
   		$(uiComponent.SearchTextBox).val('Quick Search');
   		$(uiComponent.SearchTextBox).css('color', '#D5D5D5');
   		
-  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, viewType: "TEXT_LIST"});
+  		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum,
+  																viewType: "TEXT_LIST", updateTime: settingStored.updateTime,
+  																orderBy: settingStored.orderBy});
   		
   		if ($(uiComponent.GadgetConnectionSetting).length > 0) {
   			$(uiComponent.GadgetConnectionSetting).empty();

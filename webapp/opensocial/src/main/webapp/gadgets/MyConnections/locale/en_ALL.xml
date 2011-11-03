@@ -5,4 +5,28 @@
 <messageBundle>
   <msg name="loading">Loading... Please wait...</msg>
   <msg name="no_user_connection_activities_update">No user connection activities update</msg>
+  <msg name="back_to_list">Back To List</msg>
+  <msg name="people_directory">People Directory</msg>
+  <msg name="quick_search">Quick Search</msg>
+  <msg name="more">More</msg>
+  <msg name="load_more">Load more ...</msg>
+  <msg name="view_type">View Type</msg>
+  <msg name="icon_list">Icon List</msg>
+  <msg name="text_list">Text List</msg>
+  <msg name="update_time">Update Time</msg>
+  <msg name="every_5_mins">Every 5 mins</msg>
+  <msg name="every_30_mins">Every 30 mins</msg>
+  <msg name="every_60_mins">Every 60 mins</msg>
+  <msg name="no_update">No update</msg>
+  <msg name="item_sort_by">Item Sort By</msg>
+  <msg name="randomize">Randomize</msg>
+  <msg name="user_name_a_z">User Name (A-Z)</msg>
+  <msg name="user_name_z_a">User Name (Z-A)</msg>
+  <msg name="activity_update">Activity Update</msg>
+  <msg name="number_item_per_view">Number Item per view</msg>
+  <msg name="save">Save</msg>
+  <msg name="cancel">Cancel</msg>
+  <msg name="profile_page">Profile Page</msg>
+  <msg name="share">Share</msg>
+  <msg name="comment_here">Comment here</msg>
 </messageBundle>

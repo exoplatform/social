@@ -44,8 +44,64 @@
   	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
   	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
   	
-		<!--<script type="text/javascript" src="script/eXo/social/Locale.js"></script>-->
+  	<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Configuration.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/User.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Util.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Comment.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/Like.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/ActivityStream.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UISearch.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UITextList.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UIIconList.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/UISetting.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/MyConnectionsGadget.js"></script>
+  	
+    <!--<script type="text/javascript" src="script/eXo/social/Setting.js"></script>
+  	-->
+    <div id="message"></div>
+    <div id="loading" class="Loading" id="UILoading" style="display: none;">__MSG_loading__</div>
+    
+    <div class="GadgetConnectionBar ClearFix">
+			<div class="Label FL">__MSG_my_connections__</div>
+			<a class="FR SettingIcon" href="#" id="ModeSetting">&nbsp;</a>
+			<a class="FR ListIcon" href="#" id="ModeTextList">&nbsp;</a>
+			<a class="FR NumberListSelected" href="#" id="ModeIconList">&nbsp;</a>
+		</div>
+    
+    <div class="SearchContent ClearFix" id="UISearchContent">
+			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
+			<a href="#" id="SearchButton" class="IconSearch"></a>
+		</div>
+    
+    <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
+			<ul class="ListContent" id="UITextListListContent"></ul>
+			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UITextListPeopleDirectory" target="_blank">__MSG_people_directory__</a>			
+    </div>
+    
+    <div class="GadgetConnection GadgetConnectionDetail" id="GadgetUIIconList">
+			<ul class="ListContent" id="UIIconListListContent"></ul>
+			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UIIconListPeopleDirectory" target="_blank">__MSG_people_directory__</a>
+		</div>
 		
+		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting" style="width: 300px;"></div>
+		
+		<div class="GadgetConnection GadgetMember" id="GadgetMemberMore" style="display: none;"></div>
+    
+  ]]>
+  </Content>
+
+  <Content type="html" view="canvas">
+  <![CDATA[
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+    <link rel="stylesheet" type="text/css" href="style/home.css" />
+  
+  	<script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
+  	<script type="text/javascript" src="/social-resources/javascript/eXo/social/SocialUtil.js"></script>
+  	
+  	<script type="text/javascript" src="script/eXo/social/jquery-1.6.1.js"></script>
+  	<script type="text/javascript" src="script/eXo/social/jquery-ui-1.18.12.js"></script>
+		<script type="text/javascript" src="script/eXo/social/Locale.js"></script>
   	<script type="text/javascript" src="script/eXo/social/Configuration.js"></script>
   	<script type="text/javascript" src="script/eXo/social/User.js"></script>
   	<script type="text/javascript" src="script/eXo/social/Util.js"></script>
@@ -93,17 +149,6 @@
 				<a href="#" class="IconSearch">&nbsp;</a>
 			</div>
 		</div>
-    
-  ]]>
-  </Content>
-
-  <Content type="html" view="canvas">
-  <![CDATA[
-    <link rel="stylesheet" type="text/css" href="style/style.css" />
-    <link rel="stylesheet" type="text/css" href="style/canvas.css" />
-    <script type="text/javascript" src="/social-resources/javascript/debug.js"></script>
-    <script type="text/javascript" src="script/eXo/social/Locale.js"></script>
-    <div id="loading" class="Loading">__MSG_loading__</div>
   ]]>
   </Content>
 </Module>

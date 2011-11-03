@@ -11,13 +11,12 @@
 			limit = 0,
 	    viewType;
   
-	Locale = eXo.social.Locale;
+	Locale = exo.social.Locale;
   Util = exo.social.Util;
   Configuration = exo.social.Configuration;
   SocialUtil = eXo.social.SocialUtil;
   UISearch = exo.social.UISearch;
   ActivityStream = exo.social.ActivityStream;
-  
   	    
   var prefs = new gadgets.Prefs();
 
@@ -55,8 +54,8 @@
   UISetting.initSettingForm = function() {
   	
   	if ($('.ListSelected').length > 0) {
-			$(uiComponent.ModeIconList).removeClass('ListSelected');
-			$(uiComponent.ModeIconList).addClass('NumberListIcon');
+			$(uiComponent.ModeTextList).removeClass('ListSelected');
+			$(uiComponent.ModeTextList).addClass('ListIcon');
 		}
 		
 		if ($('.NumberListSelected').length > 0) {
@@ -72,40 +71,40 @@
     var settingContentBlock = 
     '<div class="SettingContent">' +
       '<div class="Row ClearFix">' +
-			  '<div class="LabelIL">View Type</div>' +
+			  '<div class="LabelIL">' + Locale.getMsg('view_type') + '</div>' +
 			  '<select class="SelectboxIL" id="ViewType">' +
-				  '<option value="ICON_LIST">Icon list</option>' +
-          '<option value="TEXT_LIST">Text list</option>' +
+				  '<option value="ICON_LIST">' + Locale.getMsg('icon_list') + '</option>' +
+          '<option value="TEXT_LIST">' + Locale.getMsg('text_list') + '</option>' +
 			  '</select>' +
 		  '</div>' +
 		  
 		  '<div class="Row ClearFix">' +
-			  '<div class="LabelUT">Update Time</div>' +
+			  '<div class="LabelUT">' + Locale.getMsg('update_time') + '</div>' +
 			  '<select class="SelectboxUT" id="UpdateTime">' +
-				  '<option value="5">Every 5 mins</option>' +
-          '<option value="30">Every 30 mins</option>' +
-          '<option value="60">Every 60 mins</option>' +
-          '<option value="0">No update</option>' +
+				  '<option value="5">' + Locale.getMsg('every_5_mins') + '</option>' +
+          '<option value="30">' + Locale.getMsg('every_30_mins') + '</option>' +
+          '<option value="60">' + Locale.getMsg('every_60_mins') + '</option>' +
+          '<option value="0">' + Locale.getMsg('no_update') + '</option>' +
 			  '</select>' +
 		  '</div>' +
 		  
 		  '<div class="Row ClearFix">' +
-			  '<div class="LabelISB">Item Sort by</div>' +
+			  '<div class="LabelISB">' + Locale.getMsg('item_sort_by') + '</div>' +
 			  '<select id="OrderBy" class="SelectboxISB">' +
-          '<option value="RAND">Randomize</option>' +
-          '<option value="AZ_UN">User Name (A-Z)</option>' +
-          '<option value="ZA_UN">User Name (Z-A)</option>' +
-          '<option value="A_U_T">Activity Update</option>' +
+          '<option value="RAND">' + Locale.getMsg('randomize') + '</option>' +
+          '<option value="AZ_UN" disabled="disabled">' + Locale.getMsg('user_name_a_z') + '</option>' +
+          '<option value="ZA_UN" disabled="disabled">' + Locale.getMsg('user_name_z_a') + '</option>' +
+          '<option value="A_U_T">' + Locale.getMsg('activity_update') + '</option>' +
 			  '</select>' +
 		  '</div>' +
 		  
 		  '<div class="Row ClearFix">' +
-		    '<div class="LabelNIV">Number Item per view</div>' +
+		    '<div class="LabelNIV">' + Locale.getMsg('number_item_per_view') + '</div>' +
 			  '<input id="ItemPerViewNum" class="InputNIV" type="text" value="10"/>' +
 		  '</div>' +
 		  
-		  '<a href="#" id="SaveButton" class="MCSettingButton">Save</a>' +
-	    '<a href="#" id="CancelButton" class="Link">Cancel</a>' +
+		  '<a href="#" id="SaveButton" class="MCSettingButton">' + Locale.getMsg('save') + '</a>' +
+	    '<a href="#" id="CancelButton" class="Link">' + Locale.getMsg('cancel') + '</a>' +
 	  '</div>';
 	  
 	  $(uiComponent.GadgetConnectionSetting).empty();
@@ -121,6 +120,30 @@
 		  $('#CancelButton').click(function() {
 		    cancel();
 		  });
+		  
+		  // Disabled options fix for Internet Explorer
+		  $('#OrderBy').each(function(){
+		    this.rejectDisabled = function(){
+		      if (this.options[this.selectedIndex].disabled){
+		        if (this.lastSelectedIndex) {
+		          this.selectedIndex = this.lastSelectedIndex;
+		        } else {
+		          var first_enabled = $(this).children('option:not(:disabled)').get(0);
+		          this.selectedIndex = first_enabled ? first_enabled.index : 0;
+		        }
+		      } else {
+		        this.lastSelectedIndex = this.selectedIndex;
+		      }
+		    };
+		    this.rejectDisabled();
+		    this.lastSelectedIndex = this.selectedIndex;
+		    $(this).children('option[disabled]').each(function(){
+		      $(this).css('color', '#CCC');
+		    });
+		    $(this).change(function() {
+		      this.rejectDisabled();
+		    });
+		  });
 	  });
   };
   
@@ -129,8 +152,8 @@
 		var values = [];
 		
 		var viewType = "ICON_LIST",
-		updateTime,
-		orderBy,
+		updateTime = 5 * 60 * 1000,
+		orderBy = 'RAND',
 		itemPerViewNum = 10;
 
     values.push($("#ViewType :selected").val());
@@ -141,11 +164,13 @@
     prefs.setArray("SETTINGS", values);
     
     viewType = values[0];
-    updateTime = values[1];
+    updateTime = parseInt(values[1]) * 60 * 1000;
     orderBy = values[2];
     itemPerViewNum = parseInt(values[3]);
     
-    ActivityStream.initProfiles({offset: 0, limit: itemPerViewNum, viewType: viewType});
+    ActivityStream.initProfiles({offset: 0, limit: itemPerViewNum,
+    														viewType: viewType, updateTime: updateTime,
+    														orderBy: orderBy});
     
     debug.info('limit in ui setting:');
     debug.debug(itemPerViewNum);

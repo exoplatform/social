@@ -324,4 +324,73 @@
 	padding: 0px 8px;
 	margin-right: 3px;
 }
+.GadgetConnection .CurentActivity{
+ margin: 12px;
+}
 
+.GadgetConnection .CurentActivity .Commnent{
+ float: left;
+}
+
+.GadgetConnection .CurentActivity .Commnent .Comm{
+ width: 170px;
+ overflow: hidden;
+    white-space: nowrap;
+}
+
+.GadgetConnection .CurentActivity .Commnent .TimeComm{
+ width: 170px;
+ overflow: hidden;
+    white-space: nowrap;
+ color: #808080;
+}
+
+.GadgetConnection .CurentActivity .Action{
+ float: right;
+ width: 40px;
+}
+
+.GadgetConnection .CurentActivity .Action .CommIcon{
+ background: url("/social-resources/skin/DefaultSkin/portal/background/CommIcon.png") no-repeat center;
+ padding: 2px 6px;
+ margin-right: 7px;
+}
+
+.GadgetConnection .CurentActivity .Action .LikeIcon{
+ background: url("/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png") no-repeat center;
+ padding: 2px 6px;
+}
+
+.GadgetConnection .CurentActivity .NumberLike{
+ color: #0053A7;
+}
+
+.QuickCommentBox{
+ margin: 0px 35px;
+}
+
+.QuickCommentBox input{
+ border: 1px solid #E1E1E1;
+    color: #D2D2D2;
+    font-size: 11px;
+    padding: 4px;
+    width: 100%;
+}
+
+.QuickCommentBox .ShareBT{
+ text-align: right;
+ padding-top: 2px;
+}
+
+.QuickCommentBox .ShareBT a{
+ color: #0053A7;
+}
+
+.GadgetConnection .ListContent .User{
+ font-weight: bold;
+ font-family: areal;
+}
+
+.GadgetMember ul{
+ padding-left: 35px;
+}

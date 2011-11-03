@@ -6,6 +6,7 @@
 (function () {
 	var window_ = this;
 	
+	Locale = exo.social.Locale;
 	Configuration = exo.social.Configuration;
 	
 	/**
@@ -108,7 +109,7 @@
 					userBlock.push('<a href="' + userConnection.profileUrl + '" class="User">' + userConnection.displayName +'</a><span class="Member">' + userConnection.position +'</span>');
 					userBlock.push('<div class="Work">' + userConnection.activityTitle + '</div>');
 				userBlock.push('</div>');
-				userBlock.push('<a href="#" class="More" id="' + userConnection.activityId + '">More</a>');
+				userBlock.push('<a href="#" class="More" id="' + userConnection.activityId + '">' + Locale.getMsg('more') + '</a>');
   		userBlock.push('</li>');
   	});
 		
@@ -189,6 +190,10 @@
 	  if (refreshInterval && refreshInterval > 0) {
 	      ts = Math.floor(ts / (refreshInterval * 1000));
 	  }
+	  
+	  debug.info("url in util:");
+	  debug.debug(url);
+	  
 	  if (url.indexOf("?") > -1) {
 	     sep = "&";
 	  }

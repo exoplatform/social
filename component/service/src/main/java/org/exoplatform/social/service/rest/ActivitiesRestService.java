@@ -195,15 +195,16 @@ public class ActivitiesRestService implements ResourceContainer {
       identityIds = addItemToArray(identityIds, identityId);
       activity.setLikeIdentityIds(identityIds);
       try {
-        Identity user = getIdentityManager().getIdentity(activity.getUserId());
-        _activityManager.saveActivity(user, activity);
+        //Identity user = getIdentityManager().getIdentity(activity.getUserId(),true);
+        _activityManager.updateActivity(activity);
+        activity = _activityManager.getActivity(activityId);
       } catch (Exception ex) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     } else {
       //TODO hoatle let it run smoothly or informs that user already liked the activity?
     }
-    likeList.setLikes(getLikes(identityIds));
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
 
