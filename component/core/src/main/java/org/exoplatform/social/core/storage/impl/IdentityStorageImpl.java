@@ -368,7 +368,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
             skills.add(currentXp.get(Profile.EXPERIENCES_SKILLS));
 
           }
-          profileEntity.setProperty(PropNs.INDEX.nameOf("skills"), skills);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_SKILLS), skills);
 
         }
         else if (Profile.AVATAR.equals(key)) {
@@ -381,13 +381,15 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           avatar.setContentResource(new Resource(attachement.getMimeType(), null, attachement.getImageBytes()));
         }
         else {
-          if (value != null) {
-            List<String> lvalue = new ArrayList();
-            lvalue.add((String) value);
-            profileEntity.setProperty(PropNs.VOID.nameOf(key), lvalue);
-          }
-          else {
-            profileEntity.setProperty(PropNs.VOID.nameOf(key), null);
+          //need to check here to avoid to set property with name: "void-skills"
+          if (Profile.EXPERIENCES_SKILLS.equals(key) == false) {
+            if (value != null) {
+              List<String> lvalue = new ArrayList();
+              lvalue.add((String) value);
+              profileEntity.setProperty(PropNs.VOID.nameOf(key), lvalue);
+            } else {
+              profileEntity.setProperty(PropNs.VOID.nameOf(key), null);
+            }
           }
         }
       }
