@@ -71,16 +71,6 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
    *           not remove the group record from the database.
    */
   public void preDelete(Group group) throws Exception {
-    SpaceService spaceSrv = getSpaceService();
-    String groupId = group.getId();
-    Space space = spaceSrv.getSpaceByGroupId(groupId);
-    if (space != null) {
-      spaceSrv.deleteSpace(space);
-      UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
-      UIWorkingWorkspace uiWorkSpace = uiPortalApp.getChild(UIWorkingWorkspace.class);
-      uiWorkSpace.updatePortletsByName("SpacesToolbarPortlet");
-      uiWorkSpace.updatePortletsByName("SocialUserToolBarGroupPortlet");
-    }
   }
 
   /**
