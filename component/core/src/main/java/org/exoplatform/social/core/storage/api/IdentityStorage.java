@@ -17,7 +17,7 @@
 
 package org.exoplatform.social.core.storage.api;
 
-import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -188,7 +188,6 @@ public interface IdentityStorage {
   /**
    * get Space's member Identity and filter it by Profile Filter
    * @param space
-   * @param providerId
    * @param profileFilter
    * @param offset
    * @param limit
@@ -198,7 +197,7 @@ public interface IdentityStorage {
    */
   public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space, 
                                                                 final ProfileFilter profileFilter,
-                                                                SpaceMemberFilterListAccess.Type type,
+                                                                Type type,
                                                                 long offset, long limit)
                                                                 throws IdentityStorageException;
 

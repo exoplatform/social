@@ -22,11 +22,14 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
+import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
+import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -36,7 +39,6 @@ import org.exoplatform.social.core.storage.cache.model.data.ProfileData;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityCompositeKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -400,10 +402,25 @@ public class CachedIdentityStorage implements IdentityStorage {
     
   }
 
-
   public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space,
       final ProfileFilter profileFilter, final Type type, final long offset, final long limit)
       throws IdentityStorageException {
-      return storage.getSpaceMemberIdentitiesByProfileFilter(space , profileFilter, type, offset, limit);
+
+    SpaceKey spaceKey = new SpaceKey(space.getId());
+    IdentityFilterKey identityKey = new IdentityFilterKey(SpaceIdentityProvider.NAME, profileFilter);
+    ListSpaceMembersKey listKey = new ListSpaceMembersKey(spaceKey, identityKey, offset, limit);
+
+    ListIdentitiesData keys = identitiesCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getSpaceMemberIdentitiesByProfileFilter(space , profileFilter, type, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    return buildIdentities(keys);
+
   }
+
 }

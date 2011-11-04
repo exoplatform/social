@@ -22,7 +22,9 @@ import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
+import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ListSpacesData;
+import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
@@ -46,6 +48,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   private final ExoCache<SpaceRefKey, SpaceKey> exoRefSpaceCache;
   private final ExoCache<SpaceFilterKey, IntegerData> exoSpacesCountCache;
   private final ExoCache<ListSpacesKey, ListSpacesData> exoSpacesCache;
+  private final ExoCache<ListIdentitiesKey, ListIdentitiesData> exoIdentitiesCache;
 
   private final FutureExoCache<SpaceKey, SpaceData, ServiceContext<SpaceData>> spaceCache;
   private final FutureExoCache<SpaceRefKey, SpaceKey, ServiceContext<SpaceKey>> spaceRefCache;
@@ -97,6 +100,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     this.exoRefSpaceCache = cacheService.getSpaceRefCache();
     this.exoSpacesCountCache = cacheService.getSpacesCountCache();
     this.exoSpacesCache = cacheService.getSpacesCache();
+    this.exoIdentitiesCache = cacheService.getIdentitiesCache();
 
     this.spaceCache = CacheType.SPACE.createFutureCache(exoSpaceCache);
     this.spaceRefCache = CacheType.SPACE_REF.createFutureCache(exoRefSpaceCache);
@@ -159,6 +163,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
     exoSpacesCountCache.clearCache();
     exoSpacesCache.clearCache();
+    exoIdentitiesCache.clearCache();
     if (removed != null) {
       cleanRef(removed);
     }
