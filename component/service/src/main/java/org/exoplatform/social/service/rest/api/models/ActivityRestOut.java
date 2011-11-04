@@ -45,6 +45,10 @@ public class ActivityRestOut extends HashMap<String, Object>{
      * The title.
      */
     TITLE("title"),
+    /** 
+     * Activity Body message 
+     */
+    BODY("body"),
     /**
      * The priority from 0 to 1. 1 is the higher priority.
      */
@@ -140,6 +144,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     initialize();
     this.setId(activity.getId());
     this.setTitle(activity.getTitle());
+    this.setBody(activity.getBody()); 
     this.setPriority(activity.getPriority());
     this.setAppId(activity.getAppId());
     this.setType(activity.getType());
@@ -193,6 +198,18 @@ public class ActivityRestOut extends HashMap<String, Object>{
     }
   }
 
+  public String getBody() {
+    return (String) this.get(Field.BODY.toString());
+  }
+
+  public void setBody(final String body) {
+    if(body != null){
+      this.put(Field.BODY.toString(), body);
+    } else {
+      this.put(Field.BODY.toString(), "");
+    }
+  }
+  
   public Float getPriority() {
     return (Float) this.get(Field.PRIORITY.toString());
   }
@@ -425,6 +442,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
   private void initialize(){
     this.setId("");
     this.setTitle("");
+    this.setBody("");
     this.setPriority(new Float(0));
     this.setAppId("");
     this.setType("");
