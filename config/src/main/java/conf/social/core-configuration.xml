@@ -368,7 +368,7 @@
         </value-param>
         <value-param profiles="all,default,minimal">
           <name>workspace-name</name>
-          <value>collaboration</value>
+          <value>social</value>
         </value-param>
         <values-param>
           <name>entities</name>
