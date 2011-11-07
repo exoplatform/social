@@ -923,6 +923,141 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
+  
+  public void testProfileXpWithSkillsNull() throws Exception {
+    Identity newIdentity = new Identity("organization", "withxp");
+
+    //
+    storage._createIdentity(newIdentity);
+    String generatedId = newIdentity.getId();
+    assertNotNull(generatedId);
+    assertEquals("organization", newIdentity.getProviderId());
+    assertEquals(false, newIdentity.isDeleted());
+    assertEquals("withxp", newIdentity.getRemoteId());
+    assertNotNull(newIdentity.getProfile());
+    assertNull(newIdentity.getProfile().getId());
+
+    //
+    storage._createProfile(newIdentity.getProfile());
+    assertNotNull(newIdentity.getProfile().getId());
+
+    //
+    Profile profile = newIdentity.getProfile();
+    profile.setProperty(Profile.USERNAME, "user");
+    profile.setProperty(Profile.FIRST_NAME, "first");
+    profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
+
+    // xps
+    List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
+    Map<String, Object> xp1 = new HashMap<String, Object>();
+    xp1.put(Profile.EXPERIENCES_SKILLS, null);
+    xp1.put(Profile.EXPERIENCES_POSITION, "position 1");
+    xp1.put(Profile.EXPERIENCES_COMPANY, "company 1");
+    xp1.put(Profile.EXPERIENCES_DESCRIPTION, "description 1");
+    xp1.put(Profile.EXPERIENCES_START_DATE, "01/01/2010");
+    xp1.put(Profile.EXPERIENCES_END_DATE, null);
+    xp1.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.TRUE);
+    xps.add(xp1);
+    
+   
+    profile.setProperty(Profile.EXPERIENCES, xps);
+
+    //
+    storage._saveProfile(profile);
+
+    tearDownIdentityList.add(newIdentity.getId());
+  }
+  
+  public void testProfileXpWithDescriptionNull() throws Exception {
+    Identity newIdentity = new Identity("organization", "withxp");
+
+    //
+    storage._createIdentity(newIdentity);
+    String generatedId = newIdentity.getId();
+    assertNotNull(generatedId);
+    assertEquals("organization", newIdentity.getProviderId());
+    assertEquals(false, newIdentity.isDeleted());
+    assertEquals("withxp", newIdentity.getRemoteId());
+    assertNotNull(newIdentity.getProfile());
+    assertNull(newIdentity.getProfile().getId());
+
+    //
+    storage._createProfile(newIdentity.getProfile());
+    assertNotNull(newIdentity.getProfile().getId());
+
+    //
+    Profile profile = newIdentity.getProfile();
+    profile.setProperty(Profile.USERNAME, "user");
+    profile.setProperty(Profile.FIRST_NAME, "first");
+    profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
+
+    // xps
+    List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
+    Map<String, Object> xp1 = new HashMap<String, Object>();
+    xp1.put(Profile.EXPERIENCES_SKILLS, "java");
+    xp1.put(Profile.EXPERIENCES_POSITION, "position 1");
+    xp1.put(Profile.EXPERIENCES_COMPANY, "company 1");
+    xp1.put(Profile.EXPERIENCES_DESCRIPTION, null);
+    xp1.put(Profile.EXPERIENCES_START_DATE, "01/01/2010");
+    xp1.put(Profile.EXPERIENCES_END_DATE, null);
+    xp1.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.TRUE);
+    xps.add(xp1);
+    
+   
+    profile.setProperty(Profile.EXPERIENCES, xps);
+
+    //
+    storage._saveProfile(profile);
+
+    tearDownIdentityList.add(newIdentity.getId());
+  }
+  
+  public void testProfileXpWithSkillDescNull() throws Exception {
+    Identity newIdentity = new Identity("organization", "withxp");
+
+    //
+    storage._createIdentity(newIdentity);
+    String generatedId = newIdentity.getId();
+    assertNotNull(generatedId);
+    assertEquals("organization", newIdentity.getProviderId());
+    assertEquals(false, newIdentity.isDeleted());
+    assertEquals("withxp", newIdentity.getRemoteId());
+    assertNotNull(newIdentity.getProfile());
+    assertNull(newIdentity.getProfile().getId());
+
+    //
+    storage._createProfile(newIdentity.getProfile());
+    assertNotNull(newIdentity.getProfile().getId());
+
+    //
+    Profile profile = newIdentity.getProfile();
+    profile.setProperty(Profile.USERNAME, "user");
+    profile.setProperty(Profile.FIRST_NAME, "first");
+    profile.setProperty(Profile.LAST_NAME, "last");
+    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
+
+    // xps
+    List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
+    Map<String, Object> xp1 = new HashMap<String, Object>();
+    xp1.put(Profile.EXPERIENCES_SKILLS, null);
+    xp1.put(Profile.EXPERIENCES_POSITION, "position 1");
+    xp1.put(Profile.EXPERIENCES_COMPANY, "company 1");
+    xp1.put(Profile.EXPERIENCES_DESCRIPTION, null);
+    xp1.put(Profile.EXPERIENCES_START_DATE, "01/01/2010");
+    xp1.put(Profile.EXPERIENCES_END_DATE, null);
+    xp1.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.TRUE);
+    xps.add(xp1);
+    
+   
+    profile.setProperty(Profile.EXPERIENCES, xps);
+
+    //
+    storage._saveProfile(profile);
+
+    tearDownIdentityList.add(newIdentity.getId());
+  }
 
   private static String escapeJCRSpecialCharacters(String string) {
     if (string == null) {
