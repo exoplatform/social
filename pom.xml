@@ -99,10 +99,10 @@
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
-    <org.gatein.common.version>2.0.4-Beta03</org.gatein.common.version>
+    <org.gatein.common.version>2.0.4-GA</org.gatein.common.version>
     <org.gatein.wci.version>2.1.0-GA</org.gatein.wci.version>
-    <org.gatein.pc.version>2.3.0-Beta06</org.gatein.pc.version>
-    <org.gatein.wsrp.version>2.1.0-Beta06</org.gatein.wsrp.version>
+    <org.gatein.pc.version>2.3.0-GA</org.gatein.pc.version>
+    <org.gatein.wsrp.version>2.1.0-GA</org.gatein.wsrp.version>
     <org.gatein.mop.version>1.1.0-Beta07</org.gatein.mop.version>
     <org.shindig.version>2.0.2-Beta03</org.shindig.version>
     <org.chromattic.version>1.1.0</org.chromattic.version>
