@@ -159,11 +159,9 @@
     debug.info('UISearch.getNameToSearch:');
     debug.debug(UISearch.getNameToSearch());
     
-    if (nameToSearch === '') {
-    	return;
-    }
+    nameToSearch = encodeURIComponent(nameToSearch);
     
-    if (nameToSearch === UISearch.getNameToSearch()) {
+    if (nameToSearch === '' || nameToSearch === UISearch.getNameToSearch()) {
     	return;
     }
     

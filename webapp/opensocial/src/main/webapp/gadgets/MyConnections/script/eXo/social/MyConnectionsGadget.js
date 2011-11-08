@@ -13,7 +13,6 @@
   
 (function($) {
 	var window_ = this;
-	var prefs = new gadgets.Prefs();
 
 	Locale = exo.social.Locale;
 	Comment = exo.social.Comment;
@@ -54,45 +53,6 @@
   }
   
   /**
-   * Get the setting.
-   * 
-   * @return
-   */
-  function getSetting() {
-  	var settings = prefs.getArray("SETTINGS");
-  	
-  	var settingStored = {
-  		viewType: 'ICON_LIST',
-  		updateTime: 5 * 60 * 1000,
-  		orderBy: 'RAND',
-  		itemPerViewNum: 10
-  	};
-  	
-  	debug.info('settings');
-  	debug.debug(settings);
-  	
-  	if (settings !== null) {
-  		if (settings[0] !== undefined)	{
-  			settingStored.viewType = settings[0];
-  		}
-  		if (settings[1] !== undefined) {
-  			settingStored.updateTime = parseInt(settings[1]) * 60 * 1000;
-  		}
-  		if (settings[2] !== undefined) {
-  			settingStored.orderBy = settings[2]; 
-  		}
-  		if (settings[3] !== undefined) {
-  			settingStored.itemPerViewNum = parseInt(settings[3]); 
-  		}
-  	}
-  	
-  	debug.info('setting stored:');
-  	debug.debug(settingStored);
-  	
-  	return settingStored;
-  }
-  
-  /**
    * The view type of gadget.
    */
   MyConnectionsGadget.VIEW_TYPE = {
@@ -105,7 +65,7 @@
    * Main point of gadget.
    */
   MyConnectionsGadget.main = function() {
-  	var settingStored = getSetting();
+  	var settingStored = Util.getSetting();
   	
   	ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum,
   															viewType: settingStored.viewType, updateTime: settingStored.updateTime,
@@ -149,7 +109,7 @@
   		$(uiComponent.GadgetUITextList).css('display', 'none');
   		$(uiComponent.UISearchContent).css('display', 'block');
   		
-  		var settingStored = getSetting();
+  		var settingStored = Util.getSetting();
   		
   		debug.info('settingStored click icon list:');
   		debug.debug(settingStored);
@@ -165,7 +125,7 @@
   	});
   	
   	$(uiComponent.ModeTextList).click(function() {
-  		var settingStored = getSetting();
+  		var settingStored = Util.getSetting();
   		
   		debug.info('settingStored click text list:');
   		debug.debug(settingStored);

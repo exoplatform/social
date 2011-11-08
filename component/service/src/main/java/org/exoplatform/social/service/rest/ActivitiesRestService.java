@@ -676,6 +676,56 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
+   * Comment an existing activity from a specified activity id. Just returns the created comment.
+   *
+   * @param uriInfo the uri request uri
+   * @param portalName the associated portal container name
+   * @param activityId the specified activity id
+   * @param format the expected returned format
+   * @param text the content of comment
+   * @return a response object
+   */
+  @GET
+  @Path("{activityId}/comments/create.{format}")
+  public Response createCommentActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalName") String portalName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format,
+                                           @QueryParam("text") String text) {
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
+    
+    if(text == null || text.trim().equals("")){
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+      
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+
+    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);
+    ActivityManager activityManager = Util.getActivityManager(portalName);
+    ExoSocialActivity activity = null;
+    
+    try {
+      activity = activityManager.getActivity(activityId);
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    
+    ExoSocialActivity commentActivity = new ExoSocialActivityImpl();
+    commentActivity.setTitle(text);
+    commentActivity.setUserId(currentIdentity.getId());
+    
+    activityManager.saveComment(activity,commentActivity);
+    
+    CommentRestOut commentOut = new CommentRestOut(commentActivity, portalName);
+    
+    return Util.getResponse(commentOut, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  /**
    * destroys comments and returns json/xml format
    * @param uriInfo
    * @param activityId

@@ -36,7 +36,8 @@
   	ModeSetting: '#ModeSetting',
     ModeIconList: '#ModeIconList',
     ModeTextList: '#ModeTextList',
-    UISearchContent: '#UISearchContent'
+    UISearchContent: '#UISearchContent',
+    SearchTextBox: '#SearchTextBox'
   };
   
   /**
@@ -172,13 +173,17 @@
   	}
   	
   	if (userConnectionList === null || userConnectionList.length === 0) {
-  		$(uiComponent.UITextListListContent).append(Locale.getMsg("no_user_connection_activities_update"));
+  		
+  		if ($(uiComponent.UITextListListContent).children().size() === 0) {
+  			$(uiComponent.UITextListListContent).append(Locale.getMsg("no_user_connection_activities_update"));
+  		}
+  		
   		if ($(uiComponent.UITextListMoreContent).length > 0) {
   			$(uiComponent.UITextListMoreContent).hide();
   		}
   		if (UITextList.getSearchMode() === true) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-		 											'<a href="#" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
+		 											'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
 		 										'</div>';
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
   				$(uiComponent.UITextListMoreContent).after(addBlock);
@@ -188,12 +193,12 @@
   	} else {
   		$(uiComponent.UITextListListContent).append(getUserTextListBlock(userConnectionList));
   		if ($(uiComponent.UITextListMoreContent).length === 0) {
-  			$(uiComponent.UITextListListContent).after('<div class="MoreContent" id="UITextListMoreContent"><a href="#" class="ReadMore" id="UITextListLoadMore">' + Locale.getMsg('load_more') + '</a></div>');
+  			$(uiComponent.UITextListListContent).after('<div class="MoreContent" id="UITextListMoreContent"><a href="javascript:void(0)" class="ReadMore" id="UITextListLoadMore">' + Locale.getMsg('load_more') + '</a></div>');
   		}
   		//search mode
   		if (UITextList.getUserConnectionSearch() !== null) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-  										 		'<a href="#" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="#" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
+  										 		'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
   										 	'</div>';
   			
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
@@ -232,7 +237,7 @@
 		}
 		
 		UITextList.display(UITextList.getUserConnection());
-		$("#SearchTextBox").val(Locale.getMsg('quick_search'));
+		$(uiComponent.SearchTextBox).val(Locale.getMsg('quick_search'));
 	});
   
 	$(uiComponent.UITextListLoadMore).live("click", function() {

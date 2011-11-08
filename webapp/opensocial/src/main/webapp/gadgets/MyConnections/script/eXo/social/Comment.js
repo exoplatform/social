@@ -80,6 +80,32 @@
 	}
 	
 	/**
+	 * Actually comment is an activity with externalId the id of activity commented.
+	 * 
+	 * @param activityId
+	 * @param comment
+	 * @param callback
+	 */
+	Comment.create = function(activityId, comment, callback) {
+	  if (!activityId) {
+	    debug.warn('[Comment.create]: activityId is null!');
+	    return;
+	  }
+	  
+	  var url = Configuration.portalEnvironment.activitiesRestUrl + 
+							activityId + 
+							"/comments/create.json?text=" + encodeURIComponent(comment);
+	  
+	  debug.info("url create comments:");
+	  debug.debug(url);
+	  
+	  debug.info("comment after escape:");
+	  debug.debug("comment: " + encodeURIComponent(comment));
+	  
+	  Util.makeRequest(url, callback);
+	}
+	
+	/**
 	 * Load more comments of the current latest activity.
 	 * 
 	 * @param callback

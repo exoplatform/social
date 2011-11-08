@@ -64,14 +64,14 @@
     
     <div class="GadgetConnectionBar ClearFix">
 			<div class="Label FL">__MSG_my_connections__</div>
-			<a class="FR SettingIcon" href="#" id="ModeSetting">&nbsp;</a>
-			<a class="FR ListIcon" href="#" id="ModeTextList">&nbsp;</a>
-			<a class="FR NumberListSelected" href="#" id="ModeIconList">&nbsp;</a>
+			<a class="FR SettingIcon" href="javascript:void(0)" id="ModeSetting">&nbsp;</a>
+			<a class="FR ListIcon" href="javascript:void(0)" id="ModeTextList">&nbsp;</a>
+			<a class="FR NumberListSelected" href="javascript:void(0)" id="ModeIconList">&nbsp;</a>
 		</div>
     
     <div class="SearchContent ClearFix" id="UISearchContent">
 			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
-			<a href="#" id="SearchButton" class="IconSearch"></a>
+			<a href="javascript:void(0)" id="SearchButton" class="IconSearch"></a>
 		</div>
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
@@ -121,34 +121,29 @@
     
     <div class="GadgetConnectionBar ClearFix">
 			<div class="Label FL">My connections</div>
-			<a class="FR SettingIcon" href="#" id="ModeSetting">&nbsp;</a>
-			<a class="FR ListIcon" href="#" id="ModeTextList">&nbsp;</a>
-			<a class="FR NumberListSelected" href="#" id="ModeIconList">&nbsp;</a>
+			<a class="FR SettingIcon" href="javascript:void(0)" id="ModeSetting">&nbsp;</a>
+			<a class="FR ListIcon" href="javascript:void(0)" id="ModeTextList">&nbsp;</a>
+			<a class="FR NumberListSelected" href="javascript:void(0)" id="ModeIconList">&nbsp;</a>
 		</div>
     
     <div class="SearchContent ClearFix" id="UISearchContent">
 			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
-			<a href="#" id="SearchButton" class="IconSearch"></a>
+			<a href="javascript:void(0)" id="SearchButton" class="IconSearch"></a>
 		</div>
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
 			<ul class="ListContent" id="UITextListListContent"></ul>
-			<a href="#" class="Link" id="UITextListPeopleDirectory">People Directory</a>			
+			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UITextListPeopleDirectory">People Directory</a>			
     </div>
     
     <div class="GadgetConnection GadgetConnectionDetail" id="GadgetUIIconList">
 			<ul class="ListContent" id="UIIconListListContent"></ul>
-			<a href="#" class="Link" id="UIIconListPeopleDirectory">People Directory</a>
+			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UIIconListPeopleDirectory">People Directory</a>
 		</div>
 		
 		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting" style="width: 300px;"></div>
 		
-		<div class="GadgetConnection GadgetMember" id="GadgetMemberMore" style="display: none;">
-			<div class="SearchContent ClearFix">
-				<input type="text" value="Quick Search" class="Search">
-				<a href="#" class="IconSearch">&nbsp;</a>
-			</div>
-		</div>
+		<div class="GadgetConnection GadgetMember" id="GadgetMemberMore" style="display: none;"></div>
   ]]>
   </Content>
 </Module>

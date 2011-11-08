@@ -8,6 +8,7 @@
   UITextList = exo.social.UITextList;
   UIIconList = exo.social.UIIconList;
   UISetting = exo.social.UISetting;
+  UISearch = exo.social.UISearch;
   
   var uiComponent = {
 		GadgetUIIconList: '#GadgetUIIconList',
@@ -117,6 +118,8 @@
 	  			$(uiComponent.GadgetConnectionSetting).empty();
 	  		}
 				
+				UISearch.setNameToSearch(null);
+				
 				if (params.viewType === ActivityStream.VIEW_TYPE.TEXT_LIST) {
 					$(uiComponent.UITextListListContent).empty();
 					
@@ -154,7 +157,13 @@
     // Set the update time.
 		if (params.updateTime > 0) {
 			setInterval(function() {
-				initActivityStream(params);
+				var settingStored = Util.getSetting();
+		  	
+				initActivityStream({offset: 0, 
+														limit: settingStored.itemPerViewNum,
+		  											viewType: settingStored.viewType,
+		  											updateTime: settingStored.updateTime,
+		  											orderBy: settingStored.orderBy});
 			}, params.updateTime);
 		}
   };

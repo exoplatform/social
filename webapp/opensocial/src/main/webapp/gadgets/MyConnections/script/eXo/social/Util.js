@@ -176,7 +176,7 @@
 	        break;
 	      case gadgets.io.ContentType.JSON:
 	        postData = gadgets.json.stringify(opt_postData);
-	        headers = {"Content-Type":"application/json"};
+	        headers = {"Content-Type":"application/json; charset=UTF-8"};
 	        break;
 	       //TODO handles more
 	      default:
@@ -190,9 +190,6 @@
 	  if (refreshInterval && refreshInterval > 0) {
 	      ts = Math.floor(ts / (refreshInterval * 1000));
 	  }
-	  
-	  debug.info("url in util:");
-	  debug.debug(url);
 	  
 	  if (url.indexOf("?") > -1) {
 	     sep = "&";
@@ -252,6 +249,46 @@
 	    for (var i=0,len=evts.length;i<len;i++) evts[i]();
 	  }
 	 }
+	 
+	/**
+	 * Get the setting.
+	 * 
+	 * @return
+	 */
+  Util.getSetting = function() {
+  	var prefs = new gadgets.Prefs();
+  	var settings = prefs.getArray("SETTINGS");
+  	
+  	var settingStored = {
+  		viewType: 'ICON_LIST',
+  		updateTime: 5 * 60 * 1000,
+  		orderBy: 'RAND',
+  		itemPerViewNum: 10
+  	};
+  	
+  	debug.info('settings');
+  	debug.debug(settings);
+  	
+  	if (settings !== null) {
+  		if (settings[0] !== undefined)	{
+  			settingStored.viewType = settings[0];
+  		}
+  		if (settings[1] !== undefined) {
+  			settingStored.updateTime = parseInt(settings[1]) * 60 * 1000;
+  		}
+  		if (settings[2] !== undefined) {
+  			settingStored.orderBy = settings[2]; 
+  		}
+  		if (settings[3] !== undefined) {
+  			settingStored.itemPerViewNum = parseInt(settings[3]); 
+  		}
+  	}
+  	
+  	debug.info('setting stored:');
+  	debug.debug(settingStored);
+  	
+  	return settingStored;
+  };
 	 
 	//name space
 	window_.exo = window_.exo || {};
