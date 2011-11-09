@@ -20,6 +20,7 @@ package org.exoplatform.social.core.storage.cache;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -33,10 +34,12 @@ import java.util.List;
 public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   private CachedActivityStorage activityStorage;
+  private CachedRelationshipStorage relationshipStorage;
   private IdentityStorageImpl identityStorage;
   private SocialStorageCacheService cacheService;
 
   private Identity identity;
+  private Identity identity2;
 
   private List<String> tearDownIdentityList;
 
@@ -47,6 +50,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
     //
     activityStorage = (CachedActivityStorage) getContainer().getComponentInstanceOfType(CachedActivityStorage.class);
+    relationshipStorage = (CachedRelationshipStorage) getContainer().getComponentInstanceOfType(CachedRelationshipStorage.class);
     identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
     cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
 
@@ -58,10 +62,13 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     //
     identity = new Identity("p", "r");
     identityStorage.saveIdentity(identity);
+    identity2 = new Identity("p", "r2");
+    identityStorage.saveIdentity(identity2);
 
     //
     tearDownIdentityList = new ArrayList<String>();
     tearDownIdentityList.add(identity.getId());
+    tearDownIdentityList.add(identity2.getId());
 
   }
 
@@ -133,6 +140,36 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, cacheService.getActivityCache().getCacheSize());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
+
+  }
+  public void testRelationshipActivity() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello on 1");
+    activity.setUserId(identity.getId());
+    activityStorage.saveActivity(identity, activity);
+
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("hello on 2");
+    activity2.setUserId(identity2.getId());
+    activityStorage.saveActivity(identity2, activity2);
+
+    //
+    activityStorage.getActivityFeed(identity, 0, 20);
+    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+
+    Relationship relationship = new Relationship(identity, identity2, Relationship.Type.CONFIRMED);
+    relationshipStorage.saveRelationship(relationship);
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+
+    //
+    activityStorage.getActivityFeed(identity, 0, 20);
+    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+
+    //
+    relationshipStorage.removeRelationship(relationship);
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
   }
 

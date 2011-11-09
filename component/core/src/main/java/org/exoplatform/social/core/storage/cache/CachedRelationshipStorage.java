@@ -166,6 +166,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     exoRelationshipCache.remove(new RelationshipKey(relationship.getId()));
     exoRelationshipsCache.clearCache();
     exoRelationshipCountCache.clearCache();
+    getCachedActivityStorage().invalidate();
     
   }
 
