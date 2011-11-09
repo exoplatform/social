@@ -3,21 +3,22 @@
   Message bundle for fr_ALL
 -->
 <messageBundle>
-  <msg name="title">Space Activities</msg>
-  <msg name="description">Space activity stream</msg>
+  <msg name="loading">Chargement en cours...</msg>
+  <msg name="title">Activités de l'espace</msg>
+  <msg name="description">Flux d'activités de l'espace</msg>
   <msg name="what_are_you_doing">Sur quoi travaillez-vous?</msg>
   <msg name="share">Partager</msg>
   <msg name="attach">Attacher</msg>
-  <msg name="please_provide_link">Merci de fournir un lien.</msg>
-  <msg name="getting_link_info_please_wait">Chargement du lien. Merci de patienter...</msg>
+  <msg name="please_provide_link">Veuillez fournir un lien.</msg>
+  <msg name="getting_link_info_please_wait">Chargement du lien. Merci de patienter.</msg>
   <msg name="not_valid_link">Assurez-vous que le lien est bien valide.</msg>
   <msg name="user_shared_a_link">{0} a partagé un lien</msg>
   <msg name="problem_happens_to_fix_soon">Désolé pour ce problème. Nous y travaillons.</msg>
   <msg name="activities_of_displayName">Les activités de {0} </msg>
   <msg name="friends_activities">Activités du réseau</msg>
   <msg name="owner_friends">Vos contacts</msg>
-  <msg name="displayName_does_not_have_update">aucune activité envoyée</msg>
-  <msg name="displayName_do_not_have_update">aucune activité envoyée</msg>
+  <msg name="displayName_does_not_have_update">Aucune activité envoyée</msg>
+  <msg name="displayName_do_not_have_update">Aucune activité envoyée</msg>
   <msg name="comment">Commentaire</msg>
   <msg name="collapse_all_activities">Replier</msg>
   <msg name="expand_all_activities">Déplier</msg>
@@ -73,7 +74,7 @@
   <msg name="am">AM</msg>
   <msg name="pm">PM</msg>
   <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
-  <msg name="error_activity_not_found">Erreur: cette activité vient d'être supprimée par son auteur.</msg>
-  <msg name="internal_error">Une erreur interne vient de survenir. Veuillez rafraîchir.</msg>
+  <msg name="error_activity_not_found">Erreur: cette activité a été supprimée.</msg>
+  <msg name="internal_error">Erreur interne. Veuillez rafraîchir.</msg>
   <msg name="RELATION_CONFIRMED">${Requester} est maintenant connecté à ${Accepter}</msg>
 </messageBundle>
