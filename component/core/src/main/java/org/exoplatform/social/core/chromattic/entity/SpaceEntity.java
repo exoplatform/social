@@ -55,6 +55,8 @@ public abstract class SpaceEntity {
   @Property(name = "soc:registration")
   public abstract String getRegistration();
   public abstract void setRegistration(String registration);
+  public static final PropertyLiteralExpression<String> registration =
+    new PropertyLiteralExpression<String>(String.class, "soc:registration");
 
   @Property(name = "soc:description")
   public abstract String getDescription();
@@ -73,6 +75,8 @@ public abstract class SpaceEntity {
   @Property(name = "soc:visibility")
   public abstract String getVisibility();
   public abstract void setVisibility(String visibility);
+  public static final PropertyLiteralExpression<String> visibility =
+    new PropertyLiteralExpression<String>(String.class, "soc:visibility");
 
   @Property(name = "soc:priority")
   public abstract String getPriority();

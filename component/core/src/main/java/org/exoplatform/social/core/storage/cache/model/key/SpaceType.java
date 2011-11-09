@@ -27,6 +27,7 @@ public enum SpaceType {
   INVITED,
   PUBLIC,
   ACCESSIBLE,
+  VISIBLE,
   EDITABLE,
   ALL
 }

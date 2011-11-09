@@ -316,8 +316,9 @@ public class UIManageAllSpaces extends UIContainer {
   private List<Space> loadSpaces(int index, int length) throws Exception {
     String charSearch = uiSpaceSearch.getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
+    String userId = Util.getPortalRequestContext().getRemoteUser();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
-      setSpacesListAccess(getSpaceService().getAllSpacesWithListAccess());
+      setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, null));
     } else {
       SpaceFilter spaceFilter = null;
       if (charSearch != null) {
@@ -325,7 +326,7 @@ public class UIManageAllSpaces extends UIContainer {
       } else {
         spaceFilter = new SpaceFilter(searchCondition);
       }
-      setSpacesListAccess(getSpaceService().getAllSpacesByFilter(spaceFilter));
+      setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, spaceFilter));
     }
     
     setSpacesNum(getSpacesListAccess().getSize());

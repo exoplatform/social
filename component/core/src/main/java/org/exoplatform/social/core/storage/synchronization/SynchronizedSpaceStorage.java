@@ -433,6 +433,22 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getVisibleSpacesCount(final String userId, final SpaceFilter spaceFiler) throws SpaceStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getVisibleSpacesCount(userId, spaceFiler);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
 
   /**
    * {@inheritDoc}
@@ -476,6 +492,22 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
     boolean created = startSynchronization();
     try {
       return super.getAccessibleSpaces(userId, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Space> getVisibleSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) throws SpaceStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getVisibleSpaces(userId, spaceFilter, offset, limit);
     }
     finally {
       stopSynchronization(created);

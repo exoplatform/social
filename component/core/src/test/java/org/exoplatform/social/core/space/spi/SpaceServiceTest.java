@@ -2509,6 +2509,140 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void testGetSpaceApplicationConfigPlugin() throws Exception {
     //TODO Complete this
   }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpaces() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.OPEN, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
+      
+      spaceService.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces
+    {
+      List<Space> visibleAllSpaces = spaceService.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
+    }
+    
+    
+  }
+  
+  
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesCloseRegistration() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.CLOSE, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
+      
+      spaceService.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces
+    {
+      List<Space> visibleAllSpaces = spaceService.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 0 spaces: don't see
+    {
+      int registrationCloseSpaceCount = 0;
+      List<Space> registrationCloseSpaces = spaceService.getVisibleSpaces("mary", null);
+      assertNotNull("registrationCloseSpaces must not be  null", registrationCloseSpaces);
+      assertEquals("registrationCloseSpaces must return: " + registrationCloseSpaceCount, registrationCloseSpaceCount, registrationCloseSpaces.size());
+    }
+    
+   
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesInvitedMember() throws Exception {
+    int countSpace = 10;
+    Space[] listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstanceInvitedMember(i, Space.PRIVATE, Space.CLOSE, new String[] {"mary", "hacker"}, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
+      
+      spaceService.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces
+    {
+      List<Space> visibleAllSpaces = spaceService.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
+    }
+    
+    //visible with invited = 'mary'  return 6 spaces
+    {
+      int invitedSpaceCount1 = 6;
+      List<Space> invitedSpaces1 = spaceService.getVisibleSpaces("mary", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces1);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount1, invitedSpaceCount1, invitedSpaces1.size());
+    }
+    
+    //visible with invited = 'hacker'  return 6 spaces
+    {
+      int invitedSpaceCount1 = 6;
+      List<Space> invitedSpaces1 = spaceService.getVisibleSpaces("hacker", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces1);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount1, invitedSpaceCount1, invitedSpaces1.size());
+    }
+    
+    //visible with invited = 'paul'  return 0 spaces
+    {
+      int invitedSpaceCount2 = 0;
+      List<Space> invitedSpaces2 = spaceService.getVisibleSpaces("paul", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces2);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount2, invitedSpaceCount2, invitedSpaces2.size());
+    }
+  }
 
   private Space populateData() throws Exception {
     String spaceDisplayName = "Space1";
@@ -2559,6 +2693,58 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     this.spaceService.saveSpace(space, true);
+    return space;
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @return an instance of space
+   */
+  private Space getSpaceInstance(int number, String visible, String registration, String manager, String...members) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space " + number);
+    space.setRegistration(registration);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(visible);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {manager};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    return space;
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @return an instance of space
+   */
+  private Space getSpaceInstanceInvitedMember(int number, String visible, String registration, String[] invitedMember, String manager, String...members) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space " + number);
+    space.setRegistration(registration);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(visible);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {manager};
+    //String[] invitedUsers = new String[] {invitedMember};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedMember);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
     return space;
   }
 

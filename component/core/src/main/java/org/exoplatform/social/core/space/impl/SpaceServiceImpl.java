@@ -266,6 +266,31 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter) throws SpaceException {
+    try {
+      return Arrays.asList(this.getVisibleSpacesWithListAccess(userId, spaceFilter).load(OFFSET, LIMIT));
+    } catch (Exception e) {
+      throw new SpaceException(SpaceException.Code.ERROR_DATASTORE, e);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
+    if (userId.equals(getUserACL().getSuperUser())) {
+      if (spaceFilter == null)
+       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL);
+      else
+        return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
+    } else {
+      return new SpaceListAccess(this.spaceStorage, userId, spaceFilter,SpaceListAccess.Type.VISIBLE);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public List<Space> getEditableSpaces(String userId)  throws SpaceException {
     try {
       return Arrays.asList(this.getSettingableSpaces(userId).load(OFFSET, LIMIT));

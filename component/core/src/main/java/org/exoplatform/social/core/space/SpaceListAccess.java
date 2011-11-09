@@ -79,6 +79,8 @@ public class SpaceListAccess implements ListAccess<Space> {
     MEMBER,
     /** Gets the spaces which the user has the "member" role by filter. */
     MEMBER_FILTER,
+    /** Gets the spaces which are visible and not include these spaces hidden */
+    VISIBLE
   }
   
   /**
@@ -168,6 +170,7 @@ public class SpaceListAccess implements ListAccess<Space> {
       case SETTING_FILTER: return spaceStorage.getEditableSpacesByFilterCount(this.userId, this.spaceFilter);
       case MEMBER: return spaceStorage.getMemberSpacesCount(this.userId);
       case MEMBER_FILTER: return spaceStorage.getMemberSpacesByFilterCount(this.userId, this.spaceFilter);
+      case VISIBLE: return spaceStorage.getVisibleSpacesCount(this.userId, this.spaceFilter);
       default: return 0;
     }
   }
@@ -208,6 +211,8 @@ public class SpaceListAccess implements ListAccess<Space> {
       case MEMBER: listSpaces = spaceStorage.getMemberSpaces(this.userId, offset, limit);
         break;
       case MEMBER_FILTER: listSpaces = spaceStorage.getMemberSpacesByFilter(this.userId, this.spaceFilter, offset, limit);
+        break;
+      case VISIBLE: listSpaces = spaceStorage.getVisibleSpaces(this.userId, this.spaceFilter, offset, limit);
         break;
     }
     return listSpaces.toArray(new Space[listSpaces.size()]);

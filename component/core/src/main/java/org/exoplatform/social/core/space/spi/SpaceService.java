@@ -24,6 +24,7 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 
@@ -535,6 +536,26 @@ public interface SpaceService {
    */
   List<Space> getAccessibleSpaces(String userId) throws SpaceException;
 
+  /**
+   * Gets spaces of a user which that user can see the visible spaces.
+   *
+   * @param userId
+   * @param spaceFilter
+   * @return list of spaces
+   * @throws SpaceException
+   * @since 1.2.5-GA
+   */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter) throws SpaceException;
+  
+  /**
+   * Gets spaces of a user which that user can see the visible spaces.
+   * @param userId
+   * @param spaceFilter
+   * @return list of spaces
+   * @since 1.2.5-GA
+   */
+  public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter);
+  
   /**
    * Gets spaces of a user which that user has the edit permission.
    *

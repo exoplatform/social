@@ -138,7 +138,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setVisibility(Space.PUBLIC);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
+    space.setGroupId("/spaces/space" + number);
     String[] managers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -148,6 +148,66 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     return space;
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @return an instance of space
+   */
+  private Space getSpaceInstance(int number, String visible, String registration, String manager, String...members) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space " + number);
+    space.setRegistration(registration);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(visible);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {manager};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    return space;
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @return an instance of space
+   */
+  private Space getSpaceInstanceInvitedMember(int number, String visible, String registration, String[] invitedMember, String manager, String...members) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("my space " + number);
+    space.setRegistration(registration);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(visible);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {manager};
+    //String[] invitedUsers = new String[] {invitedMember};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedMember);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    return space;
+  }
+  
+  private List<Space> getSpaceWithRoot(SpaceFilter filter) {
+    if (filter == null) {
+      return spaceStorage.getAllSpaces();
+    } else {
+      return spaceStorage.getSpacesByFilter(filter, 0, 200);
+    }
   }
 
   /**
@@ -2517,6 +2577,418 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("avatar URL should not be null",got.getAvatarUrl());
   }
   
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpaces() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.OPEN, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter = null
+    {
+      int countSpace1 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace1, countSpace1, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int countSpace2 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('M'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace2, countSpace2, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int countSpace3 = 0;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('A'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace3, countSpace3, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter = null
+    {
+      int privateSpace1 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", null);
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace1, privateSpace1, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int privateSpace2 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter('M'));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace2, privateSpace2, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int privateSpace3 = 0;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter('A'));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace3, privateSpace3, privateSpaces.size());
+    }
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesWithValidate() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.VALIDATION, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.VALIDATION, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter = null
+    {
+      int countSpace1 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace1, countSpace1, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int countSpace2 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('M'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace2, countSpace2, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int countSpace3 = 0;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('A'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace3, countSpace3, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter = null
+    {
+      int privateSpace1 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", null);
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace1, privateSpace1, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int privateSpace2 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter('M'));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace2, privateSpace2, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int privateSpace3 = 0;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter('A'));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace3, privateSpace3, privateSpaces.size());
+    }
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesFilterByName() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.OPEN, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.OPEN, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter = null
+    {
+      int countSpace1 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace1, countSpace1, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int countSpace2 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter("my space"));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace2, countSpace2, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int countSpace3 = 0;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter("your space"));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace3, countSpace3, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter = null
+    {
+      int privateSpace1 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", null);
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace1, privateSpace1, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 6 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int privateSpace2 = 6;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter("my space"));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace2, privateSpace2, privateSpaces.size());
+    }
+    
+    //visible with remoteId = 'mary'  return 0 spaces with SpaceFilter configured firstCharacter 'A'
+    {
+      int privateSpace3 = 0;
+      List<Space> privateSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter("your space"));
+      assertNotNull("visibleSpaces must not be  null", privateSpaces);
+      assertEquals("visibleSpaces() must return: " + privateSpace3, privateSpace3, privateSpaces.size());
+    }
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesCloseRegistration() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.CLOSE, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces
+    {
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
+    }
+    
+    
+    
+    //visible with remoteId = 'mary'  return 0 spaces: don't see
+    {
+      int registrationCloseSpaceCount = 0;
+      List<Space> registrationCloseSpaces = spaceStorage.getVisibleSpaces("mary", null);
+      assertNotNull("registrationCloseSpaces must not be  null", registrationCloseSpaces);
+      assertEquals("registrationCloseSpaces must return: " + registrationCloseSpaceCount, registrationCloseSpaceCount, registrationCloseSpaces.size());
+    }
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesCloseRegistrationByFilter() throws Exception {
+    int countSpace = 10;
+    Space []listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private' and manager = "demo"
+        listSpace[i] = this.getSpaceInstance(i, Space.PRIVATE, Space.CLOSE, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      int countSpace1 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('M'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace1, countSpace1, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured firstCharacter 'M'
+    {
+      
+      int countSpace2 = 0;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter('A'));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace2, countSpace2, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces with SpaceFilter configured name "my space"
+    {
+      
+      int countSpace3 = 10;
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", new SpaceFilter("my space"));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace3, countSpace3, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'root'  return 10 spaces with SpaceFilter configured name "my space"
+    {
+      
+      int countSpace4 = 10;
+      List<Space> visibleAllSpaces = getSpaceWithRoot(new SpaceFilter("my space"));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace4, countSpace4, visibleAllSpaces.size());
+    }
+    
+   //visible with remoteId = 'root'  return 10 spaces with SpaceFilter is null.
+    {
+      
+      int countSpace5 = 10;
+      List<Space> visibleAllSpaces = getSpaceWithRoot(null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace5, countSpace5, visibleAllSpaces.size());
+    }
+    
+    //visible with remoteId = 'root'  return 0 spaces with SpaceFilter configured name "my space"
+    {
+      
+      int countSpace6 = 0;
+      List<Space> visibleAllSpaces = getSpaceWithRoot(new SpaceFilter("your space"));
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace6, countSpace6, visibleAllSpaces.size());
+    }
+    
+       
+    //visible with remoteId = 'mary'  return 0 spaces: don't see although with SpaceFilter configured firstCharacter 'M'
+    {
+      int registrationCloseSpaceCount1 = 0;
+      List<Space> registrationCloseSpaces = spaceStorage.getVisibleSpaces("mary", new SpaceFilter('M'));
+      assertNotNull("registrationCloseSpaces must not be  null", registrationCloseSpaces);
+      assertEquals("registrationCloseSpaces must return: " + registrationCloseSpaceCount1, registrationCloseSpaceCount1, registrationCloseSpaces.size());
+    }
+    
+    //visible with remoteId = 'root'  return 10 spaces: see all spaces:: check at SpaceServiceImpl
+    {
+      int registrationCloseSpaceCount2 = 10;
+      List<Space> registrationCloseSpaces1 = spaceStorage.getSpacesByFilter(new SpaceFilter('M'), 0, 200);
+      assertNotNull("registrationCloseSpaces must not be  null", registrationCloseSpaces1);
+      assertEquals("registrationCloseSpaces must return: " + registrationCloseSpaceCount2, registrationCloseSpaceCount2, registrationCloseSpaces1.size());
+    }
+  }
+  
+  /**
+   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
+   *
+   * @throws Exception
+   * @since 1.2.5-GA
+   */
+  public void testGetVisibleSpacesInvitedMember() throws Exception {
+    int countSpace = 10;
+    Space[] listSpace = new Space[10];
+    
+    //there are 6 spaces with visible = 'private'
+    for (int i = 0; i < countSpace; i ++) {
+    
+      if (i < 6)
+         //[0->5] :: there are 6 spaces with visible = 'private'
+        listSpace[i] = this.getSpaceInstanceInvitedMember(i, Space.PRIVATE, Space.CLOSE, new String[] {"mary", "hacker"}, "demo");
+      else
+        //[6->9]:: there are 4 spaces with visible = 'hidden'
+        listSpace[i] = this.getSpaceInstance(i, Space.HIDDEN, Space.CLOSE, "demo");
+      
+      spaceStorage.saveSpace(listSpace[i], true);
+      tearDownSpaceList.add(listSpace[i]);
+    }
+    
+    //visible with remoteId = 'demo'  return 10 spaces
+    {
+      List<Space> visibleAllSpaces = spaceStorage.getVisibleSpaces("demo", null);
+      assertNotNull("visibleSpaces must not be  null", visibleAllSpaces);
+      assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
+    }
+    
+    //visible with invited = 'mary'  return 6 spaces
+    {
+      int invitedSpaceCount1 = 6;
+      List<Space> invitedSpaces1 = spaceStorage.getVisibleSpaces("mary", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces1);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount1, invitedSpaceCount1, invitedSpaces1.size());
+    }
+    
+    //visible with invited = 'hacker'  return 6 spaces
+    {
+      int invitedSpaceCount1 = 6;
+      List<Space> invitedSpaces1 = spaceStorage.getVisibleSpaces("hacker", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces1);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount1, invitedSpaceCount1, invitedSpaces1.size());
+    }
+    
+    //visible with invited = 'paul'  return 0 spaces
+    {
+      int invitedSpaceCount2 = 0;
+      List<Space> invitedSpaces2 = spaceStorage.getVisibleSpaces("paul", null);
+      assertNotNull("invitedSpaces must not be  null", invitedSpaces2);
+      assertEquals("invitedSpaces must return: " + invitedSpaceCount2, invitedSpaceCount2, invitedSpaces2.size());
+    }
+  }
   
   // TODO : test getSpaceByGroupId without result
   // TODO : save space with null member[]

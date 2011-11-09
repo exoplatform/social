@@ -1009,11 +1009,11 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     return spaces;
   }
-
+  
+  
   /*
     Accessible spaces
    */
-
   /**
    * {@inheritDoc}
    */
@@ -1047,6 +1047,99 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     return spaces;
   }
+  
+  /*
+   * Visible spaces
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getVisibleSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
+    return _getVisibleSpaces(userId, spaceFilter).objects().size();
+  }
+
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
+
+    List<Space> spaces = new ArrayList<Space>();
+
+    //
+    QueryResult<SpaceEntity> results = _getVisibleSpaces(userId, spaceFilter).objects();
+
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
+    }
+
+    return spaces;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException {
+    List<Space> spaces = new ArrayList<Space>();
+
+    //
+    QueryResult<SpaceEntity> results = _getVisibleSpaces(userId, spaceFilter).objects(offset, limit);
+
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
+    }
+
+    return spaces;
+  }
+
+  private Query<SpaceEntity> _getVisibleSpaces(String userId, SpaceFilter spaceFilter) {
+
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    if (validateFilter(spaceFilter)) {
+      _applyFilter(whereExpression, spaceFilter);
+      whereExpression.and();
+      whereExpression.startGroup();
+    }
+    
+    //visibility::(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate')) 
+    whereExpression.startGroup();
+    whereExpression.like(SpaceEntity.visibility, Space.PRIVATE);
+    whereExpression.and();
+    whereExpression.startGroup();
+    whereExpression.like(SpaceEntity.registration, Space.OPEN);
+    whereExpression.or();
+    whereExpression.like(SpaceEntity.registration, Space.VALIDATION);
+    whereExpression.endGroup();
+    whereExpression.endGroup();
+    
+    //(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate'))
+    // OR
+    //(soc:membersId like '' OR managerMembersId like '' OR soc:invitedMembersId like '')
+    whereExpression.or(); 
+    whereExpression.startGroup(); 
+
+    whereExpression.equals(SpaceEntity.membersId, userId)
+                   .or()
+                   .equals(SpaceEntity.managerMembersId, userId)
+                   .or()
+                   .equals(SpaceEntity.invitedMembersId, userId);
+
+    whereExpression.endGroup();
+    whereExpression.endAllGroup();
+
+    return builder.where(whereExpression.toString()).get();
+
+  }
+
 
   /**
    * {@inheritDoc}

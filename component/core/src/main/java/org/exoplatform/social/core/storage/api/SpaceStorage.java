@@ -293,6 +293,16 @@ public interface SpaceStorage {
    * @since 1.2.0-GA
    */
   public int getAccessibleSpacesCount(String userId) throws SpaceStorageException;
+  
+  /**
+   * Gets the count of the visible spaces of the userId.
+   * 
+   * @param userId
+   * @return
+   * @throws SpaceStorageException
+   * @since 1.2.5-GA
+   */
+  public int getVisibleSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException;
 
   /**
    * Gets the count of the accessible spaces of the user by filter.
@@ -313,6 +323,26 @@ public interface SpaceStorage {
    * @since 1.2.0-GA
    */
   public List<Space> getAccessibleSpaces(String userId) throws SpaceStorageException;
+  
+  /**
+   * Gets the spaces of a user which that user has the visible spaces.
+   *
+   * @param userId the userId
+   * @return a list of the accessible spaces
+   * @throws SpaceStorageException
+   * @since 1.2.5-GA
+   */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException;
+  
+  /**
+   * Gets the spaces of a user which that user has the "member" role or edit permission.
+   *
+   * @param userId the userId
+   * @return a list of the accessible spaces
+   * @throws SpaceStorageException
+   * @since 1.2.0-GA
+   */
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter) throws SpaceStorageException;
 
   /**
    * Gets the spaces of a user which that user has "member" role or edit permission with offset, limit.
