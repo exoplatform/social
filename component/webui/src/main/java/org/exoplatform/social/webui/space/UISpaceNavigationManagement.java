@@ -20,8 +20,8 @@ package org.exoplatform.social.webui.space;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
@@ -48,7 +48,8 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfigs({
 @ComponentConfig(template = "classpath:groovy/social/webui/space/UISpaceNavigationManagement.gtmpl", events = {
     @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
-    @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class)
+    @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class),
+    @EventConfig(listeners = UISpaceNavigationManagement.SaveActionListener.class)
     }),
     @ComponentConfig(
                      type = UIPageNodeForm.class,
@@ -136,58 +137,6 @@ public class UISpaceNavigationManagement extends UIContainer {
     return this.ownerType;
   }
 
-  static public class SaveActionListener extends EventListener<UISpaceNavigationManagement> {
-
-    public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
-      PortalRequestContext prContext = Util.getPortalRequestContext();
-      UISpaceNavigationManagement uiManagement = event.getSource();
-      UISpaceNavigationNodeSelector uiNodeSelector = uiManagement.getChild(UISpaceNavigationNodeSelector.class);
-      UserPortalConfigService portalConfigService = uiManagement.getApplicationComponent(UserPortalConfigService.class);
-
-      UIPopupWindow uiPopup = uiManagement.getChild(UIPopupWindow.class);
-      uiPopup.createEvent("ClosePopup", Phase.PROCESS, event.getRequestContext()).broadcast();
-
-      UIPortalApplication uiPortalApp = (UIPortalApplication) prContext.getUIApplication();
-      UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
-      prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-      prContext.setFullRender(true);
-
-      UserNavigation navigation = uiNodeSelector.getEdittedNavigation();
-      SiteKey siteKey = navigation.getKey();
-      String editedOwnerId = siteKey.getName();
-
-      // Check existed
-      UserPortalConfig userPortalConfig;
-      if (PortalConfig.PORTAL_TYPE.equals(siteKey.getTypeName())) {
-        userPortalConfig = portalConfigService.getUserPortalConfig(editedOwnerId,
-                                                                   event.getRequestContext()
-                                                                        .getRemoteUser());
-        if (userPortalConfig == null) {
-          prContext.getUIApplication()
-                   .addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore",
-                                                      null,
-                                                      ApplicationMessage.ERROR));
-          return;
-        }
-      } else {
-        userPortalConfig = portalConfigService.getUserPortalConfig(prContext.getPortalOwner(),
-                                                                   event.getRequestContext()
-                                                                        .getRemoteUser());
-      }
-
-      UserNavigation persistNavigation = userPortalConfig.getUserPortal().getNavigation(siteKey);
-      if (persistNavigation == null) {
-        prContext.getUIApplication()
-                 .addMessage(new ApplicationMessage("UINavigationManagement.msg.NavigationNotExistAnymore",
-                                                    null,
-                                                    ApplicationMessage.ERROR));
-        return;
-      }
-
-      uiNodeSelector.save();
-    }
-  }
-
   static public class AddRootNodeActionListener extends EventListener<UISpaceNavigationManagement> {
 
     @Override
@@ -221,6 +170,55 @@ public class UISpaceNavigationManagement extends UIContainer {
       menu.createEvent("AddNode", Phase.PROCESS, event.getRequestContext()).broadcast();
     }
 
+  }
+  
+  static public class SaveActionListener extends EventListener<UISpaceNavigationManagement> {
+
+    public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
+      PortalRequestContext prContext = Util.getPortalRequestContext();
+      UISpaceNavigationManagement uiManagement = event.getSource();
+      UISpaceNavigationNodeSelector uiNodeSelector = uiManagement.getChild(UISpaceNavigationNodeSelector.class);
+      UserPortalConfigService portalConfigService = uiManagement.getApplicationComponent(UserPortalConfigService.class);
+
+      UIPortalApplication uiPortalApp = (UIPortalApplication) prContext.getUIApplication();
+      UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+      prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+      prContext.ignoreAJAXUpdateOnPortlets(true);
+
+      UserNavigation navigation = uiNodeSelector.getEdittedNavigation();
+      SiteKey siteKey = navigation.getKey();
+      String editedOwnerId = siteKey.getName();
+
+      // Check existed
+      UserPortalConfig userPortalConfig;
+      if (SiteType.PORTAL.equals(siteKey.getType())) {
+        userPortalConfig = portalConfigService.getUserPortalConfig(editedOwnerId,
+                                                                   event.getRequestContext()
+                                                                        .getRemoteUser());
+        if (userPortalConfig == null) {
+          prContext.getUIApplication()
+                   .addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore",
+                                                      null,
+                                                      ApplicationMessage.ERROR));
+          return;
+        }
+      } else {
+        userPortalConfig = portalConfigService.getUserPortalConfig(prContext.getPortalOwner(),
+                                                                   event.getRequestContext()
+                                                                        .getRemoteUser());
+      }
+
+      UserNavigation persistNavigation = userPortalConfig.getUserPortal().getNavigation(siteKey);
+      if (persistNavigation == null) {
+        prContext.getUIApplication()
+                 .addMessage(new ApplicationMessage("UINavigationManagement.msg.NavigationNotExistAnymore",
+                                                    null,
+                                                    ApplicationMessage.ERROR));
+        return;
+      }
+
+      uiNodeSelector.save();
+    }
   }
   
   /**
