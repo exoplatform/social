@@ -479,7 +479,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
    */
   public void testSaveLike() throws Exception {
     ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
-    demoActivity.setTitle("demo activity");
+    demoActivity.setTitle("&\"demo activity");
     demoActivity.setUserId(demoActivity.getId());
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
     tearDownActivityList.add(demoActivity);
@@ -492,6 +492,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
+    assertEquals("&amp;&quot;demo activity", demoActivity.getTitle());
   }
   
   /**
