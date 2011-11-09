@@ -182,9 +182,15 @@ public class UIRelationshipActivity extends BaseUIActivity {
                                                      new String[] { senderLink });
         }
       } else {
-        return ResourceBundleUtil.
+        if (Utils.getViewerRemoteId().equals(getOwnerIdentity().getRemoteId())) {
+          return ResourceBundleUtil.
+                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
+                                             new String[] { senderLink });
+        } else {
+          return ResourceBundleUtil.
                 replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
-                                                   new String[] { receiverLink, senderLink });
+                                             new String[] { receiverLink, senderLink });          
+        }
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
       if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
@@ -195,12 +201,30 @@ public class UIRelationshipActivity extends BaseUIActivity {
         } else {
           return ResourceBundleUtil.
                   replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
-                                                     new String[] { senderLink });
+                                             new String[] { senderLink });
         }
       } else {
-        return ResourceBundleUtil.
-                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
-                                                   new String[] { senderLink, receiverLink });
+          if (Utils.getViewerRemoteId().equals(getOwnerIdentity().getRemoteId())) {
+            if(isSender()) {
+              return ResourceBundleUtil.
+                      replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),
+                                                         new String[] { receiverLink });
+            } else {  
+              return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_You_To_Connect"),
+                                         new String[] { senderLink });
+            }
+          } else {
+            if (isReceiver()) {
+              return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
+                                                 new String[] { senderLink, receiverLink });
+            } else {
+              return ResourceBundleUtil.
+                  replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect"),
+                                                 new String[] { senderLink, receiverLink });
+          }
+        } 
       }
     }
     return "";

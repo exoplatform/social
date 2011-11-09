@@ -121,7 +121,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       activityManager.saveActivity(relationship.getSender(), activity1);
 
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getSender().getId(), 
+      ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getReceiver().getId(), 
                                                               RELATIONSHIP_ACTIVITY_TYPE,
                                                               "@" + relationship.getSender().getRemoteId() + " has invited @"
                                                               + relationship.getReceiver().getRemoteId() + " to connect", null);
