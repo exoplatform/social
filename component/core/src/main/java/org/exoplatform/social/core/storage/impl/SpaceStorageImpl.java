@@ -155,29 +155,67 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   /**
    * The reference types.
    */
-  private enum RefType {
+  public enum RefType {
     MEMBER() {
       @Override
       public SpaceListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getSpaces();
-      }},
+      }
+      @Override
+      public String[] idsOf(Space space) {
+        return space.getMembers();
+      }
+      @Override
+      public void setIds(Space space, String[] ids) {
+        space.setMembers(ids);
+      }
+    },
     MANAGER() {
       @Override
       public SpaceListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getManagerSpaces();
-      }},
+      }
+      @Override
+      public String[] idsOf(Space space) {
+        return space.getManagers();
+      }
+      @Override
+      public void setIds(Space space, String[] ids) {
+        space.setManagers(ids);
+      }
+    },
     PENDING() {
       @Override
       public SpaceListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getPendingSpaces();
-      }},
+      }
+      @Override
+      public String[] idsOf(Space space) {
+        return space.getPendingUsers();
+      }
+      @Override
+      public void setIds(Space space, String[] ids) {
+        space.setPendingUsers(ids);
+      }
+    },
     INVITED() {
       @Override
       public SpaceListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getInvitedSpaces();
-      }};
+      }
+      @Override
+      public String[] idsOf(Space space) {
+        return space.getInvitedUsers();
+      }
+      @Override
+      public void setIds(Space space, String[] ids) {
+        space.setInvitedUsers(ids);
+      }
+    };
 
     public abstract SpaceListEntity refsOf(IdentityEntity identityEntity);
+    public abstract String[] idsOf(Space space);
+    public abstract void setIds(Space space, String[] ids);
   }
 
   private class UpdateContext {

@@ -23,11 +23,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.IdentityStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -38,12 +47,18 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  */
 public class IdentityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorageImpl storage;
+  private RelationshipStorage relationshipStorage;
+  private ActivityStorage activityStorage;
+  private SpaceStorage spaceStorage;
   private List<String> tearDownIdentityList;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     storage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorageImpl.class);
+    activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
+    spaceStorage = (SpaceStorage) getContainer().getComponentInstanceOfType(SpaceStorageImpl.class);
     tearDownIdentityList = new ArrayList<String>();
     assertNotNull(storage);
   }
@@ -186,6 +201,126 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     catch (IllegalArgumentException e) {
       // ok
     }
+  }
+
+  public void testHardDelete() throws Exception {
+
+    Identity user1 = new Identity("organization", "user1");
+
+    //
+    storage._createIdentity(user1);
+
+    //
+    storage._hardDeleteIdentity(user1);
+
+    //
+    Identity got = storage._findIdentity("organization", "user1");
+    assertEquals(true, got.isDeleted());
+
+    tearDownIdentityList.add(user1.getId());
+
+  }
+
+  public void testHardDeleteRelationship() throws Exception {
+
+    Identity user1 = new Identity("organization", "user1");
+    Identity user2 = new Identity("organization", "user2");
+    Identity user3 = new Identity("organization", "user3");
+    Identity user4 = new Identity("organization", "user4");
+
+    //
+    storage._createIdentity(user1);
+    storage._createIdentity(user2);
+    storage._createIdentity(user3);
+    storage._createIdentity(user4);
+
+    //
+    Relationship r1 = new Relationship(user1, user2, Relationship.Type.CONFIRMED);
+    Relationship r2 = new Relationship(user1, user3, Relationship.Type.PENDING);
+    Relationship r3 = new Relationship(user4, user1, Relationship.Type.PENDING);
+    relationshipStorage.saveRelationship(r1);
+    relationshipStorage.saveRelationship(r2);
+    relationshipStorage.saveRelationship(r3);
+
+    //
+    storage._hardDeleteIdentity(user1);
+
+    //
+    Identity got = storage._findIdentity("organization", "user1");
+    assertEquals(true, got.isDeleted());
+
+    assertEquals(null, relationshipStorage.getRelationship(r1.getId()));
+    assertEquals(null, relationshipStorage.getRelationship(r2.getId()));
+    assertEquals(null, relationshipStorage.getRelationship(r3.getId()));
+
+    tearDownIdentityList.add(user1.getId());
+    tearDownIdentityList.add(user2.getId());
+    tearDownIdentityList.add(user3.getId());
+    tearDownIdentityList.add(user4.getId());
+
+
+  }
+
+  public void testHardDeleteSpace() throws Exception {
+
+    Identity user1 = new Identity("organization", "user1");
+    Identity user2 = new Identity("organization", "user2");
+
+    //
+    storage._createIdentity(user1);
+    storage._createIdentity(user2);
+
+    //
+    Space space = new Space();
+    space.setDisplayName("space name");
+    space.setMembers(new String[]{user1.getRemoteId()});
+    space.setManagers(new String[]{user1.getRemoteId(), user2.getRemoteId()});
+    space.setPendingUsers(new String[]{user1.getRemoteId()});
+    space.setInvitedUsers(new String[]{user1.getRemoteId()});
+
+    spaceStorage.saveSpace(space, true);
+
+    //
+    storage._hardDeleteIdentity(user1);
+
+    //
+    Identity got = storage._findIdentity("organization", "user1");
+    assertEquals(true, got.isDeleted());
+
+    assertEquals(1, spaceStorage.getSpaceById(space.getId()).getMembers().length);
+    assertEquals(user2.getRemoteId(), spaceStorage.getSpaceById(space.getId()).getMembers()[0]);
+    assertEquals(1, spaceStorage.getSpaceById(space.getId()).getManagers().length);
+    assertEquals(user2.getRemoteId(), spaceStorage.getSpaceById(space.getId()).getManagers()[0]);
+    assertEquals(0, spaceStorage.getSpaceById(space.getId()).getPendingUsers().length);
+    assertEquals(0, spaceStorage.getSpaceById(space.getId()).getInvitedUsers().length);
+
+    spaceStorage.deleteSpace(space.getId());
+    tearDownIdentityList.add(user1.getId());
+    tearDownIdentityList.add(user2.getId());
+
+  }
+
+  public void testHardDeleteSpaceLastManager() throws Exception {
+
+    Identity user1 = new Identity("organization", "user1");
+
+    //
+    storage._createIdentity(user1);
+
+    //
+    Space space = new Space();
+    space.setDisplayName("space name");
+    space.setManagers(new String[]{user1.getRemoteId()});
+
+    spaceStorage.saveSpace(space, true);
+
+    //
+    Identity got = storage._findIdentity("organization", "user1");
+    assertEquals(false, got.isDeleted());
+
+    spaceStorage.deleteSpace(space.getId());
+    tearDownIdentityList.add(user1.getId());
+
   }
 
   public void testCreateProfile() throws Exception {

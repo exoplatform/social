@@ -49,6 +49,9 @@ public class Profile {
   /** email key. */
   public static final String        EMAIL          = "email";
 
+  /** profile of a deleted user */
+  public static final String        DELETED        = "deleted";
+
   /**
    * property of type {@link AvatarAttachment} that contains the avatar
    */

@@ -74,14 +74,14 @@ public class WhereExpression {
   public <T> WhereExpression like(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s LIKE '%s' ", property.getName(), value));
+    builder.append(String.format("%s LIKE %s ", property.getName(), espace(property, value)));
     return this;
   }
 
   public <T> WhereExpression like(CallExpression<T> call, T value) {
     checkParam(call.getProperty(), value);
 
-    builder.append(String.format("%s(%s) LIKE '%s' ", call.getFunction(), call.getProperty().getName(), value));
+    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(), value)));
     return this;
   }
 
@@ -142,6 +142,11 @@ public class WhereExpression {
 
   private <T> String espace(PropertyLiteralExpression<T> property, T value) {
     String format = (property.getType().equals(Long.class) ? DIRECT : QUOTED);
+
+    if (value instanceof String) {
+      String strValue = ((String) value).replaceAll("'", "''");
+      return String.format(format, strValue);
+    }
 
     return String.format(format, value);
   }

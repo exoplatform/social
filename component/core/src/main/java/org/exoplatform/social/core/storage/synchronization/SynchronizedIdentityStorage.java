@@ -102,6 +102,22 @@ public class SynchronizedIdentityStorage extends IdentityStorageImpl {
    * {@inheritDoc}
    */
   @Override
+  public void hardDeleteIdentity(final Identity identity) throws IdentityStorageException {
+
+    boolean created = startSynchronization();
+    try {
+      super.hardDeleteIdentity(identity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public Profile loadProfile(Profile profile) throws IdentityStorageException {
 
     boolean created = startSynchronization();

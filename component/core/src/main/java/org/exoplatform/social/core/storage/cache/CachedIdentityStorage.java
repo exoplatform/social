@@ -203,6 +203,27 @@ public class CachedIdentityStorage implements IdentityStorage {
   /**
    * {@inheritDoc}
    */
+  public void hardDeleteIdentity(final Identity identity) throws IdentityStorageException {
+
+    //
+    storage.hardDeleteIdentity(identity);
+
+    //
+    IdentityKey key = new IdentityKey(new Identity(identity.getId()));
+    IdentityData data = exoIdentityCache.remove(key);
+    if (data != null) {
+      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
+    }
+    exoProfileCache.remove(key);
+    exoIdentitiesCountCache.clearCache();
+    exoIdentitiesCache.clearCache();
+
+  }
+
+  
+  /**
+   * {@inheritDoc}
+   */
   public Profile loadProfile(final Profile profile) throws IdentityStorageException {
 
     IdentityKey key = new IdentityKey(new Identity(profile.getIdentity().getId()));

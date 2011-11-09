@@ -69,6 +69,14 @@ public interface IdentityStorage {
   public void deleteIdentity(final Identity identity) throws IdentityStorageException;
 
   /**
+   * Hard delete an identity from JCR
+   *
+   * @param identity
+   * @throws IdentityStorageException
+   */
+  public void hardDeleteIdentity(final Identity identity) throws IdentityStorageException;
+
+  /**
    * Load profile.
    *
    * @param profile the profile

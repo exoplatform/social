@@ -22,23 +22,30 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileXpEntity;
 import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
+import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
+import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
+import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
@@ -52,6 +59,8 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +77,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   private static final Log LOG = ExoLogger.getLogger(IdentityStorageImpl.class);
 
   private IdentityStorage identityStorage;
+  private RelationshipStorage relationshipStorage;
+  private SpaceStorage spaceStorage;
 
   static enum PropNs {
 
@@ -153,6 +164,22 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   private IdentityStorage getStorage() {
     return (identityStorage != null ? identityStorage : this);
   }
+  
+  private RelationshipStorage getRelationshipStorage() {
+    if (relationshipStorage == null) {
+      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipStorage.class);
+    }
+
+    return relationshipStorage;
+  }
+
+  private SpaceStorage getSpaceStorage() {
+    if (spaceStorage == null) {
+      spaceStorage = (SpaceStorage) PortalContainer.getInstance().getComponentInstanceOfType(SpaceStorage.class);
+    }
+
+    return spaceStorage;
+  }
 
   private QueryResult<ProfileEntity> getSpaceMemberIdentitiesByProfileFilterQueryBuilder(Space space,
       final ProfileFilter profileFilter, Type type,  long offset, long limit, boolean count)
@@ -171,7 +198,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     whereExpression.startGroup();
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");;
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
@@ -317,6 +346,79 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         identity.getRemoteId(),
         identity.getId()
     ));
+  }
+
+  protected void _hardDeleteIdentity(final Identity identity) throws NodeNotFoundException {
+
+    //
+    if (identity == null || identity.getId() == null) {
+      throw new IllegalArgumentException();
+    }
+
+    IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
+
+    // Check if last manager
+    Collection<SpaceRef> refs = identityEntity.getManagerSpaces().getRefs().values();
+    for (SpaceRef ref : refs) {
+      if (ref.getSpaceRef() != null && ref.getSpaceRef().getManagerMembersId().length == 1) {
+        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY, "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
+      }
+    }
+
+    // Remove relationships
+    _removeRelationshipList(identityEntity.getSender());
+    _removeRelationshipList(identityEntity.getReceiver());
+    _removeRelationshipList(identityEntity.getRelationship());
+    _removeRelationshipList(identityEntity.getIgnore());
+    _removeRelationshipList(identityEntity.getIgnored());
+
+    // Remove space membership
+    _removeSpaceMembership(SpaceStorageImpl.RefType.MANAGER, identityEntity);
+    _removeSpaceMembership(SpaceStorageImpl.RefType.MEMBER, identityEntity);
+    _removeSpaceMembership(SpaceStorageImpl.RefType.PENDING, identityEntity);
+    _removeSpaceMembership(SpaceStorageImpl.RefType.INVITED, identityEntity);
+
+    // Remove identity
+    identity.setProviderId(identityEntity.getProviderId());
+    identity.setRemoteId(identityEntity.getRemoteId());
+    //
+    identityEntity.setDeleted(Boolean.TRUE);
+    Profile profile = loadProfile(new Profile(new Identity(identityEntity.getId())));
+    profile.setProperty(Profile.DELETED, "true");
+    saveProfile(profile);
+
+    //
+    getSession().save();
+
+    //
+    LOG.debug(String.format(
+        "Identity %s:%s (%s) deleted",
+        identity.getProviderId(),
+        identity.getRemoteId(),
+        identity.getId()
+    ));
+    
+  }
+
+  protected void _removeRelationshipList(RelationshipListEntity listEntity) {
+
+    for (RelationshipEntity relationshipEntity : listEntity.getRelationships().values()) {
+      getRelationshipStorage().removeRelationship(new Relationship(relationshipEntity.getId()));
+    }
+
+  }
+
+  protected void _removeSpaceMembership(SpaceStorageImpl.RefType refType, IdentityEntity identity) {
+
+    for(SpaceRef ref : refType.refsOf(identity).getRefs().values()) {
+      Space space = getSpaceStorage().getSpaceById(ref.getSpaceRef().getId());
+      String[] ids = refType.idsOf(space);
+      List<String> idList = new ArrayList<String>(Arrays.asList(ids));
+      idList.remove(identity.getRemoteId());
+      refType.setIds(space, idList.toArray(new String[]{}));
+      getSpaceStorage().saveSpace(space, false);
+    }
+
   }
 
   protected Profile _createProfile(final Profile profile) throws NodeNotFoundException {
@@ -641,6 +743,15 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   }
 
+  public void hardDeleteIdentity(final Identity identity) throws IdentityStorageException {
+    try {
+      _hardDeleteIdentity(identity);
+    }
+    catch (NodeNotFoundException e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY, e.getMessage(), e);
+    }
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -770,7 +881,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
@@ -804,7 +917,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
@@ -829,7 +944,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+.and()
+.not().equals(ProfileEntity.deleted, "true");
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
@@ -854,7 +971,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);

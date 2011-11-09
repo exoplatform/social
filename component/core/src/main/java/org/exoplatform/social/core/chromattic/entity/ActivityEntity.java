@@ -74,18 +74,14 @@ public abstract class ActivityEntity implements NamedEntity {
   @ManyToOne(type = RelationshipType.REFERENCE)
   public abstract IdentityEntity getPosterIdentity();
   public abstract void setPosterIdentity(IdentityEntity posterIdentity);
-  
-  /**
-   * Property for searching activities by poster.
-   * 
-   * @since 1.2.2
-   */
   public static final PropertyLiteralExpression<String> poster =
     new PropertyLiteralExpression<String>(String.class, "soc:posterIdentity");
 
   @Property(name = "soc:title")
   public abstract String getTitle();
   public abstract void setTitle(String title);
+  public static final PropertyLiteralExpression<String> title =
+    new PropertyLiteralExpression<String>(String.class, "soc:title");
 
   @Property(name = "soc:titleId")
   public abstract String getTitleId();
@@ -122,6 +118,8 @@ public abstract class ActivityEntity implements NamedEntity {
   @Property(name = "soc:likes")
   public abstract String[] getLikes();
   public abstract void setLikes(String[] title);
+  public static final PropertyLiteralExpression<String> likes =
+    new PropertyLiteralExpression<String>(String.class, "soc:likes");
 
   @Property(name = "soc:isComment")
   @DefaultValue("false")

@@ -75,6 +75,13 @@ public interface IdentityManager {
   void deleteIdentity(Identity identity);
 
   /**
+   * Hard deletes an existing identity.
+   *
+   * @param identity the existing identity.
+   */
+  void hardDeleteIdentity(Identity identity);
+
+  /**
    * Gets identity list access which contains all the identities connected with the provided identity.
    *
    * @param identity the provided identity

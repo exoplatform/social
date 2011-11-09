@@ -178,6 +178,17 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
+  public void hardDeleteIdentity(Identity identity) {
+    if (identity.getId() == null) {
+      LOG.warn("identity.getId() must not be null of [" + identity + "]");
+      return;
+    }
+    this.getIdentityStorage().hardDeleteIdentity(identity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public List<Identity> getConnections(Identity ownerIdentity) throws Exception {
     return Arrays.asList(getConnectionsWithListAccess(ownerIdentity).load(OFFSET, LIMIT));
   }
@@ -328,7 +339,7 @@ public class IdentityManagerImpl implements IdentityManager {
           result.setDeleted(true);
           identityStorage.updateIdentity(result);
         }
-        return null;
+        return result;
       }
       if (forceLoadOrReloadProfile) {
         Profile profile = this.getIdentityStorage().loadProfile(result.getProfile());

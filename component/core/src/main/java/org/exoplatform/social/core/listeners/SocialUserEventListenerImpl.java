@@ -86,4 +86,24 @@ public class SocialUserEventListenerImpl extends UserEventListener {
     }
     RequestLifeCycle.end();
   }
+
+  @Override
+  public void preDelete(final User user) throws Exception {
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+    
+    try {
+      idm.hardDeleteIdentity(identity);
+    } catch (Exception e) {
+      // TODO: Send an alert email to super admin to manage spaces in case deleted user is the last manager.
+      // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
+      // Will be implemented by SOC-2276.
+    }
+
+    RequestLifeCycle.end();
+
+  }
 }
