@@ -71,6 +71,12 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
    *           not remove the group record from the database.
    */
   public void preDelete(Group group) throws Exception {
+    SpaceService spaceSrv = getSpaceService();
+    String groupId = group.getId();
+    Space space = spaceSrv.getSpaceByGroupId(groupId);
+    if (space != null) {
+      spaceSrv.deleteSpace(space);
+    }
   }
 
   /**
