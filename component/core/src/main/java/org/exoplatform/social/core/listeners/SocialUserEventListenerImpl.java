@@ -26,6 +26,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * Listens to user updating events.
@@ -36,6 +37,23 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * @since  1.2.0-GA
  */
 public class SocialUserEventListenerImpl extends UserEventListener {
+
+  @Override
+  public void preSave(User user, boolean isNew) throws Exception {
+
+    RequestLifeCycle.begin(PortalContainer.getInstance());
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityStorage ids = (IdentityStorage) container.getComponentInstanceOfType(IdentityStorage.class);
+
+    Identity identity = ids.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
+
+    if (identity != null) {
+      throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
+    }
+
+    RequestLifeCycle.end();
+
+  }
 
   /**
    * Listens to postSave action for updating profile.
