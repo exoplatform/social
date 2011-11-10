@@ -115,6 +115,7 @@ public class ActivityIterator implements Iterator<ActivityEntity> {
     else if (yearIterator.hasNext()) {
       monthIterator = yearIterator.next().getMonths().values().iterator();
       if (monthIterator.hasNext()) {
+        dayIterator = monthIterator.next().getDays().values().iterator();
         if (dayIterator.hasNext()) {
           entityIterator = dayIterator.next().getActivities().iterator();
           if (entityIterator.hasNext()) {
