@@ -29,6 +29,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
@@ -44,7 +45,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     @EventConfig(listeners = UIHeaderSection.DenyContactActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIProfileSection.EditActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase = Phase.DECODE),
-    @EventConfig(listeners = UIHeaderSection.SaveActionListener.class, phase = Phase.DECODE)
+    @EventConfig(listeners = UIHeaderSection.SaveActionListener.class)
   }
 )
 public class UIHeaderSection extends UIProfileSection {
@@ -55,12 +56,13 @@ public class UIHeaderSection extends UIProfileSection {
   /** Label for display established invitation */
   private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
 	  
+  
   /**
    * Initializes components for header form.<br>
    */
   public UIHeaderSection() throws Exception {
     addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, null).
-                   addValidator(MandatoryValidator.class).
+                   addValidator(MandatoryValidator.class).addValidator(SpecialCharacterValidator.class).
                    addValidator(StringLengthValidator.class, 3, 30));
   }
 
@@ -73,6 +75,7 @@ public class UIHeaderSection extends UIProfileSection {
       UIHeaderSection uiHeader = event.getSource();
       uiHeader.setEditMode(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiHeader);
+      uiHeader.setFirstLoad(false);
     }
   }
 
@@ -103,6 +106,7 @@ public class UIHeaderSection extends UIProfileSection {
       Profile p = uiHeaderSect.getProfile();
       p.setProperty(Profile.POSITION, sect.escapeHtml(position));
       Utils.getIdentityManager().updateProfile(p);
+      sect.setFirstLoad(false);
     }
   }
 
@@ -206,10 +210,15 @@ public class UIHeaderSection extends UIProfileSection {
    * @throws Exception
    */
   public void setValue() throws Exception {
-    UIFormStringInput uiPosition = getChildById(Profile.POSITION);
-    Profile profile = getProfile();
-    String position = (String) profile.getProperty(Profile.POSITION);
-    position = (position == null ? "" : position);
-    uiPosition.setValue(position);
+    if (isFirstLoad() == false) {
+      UIFormStringInput uiPosition = getChildById(Profile.POSITION);
+      Profile profile = getProfile();
+      String position = (String) profile.getProperty(Profile.POSITION);
+      position = (position == null ? "" : position);
+      uiPosition.setValue(position);
+      setFirstLoad(true);
+    }
   }
+  
+ 
 }

@@ -37,7 +37,7 @@
   def isEditable = uicomponent.isEditable();
   def contactStatus = uicomponent.getContactStatus();
   def position = profile.getPropertyValue(Profile.POSITION);
-
+  
   if (isEditable)
     position = ((position == null || position == "") ? _ctx.appRes(uicomponent.getName() + ".label.yourPosition"): position);
   else

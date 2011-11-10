@@ -33,6 +33,7 @@ import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.ResourceValidator;
+import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
@@ -58,6 +59,7 @@ public class UIBasicInfoSection extends UIProfileSection {
   /** INVALID CHARACTER MESSAGE. */
   public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
 
+ 
   public UIBasicInfoSection() throws Exception {
     addChild(UITitleBar.class, null, null);
 
@@ -70,13 +72,13 @@ public class UIBasicInfoSection extends UIProfileSection {
     addUIFormInput(new UIFormStringInput(Profile.FIRST_NAME,
                                          Profile.FIRST_NAME,
                                          null).
-                   addValidator(MandatoryValidator.class).
+                   addValidator(MandatoryValidator.class).addValidator(SpecialCharacterValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.LAST_NAME,
                                          Profile.LAST_NAME,
                                          null).
-                   addValidator(MandatoryValidator.class).
+                   addValidator(MandatoryValidator.class).addValidator(SpecialCharacterValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, null).
@@ -88,12 +90,15 @@ public class UIBasicInfoSection extends UIProfileSection {
    * Reloads basic info in each request call
    */
   public void reloadBasicInfo() {
-    Identity ownerIdentity = Utils.getOwnerIdentity(false);
-    Profile profile = ownerIdentity.getProfile();
-    this.getUIStringInput(Profile.USERNAME).setValue((String) profile.getProperty(Profile.USERNAME));
-    this.getUIStringInput(Profile.FIRST_NAME).setValue((String) profile.getProperty(Profile.FIRST_NAME));
-    this.getUIStringInput(Profile.LAST_NAME).setValue((String) profile.getProperty(Profile.LAST_NAME));
-    this.getUIStringInput(Profile.EMAIL).setValue((String) profile.getProperty(Profile.EMAIL));
+    if (isFirstLoad() == false) {
+      Identity ownerIdentity = Utils.getOwnerIdentity(false);
+      Profile profile = ownerIdentity.getProfile();
+      this.getUIStringInput(Profile.USERNAME).setValue((String) profile.getProperty(Profile.USERNAME));
+      this.getUIStringInput(Profile.FIRST_NAME).setValue((String) profile.getProperty(Profile.FIRST_NAME));
+      this.getUIStringInput(Profile.LAST_NAME).setValue((String) profile.getProperty(Profile.LAST_NAME));
+      this.getUIStringInput(Profile.EMAIL).setValue((String) profile.getProperty(Profile.EMAIL));
+      setFirstLoad(true);
+    }
   }
 
   /**
@@ -118,6 +123,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       WebuiRequestContext requestContext = event.getRequestContext();
       requestContext.addUIComponentToUpdateByAjax(uiForm);
       requestContext.addUIComponentToUpdateByAjax(sect);
+      sect.setFirstLoad(false);
     }
   }
 
@@ -131,6 +137,7 @@ public class UIBasicInfoSection extends UIProfileSection {
       super.execute(event);
 
       UIBasicInfoSection uiForm = (UIBasicInfoSection) event.getSource();
+      
 
       String firstName = uiForm.getUIStringInput(Profile.FIRST_NAME).getValue();
       String lastName = uiForm.getUIStringInput(Profile.LAST_NAME).getValue();
@@ -159,7 +166,8 @@ public class UIBasicInfoSection extends UIProfileSection {
         //updates profile
         Utils.getOwnerIdentity(true);
       }
-
+      
+      uiForm.setFirstLoad(false);
       Utils.updateWorkingWorkSpace();
     }
   }

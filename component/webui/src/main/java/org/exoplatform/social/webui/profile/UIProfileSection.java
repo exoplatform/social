@@ -45,6 +45,7 @@ public abstract class UIProfileSection extends UIForm {
   /** The isEditMode is used for check the view mode. */
   private boolean isEditMode;
 
+  private boolean isFirstLoad = false;
   /**
    * Gets profile.<br>
    * 
@@ -64,7 +65,7 @@ public abstract class UIProfileSection extends UIForm {
   public boolean isEditMode() {
     return this.isEditMode;
   }
-
+  
   /**
    * Sets the edit mode for form.<br>
    * 
@@ -73,6 +74,26 @@ public abstract class UIProfileSection extends UIForm {
   public void setEditMode(boolean editMode) {
     this.isEditMode = editMode;
   }
+  
+  
+  /**
+   * Checks is first load for form.<br>
+   * 
+   * @return true first load.
+   */
+  public boolean isFirstLoad() {
+    return this.isFirstLoad;
+  }
+  
+  /**
+   * Sets the first load for form.<br>
+   * 
+   * @param editMode
+   */
+  public void setFirstLoad(boolean firstLoad) {
+    this.isFirstLoad = firstLoad;
+  }
+  
 
   /**
    * Checks the current user is right edit permission.<br>
@@ -148,7 +169,9 @@ public abstract class UIProfileSection extends UIForm {
     public void execute(Event<UIProfileSection> event) throws Exception {
       UIProfileSection sect = event.getSource();
       sect.setEditMode(false);
+      sect.setFirstLoad(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(sect);
+      
     }
   }
 }
