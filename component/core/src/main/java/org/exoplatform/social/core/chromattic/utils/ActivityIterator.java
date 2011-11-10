@@ -99,21 +99,32 @@ public class ActivityIterator implements Iterator<ActivityEntity> {
     }
     else if (dayIterator.hasNext()) {
       entityIterator = dayIterator.next().getActivities().iterator();
-      return entityIterator.next();
+      if (entityIterator.hasNext()) {
+        return entityIterator.next();
+      }
     }
     else if (monthIterator.hasNext()) {
       dayIterator = monthIterator.next().getDays().values().iterator();
-      entityIterator = dayIterator.next().getActivities().iterator();
-      return entityIterator.next();
+      if (dayIterator.hasNext()) {
+        entityIterator = dayIterator.next().getActivities().iterator();
+        if (entityIterator.hasNext()) {
+          return entityIterator.next();
+        }
+      }
     }
     else if (yearIterator.hasNext()) {
       monthIterator = yearIterator.next().getMonths().values().iterator();
-      dayIterator = monthIterator.next().getDays().values().iterator();
-      entityIterator = dayIterator.next().getActivities().iterator();
-      return entityIterator.next();
+      if (monthIterator.hasNext()) {
+        if (dayIterator.hasNext()) {
+          entityIterator = dayIterator.next().getActivities().iterator();
+          if (entityIterator.hasNext()) {
+            return entityIterator.next();
+          }
+        }
+      }
     }
 
-    throw new RuntimeException();
+    return next();
     
   }
 

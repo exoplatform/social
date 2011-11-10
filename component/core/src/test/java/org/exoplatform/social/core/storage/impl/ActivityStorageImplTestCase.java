@@ -17,13 +17,7 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
@@ -555,7 +549,112 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertFalse(gotComment.getPostedTime() == 0);
 
   }
-  
+
+  public void testManyDays() throws Exception {
+
+    long timestamp111 = timestamp(2001, 1, 1);
+    long timestamp112 = timestamp(2001, 1, 2);
+    long timestamp121 = timestamp(2001, 2, 1);
+    long timestamp122 = timestamp(2001, 2, 2);
+    long timestamp211 = timestamp(2002, 1, 1);
+    long timestamp212 = timestamp(2002, 1, 2);
+    long timestamp221 = timestamp(2002, 2, 1);
+    long timestamp222 = timestamp(2002, 2, 2);
+
+    addActivity(rootIdentity, timestamp111);
+    addActivity(rootIdentity, timestamp112);
+    addActivity(rootIdentity, timestamp121);
+    addActivity(rootIdentity, timestamp122);
+    addActivity(rootIdentity, timestamp211);
+    addActivity(rootIdentity, timestamp212);
+    addActivity(rootIdentity, timestamp221);
+    addActivity(rootIdentity, timestamp222);
+
+    List<ExoSocialActivity> activities = activityStorage.getUserActivities(rootIdentity);
+    assertEquals(8, activities.size());
+    assertEquals(timestamp111, activities.get(7).getPostedTime().longValue());
+    assertEquals(timestamp112, activities.get(6).getPostedTime().longValue());
+    assertEquals(timestamp121, activities.get(5).getPostedTime().longValue());
+    assertEquals(timestamp122, activities.get(4).getPostedTime().longValue());
+    assertEquals(timestamp211, activities.get(3).getPostedTime().longValue());
+    assertEquals(timestamp212, activities.get(2).getPostedTime().longValue());
+    assertEquals(timestamp221, activities.get(1).getPostedTime().longValue());
+    assertEquals(timestamp222, activities.get(0).getPostedTime().longValue());
+
+  }
+
+  public void testManyDaysNoActivityOnDay() throws Exception {
+
+    long timestamp1 = timestamp(2001, 1, 1);
+    long timestamp2 = timestamp(2001, 1, 2);
+
+    addActivity(rootIdentity, timestamp1);
+    ExoSocialActivity activity2 = addActivity(rootIdentity, timestamp2);
+
+    activityStorage.deleteActivity(activity2.getId());
+
+    List<ExoSocialActivity> activities = activityStorage.getUserActivities(rootIdentity);
+    assertEquals(1, activities.size());
+    assertEquals(timestamp1, activities.get(0).getPostedTime().longValue());
+
+  }
+
+  public void testManyDaysNoActivityOnMonth() throws Exception {
+
+    long timestamp11 = timestamp(2001, 1, 1);
+    long timestamp12 = timestamp(2001, 1, 2);
+    long timestamp21 = timestamp(2001, 2, 1);
+    long timestamp22 = timestamp(2001, 2, 2);
+
+    addActivity(rootIdentity, timestamp11);
+    addActivity(rootIdentity, timestamp12);
+    ExoSocialActivity activity21 = addActivity(rootIdentity, timestamp21);
+    ExoSocialActivity activity22 = addActivity(rootIdentity, timestamp22);
+
+    activityStorage.deleteActivity(activity21.getId());
+    activityStorage.deleteActivity(activity22.getId());
+
+    List<ExoSocialActivity> activities = activityStorage.getUserActivities(rootIdentity);
+    assertEquals(2, activities.size());
+    assertEquals(timestamp11, activities.get(1).getPostedTime().longValue());
+    assertEquals(timestamp12, activities.get(0).getPostedTime().longValue());
+
+  }
+
+  public void testManyDaysNoActivityOnYear() throws Exception {
+
+    long timestamp111 = timestamp(2001, 1, 1);
+    long timestamp112 = timestamp(2001, 1, 2);
+    long timestamp121 = timestamp(2001, 2, 1);
+    long timestamp122 = timestamp(2001, 2, 2);
+    long timestamp211 = timestamp(2002, 1, 1);
+    long timestamp212 = timestamp(2002, 1, 2);
+    long timestamp221 = timestamp(2002, 2, 1);
+    long timestamp222 = timestamp(2002, 2, 2);
+
+    addActivity(rootIdentity, timestamp111);
+    addActivity(rootIdentity, timestamp112);
+    addActivity(rootIdentity, timestamp121);
+    addActivity(rootIdentity, timestamp122);
+    ExoSocialActivity activity211 = addActivity(rootIdentity, timestamp211);
+    ExoSocialActivity activity212 = addActivity(rootIdentity, timestamp212);
+    ExoSocialActivity activity221 = addActivity(rootIdentity, timestamp221);
+    ExoSocialActivity activity222 = addActivity(rootIdentity, timestamp222);
+
+    activityStorage.deleteActivity(activity211.getId());
+    activityStorage.deleteActivity(activity212.getId());
+    activityStorage.deleteActivity(activity221.getId());
+    activityStorage.deleteActivity(activity222.getId());
+
+    List<ExoSocialActivity> activities = activityStorage.getUserActivities(rootIdentity);
+    assertEquals(4, activities.size());
+    assertEquals(timestamp111, activities.get(3).getPostedTime().longValue());
+    assertEquals(timestamp112, activities.get(2).getPostedTime().longValue());
+    assertEquals(timestamp121, activities.get(1).getPostedTime().longValue());
+    assertEquals(timestamp122, activities.get(0).getPostedTime().longValue());
+
+  }
+
   public void testRelationshipActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("I am now connected with @receiverRemoteId");
@@ -672,6 +771,25 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     return space;
   }
 
+  private ExoSocialActivity addActivity(Identity identity, long timestamp) {
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity title");
+    activity.setPostedTime(timestamp);
+    activityStorage.saveActivity(identity, activity);
+
+    return activity;
+
+  }
+
+  private long timestamp(int year, int month, int day) {
+
+    Calendar cal = Calendar.getInstance();
+    cal.set(year, month, day, 0, 0, 0);
+    return cal.getTime().getTime();
+
+  }
+
   class DummyProcessor extends BaseActivityProcessorPlugin {
 
     DummyProcessor(final InitParams params) {
@@ -684,5 +802,4 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  // TODO : test many days
 }
