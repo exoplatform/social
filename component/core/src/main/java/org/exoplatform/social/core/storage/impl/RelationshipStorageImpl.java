@@ -447,8 +447,10 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     IdentityEntity identityEntity1 = _findById(IdentityEntity.class, identity1.getId());
     IdentityEntity identityEntity2 = _findById(IdentityEntity.class, identity2.getId());
 
-    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identity2.getRemoteId());
+    // CONFIRMED
+    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identityEntity2.getName());
 
+    // PENDING
     if (got == null) {
       got = identityEntity1.getSender().getRelationships().get(identity2.getRemoteId());
     }
@@ -456,6 +458,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       got = identityEntity2.getSender().getRelationships().get(identity1.getRemoteId());
     }
 
+    // NOT FOUND
     if (got == null) {
       throw new NodeNotFoundException();
     }
