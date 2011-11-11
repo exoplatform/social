@@ -9,6 +9,7 @@
   UIIconList = exo.social.UIIconList;
   UISetting = exo.social.UISetting;
   UISearch = exo.social.UISearch;
+  Locale = exo.social.Locale;
   
   var uiComponent = {
 		GadgetUIIconList: '#GadgetUIIconList',
@@ -54,7 +55,8 @@
              opensocial.Person.Field.THUMBNAIL_URL,
              "portalName",
              "restContext",
-             "host"
+             "host",
+             "peopleUri"
             ];
 
     Util.getViewer(viewerOpts, function(res) {
@@ -69,9 +71,6 @@
       // set viewer
       Configuration.setViewer(viewer);
       
-      debug.info("viewer:");
-      debug.debug(viewer);
-
       var configPeopleRestUrl = viewer.getField('hostName') + "/" + 
       													viewer.getField('restContextName') + "/" + 
       													"social/people/" + 
@@ -82,33 +81,28 @@
        															 viewer.getField('restContextName') + "/" +
        															 viewer.getField('portalName') + "/" +
        															 "social/activities/";
-      
+      var peopleDirectory = viewer.getField('hostName') + viewer.getField('peopleUri');
+       
       Configuration.portalEnvironment = {
         'portalName': viewer.getField('portalName'),
         'restContextName': viewer.getField('restContextName'),
         'host': viewer.getField('hostName'),
         'peopleRestUrl': configPeopleRestUrl,
-        'activitiesRestUrl': configActivitiesRestUrl
+        'activitiesRestUrl': configActivitiesRestUrl,
+        'peopleDirectory': peopleDirectory
       };
       
-      debug.info('Configuration.portalEnvironment:');
-      debug.debug(Configuration.portalEnvironment);
+      var lang = Locale.getLang();
       
       //get activities of connections
       var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl + 
       										"?offset=" + params.offset + 
-      										"&limit=" + params.limit;
+      										"&limit=" + params.limit +
+      										"&lang=" + lang;
 
-			debug.info("peopleRestUrl:");
-			debug.debug(peopleRestUrl);
-			
-			
 			//get user with latest activities by jquery
 			Util.makeRequest(peopleRestUrl, function(response) {
 				var userConnections = [];
-				
-				debug.info('response');
-				debug.debug(response);
 				
 				if (response.rc === 200 && response.data !== null) {
 					userConnections = Util.parseUserConnectionActivities(response);
@@ -139,9 +133,6 @@
 				} else if (params.viewType === ActivityStream.VIEW_TYPE.SETTING) {
 					UISetting.display();
 				}
-				
-				debug.info("userConnections:");
-				debug.debug(userConnections);
 			});
     });
 	}

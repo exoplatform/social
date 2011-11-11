@@ -57,8 +57,6 @@
   	<script type="text/javascript" src="script/eXo/social/UISetting.js"></script>
   	<script type="text/javascript" src="script/eXo/social/MyConnectionsGadget.js"></script>
   	
-    <!--<script type="text/javascript" src="script/eXo/social/Setting.js"></script>
-  	-->
     <div id="message"></div>
     <div id="loading" class="Loading" id="UILoading" style="display: none;">__MSG_loading__</div>
     
@@ -76,15 +74,13 @@
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
 			<ul class="ListContent" id="UITextListListContent"></ul>
-			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UITextListPeopleDirectory" target="_blank">__MSG_people_directory__</a>			
     </div>
     
     <div class="GadgetConnection GadgetConnectionDetail" id="GadgetUIIconList">
 			<ul class="ListContent" id="UIIconListListContent"></ul>
-			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UIIconListPeopleDirectory" target="_blank">__MSG_people_directory__</a>
 		</div>
 		
-		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting" style="width: 300px;"></div>
+		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting"></div>
 		
 		<div class="GadgetConnection GadgetMember" id="GadgetMemberMore" style="display: none;"></div>
     
@@ -113,9 +109,6 @@
   	<script type="text/javascript" src="script/eXo/social/UIIconList.js"></script>
   	<script type="text/javascript" src="script/eXo/social/UISetting.js"></script>
   	<script type="text/javascript" src="script/eXo/social/MyConnectionsGadget.js"></script>
-  	
-    <!--<script type="text/javascript" src="script/eXo/social/Setting.js"></script>
-  	-->
     <div id="message"></div>
     <div id="loading" class="Loading" id="UILoading" style="display: none;">__MSG_loading__</div>
     
@@ -133,12 +126,10 @@
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
 			<ul class="ListContent" id="UITextListListContent"></ul>
-			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UITextListPeopleDirectory">People Directory</a>			
     </div>
     
     <div class="GadgetConnection GadgetConnectionDetail" id="GadgetUIIconList">
 			<ul class="ListContent" id="UIIconListListContent"></ul>
-			<a href="http://int.exoplatform.org/portal/intranet/people" class="Link" id="UIIconListPeopleDirectory">People Directory</a>
 		</div>
 		
 		<div id="GadgetConnectionSetting" class="GadgetConnection GadgetConnectionSetting" style="width: 300px;"></div>

@@ -20,7 +20,7 @@
   	    
   var prefs = new gadgets.Prefs();
 
-	  /**
+  /**
    * UI component.
    */
   var uiComponent = {
@@ -47,10 +47,16 @@
   	
   }
 
+  /**
+   * Display the setting form.
+   */
   UISetting.display = function() {
   	reset();
   };
   
+  /**
+   * Init the setting form.
+   */
   UISetting.initSettingForm = function() {
   	
   	if ($('.ListSelected').length > 0) {
@@ -147,6 +153,9 @@
 	  });
   };
   
+  /**
+   * Save the setting.
+   */
   function save() {
   
 		var values = [];
@@ -166,31 +175,25 @@
     viewType = values[0];
     updateTime = parseInt(values[1]) * 60 * 1000;
     orderBy = values[2];
-    itemPerViewNum = parseInt(values[3]);
+    itemPerViewNum = (values[3] !== '') ? parseInt(values[3]) : 10;
     
     ActivityStream.initProfiles({offset: 0, limit: itemPerViewNum,
     														viewType: viewType, updateTime: updateTime,
     														orderBy: orderBy});
-    
-    debug.info('limit in ui setting:');
-    debug.debug(itemPerViewNum);
-    
-    debug.info('viewType');
-    debug.debug(viewType);
     
     $(uiComponent.GadgetConnectionSetting).hide();
   };
   
   	
   /**
-   * private method
+   * Cancel the current setting.
    */
   function cancel() {
   	reset();
   };
   
   /**
-   * private method
+   * Reset the form.
    */
   function reset() {
   	var settings = prefs.getArray("SETTINGS");
@@ -205,6 +208,9 @@
   	}
   };
   
+  /**
+   * Set option selected.
+   */
   function setSelected(optId, val) {
     var text = '';
     var id = '#' + optId + ' option';

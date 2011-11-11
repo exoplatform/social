@@ -59,9 +59,6 @@
 							"&number_of_likes=100" +
 							"&activity_stream=t";
 	  
-	  debug.info("url get activity:");
-	  debug.debug(url);
-	  
 	  Util.makeRequest(url, callback);
 	};
 	
@@ -83,7 +80,7 @@
 						position: userConnection.position,
 						activityId: userConnection.activityId,
 						activityTitle: userConnection.activityTitle,
-						prettyPostedTime: userConnection.postedTime
+						prettyPostedTime: userConnection.prettyPostedTime
 					};
 					var connectionActivity = new exo.social.User(paramsUser);
 					userConnectionsActivities.push(connectionActivity);
@@ -103,13 +100,13 @@
 	Util.getUserConnectionActivitiesBlock = function(userConnectionActivities) {
 		var userBlock = [];
 		$.each(userConnectionActivities, function(index, userConnection) {
-			userBlock.push('<li class="ClearFix">');
-				userBlock.push('<a href="' + userConnection.profileUrl + '" class="Avatar"><img alt="" width="30px" height="30px" src="' + userConnection.avatarUrl + '"/></a>');
+			userBlock.push('<li class="ClearFix ListListContent">');
+				userBlock.push('<a target="_blank" href="' + userConnection.profileUrl + '" class="Avatar"><img alt="" width="30px" height="30px" src="' + userConnection.avatarUrl + '"/></a>');
 				userBlock.push('<div class="Content">');
-					userBlock.push('<a href="' + userConnection.profileUrl + '" class="User">' + userConnection.displayName +'</a><span class="Member">' + userConnection.position +'</span>');
+					userBlock.push('<a target="_blank" href="' + userConnection.profileUrl + '" class="User">' + userConnection.displayName +'</a><span class="Member">' + userConnection.position +'</span>');
 					userBlock.push('<div class="Work">' + userConnection.activityTitle + '</div>');
 				userBlock.push('</div>');
-				userBlock.push('<a href="#" class="More" id="' + userConnection.activityId + '">' + Locale.getMsg('more') + '</a>');
+				userBlock.push('<a href="javascript:void(0)" class="More" id="' + userConnection.activityId + '">' + Locale.getMsg('more') + '</a>');
   		userBlock.push('</li>');
   	});
 		
@@ -208,49 +205,6 @@
 	}
 	
 	/**
-	 * Cross browser add event listener method. For 'evt' pass a string value with the leading "on" omitted
-	 * e.g. Util.addEventListener(window,'load',myFunctionNameWithoutParenthesis,false);
-	 * @param	obj object to attach event
-	 * @param	evt event name: click, mouseover, focus, blur...
-	 * @param	func	function name
-	 * @param	useCapture	true or false; if false => use bubbling
-	 * @static
-	 * @see		http://phrogz.net/JS/AttachEvent_js.txt
-	 */
-	 Util.addEventListener = function(obj, evt, fnc, useCapture) {
-	  if (obj === null || evt === null || fnc ===  null || useCapture === null) {
-	    debug.warn('all params is required from Util.addEventListener!');
-	    return;
-	  }
-	  if (!useCapture) useCapture = false;
-	  if (obj.addEventListener){
-	    obj.addEventListener(evt, fnc, useCapture);
-	  } else if (obj.attachEvent) {
-	    obj.attachEvent('on'+evt, function(evt) {
-	      fnc.call(obj, evt);
-	    });
-	  } else{
-	    myAttachEvent(obj, evt, fnc);
-	    obj['on'+evt] = function() { myFireEvent(obj,evt) };
-	  }
-
-	  //The following are for browsers like NS4 or IE5Mac which don't support either
-	  //attachEvent or addEventListener
-	  var myAttachEvent = function(obj, evt, fnc) {
-	    if (!obj.myEvents) obj.myEvents={};
-	    if (!obj.myEvents[evt]) obj.myEvents[evt]=[];
-	    var evts = obj.myEvents[evt];
-	    evts[evts.length] = fnc;
-	  }
-
-	  var myFireEvent = function(obj, evt) {
-	    if (!obj || !obj.myEvents || !obj.myEvents[evt]) return;
-	    var evts = obj.myEvents[evt];
-	    for (var i=0,len=evts.length;i<len;i++) evts[i]();
-	  }
-	 }
-	 
-	/**
 	 * Get the setting.
 	 * 
 	 * @return
@@ -266,9 +220,6 @@
   		itemPerViewNum: 10
   	};
   	
-  	debug.info('settings');
-  	debug.debug(settings);
-  	
   	if (settings !== null) {
   		if (settings[0] !== undefined)	{
   			settingStored.viewType = settings[0];
@@ -283,9 +234,6 @@
   			settingStored.itemPerViewNum = parseInt(settings[3]); 
   		}
   	}
-  	
-  	debug.info('setting stored:');
-  	debug.debug(settingStored);
   	
   	return settingStored;
   };

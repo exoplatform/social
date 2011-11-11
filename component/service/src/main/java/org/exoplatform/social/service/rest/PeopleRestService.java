@@ -18,8 +18,11 @@ package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -50,11 +53,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.service.rest.api.models.CommentRestOut;
-import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
-import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
-
-import com.sun.syndication.feed.module.mediarss.types.Hash;
+import org.exoplatform.webui.utils.TimeConvertUtils;
 
 /**
  * PeopleRestService.java < /br>
@@ -95,9 +94,6 @@ public class PeopleRestService implements ResourceContainer{
   private static final String USER_TO_INVITE = "user_to_invite";
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
-  
-  private static final int OFFSET_DEFAULT = 0;
-  private static final int LIMIT_DEFAULT = 10;
   
   private String portalName_;
   private IdentityManager identityManager;
@@ -168,10 +164,11 @@ public class PeopleRestService implements ResourceContainer{
    * Gets and returns list people's information that have had connection with current viewer.
    * 
    * @param uriInfo
-   * @param viewerIdentity
+   * @param portalName
    * @param nameToSearch
    * @param offset
    * @param limit
+   * @param lang
    * @param format
    * 
    * @return list people's information.
@@ -184,6 +181,7 @@ public class PeopleRestService implements ResourceContainer{
                     @QueryParam("nameToSearch") String nameToSearch,
                     @QueryParam("offset") int offset,
                     @QueryParam("limit") int limit,
+                    @QueryParam("lang") String lang,
                     @PathParam("format") String format) throws Exception {
     String[] supportedMediaType = { "json" };
     MediaType mediaType = Util.getMediaType(format,supportedMediaType);
@@ -196,45 +194,41 @@ public class PeopleRestService implements ResourceContainer{
     Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
     
     excludedIdentityList.add(currentUser);
-    ProfileFilter filter = new ProfileFilter();
-    
-    filter.setName(nameToSearch);
-    filter.setExcludedIdentityList(excludedIdentityList);
 
     Identity[] identities;
     List<HashMap<String, Object>> entitys = new ArrayList<HashMap<String,Object>>();
     if (nameToSearch == null) { 
       // default loading, if load more then need to re-calculate offset and limit before going here via rest URL.     
       identities = identityManager.getConnectionsWithListAccess(currentUser).load(offset, limit);
+    } else { 
+      // search
+      nameToSearch = nameToSearch.trim();
       
-      for(Identity identity : identities){
-        HashMap<String, Object> temp = getIdentityInfo(identity);
-        if(temp != null){
-          entitys.add(temp);
-        }
-      }
-    } else { // search
+      ProfileFilter filter = new ProfileFilter();
+      filter.setName(nameToSearch);
+      filter.setExcludedIdentityList(excludedIdentityList);
+      
       identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);// will be getConnectionsByProfileFilter      
-      for(Identity identity : identities){
-        HashMap<String, Object> temp = getIdentityInfo(identity);
-        if(temp != null){
-          entitys.add(temp);
-        }
+    }
+    
+    for(Identity identity : identities){
+      HashMap<String, Object> temp = getIdentityInfo(identity, lang);
+      if(temp != null){
+        entitys.add(temp);
       }
     }
     
     return Util.getResponse(entitys, uriInfo, mediaType, Response.Status.OK);
   }
   
-  
-  private HashMap<String, Object> getIdentityInfo(Identity existingIdentity){
+  private HashMap<String, Object> getIdentityInfo(Identity existingIdentity, String lang){
     RealtimeListAccess<ExoSocialActivity>  activityRealtimeListAccess = 
                                             activityManager.getActivitiesWithListAccess(existingIdentity);
     if(activityRealtimeListAccess.getSize() == 0 ){
       return null;
     }
     Activity lastestActivity =  activityRealtimeListAccess.load(0, 1)[0];
-    return new ConnectionInfoRestOut(existingIdentity, lastestActivity);
+    return new ConnectionInfoRestOut(existingIdentity, lastestActivity, lang);
   }
   
   public static class ConnectionInfoRestOut extends HashMap<String, Object> {
@@ -260,9 +254,9 @@ public class PeopleRestService implements ResourceContainer{
        */
       ACTIVITY_ID("activityId"),
       /**
-       * activity posted time
+       * activity pretty posted time ( ago style )
        */
-      POSTED_TIME("postedTime"),
+      PRETTY_POSTED_TIME("prettyPostedTime"),
       /** 
        * Identity's Position 
       */
@@ -294,12 +288,18 @@ public class PeopleRestService implements ResourceContainer{
       initialize();
     }
     
-    public ConnectionInfoRestOut(Identity identity, Activity lastestActivity){
+    public ConnectionInfoRestOut(Identity identity, Activity lastestActivity, String lang){
       this.setDisplayName(identity.getProfile().getFullName());
       this.setAvatarUrl(Util.buildAbsoluteAvatarURL(identity));
       this.setProfileUrl(identity.getProfile().getUrl());
       this.setActivityTitle(lastestActivity.getTitle());
-      this.setPostedTime(lastestActivity.getPostedTime());
+      
+      Calendar calendar = Calendar.getInstance();
+      calendar.setLenient(false);
+      int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
+      calendar.setTimeInMillis(lastestActivity.getPostedTime() - gmtoffset);
+      this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang), TimeConvertUtils.MONTH));
+      
       this.setPosition(identity.getProfile().getPosition());
       this.setActivityId(lastestActivity.getId());
     }
@@ -353,15 +353,15 @@ public class PeopleRestService implements ResourceContainer{
       }
     }
     
-    public Long getPostedTime() {
-      return  (Long) this.get(Field.POSTED_TIME);
+    public String getPrettyPostedTime() {
+      return  (String) this.get(Field.PRETTY_POSTED_TIME);
     }
 
-    public void setPostedTime(final Long postedTime) {
+    public void setPrettyPostedTime(final String postedTime) {
       if(postedTime != null){
-        this.put(Field.POSTED_TIME.toString(), postedTime);
+        this.put(Field.PRETTY_POSTED_TIME.toString(), postedTime);
       } else {
-        this.put(Field.POSTED_TIME.toString(), new Long(0));
+        this.put(Field.PRETTY_POSTED_TIME.toString(), new Long(0));
       }
     }
     
@@ -392,10 +392,10 @@ public class PeopleRestService implements ResourceContainer{
       this.setActivityTitle("");
       this.setAvatarUrl("");
       this.setDisplayName("");
-      this.setPostedTime(null);
       this.setProfileUrl("");
       this.setActivityId("");
       this.setPosition("");
+      this.setPrettyPostedTime("");
     }
   }
   

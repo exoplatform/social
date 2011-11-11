@@ -39,8 +39,6 @@
 
 .GadgetConnection ul li{
 	list-style: none outside none;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .GadgetConnection ul{
@@ -123,6 +121,7 @@
 .GadgetConnectionDetail .ListContent .More{
 	float: right;
 	display: block;
+	margin-right: 10px;
 }
 
 .GadgetConnection .Content{
@@ -130,16 +129,12 @@
   float: left;
   margin: 0 0 0 6px;
   overflow: hidden;
-  white-space: nowrap;
-  width: 80%;
+  white-space: normal;
 }
-
 
 .GadgetConnectionDetail .Content .Work{
 	color: #555555;
   width: 95%;
-	overflow: hidden;
-  white-space: nowrap;
 }
 
 .GadgetConnectionDetail ul li {
@@ -284,7 +279,7 @@
 
 .GadgetConnectionBar .Label{
 	color: #313332;
-	margin-right: 80px;
+	//margin-right: 80px;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -329,13 +324,11 @@
 }
 
 .GadgetConnection .CurentActivity .Commnent{
- 	float: left;
+	margin-right: 45px;
 }
 
 .GadgetConnection .CurentActivity .Commnent .Comm{
- 	width: 170px;
- 	overflow: hidden;
-  white-space: nowrap;
+
 }
 
 .GadgetConnection .CurentActivity .Commnent .TimeComm{
@@ -393,4 +386,9 @@
 
 .GadgetMember ul{
  	padding-left: 35px;
+}
+
+.GadgetConnection .ListContent .ListListContent .Content{
+ 	margin-left: 40px;
+ 	float: none;
 }

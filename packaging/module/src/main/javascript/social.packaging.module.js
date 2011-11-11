@@ -28,7 +28,9 @@ function getModule(params) {
 
   module.component.service =
   new Project("org.exoplatform.social", "exo.social.component.service","jar", module.version).
-    addDependency(ws.frameworks.json);
+    addDependency(ws.frameworks.json).
+    addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui", "jar", platformCommonsVersion));
+
 
   module.component.opensocial =
   new Project("org.exoplatform.social", "exo.social.component.opensocial","jar", module.version);

@@ -72,10 +72,6 @@
 	  var url = Configuration.portalEnvironment.activitiesRestUrl + 
 	  					activityId + 
 	  					"/comments.json?offset=" + Comment.getOffset() + "&limit=" + Comment.getLimit();
-	  
-	  debug.info("url get comments:");
-	  debug.debug(url);
-	  
 	  Util.makeRequest(url, callback);
 	}
 	
@@ -95,13 +91,6 @@
 	  var url = Configuration.portalEnvironment.activitiesRestUrl + 
 							activityId + 
 							"/comments/create.json?text=" + encodeURIComponent(comment);
-	  
-	  debug.info("url create comments:");
-	  debug.debug(url);
-	  
-	  debug.info("comment after escape:");
-	  debug.debug("comment: " + encodeURIComponent(comment));
-	  
 	  Util.makeRequest(url, callback);
 	}
 	
@@ -114,10 +103,6 @@
 		var url = Configuration.portalEnvironment.activitiesRestUrl + 
 							Comment.refer.connectionActivity.activityId + 
 							"/comments.json?offset=" + Comment.getOffset() + "&limit=" + Comment.getLimit();
-		
-		debug.info("url Comment.loadMore:");
-		debug.debug(url);
-		
 		Util.makeRequest(url, callback);
 	};
 	

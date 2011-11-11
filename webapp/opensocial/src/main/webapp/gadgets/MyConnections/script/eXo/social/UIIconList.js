@@ -187,23 +187,12 @@
   function display(userConnectionActivities) {
   	$(uiComponent.UILoading).hide();
   	
-  	debug.info("userConnectionActivities:");
-  	debug.debug(userConnectionActivities);
-  	
-  	debug.info(UIIconList.getSearchMode());
-  	
   	if (UIIconList.getSearchMode() === true) {
   		$(uiComponent.UIIconListListContent).empty();
   	}
   	
   	if (userConnectionActivities === null || userConnectionActivities.length === 0) {
-  		debug.info("size:");
-  		debug.debug($(uiComponent.UIIconListListContent).children().size());
   		if ($(uiComponent.UIIconListListContent).children().size() === 0) {
-  			
-  			debug.info('Locale.getMsg("no_user_connection_activities_update")');
-  			debug.debug(Locale.getMsg("no_user_connection_activities_update"));
-  			
   			$(uiComponent.UIIconListListContent).append(Locale.getMsg("no_user_connection_activities_update"));
   		}
   		
@@ -213,7 +202,7 @@
   		
   		if (UIIconList.getSearchMode() === true) {
   			var addBlock = '<div id="BackToListAndPeopleDirectory">' + 
-													'<a href="javascript:void(0)" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="http://int.exoplatform.org/portal/intranet/people" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
+													'<a href="javascript:void(0)" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
 												'</div>';
   			if ($(uiComponent.BackToListAndPeopleDirectory).length === 0) {
   				$(uiComponent.UIIconListListContent).append(addBlock);
@@ -229,7 +218,7 @@
   		}
   		if (UIIconList.getSearchMode() === true) {
   			var addBlock = '<div id="BackToListAndPeopleDirectory">' + 
-  												'<a href="javascript:void(0)" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
+  												'<a href="javascript:void(0)" class="Link" id="BackToUIIconListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link">' + Locale.getMsg('people_directory') + '</a>' +
   											'</div>';
   			
   			if ($(uiComponent.BackToListAndPeopleDirectory).length === 0) {
@@ -253,6 +242,10 @@
     	}
   	}
   	
+  	if ($(uiComponent.UIIconListPeopleDirectory).length === 0) {
+  		$(uiComponent.GadgetUIIconList).append('<a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link" id="UIIconListPeopleDirectory" target="_blank">' + Locale.getMsg('people_directory') + '</a>');
+  	}
+  	
   	$(uiComponent.GadgetMemberMore).hide();
   	$(uiComponent.GadgetUIIconList).show();
   	gadgets.window.adjustHeight();
@@ -263,8 +256,6 @@
    */
   $(uiComponent.More).live("click", function() {
 		var id = $(this).attr('id');
-		debug.info("id activity:");
-		debug.debug(id);
 		
 		if (UIIconList.getSearchMode() === true) {
 			setCurrentActivity(userConnectionSearch, id);
@@ -299,18 +290,8 @@
 	});
   
   $(uiComponent.UIIconListMoreContent).live("click", function() {
-  	
-  	debug.info('$(uiComponent.BackToListAndPeopleDirectory).length:');
-  	debug.debug($(uiComponent.BackToListAndPeopleDirectory).length);
-  	
   	if ($(uiComponent.BackToListAndPeopleDirectory).length === 0) {
   		UIIconList.loadMore();
-  		
-  		debug.info("load more offset:");
-  		debug.debug(UIIconList.getOffset());
-  		
-  		debug.info("load more limit:");
-  		debug.debug(UIIconList.getLimit());
   	} else {
   		UISearch.loadMore();
   	}
@@ -357,12 +338,12 @@
   UIIconList.loadMore = function() {
   	$(uiComponent.UISearchContent).css('display', 'block');
   	
+  	var lang = Locale.getLang();
+  	
   	var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl + 
   											"?offset=" + UIIconList.getOffset() + 
-												"&limit=" + UIIconList.getLimit();
-
-  	debug.info('peopleRestUrl in loadMore: ');
-  	debug.debug(peopleRestUrl);
+												"&limit=" + UIIconList.getLimit() + 
+												"&lang=" + lang;
   	
 		//Get user connection activities when click load more.
 		Util.makeRequest(peopleRestUrl, function(response) {
@@ -380,9 +361,6 @@
    * @param response
    */
   function displayComments(response) {
-  	debug.info("displayComments:");
-		debug.debug(response);
-		
 		if (response.data !== null && response.data.comments !== null) {
 			var commentsBlock = [];
 			$.each(response.data.comments, function(index, comment) {
@@ -391,9 +369,6 @@
 		   		commentsBlock.push('<span>' + comment.text + '</span>');
 		   	commentsBlock.push('</li>');
 			});
-			
-			debug.info("comment block:");
-			debug.debug(commentsBlock.join(""));
 			
 			$(uiComponent.ListContentMoreDetail).append(commentsBlock.join(""));
 			
@@ -445,22 +420,24 @@
   	var userBlock = [];
 		
 		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
-			userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
+			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
-				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
+				userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
 				userBlock.push('<div class="Member"> Member</div>');
-				userBlock.push('<a href="' + Comment.refer.connectionActivity.profileUrl + '" class="Work" id="MoreActivityDetail">' + Locale.getMsg('profile_page') + '</a>');
+				userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Work" id="MoreActivityDetail">' + Locale.getMsg('profile_page') + '</a>');
 			userBlock.push('</div>');
 		userBlock.push('</div>');
 		
 		userBlock.push('<div class="CurentActivity ClearFix">');
-			userBlock.push('<div class="Commnent">');
-				userBlock.push('<span class="Comm">' + Comment.refer.connectionActivity.activityTitle + '</span>');
-				userBlock.push('<span class="NumberLike" id="NumberOfLike"></span>');
-			userBlock.push('</div>')
 			userBlock.push('<div class="Action">');
 				userBlock.push('<a id="CommentCurrentLatestActivity" href="javascript:void(0)" class="CommIcon">&nbsp;</a><a id="LikeCurrentLatestActivity" href="javascript:void(0)" class="LikeIcon">&nbsp;</a>');
 			userBlock.push('</div>');
+		
+			userBlock.push('<div class="Commnent">');
+				userBlock.push('<span class="Comm">' + Comment.refer.connectionActivity.activityTitle + '</span>');
+				userBlock.push('<span class="NumberLike" id="NumberOfLike"></span>');
+				userBlock.push('<div class="TimeComm">' + Comment.refer.connectionActivity.prettyPostedTime + '</div>');
+			userBlock.push('</div>')
 		userBlock.push('</div>');
 	  
 	  userBlock.push('<div class="QuickCommentBox" style="display: none;" id="QuickCommentDiv">');
@@ -468,24 +445,16 @@
 	  	userBlock.push('<div class="ShareBT"><a id="ShareComment" href="javascript:void(0)">' + Locale.getMsg('share') + '</a></div>');
 	  userBlock.push('</div>');
 		
-		userBlock.push('<ul class="ListContent" id="ListContentMoreDetail">');
+		userBlock.push('<ul id="ListContentMoreDetail">');
 		userBlock.push('</ul>');
 		
 		userBlock.push('<div class="MoreContent" id="LoadMoreComments">');
 			userBlock.push('<a href="javascript:void(0)" class="ReadMore">' + Locale.getMsg('load_more') + '</a>');
 		userBlock.push('</div>');
 		
-		userBlock.push('<a href="javascript:void(0)" class="Link" id="BackToUIIconList">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>');
+		userBlock.push('<a href="javascript:void(0)" class="Link" id="BackToUIIconList">' + Locale.getMsg('back_to_list') + '</a> | <a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link">' + Locale.getMsg('people_directory') + '</a>');
 		
 		return userBlock.join('');
-  }
-  
-  function htmlEncode(value){
-    return $('<div/>').text(value).html();
-  }
-
-  function htmlDecode(value){
-    return $('<div/>').html(value).text();
   }
   
   /**
@@ -493,6 +462,10 @@
    */
   $(uiComponent.CommentCurrentLatestActivity).live("click", function() {
   	$(uiComponent.QuickCommentDiv).css('display', 'block');
+  	
+  	//hide load more
+  	$(uiComponent.LoadMoreComments).hide();
+  	
   	gadgets.window.adjustHeight();
   });
   
@@ -551,7 +524,6 @@
 	   * Blur event.
 	   */
 	  $(uiComponent.QuickCommentInput).blur(function() {
-	  	//$(uiComponent.QuickCommentInput).val('');
 	  	$(uiComponent.QuickCommentInput).css('color', 'black');
 	  });
 	  
@@ -559,7 +531,6 @@
 	   * Focus event.
 	   */
 	  $(uiComponent.QuickCommentInput).focus(function() {
-	  	//$(uiComponent.QuickCommentInput).text('');
 	  	$(uiComponent.QuickCommentInput).css('color', 'black');
 	  });
 	  
@@ -567,10 +538,6 @@
 	  Comment.setLimit(10);
 	  
 	  Util.getActivity({activityId: id, limit: 10}, function(response) {
-	  	
-	  	debug.info("get activity:");
-	  	debug.debug(response);
-	  	
 	  	if (response.data !== null && response.data.totalNumberOfLikes !== null) {
 	  		if ($(uiComponent.NumberOfLike).length > 0) {
 	  			$(uiComponent.NumberOfLike).empty();
@@ -597,11 +564,7 @@
    * Click more to view detail.
    */
   UIIconList.moreDetail = function() {
-  	debug.info("current activity:");
-  	debug.debug(Comment.refer.connectionActivity);
-  	
   	$(uiComponent.UISearchContent).css('display', 'none');
-  	
   	initMyConnectionDetail(Comment.refer.connectionActivity.activityId);
   };
 

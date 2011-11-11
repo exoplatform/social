@@ -41,6 +41,8 @@ public class ExoPersonImpl extends PersonImpl {
 
   private String portalOwner;
   
+  private String peopleUri;
+  
   public static enum Field {
     /* the json field for spaces*/
     SPACES("spaces"),
@@ -55,7 +57,9 @@ public class ExoPersonImpl extends PersonImpl {
     HOST("host"),
 
     /* the json field for portal onwer name */
-    PORTAL_OWNER("portalOwner");
+    PORTAL_OWNER("portalOwner"),
+    /* the URI of people page */
+    PEOPLE_URI("peopleUri");
     
     /**
      * The json field that the instance represents.
@@ -142,5 +146,12 @@ public class ExoPersonImpl extends PersonImpl {
   public void setPortalOwner(String portalOwner) {
     this.portalOwner = portalOwner;
   }
+  
+  public String getPeopleUri() {
+    return peopleUri;
+  }
 
+  public void setPeopleUri(String peopleUri) {
+    this.peopleUri = peopleUri;
+  } 
 }

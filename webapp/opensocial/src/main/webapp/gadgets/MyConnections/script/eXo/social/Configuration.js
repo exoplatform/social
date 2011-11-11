@@ -58,7 +58,8 @@
 		portalName: null,
 		restContextName: null,
 		peopleRestUrl: null,
-		activitiesRestUrl: null
+		activitiesRestUrl: null,
+		peopleDirectory: null
 	};
 	
 	/**

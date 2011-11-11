@@ -23,11 +23,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Request;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
@@ -48,7 +51,18 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.mop.user.UserPortal;
+import org.exoplatform.portal.mop.user.UserPortalContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -238,6 +252,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         ((ExoPersonImpl) p).setRestContextName(container.getRestContextName());
       } else if (ExoPersonImpl.Field.HOST.toString().equals(field)) {
         ((ExoPersonImpl) p).setHostName(getHost(st));
+      } else if (ExoPersonImpl.Field.PEOPLE_URI.toString().equals(field)) {
+        ((ExoPersonImpl) p).setPeopleUri(getURIForPeople(container, identity.getRemoteId()));
       }
     }
     return p;
@@ -414,4 +430,49 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     return ImmediateFuture.newInstance(null);
   }
 
+  /**
+   * Get the uri people.
+   * 
+   * @param portalContainer
+   * @param remoteId
+   * @return
+   * @throws Exception
+   */
+  private String getURIForPeople(PortalContainer portalContainer, String remoteId) throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
+
+    UserPortalContext NULL_CONTEXT = new UserPortalContext() {
+      public ResourceBundle getBundle(UserNavigation navigation) {
+        return null;
+      }
+
+      public Locale getUserLocale() {
+        return Locale.ENGLISH;
+      }
+    };
+    RequestLifeCycle.begin(container);
+    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+    UserPortal userPortal = userPortalCfg.getUserPortal();
+    
+    SiteKey siteKey = SiteKey.portal(userPortalConfigSer.getDefaultPortal());
+    UserNavigation userNav = userPortal.getNavigation(siteKey);
+    UserNode rootNode = userPortal.getNode(userNav, Scope.ALL, null, null);
+    UserNode peopleNode = rootNode.getChild("people");
+    UserNode iteratorNode = peopleNode;
+    StringBuffer stringBuffer = new StringBuffer();
+    
+    while(iteratorNode.getParent()!=null){
+      stringBuffer.insert(0, iteratorNode.getName());
+      stringBuffer.insert(0, "/");
+      iteratorNode = iteratorNode.getParent();
+    }
+    stringBuffer.insert(0, userPortalConfigSer.getDefaultPortal());
+    stringBuffer.insert(0, "/");
+    stringBuffer.insert(0, portalContainer.getName());
+    stringBuffer.insert(0, "/");
+    
+    RequestLifeCycle.end();
+    return stringBuffer.toString();
+  }
 }

@@ -153,12 +153,6 @@
   	
     var nameToSearch = ((searchInputEl.value != "") && (searchInputEl.value != DEFAULT_INPUT_VALUE)) ? searchInputEl.value : "";
     
-    debug.info("name to search:");
-    debug.debug(nameToSearch);
-    
-    debug.info('UISearch.getNameToSearch:');
-    debug.debug(UISearch.getNameToSearch());
-    
     nameToSearch = encodeURIComponent(nameToSearch);
     
     if (nameToSearch === '' || nameToSearch === UISearch.getNameToSearch()) {
@@ -167,27 +161,22 @@
     
     UISearch.setNameToSearch(nameToSearch);
     
-    debug.info('UISearch.getViewType():');
-    debug.debug(UISearch.getViewType());
-    
     if (UISearch.getViewType() === UISearch.VIEW_TYPE.TEXT_LIST) {
     	UITextList.setUserConnectionSearch(null);
     } else if (UISearch.getViewType() === UISearch.VIEW_TYPE.ICON_LIST) {
     	UIIconList.setUserConnectionSearch(null);
     }
     
+    var lang = Locale.getLang();
+    
   	var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl + 
   											"?offset=" + UISearch.getOffset() + 
   										  "&limit=" + UISearch.getLimit() +
-  											"&nameToSearch=" + UISearch.getNameToSearch();
-										
-  	debug.info("search url:");
-  	debug.debug(peopleRestUrl);
+  											"&nameToSearch=" + UISearch.getNameToSearch() + 
+  											"&lang=" + lang;
   	
   	Util.makeRequest(peopleRestUrl, function(response) {
   		var userConnectionsActivities = Util.parseUserConnectionActivities(response);
-  		debug.info("search result:");
-  		debug.debug(userConnectionsActivities);
   	  display(userConnectionsActivities);
 		});
   }
@@ -245,18 +234,15 @@
 	 * Load more result with search.
 	 */
 	UISearch.loadMore = function() {
+		var lang = Locale.getLang();
 		var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl + 
 												"?offset=" + UISearch.getOffset() + 
 											  "&limit=" + UISearch.getLimit() +
-												"&nameToSearch=" + UISearch.getNameToSearch();
-
-		debug.info("search url:");
-		debug.debug(peopleRestUrl);
+												"&nameToSearch=" + UISearch.getNameToSearch() + 
+												"&lang=" + lang;
 		
 		Util.makeRequest(peopleRestUrl, function(response) {
 			var userConnectionsActivities = Util.parseUserConnectionActivities(response);
-			debug.info("search result:");
-			debug.debug(userConnectionsActivities);
 			display(userConnectionsActivities);
 		});
 	}

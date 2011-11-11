@@ -151,7 +151,7 @@
   function getUserTextListBlock(userConnectionList) {
   	var userBlock = [];
   	$.each(userConnectionList, function(index, value) {
-  		userBlock.push('<li><a href="' + value.profileUrl + '" class="Icon"> ' + value.displayName + ' </a><span>' + value.activityTitle + '</span></li>'); 
+  		userBlock.push('<li><a target="_blank" href="' + value.profileUrl + '" class="Icon"> ' + value.displayName + ' </a><span>' + value.activityTitle + '</span></li>'); 
   	});
   	return userBlock.join('');
   }
@@ -162,12 +162,6 @@
    * @param userConnectionList
    */
   function display(userConnectionList) {
-  	debug.info("userConnectionList in UITextList:");
-  	debug.debug(userConnectionList);
-  	
-  	debug.info('UITextList.getUserConnectionSearch()');
-  	debug.debug(UITextList.getUserConnectionSearch());
-  	
   	if (UITextList.getUserConnectionSearch() !== null) {
   		$(uiComponent.UITextListListContent).empty();
   	}
@@ -183,7 +177,7 @@
   		}
   		if (UITextList.getSearchMode() === true) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-		 											'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
+		 											'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
 		 										'</div>';
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
   				$(uiComponent.UITextListMoreContent).after(addBlock);
@@ -198,7 +192,7 @@
   		//search mode
   		if (UITextList.getUserConnectionSearch() !== null) {
   			var addBlock = '<div id="UITextListBackToListAndPeopleDirectory">' + 
-  										 		'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a href="javascript:void(0)" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
+  										 		'<a href="javascript:void(0)" class="Link" id="BackToUITextListFromSearch">' + Locale.getMsg('back_to_list') + '</a> | <a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link">' + Locale.getMsg('people_directory') + '</a>'  + 
   										 	'</div>';
   			
   			if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
@@ -221,6 +215,11 @@
     		}
     	}
   	}
+  	
+  	if ($(uiComponent.UITextListPeopleDirectory).length === 0) {
+  		$(uiComponent.GadgetUITextList).append('<a target="_blank" href="' + Configuration.portalEnvironment.peopleDirectory + '" class="Link" id="UITextListPeopleDirectory" target="_blank">' + Locale.getMsg('people_directory') + '</a>');
+  	}
+  	
   	gadgets.window.adjustHeight();
   }
   
@@ -241,10 +240,6 @@
 	});
   
 	$(uiComponent.UITextListLoadMore).live("click", function() {
-		
-		debug.info("$(uiComponent.UITextListLoadMore).length: ");
-		debug.debug($(uiComponent.UITextListLoadMore).length);
-		
 		if ($(uiComponent.UITextListBackToListAndPeopleDirectory).length === 0) {
 			UITextList.loadMore();
 		} else {
@@ -292,12 +287,11 @@
    * Load more user connection activities.
    */
   UITextList.loadMore = function() {
+  	var lang = Locale.getLang();
   	var peopleRestUrl = Configuration.portalEnvironment.peopleRestUrl +
   											"?offset=" + UITextList.getOffset() + 
-												"&limit=" + UITextList.getLimit();
-  	
-  	debug.info("peopleRestUrl in UITextList:");
-  	debug.debug(peopleRestUrl);
+												"&limit=" + UITextList.getLimit() + 
+												"&lang=" + lang;
   	
   	//Get user connection activities when click load more.
   	Util.makeRequest(peopleRestUrl, function(response) {

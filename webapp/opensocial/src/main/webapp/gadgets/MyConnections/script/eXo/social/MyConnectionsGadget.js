@@ -25,9 +25,6 @@
 	Configuration = exo.social.Configuration;
 	SocialUtil = eXo.social.SocialUtil;
 	
-	debug.info('Locale');
-	debug.debug(Locale);
-	
 	/**
 	 * UI component.
 	 */
@@ -111,9 +108,6 @@
   		
   		var settingStored = Util.getSetting();
   		
-  		debug.info('settingStored click icon list:');
-  		debug.debug(settingStored);
-  		
   		ActivityStream.initProfiles({offset: 0, limit: settingStored.itemPerViewNum, 
   																viewType: "ICON_LIST", updateTime: settingStored.updateTime,
   																orderBy: settingStored.orderBy});
@@ -126,9 +120,6 @@
   	
   	$(uiComponent.ModeTextList).click(function() {
   		var settingStored = Util.getSetting();
-  		
-  		debug.info('settingStored click text list:');
-  		debug.debug(settingStored);
   		
   		$(uiComponent.UITextListListContent).empty();
   		
