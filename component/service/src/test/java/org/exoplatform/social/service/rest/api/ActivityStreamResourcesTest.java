@@ -1300,7 +1300,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       // Mary creates 10 activities to Demo's stream
       createActivities(maryIdentity, demoIdentity, 10);
       
-      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20).get(0);
+      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(johnIdentity).loadAsList(0, 20).get(0);
       resourceUrl = RESOURCE_URL + "connections.json?since_id=" + baseActivity.getId();
       
       // Demo gets activities in of his connections base on the first connection's activity => 20
@@ -1340,7 +1340,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       // John creates 5 activities to Demo's stream
       createActivities(johnIdentity, demoIdentity, 5);
       
-      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+      ExoSocialActivity baseActivity = activityManager.getActivitiesOfConnectionsWithListAccess(johnIdentity).loadAsList(0, 5).get(4);
       resourceUrl = RESOURCE_URL + "connections.json?max_id=" + baseActivity.getId();
 
       ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
@@ -1464,8 +1464,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       activityManager.saveLike(act, rootIdentity);
     }
 
-    ExoSocialActivity baseSinceIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
-    ExoSocialActivity baseMaxIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 5).get(4);
+    ExoSocialActivity baseSinceIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(johnIdentity).loadAsList(0, 5).get(4);
+    ExoSocialActivity baseMaxIdActivity = activityManager.getActivitiesOfConnectionsWithListAccess(johnIdentity).loadAsList(0, 5).get(4);
 
     String resourceUrl = RESOURCE_URL + "connections.json?limit=" + limit + "&since_id=" + baseSinceIdActivity.getId()
             + "&max_id=" + baseMaxIdActivity.getId() + "&number_of_comments=" + numberOfComments

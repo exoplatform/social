@@ -565,11 +565,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         whereExpression.or();
       }
 
-      if (OrganizationIdentityProvider.NAME.equals(currentIdentity.getProviderId())) {
-        whereExpression.equals(ActivityEntity.poster, currentIdentity.getId());
-      } else {
-        whereExpression.equals(ActivityEntity.identity, currentIdentity.getId());
-      }
+      whereExpression.equals(ActivityEntity.identity, currentIdentity.getId());
+
     }
     whereExpression.endGroup();
 

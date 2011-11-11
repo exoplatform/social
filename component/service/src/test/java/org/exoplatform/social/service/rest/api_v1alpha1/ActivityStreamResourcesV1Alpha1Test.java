@@ -17,6 +17,15 @@
 
 package org.exoplatform.social.service.rest.api_v1alpha1;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.Response;
+
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -31,20 +40,17 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api_v1alpha1.models.ActivityList;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
-import javax.ws.rs.core.Response;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
 public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
 
+  private final Log LOG = ExoLogger.getLogger(ActivityStreamResourcesV1Alpha1Test.class);
+  
   private final String RESOURCE_URL = "/api/social/v1-alpha1/portal/activity_stream";
 
+  private List<ExoSocialActivity> tearDownActivityList;
   //
   private IdentityManager identityManager;
   private ActivityManager activityManager;
@@ -59,6 +65,9 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
 
   //
   private Space space;
+  
+  //
+  
 
   /**
    * Adds {@link ActivityStreamResources}.
@@ -70,6 +79,9 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     super.setUp();
     addResource(ActivityStreamResources.class, null);
 
+    //
+    tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    
     //
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
@@ -109,6 +121,14 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
   public void tearDown() throws Exception {
     removeResource(ActivityStreamResources.class);
 
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      try {
+        activityManager.deleteActivity(activity.getId());
+      } catch (Exception e) {
+        LOG.warn("can not delete activity with id: " + activity.getId());
+      }
+    }
+    
     //
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(johnIdentity);
@@ -414,8 +434,6 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
 
-    this.maryPostActivityToRootWall(1);
-
     ContainerResponse response =
         service("GET", RESOURCE_URL + "/" + rootIdentity.getId() + "/connections/default.json", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -426,7 +444,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(1, got.getActivities().size());
+    //5 activities create in setup() method
+    assertEquals(5, got.getActivities().size());
 
     endSession();
 
@@ -444,10 +463,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
 
-    this.maryPostActivityToRootWall(10);
-
     ContainerResponse response =
-        service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/default.json?limit=2", "", null, null);
+        service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/default.json?limit=6", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
     assertNotNull(response.getEntity());
@@ -456,7 +473,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(2, got.getActivities().size());
+    //5 activities create in setup() method
+    assertEquals(5, got.getActivities().size());
 
     endSession();
 
@@ -488,9 +506,9 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(3, got.getActivities().size());
 
-    assertEquals("mary posts activiy " + 9 + " to root'wall", got.getActivities().get(0).getTitle());
-    assertEquals("mary posts activiy " + 8 + " to root'wall", got.getActivities().get(1).getTitle());
-    assertEquals("mary posts activiy " + 7 + " to root'wall", got.getActivities().get(2).getTitle());
+    assertEquals("mary title " + 4, got.getActivities().get(0).getTitle());
+    assertEquals("mary title " + 3, got.getActivities().get(1).getTitle());
+    assertEquals("mary title " + 2, got.getActivities().get(2).getTitle());
 
     endSession();
 
@@ -582,9 +600,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
 
-    this.maryPostActivityToRootWall(4);
-
-    List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(rootIdentity).loadAsList(0, 4);
+    //setup inject 10 activities for root identity
+    List<ExoSocialActivity> activites = activityManager.getActivitiesWithListAccess(maryIdentity).loadAsList(0, 5);
 
     ContainerResponse response = service(
         "GET",
@@ -599,9 +616,9 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
 
     ActivityList got = (ActivityList) response.getEntity();
     assertEquals(3, got.getActivities().size());
-    assertEquals("mary posts activiy " + 3 + " to root'wall", got.getActivities().get(0).getTitle());
-    assertEquals("mary posts activiy " + 2 + " to root'wall", got.getActivities().get(1).getTitle());
-    assertEquals("mary posts activiy " + 1 + " to root'wall", got.getActivities().get(2).getTitle());
+    assertEquals("mary title " + 4, got.getActivities().get(0).getTitle());
+    assertEquals("mary title " + 3, got.getActivities().get(1).getTitle());
+    assertEquals("mary title " + 2, got.getActivities().get(2).getTitle());
 
     endSession();
 
@@ -625,7 +642,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     this.maryPostActivityToRootWall(3);
 
     List<ExoSocialActivity> activities =
-        activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 2);
+        activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 4);
 
     ContainerResponse response = service(
         "GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/older/" + activities.get(1).getId() + ".json",
@@ -638,7 +655,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(1, got.getActivities().size());
+    assertEquals(3, got.getActivities().size());
 
     endSession();
 
@@ -661,11 +678,11 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     this.maryPostActivityToRootWall(3);
 
     List<ExoSocialActivity> activites =
-        activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 2);
+        activityManager.getActivitiesOfConnectionsWithListAccess(rootIdentity).loadAsList(0, 5);
 
     ContainerResponse response = service(
         "GET",
-        RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/older/" + activites.get(1).getId() + ".json?limit=2",
+        RESOURCE_URL + "/" + rootIdentity.getId() +  "/connections/older/" + activites.get(3).getId() + ".json?limit=2",
         "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -1040,7 +1057,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(7, got.getActivities().size());
+    //setup() method creates 22 activities: 10 : root; 5 : mary; 7 for space.
+    assertEquals(22, got.getActivities().size());
 
     endSession();
 
@@ -1058,7 +1076,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     startSessionAs(rootIdentity.getRemoteId());
 
     ContainerResponse response =
-        service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/default.json?limit=12", "", null, null);
+        service("GET", RESOURCE_URL + "/" + rootIdentity.getId() +  "/feed/default.json?limit=50", "", null, null);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
     assertNotNull(response.getEntity());
@@ -1067,7 +1085,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(7, got.getActivities().size());
+    assertEquals(22, got.getActivities().size());
 
     endSession();
 
@@ -1094,7 +1112,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(7, got.getActivities().size());
+    assertEquals(8, got.getActivities().size());
     assertEquals("space title 6", got.getActivities().get(0).getTitle());
     assertEquals("space title 5", got.getActivities().get(1).getTitle());
     assertEquals("space title 4", got.getActivities().get(2).getTitle());
@@ -1236,8 +1254,10 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
       fail();
     }
 
+    
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(5, got.getActivities().size());
+    //setup create 22 activities. Gets from 2 to 22 position
+    assertEquals(20, got.getActivities().size());
 
     endSession();
 
@@ -1289,8 +1309,6 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     startSessionAs(rootIdentity.getRemoteId());
     startSessionAs(maryIdentity.getRemoteId());
 
-    this.maryPostActivityToRootWall(10);
-
     List<ExoSocialActivity> activities = activityManager.getActivityFeedWithListAccess(rootIdentity).loadAsList(0, 10);
 
     ContainerResponse response = service(
@@ -1304,11 +1322,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
     }
 
     ActivityList got = (ActivityList) response.getEntity();
-    assertEquals(7, got.getActivities().size());
-
-    for (int i = 6, j = 0; i >= 0; i --, j ++) {
-      assertEquals("space title" + " " + i, got.getActivities().get(j).getTitle());
-    }
+    assertEquals(8, got.getActivities().size());
 
     endSession();
 
@@ -1387,7 +1401,7 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
       activity.setTemplateParams(params);
 
       //
-      activityManager.saveActivityNoReturn(identity, activity);
+      tearDownActivityList.add(activityManager.saveActivity(identity, activity));
 
       ExoSocialActivity comment1 = new ExoSocialActivityImpl();
       comment1.setTitle("comment 1");
@@ -1423,7 +1437,8 @@ public class ActivityStreamResourcesV1Alpha1Test extends AbstractResourceTest {
       params.put("key2", "value2");
       activity.setTemplateParams(params);
 
-      activityManager.saveActivityNoReturn(rootIdentity, activity);
+      tearDownActivityList.add(activityManager.saveActivity(rootIdentity, activity));
+      
     }
   }
 }

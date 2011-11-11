@@ -689,7 +689,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("demoActivities.getNumberOfOlder(baseActivity) must return 15", 15, 
                  demoActivities.getNumberOfOlder(baseActivity));
     
-    demoActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(johnIdentity);
+    demoActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(maryIdentity);
     assertNotNull("demoActivities must not be null", demoActivities);
     assertEquals("demoActivities.getSize() must return: 0", 0, demoActivities.getSize());
     
@@ -724,6 +724,27 @@ public class ActivityManagerTest extends AbstractCoreTest {
     RealtimeListAccess<ExoSocialActivity> maryActivityFeed = activityManager.getActivityFeedWithListAccess(maryIdentity);
     assertEquals("maryActivityFeed.getSize() must return 6", 6, maryActivityFeed.getSize());
     
+    // Create demo's activity on space
+    createActivityToOtherIdentity(demoIdentity, spaceIdentity, 5);
+
+    // after that the feed of demo with have 16
+    RealtimeListAccess<ExoSocialActivity> demoActivityFeed3 = activityManager
+        .getActivityFeedWithListAccess(demoIdentity);
+    assertEquals("demoActivityFeed3.getSize() must return 16", 16,
+        demoActivityFeed3.getSize());
+
+    // demo's Space feed must be be 5
+    RealtimeListAccess demoActivitiesSpaceFeed = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
+    assertEquals("demoActivitiesSpaceFeed.getSize() must return 10", 10, demoActivitiesSpaceFeed.getSize());
+
+    // the feed of mary must be the same because mary not the member of space
+    RealtimeListAccess<ExoSocialActivity> maryActivityFeed2 = activityManager.getActivityFeedWithListAccess(maryIdentity);
+    assertEquals("maryActivityFeed2.getSize() must return 6", 6, maryActivityFeed2.getSize());
+
+    // john not friend of demo but member of space
+    RealtimeListAccess johnSpaceActivitiesFeed = activityManager.getActivitiesOfUserSpacesWithListAccess(johnIdentity);
+    assertEquals("johnSpaceActivitiesFeed.getSize() must return 10", 10, johnSpaceActivitiesFeed.getSize());
+
     relationshipManager.remove(demoMaryConnection);
     spaceService.deleteSpace(space);
   }
@@ -985,7 +1006,7 @@ this.populateActivityMass(johnIdentity, 10);
    assertNotNull("demoActivities must not be null", demoActivities);
    assertEquals("demoActivities.size() must return: 20", 20, demoActivities.size());
    
-   demoActivities = activityManager.getActivitiesOfUserSpaces(johnIdentity);
+   demoActivities = activityManager.getActivitiesOfUserSpaces(maryIdentity);
    assertNotNull("demoActivities must not be null", demoActivities);
    assertEquals("demoActivities.size() must return: 0", 0, demoActivities.size());
    
@@ -1298,6 +1319,28 @@ this.populateActivityMass(johnIdentity, 10);
     }
   }
   
+  private void createActivityToOtherIdentity(Identity posterIdentity,
+      Identity targetIdentity, int number) {
+
+    // if(!relationshipManager.get(posterIdentity,
+    // targetIdentity).getStatus().equals(Type.CONFIRMED)){
+    // return;
+    // }
+
+    for (int i = 0; i < number; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      ;
+      activity.setTitle("title " + i);
+      activity.setUserId(posterIdentity.getId());
+      tearDownActivityList.add(activity);
+      try {
+        activityManager.saveActivityNoReturn(targetIdentity, activity);
+      } catch (Exception e) {
+        LOG.error("can not save activity.", e);
+      }
+    }
+  }
+  
   /**
    * Gets an instance of the space.
    * 
@@ -1307,20 +1350,21 @@ this.populateActivityMass(johnIdentity, 10);
    * @throws Exception
    * @since 1.2.0-GA
    */
-  private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
+  private Space getSpaceInstance(SpaceService spaceService, int number)
+      throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
-    space.setVisibility(Space.PUBLIC);
+    space.setVisibility(Space.OPEN);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
-    String[] managers = new String[] {"demo", "tom"};
-    String[] members = new String[] {"raul", "ghost", "dragon"};
-    String[] invitedUsers = new String[] {"register1", "mary"};
-    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    String[] managers = new String[] { "demo", "rault" };
+    String[] members = new String[] { "raul", "ghost", "dragon", "john" };
+    String[] invitedUsers = new String[] { "register1", "mary" };
+    String[] pendingUsers = new String[] { "jame", "paul", "hacker" };
     space.setInvitedUsers(invitedUsers);
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
