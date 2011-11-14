@@ -16,13 +16,16 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
@@ -186,6 +189,54 @@ public class UIExperienceSection extends UIProfileSection {
   }
 
   /**
+   * Convert calendar to string.
+   * 
+   * @param cal
+   * @return
+   * @since 1.2.5
+   */
+  protected String calendarToString(Calendar cal) {
+    String sDate = "" ;
+    SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
+    sDate = sd.format(cal.getTime());
+    return sDate ;
+  }
+
+  /**
+   * Convert string to calendar.
+   * 
+   * @param sDate
+   * @return
+   * @since 1.2.5
+   */
+  protected Calendar stringToCalendar(String sDate) {
+    try {
+      SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
+      Calendar calendar = Calendar.getInstance() ;
+      calendar.setTime(sd.parse(sDate));
+      return calendar ;
+    } catch (ParseException e) {
+      return null ;
+    }
+  }
+
+  /**
+   * Display date time.
+   * 
+   * @param d
+   * @return
+   * @since 1.2.5
+   * @throws ParseException
+   */
+  protected String displayDateTime(Object d) throws ParseException{
+    Date date = this.stringToCalendar(d.toString()).getTime(); 
+    Locale l = WebuiRequestContext.getCurrentInstance().getLocale();
+    Calendar cal = Calendar.getInstance(l) ;
+    DateFormat sf = SimpleDateFormat.getDateInstance(DateFormat.LONG, l);
+    return sf.format(date) ;
+  }
+
+  /**
    * Gets year of date time.<br>
    *
    * @param inDate Input date
@@ -344,13 +395,20 @@ public class UIExperienceSection extends UIProfileSection {
         for (int idx = 0; idx < totalProfiles; idx += 7) {
           ((UIFormInput) listChildForSetValue.get(idx + 1)).setValue(listProfile.get(idx));
           ((UIFormInput) listChildForSetValue.get(idx + 2)).setValue(listProfile.get(idx + 1));
-          ((UIFormInput) listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx + 2)); //des
-          ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); //skills
-          ((UIFormInput) listChildForSetValue.get(idx + 5)).setValue(listProfile.get(idx + 4)); //start date
-          ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5)); // end date
+          ((UIFormInput) listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx + 2)); // des
+          ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); // skills
+
+          ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 4)
+                                                                                                                         .toString())); // start date
+          if (listProfile.get(idx + 5) != null) {
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 5)
+                                                                                                                           .toString())); // end date
+          } else {
+            ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5)); // end date
+          }
+
           ((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
-          ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6))
-                  .setRendered(!((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).getValue());
+          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
         }
       }
 
@@ -488,15 +546,27 @@ public class UIExperienceSection extends UIProfileSection {
       skills = uiFormTextAreaInput.getValue();
 
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
-      startDate = uiDateTimeInput.getValue();
+      Locale locale = context.getParentAppRequestContext().getLocale();
+      String currentPartern = uiDateTimeInput.getDatePattern_();
+
+      SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(sf.parse(uiDateTimeInput.getValue()));
+      startDate = calendarToString(cal);
 
       if ((startDate == null) || (startDate.length() == 0)) {
         uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
         return 2;
       }
 
-      uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-      endDate = uiDateTimeInput.getValue();
+      try {
+        uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
+        
+        cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+      } catch (Exception e) {
+        endDate = null;
+      }
+      endDate = calendarToString(cal);
 
       sDate = stringToDate(startDate);
       eDate = stringToDate(endDate);
@@ -566,17 +636,17 @@ public class UIExperienceSection extends UIProfileSection {
     uiFormTextAreaInput.setRows(3);
 
     addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false)
-      .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
 
     addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false)
-      .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
 
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");
     uiDateInputCheck.setOnChange("ShowHideEndDate", uiDateInputCheck.getId());
     addUIFormInput(uiDateInputCheck);
 
-//    addUIFormInput(new UIFormStringInput(DESCRIPTION + expIdx, null, null));
+    //    addUIFormInput(new UIFormStringInput(DESCRIPTION + expIdx, null, null));
   }
 
   /**
@@ -587,8 +657,8 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws ParseException
    */
   private Date stringToDate(String dateStr) throws ParseException {
-    SimpleDateFormat formatDate = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY);
-    if ((dateStr == null) || (dateStr.length() == 0)) {
+    SimpleDateFormat formatDate = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
+    if ((dateStr == null) || (dateStr.trim().length() == 0)) {
       return null;
     }
     return formatDate.parse(dateStr);
@@ -602,7 +672,7 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws ParseException
    */
   private Calendar getCalendar(String inDate) throws ParseException {
-    SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY);
+    SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
     Date date = format.parse(inDate);
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
