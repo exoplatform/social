@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -58,6 +59,8 @@ public class UIBasicInfoSection extends UIProfileSection {
 
   /** INVALID CHARACTER MESSAGE. */
   public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
+  
+  public String lastloadUser;
 
  
   public UIBasicInfoSection() throws Exception {
@@ -97,7 +100,8 @@ public class UIBasicInfoSection extends UIProfileSection {
       this.getUIStringInput(Profile.FIRST_NAME).setValue((String) profile.getProperty(Profile.FIRST_NAME));
       this.getUIStringInput(Profile.LAST_NAME).setValue((String) profile.getProperty(Profile.LAST_NAME));
       this.getUIStringInput(Profile.EMAIL).setValue((String) profile.getProperty(Profile.EMAIL));
-      setFirstLoad(true);
+      if (isEditMode())
+        setFirstLoad(true);
     }
   }
 
@@ -171,4 +175,6 @@ public class UIBasicInfoSection extends UIProfileSection {
       Utils.updateWorkingWorkSpace();
     }
   }
+  
+  
 }
