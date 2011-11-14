@@ -34,6 +34,7 @@ import java.util.List;
 public class IdentityFilterKey extends MultitenantCacheKey {
 
   private final String providerId;
+  private final String remoteId;
   private final String name;
   private final String position;
   private final String company;
@@ -41,10 +42,36 @@ public class IdentityFilterKey extends MultitenantCacheKey {
   private final String gender;
   private final char firstChar;
   private final List<IdentityKey> excluded;
+  
+  /**
+   * Constructor for case using remoteId as key.
+   * @param providerId
+   * @param remoteId
+   * @param filter
+   */
+  public IdentityFilterKey(final String providerId, final String remoteId, final ProfileFilter filter) {
+    this.remoteId = remoteId;
+    this.providerId = providerId; 
+    this.name = filter.getName();
+    this.position = filter.getPosition();
+    this.company = filter.getCompany();
+    this.skills = filter.getSkills();
+    this.gender = filter.getGender();
+    this.firstChar = filter.getFirstCharacterOfName();
 
+    List<IdentityKey> keys = new ArrayList<IdentityKey>();
+    for (Identity i : filter.getExcludedIdentityList()) {
+      keys.add(new IdentityKey(i));
+    }
+
+    this.excluded = Collections.unmodifiableList(keys);
+    
+  }
+  
   public IdentityFilterKey(final String providerId, final ProfileFilter filter) {
 
     this.providerId = providerId;
+    this.remoteId = null;
     this.name = filter.getName();
     this.position = filter.getPosition();
     this.company = filter.getCompany();
@@ -131,6 +158,9 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     if (skills != null ? !skills.equals(that.skills) : that.skills != null) {
       return false;
     }
+    if (remoteId != null ? !remoteId.equals(that.remoteId) : that.remoteId != null) {
+      return false;
+    }
 
     return true;
   }
@@ -138,6 +168,7 @@ public class IdentityFilterKey extends MultitenantCacheKey {
   @Override
   public int hashCode() {
     int result = super.hashCode();
+    result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (position != null ? position.hashCode() : 0);
@@ -146,6 +177,7 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     result = 31 * result + (gender != null ? gender.hashCode() : 0);
     result = 31 * result + (int) firstChar;
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
+    
     return result;
   }
 
