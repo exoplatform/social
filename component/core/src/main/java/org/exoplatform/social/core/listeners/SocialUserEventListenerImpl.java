@@ -47,7 +47,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
 
     Identity identity = ids.findIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
 
-    if (identity != null) {
+    if (isNew && identity != null) {
       throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
     }
 
