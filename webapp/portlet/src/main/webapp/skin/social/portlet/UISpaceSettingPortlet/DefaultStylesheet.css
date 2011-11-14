@@ -532,16 +532,16 @@
   color:#058EE6;
   cursor:pointer;
   font-weight:normal;
-  line-height:31px;
-  padding:0 8px 5px 4px;
+  line-height:25px;
+  padding:0 8px 0px 4px;
 }
 
 .UIHorizontalTabs .MessageTabDialog .DisabledTab .MiddleTab {
   color:gray;
   cursor:pointer;
   font-weight:normal;
-  line-height:31px;
-  padding:0 8px 5px 4px;
+  line-height:25px;
+  padding:0 8px 0px 4px;
 }
 
 /* =============left column - space setting===============*/
@@ -1153,8 +1153,8 @@ padding: 0 0 0 20px
   color:gray;
   cursor:pointer;
   font-weight:normal;
-  line-height:31px;
-  padding:0 8px 5px 4px;
+  line-height:25px;
+  padding:0 8px 0px 4px;
 }
 
 /* =============left column - space setting===============*/
