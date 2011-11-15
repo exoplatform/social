@@ -104,8 +104,8 @@
 		  }
 		}, false);
 	
-		Util.addEventListener(this.nameTextObj, 'keypress', function(event) {
-	      uiProfileUserSearch.keyPressAction(event);
+		Util.addEventListener(this.nameTextObj, 'keydown', function(event) {
+	      uiProfileUserSearch.keyDownAction(event);
 	    }, false);
 		 
 		Util.addEventListener(this.posTextObj, 'focus', function() {
@@ -140,19 +140,19 @@
 		  }
 		}, false);
 		
-		Util.addEventListener(this.posTextObj, 'keypress', function(event) {
-	      uiProfileUserSearch.keyPressAction(event);
+		Util.addEventListener(this.posTextObj, 'keydown', function(event) {
+	      uiProfileUserSearch.keyDownAction(event);
 	    }, false);
 		
-		Util.addEventListener(this.skillTextObj, 'keypress', function(event) {
-	      uiProfileUserSearch.keyPressAction(event);
+		Util.addEventListener(this.skillTextObj, 'keydown', function(event) {
+	      uiProfileUserSearch.keyDownAction(event);
 	    }, false);
 			        
 		suggestControlObj.load(nameEl, uiProfileUserSearchObj);
 	 
 	 }
 	        
-	 UIProfileUserSearch.prototype.keyPressAction = function(event) {
+	 UIProfileUserSearch.prototype.keyDownAction = function(event) {
 	    var nameEl = this.nameTextObj;
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
