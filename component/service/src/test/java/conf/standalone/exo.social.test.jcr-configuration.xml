@@ -96,7 +96,7 @@
                       <string>eXoApplications</string>
                     </field>
                     <field name="path">
-                      <string>/production</string>
+                      <string>/exo:applications</string>
                     </field>
                     <field name="permissions">
                       <collection type="java.util.ArrayList">
