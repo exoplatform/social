@@ -1,5 +1,5 @@
 =====================================================
-    Release Notes - eXo Social - Version 1.1.1
+    Release Notes - eXo Social - Version 1.2.5
 =====================================================
 
 ===============
@@ -28,10 +28,12 @@ eXo Social is composed of 2 modules :
 =============
 2 What's new?
 =============
-
-- Focus more on Social's performance with ExoCache. Make avatar images are cached.
-- Make it configurable for OpenSocial Rest Context API.
-- UI enhancement: more incentive "Add New Space" button; move edit space navigation into space settings
+- New Skin for social
+- My Connections Gadget
+- Opensocial 1.1 support 
+- Redesigned Activity Streams
+- Many bugs fixes
+- UXP improvement  
 
 =========
 3 INSTALL
@@ -86,10 +88,11 @@ You can log into the portal with the following accounts: root, john, marry, demo
 All those accounts have the default password "gtn".
 
 * Direct link to access applications in Social :
-    +) Spaces application: http://localhost:8080/socialdemo/private/classic/spaces
-    +) People application: http://localhost:8080/socialdemo/private/classic/people
-    +) Activity stream application: http://localhost:8080/socialdemo/private/classic/activities
-    +) Profile of user: http://localhost:8080/socialdemo/private/classic/profile
+    +) All Spaces: http://localhost:8080/socialdemo/classic/all-spaces
+    +) People page: http://localhost:8080/socialdemo/classic/people
+    +) Activity stream : http://localhost:8080/socialdemo/classic/activities
+    +) Profile of user: http://localhost:8080/socialdemo/classic/profile
+
 
   You will get login form if you are not yet logged in to Social.
 
@@ -100,7 +103,7 @@ All those accounts have the default password "gtn".
 
      Company site        http://www.exoplatform.com
      Community JIRA      http://jira.exoplatform.org
-     Community site      http://www.exoplatform.org
+     Community site      http://community.exoplatform.org
      Community gatein    http://www.jboss.org/gatein/
      Developers wiki     http://wiki.exoplatform.org
 
@@ -108,6 +111,379 @@ All those accounts have the default password "gtn".
 ===========
 5 CHANGELOG
 ===========
+- 1.2.5
+
+** Bug
+    * [SOC-1339] - can't delete a space from a webservice
+    * [SOC-1421] - [Profile] Still kept old value of deleted user's profile
+    * [SOC-1791] - Error font when share a link contain Vietnamese
+    * [SOC-1828] - User is still displayed in people list although it deleted from Organization porlet
+    * [SOC-2064] - Unknown error when comment or like a comment of deleted user on activities stream
+    * [SOC-2110] - [IE7] Little Error UI in Find Space
+    * [SOC-2132] - Selected date in "experiences" profile is not well interpreted (locales)
+    * [SOC-2140] - Profile minimal doesn't work anymore
+    * [SOC-2143] - Social should add configuration to compatibility with eXoApplications path definition 
+    * [SOC-2168] - [Profile] Validate data in profile page
+    * [SOC-2173] - Restriction on current position edition
+    * [SOC-2175] - Bad search result for keywords containing spaces
+    * [SOC-2198] - Bad joining space botton visibility in closed mode registration
+    * [SOC-2199] - Bad space visibility in the hidden mode
+    * [SOC-2203] - Bad alignment of blocks on intranet homepage
+    * [SOC-2209] - [My Space] List action is not right displayed with user is 'Root'
+    * [SOC-2219] - Social API - Get Activity doesn't work for some activities
+    * [SOC-2222] - Exception when want to invite the people
+    * [SOC-2224] - Some people are friend on network page, but not not on people page.
+    * [SOC-2225] - Some activity shouldn't appear in the activity stream
+    * [SOC-2226] - There is something wrong with Profile Network page on Social.
+    * [SOC-2236] - Cache for The filter alphabetically does not work in the Space's member tab
+    * [SOC-2240] - can't invite membre whose name contains "-" to a private  space
+    * [SOC-2241] - org.hibernate.TransactionException when create new space
+    * [SOC-2242] - Wrong in validation Position field in Header section [Profile]
+    * [SOC-2246] - Problem on search user by skills.
+    * [SOC-2248] - Error in "People" page in French
+    * [SOC-2249] - Unknown error message when adds user experiences 
+    * [SOC-2264] - Save button on Space Navigation does not work when we clone or copy and paste node
+    * [SOC-2265] - Hidden spaces are always visible
+    * [SOC-2269] - REST API should set title to null when we like activity (to avoid encoding issues)
+    * [SOC-2271] - Exeption when click invite user
+    * [SOC-2273] - Activity stream is not refreshed when a relation is removed
+    * [SOC-2277] - Activity Stream disappeared suddenly !!
+    * [SOC-2281] - ecms-social-integ [Download this file] in Doc Viewer does not work
+    * [SOC-2284] - align dependencies with exogtn
+
+** Documentation
+    * [SOC-2234] - Activity types and plug-in documentation 
+    
+** Improvement
+    * [SOC-1507] - Enhance the problem with deleted users
+    * [SOC-1739] - Improve Product Labels
+    * [SOC-2060] - UIPopup - check and improv. the UIPopup calls
+    * [SOC-2091] - Document share selector is a poor user experience
+    * [SOC-2181] - Create Portal Template for social system navigations
+    * [SOC-2204] - Externalize some JCR Workspace properties
+    * [SOC-2214] - Poor UI in My Profile
+    * [SOC-2243] - The json of Activity Rest doesn't have body field in result which use by forum.
+    * [SOC-2253] - Displaying Space activity streams
+
+** New Feature
+    * [SOC-1151] - My Connections Gadget
+
+- 1.2.4
+
+** Bug
+    * [SOC-1872] - Can not search contact in People/Directory/Connections
+    * [SOC-1912] - Can not attach Document when create an activity
+    * [SOC-2012] - Space Navigation does not work properly
+    * [SOC-2025] - UI Tab problem on Space Settings
+    * [SOC-2026] - UI problem on space settings with Chrome
+    * [SOC-2073] - 'Show more contact...' button is displayed abnormally
+    * [SOC-2083] - DashBoard is not shown after click on DashBoard link on Toolbar in case user is 'root'.
+    * [SOC-2096] - More options do not work on people search
+    * [SOC-2111] - New user don't displays in people list
+    * [SOC-2124] - Cannot enter a Space immediately after creation
+    * [SOC-2125] - [Dashboard] Exception when adding Activity Stream gadget
+    * [SOC-2133] - Find Contact - arrow keys do not work on drop-down list
+    * [SOC-2141] - JS error may occur when switching stream tab
+    * [SOC-2145] - Activity Resources Service doesn't return posterIdentity for Comments
+    * [SOC-2146] - Error Status 404 - When we click on the Name's contact from the Homepage
+    * [SOC-2148] - An error occured in Space member tab
+    * [SOC-2149] - The filter alphabetically does not work in the Space's member tab
+    * [SOC-2151] - Click on the link "Show more posts, an error message is occured
+    * [SOC-2152] - French labels in the My Connections space
+    * [SOC-2156] - The comment field is too big
+    * [SOC-2162] - The link "Show More Posts" doesn't appears at the first login
+    * [SOC-2166] - Empty activity stream for the first connection
+    * [SOC-2167] - Some REST API produce unexpected 403 error
+    * [SOC-2169] - Premature end of file
+    * [SOC-2176] - Bad search results for the network list
+    * [SOC-2177] - Bad search result for the Received invitations list
+    * [SOC-2178] - Bad search result for the Pending Requests list
+    * [SOC-2182] - The activity stream shouldn't be broken when activity rendering fails
+    * [SOC-2183] - Changing application name by double click failure 
+    * [SOC-2184] - Alert [The target blockId to update is not found : ] when change avatar both in Profile and Space
+    * [SOC-2186] - Spaces :  unexpected grey line below the toolbar on apps pages
+    * [SOC-2192] - Social activity content is modified when you like/unlike
+    * [SOC-2195] - Unknown error when view connections of friend (who has no friend yet)
+    * [SOC-2200] - [SOC]Exception when share link on Social RSS Reader
+    * [SOC-2212] - Bug with my old spaces
+    * [SOC-2215] - UI bug in connexion activity
+    * [SOC-2231] - space user should contains managers
+    * [SOC-2236] - Cache for The filter alphabetically does not work in the Space's member tab
+
+** Feedback
+    * [SOC-746] - Should jump into a space right after creation
+
+** Improvement
+    * [SOC-1457] - Space Activity Stream tab - tell to which space the message was created for
+
+** New Feature
+    * [SOC-1808] - Redesigned Space Activity Stream
+    * [SOC-2007] - Relooked My Spaces Gadget
+
+- 1.2.3
+
+** Bug
+    * [SOC-1999] - User space changes impact other tenants
+    * [SOC-2015] - There is something wrong with IdentityManager#getIdentitiesByProfileFilter
+    * [SOC-2069] - NPE when creates new space via the WidgetRestService in Social
+    * [SOC-2086] - Activity gadget does not work when add to homepage 
+    * [SOC-2104] - UI Problems: Feedbacks and bugs after applied new UXP
+
+** Improvement
+    * [SOC-1896] - Rest Issues for Mobile
+    * [SOC-2010] - Add priority for skin modules
+    * [SOC-2052] - Problem of Social Injector on PLF 3.5.x
+    * [SOC-2063] - Add default cache configuration
+
+** New Feature
+    * [SOC-1948] - Opensocial 1.1 support
+
+- 1.2.2
+
+** Bug
+    * [SOC-873] - The spaces created do not appear in drop down menu when moving mouse over the Spaces tab on menu
+    * [SOC-945] - the class SpaceUtils with only static function keep a reference to ExoContainer    
+    * [SOC-1433] - [Activity] need to be refresh to show new added activity after add
+    * [SOC-1472] - Can not delete user activities in special case
+    * [SOC-1764] - Show message error when add activity for space in a special case
+    * [SOC-1833] - With user "mary & demo": Show Space Invitation and Pending list is empty
+    * [SOC-1851] - Display wrong application (not in form of Space Template) after created by add node in Navigation Management in Space.
+    * [SOC-1870] - IE7: UI error with comment form
+    * [SOC-1871] - IE7: Error with position of icon in INVITATIONS TO CONNECT form
+    * [SOC-1941] - [Serror] script can crash Porlet rendering process on MySpace
+    * [SOC-1995] - Wrong activity for connections tab
+    * [SOC-2001] - Search tooltip not localized
+    * [SOC-2020] - In public profile page of a user, click Invite to connect => come back my public profile page
+    * [SOC-2021] - Cannot Like/Unlike on other user's Activity page
+    * [SOC-2027] - Wrong space link, redirect to homepage when being clicked
+    * [SOC-2035] - Activity details is on top of link image
+    * [SOC-2039] - Space gadget: Wrong space link, redirect to homepage when being clicked
+    * [SOC-2040] - IE7 UI - Activities page - Avatar is not lined up
+    * [SOC-2056] - Activity year/month/day can be overrided by another one
+    * [SOC-2059] - NPE when create new space.
+    * [SOC-2073] - 'Show more contact...' button is displayed abnormally
+
+** Improvement
+    * [SOC-1933] - Check compatible of UI new skin changed for UITabContainer, UIHorizontalTabs, UIPopupWindow
+    * [SOC-2013] - Auto convert links on activity and comment
+    * [SOC-2051] - People Application's first load is very slow when people directory is relatively big
+    * [SOC-2053] - social shoudn't use stored url for profiles
+
+** New Feature
+    * [SOC-1807] - New Spaces Layout
+    * [SOC-1876] - Redesigned Connections screen
+    * [SOC-1877] - Improved connections page
+    * [SOC-1892] - Cache for storage layer
+
+- 1.2.1
+
+** Bug
+    * [SOC-1505] - [Activities] Don't reload new add activities after share on my status tab at the first time
+    * [SOC-1859] - Space's avatar is not displayed instancely after uploading (replace an existing one not default or not the first time uploading).
+    * [SOC-1861] - IE7: Search icon in Directory is not shown
+    * [SOC-1882] - Can not get currentRepository properly in org.exoplatform.social.core.space.SpaceListenerPlugin when running multi-tenant
+    * [SOC-1903] - Wrong translation to French at space search
+    * [SOC-1917] - Show code error and exception in console when search public space: fix the problem with number search
+    * [SOC-1922] - don't hardCode the avatar path in SpaceStorage and IdentityStorage
+    * [SOC-1931] - Maven eclipse:eclipse name of build path project was wrong
+    * [SOC-1939] - Social bugs on IE8
+    * [SOC-1942] - NPE when accessing into space settings of created space.
+    * [SOC-1943] - No @Consumes(MediaType.APPLICATION_JSON) for ActivityResources#createNewActivity
+    * [SOC-1945] - Can not get created public spaces
+    * [SOC-1950] - Error when accepting invitation to make connection at Incoming tab or remove outgoing connections
+    * [SOC-1952] - [USR_PLF_BUI_AIW_02] Space is not listed in Homepage after created
+    * [SOC-1958] - Throw exception in console when add a space same name with another
+    * [SOC-1970] - [People] Show code error in UI when deny invitation or remove connection
+    * [SOC-1973] - ActivityStorage: getUserActivities() return the Activity List is not sorted by postedTime (new first, older later)
+    * [SOC-1975] - Problem with OSHtmlSanitizerProcessor
+    * [SOC-1979] - Don't add external plugins configurations embedded in the jar
+    * [SOC-1983] - OAuth exception with signed requests
+    * [SOC-1986] - User spaces list shared between tenants
+    * [SOC-2002] - Cache problem with IdentityStorage#getIdentitiesByProfileFilter
+    * [SOC-2004] - UI bug for activity page and does not switch tabs properly
+    * [SOC-2005] - ActivityStorageImpl doesn't use actual timestamp as node name for a comment.
+
+** Improvement
+    * [SOC-1469] - After inviting people to connect, do not jump/scroll to the top of the page
+    * [SOC-1478] - Delete IdentityManager instance declaration from IdentityStorage
+    * [SOC-1509] - Comment in Social - interpreting newlines
+    * [SOC-1699] - Browser alert while adding new message to Space activities in created space
+    * [SOC-1700] - New user is not appeared in created space by invite
+    * [SOC-1750] - [DOM] UIContactSection optimization
+    * [SOC-1765] - [DOM] UILinkActivity optimization
+    * [SOC-1766] - [DOM] UISpaceMember optimization
+    * [SOC-1767] - [DOM] UIExperienceSection optimization
+    * [SOC-1824] - Exception when user accepts invitation to the space, on exits the space on tennant repository;
+    * [SOC-1825] - Exception when create space on tennant repository;
+    * [SOC-1826] - Edit space button shows blank page w/o any messages on colsole on tennant repository;
+    * [SOC-1827] - My spaces gadged doesn't show any spaces user belongs to;
+    * [SOC-1954] - Move configuration from .jar file to .war file
+
+** New Feature
+    * [SOC-1875] - Redesigned Activity Streams
+
+- 1.2.0-GA
+
+** Bug
+    * [SOC-875] - Space description displays null when Space description field is edited with blank
+    * [SOC-878] - Share link without thumb, the thumb is still displayed
+    * [SOC-931] - Text right after [@] character is not displayed in user activites
+    * [SOC-967] - [space] lost Revoke icon on pending space list 
+    * [SOC-985] - Space avatar is not used in the activity stream
+    * [SOC-1029] - @mentions hardcode "classic" in the URL
+    * [SOC-1043] - Social extension forces the creation of the 'classic' portal
+    * [SOC-1044] - Space name's validation is wrong
+    * [SOC-1055] - DateTime message is hard-coded
+    * [SOC-1056] - Click on author in user activity title links to "classic"
+    * [SOC-1057] - Missing gadgets when english language is not selected
+    * [SOC-1084] - When adding an activity and attaching an image only the image is taken into account
+    * [SOC-1098] - Some labels are not translated in space
+    * [SOC-1110] - [Activity] text for comment is clean after share link or document
+    * [SOC-1126] - Share image link and input status text, input text disappears
+    * [SOC-1128] - Bug in Activity Stream when user deletes inputted text in the status textbox when share link, document
+    * [SOC-1130] - Show wrong add application button when change language to French
+    * [SOC-1133] - Backport -Apps preconfigured on Spaces does not work, need lifecycle for this
+    * [SOC-1135] - Bug in templateParams of activity
+    * [SOC-1138] - Shared link is not available on User'activity
+    * [SOC-1141] - It is possible to remove last space leader
+    * [SOC-1143] - Can't publish activity stream using the opensocial API
+    * [SOC-1144] - CLONE -opensocial.Person.Field.PROFILE_URL should return a valid URL
+    * [SOC-1146] - CLONE -spaces and people selector font is not consistent with overall look and feel
+    * [SOC-1166] - Don't auto update status for user who send invitation to other
+    * [SOC-1169] - show exception when delete comment of special status (accept friend request)
+    * [SOC-1183] - Can not search people from the search box [Find People] function
+    * [SOC-1201] - Problem when delete application in lists
+    * [SOC-1208] - [SOC] Have a large space between avatar and activity on FF. See file attach
+    * [SOC-1222] - Profile.getAvatarImageSource() return an invalid URL
+    * [SOC-1224] - [SOC] Has problem with share link on user/space activities
+    * [SOC-1229] - no label on experience (profile portlet)
+    * [SOC-1230] - can't edit multiple experience
+    * [SOC-1235] - Mary can accept/deny the invitations of Root to John on tab Activity/Connections
+    * [SOC-1240] - UI Avatar Uploader does not work
+    * [SOC-1252] - [Space] Show UNKNOWN ERROR when click Sav after change st on Setting tab
+    * [SOC-1256] - [Activities] shared link is not display as link on user activity
+    * [SOC-1257] - Error occurs when searching  after selecting one page
+    * [SOC-1262] - After change space's display name, the space is not displayed on "spaces" navigation anymore
+    * [SOC-1280] - [Activities] can not keep entered text when share link on User activities On IE7
+    * [SOC-1289] - Feedmash is not working anymore
+    * [SOC-1299] - Cannot close add/edit page node popup in space's navigation setting
+    * [SOC-1321] - Could not get activities of spaces or connections in User Activity Stream Portlet
+    * [SOC-1324] - show exception when delete root node of Space
+    * [SOC-1326] - The User Activities title should not belong to the UserActivityStream portlet
+    * [SOC-1328] - [Activity] can not remove user's activities
+    * [SOC-1333] - Navigation cache problem after creating a space by a webservice
+    * [SOC-1338] - problem with activity after renaming a space
+    * [SOC-1343] - Don't show shared link from Socical Rss reader gadget on user activities
+    * [SOC-1347] - Can not delete activivity of a user when he posted an activity to his connection's activity stream
+    * [SOC-1351] - Popup auto suggest in search contacts not invisible after pressing Enter.
+    * [SOC-1360] - john can select a target group but the pop up does not show any group.
+    * [SOC-1374] - [Profile] can not update user's experiences and contacts
+    * [SOC-1380] - can not load image when change avatar on IE7
+    * [SOC-1396] - IndexOutOfBoundsException when we try to get more activities
+    * [SOC-1411] - The button Save in Space Setting must be center text area
+    * [SOC-1412] - The button Save in Space Setting must be center text area
+    * [SOC-1413] - [People] Need log out/re-log in to display new user on people page
+    * [SOC-1414] - Sometimes profile display "null" value for username
+    * [SOC-1417] - Missing message bundle key for UISpaceAddForm
+    * [SOC-1425] - UI Bug for comments in activity stream
+    * [SOC-1427] - Missing translations in French
+    * [SOC-1435] - Error occurs when changes basic info in profile
+    * [SOC-1439] - UI Bug for comments in activity stream
+    * [SOC-1442] - Problem with "More" activities
+    * [SOC-1444] - Can't publish an activity in a space activity stream
+    * [SOC-1459] - [Space] Show home space page after click on Edit space icon
+    * [SOC-1473] - CLONE - Validator for basic information must be the same as from portal
+    * [SOC-1483] - Wrong French label
+    * [SOC-1487] - Fix a blocker issue from Sonar report
+    * [SOC-1488] - Mistake on <span> syntax usage
+    * [SOC-1501] - Error UI When change name of application have long name
+    * [SOC-1522] - Load activities from private spaces to connections tab
+    * [SOC-1523] - Still can upload a image file that over 2 MB although only allow below 2 MB
+    * [SOC-1525] - Bad presentation of the profile screen when switch to French
+    * [SOC-1530] - Have problem with title is Vietnamese with share link on user's activities
+    * [SOC-1540] - [Add Activities] Attached link is disappear after attach
+    * [SOC-1576] - Space Settings option can be seen by non-moderator user
+    * [SOC-1674] - eXo social extra widget broken
+    * [SOC-1679] - Show empty page and throw exception in console when delete unique space in page 2
+    * [SOC-1702] - Error UI and throw exception in console when open [Dashboard] application at left menu of space
+    * [SOC-1704] - added spaces isn't displayed after click on [Search space] icon
+    * [SOC-1727] - Text in activity stream is removed after select document
+    * [SOC-1729] - Problem with share https link and share blocked links
+    * [SOC-1730] - When change First name & Last name in Basic Information, the name in Header section not updated
+    * [SOC-1731] - Don't update new space after created in My space list
+    * [SOC-1734] - Exception when start Social
+    * [SOC-1736] - Remove the commented part in the guice-modules param in web.xml
+    * [SOC-1759] - Space navigation isn't refresh after adding application
+    * [SOC-1762] - Social token generator rise problem for rest service in ks (PLF integrated) could not get user id
+    * [SOC-1768] - Cannot package social because of missing 1.2 version of  commons-pool
+    * [SOC-1786] - Attach link function doesn't work properly:Exception with some special links
+    * [SOC-1787] - Activities of spaces are not well sorted
+    * [SOC-1812] - Can not comment on user activity stream
+    * [SOC-1813] - No accept/ deny action is displayed for connection request activity type
+    * [SOC-1814] - User activity become space activity on space activity stream
+    * [SOC-1815] - Can not upload space avatar
+    * [SOC-1818] - No system property defined for: ${jboss.server.data.dir}
+    * [SOC-1819] - IllegalStateException when running Activity Stream gadget
+    * [SOC-1820] - NPE when running Activity Stream gadget without any connections
+    * [SOC-1841] - Can not run gadget due to SecurityTokenGenerator Exception
+    * [SOC-1856] - comment is not set  isComment() when get
+    * [SOC-1865] - Show code error and exception in console when search public space
+    * [SOC-1866] - Unknown error when edit name of application in Space
+    * [SOC-1873] - [Dashboard] Throw exception and don't show shared link from social RSS reader gadgets
+    * [SOC-1884] - RestAPI ActivityResources#deleteExistingActivityById() should return model of json object.
+    * [SOC-1907] - Space Setting disappears after space's member add comment
+
+** Feedback
+    * [SOC-1095] - Backport - Don't use a trash to remove a relation
+    * [SOC-1139] - order the list of people by last name
+
+** Improvement
+    * [SOC-982] - Give the user a hint why he does not see any groups in "bind groups"
+    * [SOC-1082] - backport -Relationship activity type
+    * [SOC-1103] - Use applications icons
+    * [SOC-1115] - Move edit space navigation into space settings
+    * [SOC-1195] - [Space][activity] member of space should has right deleted activity which member updated
+    * [SOC-1227] - The method loadProfile should be called only when it is needed
+    * [SOC-1297] - Use only one instance of Transliterator
+    * [SOC-1298] - The class SpaceUtils doesn't support several portal containers and is not thread safe
+    * [SOC-1302] - Make Security Domain configurable
+    * [SOC-1316] - http://localhost:8080 should point to the demo portal
+    * [SOC-1340] - Insconsistent behavior between getActivitiesOfConnections getActivitiesOfUserSpaces getActivities
+    * [SOC-1342] - Improve Auto Suggest
+    * [SOC-1362] - Use field labels in My Profile page and not the field name
+    * [SOC-1381] - [SOC] Provide a description for space's group navigation
+    * [SOC-1391] - Improve performance by using properties name pattern
+    * [SOC-1403] - Improve the method getActivitiesOfConnections(identity)
+    * [SOC-1408] - Improve the accesses to the Spaces
+    * [SOC-1443] - Allow to customize default application names
+    * [SOC-1484] - Unused ArrayList instantiation in PortletPreferenceRequiredPlugin
+    * [SOC-1492] - Don't get all users in a single list
+    * [SOC-1500] - UIMyConnections: Don't load profiles if not needed
+    * [SOC-1579] - Improve the evaluation of Space applications portlet preferences pattern
+    * [SOC-1633] - [Social] support function to get PortletName from SpaceLifeCycleEvent
+    * [SOC-1823] - Navigation API - new GateIn Implementation
+
+- 1.2.0-Beta02
+
+** Bug
+    * [SOC-1459] - [Space] Show home space page after click on Edit space icon
+
+** Improvement
+    * [SOC-1492] - Don't get all users in a single list
+    * [SOC-1579] - Improve the evaluation of Space applications portlet preferences pattern
+
+** Task
+    * [SOC-1376] - Refactor SpaceService
+    * [SOC-1583] - Upgrade to JCR 1.14-Beta3
+    * [SOC-1586] - Review Vien's OpenSocial presentation
+    * [SOC-1599] - Join presentations for social-1.2.0-s12
+    * [SOC-1615] - Upgrade platform.commons from 1.0.3 to 1.1.0-Beta01-SNAPSHOT
+
+
+- 1.2.0-Beta01
+
+** Task
+    * [SOC-1361] - Empty field in profile page should be ignored and not raise an error
 
 - 1.1.1
 
