@@ -521,15 +521,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
             ProfileXpEntity xpEntity = profileEntity.createXp();
             profileEntity.getXps().put(String.valueOf(System.currentTimeMillis()), xpEntity);
-            xpEntity.setSkills(currentXp.get(Profile.EXPERIENCES_SKILLS) == null ? "" : currentXp.get(Profile.EXPERIENCES_SKILLS));
+            xpEntity.setSkills(currentXp.get(Profile.EXPERIENCES_SKILLS));
             xpEntity.setPosition(currentXp.get(Profile.EXPERIENCES_POSITION));
             xpEntity.setStartDate(currentXp.get(Profile.EXPERIENCES_START_DATE));
             xpEntity.setEndDate(currentXp.get(Profile.EXPERIENCES_END_DATE));
             xpEntity.setCompany(currentXp.get(Profile.EXPERIENCES_COMPANY));
-            xpEntity.setDescription(currentXp.get(Profile.EXPERIENCES_DESCRIPTION) == null ? "" : currentXp.get(Profile.EXPERIENCES_DESCRIPTION));
+            xpEntity.setDescription(currentXp.get(Profile.EXPERIENCES_DESCRIPTION));
 
             //
-            skills.add(xpEntity.getSkills());
+            if (xpEntity.getSkills() != null) {
+              skills.add(xpEntity.getSkills());
+            }
 
           }
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_SKILLS), skills);
