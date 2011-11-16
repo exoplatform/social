@@ -81,7 +81,13 @@
        															 viewer.getField('restContextName') + "/" +
        															 viewer.getField('portalName') + "/" +
        															 "social/activities/";
-      var peopleDirectory = viewer.getField('hostName') + viewer.getField('peopleUri');
+      
+       var peopleDirectory = '';
+       if (viewer.getField('peopleUri') === '') {
+       	peopleDirectory = viewer.getField('hostName') + '/portal/intranet/people';
+       } else {
+       	peopleDirectory = viewer.getField('hostName') + viewer.getField('peopleUri');
+       } 
        
       Configuration.portalEnvironment = {
         'portalName': viewer.getField('portalName'),

@@ -439,9 +439,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @throws Exception
    */
   private String getURIForPeople(PortalContainer portalContainer, String remoteId) throws Exception {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
-
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)portalContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+    
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
         return null;
@@ -451,26 +450,32 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
         return Locale.ENGLISH;
       }
     };
-    RequestLifeCycle.begin(container);
-    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
-    UserPortal userPortal = userPortalCfg.getUserPortal();
-    
-    SiteKey siteKey = SiteKey.portal(userPortalConfigSer.getDefaultPortal());
-    UserNavigation userNav = userPortal.getNavigation(siteKey);
-    UserNode rootNode = userPortal.getNode(userNav, Scope.ALL, null, null);
-    UserNode peopleNode = rootNode.getChild("people");
-    UserNode iteratorNode = peopleNode;
     StringBuffer stringBuffer = new StringBuffer();
-    
-    while(iteratorNode.getParent()!=null){
-      stringBuffer.insert(0, iteratorNode.getName());
-      stringBuffer.insert(0, "/");
-      iteratorNode = iteratorNode.getParent();
+    try {
+      RequestLifeCycle.begin(portalContainer);
+      UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+      UserPortal userPortal = userPortalCfg.getUserPortal();
+      
+      SiteKey siteKey = SiteKey.portal(userPortalConfigSer.getDefaultPortal());
+      UserNavigation userNav = userPortal.getNavigation(siteKey);
+      UserNode rootNode = userPortal.getNode(userNav, Scope.ALL, null, null);
+      UserNode peopleNode = rootNode.getChild("people");
+      UserNode iteratorNode = peopleNode;
+      
+      if(iteratorNode != null){
+        while(iteratorNode !=null && iteratorNode.getParent()!=null){
+          stringBuffer.insert(0, iteratorNode.getName());
+          stringBuffer.insert(0, "/");
+          iteratorNode = iteratorNode.getParent();
+        }
+        stringBuffer.insert(0, userPortalConfigSer.getDefaultPortal());
+        stringBuffer.insert(0, "/");
+        stringBuffer.insert(0, portalContainer.getName());
+        stringBuffer.insert(0, "/");
+      }
+    } catch (Exception e){
+      //Do nothing because cann't get the people page node
     }
-    stringBuffer.insert(0, userPortalConfigSer.getDefaultPortal());
-    stringBuffer.insert(0, "/");
-    stringBuffer.insert(0, portalContainer.getName());
-    stringBuffer.insert(0, "/");
     
     RequestLifeCycle.end();
     return stringBuffer.toString();
