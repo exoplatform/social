@@ -1,0 +1,960 @@
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIInvitations.label.Deny=Denegar
++UIInvitations.label.Accept=Aceptar
++UIInvitations.label.NotYet=No tiene ninguna invitaci\u00f3n todav\u00eda.
++UIInvitations.label.Position=Posici\u00f3n
++UIInvitations.label.RelationsListing=Invitaciones esperando por su respuesta
++UIInvitations.label.MyInvitationsList=INVITACIONES PARA CONECTAR
++UIInvitations.label.RevokedInfo=La invitaci\u00f3n fu\u00e9 revocada o borrada por otro.
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_es.properties	(revision 0)
+@@ -0,0 +1,8 @@
++UIPendingRelation.label.Position=Posici\u00f3n
++UIPendingRelation.label.Revoke=Revocar
++UIPendingRelation.label.WaitForConfirmation=En espera de la confirmaci\u00f3n
++UIPendingRelation.label.NotYet=No tiene solicitudes pendientes
++UIPendingRelation.label.AddConnections=A\u00f1adir conecciones
++UIPendingRelation.label.RelationsListing=Personas a las que se quiere conectar
++UIPendingRelation.label.MyRequestsList=SOLICITUDES DE CONECCION
++UIPendingRelation.label.RevokedInfo=El pedido fu\u00e9 revocado o borrado por otra persona.
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_es.properties	(revision 0)
+@@ -0,0 +1,11 @@
++UIMyConnections.label.Deny=Denegar
++UIMyConnections.label.Remove=Remover
++UIMyConnections.label.Accept=Aceptar
++UIMyConnections.label.Profile=Perfil
++UIMyConnections.label.NotYet=Todav\u00eda no hay conecci\u00f3n establecida.
++UIMyConnections.label.AddConnections=A\u00f1adir Connecciones
++UIMyConnections.label.Position=Posici\u00f3n
++UIMyConnections.label.RelationsListing=Personas que son conecciones establecidas
++UIMyConnections.label.MyRelationsList=MI RED
++UIMyConnections.label.UserRelationList=Red de {0}
++UIMyConnections.label.DeletedInfo=La conecci\u00f3n ha sido borrada por otra persona.
+Index: component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/UIActivitiesContainer_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet=Ninguna actualizaci\u00f3n ha sido publicada.
++UIActivitiesLoader.label.More=M\u00e1s
+Index: component/webui/src/main/resources/locale/social/webui/composer/UIComposer_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/composer/UIComposer_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/composer/UIComposer_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIComposer.input.Write_Something=Escriba algo...
++UIComposer.input.What_Are_You_Working_On=\u00bfEn que est\u00e1 trabajando?
++UIComposer.label.Attach=Adjuntar
++UIComposer.label.Share=Compartir
++UIComposer.msg.error.Empty_Message=El mensaje est\u00e1 vac\u00edo
++UIPopupWindow.title.UIPopupWindow=Ventana Emergente
++OptionPopupWindow.title.OptionPopupWindow=Ventana Emergente
+Index: component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIAvatarUploader.msg.img_not_loaded=Un error se ha producido al subir la imagen.
++UIAvatarUploader.msg.mimetype_not_accepted=El archivo subido no ha sido reconozido como imagen. Favor de usar .png, .gif, o .jpg solamente.
++UIAvatarUploader.label.info=Favor de subir una foto con un tama\u00f1o de menos de 2MB.
++UIAvatarUploader.label.Name=Nombre:
++UIAvatarUploader.label.Uploader=Subir:
++UIAvatarUploader.action.Confirm=Confirmar
++UIAvatarUploader.action.Cancel=Cancelar
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_es.properties	(revision 0)
+@@ -0,0 +1,10 @@
++UISpaceGroupBound.label.checkbox=Seleccione un grupo objetivo para este espacio
++UISpaceGroupBound.label.description=<p>Una vez que haya creado un nuevo espacio exitosamente, un grupo ser\u00e1 creado autom\u00e1ticamente con el mismo nombre del espacio.
++UISpaceGroupBound.label.description_hasGroupManagerRole=<p>Si desea seleccionar un grupo para invitar usuarios a unirse al espacio nuevo creado, favor de marcar en la casilla de verificaci\u00f3n.</p>
++UISpaceGroupBound.label.description_notHasGroupManagerRole=<p><strong>Esta caracter\u00edstica est\u00e1 desactivada porque necesita ser gestor de un grupo para invitar usuarios en un espacio.</strong></p>
++UISpaceGroupBound.label.selected_group=Grupo seleccionado
++UIPopupGroupBound.title.UIPopupGroupBound=Invitar a los usuarios del grupo
++UIPopupGroupBound.title.UISocialGroupSelector=Seleccionar un grupo objetivo para este espacio
++UISocialGroupSelector.title.selectGroupMember=Grupo para invitar usuarios
++UISocialGroupSelector.title.selectChildGroup=El subgrupo para invitar usuarios
++UISocialGroupSelector.title.addGroupButton=Seleccione este grupo para invitar usuarios
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_es.properties	(revision 0)
+@@ -0,0 +1,14 @@
++UISpaceInfo.action.Save=Guardar
++UISpaceInfo.label.name=Nombre:
++UISpaceInfo.label.description=Descripci\u00f3n:
++UISpaceInfo.label.priority=Prioridad:
++UISpaceInfo.title.ClickChangeAvatar=Pulse para cambiar el avatar del espacio
++UISpaceInfo.label.option.1=Alto
++UISpaceInfo.label.option.2=Intermedio
++UISpaceInfo.label.option.3=Bajo
++UISpaceInfo.label.tag=Etiquetar:
++UISpaceInfo.msg.name-invalid=Favor de escribir un nombre de espacio v\u00e1lido: alfabeto, espacio y caracteres de d\u00edgito solamente.
++UISpaceInfo.msg.update-success=Actualizaci\u00f3n de la informaci\u00f3n del espacio exitosa.
++UISpaceInfo.msg.current-name-exist=Este nombre ya est\u00e1 en uso.
++UISpaceInfo.label.ChangeAvatar=Cambiar el avatar
++UISpaceInfo.label.Public=P\u00fablico
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UISpaceApplication.button.remove=Eliminar
++UISpaceApplication.button.add=A\u00f1adir
++AddApplication.title.UISpaceApplicationList=Lista de Aplicaciones
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UISpaceMenu.label.Home=Inicio
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_es.properties	(revision 0)
+@@ -0,0 +1,16 @@
++UISpaceNavigationNodeSelector.msg.systemnode-delete=No se puede borrar un nodo del sistema
++UISpaceNavigationNodeSelector.msg.systemnode-move=No se puede cortar un nodo del sistema
++UISpaceNavigationNodeSelectorPopupMenu.event.AddNode=A\u00f1adir un nodo nuevo
++UISpaceNavigationNodeSelectorPopupMenu.event.PasteNode=Pegar Nodo
++SpaceNavigationNodePopupMenu.event.AddNode=A\u00f1adir nuevo Nodo
++SpaceNavigationNodePopupMenu.event.EditPageNode=Editar P\u00e1gina del Nodo
++SpaceNavigationNodePopupMenu.event.EditSelectedNode=Editar este Nodo
++SpaceNavigationNodePopupMenu.event.EditNavigation=Editar Navegaci\u00f3n
++SpaceNavigationNodePopupMenu.event.CopyNode=Copia del Nodo
++SpaceNavigationNodePopupMenu.event.CloneNode=Nodo clon
++SpaceNavigationNodePopupMenu.event.CutNode=Cortar el Nodo
++SpaceNavigationNodePopupMenu.event.MoveUp=Mover Arriba
++SpaceNavigationNodePopupMenu.event.MoveDown=Mover Abajo
++SpaceNavigationNodePopupMenu.event.PasteNode=Pegar Nodo
++SpaceNavigationNodePopupMenu.event.SaveNavigation=Guardar Navegaci\u00f3n
++SpaceNavigationNodePopupMenu.event.DeleteNode=Borrar el Nodo
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_es.properties	(revision 0)
+@@ -0,0 +1,12 @@
++UIManagePublicSpaces.label.SpaceListing=Espacios Encontrado
++UIManagePublicSpaces.label.action_request_to_join=Solicitud de adhesi\u00f3n
++UIManagePublicSpaces.fieldLabel.description=Descripci\u00f3n:
++UIManagePublicSpaces.fieldLabel.members=Miembros:
++UIManagePublicSpaces.fieldLabel.url=Url:
++UIManagePublicSpaces.fieldLabel.status=Estado:
++UIManagePublicSpaces.status.visible=Este espacio puede ser visto por cualquier persona y
++UIManagePublicSpaces.status.open=los usuarios pueden afiliarse libremente.
++UIManagePublicSpaces.status.validation=los usuarios pueden unirse despu\u00e9s de la validaci\u00f3n por un gestor de espacio.
++UIManagePublicSpaces.status.close=los usuarios no pueden acceder a unirse a este espacio.
++UIManagePublicSpaces.msg.error_request_join=Lo lamentamos, un error se produce al pedir unirse a un espacio.  Favor de intentar de nuevo.
++UIManagePublicSpaces.label.no_public=no hay espacio p\u00fablico para unirse.
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_es.properties	(revision 0)
+@@ -0,0 +1,4 @@
++UIManagePendingSpaces.label.SpaceListing=Espacios Encontrados
++UIManagePendingSpaces.label.NoSpace=No hay ninguna solicitud pendiente para unirse.
++UIManagePendingSpaces.fieldLabel.members=Miembros:
++UIManagePendingSpaces.msg.DeletedInfo=El espacio ha sido borrado por alguien.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_es.properties	(revision 0)
+@@ -0,0 +1,8 @@
++UISpaceVisibility.label.VisibleAndOpenSpace=(Cualquiera puede unirse al grupo)
++UISpaceVisibility.label.VisibleAndValidationSpace=(La membres\u00eda del espacio requiere validaci\u00f3n)
++UISpaceVisibility.label.VisibleAndCloseSpace=(La membres\u00eda del espacio es por invitaci\u00f3n)
++UISpaceVisibility.label.HiddenSpace=(El espacio no est\u00e1 en la lista)
++UISpaceVisibility.label.UIVisibility=Visibilidad
++UISpaceVisibility.label.UIRegistration=Inscripci\u00f3n
++UISpaceVisibility.label.Visibility=Visibilidad
++UISpaceVisibility.label.Registration=Inscripci\u00f3n
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_es.properties	(revision 0)
+@@ -0,0 +1,4 @@
++UISpacePermission.action.Save=Guardar
++UISpacePermission.msg.update-success=La actualizaci\u00f3n del permiso del espacio fu\u00e9 exitosa.
++UISpacePermission.label.Visibility=Visibilidad
++UISpacePermission.label.Registration=Inscripci\u00f3n
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UISpaceUserSearch.label.search=Filtro:
++UISpaceUserSearch.label.by=Por:
++UISpaceUserSearch.label.search_action=Filtro
++UISpaceUserSearch.label.option.userName=Nombre del Usuario
++UISpaceUserSearch.label.option.firstName=Nombre
++UISpaceUserSearch.label.option.lastName=Apellido
++UISpaceUserSearch.label.option.email=Correo Electr\u00f3nico
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIManageInvitationSpaces.label.SpaceListing=Espacios Encontrados
++UIManageInvitationSpaces.label.NoSpace=Ninguna invitaci\u00f3n al espacio.
++UIManageInvitationSpaces.label.Members=Miembros:
++UIManageInvitationSpaces.msg.DeletedInfo=Lo lamentamos, esta tarea no pudo completarse.  El Espacio fu\u00e9 borrado por alguien m\u00e1s.
++UIManageInvitationSpaces.msg.error_accept_invitation=Lo lamentamos, la invitaci\u00f3n fu\u00e9 revocada o algo sali\u00f3 mal.  Favor de intentar luego.
++UIManageInvitationSpaces.msg.error_deny_invitation=Lo lamentamos, la invitaci\u00f3n fu\u00e9 revocada o algo sali\u00f3 mal. Favor de intentar luego.
++UIManageInvitationSpaces.msg.RevokedInfo=Lo lamentamos, esta tarea no pudo ser completada.  La invitaci\u00f3n fu\u00e9 revocada.
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_es.properties	(revision 0)
+@@ -0,0 +1,31 @@
++UIManageMySpaces.label.SpaceListing=Espacios Encontrados
++UIManageMySpaces.msg.confirm_space_delete=\u00bfEst\u00e1 seguro de querer borrar este espacio? Esta acci\u00f3n no puede ser revocada.  Todas las navegaciones de la p\u00e1gina y este grupo ser\u00e1n borrados tambi\u00e9n.
++UIManageMySpaces.label.invited_spaces=Invitaciones:
++UIManageMySpaces.label.my_spaces=Mis Espacios:
++UIManageMySpaces.label.action_accept_space=Aceptar el Pedido
++UIManageMySpaces.label.action_deny_space=Denegar Pedido de Espacio
++UIManageMySpaces.label.action_edit_space=Editar Espacio
++UIManageMySpaces.label.action_edit_space_navigation=Editar Espacio de la Navegaci\u00f3n
++UIManageMySpaces.label.action_delete_space=Borrar Espacio
++UIManageMySpaces.label.action_leave_space=Dejar el Espacio
++UIManageMySpaces.label.action_add_space=A\u00f1adir Nuevo Espacio
++UIManageMySpaces.fieldLabel.description=Descripci\u00f3n:
++UIManageMySpaces.fieldLabel.members=Miembros:
++UIManageMySpaces.fieldLabel.url=Url:
++UIManageMySpaces.fieldLabel.status=Estado:
++UIManageMySpaces.msg.warning_space_not_available=No se puede navegar al espacio.  Al parecer este espacio ha sido borrado.
++UIManageMySpaces.msg.group_unable_to_retrieve=Este espacio no puede editarse.  El espacio del grupo ya no existe.
++UIManageMySpaces.status.visible=Este espacio puede ser visto por cualquiera y
++UIManageMySpaces.status.hidden=El espacio s\u00f3lo puede ser visto por sus miembros y los usuarios s\u00f3lo pueden convertirse en miembro luego de aceptar la invitaci\u00f3n de espacio del l\u00edder.
++UIManageMySpaces.status.open=Los usuarios pueden unirse a este espacio sin alguna validaci\u00f3n.
++UIManageMySpaces.status.validation=Los usuarios pueden unirse a este espacio luego de que el l\u00edder del espacio valide el pedido a unirse.
++UIManageMySpaces.status.close=Los usuarios no pueden aplicar ya que el espacio est\u00e1 cerrado.
++UIManageMySpaces.label.no_spaces=Todav\u00eda no es miembro de ning\u00fan espacio.
++UIManageMySpaces.msg.warning_leave_space=Usted es el \u00faltimo gerente de este espacio.  Necesita promocionar otro miembro como gerente del espacio antes de salir del mismo.
++UIManageMySpaces.msg.error_leave_space=Lo lamentamos, un error se produjo al salir del espacio. Favor de intentar de nuevo luego.
++UIManageMySpaces.msg.error_accept_invitation=Lo lamentamos, un error se produjo al aceptar la invitaci\u00f3n.  Favor de intentar de nuevo luego.
++UIManageMySpaces.msg.error_deny_invitation=Lo lamentamos, un error se produjo al denegar la invitaci\u00f3n. Favor de intentar de nuevo luego.
++UIManageMySpaces.msg.error_delete_space=Lo lamentamos, un error se produjo al borrar este espacio. Favor de intentar de nuevo luego.
++UIManageMySpaces.msg.DeletedInfo=Lo lamentamos, la tarea no est\u00e1 completa.  El espacio ha sido borrado.
++UIManageMySpaces.msg.MemberShipRemovedInfo=Lo lamentamos, usted no es miembro de ese espacio.  La afiliaci\u00f3n fu\u00e9 removida por otra persona.
++UIManageMySpaces.msg.NavigationRemovedInfo=El espacio de la navegaci\u00f3n no puede ser editado.  Puede que la navegaci\u00f3n haya sido removida.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIPopupWindow.Close=Cerrar Ventana
++UIPopupWindow.title.UIPageNodeForm=A\u00d1ADIR/EDITAR NODO DE P\u00c1GINA
++UIPopupWindow.title.UINavigationManagement=Gesti\u00f3n de Navegaci\u00f3n
++UIPopupWindow.title.UIPageNavigationForm=Formulario de Navegaci\u00f3n de P\u00e1gina
++UISpaceNavigationManagement.action.addNode=A\u00f1adir Nodo
++UISpaceNavigationManagement.action.Save=Guardar
++UISpaceNavigationManagement.msg.NavigationNotExistAnymore=La navegaci\u00f3n puede ser borrada.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceApplicationList_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceApplicationList_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceApplicationList_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UISpaceApplicationList.label.install=Instalar
++UISpaceApplicationList.label.noneApp=No hay aplicaci\u00f3n disponible para instalar
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_es.properties	(revision 0)
+@@ -0,0 +1,5 @@
++UISpaceSearch.label.DefaultSpaceNameAndDesc=nombre o descripci\u00f3n
++UISpaceSearch.label.SearchAll=Todo
++UISpaceSearch.label.FindSpace=Encontrar Espacio
++UISpaceSearch.label.SpaceDirectory=Filtrar por alfabeto
++UISpaceSearch.label.AddNewSpace=A\u00f1adir un Espacio Nuevo
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_es.properties	(revision 0)
+@@ -0,0 +1,33 @@
++UISpaceMember.msg.user-is-invited=Algunos usuarios ya existen en la lista de invitados, incluyendo: {0}
++UISpaceMember.msg.user-is-member=Algunos usuarios ya han existido en el espacio, incluyendo: {0}
++UISpaceMember.msg.user-not-exist=Algunos usuarios no existen incluyendo: {0}
++UISpaceMember.msg.Invalid-char=El campo {0} debe contener s\u00f3lo caracteres alfanum\u00e9ricos.
++UISpaceMember.msg.error_remove_member=No se pudo eliminar este miembro.  Aseg\u00farese de que este usuario pertenece a este grupo.
++UISpaceMember.msg.error_remove_leader=No se puede eliminar este l\u00edder.  Aseg\u00farese que este usuario no es el \u00fanico l\u00edder.
++UISpaceMember.msg.error_self_remove_leader=Usted es el \u00faltimo gestor de este espacio.  Necesita promover otro miembro como gestor del espacio antes de que pueda abandonarlo.
++UISpaceMember.msg.error_revoke_invited=El usuario invitado no se pudo revocar.  Aseg\u00farese de que este usuario est\u00e9 invitado.
++UISpaceMember.msg.error_decline_user=No se puede declinar el pedido de este usuario.  Aseg\u00farese de que este pedido sigue en espera.
++UISpaceMember.msg.error_validate_user=No se pudo validar el pedido de este usuario.  Aseg\u00farese de que el pedido sigue en espera.
++UISpaceMember.msg.error_make_leader=No puede colocar este usuario como l\u00edder.  Aseg\u00farese que este usuario es todav\u00eda un miembro del grupo.
++UISpaceMember.label.search=Seleccionar de la lista
++UISpaceMember.button.invite=Invitar
++UISpaceMember.button.decline=Declinar
++UISpaceMember.button.validate=Validar
++UISpaceMember.button.revoke=Revocar la invitaci\u00f3n
++UISpaceMember.button.remove=Eliminar
++UISpaceMember.button.actions=Acciones
++UISpaceMember.title.members=Miembros
++UISpaceMember.title.leader=Gestor
++UISpaceMember.title.invited=Invitado
++UISpaceMember.title.pending=Pendiente
++UISpaceMember.label.removeLeader=Eliminar gerente
++UISpaceMember.label.makeLeader=Promover
++UISpaceMember.mail.header=Hola, nos gustar\u00eda a\u00f1adirle a nuestro espacio.
++UISpaceMember.mail.footer=Gracias.
++UISpaceMember.label.SelectUser=Seleccionar Usuarios
++UISpaceMember.label.RemoveAction=Eliminar
++UISpaceMember.label.RevokeInvitedAction=Revocar la invitaci\u00f3n
++UISpaceMember.label.DeclineAction=Declinar
++UISpaceMember.label.ValidateAction=Validar
++UISpaceMember.label.InviteAction=Invitar
++UISpaceMember.label.SearchUserAction=Seleccionar Usuarios
+Index: component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UIAddApplicationSpace.label.Close=Cerrar
++UIAddApplicationSpace.label.empty=No hay lista de aplicaciones.
++UIAddApplicationSpace.msg.app-exist=Esta aplicaci\u00f3n ya existe en el espacio.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceActivitiesDisplay_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceActivitiesDisplay_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceActivitiesDisplay_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UISpaceActivitiesDisplay.label.Activity_Stream_Of_Space=Flujo de Actividad de {0}
++UISpaceActivitiesDisplay.label.Empty_Activity_List=El espacio "{0}" todav\u00eda no tiene actividad.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_es.properties	(revision 0)
+@@ -0,0 +1,32 @@
++UISpaceAddForm.action.Create=Crear
++UISpaceAddForm.tab.label.UISpaceSettings=Ajustes
++UISpaceAddForm.tab.label.UISpaceVisibility=Visibilidad
++UISpaceAddForm.tab.label.UISpaceGroupBound=Invitar usuarios del grupo
++UISpaceAddForm.label.name=Nombre
++UISpaceAddForm.label.priority=Prioridad
++UISpaceAddForm.label.description=Descripci\u00f3n
++UISpaceAddForm.label.UIVisibility=Visibilidad
++UISpaceAddForm.label.UIRegistration=Inscripci\u00f3n
++UISpaceAddForm.label.option.1=Alto
++UISpaceAddForm.label.option.2=Intermedio
++UISpaceAddForm.label.option.3=Bajo
++UISpaceAddForm.msg.default_space_description=Este espacio no tiene un res\u00famen descriptivo.
++UISpaceAddForm.msg.error_space_already_exist=Un espacio con el mismo nombre ya existe.
++UISpaceAddForm.msg.error_space_creation=No se pudo crear un espacio nuevo.
++UISpaceAddForm.msg.error_space_not_saved=No se pudo crear un espacio nuevo.
++UISpaceAddForm.msg.error_unable_to_init_app=Error al inicializar la aplicaci\u00f3n.
++UISpaceAddForm.msg.error_unable_to_add_creator=Imposible de a\u00f1adir un creador a este espacio nuevo.
++UISpaceAddForm.msg.error_unable_to_add_application=Imposible de a\u00f1adir algunas aplicaciones a este espacio nuevo.
++UISpaceAddForm.msg.error_unable_to_retrieve_user=No se pudo crear un espacio nuevo.  No se encontr\u00f3 el usuario.
++UIVisibility.label.public=P\u00fablico
++UIVisibility.label.private=Visible
++UIVisibility.label.hidden=Oculto
++UIRegistration.label.open=Abrir
++UIRegistration.label.validation=Validaci\u00f3n
++UIRegistration.label.close=Cerrar
++UISpaceSettings.msg.invalid_space_name=Favor de escribir un nombre v\u00e1lido en el espacio: alfabeto, espacio y caracteres de d\u00edgito solamente.
++UISpaceSettings.label.HighPrio=(El espacio se mostrar\u00e1 en la parte superior del listado de espacios)
++UISpaceSettings.label.InterMePrio=(El espacio se mostrar\u00e1 en la parte media del listado de espacios)
++UISpaceSettings.label.lowPrio=(El espacio se mostrar\u00e1 en la parte inferior del listado de espacios)
++UIPopupWindow.Close=Cerrar Ventana
++UINavigationManagement.action.Save=Guardar
+Index: component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_es.properties	(revision 0)
+@@ -0,0 +1,25 @@
++UIActivity.label.Source=Procedencia
++UIActivity.label.Activity_Can_Be_Deleted=Esta actividad no ha sido encontrada
++UIActivity.label.Comment=Comentario
++UIActivity.label.Like=Me gusta
++UIActivity.label.Unlike=No me gusta
++UIActivity.input.Write_A_Comment=Escribir un comentario...
++UIActivity.label.Show_All_Comments=Mostrar todos {0} comentarios.
++UIActivity.label.Hide_All_Comments=Esconder todos los {0} comentarios.
++UIActivity.label.One_Person_Like_This={start} 1 persona {end} le gusta.
++UIActivity.label.People_Like_This={start} A {0} personas {end} les gusta.
++UIActivity.label.You_Like_This=Te gusta.
++UIActivity.label.You_And_One_Person_Like_This=A t\u00ed y a {start} 1 persona {end} les gusta.
++UIActivity.label.You_And_People_Like_This=A t\u00ed y a {start} {0} personas {end} les gusta.
++UIActivity.label.Activity_Has_Been_Deleted=\u00a1Esta actividad ha sido borrada!
++UIActivity.msg.Are_You_Sure_To_Delete_This_Activity=\u00bfEst\u00e1s seguro de borrar esta actividad?
++UIActivity.msg.Are_You_Sure_To_Delete_This_Comment=\u00bfEst\u00e1s seguro de borrar este comentario?
++UIActivity.label.Less_Than_A_Minute=hace menos de un minuto
++UIActivity.label.About_A_Minute=hace un minuto
++UIActivity.label.About_?_Minutes=hace alrededor de {0} minutos
++UIActivity.label.About_An_Hour=hace una hora
++UIActivity.label.About_?_Hours=hace alrededor de {0} horas
++UIActivity.label.About_A_Day=hace un d\u00eda
++UIActivity.label.About_?_Days=hace alrededor de {0} d\u00edas
++UIActivity.label.About_A_Month=hace un mes
++UIActivity.label.About_?_Months=hace alrededor de {0} meses
+Index: component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_es.properties	(revision 0)
+@@ -0,0 +1,9 @@
++UIRelationshipActivity.label.Accept=Aceptar
++UIRelationshipActivity.label.Refuse=Rechazar
++UIRelationshipActivity.label.Revoke=Revocar
++UIRelationshipActivity.msg.You_Invited_UserName_To_Connect=Usted invit\u00f3 a {0} a conectarse.
++UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0} le invit\u00f3 a conectarse.
++UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect={0} invit\u00f3 a {1} a conectarse.
++UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName=Ahora est\u00e1 conectado con {0}.
++UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName={0} est\u00e1 ahora conectado con {1}.
++UIRelationshipActivity.msg.Invitation_Revoked_Already=La invitaci\u00f3n fu\u00e9 revocada.  Usted no est\u00e1 conectado.
+Index: component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_es.properties	(revision 0)
+@@ -0,0 +1,5 @@
++UIAvatarUploadContent.label.file_name=Nombre del archivo:
++UIAvatarUploadContent.label.file_type=Tipo de archivo:
++UIAvatarUploadContent.label.image_size=Tama\u00f1o de la imagen:
++UIAvatarUploadContent.label.save=Guardar
++UIAvatarUploadContent.label.abort=Anular
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_es.properties	(revision 0)
+@@ -0,0 +1,33 @@
++UIExperienceSection.label.title=Experiencias
++UIExperienceSection.label.month_1=enero
++UIExperienceSection.label.month_2=febrero
++UIExperienceSection.label.month_3=marzo
++UIExperienceSection.label.month_4=abril
++UIExperienceSection.label.month_5=mayo
++UIExperienceSection.label.month_6=junio
++UIExperienceSection.label.month_7=julio
++UIExperienceSection.label.month_8=agosto
++UIExperienceSection.label.month_9=septiembre
++UIExperienceSection.label.month_10=octubre
++UIExperienceSection.label.month_11=noviembre
++UIExperienceSection.label.month_12=diciembre
++UIExperienceSection.label.company=Organizaci\u00f3n
++UIExperienceSection.label.position=Posici\u00f3n
++UIExperienceSection.label.skills=Habilidades Usadas
++UIExperienceSection.label.startDate=Fecha de Comienzo
++UIExperienceSection.label.endDate=Fin de la Fecha
++UIExperienceSection.label.choose=Escoger
++UIExperienceSection.label.description=Detalles del puesto
++UIExperienceSection.label.StillInPosition=A\u00fan en esta posici\u00f3n
++UIExperienceSection.label.untilNow=Hasta ahora
++UIExperienceSection.label.Add=A\u00f1adir
++UIExperienceSection.msg.startDateBeforeEndDate=La Fecha de Comienzo debe ser antes de la Fecha Final
++UIExperienceSection.msg.StartDateAfterToday=La Fecha de Comienzo debe ser antes de hoy
++UIExperienceSection.msg.EndDateAfterToday=La Fecha Final debe ser antes de hoy
++UIExperienceSection.label.noneExperience=Todav\u00eda no ha ingresado ninguna experiencia
++UIExperienceSection.label.noneExperienceOther=todav\u00eda no ha ingresado ninguna experiencia
++UIExperienceSection.label.Current=Actual
++UIExperienceSection.label.Past=Pasado
++UIExperienceSection.label.to=hasta
++UIExperienceSection.label.at=en
++UIExperienceSection.msg.confirmDeleteExp=\u00bfEst\u00e1 seguro de querer borrar esta experiencia?
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_es.properties	(revision 0)
+@@ -0,0 +1,4 @@
++UIHeaderSection.label.yourPosition=Su posici\u00f3n actual
++UIHeaderSection.label.edit=Editar
++UIHeaderSection.label.Cancel=Cerrar
++UIHeaderSection.label.Send=Guardar
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UIUserActivitiesDisplay.label.Connections=Conecciones
++UIUserActivitiesDisplay.label.Spaces=Espacios
++UIUserActivitiesDisplay.label.My_Status=Mi Estado
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIProfile_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIProfile_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIProfile_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UIProfile.label.ChangeAvatar=Cambiar el avatar
++UIProfile.label.Click_To_Change_Avatar=Pulsar para cambiar el avatar
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_es.properties	(revision 0)
+@@ -0,0 +1,14 @@
++UIContactSection.label.gender=Sexo
++UIContactSection.label.phones=Tel\u00e9fono
++UIContactSection.label.title=Contacto
++UIContactSection.label.urls=Urls
++UIContactSection.label.ims=Mensaje Instant\u00e1neo
++UIContactSection.label.noGender=sexo no indicado
++UIContactSection.label.noUrls=el enlace de contacto no se entr\u00f3
++UIContactSection.label.noIms=el IM no se entr\u00f3
++UIContactSection.label.noPhones=el tel\u00e9fono no se entr\u00f3
++UIContactSection.label.noContact=ninguna informaci\u00f3n de contacto ha sido entrada todav\u00eda
++UIContactSection.label.noContactCurrent=No ha entrado ninguna informaci\u00f3n del contacto todav\u00eda
++UIContactSect.msg.Invalid-email=El correo electr\u00f3nico no ha sido reconocido como un correo electr\u00f3nico v\u00e1lido.
++UIContactSect.msg.Invalid-phone=El tel\u00e9fono no ha sido reconocido como un tel\u00e9fono v\u00e1lido.
++UIContactSect.msg.Invalid-url=El enlace no fu\u00e9 reconocido como un URL v\u00e1lido.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_es.properties	(revision 0)
+@@ -0,0 +1,6 @@
++UIBasicInfoSection.label.title=Informaci\u00f3n b\u00e1sica
++UIBasicInfoSection.label.userName=Nombre de usuario
++UIBasicInfoSection.label.firstName=Nombre
++UIBasicInfoSection.label.lastName=Apellido
++UIBasicInfoSection.label.email=Correo Electr\u00f3nico
++UIBasicInfoSection.msg.Invalid-char=El campo {0} s\u00f3lo tiene alfa, d\u00edgito, comas y tiene que empezar y terminar con caracteres alfab\u00e9ticos.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIDisplayProfileList.label.Revoke=Revocar
++UIDisplayProfileList.label.WaitForConfirmation=Invitado a conectarse
++UIDisplayProfileList.label.Position=Posici\u00f3n
++UIDisplayProfileList.label.NotYet=Ninguna persona encontrada
++UIDisplayProfileList.label.RelationsListing=Personas Encontradas
++UIDisplayProfileList.label.RevokedInfo=La invitaci\u00f3n fu\u00e9 revocada o borrada por otra persona.
++UIDisplayProfileList.label.InvitationEstablishedInfo=La invitaci\u00f3n fu\u00e9 establecida por otra persona.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_es.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_es.properties	(revision 0)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_es.properties	(revision 0)
+@@ -0,0 +1,14 @@
++UIProfileUserSearch.label.Name=nombre
++UIProfileUserSearch.label.ContactSearch=Encontrar Contacto
++UIProfileUserSearch.label.MoreLabel=M\u00e1s
++UIProfileUserSearch.label.HideLabel=Esconder
++UIProfileUserSearch.label.Search=B\u00fasqueda
++UIProfileUserSearch.label.FilterBy=Filtrar por
++UIProfileUserSearch.label.Male=hombre
++UIProfileUserSearch.label.FeMale=mujer
++UIProfileUserSearch.label.Position=posici\u00f3n
++UIProfileUserSearch.label.Company=compa\u00f1\u00eda
++UIProfileUserSearch.label.Skills=habilidades
++UIProfileUserSearch.label.AllGender=G\u00e9nero
++UIProfileUserSearch.label.RelationDirectory=Directorio de personas
++UIProfileUserSearch.label.SearchAll=Todo
+Index: demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties	(revision 0)
++++ demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties	(revision 0)
+@@ -0,0 +1,22 @@
++portal.classic.myprofile=Ver Perfil
++portal.classic.connections=Mis conecciones
++portal.classic.people=Personas
++portal.classic.spaces=Espacios
++portal.classic.home=Inicio
++portal.classic.webexplorer=Explorador Web
++portal.classic.canvas=Lienzo
++portal.classic.register=Inscribirse
++portal.classic.gwtgadget=Gadget GWT
++portal.classic.activities=Actividades
++portal.classic.groupnavigation=Navegar por Grupo
++portal.classic.portalnavigation=Navegaci\u00f3n del Portal
++portal.classic.activity=Actividad
++portal.classic.profile=Perfil
++portal.classic.yours=Conecciones
++portal.classic.invitations=Invitaciones
++portal.classic.requests=Pedidos
++portal.classic.invitationSpace=Espacio de Invitaci\u00f3n
++portal.classic.pendingSpace=Espacio de espera
++portal.classic.publicSpace=Espacio P\u00fablico
++UIPortalToolPanel.label.copyrightText=Copyright \u00a9 2010. Todos los derechos reservados,
++UIPortalToolPanel.label.companyTitleText=eXo Platform SAS.
+Index: demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties	(revision 0)
++++ demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties	(revision 0)
+@@ -0,0 +1 @@
++developer.canvas=Lienzo
+Index: extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_es.properties
+===================================================================
+--- extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_es.properties	(revision 0)
++++ extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_es.properties	(revision 0)
+@@ -0,0 +1,5 @@
++UIActivityComposer.label.UIDocActivityComposer=Compartir Documento
++UIComposerDocumentExtension.label.Select_Document=Seleccionar Documento
++UIComposerDocumentExtension.label.Download=Descargar
++UIComposerDocumentExtension.label.View_Document=Ver
++UIPopupWindow.title.UIOneNodePathSelector=Selector de Documento
+Index: extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_es.properties
+===================================================================
+--- extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_es.properties	(revision 0)
++++ extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_es.properties	(revision 0)
+@@ -0,0 +1,8 @@
++UIActivityComposer.label.UILinkActivityComposer=Compartir Enlace
++UILinkComposerPlugin.label.Attach_Link=Compartir Enlace:
++UILinkComposerPlugin.label.Close=Cerrar
++UILinkComposerPlugin.label.Attach=Adjuntar
++UILinkComposerPlugin.msg.No_Thumbnail=No utilizar el thumbnail
++UILinkComposerPlugin.msg.Previous_Image=Imagen previa
++UILinkComposerPlugin.msg.Next_Image=Pr\u00f3xima imagen
++UILinkComposerPlugin.msg.error.Attach_Link=Un problema ocurri\u00f3 al compartir este enlace.  Favor de asegurarse de escribir un url v\u00e1lido.
+Index: extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties	(revision 0)
++++ extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_es.properties	(revision 0)
+@@ -0,0 +1,20 @@
++portal.classic.myprofile=Ver Perfil
++portal.classic.connections=Mis conecciones
++portal.classic.people=Personas
++portal.classic.spaces=Espacios
++portal.classic.home=Inicio
++portal.classic.webexplorer=Explorador Web
++portal.classic.canvas=Lienzo
++portal.classic.register=Inscribirse
++portal.classic.gwtgadget=Gadget GWT
++portal.classic.activities=Actividades
++portal.classic.groupnavigation=Navegar por Grupo
++portal.classic.portalnavigation=Navegaci\u00f3n del Portal
++portal.classic.activity=Actividad
++portal.classic.profile=Perfil
++portal.classic.yours=Conecciones
++portal.classic.invitations=Invitaciones
++portal.classic.requests=Pedidos
++portal.classic.invitationSpace=Espacio de Invitaci\u00f3n
++portal.classic.pendingSpace=Espacio de espera
++portal.classic.publicSpace=Espacio P\u00fablico
+Index: extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties	(revision 0)
++++ extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_es.properties	(revision 0)
+@@ -0,0 +1 @@
++developer.canvas=Lienzo
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_es.properties	(revision 0)
+@@ -0,0 +1,15 @@
++UIMembersPortlet.label.UserList=ESPACIO DE MIEMBROS
++UIMembersPortlet.label.member=Miembro
++UIMembersPortlet.label.empty=Ninguno de los miembros coincide con el filtro.
++UIMembersPortlet.label.FirstName=Nombre
++UIMembersPortlet.label.LastName=Apellido
++UIMembersPortlet.label.EmailAddress=Correo Electr\u00f3nico
++UIMembersPortlet.label.Membership=Afiliaci\u00f3n
++UIMembersPortlet.label.manager=Gerente
++UIMembersPortlet.label.Position=Posici\u00f3n
++UIMembersPortlet.label.NotLeaderYet=El espacio todav\u00eda no tiene l\u00edder.
++UIMembersPortlet.label.NotMemberYet=El espacio todav\u00eda no tiene miembro.
++UIMembersPortlet.label.Admin=Admin
++UIMembersPortlet.label.SpaceAdmin=Espacio Administrativo
++UIMembersPortlet.label.Administrator=Administrador
++UIMembersPortlet.label.SpaceMember=Espacio de Miembros
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_es.properties	(revision 0)
+@@ -0,0 +1,39 @@
++UISocialDemoHomePagePortlet.label.eXo_Social=eXo Social
++UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform=Un servicio extendido de eXo Platform 3
++UISocialDemoHomePagePortlet.label.Community_Members=Miembros de la Comunidad:
++UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation=Descargue la Documentaci\u00f3n de eXo Social
++UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use=\u00bfPara uso de la empresa o en producci\u00f3n?
++UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3=Pruebe eXo Platform 3
++UISocialDemoHomePagePortlet.label.Contact_Us=Cont\u00e1ctenos
++UISocialDemoHomePagePortlet.label.Resource_Center=Centro de Recursos
++UISocialDemoHomePagePortlet.label.Support=Apoyo
++UISocialDemoHomePagePortlet.label.Training=Formaci\u00f3n
++UISocialDemoHomePagePortlet.label.eXo_Blog=eXo Blog
++UISocialDemoHomePagePortlet.label.eXo_Website=Sitio Web eXo
++UISocialDemoHomePagePortlet.label.New_To_eXo_Social_Question=\u00bfNuevo a eXo Social?
++UISocialDemoHomePagePortlet.label.Watch_The=Ver el
++UISocialDemoHomePagePortlet.label.Getting_Started_Guide=Gu\u00eda de Comienzo
++UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features=, o comienze a explorar algunas de las caracter\u00edsticas claves:
++UISocialDemoHomePagePortlet.label.People_And_Connections=Contactos y Conecciones
++UISocialDemoHomePagePortlet.label.Profiles=Perfiles: los usuarios pueden a\u00f1adir su experiencia de trabajo, descripci\u00f3n de su trabajo y otros detalles
++UISocialDemoHomePagePortlet.label.LDAP_Integration=Integraci\u00f3n LDAP: cree una red autom\u00e1ticamente desde cuentas existentes de usuarios
++UISocialDemoHomePagePortlet.label.Browse_User_Profiles=Navegue por los perfiles de usuarios o busque las connecciones basadas en un criterio seleccionado.
++UISocialDemoHomePagePortlet.label.Send_Accept_Reject_Cancel_Connection_Requests=Env\u00ede acepte, rechaze o cancele pedidos de conecci\u00f3n
++UISocialDemoHomePagePortlet.label.Community_Management=Gesti\u00f3n de Comunidad
++UISocialDemoHomePagePortlet.label.Atomatic_Creation_Of_New_Spaces_For_Groups=Creaci\u00f3n autom\u00e1tica de espacios nuevos para grupos
++UISocialDemoHomePagePortlet.label.Control_Access_And_Set_Registration_Requirements=Controle el acceso y establezca los requerimientos de la inscripci\u00f3n a un espacio.
++UISocialDemoHomePagePortlet.label.Add_Remove_Memers_Applications=A\u00f1adir o remover miembros o aplicaciones de un espacio
++UISocialDemoHomePagePortlet.label.Browse_Search_Existing_Spaces=Navegue o busque espacios existentes
++UISocialDemoHomePagePortlet.label.Activity_Streams=Flujos de Actividad
++UISocialDemoHomePagePortlet.label.Publish_View_User_Activities=Publicar y ver las actividades de usuarios y las actualizaciones de estados.
++UISocialDemoHomePagePortlet.label.Publish_View_Applications_Activities=Publicar y ver las actividades de aplicaciones
++UISocialDemoHomePagePortlet.label.Share_Content_Links=Compartir contenido y enlaces dentro de un flujo
++UISocialDemoHomePagePortlet.label.Comment_Vote_Activities=Comente y vote (me gusta/no me gusta) en actividades en tiempo real
++UISocialDemoHomePagePortlet.label.Builtin_Social_Gadgets=Gadgets Sociales Integrados
++UISocialDemoHomePagePortlet.label.Status_Update=Actualizaci\u00f3n de estado: publique y vea los flujos de actividad
++UISocialDemoHomePagePortlet.label.RSS_Fetcher=Lector RSS: busque un feed RSS para compartir publicaciones en los flujos de la actividad
++UISocialDemoHomePagePortlet.label.Connection_Viewer=Conecciones: reciba una lista de las conecciones de un usuario
++UISocialDemoHomePagePortlet.label.Build_Custom_Gadgets=Construya gadgets personalizados usando APIs de OpenSocial
++UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social=Comience a usar eXo Social,
++UISocialDemoHomePagePortlet.label.Login_As_Root=Iniciar la sesi\u00f3n como Root
++UISocialDemoHomePagePortlet.label.You_Are_Loginned_As_Root=usted est\u00e1 conectado como Root
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_es.properties	(revision 0)
+@@ -0,0 +1,5 @@
++UISpacesNavigationPortlet.label.Space=ESPACIOS
++UISpacesNavigationPortlet.label.MySpace=Mis espacios
++UISpacesNavigationPortlet.label.Invitation=Invitaciones
++UISpacesNavigationPortlet.label.Pending=Pendientes
++UISpacesNavigationPortlet.label.Public=P\u00fablicos
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_es.properties	(revision 0)
+@@ -0,0 +1,16 @@
++UISocialExtensionHomePagePortlet.label.People=Contactos
++UISocialExtensionHomePagePortlet.label.Your_Own_Enterprise_Social_Network=Su propia red social empresarial
++UISocialExtensionHomePagePortlet.label.Turn_Your_Directory_Into_A_Social_Network=Convierta su directorio en una red social.
++UISocialExtensionHomePagePortlet.label.Users_Can_Fill_Their_Profile=Los usuarios pueden rellenar su perfil
++UISocialExtensionHomePagePortlet.label.Search_By_Skills_And_Experience=Buscar por habilidades y experiencia
++UISocialExtensionHomePagePortlet.label.Activity_MicroBlogging=Actividad de microblogging
++UISocialExtensionHomePagePortlet.label.OpenSocial_API_Support=Apoyo API OpenSocial
++UISocialExtensionHomePagePortlet.label.Spaces=Espacios
++UISocialExtensionHomePagePortlet.label.Collaborative_Workspaces_For_Communities=Espacios de trabajo colaborativos para comunidades
++UISocialExtensionHomePagePortlet.label.Reveal_Domant_Communities=Revelar las comunidades durmientes
++UISocialExtensionHomePagePortlet.label.Open_Community_Management=Gesti\u00f3n de comunidad abierta
++UISocialExtensionHomePagePortlet.label.Group_Activity_Stream=Flujo de actividad grupal
++UISocialExtensionHomePagePortlet.label.Add_Custom_Applications=A\u00f1ada aplicaciones personalizadas
++UISocialExtensionHomePagePortlet.label.Live_Chat=Charla en Vivo
++UISocialExtensionHomePagePortlet.label.eXo_Forums=Foros eXo
++UISocialExtensionHomePagePortlet.label.Contact_Us=Cont\u00e1ctenos
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_es.properties	(revision 0)
+@@ -0,0 +1,41 @@
++UITabPane.title.UISpaceInfo=Ajustes
++UITabPane.title.UISpaceMember=Miembros
++UITabPane.title.UISpaceApplication=Aplicaciones
++UITabPane.title.UISpacePermission=Visibilidad
++UITabPane.title.UISpaceNavigationManagement=Navegaci\u00f3n del Espacio
++InviteUsers.title.UIInviteUsers=Usuario invitado
++UIInviteUsers.header.userName=Nombre de Usuario
++UIInviteUsers.header.lastName=Apellido
++UIInviteUsers.header.firstName=Nombre
++UIInviteUsers.header.email=Correo Electr\u00f3nico
++UIInviteUsers.header.action=Acci\u00f3n
++UIInviteUsers.action.title.SelectUser=Seleccionar
++UIInviteUsers.label.option.userName=#{word.userName}
++UIInviteUsers.label.option.firstName=#{word.firstName}
++UIInviteUsers.label.option.lastName=#{word.lastName}
++UIInviteUsers.label.option.email=#{word.email}
++UIPopupWindow.title.UIAvatarUploader=Seleccionar avatar
++UIPopupAvatarUploader.title.UIAvatarUploader=Subir Avatar
++UIAvatarUploader.action.Change=Cambiar
++UIAvatarUploader.action.Cancel=Cancelar
++UIAvatarUploadContent.label.file_name=Nombre del archivo:
++UIAvatarUploadContent.label.file_type=Nombre del archivo:
++UIAvatarUploadContent.label.image_size=Tama\u00f1o de la imagen:
++UIAvatarUploadContent.label.save=Guardar
++UIAvatarUploadContent.label.abort=Anular
++UIPopupAvatarUploader.title.UIPopupAvatarUploader=Subidor del Avatar
++UIPopupAvatarUploader.title.UIAvatarUploadContent=Previsualizaci\u00f3n del Avatar
++UIAvatarUploader.msg.img_not_loaded=Un error se ha producido al subir la imagen.
++UIAvatarUploader.msg.mimetype_not_accepted=El archivo subido no ha sido reconozido como imagen.  Favor de usar .png, .gif, o .jpg solamente.
++UIAvatarUploader.label.info=Favor de seleccionar una foto (.png, .gif, .jpg, .jpeg) a subir con tama\u00f1o no mas grande de 2MB.
++UIAvatarUploader.label.Name=Nombre:
++UIAvatarUploader.label.Uploader=Subir:
++UIAvatarUploader.action.Confirm=Confirmar
++SearchUser.title.UIUserSelector=Seleccionar Usuarios
++SearchUser.title.SearchUser=Buscar Usuario
++Visibility.label.public=P\u00fablico
++Visibility.label.private=Visible
++Visibility.label.hidden=Escondido
++Registration.label.open=Abrir
++Registration.label.validation=Validaci\u00f3n
++Registration.label.close=Cerrar
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UISocialBannerPortlet.label.Sign_In=Registrarse
++UISocialBannerPortlet.label.ChangeLanguage=Cambiar el Idioma
++UISocialBannerPortlet.label.Register=Inscribirse
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PendingSpacesPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PendingSpacesPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PendingSpacesPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UIPendingSpacesPortlet.label.PendingSpaceList=SOLICITUDES DE ACCESO AL ESPACIO
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialFooterPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialFooterPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialFooterPortlet_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UIFooterPortlet.label.copyrightText=Derechos de Autor \u00a9 2010.  Todos los derechos reservados,
++UIFooterPortlet.label.companyTitleText=eXo Platform SAS
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/WarningPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/WarningPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/WarningPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UIWarningPortlet.title.description=Esta demo no est\ufffd libre de errores. La misma representa el estado actual de desarrollo de eXo Social.  Toda la data es <b>borrada</b> cada noche (hora GMT) y la aplicaci\ufffdn recomenzada.<br />Si desea formar parte del <b>Programa de Acceso Temprano</b> para esta aplicaci\ufffdn, contacte <a href="enviara:jeremi@exoplatform.com">Jeremi</a>.
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_es.properties	(revision 0)
+@@ -0,0 +1,4 @@
++UIUserActivityStreamPortlet.label.Connections=Conecciones
++UIUserActivityStreamPortlet.label.Spaces=Espacios
++UIUserActivityStreamPortlet.label.My_Status=Mi Estado
++UIUserActivityStreamPortlet.label.UserActivities=Actividades de Usuarios
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIMyConnectionsNavigationPortlet.label.Relation=CONNECCIONES
++UIMyConnectionsNavigationPortlet.label.Relations=Red
++UIMyConnectionsNavigationPortlet.label.Invitations=Entrante
++UIMyConnectionsNavigationPortlet.label.Requests=Saliente
++UIMyConnectionsNavigationPortlet.label.RelationTitle=Las personas a las que est\u00e1 conectada
++UIMyConnectionsNavigationPortlet.label.InvitationTitle=Las personas que desean conectar con usted.
++UIMyConnectionsNavigationPortlet.label.RequestTitle=Personas con las que desea conectar
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PublicSpacesPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PublicSpacesPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PublicSpacesPortlet_es.properties	(revision 0)
+@@ -0,0 +1,2 @@
++UIPublicSpacesPortlet.label.PublicSpaceList=ESPACIOS P\u00daBLICOS
++UIPublicSpacePortlet.msg.DeletedInfo=No se pudo solicitar la membres\u00eda. El espacio fue borrado por alguien.
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_es.properties	(revision 0)
+@@ -0,0 +1,14 @@
++UIProfileNavigationPortlet.label.Me=Yo
++UIProfileNavigationPortlet.label.Activity=Actividad
++UIProfileNavigationPortlet.label.Profile=Perfil
++UIProfileNavigationPortlet.label.Relations=Conecciones
++UIProfileNavigationPortlet.label.InviteToConnect=Invitar a conectarse
++UIProfileNavigationPortlet.label.Connect=Conectar
++UIProfileNavigationPortlet.label.Deny=Denegar
++UIProfileNavigationPortlet.label.Revoke=Revocar
++UIProfileNavigationPortlet.label.Disconnect=Desconectar
++UIProfileNavigationPortlet.label.InviteToConnectTitle=Invitar a {0} a conectarse
++UIProfileNavigationPortlet.label.ConnectTitle=Aceptar la invitaci\u00f3n de {0}
++UIProfileNavigationPortlet.label.DenyTitle=Denegar la invitaci\u00f3n de {0}
++UIProfileNavigationPortlet.label.RevokeTitle=Revocar invitaci\u00f3n a conectar con {0}
++UIProfileNavigationPortlet.label.DisconnectTitle=Desconectar la conecci\u00f3n a {0}
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceActivityStreamPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceActivityStreamPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceActivityStreamPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UISpaceActivityStreamPortlet.label.SpaceActivities=Actividades del espacio
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_es.properties	(revision 0)
+@@ -0,0 +1,8 @@
++UIConnectionsNavigationPortlet.label.My-Relations=MIS CONNECCIONES
++UIConnectionsNavigationPortlet.label.Relations=Red Social
++UIConnectionsNavigationPortlet.label.Invitations=Entrante
++UIConnectionsNavigationPortlet.label.Requests=Saliente
++UIConnectionsNavigationPortlet.label.RelationTitle=Las personas a las que est\u00e1 conectado
++UIConnectionsNavigationPortlet.label.InvitationTitle=Personas que desean conectar con usted
++UIConnectionsNavigationPortlet.label.RequestTitle=Personas con las que desea conectar
++UIConnectionsNavigationPortlet.label.UserConnections={0}'s CONNECCIONES
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_es.properties	(revision 0)
+@@ -0,0 +1,10 @@
++UISocialLogoPortlet.note.Text=Este es el Logo
++UILogoEditMode.title=Cambiar URL
++UILogoEditMode.label.logoUrl=URL
++UILogoEditMode.label.editmode=Modo Edici\u00f3n
++UILogoEditMode.action.Save=Guardar
++UISocialLogoPortlet.action.changeLanguage=Cambiar Idioma
++UISocialLogoPortlet.action.Register=Inscribirse
++UISocialLogoPortlet.action.signout=Cerrar la sesi\u00f3n
++UISocialLogoPortlet.action.signin=Registrarse
++UISocialLogoPortlet.label.Welcome=Bienvenido
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_es.properties	(revision 0)
+@@ -0,0 +1,9 @@
++UIMySpacesPortlet.label.MySpaceList=MIS ESPACIOS
++UITabPane.title.UIManageMySpaces=Mis Espacios
++UITabPane.title.UIManagePublicSpaces=Espacios P\u00fablicos
++UITabPane.title.UIManagePendingSpaces=Pedidos Pendientes
++UIPopupWindow.title.UISpaceAddForm=Crear un nuevo espacio
++UIPopupAddSpace.title.UIPopupAddSpace=A\u00f1adir Espacio
++UIPopupAddSpace.title.UIPageNodeForm2=Forma de P\u00e1gina de Nodo
++UIPopupAddSpace.title.UISpaceAddForm=A\u00f1adir Espacio
++UIPopupAddSpace.title.UINavigationManagement=Gesti\u00f3n de Navegaci\u00f3n
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UISpacesToolBarPortlet.label.Spaces=Espacios
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UIPeopleToolBarPortlet.label.People=Personas
++UIPeopleToolBarPortlet.label.Directory=Directorio
++UIPeopleToolBarPortlet.label.Connections=Conecciones
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UISocialUserToolBarGroupPortlet.label.group=Grupo
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_es.properties	(revision 0)
+@@ -0,0 +1,8 @@
++UITabPane.title.UIManageMySpaces=Mis Espacios
++UITabPane.title.UIManagePublicSpaces=Espacios P\u00fablicos
++UITabPane.title.UIManagePendingSpaces=Pedidos Pendientes
++UISpaceMenuPortlet.msg.invalidAppName=El nombre no es v\u00e1lido.  El mismo debe incluir al menos tres caracteres no comenzar con el caracter  '_'  y no contener otros caracteres especiales.
++UISpaceMenuPortlet.msg.existingAppName=El nombre de esta aplicaci\u00f3n ya existe.  Favor de escoger otra.
++UIPopupWindow.title.UISpaceAddForm=Crear un nuevo espacio
++UIPopupAddSpace.title.UIPopupAddSpace=A\u00f1adir Espacio
++UIPopupAddSpace.title.UISpaceAddForm=A\u00f1adir Espacio
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_es.properties	(revision 0)
+@@ -0,0 +1,3 @@
++UIUserToolBarPortlet.label.activities=Actividades
++UIUserToolBarPortlet.label.profile=Perfil
++UIUserToolBarPortlet.label.relations=Conecciones
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/InvitationSpacesPortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/InvitationSpacesPortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/InvitationSpacesPortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UIInvitationSpacesPortlet.label.InviSpaceList=INVITACIONES DE ESPACIOS
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_es.properties	(revision 0)
+@@ -0,0 +1 @@
++UIPeoplePortlet.label.People=Personas
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_es.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_es.properties	(revision 0)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_es.properties	(revision 0)
+@@ -0,0 +1,7 @@
++UIProfilePortlet.label.Public=Perfil P\u00fablico
++UIPopupAvatarUploader.title.UIPopupAvatarUploader=Subidor del Avatar
++UIPopupAvatarUploader.title.UIAvatarUploader=Subir Avatar
++UIPopupAvatarUploader.title.UIAvatarUploadContent=Previsualizaci\u00f3n del Avatar
++UITitleBar.label.cancel=Cancelar
++UITitleBar.label.save=Guardar
++UITitleBar.label.edit=Editar
