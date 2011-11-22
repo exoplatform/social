@@ -108,7 +108,7 @@ def childs = uicomponent.getChildren();
         <% if (uicomponentId == "UIPeopleSearch") {%>
             <li>
      <% } else {%>
-            <li  style="width: 25px">
+            <li>
      <% } %>
         <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
                     <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>

@@ -149,9 +149,8 @@ a:ACTIVE {
   list-style-position: outside;
   list-style-type: none;
   margin: 0 2px 3px 0;
-  min-width: 15px;
+  min-width: 25px;
   padding: 0;
-  width: 3.2%;
 }
 
 .DirectorySpaces ul.LetterList li a {
