@@ -23,6 +23,17 @@
   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
 
   <component>
+    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
+    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
+    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
+  </component>
+
+
+  <component>
     <key>org.exoplatform.social.common.jcr.LockManager</key>
     <type>org.exoplatform.social.common.jcr.LockManager</type>
   </component>

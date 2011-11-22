@@ -79,6 +79,118 @@
   </external-component-plugins>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
+      <component-plugin>
+        <name>setAllowedTagPlugin</name>
+        <set-method>setAllowedTagPlugin</set-method>
+        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
+        <init-params>
+          <object-param>
+            <name>b tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>b</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>i tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>i</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>a tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>a</string></field>
+              <field name="tagAttributes">
+                <collection type="java.util.HashSet" item-type="java.lang.String">
+                  <value><string>href</string></value>
+                </collection>
+              </field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>span tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>span</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>em tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>em</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>strong tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>strong</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>p tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>p</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>ol tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>ol</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>ul tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>ul</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>li tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>li</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>br tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>br</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>img tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>img</string></field>
+              <field name="tagAttributes">
+                <collection type="java.util.HashSet" item-type="java.lang.String">
+                  <value><string>src</string></value>
+                </collection>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
+    <component-plugin>
+      <name>XMLBalancerFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>XMLTagFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>LineBreakerFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
     <component-plugin>
       <name>social.data.location</name>

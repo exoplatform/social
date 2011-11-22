@@ -1,0 +1,3726 @@
+Index: component/service/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml
+===================================================================
+--- component/service/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml	(revision 76840)
++++ component/service/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml	(working copy)
+@@ -48,6 +48,11 @@
+   </component>
+ 
+   <component>
++    <key>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</key>
++    <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
++  </component>
++
++  <component>
+     <key>org.exoplatform.social.core.manager.ActivityManager</key>
+     <type>org.exoplatform.social.core.manager.ActivityManager</type>
+     <component-plugins>
+@@ -56,21 +61,11 @@
+         <set-method>addProcessorPlugin</set-method>
+         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+         <init-params>
+-          <values-param>
+-            <name>allowedTags</name>
+-            <value>b</value>
+-            <value>i</value>
+-            <value>a</value>
+-            <value>span</value>
+-            <value>em</value>
+-            <value>strong</value>
+-            <value>p</value>
+-            <value>ol</value>
+-            <value>ul</value>
+-            <value>li</value>
+-            <value>br</value>
+-            <value>img</value>
+-          </values-param>
++          <value-param>
++            <name>priority</name>
++            <description>priority of this processor (lower are executed first)</description>
++            <value>3</value>
++          </value-param>
+         </init-params>
+       </component-plugin>
+     </component-plugins>
+Index: component/common/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml
+===================================================================
+--- component/common/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml	(revision 0)
++++ component/common/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml	(revision 0)
+@@ -0,0 +1,107 @@
++<configuration
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++  xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
++  xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
++
++  <component>
++    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
++    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
++  </component>
++
++  <component>
++    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
++    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
++    <component-plugins>
++      <component-plugin>
++        <name>setAllowedTagPlugin</name>
++        <set-method>setAllowedTagPlugin</set-method>
++        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
++        <init-params>
++          <object-param>
++            <name>b tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>b</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>i tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>i</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>a tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>a</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>href</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>span tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>span</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>em tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>em</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>strong tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>strong</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>p tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>p</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ol tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ol</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ul tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ul</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>li tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>li</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>br tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>br</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>img tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>img</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>src</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++        </init-params>
++      </component-plugin>
++    </component-plugins>
++  </component>
++
++</configuration>
+\ No newline at end of file
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorTest.java	(revision 0)
+@@ -0,0 +1,211 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++
++import java.util.ArrayList;
++import java.util.HashSet;
++import java.util.List;
++import java.util.Set;
++
++import org.exoplatform.container.PortalContainer;
++import org.exoplatform.social.common.AbstractCommonTest;
++import org.exoplatform.social.common.xmlprocessor.filters.DOMContentEscapeFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.filters.DOMXMLTagFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy.AllowedTag;
++
++/**
++ * Unit Test for {@link XMLProcessor}.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class XMLProcessorTest extends AbstractCommonTest {
++
++  private XMLProcessor xmlProcessor;
++
++  private PortalContainer portalContainer;
++
++  private List<Filter> tearDownFilter;
++
++  @Override
++  public void setUp() throws Exception {
++    super.setUp();
++    portalContainer = PortalContainer.getInstance();
++    xmlProcessor = (XMLProcessor) portalContainer.getComponentInstanceOfType(XMLProcessor.class);
++    tearDownFilter = new ArrayList<Filter>();
++  }
++
++  @Override
++  public void tearDown() throws Exception {
++    for (Filter filter : tearDownFilter) {
++      xmlProcessor.removeFilter(filter);
++    }
++    super.tearDown();
++  }
++
++  /**
++   * Tests {@link XMLProcessor#addFilter(Filter)}.
++   */
++  public void testAddFilter() {
++    LineBreakerFilterPlugin filter = new LineBreakerFilterPlugin();
++    tearDownFilter.add(filter);
++    xmlProcessor.addFilter(filter);
++  }
++
++  /**
++   * Tests {@link XMLProcessor#removeFilter(Filter)}.
++   */
++  public void testRemoveFilter() {
++    xmlProcessor.removeFilter(new LineBreakerFilterPlugin());
++  }
++
++  /**
++   * Tests {@link XMLProcessor#addFilterPlugin(BaseXMLFilterPlugin)}
++   * and {@link XMLProcessor#removeFilterPlugin(BaseXMLFilterPlugin)}.
++   */
++  public void testAddAndRemoveFilterPlugin() {
++    FakeXMLFilterPluginPlugin fakeXMLFilterPlugin = new FakeXMLFilterPluginPlugin();
++    xmlProcessor.addFilterPlugin(fakeXMLFilterPlugin);
++    xmlProcessor.removeFilterPlugin(fakeXMLFilterPlugin);
++  }
++
++  /**
++   * Tests {@link XMLProcessor#process(Object)}.
++   */
++  public void testProcess() {
++    Object output = xmlProcessor.process("<h3>hello world our there</h3><d>");
++    assertEquals("<h3>hello world our there</h3><d>", output);
++  }
++
++
++  /**
++   * Tests {@link XMLProcessor#process(Object)} with:
++   * {@link org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin}.
++   */
++  public void testXMLBalancer() {
++    XMLProcessor xmlProcessor = new XMLProcessorImpl();
++    LineBreakerFilterPlugin breakLineFilter = new LineBreakerFilterPlugin();
++    XMLBalancerFilterPlugin xmlBalancer = new XMLBalancerFilterPlugin();
++
++    xmlProcessor.addFilter(breakLineFilter);
++    xmlProcessor.addFilter(xmlBalancer);
++
++    assertEquals(null,
++            xmlProcessor.process(null));
++    assertEquals("", xmlProcessor.process(""));
++    assertEquals("hello 1", xmlProcessor.process("hello 1"));
++    assertEquals("hello 1<br /> hello2",
++            xmlProcessor.process("hello 1\n hello2"));
++    assertEquals("hello 1&lt;&gt; hello2",
++            xmlProcessor.process("hello 1<> hello2"));
++    assertEquals("<a>hello 1</a>", xmlProcessor.process("<a>hello 1"));
++    assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process("hello 1</a>"));
++    assertEquals("<a>Hello 2<a><b /></a></a>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
++
++  }
++
++  /**
++   * Tests {@link XMLProcessor#process(Object)} with:
++   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags.
++   */
++  public void testXMLFilter() {
++    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
++    tagFilterPolicy.addAllowedTags("div", "p", "b", "br", "a");
++    XMLTagFilterPlugin xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
++    xmlProcessor.addFilter(xmlFilter);
++
++    assertEquals(null, xmlProcessor.process(null));
++
++    assertEquals("hello 1", xmlProcessor.process("hello 1"));
++    assertEquals("hello 1\n hello2", xmlProcessor.process("hello 1\n hello2"));
++    assertEquals("<a>hello 1", xmlProcessor.process("<a>hello 1"));
++    assertEquals("hello 1</a>", xmlProcessor.process("hello 1</a>"));
++    assertEquals("<a>Hello 2<a><b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
++    assertEquals("<a>Hello 2&lt;i&gt;<b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
++    assertEquals("<a>Hello 2<b /><b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
++  }
++
++  /**
++   * Tests {@link XMLProcessor#process(Object)} with:
++   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes.
++   */
++  public void testXMLFilterWithTagAndAttributes() {
++    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
++    tagFilterPolicy.addAllowedTags("div", "p", "b", "br", "a");
++    XMLTagFilterPlugin xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
++    xmlProcessor.addFilter(xmlFilter);
++
++    assertEquals(null, xmlProcessor.process(null));
++    assertEquals("hello 1", xmlProcessor.process("hello 1"));
++    assertEquals("hello 1\n hello2", xmlProcessor.process("hello 1\n hello2"));
++    assertEquals("<a>hello 1", xmlProcessor.process("<a>hello 1"));
++    assertEquals("hello 1</a>", xmlProcessor.process("hello 1</a>"));
++    assertEquals("<a>Hello 2<a><b>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
++    assertEquals("<a>Hello 2&lt;i&gt;<b>", xmlProcessor.process("<a<b>Hello 2<i><b>"));
++    assertEquals("<a>Hello 2<b /><b>", xmlProcessor.process("<a<b>Hello 2<b /><b>"));
++    assertEquals("&lt;script&gt;foo&lt;/script&gt;", xmlProcessor.process("<script>foo</script>"));
++  }
++
++  /**
++   * Tests {@link XMLProcessor#process(Object)} with:
++   * {@link org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin} for allowed tags and its allowed attributes,
++   * {@link org.exoplatform.social.common.xmlprocessor.filters.DOMContentEscapeFilterPlugin}, {@link org.exoplatform.social.common.xmlprocessor.filters.DOMLineBreakerFilterPlugin}.
++   */
++  public void testXMLDOMFilterAndEscapeWithTagAndAttributes() {
++    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
++    tagFilterPolicy.addAllowedTags("div", "p", "b", "br");
++    Set<String> aAttributes = new HashSet<String>();
++    aAttributes.add("href");
++    AllowedTag aTag = new AllowedTag("a", aAttributes);
++    tagFilterPolicy.addAllowedTag(aTag);
++
++
++    Filter domXmlTagFilter = new DOMXMLTagFilterPlugin(tagFilterPolicy);
++    Filter domContentEscapeFilter = new DOMContentEscapeFilterPlugin();
++    Filter domLineBreakerFilter = new DOMLineBreakerFilterPlugin();
++
++    xmlProcessor.addFilter(domLineBreakerFilter);
++    xmlProcessor.addFilter(domXmlTagFilter);
++    xmlProcessor.addFilter(domContentEscapeFilter);
++
++    assertEquals("hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1"))).toString());
++    assertEquals("hello 1<br /> hello2", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1\n hello2"))).toString());
++    assertEquals("&lt;a&gt;hello 1", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>hello 1"))).toString());
++    assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
++    assertEquals("&lt;a&lt;b&gt;Hello 2&lt;a&gt;&lt;b&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
++    assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
++    assertEquals("<a>Hello 2<b /></a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2<b /></a>"))).toString());
++    assertEquals("<a href=\"abc\">Hello 2<b /></a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2<b /></a>"))).toString());
++  }
++
++
++  /**
++   * Fake xml filter plugin
++   */
++  static class FakeXMLFilterPluginPlugin extends BaseXMLFilterPlugin {
++    @Override
++    public Object doFilter(Object input) {
++      return null;
++    }
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/XmlTagFilterPolicyTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/XmlTagFilterPolicyTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/XmlTagFilterPolicyTest.java	(revision 0)
+@@ -0,0 +1,54 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++import java.util.Set;
++
++import org.exoplatform.social.common.AbstractCommonTest;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy.AllowedTag;
++
++/**
++ * Unit Test for {@link XMLTagFilterPolicy}.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ * @since Jun 18, 2011
++ */
++public class XmlTagFilterPolicyTest extends AbstractCommonTest {
++
++  private XMLTagFilterPolicy configXmlTagFilterPolicy;
++
++  private XMLTagFilterPolicy plainXmlTagFilterPolicy;
++
++  @Override
++  public void setUp() throws Exception {
++    super.setUp();
++    configXmlTagFilterPolicy = (XMLTagFilterPolicy) getContainer().getComponentInstanceOfType(XMLTagFilterPolicy.class);
++    plainXmlTagFilterPolicy = new XMLTagFilterPolicy();
++  }
++
++  @Override
++  public void tearDown() throws Exception {
++    plainXmlTagFilterPolicy = null;
++    super.tearDown();
++  }
++
++  public void testGetAllowedTagSet() {
++    Set<AllowedTag> allowedTagSet = configXmlTagFilterPolicy.getAllowedTagSet();
++    assertNotNull("allowedTagSet must not be null", allowedTagSet);
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/NodeTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/NodeTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/NodeTest.java	(revision 0)
+@@ -0,0 +1,82 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit Test for {@link Node}.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ * @since Jun 18, 2011
++ */
++public class NodeTest extends TestCase {
++
++  public void testGetParentNode() {
++    Node parentNode = new Node();
++    Node childNode = new Node();
++
++    childNode.setParentNode(parentNode);
++
++    assertEquals("The childNode.getParentNode() should return parentNode",
++                      parentNode, childNode.getParentNode());
++  }
++
++  public void testNodeToString() {
++    Node rootNode = new Node();
++    Node childNode = new Node();
++    childNode.setTitle("b");
++
++    Attributes attributes = new Attributes();
++    attributes.put("style", "header");
++    childNode.setAttributes(attributes);
++
++    rootNode.addChildNode(childNode);
++    childNode.setParentNode(rootNode);
++
++    assertEquals("rootNode.toString() must be <b style=\"header\" />","<b style=\"header\" />", rootNode.toString());
++  }
++
++
++  public void testConvertToContent() {
++    Node rootNode = new Node();
++    Node childNode = new Node();
++    childNode.setTitle("b");
++
++    Attributes attributes = new Attributes();
++    attributes.put("style", "header");
++    childNode.setAttributes(attributes);
++
++    rootNode.addChildNode(childNode);
++    childNode.setParentNode(rootNode);
++
++    childNode.convertToContent();
++
++    assertEquals("rootNode.toString() must be <b style=\"header\" />","<b style=\"header\" />",
++                            rootNode.getChildNodes().get(0).getContent());
++  }
++
++  public void testSetGet(){
++    Node node = new Node();
++
++    node.setTitle("abc");
++    assertEquals("abc", node.getTitle());
++
++    node.setContent("def");
++    assertEquals("def", node.getContent());
++  }
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/AttributesTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/AttributesTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/model/AttributesTest.java	(revision 0)
+@@ -0,0 +1,97 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++import java.util.Iterator;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit test for {@link Attributes}.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ */
++public class AttributesTest extends TestCase {
++
++  /**
++   * Tests {@link Attributes#get(String)}, {@link Attributes#put(String, String)}.
++   */
++  public void testGetAndPut() {
++    Attributes attributes = new Attributes();
++    assertEquals("attributes.get(\"foo\") must be \"\"", "", attributes.get("foo"));
++    attributes.put("foo", "bar");
++    assertEquals("attributes.get(\"foo\") must return \"bar\"", "bar", attributes.get("foo"));
++  }
++
++  /**
++   * Tests {@link Attributes#put(String, String)}.
++   */
++  public void testRemove() {
++    Attributes attributes = new Attributes();
++    attributes.put("foo", "bar");
++    attributes.remove("foo");
++    assertEquals("attributes.get(\"foo\") must be empty string", "", attributes.get("foo"));
++  }
++
++  /**
++   * Tests {@link Attributes#hasKey(String)}
++   */
++  public void testHasKey() {
++    Attributes attributes = new Attributes();
++    assertFalse("attributes.hasKey(\"foo\") must return false", attributes.hasKey("foo"));
++    attributes.put("foo", "bar");
++    assertTrue("attributes.hasKey(\"foo\") must return true", attributes.hasKey("foo"));
++  }
++
++  /**
++   * Tests {@link org.exoplatform.social.common.xmlprocessor.model.Attributes#size()}.
++   */
++  public void testSize() {
++    Attributes attributes = new Attributes();
++    assertEquals("attributes.size() must return 0", 0, attributes.size());
++    attributes.put("foo", "bar");
++    assertEquals("attributes.size() must return 1", 1, attributes.size());
++  }
++
++  /**
++   * Tests {@link Attributes#getKeyIterator()}.
++   */
++  public void testGetKeyIterator() {
++    Attributes attributes = new Attributes();
++    Iterator<String> keyIterator = attributes.getKeyIterator();
++    assertFalse("keyIterator.hasNext() must return false", keyIterator.hasNext());
++    attributes.put("foo", "bar");
++    keyIterator = attributes.getKeyIterator();
++    assertTrue("keyIterator.hasNext() must return true", keyIterator.hasNext());
++    assertEquals("keyIterator.next() must be \"foo\"", "foo", keyIterator.next());
++  }
++
++  /**
++   * Tests {@link Attributes#toString()}.
++   */
++  public void testToString() {
++    Attributes attributes = new Attributes();
++    assertEquals("attributes.xml() must be empty string", "", attributes.toString());
++    attributes.put("foo", "bar");
++    assertEquals("attributes.xml() must be foo=\"bar\"", " foo=\"bar\"", attributes.toString());
++    attributes.put("foo", "bar1");
++    assertEquals("attributes.xml() must be foo=\"bar1\"", " foo=\"bar1\"", attributes.toString());
++    attributes.put("foo1", "bar1");
++    assertEquals("attributes.xml() must be foo=\"bar1\" foo1=\"bar1\"", " foo=\"bar1\" foo1=\"bar1\"", attributes.toString());
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,53 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import org.exoplatform.social.common.xmlprocessor.DOMParser;
++import org.exoplatform.social.common.xmlprocessor.Tokenizer;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit test for {@link DOMContentEscapeFilterPlugin}.
++ */
++public class DOMContentEscapeFilterPluginTest extends TestCase {
++
++  /**
++   * Tests {@link DOMContentEscapeFilterPlugin#doFilter(Object)}.
++   */
++  public void testDOMContentEscape() {
++    assertEquals(
++            "",
++            new DOMContentEscapeFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")))
++                    .toString());
++
++    assertEquals(
++            "hello 1\r\nhello 2",
++            new DOMContentEscapeFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("hello 1\r\nhello 2"))).toString());
++
++    assertEquals(
++            "&lt;b&gt; = hello 1 &amp;&quot;\\ hello 2 &lt;a&gt;",
++            new DOMContentEscapeFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("<b> = hello 1 &\"\\ hello 2 <a>")))
++                    .toString());
++  }
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,58 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.HashSet;
++import java.util.Set;
++
++import org.exoplatform.social.common.xmlprocessor.Filter;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit test for {@link XMLTagFilterPlugin}.
++ */
++public class XMLTagFilterPluginTest extends TestCase {
++
++  public void testXMLTagFilter() {
++    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
++    tagFilterPolicy.addAllowedTags("b", "i", "br");
++    Set<String> aAttributes = new HashSet<String>();
++    aAttributes.add("href");
++    tagFilterPolicy.addAllowedTag("a", aAttributes);
++    Filter xmlFilter = new XMLTagFilterPlugin(tagFilterPolicy);
++
++    assertEquals("hello 1",
++            xmlFilter.doFilter("hello 1"));
++
++    assertEquals("&lt;c&gt;<a href=\"http://\">hello2</a>&lt;/c&gt;",
++            xmlFilter.doFilter("<c><a HREF=\"http://\">hello2</a></c>"));
++
++    assertEquals("3 < 5 >",
++            xmlFilter.doFilter("3 < 5 >"));
++
++    assertEquals("<b><i> hello 3</b> hello 4</i>",
++            xmlFilter.doFilter("<b><i> hello 3</b> hello 4</i>"));
++
++    assertEquals("<b> hello 5 <br /><i><i>&lt;h&gt;ee <b /><a><i>hello 10</i</a><i /> e&lt;/h&gt;</i></i></b>",
++            xmlFilter.doFilter("<b ID=\"blablo\"> hello 5 <br   /><i><i><h>ee <b/><a><i>hello 10</i</a><i/> e</h></i></i></b>"));
++
++    assertEquals("<b> hello 6 <br /><b>",
++            xmlFilter.doFilter("<B> hello 6 <br/><b>"));
++  }
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,81 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.HashSet;
++import java.util.Set;
++
++import org.exoplatform.social.common.xmlprocessor.DOMParser;
++import org.exoplatform.social.common.xmlprocessor.Tokenizer;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit test for {@link DOMXMLTagFilterPlugin}.
++ */
++public class DOMXMLTagFilterPluginTest extends TestCase {
++
++  public void testDoFilter() {
++    XMLTagFilterPolicy tagFilterPolicyBasicText = new XMLTagFilterPolicy();
++    tagFilterPolicyBasicText.addAllowedTags("b", "i", "br");
++    Set<String> aAttributes = new HashSet<String>();
++    aAttributes.add("href");
++    tagFilterPolicyBasicText.addAllowedTag("a", aAttributes);
++    Node rootNode;
++    assertEquals(
++            "",
++            new DOMXMLTagFilterPlugin(tagFilterPolicyBasicText).doFilter(
++                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")))
++                    .toString());
++    assertEquals(
++            "hello 1",
++            new DOMXMLTagFilterPlugin(tagFilterPolicyBasicText).doFilter(
++                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("hello 1")))
++                    .toString());
++
++    rootNode = new Node();
++    assertEquals(
++            "<c><a href=\"http://\">hello2</a></c>",
++            new DOMXMLTagFilterPlugin(tagFilterPolicyBasicText).doFilter(
++                    DOMParser.createDOMTree(rootNode,
++                            Tokenizer.tokenize("<c><a HREF=\"http://\" id=\"hello\">hello2</a></c>")))
++                    .toString());
++    assertEquals(3, rootNode.getChildNodes().size());
++    assertEquals("<c>", rootNode.getChildNodes().get(0).getContent());
++    assertEquals("</c>", rootNode.getChildNodes().get(2).getContent());
++    assertEquals("a", rootNode.getChildNodes().get(1).getTitle());
++    assertEquals("hello2", rootNode.getChildNodes().get(1).getChildNodes().get(0).toString());
++
++    rootNode = new Node();
++    assertEquals(
++            "<c><i>hello world</i><a href=\"http://\">hello2</a></c>",
++            new DOMXMLTagFilterPlugin(tagFilterPolicyBasicText).doFilter(
++                    DOMParser.createDOMTree(rootNode,
++                            Tokenizer.tokenize("<c><i>hello world</i><a HREF=\"http://\" id=\"hello\">hello2</a></c>")))
++                    .toString());
++    assertEquals(4, rootNode.getChildNodes().size());
++    assertEquals("<c>", rootNode.getChildNodes().get(0).getContent());
++    assertEquals("</c>", rootNode.getChildNodes().get(3).getContent());
++    assertEquals("i", rootNode.getChildNodes().get(1).getTitle());
++    assertEquals("hello world", rootNode.getChildNodes().get(1).getChildNodes().get(0).toString());
++    assertEquals("a", rootNode.getChildNodes().get(2).getTitle());
++    assertEquals("hello2", rootNode.getChildNodes().get(2).getChildNodes().get(0).toString());
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,61 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import org.exoplatform.social.common.xmlprocessor.DOMParser;
++import org.exoplatform.social.common.xmlprocessor.Tokenizer;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++import junit.framework.TestCase;
++
++public class DOMLineBreakerFilterPluginTest extends TestCase {
++
++  public void testDOMLineBreakerFilter() {
++    assertEquals(
++            "",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("")))
++                    .toString());
++    assertEquals(
++            "hello 1",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(), Tokenizer.tokenize("hello 1")))
++                    .toString());
++
++    assertEquals(
++            "hello 1<br />hello 2",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("hello 1\nhello 2"))).toString());
++    assertEquals(
++            "hello 1<br />hello 2",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("hello 1\r\nhello 2"))).toString());
++    assertEquals(
++            "hello 1 <br /> hello 2",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("hello 1 <br /> hello 2"))).toString());
++    assertEquals(
++            "hello 1 <br /> hello 2 <c>",
++            new DOMLineBreakerFilterPlugin().doFilter(
++                    DOMParser.createDOMTree(new Node(),
++                            Tokenizer.tokenize("hello 1 <br /> hello 2 <c>"))).toString());
++
++  }
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,35 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import org.exoplatform.social.common.xmlprocessor.Filter;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit Test for {@link LineBreakerFilterPlugin}.
++ */
++public class LineBreakerFilterPluginTest extends TestCase {
++
++  public void testBreakLineFilter() {
++    Filter breakLineFilter = new LineBreakerFilterPlugin();
++
++    assertEquals("hello 1<br />", breakLineFilter.doFilter("hello 1\n"));
++    assertEquals("3 < 5<br /> >", breakLineFilter.doFilter("3 < 5\n >"));
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPluginTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPluginTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPluginTest.java	(revision 0)
+@@ -0,0 +1,49 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import org.exoplatform.social.common.xmlprocessor.Filter;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit test for {@link XMLBalancerFilterPlugin}.
++ */
++public class XMLBalancerFilterPluginTest extends TestCase {
++
++  public void testXMLBalancerFilter() {
++    Filter balancer = new XMLBalancerFilterPlugin();
++
++    assertEquals("hello 1",
++            balancer.doFilter("hello 1"));
++
++    assertEquals("<a href=\"http://\">hello2</a>",
++            balancer.doFilter("<a href=\"http://\">hello2</a>"));
++
++    assertEquals("<b><i> hello 3</i></b> hello 4&lt;/i&gt;",
++            balancer.doFilter("<b><i> hello 3</b> hello 4</i>"));
++
++    assertEquals("<b> hello 5 <br /></b>",
++            balancer.doFilter("<b> hello 5 <br   /></b>"));
++
++    assertEquals("<b> hello 6 <br /><b /></b>",
++            balancer.doFilter("<b> hello 6 <br /><b>"));
++
++    assertEquals("3 &lt; 5 &gt;",
++            balancer.doFilter("3 < 5 >"));
++  }
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/TokenizerTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/TokenizerTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/TokenizerTest.java	(revision 0)
+@@ -0,0 +1,62 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import java.util.List;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit Test for {@link Tokenizer}.
++ */
++public class TokenizerTest extends TestCase {
++
++  public void testTokenize() {
++    List<String> result;
++
++    result = Tokenizer.tokenize("");
++    assertEquals(0, result.size());
++
++    result = Tokenizer.tokenize("hello");
++    assertEquals(1, result.size());
++    assertEquals("hello", result.get(0));
++
++    result = Tokenizer.tokenize("a < asd >");
++    assertEquals(2, result.size());
++    assertEquals("a ", result.get(0));
++    assertEquals("< asd >", result.get(1));
++
++    result = Tokenizer.tokenize("<a> a </a>");
++    assertEquals(3, result.size());
++    assertEquals("<a>", result.get(0));
++    assertEquals(" a ", result.get(1));
++    assertEquals("</a>", result.get(2));
++
++    result = Tokenizer.tokenize("<a href=\"hello\"> a </a>");
++    assertEquals(3, result.size());
++    assertEquals("<a href=\"hello\">", result.get(0));
++    assertEquals(" a ", result.get(1));
++    assertEquals("</a>", result.get(2));
++
++    result = Tokenizer.tokenize("<a href='hello'> a </a>");
++    assertEquals(3, result.size());
++    assertEquals("<a href='hello'>", result.get(0));
++    assertEquals(" a ", result.get(1));
++    assertEquals("</a>", result.get(2));
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/DOMParserTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/DOMParserTest.java	(revision 0)
++++ component/common/src/test/java/org/exoplatform/social/common/xmlprocessor/DOMParserTest.java	(revision 0)
+@@ -0,0 +1,74 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import java.util.Arrays;
++import java.util.List;
++
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++import junit.framework.TestCase;
++
++/**
++ * Unit Test for {@link DOMParser}.
++ */
++public class DOMParserTest extends TestCase {
++
++  public void testCreateDOMTreeListOfString() {
++    List<String> input;
++    input = Arrays.asList("");
++    Node rootNode;
++    rootNode = DOMParser.createDOMTree(input);
++    assertEquals(1, rootNode.getChildNodes().size());
++    assertEquals("", rootNode.getChildNodes().get(0).getContent());
++
++    input = Arrays.asList("<a>", " b ", "</a>", "<i>", "e", "<h>", "</i>");
++    rootNode = DOMParser.createDOMTree(input);
++    assertEquals(5, rootNode.getChildNodes().size());
++    assertEquals(1, rootNode.getChildNodes().get(0).getChildNodes().size());
++    assertEquals("a", rootNode.getChildNodes().get(0).getTitle());
++    assertEquals(" b ", rootNode.getChildNodes().get(0).getChildNodes().get(0).getContent());
++    assertEquals("<i>", rootNode.getChildNodes().get(1).getContent());
++    assertEquals("e", rootNode.getChildNodes().get(2).getContent());
++    assertEquals("<h>", rootNode.getChildNodes().get(3).getContent());
++    assertEquals("</i>", rootNode.getChildNodes().get(4).getContent());
++  }
++
++  public void testCreateDOMTreeNodeListOfString() {
++    List<String> input;
++    input = Arrays.asList("");
++    Node rootNode = new Node();
++
++    DOMParser.createDOMTree(rootNode, input);
++    assertEquals(1, rootNode.getChildNodes().size());
++    assertEquals("", rootNode.getChildNodes().get(0).getContent());
++
++    rootNode = new Node();
++
++    input = Arrays.asList("<a>", " b ", "</a>", "<i>", "e", "<h>", "</i>");
++    DOMParser.createDOMTree(rootNode, input);
++    assertEquals(5, rootNode.getChildNodes().size());
++    assertEquals(1, rootNode.getChildNodes().get(0).getChildNodes().size());
++    assertEquals("a", rootNode.getChildNodes().get(0).getTitle());
++    assertEquals(" b ", rootNode.getChildNodes().get(0).getChildNodes().get(0).getContent());
++    assertEquals("<i>", rootNode.getChildNodes().get(1).getContent());
++    assertEquals("e", rootNode.getChildNodes().get(2).getContent());
++    assertEquals("<h>", rootNode.getChildNodes().get(3).getContent());
++    assertEquals("</i>", rootNode.getChildNodes().get(4).getContent());
++  }
++
++}
+Index: component/common/src/test/java/org/exoplatform/social/common/AbstractCommonTest.java
+===================================================================
+--- component/common/src/test/java/org/exoplatform/social/common/AbstractCommonTest.java	(revision 76840)
++++ component/common/src/test/java/org/exoplatform/social/common/AbstractCommonTest.java	(working copy)
+@@ -20,6 +20,8 @@
+ import org.exoplatform.component.test.ConfigurationUnit;
+ import org.exoplatform.component.test.ConfiguredBy;
+ import org.exoplatform.component.test.ContainerScope;
++import org.exoplatform.container.PortalContainer;
++import org.exoplatform.services.jcr.RepositoryService;
+ 
+ /**
+  * Abstract Common Test.
+@@ -30,12 +32,20 @@
+  */
+ @ConfiguredBy({
+   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
+-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml")
++  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration" +
++          ".xml"),
++  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test" +
++          ".configuration.xml")
+ })
+ public abstract class AbstractCommonTest extends AbstractKernelTest {
+ 
++  protected PortalContainer portalContainer;
++  protected RepositoryService repositoryService;
++
+   @Override
+   protected void setUp() throws Exception {
++    portalContainer = PortalContainer.getInstance();
++    repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
+     begin();
+   }
+ 
+Index: component/common/src/main/java/conf/portal/configuration.xml
+===================================================================
+--- component/common/src/main/java/conf/portal/configuration.xml	(revision 76840)
++++ component/common/src/main/java/conf/portal/configuration.xml	(working copy)
+@@ -23,6 +23,17 @@
+   xmlns="http://www.exoplaform.org/xml/ns/kernel_1_0.xsd">
+ 
+   <component>
++    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
++    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
++  </component>
++
++  <component>
++    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
++    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
++  </component>
++
++
++  <component>
+     <key>org.exoplatform.social.common.jcr.LockManager</key>
+     <type>org.exoplatform.social.common.jcr.LockManager</type>
+   </component>
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/XMLTagFilterPolicy.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/XMLTagFilterPolicy.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/XMLTagFilterPolicy.java	(revision 0)
+@@ -0,0 +1,217 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++import java.util.HashSet;
++import java.util.List;
++import java.util.Set;
++
++import org.exoplatform.container.component.BaseComponentPlugin;
++import org.exoplatform.container.xml.InitParams;
++
++/**
++ * Contains the set of {@link AllowedTag}.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since 1.2.1
++ */
++public class XMLTagFilterPolicy {
++
++  private Set<AllowedTag> allowedTagSet;
++
++  /**
++   * Default constructor
++   */
++  public XMLTagFilterPolicy() {
++    allowedTagSet = new HashSet<AllowedTag>();
++  }
++
++  /**
++   * Gets allowed tag set.
++   *
++   * @return the allowed tag set
++   */
++  public Set<AllowedTag> getAllowedTagSet() {
++    return allowedTagSet;
++  }
++
++  /**
++   * Sets allowed tag set.
++   *
++   * @param allowedTagSet the allowed tag set
++   */
++  public void setAllowedTagSet(Set<AllowedTag> allowedTagSet) {
++    this.allowedTagSet = allowedTagSet;
++  }
++
++  /**
++   * Adds many tags at once with empty attributes.
++   *
++   * @param tagNames
++   */
++  public void addAllowedTags(String... tagNames) {
++    for (String tagName : tagNames) {
++      if (allowedTagSet.contains(tagName)) {
++        return;
++      }
++      AllowedTag allowedTag = new AllowedTag(tagName);
++      allowedTagSet.add(allowedTag);
++    }
++  }
++
++  /**
++   * Adds allowed tagName and its allowed attributes.
++   *
++   * @param tagName the tag name
++   * @param tagAttributes the set of attributes
++   */
++  public void addAllowedTag(String tagName, Set<String> tagAttributes) {
++    AllowedTag allowedTag = new AllowedTag(tagName, tagAttributes);
++    addAllowedTag(allowedTag);
++  }
++
++  /**
++   * Adds allowed tag.
++   *
++   * @param allowedTag the allowed tag
++   */
++  public void addAllowedTag(AllowedTag allowedTag) {
++    allowedTagSet.add(allowedTag);
++  }
++
++  /**
++   * Removed allowed tag.
++   *
++   * @param allowedTag the allowed tag
++   */
++  public void removeAllowedTag(AllowedTag allowedTag) {
++    allowedTagSet.remove(allowedTag);
++  }
++
++
++  /**
++   * Sets {@link AllowedTagPlugin}.
++   *
++   * @param allowedTagPlugin
++   */
++  public void setAllowedTagPlugin(AllowedTagPlugin allowedTagPlugin) {
++    List<AllowedTag> allowedTagList = allowedTagPlugin.getAllowedTagList();
++    for (AllowedTag allowedTag : allowedTagList) {
++      addAllowedTag(allowedTag);
++    }
++  }
++
++  /**
++   * The plugin component for configuring the list of {@link AllowedTag}.
++   */
++  public static class AllowedTagPlugin extends BaseComponentPlugin {
++    private List<AllowedTag> allowedTagList;
++
++    /**
++     * Constructor.
++     *
++     * @param initParams
++     */
++    public AllowedTagPlugin(InitParams initParams) {
++      allowedTagList = initParams.getObjectParamValues(AllowedTag.class);
++    }
++
++    /**
++     * Gets the allowed tag list.
++     *
++     * @return the allowed tag list
++     */
++    public List<AllowedTag> getAllowedTagList() {
++      return allowedTagList;
++    }
++
++  }
++
++  /**
++   * The allowed tags: tagName and tagAttributes to be configured for allowed tags.
++   */
++  public static class AllowedTag {
++    private String tagName;
++    private Set<String> tagAttributes = new HashSet<String>();
++
++    /**
++     * Default constructor.
++     */
++    public AllowedTag() {
++
++    }
++
++    /**
++     * Constructor with tagName.
++     *
++     * @param tagName
++     */
++    public AllowedTag(String tagName) {
++      this.tagName = tagName;
++    }
++
++    /**
++     * Constructor with tagName and tagAttributes.
++     *
++     * @param tagName the tag name
++     * @param tagAttributes the tag attributes
++     */
++    public AllowedTag(String tagName, Set<String> tagAttributes) {
++      this.tagName = tagName;
++      this.tagAttributes = tagAttributes;
++    }
++
++    /**
++     * Gets the tag name.
++     *
++     * @return the tag name
++     */
++    public String getTagName() {
++      return tagName;
++    }
++
++    /**
++     * Sets the tag name.
++     *
++     * @param setTagName the tag name
++     */
++    public void setTagName(String setTagName) {
++      tagName = setTagName;
++    }
++
++    /**
++     * Sets the tag attributes.
++     *
++     * @param tagAttributes the tag attributes
++     */
++    public void setTagAttributes(Set<String> tagAttributes) {
++      this.tagAttributes = tagAttributes;
++    }
++
++    /**
++     * Gets the tag attributes.
++     *
++     * @return the tag attributes
++     */
++    public Set<String> getTagAttributes() {
++      return tagAttributes;
++    }
++
++  }
++
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Node.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Node.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Node.java	(revision 0)
+@@ -0,0 +1,292 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++import java.util.LinkedList;
++
++/**
++ * Model of XML node tree
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class Node {
++  private Node parentNode = null;
++  private String title = "";
++  private Attributes attributes = new Attributes();
++  private String content = "";
++  private LinkedList<Node> childNodes = new LinkedList<Node>();
++
++  /**
++   * Gets parent Node of current Node. If current Node is root, parent Node == null;
++   *
++   * @return parent node
++   */
++  public Node getParentNode() {
++    return parentNode;
++  }
++
++  /**
++   * Sets the parent Node of currentNode
++   *
++   * @param parentNode
++   */
++  public void setParentNode(Node parentNode) {
++    this.parentNode = parentNode;
++  }
++
++  /**
++   * Gets title of Node, node's title ak the tag name.
++   *
++   * @return the node title
++   */
++  public String getTitle() {
++    return title;
++  }
++
++  /**
++   * Sets title of Node, node's title ak the tag name.
++   *
++   * @param nodeTitle
++   */
++  public void setTitle(String nodeTitle) {
++    this.title = nodeTitle;
++  }
++
++  /**
++   * Returns Attributes of Node
++   *
++   * @return the attributes
++   */
++  public Attributes getAttributes() {
++    return attributes;
++  }
++
++  /**
++   * Sets attributes of Node.
++   *
++   * @param attributes
++   */
++  public void setAttributes(Attributes attributes) {
++    this.attributes = attributes;
++  }
++
++  /**
++   * Gets the Content of Node, if Node have Content it mean that is text Node.
++   *
++   * @return the content node
++   */
++  public String getContent() {
++    return content;
++  }
++
++  /**
++   * Sets the Content of Node, if Node have Content it mean that is text Node.
++   *
++   * @param content
++   */
++  public void setContent(String content) {
++    this.content = content;
++  }
++
++  /**
++   * Gets the list child nodes of current Node.
++   *
++   * @return child nodes
++   */
++  public LinkedList<Node> getChildNodes() {
++    return childNodes;
++  }
++
++  /**
++   * Sets the list child nodes of current Node.
++   *
++   * @param childNodes the child nodes
++   */
++  public void setChildNodes(LinkedList<Node> childNodes) {
++    this.childNodes = childNodes;
++  }
++
++  /**
++   * Adds child Node to this Node.
++   *
++   * @param childNode the child node
++   */
++  public void addChildNode(Node childNode) {
++    this.childNodes.add(childNode);
++  }
++
++  /**
++   * Adds Attribute to current Node.
++   *
++   * @param key   attribute key
++   * @param value attribute value
++   */
++  public void addAttribute(String key, String value) {
++    this.attributes.put(key, value);
++  }
++
++
++
++  /**
++   * Convert Node to XML String including all sub-Node
++   * @return XML String
++   */
++  @Override
++  public String toString() {
++    StringBuilder xmlString = new StringBuilder("");
++    boolean selfClosedTag = false;
++    boolean textTag = false;
++
++    if (childNodes.size() == 0 && content.isEmpty()) {
++      selfClosedTag = true;
++    }
++    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
++            && title.isEmpty()) {
++      textTag = true;
++    }
++
++    if (textTag) {
++      xmlString.append(this.content);
++    } else {
++      if (this.parentNode != null) {
++
++        xmlString.append("<" + this.title);
++
++        xmlString.append(attributes.toString());
++
++        if (selfClosedTag) {
++          xmlString.append(" /");
++        }
++        xmlString.append(">");
++      }
++      for (Node childNode : childNodes) {
++        xmlString.append(childNode.toString());
++      }
++
++      if (this.parentNode != null && !selfClosedTag) {
++        xmlString.append("</" + this.title + ">");
++      }
++    }
++    return xmlString.toString();
++  }
++
++  /**
++   * Returns the Open Tag of this Node, if this node is textNode so this will equal blank string.
++   *
++   * @return
++   */
++  private String toOpenString() {
++    StringBuilder xmlString = new StringBuilder("");
++    boolean selfClosedTag = false;
++    boolean textTag = false;
++
++    if (childNodes.size() == 0 && content.isEmpty()) {
++      selfClosedTag = true;
++    }
++    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
++            && title.isEmpty()) {
++      textTag = true;
++    }
++
++    if (textTag) {
++      xmlString.append(this.content);
++    } else {
++      if (this.parentNode != null) {
++
++        xmlString.append("<" + this.title);
++
++        xmlString.append(attributes.toString());
++
++        if (selfClosedTag) {
++          xmlString.append(" /");
++        }
++        xmlString.append(">");
++      }
++    }
++    return xmlString.toString();
++  }
++
++  /**
++   * Returns the Close Tag of this Node, if this node is textNode so this will equal blank string.
++   *
++   * @return
++   */
++  private String toCloseString() {
++    StringBuilder xmlString = new StringBuilder("");
++    boolean selfClosedTag = false;
++    boolean textTag = false;
++
++    if (childNodes.size() == 0 && content.isEmpty()) {
++      selfClosedTag = true;
++    }
++    if (attributes.size() == 0 && childNodes.size() == 0 && !content.isEmpty()
++            && title.isEmpty()) {
++      textTag = true;
++    }
++
++    if (textTag) {
++      xmlString.append(this.content);
++    } else {
++      if (this.parentNode != null && !selfClosedTag) {
++        xmlString.append("</" + this.title + ">");
++      }
++    }
++    return xmlString.toString();
++  }
++
++  /**
++   * Converts this Tag Node to Content Node, add Close Tag at the end of child nodes and move all child Nodes of this
++   * Node to parent Node.
++   */
++  public void convertToContent() {
++    if (parentNode != null) {
++      int thisPostion = parentNode.getChildNodes().indexOf(this);
++      String content = this.toOpenString();
++      String closeTag = this.toCloseString();
++      this.title = "";
++      this.attributes.clear();
++
++      this.content = content;
++      if (!closeTag.isEmpty()) {
++        Node closeContentNode = new Node();
++        closeContentNode.setContent(closeTag);
++        childNodes.addLast(closeContentNode);
++        moveAllChildNodesToOtherNode(parentNode, thisPostion);
++      }
++    }
++  }
++
++
++  /**
++   * Moves all child Node of this Node to destNode and insert it after insertPosition;
++   *
++   * @param destNode
++   * @param insertPosition
++   */
++  private void moveAllChildNodesToOtherNode(Node destNode, int insertPosition) {
++    if (destNode != null) {
++      LinkedList<Node> parentChildNodes = destNode.getChildNodes();
++      int postShift = insertPosition;
++      for (Node childNode : childNodes) {
++        postShift++;
++        childNode.setParentNode(destNode);
++        parentChildNodes.add(postShift, childNode);
++      }
++      childNodes.clear();
++    }
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Attributes.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Attributes.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/model/Attributes.java	(revision 0)
+@@ -0,0 +1,120 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.model;
++
++
++import java.util.Iterator;
++import java.util.LinkedHashMap;
++
++/**
++ * The attributes of an Node.
++ * <p/>
++ * Attributes are treated as a map: there can be only one value associated with an attribute key.
++ * <p/>
++ * Attribute key and value comparisons are done case insensitively, and keys are normalised to lower-case.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class Attributes {
++
++  /**
++   * Linked hash map to preserve insertion order.
++   */
++  private LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>(2);
++
++  /**
++   * Gets an attribute value by key.
++   *
++   * @param key the attribute key
++   * @return the attribute value if set; or empty string if not set.
++   * @see #hasKey(String)
++   */
++  public String get(String key) {
++    String attr = attributes.get(key.toLowerCase());
++    return attr != null ? attr : "";
++  }
++
++  /**
++   * Sets a new attribute, or replace an existing one by key.
++   *
++   * @param key   attribute key
++   * @param value attribute value
++   */
++  public void put(String key, String value) {
++    attributes.put(key.toLowerCase(), value);
++  }
++
++  /**
++   * Removes an attribute by key.
++   *
++   * @param key attribute key to remove
++   */
++  public void remove(String key) {
++    attributes.remove(key.toLowerCase());
++  }
++
++  /**
++   * Checks if these attributes contain an attribute with this key.
++   *
++   * @param key key to be checked
++   * @return true if key exists, false otherwise
++   */
++  public boolean hasKey(String key) {
++    return attributes.containsKey(key.toLowerCase());
++  }
++
++  /**
++   * Get the number of attributes in this set.
++   *
++   * @return size
++   */
++  public int size() {
++    return attributes.size();
++  }
++
++  /**
++   * Gets the KeySet iterator of attributes
++   *
++   * @return Iterator<String>
++   */
++  public Iterator<String> getKeyIterator() {
++    return attributes.keySet().iterator();
++  }
++
++  /**
++   * Clears all attributes
++   */
++  public void clear() {
++    attributes.clear();
++  }
++
++  /**
++   * Converts to string xml presentation of this attributes.
++   *
++   * @return a xml presentation string
++   */
++  @Override
++  public String toString() {
++    StringBuilder attributesString = new StringBuilder();
++    for (String key : attributes.keySet()) {
++      String val = attributes.get(key);
++      attributesString.append(" " + key + "=" + "\"" + val + "\"");
++    }
++    return attributesString.toString();
++  }
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/BaseXMLFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/BaseXMLFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/BaseXMLFilterPlugin.java	(revision 0)
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import org.exoplatform.container.component.BaseComponentPlugin;
++
++/**
++ * Base component for {@link Filter}. Any component plugin for {@link XMLProcessor} must extends
++ * this class.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ * @since Jun 29, 2011
++ * @since 1.2.1
++ */
++public abstract class BaseXMLFilterPlugin extends BaseComponentPlugin implements Filter {
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessor.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessor.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessor.java	(revision 0)
+@@ -0,0 +1,65 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++
++/**
++ * The Processor is responsible for processing the input by pushing the input through filter chains and returns
++ * result. This processor also allows configuring external filter component plugin.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since  1.2.1
++ */
++public interface XMLProcessor {
++
++  /**
++   * Adds a defined filter to this processor.
++   *
++   * @param filter a defined filter
++   */
++  void addFilter(Filter filter);
++
++  /**
++   * Removes a defined filter which is added.
++   *
++   * @param addedFilter the added filter
++   */
++  void removeFilter(Filter addedFilter);
++
++  /**
++   * Adds a defined filter component plugin to this processor.
++   *
++   * @param filterComponentPlugin the filter component plugin
++   */
++  void addFilterPlugin(BaseXMLFilterPlugin filterComponentPlugin);
++
++  /**
++   * Removes the existing filter component plugin from this processor.
++   *
++   * @param filterComponentPlugin the existing filter component plugin.
++   */
++  void removeFilterPlugin(BaseXMLFilterPlugin filterComponentPlugin);
++
++  /**
++   * Processes an input object though filter chains.
++   *
++   * @param input the input object
++   * @return new processed object by added filters.
++   */
++  Object process(Object input);
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorImpl.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorImpl.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/XMLProcessorImpl.java	(revision 0)
+@@ -0,0 +1,101 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import java.util.Iterator;
++import java.util.LinkedList;
++
++/**
++ * Implementation of {@link XMLProcessor}.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class XMLProcessorImpl implements XMLProcessor {
++  /**
++   * The linked list for all filters.
++   */
++  private LinkedList<Filter> filters;
++
++  /**
++   * Constructor
++   */
++  public XMLProcessorImpl() {
++    filters = new LinkedList<Filter>();
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public void addFilter(Filter filter) {
++    filters.add(filter);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public void removeFilter(Filter addedFilter) {
++    filters.remove(addedFilter);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public void addFilterPlugin(BaseXMLFilterPlugin filterComponentPlugin) {
++    addFilter(filterComponentPlugin);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public void removeFilterPlugin(BaseXMLFilterPlugin filterComponentPlugin) {
++    removeFilter(filterComponentPlugin);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  public void removeFilter(Class className) {
++    LinkedList<Filter> filtersClone = (LinkedList<Filter>) filters.clone();
++
++    for (Iterator<Filter> filterIterator = filtersClone.iterator();
++         filterIterator.hasNext();
++         ) {
++      Filter filter = filterIterator.next();
++      if (filter.getClass().equals(className)) {
++        filters.remove(filter);
++      }
++    }
++  }
++
++
++  /**
++   * {@inheritDoc}
++   */
++  public Object process(Object input) {
++    for (Iterator<Filter> filterIterator = filters.iterator();
++         filterIterator.hasNext();
++         ) {
++      Filter filter = filterIterator.next();
++      input = filter.doFilter(input);
++    }
++    return input;
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/package-info.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/package-info.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/package-info.java	(revision 0)
+@@ -0,0 +1,4 @@
++/**
++ * Provides xml processor classes for sanitize purpose: allows using html tags.
++ */
++package org.exoplatform.social.common.xmlprocessor;
+\ No newline at end of file
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Filter.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Filter.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Filter.java	(revision 0)
+@@ -0,0 +1,34 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++/**
++ * The filter actually does the work of filtering the input and returns the result. Many filters are added into
++ * filter chains and are used by {@link XMLProcessor} to process input.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since  1.2.1
++ */
++public interface Filter {
++  /**
++   * Filters the input data.
++   *
++   * @param input the input data
++   * @return an Object with the result after filtered
++   */
++  public Object doFilter(Object input);
++}
+\ No newline at end of file
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMContentEscapeFilterPlugin.java	(revision 0)
+@@ -0,0 +1,65 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.LinkedList;
++
++import org.apache.commons.lang.StringEscapeUtils;
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++
++/**
++ * The filter escapes all content of the DOMTree to make sure it cleaned.
++ * <b>Note:</b> this filter cannot detect that content escaped or not so make sure that you don't use it twice or
++ * using it with escaped content.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since  1.2.1
++ */
++public class DOMContentEscapeFilterPlugin extends BaseXMLFilterPlugin {
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public Object doFilter(Object input) {
++    if (input instanceof Node) {
++      nodeFilter((Node) input);
++    }
++    return input;
++  }
++
++  /**
++   * Filter by nodes.
++   *
++   * @param node a node
++   */
++  private void nodeFilter(Node node) {
++    LinkedList<Node> currentChildNode = node.getChildNodes();
++    if (node.getParentNode() != null) {
++      if (!node.getContent().isEmpty()) {
++        node.setContent(StringEscapeUtils.escapeHtml(node.getContent()));
++      }
++    }
++    for (int i = 0; i < currentChildNode.size(); i++) {
++      nodeFilter(currentChildNode.get(i));
++    }
++
++  }
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLTagFilterPlugin.java	(revision 0)
+@@ -0,0 +1,128 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.regex.Matcher;
++
++import org.apache.commons.lang.StringEscapeUtils;
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.DOMParser;
++import org.exoplatform.social.common.xmlprocessor.Tokenizer;
++import org.exoplatform.social.common.xmlprocessor.model.Attributes;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++
++/**
++ * This is XML Tags and Attributes filter from String input base on whitelist. You must define XMLTagFilterPolicy and
++ * add XMLTagFilterPolicy to this constructor.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class XMLTagFilterPlugin extends BaseXMLFilterPlugin {
++  private LinkedHashMap<String, Attributes> allowedTags;
++
++  /**
++   * Gets allowed tags list
++   *
++   * @return the allowed tags list
++   */
++  public LinkedHashMap<String, Attributes> getAllowedTags() {
++    return allowedTags;
++  }
++
++  /**
++   * Sets allowed tags list
++   *
++   * @param allowedTags
++   */
++  public void setAllowedTags(LinkedHashMap<String, Attributes> allowedTags) {
++    this.allowedTags = allowedTags;
++  }
++
++  /**
++   * Constructor, the policy must be set from constructor.
++   *
++   * @param tagFilterPolicy
++   */
++  public XMLTagFilterPlugin(XMLTagFilterPolicy tagFilterPolicy) {
++    allowedTags = Util.getAllowedTagsFromTagFilterPolicy(tagFilterPolicy);
++  }
++
++  /**
++   *
++   */
++  public Object doFilter(Object input) {
++    if (input instanceof String) {
++      input = nodeFilter((String) input);
++    }
++    return input;
++  }
++
++  private String nodeFilter(String xmlInput) {
++    List<String> xmlTokens = Tokenizer.tokenize(xmlInput);
++
++    for (int i = 0; i < xmlTokens.size(); i++) {
++      String token = xmlTokens.get(i);
++
++
++      Matcher startMatcher = DOMParser.TAGSTARTPATTERN.matcher(token);
++      Matcher endMatcher = DOMParser.TAGCLOSEPATTERN.matcher(token);
++
++      if (startMatcher.find()) {
++        String tag = startMatcher.group(1).toLowerCase();
++
++        if (!allowedTags.containsKey(tag)) {
++          xmlTokens.set(i, StringEscapeUtils.escapeHtml(token));
++        } else {
++          StringBuilder tagStringBuilder = new StringBuilder("<" + tag);
++
++          String tokenBody = startMatcher.group(2);
++          Matcher attributes = DOMParser.ATTRIBUTESPATTERN.matcher(tokenBody);
++
++          Attributes attributesWhiteList = allowedTags.get(tag);
++
++          while (attributes.find()) {
++            String attr = attributes.group(1).toLowerCase();
++            String val = attributes.group(4) == null ? attributes.group(3) : attributes.group(4);
++            if (attributesWhiteList.hasKey(attr)) {
++              tagStringBuilder.append(" " + attr + "=" + "\"" + val + "\"");
++            }
++          }
++          if (DOMParser.SELFTCLOSETAGPATTERN.matcher(token).find()) {
++            tagStringBuilder.append(" />");
++          } else {
++            tagStringBuilder.append(">");
++          }
++          xmlTokens.set(i, tagStringBuilder.toString());
++        }
++      } else if (endMatcher.find()) {
++        String tag = endMatcher.group(1).toLowerCase();
++        if (!allowedTags.containsKey(tag)) {
++          xmlTokens.set(i, StringEscapeUtils.escapeHtml(token));
++        }
++      }
++    }
++    StringBuilder xmlStringBuilder = new StringBuilder();
++
++    for (String xmlToken : xmlTokens) {
++      xmlStringBuilder.append(xmlToken);
++    }
++    return xmlStringBuilder.toString();
++  }
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMXMLTagFilterPlugin.java	(revision 0)
+@@ -0,0 +1,103 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.Iterator;
++import java.util.LinkedHashMap;
++import java.util.LinkedList;
++
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.model.Attributes;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++
++
++/**
++ * This Filter travel through DOM tree and find if any TAG is not satisfied the rules specified by a list of allowed
++ * tags.
++ * With wrong TAG, it change itself to content Type.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since  1.2.1
++ */
++public class DOMXMLTagFilterPlugin extends BaseXMLFilterPlugin {
++  private LinkedHashMap<String, Attributes> allowedTags = new LinkedHashMap<String, Attributes>();
++
++  /**
++   * Gets the policy List.
++   *
++   * @return the allowedTags
++   */
++  public LinkedHashMap<String, Attributes> getAllowedTags() {
++    return allowedTags;
++  }
++
++  /**
++   * Sets allowed tag policy to DOMXMLagFilter.
++   *
++   * @param allowedTags
++   */
++  public void setAllowedTags(LinkedHashMap<String, Attributes> allowedTags) {
++    this.allowedTags = allowedTags;
++  }
++
++  /**
++   * Constructor, the policy must be set from constructor.
++   *
++   * @param tagFilterPolicy
++   */
++  public DOMXMLTagFilterPlugin(XMLTagFilterPolicy tagFilterPolicy) {
++    allowedTags = Util.getAllowedTagsFromTagFilterPolicy(tagFilterPolicy);
++  }
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public Object doFilter(Object input) {
++    if (input instanceof Node) {
++      nodeFilter((Node) input);
++    }
++    return input;
++  }
++
++  private Node nodeFilter(Node currentNode) {
++    LinkedList<Node> currentChildNode = currentNode.getChildNodes();
++    if (!currentNode.getTitle().isEmpty()) {
++      String tag = currentNode.getTitle();
++      if (allowedTags.containsKey(tag)) {
++
++        Attributes currentAttributes = currentNode.getAttributes();
++        Attributes validatedAttributes = new Attributes();
++
++        for (Iterator<String> iterator = currentAttributes.getKeyIterator(); iterator.hasNext(); ) {
++          String key = iterator.next();
++          if (allowedTags.get(tag).hasKey(key)) {
++            validatedAttributes.put(key, currentAttributes.get(key));
++          }
++        }
++        currentNode.setAttributes(validatedAttributes);
++      } else {
++        currentNode.convertToContent();
++      }
++    }
++    for (int i = 0; i < currentChildNode.size(); i++) {
++      nodeFilter(currentChildNode.get(i));
++    }
++    return currentNode;
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/DOMLineBreakerFilterPlugin.java	(revision 0)
+@@ -0,0 +1,80 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.LinkedList;
++
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++/**
++ * This filter checks if DOM tree Content contain native line-break character and replace it with
++ * <code>&lt;br /&gt;</code> tags.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ * @since  1.2.1
++ */
++public class DOMLineBreakerFilterPlugin extends BaseXMLFilterPlugin {
++
++  /**
++   * Filters any new line characters by new line html tag (&lt;br&gt;).
++   *
++   * @param input the input data
++   * @return the filtered input
++   */
++  public Object doFilter(Object input) {
++    if (input instanceof Node) {
++      nodeFilter((Node) input);
++    }
++    return input;
++  }
++
++  private Node nodeFilter(Node currentNode) {
++    LinkedList<Node> currentChildNode = currentNode.getChildNodes();
++    if (currentNode.getParentNode() != null) {
++      if (!currentNode.getContent().isEmpty()) {
++        LinkedList<Node> parentChildNodes = currentNode.getParentNode()
++                .getChildNodes();
++        int startPostion = parentChildNodes.indexOf(currentNode);
++        int i = startPostion;
++        Node parentNode = currentNode.getParentNode();
++        String content = currentNode.getContent();
++        String[] contentArray = content.split("\\r?\\n");
++
++        if (contentArray.length > 1) {
++          currentNode.setContent(contentArray[0]);
++          for (int j = 1; j < contentArray.length; j++) {
++            Node nodeToAdd = new Node();
++            nodeToAdd.setTitle("br");
++            nodeToAdd.setParentNode(parentNode);
++            parentChildNodes.add(++i, nodeToAdd);
++            nodeToAdd = new Node();
++            nodeToAdd.setContent(contentArray[i]);
++            nodeToAdd.setParentNode(parentNode);
++            parentChildNodes.add(++i, nodeToAdd);
++          }
++        }
++      }
++    }
++    for (int i = 0; i < currentChildNode.size(); i++) {
++      nodeFilter(currentChildNode.get(i));
++    }
++    return currentNode;
++
++  }
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/LineBreakerFilterPlugin.java	(revision 0)
+@@ -0,0 +1,39 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++
++/**
++ * This Filter repace native line break character in String input and replace it with HTML /<br/> tag.
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class LineBreakerFilterPlugin extends BaseXMLFilterPlugin {
++
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public Object doFilter(Object input) {
++    if (input instanceof String) {
++      String inputString = (String) input;
++      input = inputString.replaceAll("\\r?\\n", "<br />");
++    }
++    return input;
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/Util.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/Util.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/Util.java	(revision 0)
+@@ -0,0 +1,55 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.LinkedHashMap;
++import java.util.Set;
++
++import org.exoplatform.social.common.xmlprocessor.model.Attributes;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
++import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy.AllowedTag;
++
++/**
++ * Utility class for filter processing.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ * @since Aug 3, 2011
++ * @since  1.2.1
++ */
++class Util {
++
++  /**
++   * Gets white list from a tag filter policy.
++   *
++   * @param tagFilterPolicy the tag filter policy
++   * @return the white list
++   */
++  public static LinkedHashMap<String, Attributes> getAllowedTagsFromTagFilterPolicy(XMLTagFilterPolicy tagFilterPolicy) {
++    LinkedHashMap<String, Attributes> allowedTags = new LinkedHashMap<String, Attributes>();
++    Set<AllowedTag> allowedTagList = tagFilterPolicy.getAllowedTagSet();
++    for (AllowedTag allowedTag: allowedTagList) {
++      Set<String> tagAttributes = allowedTag.getTagAttributes();
++      Attributes attributes = new Attributes();
++      for (String attributeKey : tagAttributes) {
++        attributes.put(attributeKey, "");
++      }
++      allowedTags.put(allowedTag.getTagName(), attributes);
++    }
++    return allowedTags;
++  }
++
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPlugin.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPlugin.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/filters/XMLBalancerFilterPlugin.java	(revision 0)
+@@ -0,0 +1,114 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor.filters;
++
++import java.util.List;
++import java.util.regex.Matcher;
++
++import org.apache.commons.lang.StringEscapeUtils;
++import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
++import org.exoplatform.social.common.xmlprocessor.DOMParser;
++import org.exoplatform.social.common.xmlprocessor.Tokenizer;
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++/**
++ * This Filter try Smart way to autoCorrect the typo in HTML input (auto close opened TAG, escape wrong TAG).
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class XMLBalancerFilterPlugin extends BaseXMLFilterPlugin {
++  /**
++   * {@inheritDoc}
++   */
++  @Override
++  public Object doFilter(Object input) {
++    if (input instanceof String) {
++      input = createDOMTree((String) input).toString();
++    }
++    return input;
++  }
++
++  /**
++   * Creates DOM tree From String input and Balance it.
++   *
++   * @param xmlString
++   * @return
++   */
++  private Node createDOMTree(String xmlString) {
++    Node rootNode = new Node();
++    Node parsingNode = rootNode;
++    Node currentNode = rootNode;
++
++    List<String> xmlTokens = Tokenizer.tokenize(xmlString);
++
++    for (String token : xmlTokens) {
++      Matcher startMatcher = DOMParser.TAGSTARTPATTERN.matcher(token);
++      Matcher endMatcher = DOMParser.TAGCLOSEPATTERN.matcher(token);
++
++      if (DOMParser.COMMENTPATTERN.matcher(token).find()) {
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        currentNode.addChildNode(parsingNode);
++        parsingNode.setTitle(token);
++      } else if (startMatcher.find()) {
++        String tag = startMatcher.group(1).toLowerCase();
++
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        parsingNode.setTitle(tag);
++
++        String tokenBody = startMatcher.group(2);
++
++        Matcher attributes = DOMParser.ATTRIBUTESPATTERN.matcher(tokenBody);
++
++        while (attributes.find()) {
++          String attr = attributes.group(1).toLowerCase();
++          String val = attributes.group(4) == null ? attributes.group(3) : attributes.group(4);
++          parsingNode.addAttribute(attr, val);
++        }
++        currentNode.addChildNode(parsingNode);
++        if (!DOMParser.SELFTCLOSETAGPATTERN.matcher(token).find()) {
++          currentNode = parsingNode;
++        }
++      } else if (endMatcher.find()) {
++        String tag = endMatcher.group(1).toLowerCase();
++        Node searchOpenedNode = currentNode;
++        while (!searchOpenedNode.getTitle().equals(tag)
++                && !(searchOpenedNode.getParentNode() == null)) {
++          searchOpenedNode = searchOpenedNode.getParentNode();
++        }
++        if (searchOpenedNode.getParentNode() == null) {
++          Node invalidNode = new Node();
++          invalidNode.setContent(StringEscapeUtils.escapeHtml(token));
++          currentNode.addChildNode(invalidNode);
++        } else if (searchOpenedNode.getTitle().equals(currentNode.getTitle())) {
++          currentNode = currentNode.getParentNode();
++        } else {
++          currentNode = searchOpenedNode.getParentNode();
++        }
++
++      } else {
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        parsingNode.setContent(StringEscapeUtils.escapeHtml(token));
++
++        currentNode.addChildNode(parsingNode);
++      }
++    }
++    return rootNode;
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Tokenizer.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Tokenizer.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/Tokenizer.java	(revision 0)
+@@ -0,0 +1,97 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import java.util.ArrayList;
++import java.util.List;
++
++
++/**
++ * XML scanner/tokenizer
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class Tokenizer {
++  /**
++   * Splits tag of XML String to an arrayList
++   *
++   * @param html
++   * @return List<String> which each item is a token of HTML tag
++   */
++  public static List<String> tokenize(String html) {
++    ArrayList<String> tokens = new ArrayList<String>();
++    int pos = 0;
++    String token = "";
++    int len = html.length();
++    while (pos < len) {
++      char c = html.charAt(pos);
++
++      String ahead = html.substring(pos, pos > len - 4 ? len : pos + 4);
++
++      // a comment is starting
++      if ("<!--".equals(ahead)) {
++        // store the current token
++        if (token.length() > 0) {
++          tokens.add(token);
++        }
++
++        // clear the token
++        token = "";
++
++        // search the end of <......>
++        int end = moveToMarkerEnd(pos, "-->", html);
++        tokens.add(html.substring(pos, end));
++        pos = end;
++
++        // a new "<" token is starting
++      } else if ('<' == c) {
++
++        // store the current token
++        if (token.length() > 0) {
++          tokens.add(token);
++        }
++
++        // clear the token
++        token = "";
++
++        // search the end of <......>
++        int end = moveToMarkerEnd(pos, ">", html);
++        tokens.add(html.substring(pos, end));
++        pos = end;
++
++      } else {
++        token = token + c;
++        pos++;
++      }
++
++    }
++    if (token.length() > 0) {
++      tokens.add(token);
++    }
++    return tokens;
++  }
++
++  private static int moveToMarkerEnd(int pos, String marker, String s) {
++    int i = s.indexOf(marker, pos);
++    if (i > -1) {
++      pos = i + marker.length();
++    } else {
++      pos = s.length();
++    }
++    return pos;
++  }
++}
+Index: component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/DOMParser.java
+===================================================================
+--- component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/DOMParser.java	(revision 0)
++++ component/common/src/main/java/org/exoplatform/social/common/xmlprocessor/DOMParser.java	(revision 0)
+@@ -0,0 +1,138 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.common.xmlprocessor;
++
++import java.util.List;
++import java.util.regex.Matcher;
++import java.util.regex.Pattern;
++
++import org.exoplatform.social.common.xmlprocessor.model.Node;
++
++/**
++ * DOMParser utility
++ *
++ * @author Ly Minh Phuong - http://phuonglm.net
++ */
++public class DOMParser {
++  public static final Pattern COMMENTPATTERN = Pattern.compile("<!--.*"); // <!--.........>
++  public static final Pattern TAGSTARTPATTERN = Pattern
++          .compile("<(?i)(\\w+\\b)\\s*(.*)/?>$"); // <tag ....props.....>
++  public static final Pattern TAGCLOSEPATTERN = Pattern
++          .compile("</(?i)(\\w+\\b)\\s*>$"); // </tag .........>
++  public static final Pattern SELFTCLOSETAGPATTERN = Pattern.compile("<.+/\\s*?>");
++  public static final Pattern ATTRIBUTESPATTERN = Pattern
++          .compile("(\\w*)\\s*=\\s*(\"([^\"]*)\"|'([^']*)')"); // prop="...."
++
++  /**
++   * Creates the XML DOM tree from XML token List tree.
++   *
++   * @param xmlTokens The HTML token array.
++   * @return TreeNode contain the content parsed from token list.
++   */
++
++  public static Node createDOMTree(List<String> xmlTokens) {
++    return createDOMTree(new Node(), xmlTokens);
++  }
++
++  /**
++   * Creates the XML DOM tree from XML token List tree as childNodeList of currentNode.
++   *
++   * @param currentNode The Node to add childNode to.
++   * @param xmlTokens   The HTML token array
++   * @return TreeNode contain the content parsed from token list
++   */
++  public static Node createDOMTree(Node currentNode, List<String> xmlTokens) {
++    Node parsingNode;
++
++    for (int i = 0; i < xmlTokens.size(); i++) {
++      String token = xmlTokens.get(i);
++      Matcher startMatcher = TAGSTARTPATTERN.matcher(token);
++      Matcher endMatcher = TAGCLOSEPATTERN.matcher(token);
++
++      if (COMMENTPATTERN.matcher(token).find()) {
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        currentNode.addChildNode(parsingNode);
++        parsingNode.setTitle(token.substring(4, token.length() - 3));
++      } else if (startMatcher.find()) {
++        String tag = startMatcher.group(1).toLowerCase();
++
++        if (SELFTCLOSETAGPATTERN.matcher(token).find()) {
++          parsingNode = new Node();
++          parsingNode.setParentNode(currentNode);
++          currentNode.addChildNode(parsingNode);
++          parsingNode.setTitle(tag);
++        } else {
++          int findDeep = 0;
++          int matchedEnd = 0;
++          for (int j = i + 1; j < xmlTokens.size(); j++) {
++            Matcher startFindMatcher = TAGSTARTPATTERN
++                    .matcher(xmlTokens.get(j));
++            Matcher endFindMatcher = TAGCLOSEPATTERN.matcher(xmlTokens.get(j));
++            if (startFindMatcher.find()) {
++              if (!SELFTCLOSETAGPATTERN.matcher(xmlTokens.get(j)).find()) {
++                findDeep++;
++              }
++            } else if (endFindMatcher.find()) {
++              if (endFindMatcher.group(1).toLowerCase().equals(tag)
++                      && findDeep == 0) {
++                matchedEnd = j;
++                break;
++              } else {
++                findDeep--;
++              }
++            }
++          }
++          if (matchedEnd > 0) {
++            parsingNode = new Node();
++            parsingNode.setParentNode(currentNode);
++            parsingNode.setTitle(tag);
++
++            String tokenBody = startMatcher.group(2);
++
++            Matcher attributes = ATTRIBUTESPATTERN.matcher(tokenBody);
++
++            while (attributes.find()) {
++              String attr = attributes.group(1).toLowerCase();
++              String val = attributes.group(4) == null ? attributes.group(3) : attributes.group(4);
++              parsingNode.addAttribute(attr, val);
++            }
++            currentNode.addChildNode(parsingNode);
++            createDOMTree(parsingNode, xmlTokens.subList(i + 1, matchedEnd));
++            i = matchedEnd;
++          } else {
++            parsingNode = new Node();
++            parsingNode.setParentNode(currentNode);
++            currentNode.addChildNode(parsingNode);
++            parsingNode.setContent(token);
++          }
++        }
++      } else if (endMatcher.find()) {
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        parsingNode.setContent(token);
++        currentNode.addChildNode(parsingNode);
++      } else {
++        parsingNode = new Node();
++        parsingNode.setParentNode(currentNode);
++        parsingNode.setContent(token);
++        currentNode.addChildNode(parsingNode);
++      }
++    }
++    return currentNode;
++  }
++}
+Index: component/core/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml
+===================================================================
+--- component/core/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml	(revision 76840)
++++ component/core/src/test/java/conf/standalone/exo.social.component.common.test.configuration.xml	(working copy)
+@@ -27,4 +27,14 @@
+     <type>org.exoplatform.social.common.jcr.LockManager</type>
+   </component>
+ 
+-</configuration>
++  <component>
++    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
++    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
++  </component>
++
++  <component>
++    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
++    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
++  </component>
++
++</configuration>
+\ No newline at end of file
+Index: component/core/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml
+===================================================================
+--- component/core/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml	(revision 76840)
++++ component/core/src/test/java/conf/standalone/exo.social.component.core.test.configuration.xml	(working copy)
+@@ -115,6 +115,11 @@
+   </component>
+ 
+   <component>
++    <key>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</key>
++    <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
++  </component>
++
++  <component>
+     <key>org.exoplatform.social.core.manager.ActivityManager</key>
+     <type>org.exoplatform.social.core.manager.ActivityManager</type>
+     <component-plugins>
+@@ -123,21 +128,11 @@
+         <set-method>addProcessorPlugin</set-method>
+         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+         <init-params>
+-          <values-param>
+-            <name>allowedTags</name>
+-            <value>b</value>
+-            <value>i</value>
+-            <value>a</value>
+-            <value>span</value>
+-            <value>em</value>
+-            <value>strong</value>
+-            <value>p</value>
+-            <value>ol</value>
+-            <value>ul</value>
+-            <value>li</value>
+-            <value>br</value>
+-            <value>img</value>
+-          </values-param>
++          <value-param>
++            <name>priority</name>
++            <description>priority of this processor (lower are executed first)</description>
++            <value>3</value>
++          </value-param>
+         </init-params>
+       </component-plugin>
+     </component-plugins>
+@@ -396,6 +391,119 @@
+       <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
+     </component-plugin>
+   </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
++      <component-plugin>
++        <name>setAllowedTagPlugin</name>
++        <set-method>setAllowedTagPlugin</set-method>
++        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
++        <init-params>
++          <object-param>
++            <name>b tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>b</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>i tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>i</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>a tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>a</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>href</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>span tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>span</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>em tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>em</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>strong tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>strong</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>p tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>p</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ol tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ol</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ul tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ul</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>li tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>li</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>br tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>br</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>img tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>img</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>src</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++        </init-params>
++      </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
++    <component-plugin>
++      <name>XMLBalancerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>XMLTagFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>LineBreakerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
++    </component-plugin>
++  </external-component-plugins>
++
+   <!--
+   <external-component-plugins>
+     <target-component>org.exoplatform.social.core.manager.RelationshipManager</target-component>
+Index: component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessorTest.java
+===================================================================
+--- component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessorTest.java	(revision 0)
++++ component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessorTest.java	(revision 0)
+@@ -0,0 +1,89 @@
++/*
++ * Copyright (C) 2003-2011 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.core.processor;
++
++import org.exoplatform.container.PortalContainer;
++import org.exoplatform.social.core.activity.model.Activity;
++import org.exoplatform.social.core.test.AbstractCoreTest;
++
++/**
++ * Unit Test for {@link OSHtmlSanitizerProcessor}.
++ *
++ * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
++ * @since  Jun 29, 2011
++ */
++public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
++
++  private OSHtmlSanitizerProcessor processor;
++
++  @Override
++  public void setUp() throws Exception {
++    super.setUp();
++    processor = (OSHtmlSanitizerProcessor) PortalContainer.getInstance().
++                                           getComponentInstanceOfType(OSHtmlSanitizerProcessor.class);
++
++  }
++
++  @Override
++  public void tearDown() throws Exception {
++    super.tearDown();
++  }
++
++
++  public void testProcessActivity() throws Exception {
++    Activity activity = new Activity();
++    String sample = "this is a <b> tag to keep</b>";
++    activity.setTitle(sample);
++    activity.setBody(sample);
++    processor.processActivity(activity);
++
++    assertEquals(sample, activity.getTitle());
++    assertEquals(sample, activity.getBody());
++
++    // tags with attributes
++    sample = "text <a href='#'>bar</a> zed";
++
++    activity.setTitle(sample);
++    processor.processActivity(activity);
++
++    assertEquals("text <a href=\"#\">bar</a> zed", activity.getTitle());
++
++    // only with open tag
++    sample = "<b> only open!!!";
++    activity.setTitle(sample);
++    processor.processActivity(activity);
++    assertEquals("<b> only open!!!</b>", activity.getTitle());
++
++    // self closing tags
++    sample = "<script href='#' />bar</a>";
++    activity.setTitle(sample);
++    processor.processActivity(activity);
++    assertEquals("&lt;script href=&quot;#&quot; /&gt;bar&lt;/a&gt;", activity.getTitle());
++
++    // forbidden tag
++    sample = "<script>foo</script>";
++    activity.setTitle(sample);
++    processor.processActivity(activity);
++    assertEquals("&lt;script&gt;foo&lt;/script&gt;", activity.getTitle());
++
++    // embedded
++    sample = "<span><strong>foo</strong>bar<script>zed</script></span>";
++    activity.setTitle(sample);
++    processor.processActivity(activity);
++    assertEquals("<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>", activity.getTitle());
++  }
++}
+Index: component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessTest.java
+===================================================================
+--- component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessTest.java	(revision 76840)
++++ component/core/src/test/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessTest.java	(working copy)
+@@ -1,75 +0,0 @@
+-/*
+- * Copyright (C) 2003-2010 eXo Platform SAS.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU Affero General Public License
+- * as published by the Free Software Foundation; either version 3
+- * of the License, or (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, see<http://www.gnu.org/licenses/>.
+- */
+-package org.exoplatform.social.core.processor;
+-
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-
+-import junit.framework.TestCase;
+-
+-import org.exoplatform.container.xml.InitParams;
+-import org.exoplatform.container.xml.ValuesParam;
+-
+-public class OSHtmlSanitizerProcessTest extends TestCase {
+-
+-  public void testInitParams() {
+-    OSHtmlSanitizerProcessor processor = new OSHtmlSanitizerProcessor(null);
+-    String [] actual = processor.getAllowedTags();
+-    assertEquals(OSHtmlSanitizerProcessor.OS_ALLOWED_TAGS, actual);
+-    InitParams params = new InitParams();
+-    processor = new OSHtmlSanitizerProcessor(params);
+-    actual = processor.getAllowedTags();
+-    assertEquals(OSHtmlSanitizerProcessor.OS_ALLOWED_TAGS, actual);
+-    params = new InitParams();
+-    ValuesParam allowedTagsParams = new ValuesParam();
+-    allowedTagsParams.setName("allowedTags");
+-    allowedTagsParams.setValues(new ArrayList<String>(Arrays.asList("foo","bar", "zed")));
+-    params.addParameter(allowedTagsParams);
+-    processor = new OSHtmlSanitizerProcessor(params);
+-    actual = processor.getAllowedTags();
+-//    AssertUtils.assertContains(actual, "foo","bar", "zed");
+-  }
+-
+-
+-
+-  public void testEscapeHtml() {
+-
+-    String [] allowed = new String []{"b", "i", "a", "span", "em", "strong", "p", "ol", "ul", "li", "br"};
+-
+-    OSHtmlSanitizerProcessor processor = new OSHtmlSanitizerProcessor(null);
+-    processor.setAllowedTags(allowed);
+-    String sample = "this is a <b> tag to keep</b>";
+-    assertEquals(sample, processor.escapeHtml(sample));
+-
+-    // tags with attributes
+-    sample = "text <a href='#' >bar</a> zed" ;
+-    assertEquals(sample, processor.escapeHtml(sample));
+-
+-    // self closing tags
+-    sample = "<script href='#' />bar</a>";
+-    assertEquals("&lt;script href='#' /&gt;bar</a>", processor.escapeHtml(sample));
+-
+-    // forbidden tag
+-    sample = "<script>foo</script>";
+-    assertEquals("&lt;script&gt;foo&lt;/script&gt;", processor.escapeHtml(sample));
+-
+-    // embedded
+-    sample = "<span><strong>foo</strong>bar<script>zed</script></span>";
+-    assertEquals("<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>", processor.escapeHtml(sample));
+-  }
+-
+-}
+Index: component/core/src/main/java/conf/portal/configuration.xml
+===================================================================
+--- component/core/src/main/java/conf/portal/configuration.xml	(revision 76840)
++++ component/core/src/main/java/conf/portal/configuration.xml	(working copy)
+@@ -48,6 +48,11 @@
+   </component>
+ 
+   <component>
++    <key>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</key>
++    <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
++  </component>
++
++  <component>
+     <key>org.exoplatform.social.core.manager.ActivityManager</key>
+     <type>org.exoplatform.social.core.manager.ActivityManager</type>
+     <component-plugins>
+@@ -56,22 +61,11 @@
+         <set-method>addProcessorPlugin</set-method>
+         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+         <init-params>
+-          <values-param>
+-            <name>allowedTags</name>
+-            <value>b</value>
+-            <value>i</value>
+-            <value>a</value>
+-            <value>span</value>
+-            <value>em</value>
+-            <value>strong</value>
+-            <value>p</value>
+-            <value>ol</value>
+-            <value>ul</value>
+-            <value>li</value>
+-            <value>br</value>
+-            <value>img</value>
+-            <value>strike</value>
+-          </values-param>
++          <value-param>
++            <name>priority</name>
++            <description>priority of this processor (lower are executed first)</description>
++            <value>3</value>
++          </value-param>
+         </init-params>
+       </component-plugin>
+     </component-plugins>
+Index: component/core/src/main/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessor.java
+===================================================================
+--- component/core/src/main/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessor.java	(revision 76840)
++++ component/core/src/main/java/org/exoplatform/social/core/processor/OSHtmlSanitizerProcessor.java	(working copy)
+@@ -16,106 +16,26 @@
+  */
+ package org.exoplatform.social.core.processor;
+ 
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.regex.Matcher;
+-import java.util.regex.Pattern;
+-
++import org.exoplatform.container.PortalContainer;
+ import org.exoplatform.container.xml.InitParams;
+-import org.exoplatform.container.xml.ValuesParam;
++import org.exoplatform.social.common.xmlprocessor.XMLProcessor;
+ import org.exoplatform.social.core.BaseActivityProcessorPlugin;
+ import org.exoplatform.social.core.activity.model.Activity;
+ 
+ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
+ 
+-  /**
+-   * html tags allowed in title and body by OpenSocial spec
+-   */
+-  public static final String[] OS_ALLOWED_TAGS = {"b", "i", "a", "span"};
++  private XMLProcessor xmlProcessor;
+ 
+-  private String [] allowedTags = OS_ALLOWED_TAGS;
+-
+   public OSHtmlSanitizerProcessor(InitParams params) {
+     super(params);
+-    allowedTags = getAllowedTags(params, allowedTags) ;
+   }
+ 
+-  @SuppressWarnings("unchecked")
+-  private String[] getAllowedTags(InitParams initParams, String[] defaultValue) {
+-    String [] result = defaultValue;
+-    try {
+-      ValuesParam params = initParams.getValuesParam("allowedTags");
+-       ArrayList<String> values = params.getValues();
+-       result =  values.toArray(new String [values.size()]);
+-    }
+-    catch (Exception e) {
+-      return defaultValue;
+-    }
+-    return result;
+-  }
+-
+-  public int getPriority() {
+-    return Integer.MIN_VALUE;
+-  }
+-
+   public void processActivity(Activity activity) {
+-    activity.setTitle(escapeHtml(activity.getTitle()));
+-    activity.setBody(escapeHtml(activity.getBody()));
+-  }
+-
+-
+-  String escapeHtml(String content) {
+-    if (content == null) {
+-      return null;
++    if (xmlProcessor == null) {
++      xmlProcessor = (XMLProcessor) PortalContainer.getInstance().getComponentInstanceOfType(XMLProcessor.class);
+     }
+-
+-    String result = content;
+-
+-    String startTag = "<([^<]+)>|<([^<\\s]+)[\\s]+[^<]+>";
+-    String endTag = "</([^<]+)>";
+-    Pattern pattern = Pattern.compile(startTag + "|"  + endTag);
+-    Matcher matcher = pattern.matcher(content);
+-
+-    StringBuffer buf = new StringBuffer();
+-
+-    // Replace all occurrences of pattern in input
+-    while ((matcher.find())) {
+-      // Get the match result
+-      String replaceStr = matcher.group();
+-
+-      // strip < and >
+-      String tag;
+-      if (replaceStr.startsWith("</")) {
+-        tag = replaceStr.trim().substring(2, replaceStr.length() -1);
+-        if (!Arrays.asList(allowedTags).contains(tag)) {
+-          replaceStr = "&lt;/" + tag + "&gt;";
+-        }
+-      } else {
+-        if (replaceStr.matches("<([^<\\s]+)[\\s]+[^<]+>")) {
+-          String start = replaceStr.split("\\s")[0];
+-          tag = start.substring(1);
+-        } else {
+-          tag = replaceStr.trim().substring(1, replaceStr.length() -1);
+-        }
+-
+-        if (!Arrays.asList(allowedTags).contains(tag)) {
+-          replaceStr = "&lt;" + replaceStr.substring(1, replaceStr.length() - 1) + "&gt;";
+-        }
+-      }
+-
+-      // Insert replacement
+-      matcher.appendReplacement(buf, replaceStr);
+-    }
+-    matcher.appendTail(buf);
+-    result = buf.toString();
+-    return result;
++    activity.setTitle((String) xmlProcessor.process(activity.getTitle()));
++    activity.setBody((String) xmlProcessor.process(activity.getBody()));
+   }
+ 
+-  public String[] getAllowedTags() {
+-    return allowedTags;
+-  }
+-
+-  public void setAllowedTags(String[] allowedTags) {
+-    this.allowedTags = allowedTags;
+-  }
+ }
+Index: demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(revision 76840)
++++ demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml	(working copy)
+@@ -79,6 +79,118 @@
+   </external-component-plugins>
+ 
+   <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
++      <component-plugin>
++        <name>setAllowedTagPlugin</name>
++        <set-method>setAllowedTagPlugin</set-method>
++        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
++        <init-params>
++          <object-param>
++            <name>b tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>b</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>i tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>i</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>a tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>a</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>href</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>span tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>span</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>em tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>em</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>strong tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>strong</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>p tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>p</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ol tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ol</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ul tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ul</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>li tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>li</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>br tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>br</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>img tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>img</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>src</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++        </init-params>
++      </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
++    <component-plugin>
++      <name>XMLBalancerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>XMLTagFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>LineBreakerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>
+Index: extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(revision 76840)
++++ extension/war/src/main/webapp/WEB-INF/conf/social-extension/social/component-plugins-configuration.xml	(working copy)
+@@ -79,6 +79,118 @@
+   </external-component-plugins>
+ 
+   <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
++      <component-plugin>
++        <name>setAllowedTagPlugin</name>
++        <set-method>setAllowedTagPlugin</set-method>
++        <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
++        <init-params>
++          <object-param>
++            <name>b tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>b</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>i tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>i</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>a tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>a</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>href</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>span tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>span</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>em tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>em</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>strong tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>strong</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>p tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>p</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ol tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ol</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>ul tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>ul</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>li tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>li</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>br tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>br</string></field>
++            </object>
++          </object-param>
++          <object-param>
++            <name>img tag</name>
++            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
++              <field name="tagName"><string>img</string></field>
++              <field name="tagAttributes">
++                <collection type="java.util.HashSet" item-type="java.lang.String">
++                  <value><string>src</string></value>
++                </collection>
++              </field>
++            </object>
++          </object-param>
++        </init-params>
++      </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
++    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
++    <component-plugin>
++      <name>XMLBalancerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>XMLTagFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
++    </component-plugin>
++    <component-plugin>
++      <name>LineBreakerFilterPlugin</name>
++      <set-method>addFilterPlugin</set-method>
++      <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
++    </component-plugin>
++  </external-component-plugins>
++
++  <external-component-plugins>
+     <target-component>org.exoplatform.social.common.jcr.SocialDataLocation</target-component>
+     <component-plugin>
+       <name>social.data.location</name>

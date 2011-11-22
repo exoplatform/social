@@ -20,6 +20,8 @@ import org.exoplatform.component.test.AbstractKernelTest;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
 
 /**
  * Abstract Common Test.
@@ -30,12 +32,20 @@ import org.exoplatform.component.test.ContainerScope;
  */
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.organization-configuration" +
+          ".xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test" +
+          ".configuration.xml")
 })
 public abstract class AbstractCommonTest extends AbstractKernelTest {
 
+  protected PortalContainer portalContainer;
+  protected RepositoryService repositoryService;
+
   @Override
   protected void setUp() throws Exception {
+    portalContainer = PortalContainer.getInstance();
+    repositoryService = (RepositoryService) portalContainer.getComponentInstanceOfType(RepositoryService.class);
     begin();
   }
 
