@@ -20,17 +20,12 @@ import java.util.List;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
-import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.GroupEventListener;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class SocialGroupEventListenerImpl extends GroupEventListener {
-
-  private SpaceService spaceService;
 
   public SocialGroupEventListenerImpl() {
     // TODO Auto-generated constructor stub
@@ -71,7 +66,9 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
    *           not remove the group record from the database.
    */
   public void preDelete(Group group) throws Exception {
-    SpaceService spaceSrv = getSpaceService();
+    SpaceService  spaceSrv = (SpaceService) ExoContainerContext.getCurrentContainer()
+      .getComponentInstance(SpaceService.class);
+    
     List<Space> allSpaces = spaceSrv.getAllSpaces();
     String groupId = group.getId();
     String groupIdOfSpace = null;
@@ -81,11 +78,6 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
         spaceSrv.deleteSpace(space);
       }
     }
-
-    UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
-    UIWorkingWorkspace uiWorkSpace = uiPortalApp.getChild(UIWorkingWorkspace.class);
-    uiWorkSpace.updatePortletsByName("SpacesToolbarPortlet");
-    uiWorkSpace.updatePortletsByName("SocialUserToolBarGroupPortlet");
   }
 
   /**
@@ -99,13 +91,5 @@ public class SocialGroupEventListenerImpl extends GroupEventListener {
    *           GroupHandler.removeGroup(..) is called.
    */
   public void postDelete(Group group) throws Exception {
-  }
-
-  private SpaceService getSpaceService() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    if (spaceService == null)
-      spaceService = (SpaceService) container.getComponentInstance(SpaceService.class);
-
-    return spaceService;
   }
 }
