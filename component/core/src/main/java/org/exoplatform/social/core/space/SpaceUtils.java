@@ -519,6 +519,8 @@ public class SpaceUtils {
    * @throws Exception
    */
   static public void removeNavigation(PageNavigation nav) throws Exception {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null) return;
     UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     DataStorage dataStorage = (DataStorage) container.getComponentInstanceOfType(DataStorage.class);
@@ -563,6 +565,8 @@ public class SpaceUtils {
     SpaceService  spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
     String userId = Util.getPortalRequestContext().getRemoteUser();
     List<Space> spaces = spaceService.getAccessibleSpaces(userId);
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null) return;
     UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
     List<PageNavigation> navs = userPortalConfig.getNavigations();
     List<PageNavigation> spaceNavs = new ArrayList<PageNavigation>();
@@ -633,6 +637,8 @@ public class SpaceUtils {
    * Updates working work space
    */
   static public void updateWorkingWorkSpace() {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null) return;
     UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
     UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
     PortalRequestContext pContext = Util.getPortalRequestContext();
@@ -722,6 +728,8 @@ public class SpaceUtils {
    * @throws SpaceException with code INTERNAL_SERVER_ERROR
    */
   static public boolean isSpaceNameExisted(String spaceName) throws SpaceException {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null) return false;
     List<PageNavigation> allNavs = Util.getUIPortalApplication().getUserPortalConfig().getNavigations();
     String space_Name = spaceName.replaceAll(" ", "_"); // Compares with Existing Pages
     String spacePrettyName = cleanString(spaceName); // Compares with Existing DashBoard Tabs's & Spaces's Names

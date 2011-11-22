@@ -586,7 +586,7 @@ private PageNode createPageNodeFromApplication(Space space,
                        org.exoplatform.portal.config.model.Application<Portlet> portletApplication,
                        Page page) {
     String visibility = space.getVisibility();
-    if (visibility.equals(Space.PUBLIC)) {
+    if (Space.PUBLIC.equals(visibility)) {
       page.setAccessPermissions(new String[] { UserACL.EVERYONE });
     } else {
       page.setAccessPermissions(new String[] { "*:" + space.getGroupId() });
