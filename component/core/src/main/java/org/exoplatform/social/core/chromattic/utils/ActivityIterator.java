@@ -60,20 +60,48 @@ public class ActivityIterator implements Iterator<ActivityEntity> {
 
   public boolean hasNext() {
 
+    boolean nothing = true;
+
     if (entityIterator != null && entityIterator.hasNext()) {
       return true;
     }
     else if (dayIterator != null && dayIterator.hasNext()) {
-      return true;
+      entityIterator = dayIterator.next().getActivities().iterator();
+      nothing = false;
+      if (entityIterator.hasNext()) {
+        return true;
+      }
     }
     else if (monthIterator != null && monthIterator.hasNext()) {
-      return true;
+      dayIterator = monthIterator.next().getDays().values().iterator();
+      nothing = false;
+      if (dayIterator.hasNext()) {
+        entityIterator = dayIterator.next().getActivities().iterator();
+        if (entityIterator.hasNext()) {
+          return true;
+        }
+      }
     }
-    else if (yearIterator.hasNext()) {
-      return true;
+    else if (yearIterator != null && yearIterator.hasNext()) {
+      monthIterator = yearIterator.next().getMonths().values().iterator();
+      nothing = false;
+      if (monthIterator.hasNext()) {
+        dayIterator = monthIterator.next().getDays().values().iterator();
+        if (dayIterator.hasNext()) {
+          entityIterator = dayIterator.next().getActivities().iterator();
+          if (entityIterator.hasNext()) {
+            return true;
+          }
+        }
+      }
     }
 
-    return false;
+    if (nothing) {
+      return false;
+    }
+    else {
+      return hasNext();
+    }
   }
 
   public int moveTo(ActivityEntity activity) {
@@ -94,39 +122,13 @@ public class ActivityIterator implements Iterator<ActivityEntity> {
 
   public ActivityEntity next() {
 
-    if (entityIterator.hasNext()) {
+    if (hasNext()) {
       return entityIterator.next();
     }
-    else if (dayIterator.hasNext()) {
-      entityIterator = dayIterator.next().getActivities().iterator();
-      if (entityIterator.hasNext()) {
-        return entityIterator.next();
-      }
-    }
-    else if (monthIterator.hasNext()) {
-      dayIterator = monthIterator.next().getDays().values().iterator();
-      if (dayIterator.hasNext()) {
-        entityIterator = dayIterator.next().getActivities().iterator();
-        if (entityIterator.hasNext()) {
-          return entityIterator.next();
-        }
-      }
-    }
-    else if (yearIterator.hasNext()) {
-      monthIterator = yearIterator.next().getMonths().values().iterator();
-      if (monthIterator.hasNext()) {
-        dayIterator = monthIterator.next().getDays().values().iterator();
-        if (dayIterator.hasNext()) {
-          entityIterator = dayIterator.next().getActivities().iterator();
-          if (entityIterator.hasNext()) {
-            return entityIterator.next();
-          }
-        }
-      }
+    else {
+      throw new RuntimeException();
     }
 
-    return next();
-    
   }
 
   public void remove() {

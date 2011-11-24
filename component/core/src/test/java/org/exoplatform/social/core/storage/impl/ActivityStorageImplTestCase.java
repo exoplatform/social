@@ -655,6 +655,40 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  public void testManyDaysNoActivityOnAll() throws Exception {
+
+    long timestamp111 = timestamp(2001, 1, 1);
+    long timestamp112 = timestamp(2001, 1, 2);
+    long timestamp121 = timestamp(2001, 2, 1);
+    long timestamp122 = timestamp(2001, 2, 2);
+    long timestamp211 = timestamp(2002, 1, 1);
+    long timestamp212 = timestamp(2002, 1, 2);
+    long timestamp221 = timestamp(2002, 2, 1);
+    long timestamp222 = timestamp(2002, 2, 2);
+
+    ExoSocialActivity activity111 = addActivity(rootIdentity, timestamp111);
+    ExoSocialActivity activity112 = addActivity(rootIdentity, timestamp112);
+    ExoSocialActivity activity121 = addActivity(rootIdentity, timestamp121);
+    ExoSocialActivity activity122 = addActivity(rootIdentity, timestamp122);
+    ExoSocialActivity activity211 = addActivity(rootIdentity, timestamp211);
+    ExoSocialActivity activity212 = addActivity(rootIdentity, timestamp212);
+    ExoSocialActivity activity221 = addActivity(rootIdentity, timestamp221);
+    ExoSocialActivity activity222 = addActivity(rootIdentity, timestamp222);
+
+    activityStorage.deleteActivity(activity111.getId());
+    activityStorage.deleteActivity(activity112.getId());
+    activityStorage.deleteActivity(activity121.getId());
+    activityStorage.deleteActivity(activity122.getId());
+    activityStorage.deleteActivity(activity211.getId());
+    activityStorage.deleteActivity(activity212.getId());
+    activityStorage.deleteActivity(activity221.getId());
+    activityStorage.deleteActivity(activity222.getId());
+
+    List<ExoSocialActivity> activities = activityStorage.getUserActivities(rootIdentity);
+    assertEquals(0, activities.size());
+
+  }
+
   public void testRelationshipActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("I am now connected with @receiverRemoteId");
