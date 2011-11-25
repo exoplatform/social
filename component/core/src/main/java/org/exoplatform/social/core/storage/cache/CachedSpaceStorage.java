@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
@@ -56,6 +57,7 @@ public class CachedSpaceStorage implements SpaceStorage {
   private final FutureExoCache<ListSpacesKey, ListSpacesData, ServiceContext<ListSpacesData>> spacesCache;
 
   private final SpaceStorageImpl storage;
+  private CachedActivityStorage cachedActivityStorage;
 
   /**
    * Build the activity list from the caches Ids.
@@ -72,6 +74,14 @@ public class CachedSpaceStorage implements SpaceStorage {
     }
     return spaces;
 
+  }
+
+  public CachedActivityStorage getCachedActivityStorage() {
+    if (cachedActivityStorage == null) {
+      cachedActivityStorage = (CachedActivityStorage)
+          PortalContainer.getInstance().getComponentInstanceOfType(CachedActivityStorage.class);
+    }
+    return cachedActivityStorage;
   }
 
   /**
@@ -185,6 +195,9 @@ public class CachedSpaceStorage implements SpaceStorage {
     if (removed != null) {
       cleanRef(removed);
     }
+
+    //
+    getCachedActivityStorage().invalidate();
 
   }
 
