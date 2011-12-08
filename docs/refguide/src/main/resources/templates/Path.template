@@ -1,0 +1,42 @@
+h3. ${@Path.doc("flat:title")} {anchor:id=${@Path.doc("flat:anchor")}}
+
+<#list @Path.children("@GET", "@POST", "@PUT", "@DELETE") as verb>
+h4. ${verb.name} ${verb.sibling("@Path").value?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
+
+*Description*: ${verb.doc()}
+
+*URL*:
+
+{code}http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")?replace("{", "[")?replace("}", "]")}${verb.sibling("@Path").value?replace("{", "[")?replace("}", "]")}{code}
+<#if verb.sibling("@Produces")??>
+
+*Supported Format*: ${verb.sibling("@Produces").attribute("flat:value")}
+</#if>
+<#if verb.doc("authentication") != "">
+
+*Requires Authentication*: true
+</#if>
+
+*Parameters*:
+* *Required (path parameters)*: <#if verb.children("@PathParam")?size = 0>No</#if>
+<#list verb.children("@PathParam") as param>
+** *{noformat}${param.value}{noformat}*: ${param.doc()}
+</#list>
+* *Optional (query paramters)*: <#if verb.children("@QueryParam")?size = 0>No</#if>
+<#list verb.children("@QueryParam") as param>
+** *{noformat}${param.value}{noformat}*: ${param.doc()}
+</#list>
+
+*Request*:
+
+{code}
+${verb.doc("flat:request")?replace("{", "[")?replace("}", "]")}
+{code}
+
+*Response*:
+
+{code:json}
+${verb.doc("flat:response")?replace("{", "[")?replace("}", "]")}
+{code}
+
+</#list>
