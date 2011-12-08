@@ -30,14 +30,7 @@ The _{noformat}rest_context_name{noformat}_ and _{noformat}portal_container_name
 ** _{noformat}rest_context_name{noformat}_: _rest_;
 ** _{noformat}portal_container_name{noformat}_: _portal_;
 
+before
 h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
-{include:document="RestService_v1_alpha1/Activity_Resources_v1_alpha1.wiki"}
-
-h1. Activity Stream Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityStreamResources}
-{include:document="RestService_v1_alpha1/Activity_Stream_Resources_v1_alpha1.wiki"}
-
-h1. Identity Resources {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.IdentityResources}
-{include:document="RestService_v1_alpha1/Identity_Resources_v1_alpha1.wiki"}
-
-h1. Version Resources   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources}
-{include:document="RestService_v1_alpha1/Version_Resources_v1_alpha1.wiki"}
+{include:document="RestService_v1_alpha1/target/generated/org.exoplatform.social.service.rest.api_v1alpha1.ActivityResources"}
+after

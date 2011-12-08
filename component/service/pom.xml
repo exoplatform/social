@@ -37,6 +37,12 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.wikbook</groupId>
+      <artifactId>wikbook.template</artifactId>
+      <version>0.9.33-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
@@ -179,4 +185,41 @@
 
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <compilerArguments>
+                <sourcepath>${project.basedir}/../../docs/refguide/src/main/resources</sourcepath>
+              </compilerArguments>
+              <compilerArgument>-Awikbook.template.annotations=javax.ws.rs.Path,javax.ws.rs.POST,javax.ws.rs.GET,javax.ws.rs.DELETE,javax.ws.rs.PUT,javax.ws.rs.PathParam,javax.ws.rs.QueryParam,javax.ws.rs.Produces</compilerArgument>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <includes>
+            <include>target/generated/*</include>
+          </includes>
+          <classifier>doc</classifier>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+  </build>
 </project>

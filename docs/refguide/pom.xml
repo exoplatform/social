@@ -25,6 +25,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.service</artifactId>
+      <version>1.2.6-SNAPSHOT</version>
+      <classifier>doc</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.wikbook</groupId>
       <artifactId>wikbook.docbkxstyle</artifactId>
       <version>${wikbook.version}</version>
@@ -106,6 +112,20 @@
               <outputDirectory>${docbook.sourceDirectory}/resources</outputDirectory>
             </configuration>
           </execution>
+           <execution>
+             <id>unpack</id>
+             <phase>compile</phase>
+             <goals>
+               <goal>unpack-dependencies</goal>
+             </goals>
+             <configuration>
+               <includeGroupIds>org.exoplatform.social</includeGroupIds>
+               <includeArtifactIds>exo.social.component.service</includeArtifactIds>
+               <includeClassifiers>doc</includeClassifiers>
+              <excludes>META-INF/**</excludes>
+              <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/RestService_v1_alpha1</outputDirectory>
+            </configuration>
+           </execution>
         </executions>
       </plugin>
 
