@@ -197,8 +197,10 @@ public class UIExperienceSection extends UIProfileSection {
    */
   protected String calendarToString(Calendar cal) {
     String sDate = "" ;
-    SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
-    sDate = sd.format(cal.getTime());
+    if (cal != null) {
+      SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
+      sDate = sd.format(cal.getTime());
+    }
     return sDate ;
   }
 
@@ -398,8 +400,11 @@ public class UIExperienceSection extends UIProfileSection {
           ((UIFormInput) listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx + 2)); // des
           ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); // skills
 
-          ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 4)
-                                                                                                                         .toString())); // start date
+          if (listProfile.get(idx + 4) != null) {
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 4)
+                                                                                                                .toString())); // start date
+          }
+          
           if (listProfile.get(idx + 5) != null) {
             ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 5)
                                                                                                                            .toString())); // end date
@@ -548,58 +553,71 @@ public class UIExperienceSection extends UIProfileSection {
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
       String currentPartern = uiDateTimeInput.getDatePattern_();
-
+      
       SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
       Calendar cal = Calendar.getInstance();
-      cal.setTime(sf.parse(uiDateTimeInput.getValue()));
-      startDate = calendarToString(cal);
-
-      if ((startDate == null) || (startDate.length() == 0)) {
-        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        return 2;
+      
+      if (!"".equals(uiDateTimeInput.getValue())) { 
+        cal.setTime(sf.parse(uiDateTimeInput.getValue()));
+        startDate = calendarToString(cal);
+        if ((startDate == null) || (startDate.length() == 0)) {
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+          return 2;
+        }
       }
-
+      
       try {
         uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-        
-        cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        if (!"".equals(uiDateTimeInput.getValue())) {
+          cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        }
       } catch (Exception e) {
         endDate = null;
       }
-      endDate = calendarToString(cal);
-
-      sDate = stringToDate(startDate);
-      eDate = stringToDate(endDate);
-      if (sDate.after(today)) {
-        uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
-        return 2;
-      }
-
+      
       uiCheckBox = (UIFormCheckBoxInput<Boolean>) listUIComp.get(i + 6);
       isCurrent = uiCheckBox.getValue();
-
-      if (!isCurrent) {
-        if ((endDate == null) || (endDate.length() == 0)) {
-          uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
-          return 2;
-        }
-        
-        if ((eDate != null) && eDate.after(today)) {
-          uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
-          return 2;
-        }
-        if ((sDate != null) && sDate.after(eDate)) {
-          uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
-          return 1;
-        }
-      } else {
-        endDate = null;
+      
+      if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
+          "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+        return 2;
       }
+      
+      if (startDate != null && !"".equals(startDate)) {
+        endDate = calendarToString(cal);
 
+        sDate = stringToDate(startDate);
+        eDate = stringToDate(endDate);
+        if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
+          uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
+          return 2;
+        }
+
+        if (!isCurrent) {
+          if ((endDate == null) || (endDate.length() == 0)) {
+            uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
+            return 2;
+          }
+          
+          if ((eDate != null) && eDate.after(today)) {
+            uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
+            return 2;
+          }
+          if ((sDate != null) && sDate.after(eDate)) {
+            uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
+            return 1;
+          }
+        } else {
+          endDate = null;
+        }
+      }
+      
       uiMap.put(Profile.EXPERIENCES_COMPANY, escapeHtml(company));
       uiMap.put(Profile.EXPERIENCES_POSITION, escapeHtml(position));
       uiMap.put(Profile.EXPERIENCES_DESCRIPTION, escapeHtml(description));
       uiMap.put(Profile.EXPERIENCES_SKILLS, escapeHtml(skills));
+      
       uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
       uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
       uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);

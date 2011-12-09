@@ -56,6 +56,6 @@ public abstract class ProfileXpEntity {
   public abstract void setCompany(String company);
 
   public boolean isCurrent() {
-    return getEndDate() == null;
+    return (getEndDate() == null && getStartDate() != null);
   }
 }
