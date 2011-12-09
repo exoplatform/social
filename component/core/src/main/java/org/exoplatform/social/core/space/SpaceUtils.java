@@ -348,7 +348,10 @@ public class SpaceUtils {
    * @return cleaned string
    */
   public static String cleanString(String str) {
-
+    if (str == null) {
+      throw new IllegalArgumentException("String argument must not be null.");
+    }
+      
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate

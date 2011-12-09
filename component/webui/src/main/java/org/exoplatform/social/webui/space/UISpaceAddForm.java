@@ -44,6 +44,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
+import org.exoplatform.webui.form.UIFormRadioBoxInput;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormTabPane;
 
@@ -220,11 +221,14 @@ public class UISpaceAddForm extends UIFormTabPane {
       String interMePrio = resApp.getString(INTERMEDIATE_PRIORITY_LABEL);
       String lowPrio = resApp.getString(LOW_PRIORITY_LABEL);
 
-      Space space = new Space();
-      uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceSettings = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_SETTINGS);
+      
+      UIFormInputSet uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectPriority = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_VISIBILITY);
+      
       UIFormInputInfo uiFormInfo = uiSpaceSettings.getChild(UIFormInputInfo.class);
-      int selectedValue = Integer.parseInt(space.getPriority());
+      int selectedValue = Integer.parseInt(selectPriority.getValue());
+      
       switch (selectedValue) {
         case 1:
           uiFormInfo.setValue(highPrio);
@@ -258,13 +262,16 @@ public class UISpaceAddForm extends UIFormTabPane {
       String visibleAndCloseSpace = resApp.getString(VISIBLE_CLOSE_SPACE);
       String hiddenSpace = resApp.getString(HIDDEN_SPACE);
 
-      Space space = new Space();
-      uiSpaceAddForm.invokeSetBindingBean(space);
+      //Space space = new Space();
+      //uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectPriority = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectRegistration = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_REGISTRATION);
+      
       UIFormInputInfo uiFormInfo = uiSpaceVisibility.getChild(UIFormInputInfo.class);
 
-      String currentVisibility = space.getVisibility();
-      String currentRegistration = space.getRegistration();
+      String currentVisibility = selectPriority.getValue();
+      String currentRegistration = selectRegistration.getValue();
       boolean isPrivate = Space.PRIVATE.equals(currentVisibility);
       boolean isOpen = Space.OPEN.equals(currentRegistration);
       boolean isValidation = Space.VALIDATION.equals(currentRegistration);

@@ -180,6 +180,7 @@ public class Space {
   public void setDisplayName(String spaceDisplayName) {
     displayName = spaceDisplayName;
     setPrettyName(SpaceUtils.cleanString(spaceDisplayName));
+    
   }
 
   /**
