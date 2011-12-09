@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -85,6 +86,8 @@ public class UISpaceInfo extends UIForm {
   private static final String SPACE_DESCRIPTION = "description";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+  private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
+  
   /**
    * constructor
    * 
@@ -103,7 +106,6 @@ public class UISpaceInfo extends UIForm {
                    addValidator(StringLengthValidator.class, 3, 30));
 
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
-                   addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 0, 255));
 
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
@@ -231,7 +233,16 @@ public class UISpaceInfo extends UIForm {
         SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
-      space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+      
+      String spaceDescription = space.getDescription();
+      if (spaceDescription == null || spaceDescription.trim().length() == 0) {
+        ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+        space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+        uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
+      } else {
+        space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+      }
+
       spaceService.updateSpace(space);
       if (nameChanged) {
         //update Space Navigation (change name).
