@@ -63,12 +63,12 @@ public class UIDisplayProfileList extends UIContainer {
   /**
    * Label for display invoke action
    */
-  private static final String INVITATION_REVOKED_INFO = "UIAllPeople.label.RevokedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo"; 
 
   /**
    * Label for display established invitation
    */
-  private static final String INVITATION_ESTABLISHED_INFO = "UIAllPeople.label.InvitationEstablishedInfo";
+  private static final String INVITATION_ESTABLISHED_INFO = "UIDisplayProfileList.label.InvitationEstablishedInfo";
 
   /**
    * Number element per page.
