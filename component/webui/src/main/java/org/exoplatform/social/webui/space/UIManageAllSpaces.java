@@ -74,7 +74,7 @@ public class UIManageAllSpaces extends UIContainer {
   private final Integer SPACES_PER_PAGE = 20;
   private static final String ALL_SPACES_STATUS = "all_spaces";
   private List<Space> spaces; // for search result
-  private static UISpaceSearch uiSpaceSearch = null;
+  private UISpaceSearch uiSpaceSearch = null;
 
   private boolean loadAtEnd = false;
   private boolean hasUpdatedSpace = false;
