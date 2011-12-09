@@ -89,7 +89,7 @@
 	      emptyItem.className = 'NoneSpace';
 	      emptyItem.innerHTML = eXo.social.Locale.getMsg('has_no_space');
 	      mySpacesEl.appendChild(emptyItem);
-	      gadgets.window.adjustHeight();
+	      gadgets.window.adjustHeight(mySpacesEl.offsetHeight);
 	      return;
 	    }
 	
@@ -101,7 +101,7 @@
 	      mySpacesEl.appendChild(spaceItem);
 	    }
 	    
-   	  gadgets.window.adjustHeight();
+   	  gadgets.window.adjustHeight(mySpacesEl.offsetHeight);
 	  }
 	}
 	
