@@ -22,6 +22,7 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -65,15 +66,30 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Gets the latest social rest api version, this version number should be used as the latest and stable version. This
-   * latest version is consider to include all new features and updates.
+   * Gets the latest eXo Social REST services version. This version number should be used as the latest and stable
+   * version that is considered to include all new features and updates of eXo Social REST services.
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get
+   * @request {code}
+   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
+   * or
+   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
+   * {code}
+   * @response {code:json}
+   *   {"version": "v1-alpha1"}
+   * {code}
+   * or
+   * {code:xml}
+   *   <?xml version="1.0" encoding="UTF-8"?>
+   *   <version>v1-alpha1</version>
+   * {code}
    * @return response of the request, the type bases on the format param
    */
   @GET
   @Path("latest.{format}")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
   public Response getLatestVersion(@Context UriInfo uriInfo,
                                    @PathParam("format") String format) {
     final String[] supportedFormat = new String[]{"json"};
@@ -85,15 +101,34 @@ public class VersionResources implements ResourceContainer {
 
 
   /**
-   * Gets the supported social rest api versions, this is for backward compatible. If a client application is using an
-   * older social rest api version, it should just work. The list order must be from the latest to oldest versions.
+   * Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client
+   * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
+   * have the latest to oldest order. For example, {noformat}[v2, v1, v1-beta1]{noformat}, but not
+   * {noformat}[v1, v2, v1-beta1]{noformat}.
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get
+   * @request {code}
+   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json
+   * or
+   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xml
+   * {code}
+   * @response {code:json}
+   *   {"versions": ["v1-alpha1"]}
+   * {code}
+   * or
+   * {code:xml}
+   *   <?xml version="1.0" encoding="UTF-8"?>
+   *   <versions>
+   *     <version>v1-alpha1</version>
+   *   </versions>
+   * {code}
    * @return response of the request, the type bases on the format param
    */
   @GET
   @Path("supported.{format}")
+  @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
   public Response getSupportedVersions(@Context UriInfo uriInfo,
                                        @PathParam("format") String format) {
     final String[] supportedFormat = new String[]{"json", "xml"};

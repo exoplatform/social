@@ -21,6 +21,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -53,17 +54,34 @@ public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   
   /**
-   * Gets the identity and its associated profile by the identityId.
+   * Gets the identity and its associated profile by the activity Id.
    *
    * @param uriInfo the uri request uri
    * @param portalContainerName the associated portal container name
    * @param identityId the specified identityId
    * @param format the expected returned format
+   * @anchor SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity.Get
+   * @authentication
+   * @request {code}
+   * GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json
+   * {code}
+   * @response {code}
+   * {
+   *   "id" : "123456789",
+   *   "providerId": "organization",
+   *   "remoteId": "demo",
+   *   "profile": {
+   *     "fullName": "Demo Gtn",
+   *     "avatarUrl": "http://platform35.demo.exoplatform.org/profile/avatar/demo.jpg"
+   *   }
+   * }
+   * {code}
    * @return a response object
    * 
    */
   @GET
   @Path("{identityId}.{format}")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getIdentityById( @Context UriInfo uriInfo,
                                    @PathParam("portalContainerName") String portalContainerName,
                                    @PathParam("identityId") String identityId,
