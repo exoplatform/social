@@ -119,7 +119,7 @@
       <div class="Lable">${findContactLabel}:&nbsp</div>
       <div class="SearchContent">
         <% uiform.renderField(childs.get(0));%>
-        <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>"><span></span></a>
+        <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>">&nbsp;</a>
       </div> 
        <a href="#" id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
     </div>

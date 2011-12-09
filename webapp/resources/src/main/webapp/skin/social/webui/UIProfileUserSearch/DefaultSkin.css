@@ -148,6 +148,7 @@ a:ACTIVE {
 .UIProfileUserSearch .SearchSpacesBG .SearchIcon {
   padding: 1px 7px;
   background: white url( "/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin/background/SearchIcon.gif" ) no-repeat right center;
+  color: transparent;
 }
 
 .UIProfileUserSearch .SearchSpacesBG .SearchContent {
@@ -163,7 +164,7 @@ a:ACTIVE {
 
 .UIProfileUserSearch .SearchSpacesBG input {
   height: 15px;
-  width: 258px;
+  width: 255px;
   font-size:11px;
   border: 1px solid white;
 }
