@@ -122,7 +122,8 @@ public class UISpaceMenu extends UIContainer {
     }
     
     List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(homeNode.getChildren());
-    Collections.sort(userNodeArraySorted, new ApplicationComparator());
+    //SOC-2290 Need to comment the bellow line, sort by in configuration XML file.
+    //Collections.sort(userNodeArraySorted, new ApplicationComparator());
     return userNodeArraySorted;
   }
 
@@ -267,17 +268,7 @@ public class UISpaceMenu extends UIContainer {
     return spaceService.hasSettingPermission(space, userId);
   }
 
-  /**
-   * Application comparator.
-   *
-   * @author hoatle
-   */
-  private class ApplicationComparator implements Comparator<UserNode> {
-    public int compare(UserNode pageNode1, UserNode pageNode2) {
-      return pageNode1.getResolvedLabel().compareToIgnoreCase(pageNode2.getResolvedLabel());
-    }
-  }
-
+ 
   /**
    * Gets spaceService.
    *
