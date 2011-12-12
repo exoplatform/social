@@ -1,13 +1,13 @@
-h3. ${@Path.doc("flat:title")} {anchor:id=${@Path.doc("flat:anchor")}}
-
 <#list @Path.children("@GET", "@POST", "@PUT", "@DELETE") as verb>
-h4. ${verb.name} ${verb.sibling("@Path").value?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
+h3. ${verb.name} ${verb.sibling("@Path").value?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
 
 *Description*: ${verb.doc()}
 
 *URL*:
 
-{code}http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")?replace("{", "[")?replace("}", "]")}${verb.sibling("@Path").value?replace("{", "[")?replace("}", "]")}{code}
+{code}
+http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}${verb.sibling("@Path").value}
+{code}
 <#if verb.sibling("@Produces")??>
 
 *Supported Format*: ${verb.sibling("@Produces").attribute("flat:value")}
@@ -29,14 +29,10 @@ h4. ${verb.name} ${verb.sibling("@Path").value?replace("{", "_")?replace("}", "_
 
 *Request*:
 
-{code}
-${verb.doc("flat:request")?replace("{", "[")?replace("}", "]")}
-{code}
+${verb.doc("bloc:request")}
 
 *Response*:
 
-{code:json}
-${verb.doc("flat:response")?replace("{", "[")?replace("}", "]")}
-{code}
+${verb.doc("bloc:response")}
 
 </#list>

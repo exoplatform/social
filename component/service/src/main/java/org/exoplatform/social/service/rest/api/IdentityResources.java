@@ -65,7 +65,7 @@ public class IdentityResources implements ResourceContainer {
    * @request {code}
    * GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json
    * {code}
-   * @response {code}
+   * @response {code:json}
    * {
    *   "id" : "123456789",
    *   "providerId": "organization",

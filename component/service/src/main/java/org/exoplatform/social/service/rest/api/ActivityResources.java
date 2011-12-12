@@ -87,7 +87,9 @@ public class ActivityResources implements ResourceContainer {
    * information for the activity stream that this activity belongs to.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Get
    * @authentication
-   * @request GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * @request {code}
+   * GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * {code}
    * @response {code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
@@ -192,9 +194,9 @@ public class ActivityResources implements ResourceContainer {
    * @param newActivity a new activity instance
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Post
    * @authentication
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity.json
-   * {code:json}
-   * {"title": "Hello World!!!"}
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity.json
+   * BODY: {"title": "Hello World!!!"}
    * {code}
    * @response {code:json}
    * {
@@ -274,7 +276,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Delete
    * @authentication
-   * @request DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * @request {code}
+   * DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * {code}
    * @response {code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
@@ -351,7 +355,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.PostDelete
    * @authentication
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json
+   * {code}
    * @response {code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
@@ -399,7 +405,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Get
    * @authentication
-   * @request GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comments.json
+   * @request {code}
+   * GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comments.json
+   * {code}
    * @response {code:json}
    * {
    *   total: 10,
@@ -482,9 +490,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Post
    * @authentication
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment.json
-   * {code:json}
-   *   BODY: {"text": "My comment here!!!"}
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment.json
+   * BODY: {"text": "My comment here!!!"}
    * {code}
    * @response {code:json}
    * {
@@ -555,7 +563,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Delete
    * @authenticated
-   * @request DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment/123456.json
+   * @request {code}
+   * DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment/123456.json
+   * {code}
    * @response {code:json}
    * {
    *   "id": "123456"
@@ -621,7 +631,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.PostDelete
    * @authenticated
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment/destroy/123456.json
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/comment/destroy/123456.json
+   * {code}
    * @response {code:json}
    * {
    *   "id": "123456"
@@ -717,7 +729,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Post
    * @authentication
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like.json
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like.json
+   * {code}
    * @response {code:json}
    * {
    *   "liked": true
@@ -769,7 +783,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Delete
    * @authentication
-   * @request DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like.json
+   * @request {code}
+   * DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like.json
+   * {code}
    * @response {code:json}
    * {
    *   "liked": false
@@ -824,7 +840,9 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Postdestroy
    * @authentication
-   * @request POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like/destroy.json
+   * @request {code}
+   * POST: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha1/portal/activity/1a2b3c4d5e/like/destroy.json
+   * {code}
    * @response {code:json}
    * {
    *   "liked": false
