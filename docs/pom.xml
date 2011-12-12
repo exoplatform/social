@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-    <parent>
+  <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>social-project</artifactId>
     <version>1.2.7-SNAPSHOT</version>
@@ -11,6 +11,10 @@
   <packaging>pom</packaging>
 
   <name>eXo Social Documentation</name>
+
+  <modules>
+    <module>gen</module>
+  </modules>
 
   <profiles>
     <profile>

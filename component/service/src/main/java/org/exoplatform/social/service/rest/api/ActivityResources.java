@@ -663,6 +663,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName
    * @param activityId
    * @param format
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitylikes.GET
    * @return
    */
   @GET

@@ -121,6 +121,7 @@ public class IdentityResources implements ResourceContainer {
    * @param providerId the providerId of Identity
    * @param remoteId the remoteId of Identity
    * @param format the expected returned format
+   * @anchor SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.remoteAndProviderId.Get
    * @return a response object
    * @since 1.2.2
    */

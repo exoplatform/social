@@ -37,9 +37,9 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.wikbook</groupId>
-      <artifactId>wikbook.template</artifactId>
-      <version>0.9.33-SNAPSHOT</version>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.docs.gen</artifactId>
+      <version>1.2.7-SNAPSHOT</version>
     </dependency>
     
     <dependency>
@@ -200,9 +200,8 @@
             <phase>compile</phase>
             <configuration>
               <compilerArguments>
-                <sourcepath>${project.basedir}/../../docs/refguide/src/main/resources</sourcepath>
+                <sourcepath>${project.basedir}/../../docs/gen/src/main/resources</sourcepath>
               </compilerArguments>
-              <compilerArgument>-Awikbook.template.annotations=javax.ws.rs.Path,javax.ws.rs.POST,javax.ws.rs.GET,javax.ws.rs.DELETE,javax.ws.rs.PUT,javax.ws.rs.PathParam,javax.ws.rs.QueryParam,javax.ws.rs.Produces</compilerArgument>
             </configuration>
           </execution>
         </executions>
