@@ -17,7 +17,7 @@
 }
 
 .UIComposer .BlastContainer textarea {
-  width: 99%;
+  width: 99% !important;
   border: 1px solid #e1e1e1;
   font-size: 11px;
   -moz-border-radius: 2px;
