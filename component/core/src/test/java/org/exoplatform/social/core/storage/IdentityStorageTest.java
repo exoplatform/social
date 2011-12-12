@@ -1,5 +1,6 @@
 package org.exoplatform.social.core.storage;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,10 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -17,6 +21,7 @@ import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
 import org.exoplatform.social.core.storage.cache.CachedSpaceStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -212,6 +217,33 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertNotNull(tobeSavedProfile.getId());
     assertEquals(username, tobeSavedProfile.getProperty(Profile.USERNAME));
     
+    // Test in case loading an user has dot characters in name.
+    {
+      InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+      AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+      String userDotName = "user.name";
+      Identity identity = new Identity(OrganizationIdentityProvider.NAME, userDotName);
+      Profile profile = new Profile(identity);
+      identity.setProfile(profile);
+      profile.setProperty(Profile.AVATAR, avatarAttachment);
+      
+      identityStorage.saveIdentity(identity);
+      identityStorage.saveProfile(profile);
+      
+      identityStorage.loadProfile(profile);
+      
+      String gotAvatarURL = profile.getAvatarUrl();
+      int indexOfLastupdatedParam = gotAvatarURL.indexOf("/?upd=");
+      String avatarURL = null;
+      if(indexOfLastupdatedParam != -1){
+        avatarURL = gotAvatarURL.substring(0,indexOfLastupdatedParam);
+      } else {
+        avatarURL = gotAvatarURL;
+      }
+      assertEquals(LinkProvider.escapeJCRSpecialCharacters(
+                   StorageUtils.encodeUrl("/production/soc:providers/soc:organization/soc:user%02name/soc:profile/soc:avatar")), avatarURL);
+      tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userDotName));
+    }
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username));
   }
 

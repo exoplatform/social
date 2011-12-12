@@ -1,5 +1,10 @@
 package org.exoplatform.social.core.storage.impl;
 
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.ext.ntdef.NTFile;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -133,4 +138,23 @@ public class StorageUtils {
     return EMPTY_STR;
   }
 
+  /**
+   * Encodes Url to conform to the generated Url of WEBDAV.
+   * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
+   * This method replace any percent character (%) by (%25) to solve this problem. 
+   * @param avatar 
+   * @return
+   */
+  public static String encodeUrl(String path) {
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    ChromatticSession chromatticSession = lifeCycle.getSession();
+    StringBuilder encodedUrl = new StringBuilder(); 
+    encodedUrl = encodedUrl.append("/").append(container.getRestContextName()).append("/jcr/").
+                              append(lifeCycle.getRepositoryName()).append("/").
+                              append(chromatticSession.getJCRSession().getWorkspace().getName()).
+                              append(path.replaceAll("%", "%25"));
+    return encodedUrl.toString();
+  }
 }

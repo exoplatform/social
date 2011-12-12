@@ -675,14 +675,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     if (avatar != null) {
       ChromatticSession chromatticSession = getSession();
       try {
-        StringBuilder avatarUrlSB = new StringBuilder(); 
-        avatarUrlSB = avatarUrlSB.append("/").append(container.getRestContextName()).append("/jcr/").
-                                  append(lifeCycle.getRepositoryName()).append("/").
-                                  append(chromatticSession.getJCRSession().getWorkspace().getName()).
-                                  append(chromatticSession.getPath(avatar)).
-                                  append("/?upd=").append(avatar.getLastModified().getTime());
+        String avatarPath = chromatticSession.getPath(avatar);
+        long lastModified = avatar.getLastModified().getTime();
+        // workaround: as dot character (.) breaks generated url (Ref: SOC-2283)
+        String avatarUrl = StorageUtils.encodeUrl(avatarPath) + "/?upd=" + lastModified;
         
-        profile.setProperty(Profile.AVATAR_URL, LinkProvider.escapeJCRSpecialCharacters(avatarUrlSB.toString()));
+        profile.setProperty(Profile.AVATAR_URL, LinkProvider.escapeJCRSpecialCharacters(avatarUrl));
       } catch (Exception e) {
         LOG.warn("Failed to build file url from fileResource: " + e.getMessage());
       }
