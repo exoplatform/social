@@ -18,6 +18,8 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
@@ -26,6 +28,8 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.Visibility;
+import org.exoplatform.portal.mop.Described.State;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.Scope;
@@ -450,6 +454,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         }
       }
 
+      if (node.getI18nizedLabels() == null) {
+         uiNodeSelector.invokeI18NizedLabels(node);
+      }
+      
       UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
       UIPopupWindow uiManagementPopup = uiSpaceNavigationManagement.getChild(UIPopupWindow.class);
       UIPageNodeForm uiNodeForm = uiApp.createUIComponent(UIPageNodeForm.class, null, null);
@@ -771,5 +779,17 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
   public TreeNode getSelectedNode() {
     return getChild(UITree.class).getSelected();
+  }
+  
+  private void invokeI18NizedLabels(TreeNode node) {
+    DescriptionService descriptionService = this.getApplicationComponent(DescriptionService.class);
+    try {
+      Map<Locale, State> labels = descriptionService.getDescriptions(node.getId());
+      node.setI18nizedLabels(labels);
+    } catch (NullPointerException npe) {
+      // set label list is null if Described mixin has been removed or not
+      // exists.
+      node.setI18nizedLabels(null);
+    }
   }
 }

@@ -15,18 +15,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package org.exoplatform.social.webui.space;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.mop.navigation.NodeChangeListener;
 import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.webui.util.Util;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * A wrapper class of {@link UserNode} for manipulation in WebUI part
@@ -50,6 +54,8 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   private String                id;
 
   private List<TreeNode>        children;
+
+  private Map<Locale, State>    i18nizedLabels;
 
   public TreeNode(UserNavigation nav, UserNode node) {
     this(nav, node, null);
@@ -188,8 +194,19 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public String getEncodedResolvedLabel() {
+    if (getLabel() == null) {
+      if (i18nizedLabels != null) {
+        Locale locale = Util.getPortalRequestContext().getLocale();
+        for (Locale key : i18nizedLabels.keySet()) {
+          if (key.equals(locale)) {
+            String encodedLabel = i18nizedLabels.get(key).getName();
+            return encodedLabel == null ? getName() : encodedLabel;
+          }
+        }
+      }
+    }
     String encodedLabel = node.getEncodedResolvedLabel();
-    return encodedLabel == null ? "" : encodedLabel;
+    return encodedLabel == null ? getName() : encodedLabel;
   }
 
   public String getName() {
@@ -313,5 +330,13 @@ public class TreeNode implements NodeChangeListener<UserNode> {
     TreeNode toTreeNode = findNode(to.getId());
     fromTreeNode.children = null;
     toTreeNode.children = null;
+  }
+
+  public void setI18nizedLabels(Map<Locale, State> labels) {
+    this.i18nizedLabels = labels;
+  }
+
+  public Map<Locale, State> getI18nizedLabels() {
+    return i18nizedLabels;
   }
 }

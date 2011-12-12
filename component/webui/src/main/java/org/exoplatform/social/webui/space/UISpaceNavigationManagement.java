@@ -58,9 +58,13 @@ import org.exoplatform.webui.event.EventListener;
                      events = {
                        @EventConfig(listeners = UIPageNodeForm.SaveActionListener.class),
                        @EventConfig(listeners = UISpaceNavigationManagement.BackActionListener.class, phase = Phase.DECODE),
+                       @EventConfig(listeners = UIPageNodeForm.ChangeLanguageActionListener.class, phase = Phase.DECODE),
+                       @EventConfig(listeners = UIPageNodeForm.SwitchLabelModeActionListener.class, phase = Phase.DECODE),
                        @EventConfig(listeners = UIPageNodeForm.SwitchPublicationDateActionListener.class, phase = Phase.DECODE),
+                       @EventConfig(listeners = UIPageNodeForm.SwitchVisibleActionListener.class, phase = Phase.DECODE),
                        @EventConfig(listeners = UIPageNodeForm.ClearPageActionListener.class, phase = Phase.DECODE),
-                       @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE)
+                       @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE),
+                       @EventConfig(listeners = UIPageNodeForm.SelectTabActionListener.class, phase = Phase.DECODE)
                      }
                    ),
     @ComponentConfig(
