@@ -130,8 +130,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
   public void testCanAccessActivityUnknown() {
     createActivities(demoIdentity, demoIdentity, 2);
     ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
   }
 
   /**
@@ -157,8 +157,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
 
     // Out network stream
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
   }
 
   /**
