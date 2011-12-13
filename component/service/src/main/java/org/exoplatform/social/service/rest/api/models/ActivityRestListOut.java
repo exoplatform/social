@@ -116,7 +116,7 @@ public class ActivityRestListOut extends HashMap<String, Object> {
     for (ExoSocialActivity activity : activityList) {
       ActivityRestOut activityItem = new ActivityRestOut(activity, portalContainerName);
       activityItem.setPosterIdentity(new IdentityRestOut(activity.getUserId(), portalContainerName));
-      activityItem.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
+      activityItem.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
       activityItem.setNumberOfComments(numberOfComments, activity, portalContainerName);
       activityItem.setNumberOfLikes(numberOfLikes, activity, portalContainerName);
       activityItems.add(activityItem);

@@ -19,6 +19,11 @@ package org.exoplatform.social.service.rest.api.models;
 import java.util.HashMap;
 
 import org.exoplatform.social.core.activity.model.ActivityStream;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.Util;
 
 
@@ -36,6 +41,7 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
   public static enum Field {
     TYPE("type"),
     PRETTY_ID("prettyId"),
+    FULL_NAME("fullName"),
     FAVICON_URL("faviconUrl"),
     TITLE("title"),
     PERMA_LINK("permaLink");
@@ -77,13 +83,31 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
    *
    * @param activityStream the activity stream instance.
    */
-  public ActivityStreamRestOut(final ActivityStream activityStream) {
+  public ActivityStreamRestOut(final ActivityStream activityStream, String portalContainerName) {
     initialize();
     this.setType(activityStream.getType().toString());
     this.setPrettyId(activityStream.getPrettyId());
     this.setFaviconUrl(activityStream.getFaviconUrl());
     this.setTitle(activityStream.getTitle());
     this.setPermaLink(activityStream.getPermaLink()); //TODO make sure absolute link
+    
+    if(activityStream.getType() != null){
+      ActivityStream.Type activityStreamType =  activityStream.getType();
+      if(activityStreamType.equals(ActivityStream.Type.SPACE)){
+        SpaceService spaceService = Util.getSpaceService(portalContainerName);
+        Space space = spaceService.getSpaceByPrettyName(activityStream.getPrettyId());
+        if(space != null && space.getDisplayName() != null){
+          this.setFullName(space.getDisplayName());
+        }
+      } else if(activityStreamType.equals(ActivityStream.Type.USER)) {
+        IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
+        Identity identity = identityManager.getOrCreateIdentity(
+                                OrganizationIdentityProvider.NAME, activityStream.getPrettyId(), true);  
+        if(identity != null && identity.getProfile() != null && identity.getProfile().getFullName() != null){
+          this.setFullName(identity.getProfile().getFullName());
+        }
+      }
+    }
   }
 
   /**
@@ -130,6 +154,29 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
     }
   }
 
+  
+  /**
+   * Gets the full name.
+   *
+   * @return the full name.
+   */
+  public String getFullName() {
+    return (String) get(Field.FULL_NAME.toString());
+  }
+
+  /**
+   * Sets the full name.
+   *
+   * @param prettyId the full name.
+   */
+  public void setFullName(final String fullName) {
+    if (fullName == null) {
+      put(Field.FULL_NAME.toString(), "");
+    } else {
+      put(Field.FULL_NAME.toString(), fullName);
+    }
+  }
+  
   /**
    * Gets the activity stream title.
    *
@@ -203,6 +250,7 @@ public class ActivityStreamRestOut extends HashMap<String, Object> {
   private void initialize() {
     setType("");
     setPrettyId("");
+    setFullName(null);
     setFaviconUrl(null);
     setTitle("");
     setPermaLink(null);

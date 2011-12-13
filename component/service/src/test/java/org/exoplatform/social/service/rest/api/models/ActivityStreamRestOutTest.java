@@ -59,7 +59,7 @@ public class ActivityStreamRestOutTest extends TestCase {
     as.setTitle(title);
     as.setPermaLink(permaLink);
 
-    ActivityStreamRestOut activityStreamRestOut = new ActivityStreamRestOut(as);
+    ActivityStreamRestOut activityStreamRestOut = new ActivityStreamRestOut(as, null);
 
     assertEquals(ActivityStream.Type.USER.toString(), activityStreamRestOut.getType());
     assertEquals(Util.getBaseUrl() + faviconUrl, activityStreamRestOut.getFaviconUrl());

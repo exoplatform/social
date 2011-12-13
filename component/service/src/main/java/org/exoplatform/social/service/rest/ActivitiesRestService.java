@@ -642,7 +642,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     if (isPassed(showActivityStream)) {
-      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
+      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
     }
     
     model.setNumberOfComments(numberOfComments, activity, portalContainerName);
