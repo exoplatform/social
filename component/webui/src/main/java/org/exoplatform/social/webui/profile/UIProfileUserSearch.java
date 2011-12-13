@@ -119,6 +119,11 @@ public class UIProfileUserSearch extends UIForm {
    * List used for identities storage.
    */
   private List<Identity> identityList = null;
+  
+  /**
+   * The input conditional of search
+   */
+  private String rawSearchConditional;
 
   /**
    * Stores selected character when search by alphabet
@@ -216,6 +221,14 @@ public class UIProfileUserSearch extends UIForm {
    */
   public final List<Identity> getIdentityList() {
     return identityList;
+  }
+
+  public String getRawSearchConditional() {
+    return rawSearchConditional;
+  }
+
+  public void setRawSearchConditional(String rawSearchConditional) {
+    this.rawSearchConditional = rawSearchConditional;
   }
 
   /**
@@ -414,37 +427,57 @@ public class UIProfileUserSearch extends UIForm {
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
             filter.setName("");
           }
-          
+          uiSearch.setRawSearchConditional("");
           uiSearch.setProfileFilter(filter);
+          
         } else {
+
           uiSearch.setSelectedChar(null);
-          if (!isValidInput(filter)) { // is invalid condition input
-            uiSearch.setIdentityList(new ArrayList<Identity>());
+          StringBuffer rawSearchMessageStringBuffer = new StringBuffer();
+          if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+            filter.setName("");
           } else {
-            if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
-              filter.setName("");
-            }
-            if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+            rawSearchMessageStringBuffer.append(defaultNameVal + ":" + filter.getName());
+          }
+          
+          if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+            filter.setPosition("");
+          } else {
+            rawSearchMessageStringBuffer
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultPosVal + ":" + filter.getPosition());
+          }
+          if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
+            filter.setSkills("");
+          } else {
+            rawSearchMessageStringBuffer
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultSkillsVal + ":" + filter.getSkills());
+          }
+          if (filter.getGender().equals(defaultGenderVal)) {
+            filter.setGender("");
+          } else {
+            rawSearchMessageStringBuffer
+              .append((rawSearchMessageStringBuffer.length() > 0 ?" ":"") + defaultGenderVal + ":" + filter.getGender());
+          }
+          
+          if(rawSearchMessageStringBuffer.length() > 0){
+            uiSearch.setRawSearchConditional(rawSearchMessageStringBuffer.toString());
+            // Eliminates space characters.
+            if(!isValidInput(filter)){
+              filter.setName("@");
+              filter.setCompany("");
+              filter.setSkills("");
               filter.setPosition("");
             }
-            if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
-              filter.setSkills("");
-            }
-            if (filter.getGender().equals(defaultGenderVal)) {
-              filter.setGender("");
-            }
-            if (filter.getSkills().equals(defaultSkillsVal)) {
-              filter.setSkills("");
-            }
-
-            // Eliminates space characters.
-            filter.setName(filter.getName().trim());
-            filter.setPosition(filter.getPosition().trim());
-            filter.setSkills(filter.getSkills().trim());
-            
-            uiSearch.setProfileFilter(filter);
-
+          } else {
+            charSearch = ALL_FILTER;
+            uiSearch.setRawSearchConditional(ALL_FILTER);
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
+            filter.setName("");
+            filter.setCompany("");
+            filter.setSkills("");
+            filter.setPosition("");
           }
+          uiSearch.setProfileFilter(filter);
         }
         uiSearch.setNewSearch(true);
       } catch (Exception e) {
@@ -457,6 +490,7 @@ public class UIProfileUserSearch extends UIForm {
       }
     }
 
+    
     /**
      * Checks input values follow regular expression.
      *
@@ -466,18 +500,52 @@ public class UIProfileUserSearch extends UIForm {
     private boolean isValidInput(final ProfileFilter input) {
       // Check contact name
       String contactName = input.getName();
+      String position = input.getPosition();
+      String skills = input.getSkills();
+      String company = input.getCompany();
+      
       // Eliminate '*' and '%' character in string for checking
       String contactNameForCheck = null;
       if (contactName != null) {
-        contactNameForCheck = contactName.trim().replace("*", "");
-        contactNameForCheck = contactNameForCheck.replace("%", "");
+        contactNameForCheck = contactName.replaceAll("[/*%]", "").trim();
         // Make sure string for checking is started by alphabet character
         contactNameForCheck = PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
         if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) {
           return false;
         }
       }
+      // Eliminate '*' and '%' character in string for checking
+      String positionForCheck = null;
+      if (contactName != null) {
+        positionForCheck = position.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        positionForCheck = PREFIX_ADDED_FOR_CHECK + positionForCheck;
+        if (!positionForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
 
+      // Eliminate '*' and '%' character in string for checking
+      String skillsForCheck = null;
+      if (contactName != null) {
+        skillsForCheck = skills.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        skillsForCheck = PREFIX_ADDED_FOR_CHECK + skillsForCheck;
+        if (!skillsForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
+      
+      // Eliminate '*' and '%' character in string for checking
+      String companyForCheck = null;
+      if (contactName != null) {
+        companyForCheck = company.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        companyForCheck = PREFIX_ADDED_FOR_CHECK + companyForCheck;
+        if (!companyForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
       return true;
     }
   }
@@ -544,7 +612,7 @@ public class UIProfileUserSearch extends UIForm {
       if (getPeopleNum() > 1) {
         labelArg = "UIProfileUserSearch.label.FoundPeopleSearch";
       }
-      searchCondition = getProfileFilter().getName();
+      searchCondition = getRawSearchConditional();
     }
     if(ALL_FILTER.equals(searchCondition)) {
       searchCondition = WebuiRequestContext.getCurrentInstance()
