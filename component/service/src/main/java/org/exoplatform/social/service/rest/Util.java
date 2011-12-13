@@ -44,6 +44,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -69,9 +71,9 @@ public final class Util {
    * @return response the response object
    */
   public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
+    return Response.created(uriInfo.getAbsolutePath())
                    .entity(entity)
-                   .type(mediaType)
+                   .type(mediaType.toString() + "; charset=utf-8")
                    .status(status)
                    .build();
   }

@@ -163,7 +163,8 @@ public class ActivityResourcesV1Alpha1Test extends AbstractResourceTest {
       startSessionAs("demo");
       ContainerResponse containerResponse = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse.getStatus() must return " + 200, 200, containerResponse.getStatus());
-      assertEquals(MediaType.APPLICATION_JSON_TYPE, containerResponse.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       Activity entity = (Activity) containerResponse.getEntity();
       assertNotNull("entity must not be null", entity);
       assertNotNull("entity.getId() must not be null", entity.getId());

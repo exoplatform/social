@@ -55,9 +55,8 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetLatestVersionWithJsonFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/latest.json", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: MediaType.APPLICATION_JSON_TYPE",
-            MediaType.APPLICATION_JSON_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
 
     Object entity = containerResponse.getEntity();
@@ -99,9 +98,8 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetSupportedVersionsWithJsonFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/supported.json", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
@@ -117,9 +115,8 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetSupportedVersionsWithXmlFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/supported.xml", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_XML_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_XML.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
     Versions entity = (Versions) containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);

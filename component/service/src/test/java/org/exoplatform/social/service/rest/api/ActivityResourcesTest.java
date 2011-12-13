@@ -465,7 +465,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse.getStatus() must return " + 200, 200, containerResponse.getStatus());
       
-      assertEquals(MediaType.APPLICATION_JSON_TYPE, containerResponse.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       HashMap<String, Object> entity =  (HashMap<String, Object>) containerResponse.getEntity();
       compareActivity(demoActivity, entity);
     }

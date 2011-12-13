@@ -161,8 +161,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       startSessionAs("john");
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       // Demo creates 10 activities to his stream
@@ -174,8 +174,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -196,8 +196,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -207,8 +207,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> spaceActivities = activityManager.getActivitiesWithListAccess(spaceIdentity).
                                                                 loadAsList(0, 20);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
@@ -232,8 +232,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     // Demo gets activity stream of his which has 15 activities
     ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
     assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-    assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     List<ExoSocialActivity> demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
     compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
   }
@@ -253,8 +253,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       startSessionAs("john");
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       // Demo creates 10 activities to his stream
@@ -266,8 +266,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -288,8 +288,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -299,8 +299,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> spaceActivities = activityManager.getActivitiesWithListAccess(spaceIdentity).
                                                                 loadAsList(0, limit);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
@@ -327,8 +327,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> newerActivities = activityManager.getActivitiesWithListAccess(demoIdentity).
                                                                 loadNewer(baseActivity, 10);
 
@@ -362,8 +362,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return: " + 200, 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(newerActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
   }
@@ -388,8 +388,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> olderActivities = activityManager.getActivitiesWithListAccess(demoIdentity).
                                                                 loadOlder(baseActivity, 20);
 
@@ -423,8 +423,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return: " + 200, 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
 
       compareActivities(olderActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -451,8 +451,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       String resourceUrl = RESOURCE_URL + demoIdentity.getId() + ".json?number_of_comments=" + numberOfComments;
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfComments);
     }
@@ -473,8 +473,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -487,8 +487,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
       compareNumberOfComments(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity(), numberOfComments);
     }
@@ -522,8 +522,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       String resourceUrl = RESOURCE_URL + demoIdentity.getId() + ".json?number_of_likes=" + numberOfLikes;
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
     }
@@ -570,8 +570,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                                                                         "&number_of_comments=" + numberOfComments;
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfComments);
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
@@ -615,8 +615,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                                                                         "&number_of_comments=-1";
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
@@ -656,8 +656,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
       
       createActivities(demoIdentity, demoIdentity, 10);
@@ -666,8 +666,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 15);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -680,8 +680,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -694,8 +694,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
                                                                 loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
@@ -718,8 +718,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
       
       createActivities(demoIdentity, demoIdentity, 10);
@@ -728,8 +728,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -742,8 +742,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -755,8 +755,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
                                                                 loadAsList(0, limit);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
@@ -787,8 +787,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
                                                                   .loadNewer(baseActivity, 20);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
@@ -806,8 +806,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, 20);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
 
@@ -824,8 +824,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
     }
@@ -856,8 +856,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
                                                                   .loadOlder(baseActivity, 20);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
@@ -879,8 +879,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadOlder(baseActivity, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -901,8 +901,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       createActivities(demoIdentity, demoIdentity, 10);
@@ -916,8 +916,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
@@ -933,8 +933,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -951,8 +951,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
                                                                 loadAsList(0, 40);
       
@@ -976,8 +976,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       startSessionAs("demo");
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
 
       createActivities(demoIdentity, demoIdentity, 10);
@@ -1001,8 +1001,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 20);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
@@ -1018,8 +1018,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse3.getEntity());
 
@@ -1039,8 +1039,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).
                                                                 loadAsList(0, 40);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse4.getEntity());
@@ -1096,8 +1096,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                                  + "&number_of_likes=" + numberOfLikes;
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
@@ -1129,8 +1129,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
                                           .loadAsList(0, limit);
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
@@ -1175,8 +1175,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
     assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
     		.OK.getStatusCode(), rsp.getStatus());
-    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-                 MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        rsp.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     
     compareActivities(new ArrayList<ExoSocialActivity>(), (ActivityRestListOut)rsp.getEntity());
     endSession();
@@ -1208,8 +1208,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
       assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(),
                    Response.Status.OK.getStatusCode(), rsp1.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       
       List<ExoSocialActivity> demoActivities = activityManager
         .getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
@@ -1236,8 +1236,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
     assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
             .OK.getStatusCode(), rsp.getStatus());
-    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        rsp.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     compareActivities(emptyList, (ActivityRestListOut) rsp.getEntity());
 
     // Demo creates 10 activities to his stream
@@ -1253,8 +1253,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
     assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
             .OK.getStatusCode(), rsp1.getStatus());
-    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
 
     List<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
     compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
@@ -1264,8 +1264,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     rsp1 = service("GET", resourceUrl, "", null, null);
     assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
             .OK.getStatusCode(), rsp1.getStatus());
-    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
     compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
 
@@ -1307,8 +1307,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
       assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
       		.OK.getStatusCode(), rsp.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          rsp.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       
       List<ExoSocialActivity> newerActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).
                                                                 loadNewer(baseActivity, 20);
@@ -1346,8 +1346,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse rsp = service("GET", resourceUrl, "", null, null);
       assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
       		.OK.getStatusCode(), rsp.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          rsp.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> olderActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).
                                                                 loadOlder(baseActivity, 20);
 
@@ -1384,8 +1384,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
       assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
       		.OK.getStatusCode(), rsp1.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
@@ -1424,8 +1424,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
       assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
       		.OK.getStatusCode(), rsp1.getStatus());
-      assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-              MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfLikes);
@@ -1473,8 +1473,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     ContainerResponse rsp1 = service("GET", resourceUrl, "", null, null);
     assertEquals("Response's status must be: " + Response.Status.OK.getStatusCode(), Response.Status
             .OK.getStatusCode(), rsp1.getStatus());
-    assertEquals("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, rsp1.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
 
     compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
@@ -1527,8 +1527,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200,
                    containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
     }
 
@@ -1549,7 +1549,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -1559,8 +1560,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE,
-                   containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
     }
@@ -1582,8 +1583,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       startSessionAs("john");
       ContainerResponse containerResponse1 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse1.getStatus() must return: " + 200, 200, containerResponse1.getStatus());
-      assertEquals("containerResponse1.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE, containerResponse1.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse1.getEntity());
     }
 
@@ -1602,8 +1603,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse3 = service("GET", resourceUrl, "", null, null);
 
       assertEquals("containerResponse3.getStatus() must return 200", 200, containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: "
-                       + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -1613,8 +1614,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: "
-                       + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE, containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
     }
@@ -1647,8 +1648,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return: " + 200, 200,
                    containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE,
-                   containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(newerActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
     endSession();
@@ -1680,8 +1681,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return: " + 200, 200, containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-                                                    MediaType.APPLICATION_JSON_TYPE, containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
 
       compareActivities(olderActivities, (ActivityRestListOut) containerResponse2.getEntity());
     }
@@ -1710,7 +1711,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse3.getStatus() must return 200",
                    200,
                    containerResponse3.getStatus());
-      assertEquals("containerResponse3.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE, containerResponse3.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(emptyList, (ActivityRestListOut) containerResponse3.getEntity());
 
       // Create 10 activities to that space with the poster as that space
@@ -1722,8 +1724,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
       ContainerResponse containerResponse4 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
-      assertEquals("containerResponse4.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE,
-                   containerResponse4.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
       compareNumberOfComments(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity(), numberOfComments);
     }
@@ -1760,10 +1762,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       ContainerResponse containerResponse2 = service("GET", resourceUrl, "", null, null);
       assertEquals("containerResponse2.getStatus() must return 200", 200,
                    containerResponse2.getStatus());
-      assertEquals("containerResponse2.getContentType() must return: "
-                       + MediaType.APPLICATION_JSON_TYPE,
-                   MediaType.APPLICATION_JSON_TYPE,
-                   containerResponse2.getContentType());
+      assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+          containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
     }
