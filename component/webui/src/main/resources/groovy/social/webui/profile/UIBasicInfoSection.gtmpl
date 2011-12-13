@@ -71,14 +71,14 @@
         </tr>
         <tr>
           <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:&nbsp</td>
-          <td class="FieldComponent">
-			<a href="#" class="ColorLink">
-            <% if (isEdit && isEditable) {
-              uiform.renderField(children.get(4));
-               } else { %>
-               <%=children.get(4).getValue();%>
-            <% } %>
-				</a>
+          <td class="FieldComponent">  
+          <% if (isEdit && isEditable) {
+            uiform.renderField(children.get(4));
+             } else { %>
+             <a href="#" class="ColorLink">
+              <%=children.get(4).getValue();%>
+             </a>
+          <% } %>
           </td>
         </tr>
       </tbody>

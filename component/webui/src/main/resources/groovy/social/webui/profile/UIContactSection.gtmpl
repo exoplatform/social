@@ -203,7 +203,7 @@
             <%
             if (isEdit) {
             %>  
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>
@@ -273,7 +273,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>
@@ -339,7 +339,7 @@
             <%
             if (isEdit) {
             %>  
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>
