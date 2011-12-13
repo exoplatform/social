@@ -46,6 +46,9 @@ import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
+import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * Component manages all experience informations
@@ -98,10 +101,7 @@ public class UIExperienceSection extends UIProfileSection {
   /** DATE TIME VALIDATE EXPRESSION. */
   private static final String DATETIME_REGEX =
      "^(\\d{1,2}\\/\\d{1,2}\\/\\d{1,4})\\s*(\\s+\\d{1,2}:\\d{1,2}:\\d{1,2})?$";
-  
-  /** COMPANY AND POSITION VALIDATE EXPRESSION. */
-  private static final String COMPANY_AND_POSITION_STRINGLENGTH_REGEX = "^[\\w\\W]{3,90}+$";
-    
+      
   /** MANDATORY START DATE MESSAGE. */
   private static final String INVALID_START_DATE_MANDATORY = "UIExperienceSection.msg.Invalid-startdate-mandatory";
   
@@ -639,9 +639,11 @@ public class UIExperienceSection extends UIProfileSection {
   private void addUIFormInput() throws Exception {
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
-      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_COMPANY_STRINGLENGTH));
+      .addValidator(MandatoryValidator.class)
+      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
-      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_POSITION_STRINGLENGTH));
+      .addValidator(MandatoryValidator.class)
+      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
 
     addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
     UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);

@@ -62,7 +62,7 @@
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
                   }%>
-                *
+                
                 <% if ((i + 7) >= childSize) {%>
                     <a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>&nbsp;
                     <span class="ActionSparator"> | </span>
@@ -78,7 +78,7 @@
                 <%if (childs.get(i + 1).isRendered()) {
                   uiform.renderField(childs.get(i + 1));
                 }%>
-                *</td>
+                </td>
               </tr>
               <tr>
                 <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
