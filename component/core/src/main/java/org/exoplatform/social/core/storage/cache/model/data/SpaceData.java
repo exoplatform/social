@@ -75,8 +75,8 @@ public class SpaceData implements CacheData<Space> {
 
     space.setId(id);
     space.setApp(app);
-    space.setPrettyName(prettyName);
     space.setDisplayName(displayName);
+    space.setPrettyName(prettyName);
     space.setRegistration(registration);
     space.setDescription(description);
     space.setType(type);

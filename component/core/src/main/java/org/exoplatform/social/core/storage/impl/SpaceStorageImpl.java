@@ -83,8 +83,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     space.setApp(entity.getApp());
     space.setId(entity.getId());
-    space.setPrettyName(entity.getPrettyName());
     space.setDisplayName(entity.getDisplayName());
+    space.setPrettyName(entity.getPrettyName());
     space.setRegistration(entity.getRegistration());
     space.setDescription(entity.getDescription());
     space.setType(entity.getType());

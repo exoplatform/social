@@ -19,10 +19,15 @@ package org.exoplatform.social.webui.space;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -141,6 +146,14 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (spaceService.getSpaceByPrettyName(space.getPrettyName()) != null) {
           throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
         }
+        
+        ExoContainer container = ExoContainerContext.getCurrentContainer();
+        IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+        Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), true);
+        if (identity != null) {
+          space.setPrettyName(SpaceUtils.buildPrettyName(space));
+        }
+
         space.setType(DefaultSpaceApplicationHandler.NAME);
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);

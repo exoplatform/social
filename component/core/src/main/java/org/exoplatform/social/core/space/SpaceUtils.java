@@ -74,6 +74,9 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -117,6 +120,10 @@ public class SpaceUtils {
   private static final Transliterator ACCENTS_CONVERTER = Transliterator.getInstance("Latin; NFD; [:Nonspacing " +
           "Mark:] Remove; NFC;");
 
+  private static String NUMBER_REG_PATTERN = "[0-9]";
+  private static String UNDER_SCORE_STR = "_";
+  private static String SPACE_STR = " ";
+  
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group
    * name
@@ -677,6 +684,29 @@ public class SpaceUtils {
       groupHandler.removeGroup(group, true);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_GROUP, e);
+    }
+  }
+
+  /**
+   * Removes membership of users with a deleted spaces.
+   * 
+   * @param space
+   */
+  public static void removeMembershipFromGroup(Space space) {
+    if (space == null) return;
+    
+    // remove users from group with role is member
+    if (space.getMembers() != null) {
+      for (String userId : space.getMembers()) {
+        removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
+      }
+    }
+    
+    // remove users from group with role is manager
+    if (space.getManagers() != null) {
+      for (String userId : space.getManagers()) {
+        removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
+      }
     }
   }
 
@@ -1311,5 +1341,38 @@ public class SpaceUtils {
     String result = input.replaceAll("[^\\pL\\pM\\p{Nd}\\p{Nl}\\p{Pc}[\\p{InEnclosedAlphanumerics}&&\\p{So}]\\?\\*%0-9]", " ");
     result = result.replaceAll("\\s+", " ");
     return result.trim();
+  }
+
+  /**
+   * Builds pretty name base on the basic name in case create more than one space with the same name.
+   * 
+   * @param space
+   * @return
+   */
+  public static String buildPrettyName(Space space) {
+    String checkedPrettyName = space.getPrettyName();
+    String mainPatternPrettyName = null;
+    String numberPattern = NUMBER_REG_PATTERN;
+    if (checkedPrettyName.substring(checkedPrettyName.lastIndexOf(UNDER_SCORE_STR) + 1).matches(numberPattern)) {
+      mainPatternPrettyName = checkedPrettyName.substring(0, checkedPrettyName.lastIndexOf(UNDER_SCORE_STR));
+    } else {
+      mainPatternPrettyName = checkedPrettyName;
+    }
+    
+    boolean hasNext = true;
+    int extendPattern = 0;
+    
+    while (hasNext) {
+      ++extendPattern;
+      checkedPrettyName = cleanString(mainPatternPrettyName + SPACE_STR + extendPattern);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, checkedPrettyName, true);
+      if (identity == null) {
+        hasNext = false;
+      }
+    }
+    
+    return checkedPrettyName;
   }
 }

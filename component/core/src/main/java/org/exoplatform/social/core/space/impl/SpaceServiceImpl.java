@@ -365,7 +365,7 @@ public class SpaceServiceImpl implements SpaceService {
     // Creates new space by creating new group
     String groupId = null;
     try {
-      groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
+      groupId = SpaceUtils.createGroup(space.getPrettyName(), creator);
     } catch (SpaceException e) {
       LOG.error("Error while creating group", e);
     }
@@ -431,6 +431,10 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void deleteSpace(Space space) {
     try {
+      
+      // remove memberships of users with deleted space.
+      SpaceUtils.removeMembershipFromGroup(space);
+      
       spaceStorage.deleteSpace(space.getId());
       
       OrganizationService orgService = getOrgService();
