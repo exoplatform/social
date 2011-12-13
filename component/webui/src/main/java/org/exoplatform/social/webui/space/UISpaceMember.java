@@ -115,7 +115,9 @@ public class UISpaceMember extends UIForm {
   private static final String USER_TO_INVITE = "user_to_invite";
   String typeOfRelation = null;
   String spaceURL = null;
-
+  private static String invitedUserNames;
+  private boolean hasErr = false;
+  
   /**
    * The flag notifies a new search when clicks search icon or presses enter.
    */
@@ -129,7 +131,7 @@ public class UISpaceMember extends UIForm {
   public UISpaceMember() throws Exception {
     addUIFormInput(new UIFormStringInput(USER, null, null)
             .addValidator(MandatoryValidator.class)
-            .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\-\\d]+$", "UISpaceMember.msg.Invalid-char"));
+            .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d\\s._,]+$", "UISpaceMember.msg.Invalid-char"));
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
     searchUserPopup.setWindowSize(640, 0);
     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
@@ -139,6 +141,7 @@ public class UISpaceMember extends UIForm {
     addChild(iteratorInvitedUsers);
     addChild(iteratorExistingUsers);
     setTypeOfRelation(USER_TO_INVITE);
+    invitedUserNames = null;
   }
 
   /**
@@ -209,6 +212,20 @@ public class UISpaceMember extends UIForm {
    */
   public void setSpaceURL(String spaceURL) {
     this.spaceURL = spaceURL;
+  }
+
+  /**
+   * @return the hasErr
+   */
+  public boolean isHasErr() {
+    return hasErr;
+  }
+
+  /**
+   * @param hasErr the hasErr to set
+   */
+  public void setHasErr(boolean hasErr) {
+    this.hasErr = hasErr;
   }
 
   /**
@@ -413,9 +430,12 @@ public class UISpaceMember extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIApplication uiApp = requestContext.getUIApplication();
       SpaceService spaceService = uiSpaceMember.getSpaceService();
+      uiSpaceMember.setHasErr(false);
+      invitedUserNames = null;
       uiSpaceMember.validateInvitedUser();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
       String usersInput = uiSpaceMember.getUsersName();
+      
       String[] invitedUsers = null;
       String name = null;
       if (usersInput != null) {
@@ -670,6 +690,7 @@ public class UISpaceMember extends UIForm {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceById(spaceId);
     String invitedUser = null;
+    ApplicationMessage appMsg = null;
     for (String userStr : invitedUserList) {
       invitedUser = userStr.trim();
 
@@ -694,6 +715,8 @@ public class UISpaceMember extends UIForm {
           }
         }
       } catch (SpaceException e) {
+        setHasErr(true);
+        invitedUserNames = getUsersName();
         if (e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
           if (usersNotExist == null) {
             usersNotExist = invitedUser;
@@ -719,9 +742,11 @@ public class UISpaceMember extends UIForm {
     String remainUsers = null;
     if (usersNotExist != null) {
       remainUsers = usersNotExist;
-      uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-not-exist",
-                                              new String[]{usersNotExist},
-                                              ApplicationMessage.WARNING));
+      appMsg = new ApplicationMessage("UISpaceMember.msg.user-not-exist",
+                                      new String[]{usersNotExist},
+                                      ApplicationMessage.WARNING);
+      appMsg.setArgsLocalized(false);
+      uiApp.addMessage(appMsg);
     }
     if (usersIsInvited != null) {
       if (remainUsers == null) {
@@ -729,8 +754,10 @@ public class UISpaceMember extends UIForm {
       } else {
         remainUsers += "," + usersIsInvited;
       }
-      uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-is-invited",
-                       new String[]{usersIsInvited}, ApplicationMessage.WARNING));
+      appMsg = new ApplicationMessage("UISpaceMember.msg.user-is-invited",
+                                      new String[]{usersIsInvited}, ApplicationMessage.WARNING);
+      appMsg.setArgsLocalized(false);
+      uiApp.addMessage(appMsg);
     }
     if (usersIsMember != null) {
       if (remainUsers == null) {
@@ -738,9 +765,11 @@ public class UISpaceMember extends UIForm {
       } else {
         remainUsers += "," + usersIsMember;
       }
-      uiApp.addMessage(new ApplicationMessage("UISpaceMember.msg.user-is-member",
-                                              new String[]{usersIsMember},
-                                              ApplicationMessage.WARNING));
+      appMsg = new ApplicationMessage("UISpaceMember.msg.user-is-member",
+                                      new String[]{usersIsMember},
+                                      ApplicationMessage.WARNING);
+      appMsg.setArgsLocalized(false);
+      uiApp.addMessage(appMsg);
     }
   }
 

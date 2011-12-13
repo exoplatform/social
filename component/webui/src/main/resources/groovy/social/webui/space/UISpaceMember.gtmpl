@@ -56,6 +56,7 @@
   def pendingIdx = 0;
   def invitedIdx = 0;
   def existingIdx = 0;
+  def invitedUserNames = uicomponent.invitedUserNames;
 %>
 <div class="$uicomponent.id">
 <% uiform.begin() %>
@@ -64,6 +65,18 @@
 		<span class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></span>
 		<a href="#" class="SearchAddMemberIcon SearchInviteButton" onclick="$inviteAction" title="$labelInviteAction">&nbsp;</a>
 		<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction" title="$labelSearchUserAction">&nbsp;</a>
+  <%
+    if ((invitedUserNames != null) && uicomponent.isHasErr()) {
+  %>
+      <script type="text/javascript">
+        try{
+          var userEl = document.getElementById("user");
+          userEl.value = "$invitedUserNames";
+        }catch(e){};
+      </script>
+  <%
+    } 
+  %>
   <!-- pending -->
   <% if (pendingUsers.size() > 0) { %>
 
