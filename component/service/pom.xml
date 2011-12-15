@@ -39,7 +39,14 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.docs.gen</artifactId>
-      <version>1.2.7-SNAPSHOT</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.docs.gen</artifactId>
+      <classifier>templates</classifier>
     </dependency>
     
     <dependency>
@@ -200,7 +207,7 @@
             <phase>compile</phase>
             <configuration>
               <compilerArguments>
-                <sourcepath>${project.basedir}/../../docs/gen/src/main/resources</sourcepath>
+                <sourcepath>${project.build.directory}/templates</sourcepath>
               </compilerArguments>
             </configuration>
           </execution>
@@ -209,14 +216,43 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>unpack-templates</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.exoplatform.social</includeGroupIds>
+              <includeArtifactIds>exo.social.docs.gen</includeArtifactIds>
+              <includeClassifiers>templates</includeClassifiers>
+              <excludes>META-INF/**</excludes>
+              <outputDirectory>${project.build.directory}/templates</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <includes>
-            <include>target/generated/*</include>
-          </includes>
-          <classifier>doc</classifier>
-        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>doc-jaxrs</classifier>
+              <includes>
+                <include>**/generated/*</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       
     </plugins>

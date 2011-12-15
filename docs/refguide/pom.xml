@@ -27,8 +27,12 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.service</artifactId>
-      <version>1.2.7-SNAPSHOT</version>
-      <classifier>doc</classifier>
+      <classifier>doc-jaxrs</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+      <classifier>doc-chromattic</classifier>
     </dependency>
     <dependency>
       <groupId>org.wikbook</groupId>
@@ -113,7 +117,7 @@
             </configuration>
           </execution>
            <execution>
-             <id>unpack</id>
+             <id>unpack-jaxrs</id>
              <phase>compile</phase>
              <goals>
                <goal>unpack-dependencies</goal>
@@ -121,9 +125,23 @@
              <configuration>
                <includeGroupIds>org.exoplatform.social</includeGroupIds>
                <includeArtifactIds>exo.social.component.service</includeArtifactIds>
-               <includeClassifiers>doc</includeClassifiers>
-              <excludes>META-INF/**</excludes>
-              <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/RestService_v1_alpha1</outputDirectory>
+               <includeClassifiers>doc-jaxrs</includeClassifiers>
+               <excludes>META-INF/**</excludes>
+               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/RestService_v1_alpha1</outputDirectory>
+            </configuration>
+           </execution>
+           <execution>
+             <id>unpack-chromattic</id>
+             <phase>compile</phase>
+             <goals>
+               <goal>unpack-dependencies</goal>
+             </goals>
+             <configuration>
+               <includeGroupIds>org.exoplatform.social</includeGroupIds>
+               <includeArtifactIds>exo.social.component.core</includeArtifactIds>
+               <includeClassifiers>doc-chromattic</includeClassifiers>
+               <excludes>META-INF/**</excludes>
+               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/chromattic</outputDirectory>
             </configuration>
            </execution>
         </executions>

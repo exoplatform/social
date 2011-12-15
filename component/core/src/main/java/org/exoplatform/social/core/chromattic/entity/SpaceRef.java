@@ -34,6 +34,9 @@ public abstract class SpaceRef {
   @Id
   public abstract String getId();
 
+  /**
+   * Refer to a space entity.
+   */
   @Owner
   @MappedBy("soc:target")
   @ManyToOne(type = RelationshipType.REFERENCE)

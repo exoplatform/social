@@ -1,12 +1,12 @@
 <#list @Path.children("@GET", "@POST", "@PUT", "@DELETE") as verb>
-h3. ${verb.name} ${verb.sibling("@Path").value?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
+h3. ${verb.name} ${verb.sibling("@Path").attribute("flat:value")?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
 
 *Description*: ${verb.doc()}
 
 *URL*:
 
 {code}
-http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}${verb.sibling("@Path").value}
+http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}${verb.sibling("@Path").attribute("flat:value")}
 {code}
 <#if verb.sibling("@Produces")??>
 
@@ -20,11 +20,11 @@ http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}$
 *Parameters*:
 * *Required (path parameters)*: <#if verb.children("@PathParam")?size = 0>No</#if>
 <#list verb.children("@PathParam") as param>
-** *{noformat}${param.value}{noformat}*: ${param.doc()}
+** *{noformat}${param.attribute("flat:value")}{noformat}*: ${param.doc()}
 </#list>
 * *Optional (query paramters)*: <#if verb.children("@QueryParam")?size = 0>No</#if>
 <#list verb.children("@QueryParam") as param>
-** *{noformat}${param.value}{noformat}*: ${param.doc()}
+** *{noformat}${param.attribute("flat:value")}{noformat}*: ${param.doc()}
 </#list>
 
 *Request*:

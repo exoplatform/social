@@ -43,29 +43,44 @@ public abstract class RelationshipEntity {
 
   @Path
   public abstract String getPath();
-  
+
+  /**
+   * The status of the relationship, including three values: PENDING, CONFIRMED, and IGNORED.
+   */
   @Property(name = "soc:status")
   public abstract String getStatus();
   public abstract void setStatus(String status);
 
+  /**
+   * The receiver identity. It refers to the soc:identity node type.
+   */
   @MappedBy("soc:from")
   @ManyToOne(type = RelationshipType.REFERENCE)
   @Owner
   public abstract IdentityEntity getFrom();
   public abstract void setFrom(IdentityEntity fromEntity);
 
+  /**
+   * The sender identity. It refers to the soc:identity node type.
+   */
   @MappedBy("soc:to")
   @ManyToOne(type = RelationshipType.REFERENCE)
   @Owner
   public abstract IdentityEntity getTo();
   public abstract void setTo(IdentityEntity toEntity);
 
+  /**
+   * Denotes if the relationship is one way or two ways. It refers to the soc:relationshipdefinition node type.
+   */
   @MappedBy("soc:reciprocal")
   @ManyToOne(type = RelationshipType.REFERENCE)
   @Owner
   public abstract RelationshipEntity getReciprocal();
   public abstract void setReciprocal(RelationshipEntity reciprocal);
 
+  /**
+   * The time when the relationship is created.
+   */
   @Property(name = "soc:createdTime")
   public abstract Long getCreatedTime();
   public abstract void setCreatedTime(Long createdTime);

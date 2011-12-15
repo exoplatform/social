@@ -132,3 +132,5 @@ The _{noformat}soc:spacedefinition{noformat}_ type has the following properties:
 |soc:groupId|String|false| The group associated with the corresponding space.|
 |soc:url|String|false|The link to access a space.  |
 
+h2. GENERATED  {anchor:id=SOCref.Social_JCR_Structure.Generated}
+{include:document="chromattic/target/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}
