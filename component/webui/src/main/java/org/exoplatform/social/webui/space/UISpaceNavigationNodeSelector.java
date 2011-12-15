@@ -338,7 +338,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       uiNodeForm.setSelectedParent(node);
       UserNavigation edittedNavigation = uiNodeSelector.getEdittedNavigation();
       uiNodeForm.setContextPageNavigation(edittedNavigation);
-      uiManagementPopup.setWindowSize(800, 500);
+      uiManagementPopup.setWindowSize(800, 445);
       uiManagementPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagementPopup.getParent());
     }
@@ -467,7 +467,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       uiNodeForm.setContextPageNavigation(edittedNav);
       uiNodeForm.setValues(node);
       uiNodeForm.setSelectedParent(node.getParent());
-      uiManagementPopup.setWindowSize(800, 500);
+      uiManagementPopup.setWindowSize(800, 445);
       
       uiManagementPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagementPopup.getParent());

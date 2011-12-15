@@ -88,7 +88,7 @@ public class UISpaceNavigationManagement extends UIContainer {
   
   public UISpaceNavigationManagement() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "AddNode", null);
-    uiPopup.setWindowSize(800, 500);
+    uiPopup.setWindowSize(800, 445);
     uiPopup.setShow(false);
     addChild(uiPopup);
     
