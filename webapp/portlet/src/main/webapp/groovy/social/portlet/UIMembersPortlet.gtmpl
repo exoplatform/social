@@ -66,36 +66,37 @@
       <div class="UISocTitleBar">
 				<h5 class="TitleBar">$administratorLabel</h5>
       </div>
-      <% if (managerList.size() > 0) {
-        for(user in managerList) {
-          def userName = user.getProfile().getFullName();
-          position = user.getProfile().getPosition();
-          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-          if (!position) position = "";
-          def leaderImageSource = user.profile.avatarUrl;
-          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-          leaderIdx += 1;
-          clzz = "ContentSpace";
-          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
-      %>
       <div class="ClearFix">
-        <div class="$clzz ClearFix">
-					<img class="ImgAvatar" src="$leaderImageSource" alt=""/>
-					<div class="CommunityMane ClearFix">
-						<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
-					</div>
-					<% if(position.length() > 0) { %>
-				 <div class="CommunityContent">
-					 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-				 </div>
-					<% } %>
-        </div>
-      <% }
+	      <% if (managerList.size() > 0) {
+	        for(user in managerList) {
+	          def userName = user.getProfile().getFullName();
+	          position = user.getProfile().getPosition();
+	          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+	          if (!position) position = "";
+	          def leaderImageSource = user.profile.avatarUrl;
+	          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+	          leaderIdx += 1;
+	          clzz = "ContentSpace";
+	          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
+	      	%>
+	        <div class="$clzz ClearFix">
+						<img class="ImgAvatar" src="$leaderImageSource" alt=""/>
+						<div class="CommunityMane ClearFix">
+							<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
+						</div>
+						<% if(position.length() > 0) { %>
+						 <div class="CommunityContent">
+							 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+						 </div>
+						<% } %>
+	        </div>
+	      <% }%>
+      </div>
+      <%
       } else { %>
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
       <% } %>
       
-      </div>
       <!-- End leaders section -->
       <!-- Members section -->
       <div class="UISocTitleBar">
