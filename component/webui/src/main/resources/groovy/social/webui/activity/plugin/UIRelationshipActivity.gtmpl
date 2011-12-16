@@ -34,6 +34,7 @@
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
+  def streamOwner = activity.getStreamOwner();
 
   def isConnectionRequested = (uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED);
   def isConnectionConfirmed = (uicomponent.getTitleId() == TitleId.CONNECTION_CONFIRMED);
