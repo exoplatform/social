@@ -1,5 +1,5 @@
 <#list @Path.children("@GET", "@POST", "@PUT", "@DELETE") as verb>
-h3. ${verb.name} ${verb.sibling("@Path").attribute("flat:value")?replace("{", "_")?replace("}", "_")}{anchor:id=${verb.doc("flat:anchor")}}
+h3. ${verb.name} ${verb.sibling("@Path").attribute("flat:value")?replace("{", "")?replace("}", "")}{anchor:id=${verb.doc("flat:anchor")}}
 
 *Description*: ${verb.doc()}
 

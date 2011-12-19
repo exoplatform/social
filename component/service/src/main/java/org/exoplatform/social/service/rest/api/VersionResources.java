@@ -72,12 +72,14 @@ public class VersionResources implements ResourceContainer {
    * @param uriInfo the uri info
    * @param format  the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get
-   * @request {code}
+   * @request
+   * {code}
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
    * or
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
    * {code}
-   * @response {code:json}
+   * @response
+   * {code:json}
    *   {"version": "v1-alpha1"}
    * {code}
    * or
@@ -109,12 +111,14 @@ public class VersionResources implements ResourceContainer {
    * @param uriInfo the uri info
    * @param format  the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get
-   * @request {code}
+   * @request
+   * {code}
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json
    * or
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xml
    * {code}
-   * @response {code:json}
+   * @response
+   * {code:json}
    *   {"versions": ["v1-alpha1"]}
    * {code}
    * or

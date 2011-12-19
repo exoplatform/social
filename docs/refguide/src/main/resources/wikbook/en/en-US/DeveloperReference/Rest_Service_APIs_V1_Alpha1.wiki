@@ -30,11 +30,11 @@ The _{noformat}rest_context_name{noformat}_ and _{noformat}portal_container_name
 ** _{noformat}rest_context_name{noformat}_: _rest_;
 ** _{noformat}portal_container_name{noformat}_: _portal_;
 
-h2. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
-{include:document="RestService_v1_alpha1/target/generated/org.exoplatform.social.service.rest.api.ActivityResources.wiki"}
+h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.ActivityResources.wiki"}
 
-h2. Identity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.IdentityResources}
-{include:document="RestService_v1_alpha1/target/generated/org.exoplatform.social.service.rest.api.IdentityResources.wiki"}
+h1. Identity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.IdentityResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.IdentityResources.wiki"}
 
-h2. Version Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources}
-{include:document="RestService_v1_alpha1/target/generated/org.exoplatform.social.service.rest.api.VersionResources.wiki"}
+h1. Version Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.VersionResources.wiki"}

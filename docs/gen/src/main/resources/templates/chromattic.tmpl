@@ -1,7 +1,7 @@
 The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following properties:
 || Property Name || Required Type ||Mutiple|| Description ||
 <#list @PrimaryType.children("@Property") as property>
-|${property.attribute("name")}|${property.type.name}|${property.type.isArray}|${property.doc()}|
+|${property.attribute("name")}|${property.type.name?replace("[]", "")}|${property.type.isArray}|${property.doc()}|
 </#list>
 <#list @PrimaryType.children("@ManyToOne") as ref>
 <#if ref.sibling("@MappedBy")??>

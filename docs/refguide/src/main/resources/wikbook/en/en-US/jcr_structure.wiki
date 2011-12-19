@@ -18,41 +18,6 @@ The <provider_name> parameter in the _{noformat}soc:<provider_name>{noformat}_ n
 
 The _{noformat}soc:<provider_name>{noformat}_ node of the _{noformat}soc:providerdefinition{noformat}_ type has the _{noformat}soc:<identityRemoteId>{noformat}_ child nodes that have the _{noformat}soc:identitydefinition{noformat}_ type.
 
-The _{noformat}soc:identitydefinition{noformat}_ node type has the following properties:
-|| Property Name || Required Type ||Mutiple|| Description ||
-|soc:providerId|String|false|The provider Id is considered as a namespace for the remote Id. |
-|soc:isDeleted|Boolean|false|Show that if the provider Id is deleted or not via the provider.|
-|soc:remoteId|String|false|The local Id from a provider Id. |
-
-And the _{noformat}soc:identitydefinition{noformat}_ node type has the following child nodes:
-|| Child Nodes || Default Primary Type || Description ||
-|soc:profile|soc:profiledefinition|Store the detailed information of an identity. |
-|soc:relationship|soc:relationship|Store all the relationships of an identity that is in connection with other identities. |
-|soc:receiver|soc:relationship|Store all the relationships which contain an identity invited to connect by other identities.|
-|soc:sender|soc:relationship|Store all the relationships which contain an identity inviting other identities to connect with himself. |
-|soc:ignored|soc:relationship|Store all the relationships which contain an identity ignored by other identities.|
-|soc:ignore|soc:relationship|Store all the relationships which contain an identity ignoring other identities.|
-|soc:activities|soc:activitylist|Store all activities in the activity stream of an identity. |
-|soc:spacemember|soc:spaceslist| Store all spaces of which an identity is a member.|
-|soc:spacependingmember|soc:spaceslist|Store all spaces which an identity is pending for validation to join. |
-|soc:spaceinvitedmember|soc:spaceslist|Store all spaces which an identity is invited to join. |
-|soc:spacemanagermember|soc:spaceslist|Store all spaces of which an identity is a manager. |
-
-
-The _{noformat}soc:relationship{noformat}_ node type has the child nodes of the _{noformat}soc:relationshipdefinition{noformat}_ type that has the following properties:
-||Property Name ||Required Type || Multiple ||Description ||
-|soc:to|Reference|false| The sender identity. It refers to the _soc:identity_ node type.|
-|soc:status|String|false|The status of the relationship, including three values: PENDING, CONFIRMED, and IGNORED.|
-|soc:reciprocal|Reference|false|Denotes if the relationship is one way or two ways. It refers to the_soc:relationshipdefinition_ node type. |
-|soc:from|Reference|false|The receiver identity. It refers to the _soc:identity_ node type.|
-|soc:createdTime|Long|false|The time when the relationship is created.|
-
-
-The _{noformat}soc:spaceslist{noformat}_ node type contains the child nodes of the _{noformat}soc:spaceref{noformat}_ type that has the following properties:
-||Property Name ||Required Type || Multiple ||Description ||
-|soc:target|Reference|false|Refer to a space entity.|
-
-
 The _{noformat}soc:profiledefinition{noformat}_ node type contains the _{noformat}soc:avatar{noformat}_ child node of the nt:file type and other child nodes of the _{noformat}soc:profilexp{noformat}_ type.
 
 The _{noformat}soc:profiledefinition{noformat}_ node type has the following properties:
@@ -65,72 +30,39 @@ The _{noformat}soc:profiledefinition{noformat}_ node type has the following prop
 |void-lastName|undefined | true|The last name of an identity in his profile. |
 |void-username|undefined | true| The username of an identity in his profile. |
 
+h1. Identity  {anchor:id=SOCref.Social_JCR_Structure.IdentityEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}
 
-The _{noformat}soc:profilexp{noformat}_ node type has the following properties:
-|| Property Name || Required Type || Multiple|| Description ||
-|soc:position|String|false|The job position of an identity at an organization. |
-|soc:company|String|false|The company where an identity works. |
-|soc:skills|String|false|The work skills of an identity. |
-|soc:description|String|false|The description of an identity's position at an organization. |
-|soc:endDate|String|false|The date when an identity stops working at an organization. |
-|soc:startDate|String|false|The date when an identity starts working at an organization. |
+h1. Relationship  {anchor:id=SOCref.Social_JCR_Structure.RelationshipEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.RelationshipEntity.wiki"}
 
+h1. Profile  {anchor:id=SOCref.Social_JCR_Structure.ProfileEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ProfileEntity.wiki"}
 
+h1. Profile experience  {anchor:id=SOCref.Social_JCR_Structure.ProfileXpEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ProfileXpEntity.wiki"}
 
-The _{noformat}soc:activitylist{noformat}_ node type has the child nodes of the _{noformat}soc:activityyear{noformat}_.
-The _{noformat}soc:activitylist{noformat}_ node type has the following properties:
-|| Property Name || Required Type || Multiple|| Description ||
-|soc:number|Long|false|The number of activities in the activities list. The default value is set to 0.|
+h1. Activity list  {anchor:id=SOCref.Social_JCR_Structure.ActivityListEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityListEntity.wiki"}
 
-The _{noformat}soc:activityyear{noformat}_ node type has the child nodes of the _{noformat}soc:activitymonth{noformat}_ type which has the same properties as its parent node type (_{noformat}soc:activitylist{noformat}_).
+h1. Activity year  {anchor:id=SOCref.Social_JCR_Structure.ActivityYearEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityYearEntity.wiki"}
 
-The _{noformat}soc:activitymonth{noformat}_ node type has the child nodes of the _{noformat}soc:activityday{noformat}_ type that has the same properties as its parent node type (_{noformat}soc:activitymonth{noformat}_).
+h1. Activity month  {anchor:id=SOCref.Social_JCR_Structure.ActivityMonthEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity.wiki"}
 
-The _{noformat}soc:activityday{noformat}_ node type has the child nodes of the _{noformat}soc:activity{noformat}_ type that has the following properties:
-|| Property Name || Required Type || Multiple|| Description ||
-|soc:isComment|Boolean|false|Specify if an activity is a comment or not. The default value is false, meaning that it is a normal activity. |
-|soc:likes|String|true|The list of identity Ids who like the activity. |
-|soc:priority|Float|false| A float number between '0' and '1' which represents the relative priority level of an activity in relation to other activities from the same source.|
-|soc:postedTime|Long|false|The number which specifies the time at which an activity took place in milliseconds since the epoch.|
-|soc:title|String|false|The string which specifies the primary text of an activity. |
-|soc:titleId|String|false| The title Id of an activity.|
-|soc:body|String|false|The string which specifies the body template message Id in the gadget specification. The body is an optional extended version of an activity. |
-|soc:bodyId|String|false| The body Id of an activity. |
-|soc:type|String|false| The application Id which creates an activity.|
-|soc:externalId|String|false|An optional string Id which is generated by the posting application. |
-|soc:url|String|false|The URL to access an activity. |
-|soc:appId|String|false|The application Id which creates an activity. |
-|soc:identity|Reference|false|The identity whose activity stream contains an activity.|
-|soc:posterIdentity|Reference|false|The identity of the user who creates an activity.|
+h1. Activity day  {anchor:id=SOCref.Social_JCR_Structure.ActivityDayEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityDayEntity.wiki"}
 
-The _{noformat}soc:activity{noformat}_ node type has the _{noformat}soc:params{noformat}_ child node of the _{noformat}soc:activityparam{noformat}_ type and other child nodes of the _{noformat}soc:activity{noformat}_ type.
+h1. Activity {anchor:id=SOCref.Social_JCR_Structure.ActivityEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityEntity.wiki"}
 
-The _{noformat}soc:activityparam{noformat}_ node type has the following property:
-|| Property Name || Required Type || Multiple|| Description ||
-|*|String|false|A map of key-values. |
+h1. Activity parameters {anchor:id=SOCref.Social_JCR_Structure.ActivityParametersEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityParameters.wiki"}
 
+h1. Space list  {anchor:id=SOCref.Social_JCR_Structure.SpaceListEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.SpaceListEntity.wiki"}
 
-h1. soc:spaces    {anchor:id=SOCref.Social_JCR_Structure.socspaces}
-The _{noformat}soc:spaces{noformat}_ node is used to store data of eXo Social spaces. Its node type is _{noformat}soc:spaces{noformat}_ that includes child nodes of the _{noformat}soc:spacedefinition{noformat}_ type.
+h1. Space {anchor:id=SOCref.Social_JCR_Structure.SpaceEntity}
+{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.SpaceEntity.wiki"}
 
-The _{noformat}soc:spacedefinition{noformat}_ type has the following properties:
-
-|| Property Name || Required Type || Multiple|| Description||
-|soc:type|String|false|The type of space which is used to run in the Classic or WebOS mode.|
-|soc:membersId|String|true|The list of users which are members of a space. |
-|soc:pendingMembersId|String|true| The list of users who are pending for validation to join a space. |
-|soc:managerMembersId|String|true|The list of users who are managers of a space. |
-|soc:invitedMembersId|String|true|The list of users who are invited to join a space. |
-|soc:visibility|String|false|The space visibility: public, private, and hidden. |
-|soc:name|String|false|The space name.|
-|soc:avatarLastUpdated |Long|false|The last time when the avatar is updated. |
-|soc:displayName|String|false|The display name of a space.|
-|soc:registration|String|false|The space registration status: open, validation, and close. |
-|soc:description|String|false|The description of a space.  |
-|soc:priority|String|false|The space priority level that is used to sort spaces in the spaces list. It contains three values: 1, 2 and 3. The smaller value has the higher priority level. |
-|soc:app|String|false|The list of applications with portlet Id, application name, and its state (installed, activated, deactivated). |
-|soc:groupId|String|false| The group associated with the corresponding space.|
-|soc:url|String|false|The link to access a space.  |
-
-h2. GENERATED  {anchor:id=SOCref.Social_JCR_Structure.Generated}
-{include:document="chromattic/target/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}

@@ -127,7 +127,7 @@
                <includeArtifactIds>exo.social.component.service</includeArtifactIds>
                <includeClassifiers>doc-jaxrs</includeClassifiers>
                <excludes>META-INF/**</excludes>
-               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/RestService_v1_alpha1</outputDirectory>
+               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/jaxrs</outputDirectory>
             </configuration>
            </execution>
            <execution>

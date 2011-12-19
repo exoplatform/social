@@ -61,6 +61,11 @@ public class ChromatticTemplateProcessor extends AbstractTemplateProcessor {
   }
 
   @Override
+  protected String generatedDirectory() {
+    return "generated";
+  }
+
+  @Override
   protected String ext() {
     return "wiki";
   }

@@ -62,10 +62,12 @@ public class IdentityResources implements ResourceContainer {
    * @param format the expected returned format
    * @anchor SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity.Get
    * @authentication
-   * @request {code}
+   * @request
+   * {code}
    * GET: http://platform35.demo.exoplatform.org/rest/private/api/social/v1/portal/identity/123456789.json
    * {code}
-   * @response {code:json}
+   * @response
+   * {code:json}
    * {
    *   "id" : "123456789",
    *   "providerId": "organization",
