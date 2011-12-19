@@ -22,8 +22,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -88,9 +90,6 @@ public class UIContactSection extends UIProfileSection {
   /** WEBSITE TITLE. */
   public static final String WEBSITE_TITLE = "Website Title";
 
-  /** URL EXAMPLE. */
-  public static final String URL_EXAMPLE = "http://exoplatform.org";
-
   /** KEY. */
   public static final String KEY = "key";
 
@@ -124,6 +123,8 @@ public class UIContactSection extends UIProfileSection {
 
   /** Number of url. */
   private int urlCount = 0;
+  
+  private String sampleURL;
 
   /** Get the number of phone. */
   /**
@@ -150,6 +151,20 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
+   * @return the sampleURL
+   */
+  public String getSampleURL() {
+    return sampleURL;
+  }
+
+  /**
+   * @param sampleURL the sampleURL to set
+   */
+  public void setSampleURL(String sampleURL) {
+    this.sampleURL = sampleURL;
+  }
+
+  /**
    * Initializes contact form.<br>
    *
    * @throws Exception
@@ -161,6 +176,10 @@ public class UIContactSection extends UIProfileSection {
     options.add(new SelectItemOption<String>(VALUE_GENDER_MALE));
     options.add(new SelectItemOption<String>(VALUE_GENDER_FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
+    
+    // Get sample url message from resource bundle and set to variable.
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+    setSampleURL(resourceBudle.getString("UIContactSection.msg.sampleUrl"));
   }
 
   /**
@@ -297,7 +316,7 @@ public class UIContactSection extends UIProfileSection {
         id1 = ((UIFormSelectBox) listUIComp.get(i)).getName();
       }
 
-      if ((value == null) || (value.length() == 0) || (URL_EXAMPLE.startsWith(value))) {
+      if ((value == null) || (value.length() == 0) || (value.startsWith(getSampleURL()))) {
         removeFormInput(id1, id2);
       }
     }
@@ -522,7 +541,7 @@ public class UIContactSection extends UIProfileSection {
     } else if (URL.equals(type)) {
       int urlIdx = urlCount;
       addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE));
-      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, URL_EXAMPLE)
+      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, getSampleURL())
       .addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
       urlCount += 2;
     }
