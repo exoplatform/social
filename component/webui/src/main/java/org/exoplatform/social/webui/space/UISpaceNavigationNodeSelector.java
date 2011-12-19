@@ -100,6 +100,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
   private UserNodeFilterConfig filterConfig;
 
   private static final Scope   NODE_SCOPE = Scope.GRANDCHILDREN;
+  
+  private static final String CHILDNODES_DELIMITER = "/";
 
   public UISpaceNavigationNodeSelector() throws Exception {
     UIRightClickPopupMenu rightClickPopup = addChild(UIRightClickPopupMenu.class,
@@ -734,6 +736,16 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       if (childNode == null) {
         return;
       }
+      
+      //If is a root node, not allow delete. As comment by Portal team, we can use "/" to check
+      // a node is root node or not. If it's a root node, it doesn't contain "/" in URI.
+      if (!childNode.getURI().contains(CHILDNODES_DELIMITER)) {
+        UIApplication uiApp = pcontext.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
+                                                null));
+        return;
+      }
+      
       String pageRef = childNode.getPageRef();
       if (pageRef != null) {
         String appName = pageRef.substring(pageRef.lastIndexOf(":") + 1);
@@ -761,14 +773,14 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       }      
       
       TreeNode parentNode = childNode.getParent();
-
+      
       if (Visibility.SYSTEM.equals(childNode.getVisibility())) {
         UIApplication uiApp = pcontext.getUIApplication();
         uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
                                                 null));
         return;
       }
-
+      
       parentNode.removeChild(childNode);
       uiNodeSelector.selectNode(parentNode);
       uiNodeSelector.save();
