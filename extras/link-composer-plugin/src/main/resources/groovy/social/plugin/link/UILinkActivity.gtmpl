@@ -178,15 +178,7 @@
           }
         %>
       <div class="TitleBlock">$linkComment</div>
-      <%
-        if(UILinkUtil.isImageLink(linkSource)){
-          %>
-            <div class="BoxGray">  <a href="$linkSource" target="_blank"><img src="$linkSource" alt=" " height="120"/></a></div>
-          <%
-        }
-        else{
-          %>
-            <div class="LinkShare ClearFix">
+          <div class="LinkShare ClearFix">
               <a href="#" class="Thumbnail">
                   $link
               </a>
@@ -195,10 +187,7 @@
                 <div class="Description">$linkDescription</div>
                 <div class="Source">$labelSource : $linkSource</div>
               </div>
-            </div>
-          <%
-        }
-      %>
+          </div>
       <div class="LinkShareActivityIcon">
         <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
         	<%

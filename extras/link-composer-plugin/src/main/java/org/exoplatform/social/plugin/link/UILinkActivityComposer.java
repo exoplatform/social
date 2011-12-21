@@ -200,6 +200,11 @@ public class UILinkActivityComposer extends UIActivityComposer {
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
     templateParams.put(COMMENT_PARAM, postedMessage);
+    
+    if(templateParams.get(IMAGE_PARAM) == null){
+      templateParams.put(IMAGE_PARAM, "");
+    }
+    
     setTemplateParams(templateParams);
 
     if (templateParams.size() == 0) {

@@ -95,6 +95,9 @@ public class LinkShare extends DefaultFilter {
   private final String MEDIUM_TYPE_VIDEO = "video";
   private final String MEDIUM_TYPE_BLOG = "blog";
   private final String MEDIUM_TYPE_MULT = "mult";
+  
+  private static final String IMAGE_MIME_TYPE = "image/";
+  private static final String HTML_MIME_TYPE = "text/html";
   //default medium_type = "news"
   private String mediumType = MEDIUM_TYPE_NEWS;
   private String mediaSrc;
@@ -346,7 +349,20 @@ public class LinkShare extends DefaultFilter {
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;
     LinkShare.lang = lang;
-    linkShare.get();
+    
+    String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
+    mimeType = mimeType.toLowerCase();
+    
+    if(mimeType.startsWith(IMAGE_MIME_TYPE)){
+      linkShare.images = new ArrayList<String>(0);
+      linkShare.images.add(link);
+      linkShare.description = "";
+    } else if(mimeType.startsWith(HTML_MIME_TYPE)){
+      linkShare.get();
+    } else {
+      linkShare.images = new ArrayList<String>(0);
+      linkShare.description = "";
+    }
     
     if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
     

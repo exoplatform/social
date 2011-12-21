@@ -95,16 +95,7 @@
      uicomponent.clearLinkShare();
                            %>
   <div class="UILinkShareDisplay">
-    <%
-      if(UILinkUtil.isImageLink(link)){
-        %>
-          <div>
-            <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 
-          </div>
-        <%
-      }
-      else {
-        %>
+
           <div class="ThumbnailLeft">
           <% if (images.size() > 0) { %>
             <div id="UIThumbnailDisplay">
@@ -149,9 +140,6 @@
               $link
             </div>
           </div>
-        <%
-      }
-    %>
     <div class="ClearLeft"><span></span></div>
   </div>
 <% } else { %>

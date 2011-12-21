@@ -41,7 +41,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -506,5 +512,40 @@ public final class Util {
       }
     }
     return false;
+  }
+  
+  /**
+   * Try to guess the mime type of url using the Content-Type from header, the extension of filename or some bytes of content.
+   * This method can be wrong if server don't provide the Content-Type, wrong or unknown file extension. So use it as your risk.
+   * @param urlString
+   * @return
+   * @since 1.2.7
+   */
+  public static String getMimeTypeOfURL(String urlString){
+    URLConnection urlConnection = null;
+    try {
+      String mimeType = null;
+      URL url = new URL(urlString); 
+      urlConnection = url.openConnection();
+      mimeType = urlConnection.getContentType();
+      if(mimeType != null){
+        return mimeType;
+      }
+      mimeType = URLConnection.guessContentTypeFromName(urlString);
+      if(mimeType != null){
+        return mimeType;
+      }
+      mimeType = URLConnection.guessContentTypeFromStream(urlConnection.getInputStream());
+      if(mimeType != null){
+        return mimeType;
+      }
+      return "";
+    } catch (MalformedURLException e) {
+      return "";
+    } catch (IOException e) {
+      return "";
+    } finally {
+      urlConnection = null;
+    }
   }
 }
