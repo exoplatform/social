@@ -49,19 +49,19 @@
   def imageSource = ownerIdentity.profile.avatarUrl;
   if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 
-  def changeAvatar = uicomponent.event('ChangeAvatar');
-  def changeAvatarLabel = _ctx.appRes(componentId + ".label.ChangeAvatar");
+  def changePicture = uicomponent.event('ChangePicture');
+  def changePictureLabel = _ctx.appRes(componentId + ".label.ChangePicture");
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
   <% uicomponent.renderChild(UIPopupWindow.class); %>
   <%if (Utils.isOwner()) { %>
-      <a onclick="<%=uicomponent.event("ChangeAvatar")%>; return false;" href="javascript:void(0)" class="Avartar Editable" title="$changeAvatarLabel">
+      <a onclick="<%=uicomponent.event("ChangePicture")%>; return false;" href="javascript:void(0)" class="Avartar Editable" title="$changePictureLabel">
         <img alt="$currentUser" src="$imageSource"/>
 		<span class="BorderTopLanger"></span>
         <span class="BorderBottomLanger"></span>
       </a>
       <div class="ChangeAvatar">
-        <a onclick="<%=uicomponent.event("ChangeAvatar")%>; return false;" href="javascript:void(0)">$changeAvatarLabel</a>
+        <a onclick="<%=uicomponent.event("ChangePicture")%>; return false;" href="javascript:void(0)">$changePictureLabel</a>
       </div>
   <% } else {%>
       <a class="Avartar">

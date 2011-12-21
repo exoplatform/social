@@ -28,10 +28,10 @@
   def labelFileType = _ctx.appRes("${uicomponentId}.label.file_type")
   def labelImageSize = _ctx.appRes("${uicomponentId}.label.image_size")
   def labelSave = _ctx.appRes("${uicomponentId}.label.save")
-  def labelAbort = _ctx.appRes("${uicomponentId}.label.abort")
+  def labelCancel = _ctx.appRes("${uicomponentId}.label.cancel")
   
   def saveAction = uicomponent.event("Save")
-  def abortAction = uicomponent.event("Abort")
+  def cancelAction = uicomponent.event("Cancel")
   def imageSource = uicomponent.imageSource;
 %>
 
@@ -45,6 +45,6 @@
   </div>
   <div class="UIAction">
       <a onclick="$saveAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelSave</a>
-      <a onclick="$abortAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelAbort</a>
+      <a onclick="$cancelAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelCancel</a>
     </div>
 </div>

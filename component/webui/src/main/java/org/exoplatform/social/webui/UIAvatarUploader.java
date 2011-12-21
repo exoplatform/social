@@ -97,7 +97,6 @@ public class UIAvatarUploader extends UIForm {
    *
    */
   public UIAvatarUploader() throws Exception {
-    addUIFormInput(new UIFormStringInput(FIELD_NAME, null));
     uiAvatarUploadInput = new UIFormUploadInput(FIELD_UPLOADER, null, uploadLimit);
     uiAvatarUploadInput.setAutoUpload(true);
     addUIFormInput(uiAvatarUploadInput);
@@ -143,7 +142,6 @@ public class UIAvatarUploader extends UIForm {
       UIApplication uiApplication = ctx.getUIApplication();
       UIAvatarUploader uiAvatarUploader = event.getSource();
       UIFormUploadInput uiAvatarUploadInput = uiAvatarUploader.getChild(UIFormUploadInput.class);
-      UIFormStringInput uiName = uiAvatarUploader.getChild(UIFormStringInput.class);
       UIPopupWindow uiPopup = uiAvatarUploader.getParent();
       InputStream uploadedStream = uiAvatarUploadInput.getUploadDataAsStream();
 
@@ -167,7 +165,7 @@ public class UIAvatarUploader extends UIForm {
         ctx.addUIComponentToUpdateByAjax(uiAvatarUploader);
       } else {
         MimeTypeResolver mimeTypeResolver = new MimeTypeResolver();
-        String fileName = uiName.getValue();
+        String fileName = uploadResource.getFileName();
         
         // @since 1.1.3
         String extension = mimeTypeResolver.getExtension(mimeType);
@@ -175,11 +173,6 @@ public class UIAvatarUploader extends UIForm {
           mimeType = uiAvatarUploader.getStandardMimeType(mimeType);
         }
         
-        if (fileName == null)
-          fileName = uploadResource.getFileName();
-        else
-          fileName = fileName + "." + mimeTypeResolver.getExtension(mimeType);
-
         // Resize avatar to fixed width if can't(avatarAttachment == null) keep
         // origin avatar
         AvatarAttachment avatarAttachment = ImageUtils.createResizedAvatarAttachment(uploadedStream,
