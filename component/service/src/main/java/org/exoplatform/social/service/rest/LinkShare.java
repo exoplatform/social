@@ -154,7 +154,7 @@ public class LinkShare extends DefaultFilter {
    * @return provided link
    */
   public String getLink() {
-    return link;
+    return this.escapeSpecialCharacters(this.link);
   }
 
   /**
@@ -162,7 +162,7 @@ public class LinkShare extends DefaultFilter {
    * @return title
    */
   public String getTitle() {
-    return title;
+    return this.escapeSpecialCharacters(this.title);
   }
   
   /**
@@ -170,7 +170,7 @@ public class LinkShare extends DefaultFilter {
    * @return description
    */
   public String getDescription() {
-    return description;
+    return this.escapeSpecialCharacters(this.description);
   }
 
   /**
@@ -407,6 +407,8 @@ public class LinkShare extends DefaultFilter {
           onPParsing = true;
         }
       }
+    } else if ("title".equalsIgnoreCase(element.rawname)) {
+      onPParsing = true;
     }
   }
 
@@ -420,9 +422,13 @@ public class LinkShare extends DefaultFilter {
     //if detect <meta name="title" content="meta_title" />, reset title
       if ("title".equalsIgnoreCase(element.rawname)) {
         if (title == null) {
-          title = temp;
-          //remove new line character \n
-          title = title.replaceAll("\n", "");
+          if (onPParsing) {
+            title = pText.toString();
+            onPParsing = false;
+            pText = null;
+          } else {
+            title = temp;
+          }
         }
       }
     //set headEnded
@@ -619,5 +625,20 @@ public class LinkShare extends DefaultFilter {
       intVal = Integer.parseInt(strNum);
     }
     return intVal;
+  }
+  
+  /**
+   * Escapes the special characters.
+   * 
+   * @param str
+   * @return
+   * @since 1.2.7
+   */
+  private String escapeSpecialCharacters(String str) {
+    if (str != null) {
+      return str.replaceAll("\r\n|\n\r|\n|\r", "");
+    } else {
+      return "";
+    }
   }
 }
