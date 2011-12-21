@@ -49,7 +49,7 @@ import java.util.List;
  */
 public class ActivityStreamResourcesTest extends AbstractResourceTest {
 
-  private final String RESOURCE_URL = "/api/social/v1-alpha2/portal/activity_stream/";
+  private final String RESOURCE_URL = "/api/social/v1-alpha3/portal/activity_stream/";
 
   private IdentityManager identityManager;
   private ActivityManager activityManager;
@@ -140,7 +140,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "123456.atom", null, null,
             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/123456.json",
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity_stream/123456.json",
                              null, null, Response.Status.BAD_REQUEST.getStatusCode());
 
   }
@@ -638,7 +638,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
                              Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "feed.atom", null, null,
                              Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/feed.json",
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity_stream/feed.json",
                              null, null, Response.Status.BAD_REQUEST.getStatusCode());
   }
   
@@ -1161,7 +1161,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
     testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "connections.atom", null, null,
             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/" + 
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity_stream/" + 
     		"connections.json", null, null, Response.Status.BAD_REQUEST.getStatusCode());
     
     // Johns gets activity stream of Demo which has 0 activities
@@ -1504,7 +1504,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     testStatusCodeOfResource("demo", "GET", RESOURCE_URL + "spaces.atom", null, null,
             Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity_stream/spaces.json",
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity_stream/spaces.json",
                             null, null, Response.Status.BAD_REQUEST.getStatusCode());
 
   }

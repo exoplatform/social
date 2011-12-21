@@ -32,8 +32,8 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api_v1alpha1.models.Version;
-import org.exoplatform.social.service.rest.api_v1alpha1.models.Versions;
+import org.exoplatform.social.service.rest.api.models.Version;
+import org.exoplatform.social.service.rest.api.models.Versions;
 
 /**
  * <p>The version <tt>public</tt> rest service to gets the current latest rest service version and supported
@@ -47,12 +47,8 @@ public class VersionResources implements ResourceContainer {
   /**
    * The latest social rest api version.
    */
-  public static final String LATEST_VERSION = "v1-alpha2";
+  public static final String LATEST_VERSION = "v1-alpha3";
 
-  /**
-   * The v1-alpha1 for backward-compatible
-   */
-  public static final String V1_ALPHA1 = "v1-alpha1";
 
   /**
    * The supported versions
@@ -61,7 +57,6 @@ public class VersionResources implements ResourceContainer {
 
   static {
     SUPPORTED_VERSIONS.add(LATEST_VERSION);
-    SUPPORTED_VERSIONS.add(V1_ALPHA1);
   }
 
   /**

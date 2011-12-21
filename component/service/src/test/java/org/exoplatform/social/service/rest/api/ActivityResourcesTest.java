@@ -57,7 +57,7 @@ import org.json.JSONWriter;
  */
 public class ActivityResourcesTest extends AbstractResourceTest {
 
-  private final String RESOURCE_URL = "/api/social/v1-alpha2/portal/activity";
+  private final String RESOURCE_URL = "/api/social/v1-alpha3/portal/activity";
 
   private IdentityManager identityManager;
   private ActivityManager activityManager;
@@ -152,10 +152,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     //not found
     testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity/1a2b3c4d5e.json", null, null,
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity/1a2b3c4d5e.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     // Unsupported media type
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e.xml", null, null,
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -182,7 +182,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("POST", resourceUrl,h, data);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity.json", h, data,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
     // title == "" or missing title
@@ -196,7 +196,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     data = writer.getBuffer().toString().getBytes("UTF-8");
     h.putSingle("content-length", "" + data.length);
 
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity.json", h, data,
                             Response.Status.BAD_REQUEST.getStatusCode());
     writer = new StringWriter();
     jsonWriter = new JSONWriter(writer);
@@ -205,7 +205,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     .endObject();
     data = writer.getBuffer().toString().getBytes("UTF-8");
     h.putSingle("content-length", "" + data.length);
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity.json", h, data,
                             Response.Status.BAD_REQUEST.getStatusCode());
     
     h = new MultivaluedMapImpl();
@@ -213,7 +213,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     h.putSingle("content-length", "" + data.length);
     
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity.xml", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity.xml", h, data,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -228,15 +228,15 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("DELETE", resourceUrl, null, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/wrongPortalContainerName/activity/128318387123.json", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/wrongPortalContainerName/activity/128318387123.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
 
     // Not Found 
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/portal/activity/2131445234213.json", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/portal/activity/2131445234213.json", null, null,
                              Response.Status.NOT_FOUND.getStatusCode());
     
     // Unsupported media type
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/portal/activity/2131445234213.xml", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/portal/activity/2131445234213.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     
     String resourceUrlPostDelete = RESOURCE_URL+"/destroy/12912903.json";
@@ -248,14 +248,14 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     testAccessResourceAsAnonymous("POST", resourceUrlPostDelete, h, null);
     
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity/destroy/128318387123.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity/destroy/128318387123.json", h, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
     // Not Found 
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/destroy/2131445234213.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/destroy/2131445234213.json", h, null,
                              Response.Status.NOT_FOUND.getStatusCode());
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/destroy/2131445234213.xml", null, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/destroy/2131445234213.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -272,10 +272,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     //not found
     testAccessNotFoundResourceWithAuthentication("demo", "GET", resourceUrl, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/wrongPortalContainerName/activity/1a2b3c4d5e/comments.json", null, null,
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/wrongPortalContainerName/activity/1a2b3c4d5e/comments.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     // Unsupported media type
-    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e/comments.xml", null, null,
+    testStatusCodeOfResource("demo", "GET", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -305,11 +305,11 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("POST", resourceUrl,h, data);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity/231241312/comment.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity/231241312/comment.json", h, data,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/"+activities[0].getId()+"/comment.xml", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/"+activities[0].getId()+"/comment.xml", h, data,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     
     // title == "" or missing title
@@ -322,7 +322,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     .endObject();
     data = writer.getBuffer().toString().getBytes("UTF-8");
     h.putSingle("content-length", "" + data.length);
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/"+activities[0].getId()+"/comment.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/"+activities[0].getId()+"/comment.json", h, data,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
 
@@ -334,7 +334,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     .endObject();
     data = writer.getBuffer().toString().getBytes("UTF-8");
     h.putSingle("content-length", "" + data.length);
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/"+activities[0].getId()+"/comment.json", h, data,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/"+activities[0].getId()+"/comment.json", h, data,
         Response.Status.BAD_REQUEST.getStatusCode());
 
   }
@@ -350,14 +350,14 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("DELETE", resourceUrl, null, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/wrongPortalContainerName/activity/128318387123/comment/2304982984.json", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/wrongPortalContainerName/activity/128318387123/comment/2304982984.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     // Not Found 
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/portal/activity/128318387123/comment/2131445234213.json", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/portal/activity/128318387123/comment/2131445234213.json", null, null,
                              Response.Status.NOT_FOUND.getStatusCode());
     
     // Unsupported media type
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e/comment/2131445234213.xml", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/2131445234213.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     
     String resourceUrlPostDelete = RESOURCE_URL+"/24802934/comment/destroy/12912903.json";
@@ -369,14 +369,14 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     testAccessResourceAsAnonymous("POST", resourceUrlPostDelete,h, null);
     
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity/128318387123/comment/destroy/128318387123.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity/128318387123/comment/destroy/128318387123.json", h, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
     // Not Found 
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/128318387123/comment/destroy/2131445234213.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/128318387123/comment/destroy/2131445234213.json", h, null,
                              Response.Status.NOT_FOUND.getStatusCode());
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e/comment/destroy/2131445234213.xml", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/2131445234213.xml", h, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -396,10 +396,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("POST", resourceUrl, null, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity/1a2b3c4e5e/like.json", null, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity/1a2b3c4e5e/like.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e/like.xml", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.xml", h, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
 
@@ -414,10 +414,10 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     // Unauthorized
     testAccessResourceAsAnonymous("DELETE", resourceUrl, null, null);
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/wrongPortalContainerName/activity/1a2b3c4e5e/like.json", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/wrongPortalContainerName/activity/1a2b3c4e5e/like.json", null, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
-    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha2/portal/activity/1a2b3c4e5e/like.xml", null, null,
+    testStatusCodeOfResource("demo", "DELETE", "/api/social/v1-alpha3/portal/activity/1a2b3c4e5e/like.xml", null, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
     
     String resourceUrlPostDelete = RESOURCE_URL+"/213123/like/destroy.json";
@@ -429,15 +429,15 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     testAccessResourceAsAnonymous("POST", resourceUrlPostDelete,h, null);
     
     // Wrong Portal Container name
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/wrongPortalContainerName/activity/13123123/like/destroy.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/wrongPortalContainerName/activity/13123123/like/destroy.json", h, null,
                              Response.Status.BAD_REQUEST.getStatusCode());
     
     // Not Found 
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/13123123/like/destroy.json", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/13123123/like/destroy.json", h, null,
                              Response.Status.NOT_FOUND.getStatusCode());
     
     // Unsupported media type
-    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha2/portal/activity/1a2b3c4d5e/like/destroy.xml", h, null,
+    testStatusCodeOfResource("demo", "POST", "/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.xml", h, null,
         Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode());
   }
   

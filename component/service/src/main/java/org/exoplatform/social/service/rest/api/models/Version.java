@@ -14,34 +14,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.service.rest.api_v1alpha1.models;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package org.exoplatform.social.service.rest.api.models;
 
 /**
- * The Activity List for Social Rest APIs: Activity Stream resources.
+ * Version class to expose as json response object.
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @since Jun 17, 2011
+ * @since Jun 15, 2011
  */
-public class ActivityList {
+public class Version {
 
   /**
-   * The activities data.
+   * Gets the latest social rest api version.
+   *
+   * @return the string the latest social rest api version
    */
-  private List<Activity> activities;
-
-  public ActivityList() {
-    this.activities = new ArrayList<Activity>();
+  public String getVersion() {
+    return version;
   }
 
-  public List<Activity> getActivities() {
-    return Collections.unmodifiableList(activities);
+  /**
+   * Sets the latest social rest api version.
+   *
+   * @param latestVersion the string the latest social rest api version
+   */
+  public void setVersion(String latestVersion) {
+    this.version = latestVersion;
   }
 
-  public void addActivity(final Activity activity) {
-    activities.add(activity);
-  }
+  /**
+   * The latest social rest api version.
+   */
+  private String version;
+
+
 }
