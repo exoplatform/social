@@ -76,8 +76,8 @@
   width: 97%;
 }
 
-.SpaceMenuPortlet  .UIHorizontalTabs {
-	padding-top: 20px;
+.SpaceMenuPortlet .UIHorizontalTabs {
+	padding-top: 31px;
 	border-bottom: 1px solid #AEAEAE;
 	text-align: right;
 }
@@ -102,7 +102,7 @@
 }
 
 .SpaceMenuPortlet .UISpaceName {
-	padding:8px 0 0 10px;
+	padding:10px 0 0 10px;
 }
 
 .SpaceMenuPortlet .UISpaceName a {
