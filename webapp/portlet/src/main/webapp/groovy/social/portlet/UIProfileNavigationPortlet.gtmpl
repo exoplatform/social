@@ -72,21 +72,21 @@
   <% } %>
   <div class="UIVerclTab">
     <% if (selectedNode == "activities")  {%>
-    <div class="SelectedTab Tab">
+    <div class="SelectedTab ArowIcon Tab">
     <% } else {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${actititesURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
+        <a href="${actititesURL}"><%=_ctx.appRes(uicomponent.getId() + ".label.Activity")%></a>
     </div>
     <% if (selectedNode == "profile")  {%>
-    <div class="SelectedTab Tab">
+    <div class="SelectedTab ArowIcon Tab">
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
         <a href="${profileURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
     </div>
     <% if (selectedNode == "connections")  {%>
-    <div class="SelectedTab Tab">
+    <div class="SelectedTab ArowIcon Tab">
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>

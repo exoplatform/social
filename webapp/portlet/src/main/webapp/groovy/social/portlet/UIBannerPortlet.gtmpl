@@ -36,16 +36,15 @@
         <%} else {%>
           <div class="LeftLoginContainer">
             <div class="RightLoginContainer">
-              <div class="MiddleLoginContainer">
-              <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
-              <a href="$registerURI"><%= _ctx.appRes("UISocialBannerPortlet.label.Register") %></a>
-              <a class="Language" onclick="$changeLanguageAction">
-                <%= _ctx.appRes("UISocialBannerPortlet.label.ChangeLanguage") %>
-              </a>
-              <div style="clear:both"><span></span></div>
-            </div>
-          </div>
-          <div style="clear:both"><span></span></div>
+              <div class="MiddleLoginContainer ClearFix">
+				  <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
+				  <a href="$registerURI"><%= _ctx.appRes("UISocialBannerPortlet.label.Register") %></a>
+				  <a class="Language" onclick="$changeLanguageAction">
+					<%= _ctx.appRes("UISocialBannerPortlet.label.ChangeLanguage") %>
+				  </a>
+				</div>
+			  </div>
+          
         </div>
       <% } %>
     </div>

@@ -24,6 +24,15 @@
   import org.exoplatform.webui.form.UIFormStringInput;
   import org.exoplatform.social.plugin.link.UILinkUtil;
 
+  def removeAllNewLines(def str) {
+    if (str) {
+      str = str.replaceAll("\r\n|\n\r|\n|\r", "");
+      return str.replaceAll("'", " ");
+    } else {
+      return "";
+    }
+  }
+
   def uicomponentId = uicomponent.id;
   def labelAttachLink = _ctx.appRes("UILinkComposerPlugin.label.Attach_Link");
   def labelAttach = _ctx.appRes("UILinkComposerPlugin.label.Attach");
@@ -45,14 +54,14 @@
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
   if (linkShare) {
-    link = linkShare.getLink().replaceAll("'", "&#039;");
+    link = removeAllNewLines(linkShare.getLink());
     images = linkShare.getImages();
     def image;
     if (images.size() > 0) {
       image = images.get(0);
     }
-    title = linkShare.getTitle().replaceAll("'", "&#039;");
-    description = linkShare.getDescription().replaceAll("'", "&#039;");
+    title = removeAllNewLines(linkShare.getTitle());
+    description = removeAllNewLines(linkShare.getDescription());
     linkData = "{"+
                   "link: '$link',"+
                   "image: '$image',"+
@@ -85,8 +94,17 @@
 <% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
                            %>
-  <div class="UILinkShareDisplay">
-
+  <div class="UILinkShareDisplay ClearFix">
+    <%
+      if(UILinkUtil.isImageLink(link)){
+        %>
+          <div>
+            <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 
+          </div>
+        <%
+      }
+      else {
+        %>
           <div class="ThumbnailLeft">
           <% if (images.size() > 0) { %>
             <div id="UIThumbnailDisplay">
@@ -99,7 +117,7 @@
                     thumbnailClass = "ThumbnailHidden";
                   })%>
               </div>
-              <div class="ThumbnailAction">
+              <div class="ThumbnailAction ClearFix">
                 <div class="BackIcon" id="BackThumbnail">
                   <span></span>
                 </div>
@@ -109,14 +127,12 @@
                 <div class="NextIcon" id="NextThumbnail">
                   <span></span>
                 </div>
-                <div style="clear: both;">
-                  <span></span>
-                </div>
+               
               </div>
             </div>
-            <div class="ThumbnailOption">
-              <input id="ThumbnailCheckbox" type="checkbox" />
-                $noThumbnail
+            <div class="ThumbnailOption ClearFix">
+              <input class="FL" id="ThumbnailCheckbox" type="checkbox" />
+              <div class="Label FL">$noThumbnail</div>
             </div>
           <% } %>
           </div>
@@ -131,7 +147,9 @@
               $link
             </div>
           </div>
-    <div class="ClearLeft"><span></span></div>
+        <%
+      }
+    %>
   </div>
 <% } else { %>
   <div class="UIComposerExtensionContainer">

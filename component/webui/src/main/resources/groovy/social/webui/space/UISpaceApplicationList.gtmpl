@@ -33,7 +33,7 @@
   }
 %>
 <div class="UIOrganizerManagement" id="$uicomponent.id">
-  <div class="AppRegistryContainer">
+  <div class="AppRegistryContainer ClearFix">
     <div class="AppRegistryControl">
       <div class="ControlArea">
         <div class="CategoryContent">
@@ -77,14 +77,14 @@
                  %>
                    <div style="cursor: default;" class="UIVTab VTabStyle3" id="<%= application.getId() %>">
                      <div class="VTabContentBG">
-                       <div class="OverflowContainer">
+                       <div class="OverflowContainer ClearFix">
                          <img src="$srcBG" onError="src='$srcBGError'" alt=""/>
                          <div class="ContentInfo" title="<%= application.getDisplayName() %>">
                              <div class="LabelTab">$applicationLabel</div>
                              <div class="LabelText"><%= application.getDescription() %></div>
                              <div onclick="$installAction" class="AplicationButton InstallApplicationButton" title="$labelInstall"><span></span></div>
                            </div>
-                         <div class="ClearLeft"><span></span></div>
+                         
                        </div>
                      </div>
                    </div>
@@ -99,6 +99,6 @@
         </div>
       </div>
     </div>
-    <div class="ClearLeft"><span></span></div>
+    
   </div>
 </div>

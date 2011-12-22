@@ -29,19 +29,6 @@ h4 {font-size: 15px;}
 h5 {font-size: 12px;}
 h6 {font-size: 11px;}
 
-.ClearFix:after {
- content: ".";
- display: block;
- height: 0;
- clear: both;
- visibility: hidden;
-}
-
-.ClearFix {
- !display: inline-block;
- !zoom: 1;
- !display: block; 
-}
 
 .FL {
 	float: left;

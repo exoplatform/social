@@ -25,28 +25,6 @@ a.ColorLinkShared {
   color: #F68A2F;
 }
 
-}
-
-
-.FloatLeft {
-  float: left;
-}
-
-.FloatRight {
-  float: right;
-}
-
-.ClearLeft {
-  clear: left;
-}
-
-.ClearRight {
-  clear: right;
-}
-
-.ClearBoth {
-  clear: both;
-}
 
 .DisplayNone {
   display: none;

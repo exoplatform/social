@@ -26,45 +26,6 @@
  * UISpaceActivityStream portlet style
  */
 
-.clearfix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-}
-
-.clearfix {
-	display: inline-block;
-}
-
-/* Hides from IE-mac \*/
-* html .clearfix {height: 1%;}
-.clearfix {display: block;}
-/* End hide from IE-mac */
-
-
-.FloatLeft {
-  float: left;
-}
-
-.FloatRight {
-  float: right;
-}
-
-.ClearLeft {
-  clear: left;
-}
-
-.ClearRight {
-  clear: right;
-}
-
-.ClearBoth {
-  clear: both;
-  height: 0px;
-}
-
 .UISpaceActivityStreamPortlet {
   font-family: lucida sans;
 }

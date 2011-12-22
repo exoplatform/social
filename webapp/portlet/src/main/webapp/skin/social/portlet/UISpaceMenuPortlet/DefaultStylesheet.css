@@ -42,21 +42,6 @@
   border: none;
 }
 
-
-.ClearFix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-.ClearFix {
-  !display: inline-block;
-  !zoom: 1;
-  !display: block;
-}
-
 .TRContainer .MenuTDContainer {
   border: none;
   width: 162px;

@@ -36,12 +36,12 @@
 %>
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
-  <div class="AvatarInfo">
+  <div class="AvatarInfo ClearFix">
     <a class="ImageAvatar"><img src="$imageSource" /></a>
     <div><span>$lalbelFileName</span></span> <%= avatarAttachment.fileName %></div>
     <div><span>$labelFileType</span> <%= avatarAttachment.mimeType %></div>
     <div><span>$labelImageSize</span> <%= avatarAttachment.size %></div>
-    <div class="ClearLeft"><span></span></div>
+    
   </div>
   <div class="UIAction">
       <a onclick="$saveAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelSave</a>
