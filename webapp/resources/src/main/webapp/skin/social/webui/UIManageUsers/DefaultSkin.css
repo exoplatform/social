@@ -120,12 +120,22 @@
 	margin-right: 4px;
 }
 
+.UISocApplication .ContainerSpace .InviteTitle .Status {
+  color: black;
+  cursor: auto;
+}
+
 .UISocApplication .ContainerSpace .CommunityMane {
   color: #0d6e8f;
-  height: 20px;
+  height: 60px;
   font-size: 12px;
   font-weight: bold;
   margin: 0px 0px 5px 92px;
+}
+
+.UISocApplication .ContainerSpace .CommunityMane .Status {
+  color: #4D4D4D;
+  font-weight: normal;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .Delete{
@@ -156,6 +166,10 @@
   font-weight: normal;
   color: #115ead;
   line-height: 18px;
+}
+
+.UISocApplication .ContainerSpace .CommunityMane .Email a{
+  color: #115ead;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NonePositionAndEmail {

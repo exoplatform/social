@@ -49,9 +49,9 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
   events = {
-    @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.ConnectActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.ConfirmActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.IgnoreActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIDisplayProfileList.LoadMorePeopleActionListener.class)
   }
@@ -97,6 +97,7 @@ public class UIDisplayProfileList extends UIContainer {
   public UIDisplayProfileList() throws Exception {
 	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
 	  uiProfileUserSearch.setHasPeopleTab(false);
+	  uiProfileUserSearch.setHasConnectionLink(true);
     init();
   }
   
@@ -311,7 +312,7 @@ public class UIDisplayProfileList extends UIContainer {
    * information of user is invited.<br> - Checks the relationship to confirm that there have not
    * got connection yet.<br> - Saves the new connection.<br>
    */
-  public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class ConnectActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -338,7 +339,7 @@ public class UIDisplayProfileList extends UIContainer {
    * user who made request.<br> - Checks the relationship to confirm that there still got invited
    * connection.<br> - Makes and Save the new relationship.<br>
    */
-  public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class ConfirmActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -364,7 +365,7 @@ public class UIDisplayProfileList extends UIContainer {
    * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
    * Removes the current relation and save the new relation.<br>
    */
-  public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class IgnoreActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList   uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);

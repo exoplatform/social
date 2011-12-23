@@ -30,12 +30,16 @@
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.core.service.LinkProvider;
 
-  def inviteTitle = _ctx.appRes(uicomponent.getId() + ".label.Invite")
-  def denyTitle = _ctx.appRes(uicomponent.getId() + ".label.Deny")
-  def acceptTitle = _ctx.appRes(uicomponent.getId() + ".label.Accept")
-  def revokeTitle = _ctx.appRes(uicomponent.getId() + ".label.Cancel")
-  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.Delete")
-      
+  def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
+  def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
+  def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
+  def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
+  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+  def cancelRequestLabel = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
+  def connectionLabel = _ctx.appRes(uicomponent.getId() + ".label.Connection")
+  def invitationSentLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationSent")
+  def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
+  
   def peopleIdx = 0
   
   if (uicomponent.isLoadAtEnd()) {
@@ -51,10 +55,10 @@
 <div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
   
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-
+  
   <% if ((list == null) || (list.size() == 0)) {%>
     <div class="NoneContentSpace">
-      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%></p>
+      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%></p>
     </div>
   <%}%>
   <div class="ClearFix">
@@ -65,7 +69,7 @@
       def fullName = identity.profile.fullName;
       def email = identity.profile.email;
       if (!email) { email = ""; }
-      def addAction = uicomponent.event("AddContact", identity.getId());
+      def connectAction = uicomponent.event("Connect", identity.getId());
       def relationship = uicomponent.getRelationship(identity);
       def contactStatus = null;
       if (relationship != null) {
@@ -98,9 +102,6 @@
 
           <div class="CommunityMane">
                 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-                <%if (statusIconSrc != null) { %>
-                  <img src="$statusIconSrc" alt="" width='14px' height='14px' class="StatusIcon"/>
-                <%}%>
                 <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>
@@ -113,28 +114,31 @@
 	                <%  } %>
 	                <% if((email != null) && (email.length() > 0)) { %>
 	                <div class="Email">
-	                  ${email}
+	                <a href="mailto:${email}">${email}</a> 
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
 	                <%  } %>
                 <% } %>
                 
-                <ul class="InviteTitle">
+               
+          </div>
+					 <ul class="InviteTitle">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$denyTitle">$denyTitle</a></li>
+				      <li class="Status FL">$invitationReceivedLabel &nbsp;:&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" title="$confirmTitle">$confirmTitle</a></li>				      
 				      <li class="Line FL">&nbsp;</li>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" title="$acceptTitle">$acceptTitle</a></li>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$ignoreTitle">$ignoreTitle</a></li>
 				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$revokeTitle">$revokeTitle</a></li>
+				      <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
 				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$removeTitle">$removeTitle</a></li>
+				      <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
+				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$removeTitle">$removeTitle</a></li>
 				<% } else if (contactStatus == null) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="$addAction" title="$inviteTitle">$inviteTitle</a></li>
+				      <li class="FL"><a href="javascript:void(0)" onclick="$connectAction" title="$connectTitle">$connectTitle</a></li>
 				<% } %>
 				</ul>
-          </div>
-
     </div>
   <% } %>
   </div>

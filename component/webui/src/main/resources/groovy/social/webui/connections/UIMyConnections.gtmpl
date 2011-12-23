@@ -34,7 +34,7 @@
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
-  def deleteLabel = _ctx.appRes(uicomponent.getId() + ".label.Delete")
+  def removeConnectionLabel = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
       
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -53,7 +53,7 @@
         <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
 
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%>
             <% def peopleURL = Utils.getURI("people") %>
             </p>
          </div>
@@ -64,7 +64,7 @@
         <%  for(id in myRelation) {
             profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
             fullName = id.profile.fullName;
-            def actionLink = uicomponent.event("Remove",id.getId());
+            def removeConnectionAction = uicomponent.event("RemoveConnection",id.getId());
             position = id.profile.position;
             relationIdx += 1;
             if (!position) position = "";
@@ -97,7 +97,7 @@
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="Email">
-	                  ${email}
+	                  <a href="mailto:${email}">${email}</a>
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
@@ -106,7 +106,7 @@
 
 			<% if (isEditable) {%>
 			   <ul class="InviteTitle">
-		         <li class="FL"><a href="javascript:void(0)" onclick="$actionLink" title="$deleteLabel" class="Delete">$deleteLabel</a></li>
+		         <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" title="$removeConnectionLabel" class="Delete">$removeConnectionLabel</a></li>
 		       </ul>
 		    <% } %>
 			   

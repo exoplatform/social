@@ -34,7 +34,6 @@ public class StorageUtils {
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String gender = profileFilter.getGender().trim();
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
@@ -66,10 +65,6 @@ public class StorageUtils {
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
-    }
-
-    if (gender.length() != 0) {
-      whereExpression.and().equals(ProfileEntity.gender, gender);
     }
   }
 

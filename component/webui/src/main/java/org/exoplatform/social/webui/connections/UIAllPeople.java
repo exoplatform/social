@@ -20,7 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -48,9 +52,9 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
   events = {
-    @EventConfig(listeners = UIAllPeople.AddContactActionListener.class),
-    @EventConfig(listeners = UIAllPeople.AcceptContactActionListener.class),
-    @EventConfig(listeners = UIAllPeople.DenyContactActionListener.class),
+    @EventConfig(listeners = UIAllPeople.ConnectActionListener.class),
+    @EventConfig(listeners = UIAllPeople.ConfirmActionListener.class),
+    @EventConfig(listeners = UIAllPeople.IgnoreActionListener.class),
     @EventConfig(listeners = UIAllPeople.SearchActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIAllPeople.LoadMorePeopleActionListener.class)
   }
@@ -96,6 +100,7 @@ public class UIAllPeople extends UIContainer {
   public UIAllPeople() throws Exception {
 	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
 	  uiProfileUserSearch.setHasPeopleTab(true);
+	  uiProfileUserSearch.setHasConnectionLink(false);
     init();
   }
   
@@ -309,7 +314,7 @@ public class UIAllPeople extends UIContainer {
    * information of user is invited.<br> - Checks the relationship to confirm that there have not
    * got connection yet.<br> - Saves the new connection.<br>
    */
-  public static class AddContactActionListener extends EventListener<UIAllPeople> {
+  public static class ConnectActionListener extends EventListener<UIAllPeople> {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -336,7 +341,7 @@ public class UIAllPeople extends UIContainer {
    * user who made request.<br> - Checks the relationship to confirm that there still got invited
    * connection.<br> - Makes and Save the new relationship.<br>
    */
-  public static class AcceptContactActionListener extends EventListener<UIAllPeople> {
+  public static class ConfirmActionListener extends EventListener<UIAllPeople> {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -362,7 +367,7 @@ public class UIAllPeople extends UIContainer {
    * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
    * Removes the current relation and save the new relation.<br>
    */
-  public static class DenyContactActionListener extends EventListener<UIAllPeople> {
+  public static class IgnoreActionListener extends EventListener<UIAllPeople> {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople   uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -414,5 +419,4 @@ public class UIAllPeople extends UIContainer {
     }
     return Utils.getRelationshipManager().get(identity, Utils.getViewerIdentity());
   }
-
 }

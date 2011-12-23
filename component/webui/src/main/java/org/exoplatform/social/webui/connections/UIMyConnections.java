@@ -18,7 +18,6 @@ package org.exoplatform.social.webui.connections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -54,7 +53,7 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIMyConnections.gtmpl",
     events = {
-      @EventConfig(listeners = UIMyConnections.RemoveActionListener.class),
+      @EventConfig(listeners = UIMyConnections.RemoveConnectionActionListener.class),
       @EventConfig(listeners = UIMyConnections.SearchActionListener.class, phase = Phase.DECODE),
       @EventConfig(listeners = UIMyConnections.LoadMorePeopleActionListener.class)
     }
@@ -101,6 +100,7 @@ public class UIMyConnections extends UIContainer {
     } else {
       uiProfileUserSearch.setHasPeopleTab(false);
     }
+    uiProfileUserSearch.setHasConnectionLink(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -344,7 +344,7 @@ public class UIMyConnections extends UIContainer {
    *   - Removes the current relation.<br>
    *
    */
-  public static class RemoveActionListener extends EventListener<UIMyConnections> {
+  public static class RemoveConnectionActionListener extends EventListener<UIMyConnections> {
     @Override
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();

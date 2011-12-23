@@ -129,7 +129,6 @@ public class PeopleRestService implements ResourceContainer{
     
     filter.setName(name);
     filter.setCompany("");
-    filter.setGender("");
     filter.setPosition("");
     filter.setSkills("");
     filter.setExcludedIdentityList(excludedIdentityList);

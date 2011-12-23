@@ -602,7 +602,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName9");
     identities = relationshipStorage.getConnectionsByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
@@ -625,7 +624,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identities.size(), 8, identities.size());
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName6");
     identities = relationshipStorage.getIncomingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
@@ -646,7 +644,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be 8", 8, identities.size());
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName8");
     identities = relationshipStorage.getOutgoingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be 1", 1, identities.size());
@@ -666,7 +663,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName6");
     countIdentities = relationshipStorage.getIncomingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
@@ -686,7 +682,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName6");
     countIdentities = relationshipStorage.getConnectionsCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
@@ -706,7 +701,6 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be 8", 8, countIdentities);
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName8");
     countIdentities = relationshipStorage.getOutgoingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);

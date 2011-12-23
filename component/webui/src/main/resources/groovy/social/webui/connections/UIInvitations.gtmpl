@@ -41,8 +41,8 @@
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
   def invitationRelationIdx = 0
   
-  def denyLabel = _ctx.appRes(uicomponent.getId() + ".label.Deny")
-  def acceptLabel = _ctx.appRes(uicomponent.getId() + ".label.Accept")
+  def ignoreLabel = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
+  def confirmLabel = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
       
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -61,7 +61,7 @@
 
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%></p>
+            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%></p>
          </div>
       <%}%>
 
@@ -71,8 +71,8 @@
             profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
             fullName = identity.profile.fullName;
             position = identity.profile.position;
-            actionAccept = uicomponent.event("Accept",identity.getId());
-            actionDeny = uicomponent.event("Deny",identity.getId());
+            actionAccept = uicomponent.event("Confirm",identity.getId());
+            actionDeny = uicomponent.event("Ignore",identity.getId());
             invitationRelationIdx += 1;
             if (!position) position = "";
             def email="";
@@ -107,7 +107,7 @@
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="Email">
-	                  ${email}
+	                  <a href="mailto:${email}">${email}</a>
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
@@ -115,9 +115,9 @@
                 <% } %>
 			<% if (isEditable) {%>
 			<ul class="InviteTitle" ClearFix>
-			  <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$acceptLabel" onclick="$actionAccept" >$acceptLabel</a></li>
+			  <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$confirmLabel" onclick="$actionAccept" >$confirmLabel</a></li>
 			  <li class="Line FL">&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$denyLabel" onclick="$actionDeny" >$denyLabel</a></li>			  
+              <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$ignoreLabel" onclick="$actionDeny" >$ignoreLabel</a></li>			  
 			</ul>
 			<% } %>
 		</div>

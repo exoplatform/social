@@ -363,7 +363,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tearDownIdentityList.add(identity);
     final ProfileFilter filter = new ProfileFilter();
     filter.setPosition("developer");
-    filter.setGender("male");
     filter.setName("First");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, 1, false);
     assertEquals(1, result.size());
@@ -415,7 +414,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
 
     final ProfileFilter filter = new ProfileFilter();
     filter.setPosition("developer");
-    filter.setGender("male");
     filter.setName("FirstN");
     final List<Identity> result = identityStorage.getIdentitiesByProfileFilter(providerId, filter, 0, total, false);
     assertEquals(total, result.size());
@@ -462,7 +460,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(10, idsCount);
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName");
     
     idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
@@ -472,9 +469,8 @@ public class IdentityStorageTest extends AbstractCoreTest {
     idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
     assertEquals(10, idsCount);
     
-    pf.setGender("female");
-    idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
-    assertEquals(0, idsCount);
+//    idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
+//    assertEquals(0, idsCount);
   }
   
   /**
@@ -489,7 +485,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identities.size(), 10, identities.size());
     
     pf.setPosition("developer");
-    pf.setGender("male");
     pf.setName("FirstName");
     identities = identityStorage.getIdentitiesByProfileFilter("organization", pf, 0, 20, false);
     assertEquals("Number of identities must be " + identities.size(), 10, identities.size());

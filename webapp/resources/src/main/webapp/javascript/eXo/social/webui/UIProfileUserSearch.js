@@ -30,19 +30,12 @@
 	    this.defaultUserContact = params.defaultUserContact || null;
 	    this.defaultPos = params.defaultPos || null;
 	    this.defaultSkills = params.defaultSkills || null;
-	    this.defaultGender = params.defaultGender || null;
-	    this.defaultMale = params.defaultMale || null;
-	    this.defaultFeMale = params.defaultFeMale || null;
 	    
 	    var profileSearch = document.getElementById(params.uicomponentId);
 	    this.nameTextObj = DOMUtil.findDescendantById(profileSearch, 'Search');
 	    this.searchButton = DOMUtil.findDescendantById(profileSearch, 'SearchButton');
 	    this.posTextObj = DOMUtil.findDescendantById(profileSearch, 'position');
 	    this.skillTextObj = DOMUtil.findDescendantById(profileSearch, 'skills');
-	    this.genderSelObj = DOMUtil.findDescendantsByTagName(profileSearch, 'select');
-	    this.filterBlock = DOMUtil.findDescendantById(profileSearch, 'Filter');
-	    this.moreSearchEl = DOMUtil.findDescendantById(profileSearch, 'MoreSearch');
-	    this.hideMoreSearchEl = DOMUtil.findDescendantById(profileSearch,'HideMoreSearch');
 	    this.onLoad();
    }
     
@@ -54,14 +47,12 @@
         var searchEl = this.nameTextObj;
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
-        var genderEl = this.genderSelObj;
         
         searchEl.style.color = BLUR_COLOR;
         posEl.style.color = BLUR_COLOR;
         skillEl.style.color = BLUR_COLOR;
         
         this.initTextBox();
-        this.initToggleFilter();
     }
    
 	/**
@@ -72,11 +63,9 @@
         var nameEl = this.nameTextObj;
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
-        var genderEl = this.genderSelObj;
         var defaultUserContact = this.defaultUserContact;
 		var defaultPos = this.defaultPos;
 		var defaultSkills = this.defaultSkills;
-		var defaultGender = this.defaultGender;
 		var uiProfileUserSearchObj = eXo.social.webui.UIProfileUserSearch;
 		var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
         
@@ -156,11 +145,9 @@
 	    var nameEl = this.nameTextObj;
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
-        var genderEl = this.genderSelObj;
         var defaultUserContact = this.defaultUserContact;
 		var defaultPos = this.defaultPos;
 		var defaultSkills = this.defaultSkills;
-		var defaultGender = this.defaultGender;
 		var uiProfileUserSearchObj = eXo.social.webui.UIProfileUserSearch;
 		var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
         
@@ -178,29 +165,6 @@
 		}
 	 }
 	 
-	 /**
-	  *  Display or not for advance search block.
-	  *      
-	  *  @scope private.     
-	  */
-	 UIProfileUserSearch.prototype.initToggleFilter = function() {
-	     var filterBlock = this.filterBlock;
-	     var moreSearchEl = this.moreSearchEl;
-	     var hideMoreSearchEl = this.hideMoreSearchEl;
-	     //Util.hideElement(
-	     Util.addEventListener(moreSearchEl, 'click', function() {
-	       Util.showElement(filterBlock.id);
-	       Util.showElement(hideMoreSearchEl.id);
-	       Util.hideElement(moreSearchEl.id);
-	     }, false);
-	     
-	     Util.addEventListener(hideMoreSearchEl, 'click', function() {
-	       Util.hideElement(filterBlock.id);
-	       Util.hideElement(hideMoreSearchEl.id);
-	       Util.showElement(moreSearchEl.id);
-	     }, false);
-	 }
-		        
 	 window_.eXo = window_.eXo || {};
 	 window_.eXo.social = window_.eXo.social || {};
 	 window_.eXo.social.webui = window_.eXo.social.webui || {};

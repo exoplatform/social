@@ -408,26 +408,21 @@ public class IdentityManagerTest extends AbstractCoreTest {
     
     { // Test cases with gender of profile.
       pf.setPosition("");
-      pf.setGender("male");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
       assertEquals("The number of identities get by gender must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
-      pf.setGender("female");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities get by gender must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());
     }
     
     { // Other test cases
       pf.setName("n**me%");
       pf.setPosition("*%");
-      pf.setGender("male");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
       assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
       pf.setName("noname");
       pf.setPosition("*%");
-      pf.setGender("male");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
       assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());

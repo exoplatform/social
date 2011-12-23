@@ -51,7 +51,7 @@ import org.exoplatform.webui.event.Event.Phase;
 @ComponentConfig(
   template =  "classpath:groovy/social/webui/connections/UIPendingRelation.gtmpl",
   events = {
-    @EventConfig(listeners = UIPendingRelation.DenyContactActionListener.class),
+    @EventConfig(listeners = UIPendingRelation.IgnoreActionListener.class),
     @EventConfig(listeners = UIPendingRelation.SearchActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIPendingRelation.LoadMorePeopleActionListener.class)
   }
@@ -93,6 +93,7 @@ public class UIPendingRelation extends UIContainer {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setTypeOfRelation(PENDING_STATUS);
     uiProfileUserSearch.setHasPeopleTab(true);
+    uiProfileUserSearch.setHasConnectionLink(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -330,7 +331,7 @@ public class UIPendingRelation extends UIContainer {
    *   - Removes the current pending relation and save the new relation.<br>
    *
    */
-  public static class DenyContactActionListener extends EventListener<UIPendingRelation> {
+  public static class IgnoreActionListener extends EventListener<UIPendingRelation> {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPendingRelation = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);

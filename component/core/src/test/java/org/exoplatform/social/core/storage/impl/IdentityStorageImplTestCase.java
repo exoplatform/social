@@ -706,15 +706,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     ProfileFilter totota = createFilter('\u0000', "totota", "", "", null);
     ProfileFilter unknown = createFilter('\u0000', "unknown", "", "", null);
 
-    ProfileFilter male = createFilter('\u0000', "", "male", "", null);
-    ProfileFilter female = createFilter('\u0000', "", "female", "", null);
-
     ProfileFilter cadre = createFilter('\u0000', "", "", "cadre", null);
     ProfileFilter dev = createFilter('\u0000', "", "", "dev", null);
-
-    ProfileFilter tmale = createFilter('\u0000', "t", "male", "", null);
-    ProfileFilter tmaledev = createFilter('\u0000', "t", "male", "dev", null);
-    ProfileFilter tmalecadre = createFilter('\u0000', "t", "male", "cadre", null);
 
     ProfileFilter t2 = createFilter('\u0000', "t", "", "", itotota);
 
@@ -726,13 +719,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", toto));
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", totota));
     assertEquals(0, storage.getIdentitiesByProfileFilterCount("o", unknown));
-    assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", male));
-    assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", female));
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", cadre));
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", dev));
-    assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", tmale));
-    assertEquals(0, storage.getIdentitiesByProfileFilterCount("o", tmaledev));
-    assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", tmalecadre));
 
     assertEquals(2, storage.getIdentitiesByProfileFilterCount("o", t2));
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", filterB2Skills));
@@ -758,15 +746,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     ProfileFilter totota = createFilter('\u0000', "totota", "", "", null);
     ProfileFilter unknown = createFilter('\u0000', "unknown", "", "", null);
 
-    ProfileFilter male = createFilter('\u0000', "", "male", "", null);
-    ProfileFilter female = createFilter('\u0000', "", "female", "", null);
-
     ProfileFilter cadre = createFilter('\u0000', "", "", "cadre", null);
     ProfileFilter dev = createFilter('\u0000', "", "", "dev", null);
-
-    ProfileFilter tmale = createFilter('\u0000', "t", "male", "", null);
-    ProfileFilter tmaledev = createFilter('\u0000', "t", "male", "dev", null);
-    ProfileFilter tmalecadre = createFilter('\u0000', "t", "male", "cadre", null);
 
     ProfileFilter t2 = createFilter('\u0000', "t", "", "", itotota);
 
@@ -782,13 +763,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", toto, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByProfileFilter("o", totota, 0, 10, false).size());
     assertEquals(0, storage.getIdentitiesByProfileFilter("o", unknown, 0, 10, false).size());
-    assertEquals(2, storage.getIdentitiesByProfileFilter("o", male, 0, 10, false).size());
-    assertEquals(1, storage.getIdentitiesByProfileFilter("o", female, 0, 10, false).size());
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", cadre, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByProfileFilter("o", dev, 0, 10, false).size());
-    assertEquals(2, storage.getIdentitiesByProfileFilter("o", tmale, 0, 10, false).size());
-    assertEquals(0, storage.getIdentitiesByProfileFilter("o", tmaledev, 0, 10, false).size());
-    assertEquals(2, storage.getIdentitiesByProfileFilter("o", tmalecadre, 0, 10, false).size());
 
     assertEquals(2, storage.getIdentitiesByProfileFilter("o", t2, 0, 10, false).size());
     assertEquals(1, storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).size());
@@ -860,7 +836,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName(c);
     filter.setName(name);
-    filter.setGender(gender);
     filter.setPosition(position);
 
     if (exclude != null) {

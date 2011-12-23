@@ -53,8 +53,8 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIInvitations.gtmpl",
     events = {
-      @EventConfig(listeners = UIInvitations.AcceptActionListener.class),
-      @EventConfig(listeners = UIInvitations.DenyActionListener.class),
+      @EventConfig(listeners = UIInvitations.ConfirmActionListener.class),
+      @EventConfig(listeners = UIInvitations.IgnoreActionListener.class),
       @EventConfig(listeners = UIInvitations.SearchActionListener.class, phase = Phase.DECODE),
       @EventConfig(listeners = UIInvitations.LoadMorePeopleActionListener.class)
     }
@@ -93,6 +93,7 @@ public class UIInvitations extends UIContainer {
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setHasPeopleTab(true);
+    uiProfileUserSearch.setHasConnectionLink(false);
 	  addChild(uiProfileUserSearch);
     init();
   }
@@ -328,7 +329,7 @@ public class UIInvitations extends UIContainer {
    *   - Checks the relation to confirm that there still got invited relation.<br>
    *   - Makes and Save the new relation.<br>
    */
-  public static class AcceptActionListener extends EventListener<UIInvitations> {
+  public static class ConfirmActionListener extends EventListener<UIInvitations> {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations   uiInvitations = event.getSource();
@@ -356,7 +357,7 @@ public class UIInvitations extends UIContainer {
    *   - Removes the current relation and save the new relation.<br>
    *
    */
-  public static class DenyActionListener extends EventListener<UIInvitations> {
+  public static class IgnoreActionListener extends EventListener<UIInvitations> {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();

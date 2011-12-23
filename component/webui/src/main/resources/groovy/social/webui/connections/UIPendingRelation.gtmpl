@@ -32,7 +32,7 @@
   def isEditable = uicomponent.isEditable();
   def currIdentity = Utils.getOwnerIdentity();
   def pendingRelationIdx = 0;
-  def cancelLabel = _ctx.appRes(uicomponent.getId() + ".label.Cancel")
+  def pendingLabel = _ctx.appRes(uicomponent.getId() + ".label.Pending")
   
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -51,7 +51,7 @@
 
       <%if ((list == null) || (list.size() == 0)) {%>
 		<div class="NoneContentSpace">
-			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
+			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%>
 			<% def peopleURL = Utils.getURI("people") %>
 			</div>
 		</div>
@@ -60,7 +60,7 @@
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
-          def actionLink = uicomponent.event("DenyContact", identity.getId());
+          def ignoreAction = uicomponent.event("Ignore", identity.getId());
           def position = identity.profile.position;
           pendingRelationIdx += 1;
           if (!position) position = "";
@@ -94,7 +94,7 @@
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="Email">
-	                  ${email}
+	                  <a href="mailto:${email}">${email}</a>
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
@@ -102,7 +102,7 @@
                 <% } %>
 			 <% if (isEditable) {%>
 			 <ul class="InviteTitle">
-		       <li class="FL"><a href="javascript:void(0)" class="WaitingIcon" title="$cancelLabel" onclick="$actionLink" >$cancelLabel</a></li>
+		       <li class="FL"><a href="javascript:void(0)" class="WaitingIcon" title="$pendingLabel" onclick="$ignoreAction" >$pendingLabel</a></li>
 		     </ul>
 			<% } %>
 			</div>
