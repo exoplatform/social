@@ -52,7 +52,10 @@ public abstract class ActivityListEntity {
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
-  
+
+  /**
+   * All the years containing activities in the list.
+   */
   @OneToMany
   public abstract Map<String, ActivityYearEntity> getYears();
 

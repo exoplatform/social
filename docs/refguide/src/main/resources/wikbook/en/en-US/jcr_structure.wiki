@@ -18,18 +18,6 @@ The <provider_name> parameter in the _{noformat}soc:<provider_name>{noformat}_ n
 
 The _{noformat}soc:<provider_name>{noformat}_ node of the _{noformat}soc:providerdefinition{noformat}_ type has the _{noformat}soc:<identityRemoteId>{noformat}_ child nodes that have the _{noformat}soc:identitydefinition{noformat}_ type.
 
-The _{noformat}soc:profiledefinition{noformat}_ node type contains the _{noformat}soc:avatar{noformat}_ child node of the nt:file type and other child nodes of the _{noformat}soc:profilexp{noformat}_ type.
-
-The _{noformat}soc:profiledefinition{noformat}_ node type has the following properties:
-|| Property Name || Required Type || Multiple|| Description ||
-|soc:parentId|String|false|The identity Id of the profile. |
-|void-Url|undefined | true| The URL to access the profile of an identity.|
-|void-email|undefined | true| The email of an identity in the profile. |
-|void-firstName|undefined |true |The first name of an identity in his profile. |
-|void-fullName|undefined | true| The full name of an identity in his profile.|
-|void-lastName|undefined | true|The last name of an identity in his profile. |
-|void-username|undefined | true| The username of an identity in his profile. |
-
 h1. Identity  {anchor:id=SOCref.Social_JCR_Structure.IdentityEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}
 
@@ -38,6 +26,15 @@ h1. Relationship  {anchor:id=SOCref.Social_JCR_Structure.RelationshipEntity}
 
 h1. Profile  {anchor:id=SOCref.Social_JCR_Structure.ProfileEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ProfileEntity.wiki"}
+
+Some residual properties can be set and will be used by eXo Social :
+|| Property Name || Required Type || Multiple|| Description ||
+|void-Url|undefined | true| The URL to access the profile of an identity.|
+|void-email|undefined | true| The email of an identity in the profile. |
+|void-firstName|undefined |true |The first name of an identity in his profile. |
+|void-fullName|undefined | true| The full name of an identity in his profile.|
+|void-lastName|undefined | true|The last name of an identity in his profile. |
+|void-username|undefined | true| The username of an identity in his profile. |
 
 h1. Profile experience  {anchor:id=SOCref.Social_JCR_Structure.ProfileXpEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ProfileXpEntity.wiki"}
@@ -58,7 +55,10 @@ h1. Activity {anchor:id=SOCref.Social_JCR_Structure.ActivityEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityEntity.wiki"}
 
 h1. Activity parameters {anchor:id=SOCref.Social_JCR_Structure.ActivityParametersEntity}
-{include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ActivityParameters.wiki"}
+
+The _{noformat}soc:activityparam{noformat}_ node type has the following property:
+|| Property Name || Required Type || Multiple|| Description ||
+|*|String|false|A map of key-values. |
 
 h1. Space list  {anchor:id=SOCref.Social_JCR_Structure.SpaceListEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.SpaceListEntity.wiki"}

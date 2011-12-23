@@ -12,7 +12,7 @@ http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}$
 
 *Supported Format*: ${verb.sibling("@Produces").attribute("flat:value")}
 </#if>
-<#if verb.doc("authentication") != "">
+<#if verb.doc("flat:authentication") != "">
 
 *Requires Authentication*: true
 </#if>

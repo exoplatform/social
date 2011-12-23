@@ -47,6 +47,9 @@ public abstract class ProfileEntity {
   @Id
   public abstract String getId();
 
+  /**
+   * The users's avatar.
+   */
   @MappedBy("soc:avatar")
   @OneToOne
   @Owner
@@ -58,6 +61,10 @@ public abstract class ProfileEntity {
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
 
+  /**
+   * The parent id is the identity id. It is used for queries.
+   * @return
+   */
   // TODO : find better
   @Property(name = "soc:parentId")
   public abstract String getParentId();
@@ -65,6 +72,9 @@ public abstract class ProfileEntity {
   public static final PropertyLiteralExpression<String> parentId =
       new PropertyLiteralExpression<String>(String.class, "soc:parentId");
 
+  /**
+   * All the experiences stored in the profile.
+   */
   @OneToMany
   @Owner
   public abstract Map<String, ProfileXpEntity> getXps();

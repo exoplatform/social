@@ -56,6 +56,9 @@ public abstract class ActivityEntity implements NamedEntity {
   @ManyToOne
   public abstract ActivityEntity getParentActivity();
 
+  /**
+   * All comments of the identity. The child is the posted time stamp.
+   */
   @Owner
   @OneToMany
   public abstract List<ActivityEntity> getComments();
@@ -176,6 +179,10 @@ public abstract class ActivityEntity implements NamedEntity {
   public static final PropertyLiteralExpression<Long> postedTime =
       new PropertyLiteralExpression<Long>(Long.class, "soc:postedTime");
 
+  /**
+   * The activity parameters.
+   * @return
+   */
   @MappedBy("soc:params")
   @OneToOne
   @Owner

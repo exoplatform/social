@@ -1,18 +1,37 @@
+<#list @PrimaryType.children("@Property", "@ManyToOne") as property>
+<#if property_index == 0>
 The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following properties:
 || Property Name || Required Type ||Mutiple|| Description ||
-<#list @PrimaryType.children("@Property") as property>
-|${property.attribute("name")}|${property.type.name?replace("[]", "")}|${property.type.isArray}|${property.doc()}|
-</#list>
-<#list @PrimaryType.children("@ManyToOne") as ref>
-<#if ref.sibling("@MappedBy")??>
-|${ref.sibling("@MappedBy").attribute("value")}|Reference|${ref.type.isArray}|${ref.doc()}|
+</#if>
+<#if property.name == "Property">
+|${property.attribute("name")}|${property.type.name}|${property.type.isArray}|${property.doc()}|
+</#if>
+<#if property.name == "ManyToOne">
+<#if property.sibling("@MappedBy")??>
+|${property.sibling("@MappedBy").attribute("value")}|Reference|${property.type.isArray}|${property.doc()}|
+</#if>
 </#if>
 </#list>
 
-And the _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following child nodes:
-|| Child Nodes || Default Primary Type || Description ||
 <#list @PrimaryType.children("@OneToOne", "@OneToMany") as child>
+<#if child.doc() != "">
+<#if child_index == 0>
+The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following child nodes:
+|| Child Nodes || Default Primary Type || Description ||
+</#if>
 <#if child.sibling("@MappedBy")??>
-|${child.sibling("@MappedBy").attribute("value")}|<#if child.type.annotation("@PrimaryType")??>${child.type.annotation("@PrimaryType").attribute("name")}</#if>|${child.doc()}|
+<#assign childName = child.sibling("@MappedBy").attribute("value")>
+<#else>
+<#assign childName = "_childName_">
+</#if>
+<#if child.type.fqn == "java.util.Map">
+<#assign p = child.type.parameter[1]>
+|${childName}|<#if p.annotation("@PrimaryType")??>${p.annotation("@PrimaryType").attribute("name")}</#if>|${child.doc()}|
+<#elseif child.type.fqn == "java.util.List">
+<#assign p = child.type.parameter[0]>
+|${childName}|<#if p.annotation("@PrimaryType")??>${p.annotation("@PrimaryType").attribute("name")}</#if>|${child.doc()}|
+<#else>
+|${childName}|<#if child.type.annotation("@PrimaryType")??>${child.type.annotation("@PrimaryType").attribute("name")}</#if>|${child.doc()}|
+</#if>
 </#if>
 </#list>
