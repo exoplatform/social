@@ -19,6 +19,7 @@
 <%
   import org.exoplatform.web.application.JavascriptManager;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
 
