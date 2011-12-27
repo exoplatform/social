@@ -24,15 +24,6 @@
   import org.exoplatform.webui.form.UIFormStringInput;
   import org.exoplatform.social.plugin.link.UILinkUtil;
 
-  def removeAllNewLines(def str) {
-    if (str) {
-      str = str.replaceAll("\r\n|\n\r|\n|\r", "");
-      return str.replaceAll("'", " ");
-    } else {
-      return "";
-    }
-  }
-
   def uicomponentId = uicomponent.id;
   def labelAttachLink = _ctx.appRes("UILinkComposerPlugin.label.Attach_Link");
   def labelAttach = _ctx.appRes("UILinkComposerPlugin.label.Attach");
@@ -54,14 +45,14 @@
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
   if (linkShare) {
-    link = removeAllNewLines(linkShare.getLink());
+    link = linkShare.getLink().replaceAll("'", "&#039;");
     images = linkShare.getImages();
     def image;
     if (images.size() > 0) {
       image = images.get(0);
     }
-    title = removeAllNewLines(linkShare.getTitle());
-    description = removeAllNewLines(linkShare.getDescription());
+    title = linkShare.getTitle().replaceAll("'", "&#039;");
+    description = linkShare.getDescription().replaceAll("'", "&#039;");
     linkData = "{"+
                   "link: '$link',"+
                   "image: '$image',"+
