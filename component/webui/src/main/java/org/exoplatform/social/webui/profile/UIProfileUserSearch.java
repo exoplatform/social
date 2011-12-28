@@ -338,21 +338,24 @@ public class UIProfileUserSearch extends UIForm {
   }
 
   protected void resetUIComponentValues() {
-	UIFormStringInput uiName = getChildById(SEARCH);
-	UIFormStringInput uiPos = getChildById(Profile.POSITION);
-	UIFormStringInput uiSkills = getChildById(Profile.EXPERIENCES_SKILLS);
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
 
-	//
-	ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-	
-	String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
-	String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
-	String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
-
-	//
-	uiName.setValue(defaultName);
-	uiPos.setValue(defaultPos);
-	uiSkills.setValue(defaultSkills);
+    if(profileFilter != null && profileFilter.getName() !=null && profileFilter.getName().equals("")){
+      UIFormStringInput uiName = getChildById(SEARCH);
+      String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+      uiName.setValue(defaultName);
+    }
+    if(profileFilter != null && profileFilter.getPosition() !=null && profileFilter.getPosition().equals("")){
+      UIFormStringInput uiPos = getChildById(Profile.POSITION);
+      String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+      uiPos.setValue(defaultPos);
+    }
+    
+    if(profileFilter != null && profileFilter.getSkills() !=null && profileFilter.getSkills().equals("")){
+      UIFormStringInput uiSkills = getChildById(Profile.EXPERIENCES_SKILLS);
+      String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+      uiSkills.setValue(defaultSkills);
+    }
   }
   
   /**

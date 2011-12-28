@@ -35,6 +35,9 @@
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
   def removeConnectionLabel = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+  def connectionLabel = _ctx.appRes(uicomponent.getId() + ".label.Connection")
+  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+  
       
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -53,9 +56,7 @@
         <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
 
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%>
             <% def peopleURL = Utils.getURI("people") %>
-            </p>
          </div>
       <%}%>
       
@@ -68,7 +69,8 @@
             position = id.profile.position;
             relationIdx += 1;
             if (!position) position = "";
-            def email="";
+            def email= id.profile.email;
+            if (!email) email = "";
             String imageSource = id.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
             if (relationIdx % 2 == 0) { %>
@@ -82,9 +84,6 @@
             </a>
             <div class="CommunityMane">
               <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-              <% if (Utils.isOwner()) { %>
-                <img src="$LinkProvider.HAS_CONNECTION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
-              <% } %>
               <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>
@@ -103,14 +102,13 @@
 	                <span class="NoneEmail"></span>
 	                <%  } %>
                 <% } %>
-
-			<% if (isEditable) {%>
-			   <ul class="InviteTitle">
-		         <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" title="$removeConnectionLabel" class="Delete">$removeConnectionLabel</a></li>
-		       </ul>
-		    <% } %>
-			   
 	         </div>
+        <% if (isEditable) {%>
+         <ul class="InviteTitle">
+              <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",id.getId())%>" title="$removeTitle">$removeTitle</a></li>
+         </ul>
+        <% } %>	         
 	   </div>
     <%  } %>
     

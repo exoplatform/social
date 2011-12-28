@@ -48,9 +48,15 @@
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
         
-        searchEl.style.color = BLUR_COLOR;
-        posEl.style.color = BLUR_COLOR;
-        skillEl.style.color = BLUR_COLOR;
+        if( searchEl.value === this.defaultUserContact){
+        	searchEl.style.color = BLUR_COLOR;
+        }
+        if( posEl.value === this.defaultPos){
+        	posEl.style.color = BLUR_COLOR;
+        }
+        if( skillEl.value === this.defaultSkills){
+        	skillEl.style.color = BLUR_COLOR;
+        }
         
         this.initTextBox();
     }

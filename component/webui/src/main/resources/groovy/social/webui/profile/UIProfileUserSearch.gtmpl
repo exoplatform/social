@@ -63,10 +63,9 @@
     jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
 	
 	
-	  def labelAllPeople = _ctx.appRes("${uicomponentId}.label.AllPeople")
-    def labelNetwork = _ctx.appRes("${uicomponentId}.label.Network")
-    def labelReceivedInvitations = _ctx.appRes("${uicomponentId}.label.ReceivedInvitations")
-    def labelPendingRequests = _ctx.appRes("${uicomponentId}.label.PendingRequests")
+	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
+    def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
+    def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
     def portalURI = Utils.getURI("");
     def ownerIdentity = Utils.getOwnerIdentity();
     def ownerId = ownerIdentity.getRemoteId();
@@ -93,7 +92,9 @@
  
     def searchAction = uicomponent.event('Search');
     def peopleFoundLabel = uicomponent.getPeopleFoundLabel();
-	
+	  
+	  uicomponent.resetUIComponentValues();
+	  
 	  def myConnectionsLink = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
   
     if (!Utils.isOwner()) {
@@ -166,13 +167,13 @@
     
      <% if (uicomponent.isHasPeopleTab()) {%>
      <ul class="MenuSpace ClearFix">
-		  <li class="FL"><a href="$allPeopleURL" class="$allPeopleDisplayModeStyle">$labelAllPeople</a></li>
+		  <li class="FL"><a href="$allPeopleURL" class="$allPeopleDisplayModeStyle">$labelEveryone</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$networkURL" class="$networkDisplayModeStyle">$labelNetwork</a></li>
+		  <li class="FL"><a href="$networkURL" class="$networkDisplayModeStyle">$myConnectionsLabel</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationsDisplayModeStyle">$labelReceivedInvitations</a></li>
+		  <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationsDisplayModeStyle">$labelRequestsReceived</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$sentInvitationURL" class="$pendingRequestsDisplayModeStyle">$labelPendingRequests</a></li>
+		  <li class="FL"><a href="$sentInvitationURL" class="$pendingRequestsDisplayModeStyle">$labelRequestsSent</a></li>
      </ul>
     <% } %>
  

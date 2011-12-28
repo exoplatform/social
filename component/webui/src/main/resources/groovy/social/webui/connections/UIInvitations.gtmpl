@@ -44,6 +44,8 @@
   def ignoreLabel = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
   def confirmLabel = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
       
+  def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
+   
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
   }
@@ -60,9 +62,8 @@
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
-        <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%></p>
-         </div>
+          <div class="NoneContentSpace">
+          </div>
       <%}%>
 
     <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
@@ -71,12 +72,12 @@
             profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
             fullName = identity.profile.fullName;
             position = identity.profile.position;
+            def email= identity.profile.email;
+            if (!email) email = "";
             actionAccept = uicomponent.event("Confirm",identity.getId());
             actionDeny = uicomponent.event("Ignore",identity.getId());
             invitationRelationIdx += 1;
             if (!position) position = "";
-            def email="";
-
             String imageSource = identity.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
    %>
@@ -92,9 +93,7 @@
         </a>
 
 		<div class="CommunityMane ClearFix">
-			<a class="CommunityName" href="${profileURL}">${fullName}</a>
-			<img src="$LinkProvider.WAITING_CONFIRMATION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
-			
+			<a class="CommunityName" href="${profileURL}">${fullName}</a>			
                 <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>
@@ -113,15 +112,15 @@
 	                <span class="NoneEmail"></span>
 	                <%  } %>
                 <% } %>
-			<% if (isEditable) {%>
-			<ul class="InviteTitle" ClearFix>
-			  <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$confirmLabel" onclick="$actionAccept" >$confirmLabel</a></li>
-			  <li class="Line FL">&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" class="CommunityAction" title="$ignoreLabel" onclick="$actionDeny" >$ignoreLabel</a></li>			  
-			</ul>
-			<% } %>
 		</div>
-
+      <% if (isEditable) {%>
+      <ul class="InviteTitle" ClearFix>
+              <li class="Status FL">$invitationReceivedLabel &nbsp;:&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" title="$confirmLabel">$confirmLabel</a></li>             
+              <li class="Line FL">&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$ignoreLabel">$ignoreLabel</a></li>    
+      </ul>
+      <% } %>
     </div>
   <% } %> 
   </div>
