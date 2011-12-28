@@ -113,6 +113,11 @@ ul {
     float: right;
     margin: 0 4px;
 }
+
+.UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock{
+       background: #eee;
+}
+
 /***************************************************************************/
 .UISocApplication .CommonTitleBar {
     color: #4d4d4d;
