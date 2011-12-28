@@ -1,17 +1,18 @@
 h3. version/latest  {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.VersionResources.Versionlastest}
 h4. GET version/latest.format    {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get}
 
-*Description*: Gets the latest eXo Social REST services version. This version number should be used as the latest and stable version that is considered to include all new features and updates of eXo Social REST services.
+*Description*: Gets the latest eXo Social REST API version. This version number should be used as the latest and stable version that is considered to include all new features and updates of eXo Social REST services.
 
-*Url*: 
+*Url*:
 
 {code}http://{domain_name}/{rest_context_name}/api/social/version/latest.format{code}
 
 For example:
-*[http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json]
-*[http://localhost:8080/rest-socialdemo/api/social/version/latest.json]
+* [http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json]
 
-*Supported Format*: JSON
+* [http://localhost:8080/rest-socialdemo/api/social/version/latest.json]
+
+*Supported Format*: json
 
 *Requires Authentication*: false
 
@@ -30,7 +31,7 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
 *Response*:
 
 {code}
-{"version": "v1-alpha1"}
+{"version": "v1-alpha3"}
 {code}
 
 * *XML*
@@ -45,22 +46,23 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
 
 {code:xml}
 <?xml version="1.0" encoding="UTF-8"?>
-<version>v1-alpha1</version>
+<version>v1-alpha3</version>
 {code}
 
 h3. version/supported {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionsupport}
 
 h4. GET version/supported.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get}
 
-*Description*: Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST have the latest to oldest order. For example, {noformat}[v2, v1, v1-beta1]{noformat}, but not {noformat}[v1, v2, v1-beta1]{noformat}.
+*Description*: Gets eXo Social REST API versions that are supported. This is for backward compatibility. If a client application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST have the latest to oldest order. For example, {noformat}[v2-alpha3, v1]{noformat}, but not {noformat}[v1, v2-alpha3]{noformat}.
 
 *Url*: {code}http://{domain_name}/{rest_context_name}/api/social/version/supported.format{code}
 
 For example:
 * [http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json]
+
 * [http://localhost:8080/rest-socialdemo/api/social/version/supported.json]
 
-*Supported Format*: JSON, XML
+*Supported Format*: json, xml
 
 *Requires Authentication*: false
 
@@ -78,7 +80,7 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.js
 *Response*:
 
 {code:json}
-{"versions": ["v1-alpha1"]}
+{"versions": ["v1-alpha3"]}
 {code}
 
 * *XML*
@@ -94,6 +96,6 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xm
 {code:xml}
 <?xml version="1.0" encoding="UTF-8"?>
 <versions>
-  <version>v1-alpha1</version>
+  <version>v1-alpha3</version>
 </versions>
 {code}

@@ -22,22 +22,22 @@ The JSON support is mandatory. The other format SHOULD be supported too (XML, RS
 
 The _{noformat}rest_context_name{noformat}_ and _{noformat}portal_container_name{noformat}_ parameters are used as follows:
 
-* On eXo Social standalone: 
-** _{noformat}rest_context_name{noformat}_: _{noformat}rest-socialdemo{noformat}_; 
+* On eXo Social standalone:
+** _{noformat}rest_context_name{noformat}_: _{noformat}rest-socialdemo{noformat}_;
 ** _{noformat}portal_container_name{noformat}_: _{noformat}socialdemo{noformat}_;
 
 * On eXo Platform:
 ** _{noformat}rest_context_name{noformat}_: _rest_;
 ** _{noformat}portal_container_name{noformat}_: _portal_;
 
-h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
-{include:document="RestService_v1_alpha1/Activity_Resources_v1_alpha1.wiki"}
+h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResources}
+{include:document="RestService_v1_alpha3/Activity_Resources_v1_alpha3.wiki"}
 
-h1. Activity Stream Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityStreamResources}
-{include:document="RestService_v1_alpha1/Activity_Stream_Resources_v1_alpha1.wiki"}
+h1. Activity Stream Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityStreamResources}
+{include:document="RestService_v1_alpha3/Activity_Stream_Resources_v1_alpha3.wiki"}
 
-h1. Identity Resources {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.IdentityResources}
-{include:document="RestService_v1_alpha1/Identity_Resources_v1_alpha1.wiki"}
+h1. Identity Resources {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.IdentityResources}
+{include:document="RestService_v1_alpha3/Identity_Resources_v1_alpha3.wiki"}
 
-h1. Version Resources   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources}
-{include:document="RestService_v1_alpha1/Version_Resources_v1_alpha1.wiki"}
+h1. Version Resources   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources}
+{include:document="RestService_v1_alpha3/Version_Resources_v1_alpha3.wiki"}
