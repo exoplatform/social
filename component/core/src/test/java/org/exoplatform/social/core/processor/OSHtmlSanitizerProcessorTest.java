@@ -47,7 +47,7 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
 
   public void testProcessActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    String sample = "this is a <b> tag to keep</b>";
+    String sample = "this is a <strong> tag to keep</strong>";
     activity.setTitle(sample);
     activity.setBody(sample);
     processor.processActivity(activity);
@@ -64,10 +64,10 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     assertEquals("text <a href=\"#\">bar</a> zed", activity.getTitle());
 
     // only with open tag
-    sample = "<b> only open!!!";
+    sample = "<strong> only open!!!";
     activity.setTitle(sample);
     processor.processActivity(activity);
-    assertEquals("<b> only open!!!</b>", activity.getTitle());
+    assertEquals("<strong> only open!!!</strong>", activity.getTitle());
 
     // self closing tags
     sample = "<script href='#' />bar</a>";

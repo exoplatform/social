@@ -157,7 +157,7 @@
     				<%=uicomponent.stringToDate(startDate)%>
     			<%}%>
     			
-          <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br />
+          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong><br />
           
           <%
           	if (startDate != null) {
@@ -184,7 +184,7 @@
     <% } %>
     <%if (pastExp.size() != 0) { %>
     <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
-    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><b><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></b></div>
+    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></strong></div>
     <%  pastExp.each {
           def company = it.get(Profile.EXPERIENCES_COMPANY);
           def position = it.get(Profile.EXPERIENCES_POSITION);
@@ -201,7 +201,7 @@
     				<%=uicomponent.stringToDate(startDate)%>
     			<%}%>
         	
-          <b>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</b><br/>
+          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong><br/>
           
           <%
           	if (startDate != null) {

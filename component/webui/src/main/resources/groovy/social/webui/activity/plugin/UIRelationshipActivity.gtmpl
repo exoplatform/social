@@ -186,7 +186,7 @@
     				def spaceName = spaceSource.displayName;
     				activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
           %>
-          <span class="DateTime">$activityPostedTimeInSpace <b><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></b> *</span>
+          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
         <%} else {%>
           <span class="DateTime">$activityPostedTime *</span>
         <% } %>
