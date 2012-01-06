@@ -44,6 +44,20 @@ eXo.social.Util.require = function(clazz) {
 //importJS("eXo.social.Locale")
 
 /**
+ * Checks if the passed argument is an array.
+ *
+ * @param obj
+ * @return true or false
+ */
+ eXo.social.Util.isArray = function(obj) {
+  if (Array.isArray) {
+    return Array.isArray(obj);
+  } else {
+    return (obj.constructor.toString().indexOf("Array") !== -1);
+  }
+ }
+
+/**
  * gets element by id
  * @static
  */
@@ -268,45 +282,50 @@ eXo.social.Util.getMimeType = function(link) {
  * Cross browser add event listener method. For 'evt' pass a string value with the leading "on" omitted
  * e.g. Util.addEventListener(window,'load',myFunctionNameWithoutParenthesis,false);
  * @param	obj object to attach event
- * @param	evt event name: click, mouseover, focus, blur...
+ * @param	evts event name or array of event names: click, mouseover, focus, blur...
  * @param	func	function name
  * @param	useCapture	true or false; if false => use bubbling
  * @static
  * @see		http://phrogz.net/JS/AttachEvent_js.txt
  */
-eXo.social.Util.addEventListener = function(obj, evt, fnc, useCapture) {
-  if (obj === null || evt === null || fnc ===  null || useCapture === null) {
-    debug.warn('all params is required from Util.addEventListener!');
-    return;
+eXo.social.Util.addEventListener = function(obj, evts, fnc, useCapture) {
+	if (obj === null || evt === null || fnc ===  null || useCapture === null) {
+		alert('all params are required from Util.addEventListener!');
+		return;
+	}
+  if (!eXo.social.Util.isArray(evts)) {
+    evts = [evts];
   }
-  if (!useCapture) useCapture = false;
-  if (obj.addEventListener){
-    obj.addEventListener(evt, fnc, useCapture);
-  } else if (obj.attachEvent) {
-    obj.attachEvent('on'+evt, function(evt) {
-      fnc.call(obj, evt);
-    });
-  } else{
-    myAttachEvent(obj, evt, fnc);
-    obj['on'+evt] = function() { myFireEvent(obj,evt) };
-  }
+  for (var i = 0, len = evts.length; i < len; i++) {
+    var evt = evts[i];
+    if (!useCapture) useCapture = false;
+    if (obj.addEventListener){
+      obj.addEventListener(evt, fnc, useCapture);
+    } else if (obj.attachEvent) {
+      obj.attachEvent('on'+evt, function(evt) {
+        fnc.call(obj, evt);
+      });
+    } else{
+      myAttachEvent(obj, evt, fnc);
+      obj['on'+evt] = function() { myFireEvent(obj,evt) };
+    }
 
-  //The following are for browsers like NS4 or IE5Mac which don't support either
-  //attachEvent or addEventListener
-  var myAttachEvent = function(obj, evt, fnc) {
-    if (!obj.myEvents) obj.myEvents={};
-    if (!obj.myEvents[evt]) obj.myEvents[evt]=[];
-    var evts = obj.myEvents[evt];
-    evts[evts.length] = fnc;
-  }
+    //The following are for browsers like NS4 or IE5Mac which don't support either
+    //attachEvent or addEventListener
+    var myAttachEvent = function(obj, evt, fnc) {
+      if (!obj.myEvents) obj.myEvents={};
+      if (!obj.myEvents[evt]) obj.myEvents[evt]=[];
+      var evts = obj.myEvents[evt];
+      evts[evts.length] = fnc;
+    }
 
-  var myFireEvent = function(obj, evt) {
-    if (!obj || !obj.myEvents || !obj.myEvents[evt]) return;
-    var evts = obj.myEvents[evt];
-    for (var i=0,len=evts.length;i<len;i++) evts[i]();
+    var myFireEvent = function(obj, evt) {
+      if (!obj || !obj.myEvents || !obj.myEvents[evt]) return;
+      var evts = obj.myEvents[evt];
+      for (var i=0,len=evts.length;i<len;i++) evts[i]();
+    }
   }
 }
-
 /**
  * removes event listener.
  * @param	obj element

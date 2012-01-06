@@ -139,13 +139,14 @@
     }
 
     if (this.deleteActivityButtonEl !== null) {
-      Util.addEventListener(this.contentBoxEl, 'mouseover', function(evt) {
+      Util.addEventListener(this.contentBoxEl, ['mouseover', 'focus'], function(evt) {
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxHilight';
       }, false);
 
-      Util.addEventListener(this.contentBoxEl, 'mouseout', function(evt) {
+      Util.addEventListener(this.contentBoxEl, ['mouseout', 'blur'], function(evt) {
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxNormal';
       }, false);
+
     }
 
   }

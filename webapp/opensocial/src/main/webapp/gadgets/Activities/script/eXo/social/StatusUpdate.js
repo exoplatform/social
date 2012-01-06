@@ -426,21 +426,21 @@ eXo.social.StatusUpdate.prototype.setActionContentButton = function(activityId) 
   function toggle(activityId) {
     var el = Util.getElementById('ActionContentButton' + activityId);
     var menuItemContainer = Util.getElementById('MenuItemContainer' + activityId);
-    el.onclick = function() {
+    Util.addEventListener(el, ['click', 'mouseover', 'focus'], function() {
       display(activityId);
-    }
-    el.onmouseover = function() {
-      display(activityId);
-    }
-    el.onmouseout = function() {
+    }, false);
+
+    Util.addEventListener(el, ['mouseout', 'blur'], function() {
       hide(activityId);
-    }
-    menuItemContainer.onmouseover = function() {
+    }, false);
+
+    Util.addEventListener(menuItemContainer, ["mouseover", "focus"], function() {
       display(activityId);
-    }
-    menuItemContainer.onmouseout = function() {
+    }, false);
+
+    Util.addEventListener(menuItemContainer, ["mouseout", "blur"], function() {
       hide(activityId);
-    }
+    }, false);
   }
   toggle(activityId);
 }

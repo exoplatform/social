@@ -84,17 +84,20 @@ UIAutoSuggestControl.prototype.createDropDown = function () {
     
     //when the user clicks on the a suggestion, get the text (innerHTML)
     //and place it into a textbox
-    this.layer.onmousedown = 
-    this.layer.onmouseup = 
+    this.layer.onkeydown =
+    this.layer.onmousedown =
+    this.layer.onkeyup =
+    this.layer.onmouseup =
+    this.layer.onfocus =
     this.layer.onmouseover = function (oEvent) {
         oEvent = oEvent || window.event;
         oTarget = oEvent.target || oEvent.srcElement;
 
-        if (oEvent.type == "mousedown") {
+        if (oEvent.type == "mousedown" || oEvent.type == "keydown") {
             oThis.textbox.value = oTarget.firstChild.nodeValue;
             oThis.hideSuggestions();
             oThis.provider.submitSearchForm(oThis.textbox);
-        } else if (oEvent.type == "mouseover") {
+        } else if (oEvent.type == "mouseover" || oEvent.type == "focus") {
             oThis.highlightSuggestion(oTarget);
         } else {
             oThis.textbox.focus();
