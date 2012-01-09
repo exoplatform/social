@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.common.jcr;
 
-import javax.jcr.Node;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

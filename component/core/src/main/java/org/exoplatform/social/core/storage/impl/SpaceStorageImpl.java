@@ -17,7 +17,6 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import org.chromattic.api.ChromatticSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,10 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
-import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -38,7 +37,6 @@ import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;

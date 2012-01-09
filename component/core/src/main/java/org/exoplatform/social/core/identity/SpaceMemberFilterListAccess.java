@@ -24,7 +24,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.api.RelationshipStorage;
 
 /**
  * ListAccess is used in loading connection with the input providerId, existing Identity and ProfileFilter, .

@@ -17,31 +17,30 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
-import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
-import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
-import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
-import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
 import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
+import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ProfileData;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityCompositeKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
+import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
+import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 /**
  * Cache support for IdentityStorage.

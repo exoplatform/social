@@ -17,8 +17,6 @@
 
 package org.exoplatform.social.extras.migration.plugin;
 
-import org.exoplatform.commons.version.util.VersionComparator;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$

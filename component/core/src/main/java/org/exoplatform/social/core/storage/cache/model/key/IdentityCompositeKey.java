@@ -17,8 +17,6 @@
 
 package org.exoplatform.social.core.storage.cache.model.key;
 
-import java.io.Serializable;
-
 /**
  * Immutable identity composite key.
  * This key is used to index the identities by remoteId.

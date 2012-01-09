@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import java.util.regex.Pattern;
-
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;

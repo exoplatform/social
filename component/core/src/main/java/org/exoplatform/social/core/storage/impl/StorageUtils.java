@@ -1,7 +1,9 @@
 package org.exoplatform.social.core.storage.impl;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
@@ -11,9 +13,6 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>

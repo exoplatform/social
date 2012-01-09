@@ -17,6 +17,14 @@
 
 package org.exoplatform.social.extras.migration;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.lang.reflect.Constructor;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.organization.OrganizationService;
@@ -30,17 +38,7 @@ import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.extras.migration.io.WriterContext;
 import org.exoplatform.social.extras.migration.rw.NodeReader;
-import org.exoplatform.social.extras.migration.rw.NodeReader_11x_12x;
 import org.exoplatform.social.extras.migration.rw.NodeWriter;
-import org.exoplatform.social.extras.migration.rw.NodeWriter_11x_12x;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Migration entry point.

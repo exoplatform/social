@@ -17,8 +17,6 @@
 
 package org.exoplatform.social.core.storage.query;
 
-import com.google.caja.parser.js.QuotedExpression;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$

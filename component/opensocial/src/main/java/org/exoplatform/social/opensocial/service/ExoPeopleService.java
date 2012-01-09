@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Request;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
@@ -51,8 +50,6 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.UserPortalConfig;

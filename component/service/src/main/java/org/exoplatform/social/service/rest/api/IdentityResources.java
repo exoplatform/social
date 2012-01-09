@@ -27,20 +27,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.storage.ActivityStorageException;
-import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.service.rest.RestChecker;
-import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
-import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
 
 /**
  * Identity Resources end point. 

@@ -17,6 +17,17 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.apache.commons.lang.Validate;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
@@ -36,7 +47,6 @@ import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.utils.ActivityIterator;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -48,17 +58,6 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.Order;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
