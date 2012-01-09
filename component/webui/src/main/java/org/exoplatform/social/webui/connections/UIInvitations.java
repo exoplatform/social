@@ -94,7 +94,7 @@ public class UIInvitations extends UIContainer {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
-	  addChild(uiProfileUserSearch);
+    addChild(uiProfileUserSearch);
     init();
   }
   
@@ -203,9 +203,9 @@ public class UIInvitations extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= RECEIVED_INVITATION_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= RECEIVED_INVITATION_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -289,7 +289,7 @@ public class UIInvitations extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-	  Identity owner = Utils.getOwnerIdentity();
+    Identity owner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
@@ -317,7 +317,7 @@ public class UIInvitations extends UIContainer {
       if (uiInvitations.currentLoadIndex < uiInvitations.peopleNum) {
         uiInvitations.loadNext();
       } else {
-    	uiInvitations.setEnableLoadNext(false);
+        uiInvitations.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
@@ -338,8 +338,8 @@ public class UIInvitations extends UIContainer {
       Identity invitingIdentity = Utils.getOwnerIdentity();
 
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
-      
-	  uiInvitations.setLoadAtEnd(false);
+
+      uiInvitations.setLoadAtEnd(false);
       if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));

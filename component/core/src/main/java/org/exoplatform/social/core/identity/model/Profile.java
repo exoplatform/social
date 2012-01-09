@@ -359,7 +359,7 @@ public class Profile {
    * @return email in String format
    */
   public final String getEmail() {
-	return (String)getProperty(EMAIL);
+    return (String) getProperty(EMAIL);
   }
   
   /**

@@ -95,9 +95,9 @@ public class UIDisplayProfileList extends UIContainer {
    * @throws Exception
    */
   public UIDisplayProfileList() throws Exception {
-	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-	  uiProfileUserSearch.setHasPeopleTab(false);
-	  uiProfileUserSearch.setHasConnectionLink(true);
+    uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+    uiProfileUserSearch.setHasPeopleTab(false);
+    uiProfileUserSearch.setHasConnectionLink(true);
     init();
   }
   
@@ -197,9 +197,9 @@ public class UIDisplayProfileList extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -275,18 +275,18 @@ public class UIDisplayProfileList extends UIContainer {
   private List<Identity> loadPeople(int index, int length) throws Exception {
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
     setPeopleListAccess(Utils.getIdentityManager().getIdentitiesByProfileFilter(
-         	            OrganizationIdentityProvider.NAME, filter, true));
+            OrganizationIdentityProvider.NAME, filter, true));
     
     setPeopleNum(getPeopleListAccess().getSize());
     uiProfileUserSearch.setPeopleNum(getPeopleNum());
     Identity[] people = getPeopleListAccess().load(index, length);
-    
+
 //  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.    
 //    if (filter.getSkills().length() > 0) { 
 //      return uiProfileUserSearch.getIdentitiesBySkills(
 //    		  new ArrayList<Identity>(Arrays.asList(people)));
 //    }
-    
+
     return new ArrayList<Identity>(Arrays.asList(people));
   }
   
@@ -302,7 +302,7 @@ public class UIDisplayProfileList extends UIContainer {
       if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
         uiAllPeople.loadNext();
       } else {
-    	uiAllPeople.setEnableLoadNext(false);
+        uiAllPeople.setEnableLoadNext(false);
       }
     }
   }

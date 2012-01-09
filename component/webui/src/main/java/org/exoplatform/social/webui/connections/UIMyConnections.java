@@ -216,9 +216,9 @@ public class UIMyConnections extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= MY_CONNECTION_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= MY_CONNECTION_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -329,9 +329,9 @@ public class UIMyConnections extends UIContainer {
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
       if (uiMyConnections.currentLoadIndex < uiMyConnections.peopleNum) {
-    	  uiMyConnections.loadNext();
+        uiMyConnections.loadNext();
       } else {
-    	  uiMyConnections.setEnableLoadNext(false);
+        uiMyConnections.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiMyConnections);
     }
@@ -351,8 +351,8 @@ public class UIMyConnections extends UIContainer {
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
       Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
       Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
-      
-	  uiMyConnections.setLoadAtEnd(false);
+
+      uiMyConnections.setLoadAtEnd(false);
       if (relationship == null || relationship.getStatus() != Relationship.Type.CONFIRMED) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(RELATION_DELETED_INFO, null, ApplicationMessage.INFO));

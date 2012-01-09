@@ -203,9 +203,9 @@ public class UIPendingRelation extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= SENT_INVITATION_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= SENT_INVITATION_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -290,7 +290,7 @@ public class UIPendingRelation extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-	  Identity owner = Utils.getOwnerIdentity();
+    Identity owner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
@@ -316,9 +316,9 @@ public class UIPendingRelation extends UIContainer {
     public void execute(Event<UIPendingRelation> event) throws Exception {
       UIPendingRelation uiPendingRelation = event.getSource();
       if (uiPendingRelation.currentLoadIndex < uiPendingRelation.peopleNum) {
-    	  uiPendingRelation.loadNext();
+        uiPendingRelation.loadNext();
       } else {
-    	  uiPendingRelation.setEnableLoadNext(false);
+        uiPendingRelation.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPendingRelation);
     }

@@ -188,7 +188,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       // TODO Re-check and re-confirm that navigation is ok then re-direct into Home of space.
       JavascriptManager jsManager = ctx.getJavascriptManager();
       jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
-      		"window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
+              "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
     }
   }
 

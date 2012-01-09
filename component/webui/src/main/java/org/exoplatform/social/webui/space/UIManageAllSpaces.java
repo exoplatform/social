@@ -200,8 +200,8 @@ public class UIManageAllSpaces extends UIContainer {
     
     uiSpaceSearch.setSpaceNameForAutoSuggest(getSpacesNames());
     
-    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE) 
-    		&& (this.spacesList.size() < getSpacesNum()));
+    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE)
+            && (this.spacesList.size() < getSpacesNum()));
     
     return this.spacesList;
   }

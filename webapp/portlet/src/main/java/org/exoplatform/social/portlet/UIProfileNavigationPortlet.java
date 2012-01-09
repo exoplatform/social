@@ -53,8 +53,8 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public UIProfileNavigationPortlet() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
-	uiPopup.setWindowSize(510, 0);
-	addChild(uiPopup);
+    uiPopup.setWindowSize(510, 0);
+    addChild(uiPopup);
   }
 
   /**

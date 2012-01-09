@@ -94,9 +94,9 @@ public class UIAllPeople extends UIContainer {
    * @throws Exception
    */
   public UIAllPeople() throws Exception {
-	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-	  uiProfileUserSearch.setHasPeopleTab(true);
-	  uiProfileUserSearch.setHasConnectionLink(false);
+    uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+    uiProfileUserSearch.setHasPeopleTab(true);
+    uiProfileUserSearch.setHasConnectionLink(false);
     init();
   }
   
@@ -196,9 +196,9 @@ public class UIAllPeople extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -273,7 +273,7 @@ public class UIAllPeople extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-	  Identity owner = Utils.getOwnerIdentity();
+    Identity owner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
@@ -300,7 +300,7 @@ public class UIAllPeople extends UIContainer {
       if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
         uiAllPeople.loadNext();
       } else {
-    	  uiAllPeople.setEnableLoadNext(false);
+        uiAllPeople.setEnableLoadNext(false);
       }
     }
   }

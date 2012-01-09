@@ -55,8 +55,8 @@ public class UIHeaderSection extends UIProfileSection {
 
   /** Label for display established invitation */
   private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
-	  
-  
+
+
   /**
    * Initializes components for header form.<br>
    */

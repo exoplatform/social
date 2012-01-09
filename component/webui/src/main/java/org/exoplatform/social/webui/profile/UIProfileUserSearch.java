@@ -158,7 +158,7 @@ public class UIProfileUserSearch extends UIForm {
    * @return
    */
   public boolean isHasPeopleTab() {
-	return hasPeopleTab;
+    return hasPeopleTab;
   }
 
   /**
@@ -166,7 +166,7 @@ public class UIProfileUserSearch extends UIForm {
    * @param hasPeopleTab
    */
   public void setHasPeopleTab(boolean hasPeopleTab) {
-	this.hasPeopleTab = hasPeopleTab;
+    this.hasPeopleTab = hasPeopleTab;
   }
 
   /**
@@ -190,7 +190,7 @@ public class UIProfileUserSearch extends UIForm {
    * @since 1.2.2
    */
   public int getPeopleNum() {
-	return peopleNum;
+    return peopleNum;
   }
   
   /**
@@ -200,7 +200,7 @@ public class UIProfileUserSearch extends UIForm {
    * @since 1.2.2
    */
   public void setPeopleNum(int peopleNum) {
-	this.peopleNum = peopleNum;
+    this.peopleNum = peopleNum;
   }
 
 /**
@@ -323,12 +323,12 @@ public class UIProfileUserSearch extends UIForm {
    * @throws Exception
    */
   public UIProfileUserSearch() throws Exception {
-	  ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-	
-	  String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
-	  String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
-	  String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
-	
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+
+    String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+    String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+    String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+
     addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, defaultName));
     addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills));
