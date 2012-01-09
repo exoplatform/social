@@ -163,7 +163,7 @@
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
     <a class="Avatar" title="$ownerName" href="$ownerUri">
-      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName">
+      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName" />
       <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
@@ -323,7 +323,7 @@
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
         <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-          <img src="$currentCommenterAvatar">
+          <img src="$currentCommenterAvatar" />
 		      <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
 		    </a>

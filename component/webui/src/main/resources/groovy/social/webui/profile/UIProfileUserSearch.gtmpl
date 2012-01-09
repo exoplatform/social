@@ -110,7 +110,7 @@
 </script>
 
 <% uiform.begin() %>
-   <div class="SearchSpacesBG ClearFix" name="SearchSpaces">	
+   <div class="SearchSpacesBG ClearFix">	
     <div class="ClearFix">
       <div class="Lable">${searchByNameLabel}:&nbsp;</div>
     	<% uiform.renderField(childs.get(0));%>
