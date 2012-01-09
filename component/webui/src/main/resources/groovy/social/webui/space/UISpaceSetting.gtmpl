@@ -24,5 +24,9 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if(uicomponent.isLeader()){ %>
   <div><% uicomponent.renderChild(UITabPane.class);%></div>
-<% } %>
+<% } else {
+     def context = _ctx.getRequestContext();
+     uicomponent.redirectToHome(context);
+   }
+%>
 </div>

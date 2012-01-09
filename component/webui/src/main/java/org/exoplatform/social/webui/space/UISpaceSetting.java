@@ -21,6 +21,8 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -128,13 +130,27 @@ public class UISpaceSetting extends UIContainer {
   public boolean isLeader() throws Exception {
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     String userId = Util.getPortalRequestContext().getRemoteUser();
-    if (spaceSrc.hasEditPermission(space, userId)) {
+    Space currentSpace = spaceSrc.getSpaceById(space.getId());
+    if (spaceSrc.hasEditPermission(currentSpace, userId)) {
       return true;
     } else {
       return false;
     }
   }
-
+ 
+ /**
+ * Redirect to home of space page in case accessing to administration pages (such as space setting page) 
+ * but the role of logged in user is member only.
+ * 
+ * @param ctx
+ * @since 1.2.8
+ */
+  protected void redirectToHome(WebuiRequestContext ctx) {
+    JavascriptManager jsManager = ctx.getJavascriptManager();
+    jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
+        "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
+  }
+  
   /**
    * This action listener is activated when user changes tab in space setting.
    * When selecting tabs, deactivates application add popup from application tab
