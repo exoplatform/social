@@ -441,26 +441,4 @@ public class ActivityManagerImpl implements ActivityManager {
     return identityManager.getIdentity(newActivity.getUserId(), false);
   }
 
-  /**
-   * Gets spaceService.
-   *
-   * @return spaceService
-   */
-  private SpaceService getSpaceService() {
-    if (spaceService == null) {
-      spaceService = (SpaceService) PortalContainer.getInstance()
-                                                   .getComponentInstanceOfType(SpaceService.class);
-    }
-    return spaceService;
-  }
-
-  /**
-   * Gets identityManager.
-   *
-   * @return identityManager
-   */
-  private IdentityManager getIdentityManager() {
-    return this.identityManager;
-  }
-
 }

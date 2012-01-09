@@ -219,11 +219,7 @@ public class ExoSocialDataInjectionExecutor {
     Identity id1 = selectRandomUser(null);
     return generateActivity(id1);
   }
-  
-  private ExoSocialActivity generateRandomUserActivity() {
-    Identity id1 = selectRandomUser(null);
-    return generateActivity(id1);
-  }
+
 
   /**
    * Gets the random value for Activity
