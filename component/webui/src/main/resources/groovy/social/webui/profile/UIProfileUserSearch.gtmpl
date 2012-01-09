@@ -127,8 +127,7 @@
 			   <% uiform.renderField(childs.get(2))%>&nbsp;
        </div>
       </div>
-    </div>       
-      <input id="searchAll" type="hidden" value="$searchAll">
+    </div>
    </div>
     
     <div class="UISocTitleBar">
@@ -154,9 +153,9 @@
      <% for (ch in alphabets) { %>
           <li>
      <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
-            <a href="#$ch" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+            <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
      <%   } else {%>
-            <a href="#$ch" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+            <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
      <%   } %>
           </li>
      <% } %>

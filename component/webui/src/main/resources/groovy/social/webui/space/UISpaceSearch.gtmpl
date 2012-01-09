@@ -112,9 +112,9 @@ if (selectedNode.equals("all-spaces")) {
                         <li>
                         <% if ((selectedChar != null) && (selectedChar == ch)) {
                             %>
-                                        <a href="#" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                                        <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
                              <%} else {%>
-                                        <a href="#" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                                        <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
                                 <% } %>
                             <% } %>
                      </li>

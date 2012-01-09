@@ -188,12 +188,12 @@
 			  <% if(uicomponent.isCurrentUser(user)) { %>
 				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader">&nbsp;</a>
 			  <% } else {%>
-				<a href="#" class="ManageMemButtonSub label" id="label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader">&nbsp;</a>
+				<a href="#" class="ManageMemButtonSub label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader">&nbsp;</a>
 			  <% } %>
 			  </td>
 			  <% } else { %>
 			  <td>
-				<a class="ManageMemButtonAdd label" id="label" onclick="$makeLeader" title="$labelMakeLeader">&nbsp;</a>
+				<a class="ManageMemButtonAdd label" onclick="$makeLeader" title="$labelMakeLeader">&nbsp;</a>
 			  </td>
 			  <% } %>
 			  <td>
