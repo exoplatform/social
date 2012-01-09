@@ -106,7 +106,7 @@
         <% if (isEditable) {%>
          <ul class="InviteTitle">
               <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",id.getId())%>" title="$removeTitle">$removeTitle</a></li>
+              <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" title="$removeTitle">$removeTitle</a></li>
          </ul>
         <% } %>	         
 	   </div>
