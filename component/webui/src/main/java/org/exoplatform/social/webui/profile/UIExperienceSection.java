@@ -400,19 +400,23 @@ public class UIExperienceSection extends UIProfileSection {
           ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); // skills
 
           if (listProfile.get(idx + 4) != null) {
-            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 4)
-                                                                                                                .toString())); // start date
+            // start date
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(
+                                                                                  listProfile.get(idx + 4).toString()));
           }
           
           if (listProfile.get(idx + 5) != null) {
-            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 5)
-                                                                                                                           .toString())); // end date
+            // end date
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(
+                                                                                  listProfile.get(idx + 5).toString()));
           } else {
-            ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5)); // end date
+            // end date
+            ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5));
           }
 
           ((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
-          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
+          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!(
+                                (UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
         }
       }
 

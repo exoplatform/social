@@ -110,7 +110,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     return cachedActivityStorage;
   }
 
-  public CachedRelationshipStorage(final RelationshipStorageImpl storage, final IdentityStorage identityStorage, final SocialStorageCacheService cacheService) {
+  public CachedRelationshipStorage(final RelationshipStorageImpl storage, final IdentityStorage identityStorage,
+                                   final SocialStorageCacheService cacheService) {
 
     //
     this.storage = storage;
@@ -463,7 +464,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
                                                final long limit) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(), profileFilter);
+    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(),
+                                                  profileFilter);
     ListRelationshipsKey<IdentityFilterKey> listKey =
         new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.CONNECTION_WITH_FILTER, offset, limit);
 
@@ -536,7 +538,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
       final Identity existingIdentity, final ProfileFilter profileFilter) throws RelationshipStorageException {
 
     //
-    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(),profileFilter);
+    IdentityFilterKey iKey = new IdentityFilterKey(existingIdentity.getProviderId(), existingIdentity.getRemoteId(),
+                                                   profileFilter);
     RelationshipCountKey<IdentityFilterKey> key =
         new RelationshipCountKey<IdentityFilterKey>(iKey, RelationshipType.CONNECTION_WITH_FILTER);
 

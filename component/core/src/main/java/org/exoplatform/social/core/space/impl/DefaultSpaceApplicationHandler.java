@@ -142,7 +142,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       UserPortal userPortal = SpaceUtils.getUserPortal();
       UserNode parentNode = userPortal.getNode(spaceNav, Scope.CHILDREN, null, null);
         
-      UserNode homeNode = createPageNodeFromApplication(parentNode, space, spaceApplicationConfigPlugin.getHomeApplication(), null, true);
+      UserNode homeNode = createPageNodeFromApplication(parentNode, space, spaceApplicationConfigPlugin.getHomeApplication(),
+                                                        null, true);
       SpaceService spaceService = getSpaceService();
 
       userPortal.updateNode(parentNode, Scope.CHILDREN, null);
@@ -281,7 +282,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       String nodeName = appName;
            
       ExoContainer container = ExoContainerContext.getCurrentContainer();
-      UserPortalConfigService configService = (UserPortalConfigService) container.getComponentInstanceOfType(UserPortalConfigService.class);
+      UserPortalConfigService configService = (UserPortalConfigService)
+                                              container.getComponentInstanceOfType(UserPortalConfigService.class);
 
       UserNode removedNode = null;
       removedNode = homeNode.getChild(nodeName);

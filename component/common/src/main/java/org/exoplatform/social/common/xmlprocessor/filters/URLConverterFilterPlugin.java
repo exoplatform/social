@@ -33,7 +33,8 @@ import org.exoplatform.social.common.xmlprocessor.model.Attributes;
 import org.exoplatform.social.common.xmlprocessor.model.Node;
 
 /**
- * This URLConverterFilterPlugin is a plugin for XMLProcessor which will auto convert any detected text link into real links, for example:
+ * This URLConverterFilterPlugin is a plugin for XMLProcessor which will auto convert any detected text link into real links,
+ * for example:
  * http://abc.com => <a href="http://abc.com" title="http://abc.com">http://abc.com</a>
  * Moreover, this plugin can trim any link to a fix size when it's too long by specifying the urlMaxLength via init params.
  * the urlMaxLength = url.length() + "...".length(), if urlMaxLength less than 3 the filter will no trim the url for display.

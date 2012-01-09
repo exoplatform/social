@@ -907,7 +907,8 @@ public class SpaceUtils {
    */
   public static UserPortal getUserPortalForRest() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
+                                                  container.getComponentInstanceOfType(UserPortalConfigService.class);
 
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
@@ -920,7 +921,8 @@ public class SpaceUtils {
     };
     
     String remoteId = ConversationState.getCurrent().getIdentity().getUserId();
-    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+    UserPortalConfig userPortalCfg = userPortalConfigSer.
+                                     getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
     return userPortalCfg.getUserPortal();
   }
 

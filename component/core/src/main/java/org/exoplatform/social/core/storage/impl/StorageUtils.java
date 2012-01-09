@@ -142,7 +142,8 @@ public class StorageUtils {
   public static String encodeUrl(String path) {
     PortalContainer container = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle)
+                                          manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
     ChromatticSession chromatticSession = lifeCycle.getSession();
     StringBuilder encodedUrl = new StringBuilder(); 
     encodedUrl = encodedUrl.append("/").append(container.getRestContextName()).append("/jcr/").

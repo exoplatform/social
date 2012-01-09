@@ -59,7 +59,8 @@ public class MultitenantCacheKey implements CacheKey {
   }
 
   private String getCurrentRepositoryName() {
-    RepositoryService repositoryService = (RepositoryService) PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class);
+    RepositoryService repositoryService = (RepositoryService)
+                                          PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class);
     try {
       return repositoryService.getCurrentRepository().getConfiguration().getName();
     }

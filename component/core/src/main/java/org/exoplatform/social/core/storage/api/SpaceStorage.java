@@ -321,7 +321,8 @@ public interface SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.5-GA
    */
-  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException;
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException;
   
   /**
    * Gets the spaces of a user which that user has the "member" role or edit permission.

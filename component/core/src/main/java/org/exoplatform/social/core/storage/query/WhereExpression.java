@@ -79,7 +79,8 @@ public class WhereExpression {
   public <T> WhereExpression like(CallExpression<T> call, T value) {
     checkParam(call.getProperty(), value);
 
-    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(), value)));
+    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(),
+                                 value)));
     return this;
   }
 

@@ -1119,7 +1119,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   /**
    * {@inheritDoc}
    */
-  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException {
     List<Space> spaces = new ArrayList<Space>();
 
     //

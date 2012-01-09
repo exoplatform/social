@@ -649,7 +649,8 @@ public class CachedSpaceStorage implements SpaceStorage {
   /**
    * {@inheritDoc}
    */
-  public List<Space> getVisibleSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getVisibleSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit)
+                                      throws SpaceStorageException {
     //
     SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.VISIBLE);
     ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);

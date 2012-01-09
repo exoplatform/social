@@ -436,7 +436,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @throws Exception
    */
   private String getURIForPeople(PortalContainer portalContainer, String remoteId) throws Exception {
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)portalContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
+                                                  portalContainer.getComponentInstanceOfType(UserPortalConfigService.class);
     
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
@@ -450,7 +451,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     StringBuffer stringBuffer = new StringBuffer();
     try {
       RequestLifeCycle.begin(portalContainer);
-      UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+      UserPortalConfig userPortalCfg = userPortalConfigSer.
+                                       getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
       UserPortal userPortal = userPortalCfg.getUserPortal();
       
       SiteKey siteKey = SiteKey.portal(userPortalConfigSer.getDefaultPortal());

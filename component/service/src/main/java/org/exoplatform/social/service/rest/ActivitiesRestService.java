@@ -405,7 +405,8 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     if (identity == null) {
-      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);  
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                    false);
     }
     
      //TODO hoatle set current userId from authentication context instead of getting userId from comment
@@ -621,13 +622,15 @@ public class ActivitiesRestService implements ResourceContainer {
       model.setTotalNumberOfLikes(null);
     }
     
-    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true).getId(),activity)){
+    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                  true).getId(),activity)){
       model.setLiked(true);
     } else {
       model.setLiked(false);
     }
     
-    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
+    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).
+                                                                           getCommentsWithListAccess(activity);
     model.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
     
     Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
@@ -700,7 +703,8 @@ public class ActivitiesRestService implements ResourceContainer {
       
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
 
-    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);
+    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                                       Util.getViewerId(uriInfo), false);
     ActivityManager activityManager = Util.getActivityManager(portalName);
     ExoSocialActivity activity = null;
     

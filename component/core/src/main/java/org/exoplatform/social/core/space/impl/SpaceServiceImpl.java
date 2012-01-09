@@ -409,7 +409,8 @@ public class SpaceServiceImpl implements SpaceService {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
       spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
       for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
-        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
+        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(),
+               Space.ACTIVE_STATUS);
       }
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);

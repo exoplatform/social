@@ -167,7 +167,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   
   private RelationshipStorage getRelationshipStorage() {
     if (relationshipStorage == null) {
-      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipStorage.class);
+      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().
+                                                                  getComponentInstanceOfType(RelationshipStorage.class);
     }
 
     return relationshipStorage;
@@ -198,7 +199,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     whereExpression.startGroup();
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");;
 
@@ -361,7 +363,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     Collection<SpaceRef> refs = identityEntity.getManagerSpaces().getRefs().values();
     for (SpaceRef ref : refs) {
       if (ref.getSpaceRef() != null && ref.getSpaceRef().getManagerMembersId().length == 1) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY, "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
+        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY,
+                                           "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
       }
     }
 
@@ -881,7 +884,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -917,7 +921,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -944,7 +949,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
 .and()
 .not().equals(ProfileEntity.deleted, "true");
 
@@ -971,7 +977,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -1047,7 +1054,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
 
     List<Identity> listIdentity = new ArrayList<Identity>();
-    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, false);
+    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset,
+                                                                                             limit, false);
 
     while (results.hasNext()) {
       ProfileEntity profileEntity = results.next();

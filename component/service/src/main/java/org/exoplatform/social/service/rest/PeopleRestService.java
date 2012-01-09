@@ -189,7 +189,8 @@ public class PeopleRestService implements ResourceContainer{
     identityManager = Util.getIdentityManager(portalName);
     
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
-    Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                                   Util.getViewerId(uriInfo), true);
     
     excludedIdentityList.add(currentUser);
 
@@ -205,8 +206,8 @@ public class PeopleRestService implements ResourceContainer{
       ProfileFilter filter = new ProfileFilter();
       filter.setName(nameToSearch);
       filter.setExcludedIdentityList(excludedIdentityList);
-      
-      identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);// will be getConnectionsByProfileFilter      
+      // will be getConnectionsByProfileFilter
+      identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);
     }
     
     for(Identity identity : identities){
@@ -296,7 +297,8 @@ public class PeopleRestService implements ResourceContainer{
       calendar.setLenient(false);
       int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
       calendar.setTimeInMillis(lastestActivity.getPostedTime() - gmtoffset);
-      this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang), TimeConvertUtils.MONTH));
+      this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang),
+                                                                TimeConvertUtils.MONTH));
       
       this.setPosition(identity.getProfile().getPosition());
       this.setActivityId(lastestActivity.getId());

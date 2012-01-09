@@ -59,7 +59,8 @@ public class SpaceFilterKey extends MultitenantCacheKey {
     if (firstCharacterOfSpaceName != that.firstCharacterOfSpaceName) {
       return false;
     }
-    if (spaceNameSearchCondition != null ? !spaceNameSearchCondition.equals(that.spaceNameSearchCondition) : that.spaceNameSearchCondition != null) {
+    if (spaceNameSearchCondition != null ? !spaceNameSearchCondition.equals(that.spaceNameSearchCondition) :
+                                           that.spaceNameSearchCondition != null) {
       return false;
     }
     if (type != that.type) {

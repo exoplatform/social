@@ -65,21 +65,41 @@ import org.exoplatform.webui.event.EventListener;
 import org.gatein.common.util.ParameterValidation;
 
 @ComponentConfigs({
-    @ComponentConfig(template = "classpath:groovy/social/webui/space/UISpaceNavigationNodeSelector.gtmpl", events = { @EventConfig(listeners = UISpaceNavigationNodeSelector.ChangeNodeActionListener.class) }),
-    @ComponentConfig(id = "SpaceNavigationNodePopupMenu", type = UIRightClickPopupMenu.class, template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl", events = {
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.EditPageNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.EditSelectedNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CopyNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CutNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CloneNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveUpActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveDownActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.DeleteNodeActionListener.class, confirm = "UIPageNodeSelector.deleteNavigation") }),
-    @ComponentConfig(id = "UISpaceNavigationNodeSelectorPopupMenu", type = UIRightClickPopupMenu.class, template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl", events = {
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class) }) })
+  @ComponentConfig(
+    template = "classpath:groovy/social/webui/space/UISpaceNavigationNodeSelector.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.ChangeNodeActionListener.class)
+    }
+  ),
+  @ComponentConfig(
+    id = "SpaceNavigationNodePopupMenu",
+    type = UIRightClickPopupMenu.class,
+    template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.EditPageNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.EditSelectedNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CopyNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CutNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CloneNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveUpActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveDownActionListener.class),
+      @EventConfig(
+        listeners = UISpaceNavigationNodeSelector.DeleteNodeActionListener.class,
+        confirm = "UIPageNodeSelector.deleteNavigation")
+    }
+  ),
+  @ComponentConfig(
+    id = "UISpaceNavigationNodeSelectorPopupMenu",
+    type = UIRightClickPopupMenu.class,
+    template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class)
+    }
+  )
+})
         
 /**
  * Editor : hanhvq@exoplatfor.com Jun 22, 2011 

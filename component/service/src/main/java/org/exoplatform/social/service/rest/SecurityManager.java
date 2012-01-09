@@ -149,7 +149,8 @@ public class SecurityManager {
                                         Identity ownerIdentityStream) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
     
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);    
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
     String posterID =  authenticatedIdentity.getId();
     String ownerID = ownerIdentityStream.getId();
     
@@ -192,7 +193,8 @@ public class SecurityManager {
   public static boolean canDeleteActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
 
     // My activity
     if (authenticatedIdentity.getId().equals(existingActivity.getUserId())) {
@@ -236,7 +238,8 @@ public class SecurityManager {
   public static boolean canCommentToActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                        ExoSocialActivity existingActivity) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
 
     if(authenticatedIdentity == null || existingActivity == null){
       return false;
