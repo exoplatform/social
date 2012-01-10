@@ -75,7 +75,7 @@
                           <div class="MyStatusInputR">
                             <div class="MyStatusInputM">
                                 <div style="height: 2px;"><span></span></div>
-                                <input type="text" id="UIComposerTextArea" class="Textbox" value="__MSG_what_are_you_doing__" />
+                                <input type="text" title="__MSG_what_are_you_doing__" id="UIComposerTextArea" class="Textbox" value="__MSG_what_are_you_doing__" />
                             </div>
                              <div id="UIComposerExtension" class="ExtensionInput">
                                <!-- dynamic loading -->
@@ -178,7 +178,7 @@
                           <div class="MyStatusInputR">
                             <div class="MyStatusInputM">
                                 <div style="height: 2px;"><span></span></div>
-                                <textarea id="UIComposerTextArea" class="Textbox">__MSG_what_are_you_doing__</textarea>
+                                <textarea id="UIComposerTextArea" class="Textbox" title="__MSG_what_are_you_doing__">__MSG_what_are_you_doing__</textarea>
                             </div>
                            </div>
                         </div>

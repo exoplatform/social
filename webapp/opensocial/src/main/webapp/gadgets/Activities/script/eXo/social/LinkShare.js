@@ -243,7 +243,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
     lsActionHtml.push('<div class="ClearRight"></div>');
   lsActionHtml.push('</div>');
   lsActionHtml.push('<div class="AddLinkContent">');
-    lsActionHtml.push('<input id="InputLink" class="InputLink" type="textbox" />');
+    lsActionHtml.push('<input id="InputLink" class="InputLink" type="textbox" title="' + Locale.getMsg('please_provide_link') + '" />');
     lsActionHtml.push('<input id="AddLinkButton" class="AddLinkButton" type="button" value="'+ Locale.getMsg('attach') +'" />');
     lsActionHtml.push('<div style="clear:both; height: 0px"><span></span></div>');
   lsActionHtml.push('</div>');
@@ -342,7 +342,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
     lsDisplayHtml.push('</div>');
   if (LinkShare.data.images.length > 0) {
     lsDisplayHtml.push('<div class="ThumbnailOption" id="ThumbnailOption">');
-      lsDisplayHtml.push('<input type="checkbox" />' + Locale.getMsg('no_thumbnail'));
+      lsDisplayHtml.push('<input type="checkbox" id="NoThumbnail" title="' + '" />' + Locale.getMsg('no_thumbnail') + "<label for='NoThumbnail'>" + Locale.getMsg('no_thumbnail') + "</label>");
     lsDisplayHtml.push("</div>");
   } //end if
   lsDisplayHtml.push('</div>');
@@ -372,11 +372,11 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
 
   var pContentTitle = Util.getElementsByClass(newElement, 'div', 'Title')[0];
   Util.addEventListener(pContentTitle, 'click', function() {
-    linkShare.addEditableText(this, 'input');
+    linkShare.addEditableText(this, 'input', Locale.getMsg('you_can_edit_the_title_of_shared_link'));
   }, false);
   var pContentDescription = Util.getElementsByClass(newElement, 'div', 'Content')[0];
   Util.addEventListener(pContentDescription, 'click', function() {
-    linkShare.addEditableText(this, 'textarea');
+    linkShare.addEditableText(this, 'textarea', Locale.getMsg('you_can_edit_the_description_of_shared_link'));
   }, false);
 
   //constructs content
@@ -442,7 +442,7 @@ eXo.social.LinkShare.prototype.enableThumbnailDisplay = function(el) {
  * if tagName = textarea
  * <textarea cols="10" rows="3">value</textarea>
  */
-eXo.social.LinkShare.prototype.addEditableText = function(oldEl, tagName) {
+eXo.social.LinkShare.prototype.addEditableText = function(oldEl, tagName, title) {
   var LinkShare = eXo.social.LinkShare;
   var Util = eXo.social.Util;
   var textContent = oldEl.innerText; //IE
@@ -452,6 +452,7 @@ eXo.social.LinkShare.prototype.addEditableText = function(oldEl, tagName) {
   var editableEl = document.createElement(tagName);
   editableEl.setAttribute('id', LinkShare.config.EDITABLE_TEXT_ID);
   editableEl.value = textContent;
+  editableEl.title = title;
   //insertafter and hide oldEl
   Util.insertAfter(editableEl, oldEl);
   oldEl.style.display='none';

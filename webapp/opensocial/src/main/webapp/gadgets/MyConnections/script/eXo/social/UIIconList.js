@@ -441,7 +441,7 @@
 		userBlock.push('</div>');
 	  
 	  userBlock.push('<div class="QuickCommentBox" style="display: none;" id="QuickCommentDiv">');
-	  	userBlock.push('<input id="QuickCommentInput" type="text" value="' + Locale.getMsg('comment_here') + '"/>');
+	  	userBlock.push('<input id="QuickCommentInput" type="text" title="' + Locale.getMsg('comment_here') + '" value="' + Locale.getMsg('comment_here') + '"/>');
 	  	userBlock.push('<div class="ShareBT"><a id="ShareComment" href="javascript:void(0)">' + Locale.getMsg('share') + '</a></div>');
 	  userBlock.push('</div>');
 		

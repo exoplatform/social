@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -114,6 +115,9 @@ public class UIContactSection extends UIProfileSection {
 
   /** INVALID URL. */
   public static final String INVALID_URL = "UIContactSect.msg.Invalid-url";
+  
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
 
   /** Number of phone. */
   private int phoneCount = 0;
@@ -526,23 +530,32 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput(final String type) throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     if (PHONE.equals(type)) {
       int phoneIdx = phoneCount;
       createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
-      addUIFormInput(new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null)
+      UIFormStringInput phone = new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null);
+      phone.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.phones"));
+      addUIFormInput(phone
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
       phoneCount += 2;
     } else if (IM.equals(type)) {
       int imIdx = imCount;
       createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
-      addUIFormInput(new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null)
+      UIFormStringInput im = new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null);
+      im.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.ims"));
+      addUIFormInput(im
       .addValidator(ExpressionValidator.class, IM_STRINGLENGTH_REGEX_EXPRESSION, INVALID_IM));
       imCount += 2;
     } else if (URL.equals(type)) {
       int urlIdx = urlCount;
-      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE));
-      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, getSampleURL())
-      .addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
+      UIFormStringInput websiteTitle = new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE);
+      websiteTitle.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.websiteTitle"));
+      addUIFormInput(websiteTitle);
+      UIFormStringInput sampleUrlForm = new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, getSampleURL());
+      sampleUrlForm.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.urls"));
+      addUIFormInput(sampleUrlForm.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
       urlCount += 2;
     }
   }

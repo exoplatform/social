@@ -84,13 +84,20 @@ public class UISpaceInfo extends UIForm {
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
   private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    * 
    * @throws Exception
    */
   public UISpaceInfo() throws Exception {
-    addUIFormInput((UIFormStringInput)new UIFormStringInput(SPACE_ID, SPACE_ID, null).setRendered(false));
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    UIFormStringInput spaceId = new UIFormStringInput(SPACE_ID, SPACE_ID, null);
+    spaceId.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.SpaceId"));
+    addUIFormInput((UIFormStringInput)spaceId.setRendered(false));
 
     UIFormStringInput spaceDisplayNameInput = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
     spaceDisplayNameInput.setEditable(false);
@@ -114,7 +121,9 @@ public class UISpaceInfo extends UIForm {
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
     //temporary disable tag
-    addUIFormInput((UIFormStringInput)new UIFormStringInput("tag","tag",null).setRendered(false));
+    UIFormStringInput tag = new UIFormStringInput("tag","tag",null);
+    tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
+    addUIFormInput((UIFormStringInput)tag.setRendered(false));
 
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
     uiPopup.setWindowSize(500, 0);

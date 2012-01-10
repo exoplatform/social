@@ -41,6 +41,7 @@
   def noThumbnail = _ctx.appRes("UILinkComposerPlugin.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("UILinkComposerPlugin.msg.Previous_Image"),
       nextImage = _ctx.appRes("UILinkComposerPlugin.msg.Next_Image");
+      titleEditable = _ctx.appRes("UILinkComposerPlugin.msg.Editable_Title_Element");
 
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
@@ -69,9 +70,9 @@
                   "attachButtonId: 'AttachButton',"+
                   "attachUrl: '${uicomponent.url("Attach")}',"+
                   "changeLinkContentUrl: '${uicomponent.url("ChangeLinkContent")}',"+
-                  "linkData: $linkData"+
+                  "linkData: $linkData,"+
+                  "titleEditable: '$titleEditable'"+
                 "}";
-
 
   jsManager.addOnLoadJavascript("initComposerLinkExtension");
 
@@ -122,8 +123,8 @@
               </div>
             </div>
             <div class="ThumbnailOption ClearFix">
-              <input class="FL" id="ThumbnailCheckbox" type="checkbox" />
-              <div class="Label FL">$noThumbnail</div>
+              <input title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
+              <label for="ThumbnailCheckbox" class="Label FL">$noThumbnail</label>
             </div>
           <% } %>
           </div>

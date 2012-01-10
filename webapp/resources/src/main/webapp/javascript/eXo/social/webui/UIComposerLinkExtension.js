@@ -49,13 +49,14 @@
    * if tagName = textarea
    * <textarea cols="10" rows="3">value</textarea>
    */
-  function addEditableText(oldEl, tagName) {
+  function addEditableText(oldEl, tagName, title) {
     var textContent = oldEl.innerText; //IE
     if (textContent === undefined) {
         textContent = oldEl.textContent;
     }
     textContent = textContent.trim();
     var editableEl = document.createElement(tagName);
+    editableEl.title = title;
     if ('input' === tagName) {
       editableEl.setAttribute('type', 'text');
       editableEl.setAttribute('size', 50);
@@ -116,6 +117,7 @@
   }
   
   UIComposerLinkExtension.prototype.configure = function(params) {
+    this.titleEditable = params.titleEditable || "";
     this.linkInfoDisplayed = params.linkInfoDisplayed || false;
     this.inputLinkId = params.inputLinkId || 'inputLink';
     this.attachButtonId = params.attachButtonId || 'attachButton';
@@ -174,12 +176,14 @@
       this.stats = Util.getElementById(this.statsId);
       this.linkTitle = Util.getElementById('LinkTitle');
       this.linkDescription = Util.getElementById('LinkDescription');
+      
+      var titleParam = this.titleEditable;
       Util.addEventListener(this.linkTitle, 'click', function(evt) {
-        addEditableText(this, 'input');
+        addEditableText(this, 'input', titleParam);
       }, false);
       
       Util.addEventListener(this.linkDescription, 'click', function(evt) {
-        addEditableText(this, 'textarea');
+        addEditableText(this, 'textarea', titleParam);
       }, false);
       
       if (this.thumbnails) {

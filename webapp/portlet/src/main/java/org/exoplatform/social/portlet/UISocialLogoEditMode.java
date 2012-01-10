@@ -50,7 +50,9 @@ public class UISocialLogoEditMode extends UIForm {
   public UISocialLogoEditMode() throws Exception {
     PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletPreferences pref = pcontext.getRequest().getPreferences();
-    addUIFormInput(new UIFormStringInput(FIELD_URL, FIELD_URL, pref.getValue("url", "")));
+    UIFormStringInput fieldUrl = new UIFormStringInput(FIELD_URL, FIELD_URL, pref.getValue("url", ""));
+    fieldUrl.setHTMLAttribute("title", FIELD_URL);
+    addUIFormInput(fieldUrl);
   }
 
   static public class SaveActionListener extends EventListener<UISocialLogoEditMode> {

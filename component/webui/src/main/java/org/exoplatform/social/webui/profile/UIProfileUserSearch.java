@@ -98,6 +98,9 @@ public class UIProfileUserSearch extends UIForm {
   /** All people filter. */
   private static final String ALL_FILTER = "All";
   
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * List used for identities storage.
    */
@@ -329,9 +332,15 @@ public class UIProfileUserSearch extends UIForm {
     String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
     String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
 
-    addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, defaultName));
-    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos));
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills));
+	  UIFormStringInput search = new UIFormStringInput(SEARCH, USER_CONTACT, defaultName);
+	  search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultName);
+    addUIFormInput(search);
+    UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos);
+    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultPos);
+    addUIFormInput(position);
+    UIFormStringInput skills = new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills);
+    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultSkills);
+    addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
     setSelectedChar(ALL_FILTER);

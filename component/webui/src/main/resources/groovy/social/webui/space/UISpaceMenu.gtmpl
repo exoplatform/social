@@ -70,6 +70,7 @@
   def spaceNameDisplay = getFitString(spaceName, 20);
   def homeUrl = Utils.getSpaceHomeURL(space);
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
+  def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
   jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
@@ -125,7 +126,7 @@
                 }
                 if (!nodeName.equals("settings")) {
                 
-                def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\")";
+                def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\"," + "\"" + titleEditable + "\")";
               %>
               <div class="UITab NormalTabStyle">
                 <div class="$appTabClass">

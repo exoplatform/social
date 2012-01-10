@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
@@ -125,6 +126,9 @@ public class UIExperienceSection extends UIProfileSection {
   /** MANDATORY POSITION MESSAGE. */
   private static final String INVALID_POSITION_MANDATORY = "UIExperienceSection.msg.Invalid-position-mandatory";
 
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * Number of components.
    */
@@ -640,6 +644,8 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput() throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
       .addValidator(MandatoryValidator.class)
@@ -658,11 +664,13 @@ public class UIExperienceSection extends UIProfileSection {
     uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false)
-                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+    UIFormDateTimeInput startDate = new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false);
+    startDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.startDate"));
+    addUIFormInput(startDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false)
-                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+    UIFormDateTimeInput endDate = new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false);
+    endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
+    addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
 
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");

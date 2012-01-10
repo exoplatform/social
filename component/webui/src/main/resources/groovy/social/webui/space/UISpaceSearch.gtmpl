@@ -81,9 +81,9 @@ if (selectedNode.equals("all-spaces")) {
 <% uiform.begin() %>
     <!--search by name-->   
     <div class="SpaceSearchContainer ClearFix">
-		   <div class="LeftContentInput">
+		   <label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
 		     $findSpaceLabel:&nbsp; 
-		   </div>
+		   </label>
 		   <div class="SearchContent">
 		     <%uiform.renderField(childs.get(0)); %>
 		     <a id="SearchButton" title="$findSpaceLabel" class="SpaceSearchIcon" onclick="$searchAction">&nbsp;</a>

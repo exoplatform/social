@@ -31,7 +31,7 @@
   <div>
     <label for="fieldKeyword">${labelKeyword}</label>
     <% uicomponent.renderChild(UIFormStringInput.class) %> 
-    ${labelBy}
+    <label for="fieldFilter">${labelBy}</label>
     <% uicomponent.renderChild(UIFormSelectBox.class) %>
     <a href="#" onclick="${searchAction}">${labelSearchAction}</a>
   </div>

@@ -19,6 +19,7 @@ package org.exoplatform.social.plugin.link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -79,12 +80,19 @@ public class UILinkActivityComposer extends UIActivityComposer {
   private boolean linkInfoDisplayed_ = false;
   private Map<String, String> templateParams;
   
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    */
   public UILinkActivityComposer() {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     setReadyForPostingActivity(false);
-    addChild(new UIFormStringInput("InputLink", "InputLink", null));
+    UIFormStringInput inputLink = new UIFormStringInput("InputLink", "InputLink", null);
+    inputLink.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UILinkComposerPlugin.label.InputLink"));
+    addChild(inputLink);
   }
 
   public void setLinkInfoDisplayed(boolean displayed) {

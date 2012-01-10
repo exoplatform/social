@@ -97,6 +97,8 @@
           <value>locale.social.webui.space.UISpaceVisibility</value>
           <value>locale.social.webui.space.UISpaceNavigationManagement</value>
           <value>locale.social.webui.space.UISpaceNavigationNodeSelector</value>
+          <value>locale.social.webui.space.UIPageNodeForm</value>
+          <value>locale.social.webui.space.UISpaceSettings</value>
           <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
         </values-param>
         <values-param>
@@ -139,6 +141,8 @@
           <value>locale.social.webui.space.UISpaceVisibility</value>
           <value>locale.social.webui.space.UISpaceNavigationManagement</value>
           <value>locale.social.webui.space.UISpaceNavigationNodeSelector</value>
+          <value>locale.social.webui.space.UIPageNodeForm</value>
+          <value>locale.social.webui.space.UISpaceSettings</value>
           <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
         </values-param>
       </init-params>

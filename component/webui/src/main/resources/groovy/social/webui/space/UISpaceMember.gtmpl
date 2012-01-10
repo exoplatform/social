@@ -62,7 +62,7 @@
 <% uiform.begin() %>
   <% def searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
   <% def inviteAction = uicomponent.event("Invite") + "; return false;"%>
-		<span class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></span>
+		<span class="AddInvite"><label for="user"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%></label> :<% uiform.renderField("user") %></span>
 		<a href="#" class="SearchAddMemberIcon SearchInviteButton" onclick="$inviteAction" title="$labelInviteAction">&nbsp;</a>
 		<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction" title="$labelSearchUserAction">&nbsp;</a>
   <%

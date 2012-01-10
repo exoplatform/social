@@ -66,7 +66,6 @@
 	 * Some div tags default.
 	 */
 	Configuration.divDefault = {
-		search: '<div class="SearchContent ClearFix"><input type="text" id="SearchTextBox" value="Quick Search" class="Search"><a href="#" id="SearchButton" class="IconSearch">&nbsp;</a></div>',
 		loadMore: '<div class="MoreContent"><a href="#" class="ReadMore" id="UITextListLoadMore"> Load more ... </a></div>',
 		peopleDirectory: '<a href="#" class="Link">People Directory</a>'
 	};

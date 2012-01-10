@@ -57,7 +57,7 @@
             <table class="UIFormGrid">
               <tbody>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></label></td>
                 <td class="FieldComponent">
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
@@ -73,7 +73,7 @@
                 <% } %>
               </tr>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i + 1).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></label></td>
                 <td class="FieldComponent">
                 <%if (childs.get(i + 1).isRendered()) {
                   uiform.renderField(childs.get(i + 1));
@@ -114,7 +114,7 @@
 				  <%if (childs.get(i + 6).isRendered()) {%>
 				        <div class="ClearFix">
                   <%uiform.renderField(childs.get(i + 6));%>
-                  <div class="StillPositionLabel">&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></div>
+                  <label for="<%=childs.get(i + 6).getId()%>" class="StillPositionLabel">&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></label>
                 </div>
                   <%}%>
                 </td>

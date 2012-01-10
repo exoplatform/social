@@ -81,16 +81,16 @@
                 <% } %>
           		<table> 
 	              <tr class="FieldContainer">
-		              <td class="FieldLabel"><%=res.getString("UILoginForm.label.UserName")%></td>
-		              <td><input class="UserName" name="username" value="<%=username%>"/></td>
+		              <td class="FieldLabel"><label for="UserNameId"><%=res.getString("UILoginForm.label.UserName")%></label></td>
+		              <td><input id="UserNameId" title='<%=res.getString("UILoginForm.label.UserName")%>' class="UserName" name="username" value="<%=username%>"/></td>
 			          </tr>
 		            <tr class="FieldContainer" id="UIPortalLoginFormControl" onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);">
-		              <td class="FieldLabel"><%=res.getString("UILoginForm.label.password")%></td>
-		              <td><input class="Password" type="password" name="password" value=""/></td>
+		              <td class="FieldLabel"><label for="PasswordId"><%=res.getString("UILoginForm.label.password")%></label></td>
+		              <td><input id="PasswordId" title='<%=res.getString("UILoginForm.label.password")%>' class="Password" type="password" name="password" value=""/></td>
 		            </tr>
 		            <tr class="FieldContainer" onkeypress="eXo.portal.UIPortalControl.onEnterPress(event);">
-		              <td class="FieldLabel"><input type="checkbox" name="rememberme" value="true"/></td>
-		              <td><%=res.getString("UILoginForm.label.RememberOnComputer")%></td>
+		              <td class="FieldLabel"><input id="RemembermeId" title='<%=res.getString("UILoginForm.label.RememberOnComputer")%>' type="checkbox" name="rememberme" value="true"/></td>
+		              <td><label for="RemembermeId"><%=res.getString("UILoginForm.label.RememberOnComputer")%></label></td>
 		            </tr>
 		          </table>
 		          <div id="UIPortalLoginFormAction" class="LoginButton" onclick="login();">

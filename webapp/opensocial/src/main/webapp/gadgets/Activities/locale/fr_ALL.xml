@@ -23,6 +23,8 @@
   <msg name="collapse_all_activities">Replier</msg>
   <msg name="expand_all_activities">Déplier</msg>
   <msg name="write_a_comment">Laissez un commentaire...</msg>
+  <msg name="you_can_edit_the_title_of_shared_link">Vous pouvez changer le titre du lien partagé</msg>
+  <msg name="you_can_edit_the_description_of_shared_link">Vous pouvez changer la description du lien partagé</msg>
   <msg name="show_all_num_comments">Afficher tous les {0} commentaires.</msg>
   <msg name="hide_all_comments">Masquer tous les commentaires.</msg>
   <msg name="user_commented_on_an_activity">{0} a commenté sur une activié.</msg>

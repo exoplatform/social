@@ -112,20 +112,29 @@ public class UIPageNodeForm extends UIFormTabPane {
   private static final String          SWITCH_MODE_ONCHANGE   = "SwitchLabelMode";
 
   private static final String          LABEL                  = "label";
+  
+  /** Html attribute title. */
+  private static final String          HTML_ATTRIBUTE_TITLE   = "title";
 
   public UIPageNodeForm() throws Exception {
     super("UIPageNodeForm");
 
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    
     UIFormInputSet uiSettingSet = new UIFormInputSet("PageNodeSetting");
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(SHOW_PUBLICATION_DATE,
                                                                                      null,
                                                                                      false);
+    uiDateInputCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.showPublicationDate"));
     UIFormCheckBoxInput<Boolean> uiVisibleCheck = new UIFormCheckBoxInput<Boolean>(VISIBLE,
                                                                                    null,
                                                                                    true);
+    uiVisibleCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.visible"));
     UIFormCheckBoxInput<Boolean> uiSwitchLabelMode = new UIFormCheckBoxInput<Boolean>(SWITCH_MODE,
                                                                                       null,
                                                                                       true);
+    uiSwitchLabelMode.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.switchMode"));
 
     uiDateInputCheck.setOnChange("SwitchPublicationDate");
     uiVisibleCheck.setOnChange("SwitchVisible");
@@ -135,19 +144,26 @@ public class UIPageNodeForm extends UIFormTabPane {
     initLanguageSelectBox(uiFormLanguagesSelectBox);
     uiFormLanguagesSelectBox.setOnChange(LANGUAGES_ONCHANGE);
 
-    uiSettingSet.addUIFormInput(new UIFormStringInput("URI", "URI", null).setEditable(false))
-                .addUIFormInput(new UIFormStringInput("name", "name", null).addValidator(MandatoryValidator.class)
+    UIFormStringInput uri = new UIFormStringInput("URI", "URI", null);
+    uri.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.uri"));
+    uiSettingSet.addUIFormInput(uri.setEditable(false));
+    UIFormStringInput name = new UIFormStringInput("name", "name", null);
+    name.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.name"));
+    uiSettingSet.addUIFormInput(name.addValidator(MandatoryValidator.class)
                                                                            .addValidator(StringLengthValidator.class,
                                                                                          3,
                                                                                          30)
                                                                            .addValidator(IdentifierValidator.class))
-                .addUIFormInput(uiSwitchLabelMode)
-                .addUIFormInput(new UIFormStringInput(LABEL, LABEL, null).addValidator(StringLengthValidator.class,
+                .addUIFormInput(uiSwitchLabelMode);
+    UIFormStringInput label = new UIFormStringInput(LABEL, LABEL, null);
+    label.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.label"));
+    uiSettingSet.addUIFormInput(label.addValidator(StringLengthValidator.class,
                                                                                        3,
                                                                                        120))
-                .addUIFormInput(uiFormLanguagesSelectBox)
-                .addUIFormInput(new UIFormStringInput(I18N_LABEL, null, null).setMaxLength(255)
-                                                                             .addValidator(StringLengthValidator.class,
+                .addUIFormInput(uiFormLanguagesSelectBox);
+    UIFormStringInput i18nLabel = new UIFormStringInput(I18N_LABEL, null, null);
+    i18nLabel.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.i18nLabel"));
+    uiSettingSet.addUIFormInput(i18nLabel.setMaxLength(255).addValidator(StringLengthValidator.class,
                                                                                            3,
                                                                                            120))
                 .addUIFormInput(uiVisibleCheck.setChecked(true))
