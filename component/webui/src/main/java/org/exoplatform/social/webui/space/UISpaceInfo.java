@@ -129,6 +129,8 @@ public class UISpaceInfo extends UIForm {
    */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
+    String descValue = ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).getValue();
+    ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).setValue(StringEscapeUtils.unescapeHtml(descValue));
     //TODO: have to find the way to don't need the line code below.
     getUIStringInput("tag").setValue(space.getTag());
   }
