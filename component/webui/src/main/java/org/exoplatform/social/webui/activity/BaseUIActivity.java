@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
@@ -82,6 +83,8 @@ public class BaseUIActivity extends UIForm {
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
 
+  private static final String HTML_ATTRIBUTE_TITLE = "title";
+  
   /**
    * Constructor
    * 
@@ -95,9 +98,13 @@ public class BaseUIActivity extends UIForm {
   }
 
   public void setActivity(ExoSocialActivity activity) {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     this.activity = activity;
     setOwnerIdentity(Utils.getIdentityManager().getIdentity(activity.getUserId(), true));
-    addChild(new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null));
+    UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
+    commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.write_a_comment"));
+    addChild(commentTextArea);
     try {
       refresh();
     } catch (ActivityStorageException e) {

@@ -654,12 +654,16 @@ public class UIExperienceSection extends UIProfileSection {
       .addValidator(MandatoryValidator.class)
       .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
 
-    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
+    UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
+    description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));
+    addUIFormInput(description);
     UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);
     uiDespcription.setColumns(28);
     uiDespcription.setRows(3);
 
-    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + expIdx, null, null));
+    UIFormTextAreaInput skills = new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + expIdx, null, null);
+    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.skills"));
+    addUIFormInput(skills);
     UIFormTextAreaInput uiFormTextAreaInput = getChildById(Profile.EXPERIENCES_SKILLS + expIdx);
     uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);

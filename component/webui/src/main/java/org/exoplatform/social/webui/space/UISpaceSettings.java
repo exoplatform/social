@@ -103,7 +103,8 @@ public class UISpaceSettings extends UIFormInputSet {
     String interMePrio = resApp.getString("UISpaceSettings.label.InterMePrio");
     priorityInfo.setValue(interMePrio);
     addUIFormInput(priorityInfo);
-    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
-                   addValidator(StringLengthValidator.class, 0,255));
+    UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);
+    description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSettings.label.spaceDescription"));
+    addUIFormInput(description.addValidator(StringLengthValidator.class, 0,255));
   }
 }

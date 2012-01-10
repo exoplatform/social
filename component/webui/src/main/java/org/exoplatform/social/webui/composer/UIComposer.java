@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.composer;
 
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -59,13 +60,19 @@ public class UIComposer extends UIForm {
   private UIActivityComposerManager activityComposerManager;
   private boolean isActivityStreamOwner;
 
+  private static final String HTML_ATTRIBUTE_TITLE = "title";
+  
   /**
    * Constructor
    * @throws Exception
    */
   public UIComposer() throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    
     //add textbox for inputting message
     messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
+    messageInput.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIComposer.input.Write_Something"));
     addUIFormInput(messageInput);
 
     //add composer container

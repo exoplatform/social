@@ -81,7 +81,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i + 2).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></label></td>
                 <td class="FieldComponent">
                 <%if (childs.get(i + 2).isRendered()) {
                   uiform.renderField(childs.get(i + 2));
@@ -89,7 +89,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.skills")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i + 3).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.skills")%></label></td>
                 <td class="FieldComponent">
                 <%if (childs.get(i + 3).isRendered()) {
                   uiform.renderField(childs.get(i + 3));
@@ -97,7 +97,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i + 4).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></label></td>
                 <td class="FieldComponent">
                 <%if (childs.get(i + 4).isRendered()) {
                   uiform.renderField(childs.get(i + 4));
@@ -105,7 +105,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></td>
+                <td class="FieldLabel"><label for="<%=childs.get(i + 5).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></label></td>
                 <td class="FieldComponent">
                   <%if (childs.get(i + 5).isRendered()) {
                     uiform.renderField(childs.get(i + 5)); %>

@@ -45,6 +45,10 @@
                scaling="true"
                scrolling="false"
                singleton="false">
+    <Locale messages="locale/ALL_ALL.xml" />
+    <Locale lang="en" messages="locale/en_ALL.xml" />
+    <Locale lang="fr" messages="locale/fr_ALL.xml" />
+    <Locale lang="vi" messages="locale/vi_ALL.xml" />
     <Require feature="opensocial-0.7" />
     <Require feature="dynamic-height" />
     <Require feature="views" />
@@ -796,7 +800,7 @@
       <div id="sample_exec">
         <div id="controls"></div>
         <div id="code_controls"></div>
-        <textarea class="code" id="code_exec">
+        <textarea title="__MSG_default_sample_code__" class="code" id="code_exec">
 /**
  * DEFAULT CODERUNNER SAMPLE CODE
  */

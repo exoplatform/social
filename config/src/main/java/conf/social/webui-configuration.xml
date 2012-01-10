@@ -100,6 +100,7 @@
           <value>locale.social.webui.space.UIPageNodeForm</value>
           <value>locale.social.webui.space.UISpaceSettings</value>
           <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
+          <value>locale.social.webui.activity.BaseUIActivity</value>
         </values-param>
         <values-param>
           <name>portal.resource.names</name>
@@ -144,6 +145,7 @@
           <value>locale.social.webui.space.UIPageNodeForm</value>
           <value>locale.social.webui.space.UISpaceSettings</value>
           <value>locale.social.webui.activity.plugin.UIRelationshipActivity</value>
+          <value>locale.social.webui.activity.BaseUIActivity</value>
         </values-param>
       </init-params>
     </component-plugin>

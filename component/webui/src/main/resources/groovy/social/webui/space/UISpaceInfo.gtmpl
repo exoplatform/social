@@ -57,7 +57,7 @@
           </tr>
           <tr>
             <td class="FieldLabel">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.description")%>
+              <label for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
             </td>
             <td class="FieldComponent"><% uiform.renderField(childs.get(2)); %></td>
           </tr>

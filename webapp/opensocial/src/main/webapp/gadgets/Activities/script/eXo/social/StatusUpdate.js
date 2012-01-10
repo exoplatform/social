@@ -823,7 +823,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         html.push('<div id="CommentForm' + activityId + '" class="CommentFormBlock DisplayNone">')
           html.push('<div class="CommentContent">');
             html.push('<div class="CommentBorder">');
-              html.push('<textarea id="CommentTextarea' + activityId + '" class="CommentTextarea">' + Locale.getMsg('write_a_comment') + '</textarea>');
+              html.push('<textarea title="' + Locale.getMsg('write_a_comment') + '" id="CommentTextarea' + activityId + '" class="CommentTextarea">' + Locale.getMsg('write_a_comment') + '</textarea>');
               html.push('<input id="CommentButton' + activityId + '" class="CommentButton DisplayNone" type="button" value="' + Locale.getMsg('comment') + '" />');
               html.push('<div class="ClearBoth"></div>');
             html.push('</div>');
