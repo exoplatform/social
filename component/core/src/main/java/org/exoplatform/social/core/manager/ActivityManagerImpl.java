@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
@@ -37,8 +36,8 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 
 /**
  * Class ActivityManagerImpl implements ActivityManager without caching.

@@ -283,7 +283,7 @@ public class UIDisplayProfileList extends UIContainer {
 //  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.    
 //    if (filter.getSkills().length() > 0) { 
 //      return uiProfileUserSearch.getIdentitiesBySkills(
-//    		  new ArrayList<Identity>(Arrays.asList(people)));
+//        new ArrayList<Identity>(Arrays.asList(people)));
 //    }
 
     return new ArrayList<Identity>(Arrays.asList(people));

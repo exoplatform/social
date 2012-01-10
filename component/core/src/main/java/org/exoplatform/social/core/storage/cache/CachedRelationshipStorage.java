@@ -17,6 +17,9 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -24,17 +27,20 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
-import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
-import org.exoplatform.social.core.storage.cache.model.key.*;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
+import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
+import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.RelationshipData;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.exoplatform.social.core.storage.cache.model.key.IdentityFilterKey;
+import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
+import org.exoplatform.social.core.storage.cache.model.key.ListRelationshipsKey;
+import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
+import org.exoplatform.social.core.storage.cache.model.key.RelationshipIdentityKey;
+import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
+import org.exoplatform.social.core.storage.cache.model.key.RelationshipType;
+import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
  * Cache support for RelationshipStorage.
@@ -52,7 +58,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   //
   private final FutureExoCache<RelationshipKey, RelationshipData, ServiceContext<RelationshipData>> relationshipCache;
-  private final FutureExoCache<RelationshipIdentityKey, RelationshipKey, ServiceContext<RelationshipKey>> relationshipCacheIdentity;
+  private final FutureExoCache<RelationshipIdentityKey,RelationshipKey,ServiceContext<RelationshipKey>> relationshipCacheIdentity;
   private final FutureExoCache<RelationshipCountKey, IntegerData, ServiceContext<IntegerData>> relationshipsCount;
   private final FutureExoCache<ListRelationshipsKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> relationshipsCache;
 
@@ -283,7 +289,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(identity);
-    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.RELATIONSHIP, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey =
+        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.RELATIONSHIP, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -306,7 +313,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(receiver);
-    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.INCOMMING, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey =
+        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.INCOMMING, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -350,7 +358,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(sender);
-    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.OUTGOING, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey =
+        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.OUTGOING, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
@@ -415,7 +424,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     //
     IdentityKey key = new IdentityKey(identity);
-    ListRelationshipsKey<IdentityKey> listKey = new ListRelationshipsKey<IdentityKey>(key, RelationshipType.CONNECTION, offset, limit);
+    ListRelationshipsKey<IdentityKey> listKey =
+        new ListRelationshipsKey<IdentityKey>(key, RelationshipType.CONNECTION, offset, limit);
     ListIdentitiesData keys = relationshipsCache.get(
         new ServiceContext<ListIdentitiesData>() {
           public ListIdentitiesData execute() {
