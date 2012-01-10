@@ -268,7 +268,7 @@
       <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
       <% } %>
         <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
-          <img width="38px" height="36px" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+          <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>
@@ -302,7 +302,7 @@
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
         <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-          <img src="$currentCommenterAvatar" />
+          <img title="$currentCommenterName" src="$currentCommenterAvatar" alt="$currentCommenterName" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>

@@ -56,7 +56,7 @@ public class URLConverterFilterPluginTest extends TestCase {
     
     assertEquals("Filter should not proccess the text inside <a>", "<a href=\"abc.com\">http://abc.com</a>", "<a href=\"abc.com\">http://abc.com</a>");
     assertEquals("Filter should not proccess the text inside <a>", "<a><div>http://abc.com</div> <div>http://def.com</div></a>","<a><div>http://abc.com</div> <div>http://def.com</div></a>");
-    assertEquals("Filter should not proccess the text inside <a>", "<a><img src=\"x\" /> http://xyz.com </a>","<a><img src=\"x\" /> http://xyz.com </a>");
+    assertEquals("Filter should not proccess the text inside <a>", "<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>","<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>");
   }
   
   /**

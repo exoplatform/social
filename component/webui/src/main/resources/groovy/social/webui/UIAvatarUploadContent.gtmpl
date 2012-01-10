@@ -29,6 +29,7 @@
   def labelImageSize = _ctx.appRes("${uicomponentId}.label.image_size")
   def labelSave = _ctx.appRes("${uicomponentId}.label.save")
   def labelCancel = _ctx.appRes("${uicomponentId}.label.cancel")
+  def avatarTitle = _ctx.appRes("${uicomponentId}.title.Avatar");
   
   def saveAction = uicomponent.event("Save")
   def cancelAction = uicomponent.event("Cancel")
@@ -37,7 +38,7 @@
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
   <div class="AvatarInfo ClearFix">
-    <a class="ImageAvatar"><img src="$imageSource" /></a>
+    <a class="ImageAvatar"><img src="$imageSource" title="$avatarTitle" alt="$avatarTitle" /></a>
     <div><span>$lalbelFileName</span></span> <%= avatarAttachment.fileName %></div>
     <div><span>$labelFileType</span> <%= avatarAttachment.mimeType %></div>
     <div><span>$labelImageSize</span> <%= avatarAttachment.size %></div>

@@ -21,7 +21,7 @@
 */
 %>
 <%
-
+	def uicomponentId = uicomponent.id;
   def appStore = uicomponent.getAppStore();
   def selectedCategory = uicomponent.getSelectedCategory();
   def categories = appStore.keySet().toArray()
@@ -74,11 +74,12 @@
                    def srcBG = "/" + application.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + application.getApplicationName() + ".png"
                    def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"
                    def installAction = uicomponent.event("InstallApplication", application.getApplicationName())
+                   def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
                  %>
                    <div style="cursor: default;" class="UIVTab VTabStyle3" id="<%= application.getId() %>">
                      <div class="VTabContentBG">
                        <div class="OverflowContainer ClearFix">
-                         <img src="$srcBG" onError="src='$srcBGError'" alt=""/>
+                         <img src="$srcBG" onError="src='$srcBGError'" title="$applicationIconTitle" alt="$applicationIconTitle" />
                          <div class="ContentInfo" title="<%= application.getDisplayName() %>">
                              <div class="LabelTab">$applicationLabel</div>
                              <div class="LabelText"><%= application.getDescription() %></div>

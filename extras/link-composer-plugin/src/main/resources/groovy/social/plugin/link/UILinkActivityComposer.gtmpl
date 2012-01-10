@@ -90,7 +90,7 @@
       if(UILinkUtil.isImageLink(link)){
         %>
           <div>
-            <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 
+            <a href="$link" target="_blank"><img src="$link" title="$title" alt="$title" height="120"/></a> 
           </div>
         <%
       }
@@ -103,7 +103,7 @@
                 <%
                   def thumbnailClass = "ThumbnailShown";
                   images.each({ %>
-                   <img src="$it" class="$thumbnailClass" />
+                   <img src="$it" class="$thumbnailClass" title="$title" alt="$title" />
                   <%
                     thumbnailClass = "ThumbnailHidden";
                   })%>

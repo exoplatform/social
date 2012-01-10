@@ -185,7 +185,7 @@
 			  html.push('<div id="ClosePopup" class="ClosePopup" title="Close">[x]</div>');
 			  html.push('</div>');
 			  html.push('<div id="UserAvatar" class="UserAvatar">');
-			  html.push('<img></img>');	
+			  html.push('<img title="Avatar" alt="Avatar"></img>');	
 			  html.push('</div>');
 			  html.push('<div id="UserTitle" class="UserTitle">');
 			  html.push('<span></span>');

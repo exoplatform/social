@@ -87,7 +87,7 @@
 			  	<div class="ContentSpace ClearFix">
 			  <% }%>
 	    	<div class="AvartarPeopleBG">
-	           <img height="47px" width="47px" src="$imageSource"/>
+	           <img height="47px" width="47px" src="$imageSource" title="$fullName" alt="$fullName" />
 	        </div>
 	    	<div class="CommunityContainer">
 	        <div class="CommunityMane Line">

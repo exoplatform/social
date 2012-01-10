@@ -307,7 +307,7 @@ eXo.social.LinkShare.prototype.addAttachAction = function() {
       <div class="LinkShareDisplay">
         <div class="ThumbnailLeft">
           <a class="ThumbnailBG" href="#">
-            <img class="Thumbnail" src="http://localhost:8080/social/gadgets/activities2/style/images/AvatarPeople.gif"/>
+            <img class="Thumbnail" alt="Avatar" src="http://localhost:8080/social/gadgets/activities2/style/images/AvatarPeople.gif"/>
           </a>
           <div class="ThumbnailAction">
             <div class="BackIcon"><span></span></div>
@@ -387,7 +387,7 @@ eXo.social.LinkShare.prototype.addAttachDisplay = function() {
 /**
  * gets ThumbnailDisplay fragment
           <a class="ThumbnailBG" href="#">
-            <img class="Thumbnail" src="http://localhost:8080/social/gadgets/activities2/style/images/AvatarPeople.gif"/>
+            <img class="Thumbnail" alt="Avatar" src="http://localhost:8080/social/gadgets/activities2/style/images/AvatarPeople.gif"/>
           </a>
           <div class="ThumbnailAction">
             <div class="BackIcon"><span></span></div>
@@ -403,7 +403,7 @@ eXo.social.LinkShare.prototype.getThumbnailDisplay = function() {
   if (LinkShare.data.selectedImageIndex === null) return;
   var thumbnailDisplay = [];
   thumbnailDisplay.push('<div>');
-    thumbnailDisplay.push('<img class="Thumbnail" src="' + LinkShare.data.images[LinkShare.data.selectedImageIndex] + '" />');
+    thumbnailDisplay.push('<img class="Thumbnail" src="' + LinkShare.data.images[LinkShare.data.selectedImageIndex] + '" title="' + LinkShare.data.title + '" alt="' + LinkShare.data.title + '" />');
   thumbnailDisplay.push('</div>');
   thumbnailDisplay.push('<div class="ThumbnailAction">');
     thumbnailDisplay.push('<div id="BackThumbnail" class="BackIcon"><span></span></div>');
@@ -596,7 +596,7 @@ eXo.social.LinkShare.prototype.addEventListenerToSelector = function() {
  *  <div class="Extension LinkShare"> <!-- constructs the content from this tag -->
  *		<div class="Link"></div>
  *  	<div class="Thumbnail">
- * 			<img src="" />
+ * 			<img src="" alt="" />
  * 		</div>
  * 		<div class="Detail">
  * 			<p class="Title"></p>
@@ -613,7 +613,7 @@ eXo.social.LinkShare.prototype.constructContent = function() {
   if (eXo.social.LinkShare.data.images.length > 0) {
     if (eXo.social.LinkShare.data.noThumbnail == null || eXo.social.LinkShare.data.noThumbnail == false) {
     content.push("<div class=\"Thumbnail\">");
-      content.push("<img title=\"" + eXo.social.LinkShare.data.title + "\" src=\"" + eXo.social.LinkShare.data.images[eXo.social.LinkShare.data.selectedImageIndex] + "\" />");
+      content.push("<img title=\"" + eXo.social.LinkShare.data.title + "\" src=\"" + eXo.social.LinkShare.data.images[eXo.social.LinkShare.data.selectedImageIndex] + "\" alt=\"" + eXo.social.LinkShare.data.title + "\" />");
     content.push("</div>");
     }//end if
   } //end if

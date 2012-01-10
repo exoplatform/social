@@ -96,6 +96,7 @@
         if (imageSource == null) {
           imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
         }
+        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
         mySpaceIdx += 1;
     %>
 
@@ -107,14 +108,14 @@
       <!-- Leader -->
       <% if (role == 1) {%>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
-          <img alt="#" src="$imageSource" />
+          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
             <a class="Text" href="<%= spaceUrl %>"><%= space.displayName %></a>
-            <img title="$iconImgLabel" src="$iconImgSource" />
+            <img title="$iconImgLabel" src="$iconImgSource" alt="$iconImgLabel" />
           </div>
           <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">
@@ -137,14 +138,14 @@
         iconImgSource = LinkProvider.SPACE_MEMBER_ICON
       %>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
-          <img alt="#" src="$imageSource" />
+          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
             <a class="Text" href="<%= spaceUrl %>">$space.displayName</a> 
-            <img title="$iconImgLabel" src="$iconImgSource" />
+            <img title="$spaceAvatarTitle" src="$iconImgSource" alt="$iconImgLabel" />
           </div>
           <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">

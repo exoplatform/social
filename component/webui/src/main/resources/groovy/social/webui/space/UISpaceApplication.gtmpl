@@ -41,9 +41,10 @@
          def appName = uicomponent.getAppName(app);
          def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
          def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+         def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
   %>
     <div class="ContentSpace ClearFix">
-      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" alt=""/></div>
+      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" title="$applicationIconTitle" alt="$applicationIconTitle" /></div>
       <div class="CommunityContainer">
         <div class="CommunityMane ClearFix Line">
           <div class="CommunityName FL"><%= appName %></div>

@@ -71,7 +71,7 @@ RssFetch.prototype.loadPage = function() {
   var feedEl = _gel("rssFeed");
   var currentView = gadgets.views.getCurrentView().getName();
 
-  var bullet = "<img src='" + eXo.social.thisRssFetch.getFavicon(feedurl) + "' alt='' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
+  var bullet = "<img src='" + eXo.social.thisRssFetch.getFavicon(feedurl) + "' tilte='rssIcon' alt='rssIcon' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
 
   while ( feedEl.hasChildNodes() )
   {

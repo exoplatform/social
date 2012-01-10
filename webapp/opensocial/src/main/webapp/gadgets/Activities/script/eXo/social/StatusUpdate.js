@@ -359,6 +359,7 @@ eXo.social.StatusUpdate.prototype.refresh = function() {
     return;
   }
   imgOwnerAvatar.src = statusUpdate.getAvatar(statusUpdate.owner.getId(), true);
+  imgOwnerAvatar.alt = statusUpdate.getName(statusUpdate.owner.getId());
   //set owner href
   var ownerProfileUrl = statusUpdate.owner.getField(opensocial.Person.Field.PROFILE_URL);
   var ownerAvatar = Util.getElementById(config.ui.UI_OWNER_AVATAR);
@@ -646,7 +647,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
       var html = [];
       html.push('<div class="ActivitiesContent">');
         html.push('<a href="' + profileUrl + '" target="_parent" title="' + userName + '" class="AvatarPeopleBG">');
-          html.push('<img height="47px" width="47px" src="' + avatarUrl + '" title="' + userName + '" />');
+          html.push('<img height="47px" width="47px" src="' + avatarUrl + '" title="' + userName + '" alt="' + userName + '" />');
         html.push('</a>');
 		    if (templateParams == undefined) {
 		      html.push('<div class="Content">');
@@ -708,7 +709,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
       var html = [];
       html.push('<div class="ActivitiesContent">');
         html.push('<a href="#" class="AvatarPeopleBG">');
-          html.push('<img height="47px" width="47px" src="' + avatarUrl + '" />');
+          html.push('<img height="47px" width="47px" src="' + avatarUrl + '" title="' + userName + '" alt="' + userName + '" />');
         html.push('</a>');
         html.push('<div class="LinkShareContent">');
           html.push('<div class="TitleContent" style="height: 24px;">');
@@ -739,7 +740,7 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
         html.push('<div class="LinkShare">')
           html.push('<div class="Thumbnail">');
           if (jsonTitle.image !== '') {
-            html.push('<img width="100px" src="' + jsonTitle.image + '" title="' + jsonTitle.title + '" />');
+            html.push('<img width="100px" src="' + jsonTitle.image + '" title="' + jsonTitle.title + '" alt="' + jsonTitle.title + '" />');
           }
           html.push('</div>');
         if (jsonTitle.image !== '') {

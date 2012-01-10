@@ -70,6 +70,7 @@
         if (imageSource == null) {
           imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
         }
+        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
         mySpaceIdx += 1;
     %>
 
@@ -79,14 +80,14 @@
     <div class="NormalBox ClearFix FL">
     <% } %>
       <div class="AvatarSpace">
-        <img alt="#" src="$imageSource" />
+        <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
         <span class="BorderTop"></span>
         <span class="BorderBottom"></span>
       </div>
       <div class="ContentBox">
         <div class="TitleContent">
           <a class="Text" href="javascript:void(0)">$space.displayName</a> 
-          <img title="$iconImgLabel" src="$LinkProvider.SPACE_WAITING_CONFIRM_ICON" />
+          <img title="$iconImgLabel" src="$LinkProvider.SPACE_WAITING_CONFIRM_ICON" alt="$iconImgLabel" />
         </div>
         <div><span class="MembersCount" />$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
         <div class="Content">

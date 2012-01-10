@@ -174,7 +174,7 @@
           if (linkImage.equals("")) {
             linkClass = "";
           } else {
-            link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" />";
+            link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
           }
         %>
       <div class="TitleBlock">$linkComment</div>
@@ -291,7 +291,7 @@
     <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
   <% } %>
       <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
-        <img width="38px" height="36px" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+        <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
         <span class="BorderTopCM"></span>
         <span class="BorderBottomCM"></span>
       </a>
@@ -326,7 +326,7 @@
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
       <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-        <img src="$currentCommenterAvatar" />
+        <img src="$currentCommenterAvatar" title="$currentCommenterName" alt="$currentCommenterName" />
 		    <span class="BorderTopCM"></span>
         <span class="BorderBottomCM"></span>
 		  </a>

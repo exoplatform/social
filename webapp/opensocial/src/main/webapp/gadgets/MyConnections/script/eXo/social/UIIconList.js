@@ -420,7 +420,7 @@
   	var userBlock = [];
 		
 		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
-			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
+			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img title="' + Comment.refer.connectionActivity.displayName + '" alt="' + Comment.refer.connectionActivity.displayName + '" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
 				userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
 				userBlock.push('<div class="Member"> Member</div>');

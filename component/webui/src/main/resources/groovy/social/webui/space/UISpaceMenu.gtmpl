@@ -25,6 +25,8 @@
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
 
+  def uicomponentId = uicomponent.id;
+	
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
@@ -34,6 +36,7 @@
   if (imageSource == null) {
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
+  def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 
   public String getFitString(String nodeLabel, int maxLen) {
     def labelStr = "";
@@ -78,7 +81,7 @@
 <div class="UISpaceMenu" id="UISpaceMenu">
   <div class="SpaceMenuPortlet ClearFix">
     <div class="UISpaceName FL ">
-      <a class="Avartar" href="$homeUrl"><img alt="Avatar" src="$imageSource" width="35" height="35" /></a>
+      <a class="Avartar" href="$homeUrl"><img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
       <a title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
       <% if (uicomponent.hasSettingPermission()) { %>
       <a class="SpaceSettingIcon" href='$homeUrl/settings' title="$settingsLabel"><span>&nbsp</span></a>

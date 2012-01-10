@@ -76,7 +76,7 @@
 	<% }%>
 				
             <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="#"/>
+              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
               <span class="BorderTop"></span>
               <span class="BorderBottom"></span>
             </a>

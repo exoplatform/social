@@ -56,7 +56,7 @@
   <% uicomponent.renderChild(UIPopupWindow.class); %>
   <%if (Utils.isOwner()) { %>
       <a onclick="<%=uicomponent.event("ChangePicture")%>; return false;" href="javascript:void(0)" class="Avartar Editable" title="$changePictureLabel">
-        <img alt="$currentUser" src="$imageSource"/>
+        <img title="$currentUser" alt="$currentUser" src="$imageSource"/>
 		<span class="BorderTopLanger"></span>
         <span class="BorderBottomLanger"></span>
       </a>
@@ -65,7 +65,7 @@
       </div>
   <% } else {%>
       <a class="Avartar">
-        <img alt="$currentUser" src="$imageSource"/>
+        <img title="$currentUser" alt="$currentUser" src="$imageSource"/>
 		<span class="BorderTopLanger"></span>
         <span class="BorderBottomLanger"></span>
       </a>

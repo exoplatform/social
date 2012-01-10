@@ -10,7 +10,7 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
     super(params);
   }
 
-  String smiley =  "<img src=\"http://www.tombraider4u.com/pictures/smiley.gif\"/>";
+  String smiley =  "<img src=\"http://www.tombraider4u.com/pictures/smiley.gif\" title=\"Smiley\" alt=\"Smiley\" />";
 
   public void processActivity(ExoSocialActivity activity) {
     String title = activity.getTitle();

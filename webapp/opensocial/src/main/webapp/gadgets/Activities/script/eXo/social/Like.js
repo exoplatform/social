@@ -206,7 +206,7 @@ eXo.social.Like.renderListPeople = function(activityId, likes) {
       var thumbnail = '/social-resources/skin/ShareImages/activity/AvatarPeople.gif';
       if (likes[i].thumbnail !== null)	thumbnail = likes[i].thumbnail;
       html.push('<a href="' + profileUrl + '" target="_parent" title="' + profileUrl + '"  class="AvatarPeopleBG">');
-        html.push('<img title="' + userName + '" alt="" height="47px" width="47px" src="' + thumbnail + '" />');
+        html.push('<img title="' + userName + '" alt="' + userName + '" height="47px" width="47px" src="' + thumbnail + '" />');
       html.push('</a>');
     }
   }
