@@ -28,7 +28,7 @@ Here is an example of the configuration file that displays the menu on the left.
 
 In this example, the outer container contains two inner containers: one container has id as *Menu* for your Menu and another has id as *Application* containing your applications.
 
-!images/spaces.png!
+!images/spaces.png| align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 If you want to put the menu on the right and the application on the left, you can swap the declared position of these two containers:
 

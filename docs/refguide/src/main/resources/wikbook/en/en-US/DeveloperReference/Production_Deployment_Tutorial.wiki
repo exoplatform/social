@@ -128,7 +128,7 @@ h2. 404 error on activity page {anchor:id=SOCref.DeveloperReference.error_on_act
 
 On Activities page, you may see a 404 error instead of the activity stream.
 
-!images/activity-404.png!
+!images/activity-404.png|align="center" width="100mm" fo:scalefit="1" html:scalefit="0"!
 
 This is due to a [limitation|https//jira:jboss.org-jira-browse-GTNPORTAL-1060] of GateIn. The current workaround involves a few manual steps:
 * First login as root

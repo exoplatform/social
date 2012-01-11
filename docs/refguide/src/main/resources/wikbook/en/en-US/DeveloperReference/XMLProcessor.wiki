@@ -4,7 +4,7 @@ This section shows you the way to change the content of input texts by using and
 h1. XMLProccessor Component {anchor:id="SOCref_developreference_XMLProcessor_Components"}
 This service processes the input texts in the system by pushing it through a filter (plugin) chain and returns a result as the diagram below:
 
-!images/ProcessorAndFilterSquenceDia.png|align="center"!
+!images/ProcessorAndFilterSquenceDia.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0" !
 
 Each filter is responsible for enriching the content of the input texts. For example, highlight usernames existing in a user's connection or
 remove the forbidden HTML tags.
@@ -51,7 +51,7 @@ In eXo Social, there are the following built-in XMLProcessor plugins (also known
 
 The following is the general Class diagram of XMLProcesscor in eXo Social:
 
-!images/ProcessorAndFilterClassDiagram.png!
+!images/ProcessorAndFilterClassDiagram.png|align="center" width="120mm" fo:scalefit="1" html:scalefit="0"!
 
 All of these filters implements the Filter interface as follows: {anchor: id="Filter_Interface"}
 {code:java}
