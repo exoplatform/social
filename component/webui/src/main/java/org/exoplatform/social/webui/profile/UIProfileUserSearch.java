@@ -332,8 +332,8 @@ public class UIProfileUserSearch extends UIForm {
     String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
     String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
 
-	  UIFormStringInput search = new UIFormStringInput(SEARCH, USER_CONTACT, defaultName);
-	  search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultName);
+    UIFormStringInput search = new UIFormStringInput(SEARCH, USER_CONTACT, defaultName);
+    search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultName);
     addUIFormInput(search);
     UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos);
     position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultPos);
