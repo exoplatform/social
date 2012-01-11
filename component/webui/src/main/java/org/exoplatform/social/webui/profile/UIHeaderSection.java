@@ -54,10 +54,10 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIHeaderSection extends UIProfileSection {
 
   /** Label for display invoke action */
-  private static final String INVITATION_REVOKED_INFO = "UIProfileNavigationPortlet.label.RevokedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIHeaderSection.label.RevokedInfo";
 
   /** Label for display established invitation */
-  private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
+  private static final String INVITATION_ESTABLISHED_INFO = "UIHeaderSection.label.InvitationEstablishedInfo";
 
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
