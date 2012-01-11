@@ -661,7 +661,7 @@ public class SpaceUtils {
     }
 
     try {
-      // adds user as creator (manager)
+      // adds user as creator (member, manager)
       addCreatorToGroup(creator, groupId);
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
@@ -735,7 +735,8 @@ public class SpaceUtils {
    * @throws SpaceException with code UNABLE_TO_ADD_CREATOR
    */
   public static void addCreatorToGroup(String creator, String groupId) {
-    addUserToGroupWithMembership(creator, groupId, MANAGER);
+    addUserToGroupWithMemberMembership(creator, groupId);
+    addUserToGroupWithManagerMembership(creator, groupId);
   }
 
   /**
@@ -750,16 +751,22 @@ public class SpaceUtils {
     OrganizationService organizationService = getOrganizationService();
     try {
       // TODO: checks whether user is already manager?
+      MembershipHandler membershipHandler = organizationService.getMembershipHandler();
+      Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
+      if (found != null) {
+        LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership: " + membership);
+        return;
+      }
       User user = organizationService.getUserHandler().findUserByName(remoteId);
       MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
       GroupHandler groupHandler = organizationService.getGroupHandler();
       Group existingGroup = groupHandler.findGroupById(groupId);
-      organizationService.getMembershipHandler().linkMembership(user, existingGroup, membershipType, true);
+      membershipHandler.linkMembership(user, existingGroup, membershipType, true);
     } catch (Exception e) {
       LOG.warn("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership);
     }
   }
-  
+
   /**
    * Adds the user to group with the membership (member). 
    * 
@@ -797,7 +804,8 @@ public class SpaceUtils {
       if (MEMBER.equals(membership)) {
           Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(remoteId, groupId);
           if (memberships.size() == 0) {
-            LOG.warn("User " + remoteId + " is not member");
+            LOG.info("User: " + remoteId + " is not a member of group: " + groupId);
+            return;
           }
           Iterator<Membership> itr = memberships.iterator();
           while (itr.hasNext()) {
@@ -807,7 +815,7 @@ public class SpaceUtils {
       } else if (MANAGER.equals(membership)) {
           Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MANAGER);
           if (memberShip == null) {
-            LOG.warn("User: " + remoteId + " is not manager of group: ");
+            LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
             return;
           }
           UserHandler userHandler = organizationService.getUserHandler();
@@ -880,7 +888,20 @@ public class SpaceUtils {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
     }
   }
-  
+
+  /**
+   * Refreshes the current user portal (navigation caching refresh).
+   *
+   * @since 1.2.8
+   */
+  public static void refreshNavigation() {
+    UserPortal userPortal = getUserPortal();
+
+    if (userPortal != null) {
+      userPortal.refresh();
+    }
+  }
+
   /**
    * Using this method to get the UserPortal make sure that the data is latest.
    * It's will remove the caching.
