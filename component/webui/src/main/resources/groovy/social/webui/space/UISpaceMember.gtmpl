@@ -138,7 +138,7 @@
 		  <% } %>
 			<td><%=invitedUser %></td>
 			<td>
-			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction">&nbsp;</a>
+			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction"></a>
 			</td>
 		  </tr>
 		<% } /*end for*/%>
@@ -186,21 +186,21 @@
 			  <% if(isLeader) { %>
 			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader">&nbsp;</a>
+				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader"></a>
 			  <% } else {%>
-				<a href="#" class="ManageMemButtonSub label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader">&nbsp;</a>
+				<a href="#" class="ManageMemButtonSub label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader"></a>
 			  <% } %>
 			  </td>
 			  <% } else { %>
 			  <td>
-				<a class="ManageMemButtonAdd label" onclick="$makeLeader" title="$labelMakeLeader">&nbsp;</a>
+				<a class="ManageMemButtonAdd label" onclick="$makeLeader" title="$labelMakeLeader"></a>
 			  </td>
 			  <% } %>
 			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteButton IconDelete">&nbsp;</a>
+				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
 			  <% } else { %>
-				<a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteButton IconDelete">&nbsp;</a>
+				<a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
 			  <% } %> 
 			  </td>
 			</tr>
