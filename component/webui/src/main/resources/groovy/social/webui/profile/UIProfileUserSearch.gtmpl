@@ -115,7 +115,7 @@
       <label for="<%=childs.get(0).getId()%>" class="Lable">${searchByNameLabel}:&nbsp;</label>
     	<% uiform.renderField(childs.get(0));%>
     	<div class="UIAction">
-	     <span class="ActionButton LightBlueStyle"><a class="AddSpaceIcon" href="#" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></a></span>
+	     <span class="ActionButton LightBlueStyle"><a id="SearchButton" class="AddSpaceIcon" href="#" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></a></span>
 	    </div>
     </div>
 	<div class="ClearFix">
