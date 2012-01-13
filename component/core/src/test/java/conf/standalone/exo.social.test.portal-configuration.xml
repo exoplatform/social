@@ -155,6 +155,54 @@
                     </field>
                   </object>
                 </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>ghost</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Ghost</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>ghost@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>paul</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Paul</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>paul@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>raul</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Raul</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>raul@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>jame</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Jame</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>jame@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
               </collection>
             </field>
           </object>
