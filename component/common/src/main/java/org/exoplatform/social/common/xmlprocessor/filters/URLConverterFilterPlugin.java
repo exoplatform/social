@@ -46,8 +46,22 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
   private int urlMaxLength = -1;
   private static final Log LOG = ExoLogger.getLogger(URLConverterFilterPlugin.class);
   
-  private static final Pattern pattern = Pattern
-      .compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+  private static final Pattern URL_PATTERN = Pattern
+      .compile("(?i)" +
+      "(" +
+        "((?:(?:ht|f)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "(?:\\w+:\\w+@)?" +                                                                       // username password
+        "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
+        "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
+        "(?:(?:[-\\w]+\\.)+(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+        "(?:(?:(?:ht|f)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\w]+))" +                           // Protocol with hostname
+      ")" +
+      "(?::[\\d]{1,5})?" +                                                                        // port
+      "(?:[\\/|\\?|\\#][^\\s]*)?");                                                               // path and query
+
+
+  private static final Pattern HAVE_PROTOCOL_PREFIX = Pattern.compile("(?i)^(?:(?:ht|f)tp(?:s?)).*");
+  private static final String DEFAULT_PROTOCOL = "http://";
   
   /**
    * Constructor with max length of URL, if url.length > UrlMaxLength then the url display will be shorten.
@@ -133,44 +147,53 @@ public class URLConverterFilterPlugin extends BaseXMLFilterPlugin {
       
       int lastMatch = 0;
       
-      Matcher m = pattern.matcher(content);
+      Matcher m = URL_PATTERN.matcher(content);
       
       while (m.find()) {
-        String url = content.substring(m.start(), m.end());
+        String textLink = content.substring(m.start(), m.end());
+        String url = textLink;
+        int start = m.start();
+        int end = m.end();
         
-        // case when string like this: "abc http://xyz" so we must create text node abc
-        if(m.start() > lastMatch){
-          Node textNode = new Node();
-          textNode.setContent(StringEscapeUtils.escapeHtml(content.substring(lastMatch, m.start())));
+        if((start == 0 || content.charAt(start-1) == ' ') &&
+            (end == content.length() || content.charAt(end) == ' ')){
+          if(!HAVE_PROTOCOL_PREFIX.matcher(url).matches()){
+            url = DEFAULT_PROTOCOL + url;
+          }
+          // case when string like this: "abc http://xyz" so we must create text node abc
+          if(m.start() > lastMatch){
+            Node textNode = new Node();
+            textNode.setContent(StringEscapeUtils.escapeHtml(content.substring(lastMatch, m.start())));
+            
+            parrentNode.insertAfter(currentProccessNode, textNode);
+            currentProccessNode = textNode;
+            insertedCount++;
+          }
           
-          parrentNode.insertAfter(currentProccessNode, textNode);
-          currentProccessNode = textNode;
+          // create <a> node
+          Node aHrefNode = new Node();
+          aHrefNode.setTitle("a");
+          aHrefNode.setParentNode(parrentNode); // set parent of <a>
+          
+          // set attribute for <a> 
+          Attributes aHrefNodeAttributes = new Attributes();
+          aHrefNodeAttributes.put("href", url);
+          aHrefNodeAttributes.put("target", "_blank");
+          aHrefNode.setAttributes(aHrefNodeAttributes);
+          
+          // Create text node for <a>, text node inside <a> and position is 0
+          Node aHrefContentNode = new Node();
+          aHrefContentNode.setContent(StringEscapeUtils.escapeHtml(shortenURL(textLink)));
+          aHrefContentNode.setParentNode(aHrefNode);
+          aHrefNode.addChildNode(aHrefContentNode);
+          
+          // insert <a> to the child list of parrentNode
+          parrentNode.insertAfter(currentProccessNode, aHrefNode);
+          currentProccessNode = aHrefNode;
+          
+          lastMatch = m.end(); // update the lastMatch of 
           insertedCount++;
         }
-        
-        // create <a> node
-        Node aHrefNode = new Node();
-        aHrefNode.setTitle("a");
-        aHrefNode.setParentNode(parrentNode); // set parent of <a>
-        
-        // set attribute for <a> 
-        Attributes aHrefNodeAttributes = new Attributes();
-        aHrefNodeAttributes.put("href", url);
-        aHrefNodeAttributes.put("target", "_blank");
-        aHrefNode.setAttributes(aHrefNodeAttributes);
-        
-        // Create text node for <a>, text node inside <a> and position is 0
-        Node aHrefContentNode = new Node();
-        aHrefContentNode.setContent(StringEscapeUtils.escapeHtml(shortenURL(url)));
-        aHrefContentNode.setParentNode(aHrefNode);
-        aHrefNode.addChildNode(aHrefContentNode);
-        
-        // insert <a> to the child list of parrentNode
-        parrentNode.insertAfter(currentProccessNode, aHrefNode);
-        currentProccessNode = aHrefNode;
-        
-        lastMatch = m.end(); // update the lastMatch of 
-        insertedCount++;
       }
       if((lastMatch + 1) < content.length()){
         Node textNode = new Node();

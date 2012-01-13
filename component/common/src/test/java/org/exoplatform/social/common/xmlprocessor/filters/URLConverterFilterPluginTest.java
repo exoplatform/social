@@ -32,7 +32,7 @@ public class URLConverterFilterPluginTest extends TestCase {
     Filter urlConverterFilter = new URLConverterFilterPlugin(0);
 
     assertEquals("<a href=\"http://google.com\" target=\"_blank\"" +
-    		        ">http://google.com</a>", urlConverterFilter.doFilter("http://google.com"));
+                ">http://google.com</a>", urlConverterFilter.doFilter("http://google.com"));
     
     assertEquals("<a href=\"http://google.com/\" target=\"_blank\"" +
                 ">http://google.com/</a> " +
@@ -54,9 +54,47 @@ public class URLConverterFilterPluginTest extends TestCase {
     assertEquals("<a href=\"http://abc.com:80/abc.jsp?a=1&b=2\" target=\"_blank\">http://abc.com:80/abc.jsp?a=1&amp;b=2</a>",
         urlConverterFilter.doFilter("http://abc.com:80/abc.jsp?a=1&b=2"));
     
-    assertEquals("Filter should not proccess the text inside <a>", "<a href=\"abc.com\">http://abc.com</a>", "<a href=\"abc.com\">http://abc.com</a>");
-    assertEquals("Filter should not proccess the text inside <a>", "<a><div>http://abc.com</div> <div>http://def.com</div></a>","<a><div>http://abc.com</div> <div>http://def.com</div></a>");
-    assertEquals("Filter should not proccess the text inside <a>", "<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>","<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>");
+    assertEquals( "<a href=\"http://cwks:9090\" target=\"_blank\">http://cwks:9090</a> " +
+        "<a href=\"http://localhost:8080/\" target=\"_blank\">http://localhost:8080/</a> " +
+        "<a href=\"http://phuonglm:gtn@localhost:8080\" target=\"_blank\">http://phuonglm:gtn@localhost:8080</a> " +
+        "<a href=\"http://cwks\" target=\"_blank\">http://cwks</a> " +
+        "<a href=\"HTTP://abc.com\" target=\"_blank\">HTTP://abc.com</a> " +
+        "<a href=\"HTTP://mary:gtn@abc.com:8080\" target=\"_blank\">HTTP://mary:gtn@abc.com:8080</a> " +
+        "<a href=\"HTTP://mary:gtn@abc.com:8080\" target=\"_blank\">HTTP://mary:gtn@abc.com:8080</a> " +
+        "<a href=\"hTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks\" target=\"_blank\">" +
+          "hTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks" +
+        "</a> " +
+        "<a href=\"HTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1\" target=\"_blank\">" +
+           "HTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1" +
+        "</a> " +
+        "<a href=\"http://abc.com\" target=\"_blank\">abc.com</a> " +
+        "<a href=\"http://mary:gtn@abc.com:8080\" target=\"_blank\">mary:gtn@abc.com:8080</a> " +
+        "<a href=\"http://mary:gtn@abc.com:8080\" target=\"_blank\">mary:gtn@abc.com:8080</a> " +
+        "<a href=\"http://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks\" target=\"_blank\">" +
+          "mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks" +
+        "</a> " +
+        "<a href=\"http://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1\" target=\"_blank\">" +
+          "mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1" +
+        "</a> " +
+        "mary*gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1",
+        urlConverterFilter.doFilter("http://cwks:9090 http://localhost:8080/ http://phuonglm:gtn@localhost:8080 " +
+            "http://cwks HTTP://abc.com HTTP://mary:gtn@abc.com:8080 HTTP://mary:gtn@abc.com:8080 " +
+            "hTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks " +
+            "HTTP://mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1 " +
+            "abc.com mary:gtn@abc.com:8080 mary:gtn@abc.com:8080 mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks " +
+            "mary:gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1 " +
+            "mary*gtn@abc.com:8080/abc.php?blabla=/google@cwks#click1")); 
+    
+    assertEquals("Do not convert invalid domain abc.def",
+        "abc.def", urlConverterFilter.doFilter("abc.def"));
+    assertEquals("Filter should not proccess the text inside <a>",
+        "<a href=\"abc.com\">http://abc.com</a>", urlConverterFilter.doFilter("<a href=\"abc.com\">http://abc.com</a>"));
+    assertEquals("Filter should not proccess the text inside <a>",
+        "<a><div>http://abc.com</div> <div>http://def.com</div></a>",
+        urlConverterFilter.doFilter("<a><div>http://abc.com</div> <div>http://def.com</div></a>"));
+    assertEquals("Filter should not proccess the text inside <a>",
+        "<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>",
+        urlConverterFilter.doFilter("<a><img src=\"x\" alt=\"x\" /> http://xyz.com </a>"));
   }
   
   /**

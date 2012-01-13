@@ -33,7 +33,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 public class LinkShareRestServiceTest extends AbstractResourceTest {
 
   static private LinkShareRestService linkShareRestService;
-  private final String RIGHT_LINK = "http://google.com";
+  private final String RIGHT_LINK = "hTTp://google.com";
   private final String WRONG_LINK = "http://google.com/ahgo/ahgoeh";
   public void setUp() throws Exception {
     super.setUp();
