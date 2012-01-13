@@ -201,9 +201,9 @@ public class LinkProvider {
   public static String getActivityUri(final String providerId, final String remoteId) {
     final String prefix = getBaseUri(null, null) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
-      return prefix + "activities" + ROUTE_DELIMITER + remoteId;
+      return String.format("%sactivities/%s",prefix,remoteId);
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
-      return prefix + ROUTE_DELIMITER + remoteId;
+      return String.format("/%s/g/:spaces:%s/%s",getPortalName(null),remoteId,remoteId);
     } else {
       LOG.warn("Failed to getActivityLink with providerId: " + providerId);
     }
