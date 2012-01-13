@@ -35,7 +35,7 @@
   def editSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_edit_space")
   def deleteSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_delete_space")
   def acceptInvitationLabel  = _ctx.appRes("${uicomponentId}.label.accept_invitation_to_join_space")
-  def denyInvitationLabel  = _ctx.appRes("${uicomponentId}.label.deny_invitation_to_join_space")
+  def ignoreInvitationLabel  = _ctx.appRes("${uicomponentId}.label.ignore_invitation_to_join_space")
   def cancelInvitationLabel  = _ctx.appRes("${uicomponentId}.label.cancel_invitation")
   
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
@@ -43,7 +43,6 @@
   def openStatus = _ctx.appRes("${uicomponentId}.status.open")
   def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
   def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
-  def labelNoSpace = _ctx.appRes("${uicomponentId}.label.no_space")
   def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
   
   if (uicomponent.isLoadAtEnd()) {
@@ -62,19 +61,13 @@
   <% uicomponent.renderChild(UISpaceSearch.class); %>
   <div class="BoxSpaceList ClearFix">
 
-    <%if (allSpaces.size() == 0) {%>
-    <div class="NoneBox">
-      <div class="NotYet">$labelNoSpace</div>
-    </div>
-    <%}%>
     <%for (space in allSpaces) {
         def typeOfSpace = uicomponent.getTypeOfSpace(space);
-        def iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
-        def iconImgSource = LinkProvider.SPACE_MANAGER_ICON
+        def iconImgLabel = null
         def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
         def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
         def acceptInvitationAction = uicomponent.event("AcceptInvitation", space.id) + "; return false"
-        def denyInvitationAction = uicomponent.event("DenyInvitation", space.id) + "; return false"
+        def ignoreInvitationAction = uicomponent.event("IgnoreInvitation", space.id) + "; return false"
         def cancelInvitationAction = uicomponent.event("CancelInvitation", space.id) + "; return false"
         def requestToJoinSpaceAction = uicomponent.event("RequestToJoin", space.id) + "; false"
         def spaceUrl = Utils.getSpaceHomeURL(space)
@@ -87,21 +80,18 @@
         
         if ("INVITED".equals(typeOfSpace.toString())) {
           // Action{Accept-Deny}, Icon {Clock}
-          iconImgSource = LinkProvider.SPACE_WAITING_CONFIRM_ICON
           iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
         } else if ("SENT".equals(typeOfSpace.toString())) {
           // Action{Cancel}, Icon{Clock}
-          iconImgSource = LinkProvider.SPACE_WAITING_CONFIRM_ICON
-          iconImgLabel = _ctx.appRes("${uicomponentId}.label.sent_invitation_to_join_space")
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending")
         } else if ("MEMBER".equals(typeOfSpace.toString())) {
           //  Action{Leave}, Icon{Link}
-          iconImgSource = LinkProvider.SPACE_MEMBER_ICON
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
         } else if ("MANAGER".equals(typeOfSpace.toString())) {
           // Action{Edit-Leave-Delete}, Icon{Member}
           iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
         } else {
           // Action{Join}, Icon{None}
-          iconImgSource=""
         }
         
         //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
@@ -151,9 +141,9 @@
             <% } else {%>
             <a class="Text" href="javascript:void(0)">$space.displayName</a>
             <% } %> 
-            <%if (iconImgSource != "") {%>
-              <img title="$iconImgLabel" src="$iconImgSource" alt="$iconImgLabel" />
-            <%}%>
+            <% if (iconImgLabel) {%>
+            	($iconImgLabel)
+            <% } %>
           </div>
           <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">
@@ -163,7 +153,7 @@
 		      <% if ("INVITED".equals(typeOfSpace.toString())) { %>
 		          <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptInvitationAction %>" title="<%= acceptInvitationLabel %>" class="Action">$acceptInvitationLabel</a></li>
 		          <li class="Line FL">&nbsp;</li>
-		          <li class="FL"><a href="javascript:void(0)" onclick="<%= denyInvitationAction %>" title="<%= denyInvitationLabel %>" class="Action">$denyInvitationLabel</a></li>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreInvitationAction %>" title="<%= ignoreInvitationLabel %>" class="Action">$ignoreInvitationLabel</a></li>
 		      <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
 		          <li class="FL"><a href="javascript:void(0)" onclick="<%= cancelInvitationAction %>" title="<%= cancelInvitationLabel %>" class="Action">$cancelInvitationLabel</a></li>
 		      <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>

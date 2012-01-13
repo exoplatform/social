@@ -31,6 +31,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -52,7 +53,7 @@ import org.exoplatform.webui.event.Event.Phase;
   template="classpath:groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
   events = {
     @EventConfig(listeners = UIManageInvitationSpaces.AcceptActionListener.class),
-    @EventConfig(listeners = UIManageInvitationSpaces.DenyActionListener.class),
+    @EventConfig(listeners = UIManageInvitationSpaces.IgnoreActionListener.class),
     @EventConfig(listeners = UIManageInvitationSpaces.SearchActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIManageInvitationSpaces.LoadMoreSpaceActionListener.class)
   }
@@ -368,14 +369,18 @@ public class UIManageInvitationSpaces extends UIContainer {
       spaceService.addMember(space, userId);
       uiManageInvitationSpaces.setHasUpdatedSpace(true);
       SpaceUtils.updateWorkingWorkSpace();
+      
+      JavascriptManager jsManager = ctx.getJavascriptManager();
+      jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
+          "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
     }
   }
 
   /**
-   * This action is triggered when user clicks on Deny Space Invitation. When denying, that space
+   * This action is triggered when user clicks on Ignore Space Invitation. When denying, that space
    * will remove the user from pending list.
    */
-  public static class DenyActionListener extends EventListener<UIManageInvitationSpaces> {
+  public static class IgnoreActionListener extends EventListener<UIManageInvitationSpaces> {
 
     @Override
     public void execute(Event<UIManageInvitationSpaces> event) throws Exception {

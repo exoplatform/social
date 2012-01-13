@@ -41,7 +41,7 @@ jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "space";');
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
-def spaceDirectoryLabel = _ctx.appRes("${uicomponentId}.label.SpaceDirectory");
+def spaceFilterLabel = _ctx.appRes("${uicomponentId}.label.SpaceFilter");
 def labelSpaceFoundListing = uicomponent.getLabelSpaceFound();
 def searchId = "SpaceSearch";
 def selectedChar = uicomponent.getSelectedChar();
@@ -50,17 +50,18 @@ def spaceNum = uicomponent.getSpaceNum();
 def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
+def spacesOrder = _ctx.appRes("${uicomponentId}.label.SpacesOrder");
 
 def labelAllSpaces = _ctx.appRes("${uicomponent.id}.label.All_Space");
 def labelMySpace = _ctx.appRes("${uicomponent.id}.label.My_Space");
-def labelReceivedInvitations = _ctx.appRes("${uicomponent.id}.label.Received_Invitations");
-def labelSentInvitations = _ctx.appRes("${uicomponent.id}.label.Pending_request");
+def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
+def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
 
 def selectedNode = Utils.getSelectedNode();
 def allSpacesURL = Utils.getURI("all-spaces");
 def mySpaceURL = Utils.getURI("spaces");
-def receivedInvitationsURL = Utils.getURI("invitationSpace");
-def sentInvitationURL = Utils.getURI("pendingSpace");
+def invitationsReceivedURL = Utils.getURI("invitationSpace");
+def requestPendingURL = Utils.getURI("pendingSpace");
 def allSpacesDisplayModeStyle = "NotSelectedTab";
 def mySpaceDisplayModeStyle = "NotSelectedTab";
 def receivedInvitationDisplayModeStyle = "NotSelectedTab";
@@ -81,6 +82,9 @@ if (selectedNode.equals("all-spaces")) {
 <% uiform.begin() %>
     <!--search by name-->   
     <div class="SpaceSearchContainer ClearFix">
+       <div class="UIAction">
+         <span class="ActionButton LightBlueStyle"><a class="AddSpaceIcon" href="#" onclick="<%= uicomponent.event("AddSpace") %>" ><%= labelActionAddSpace %></a></span>
+       </div>
 		   <label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
 		     $findSpaceLabel:&nbsp; 
 		   </label>
@@ -88,16 +92,13 @@ if (selectedNode.equals("all-spaces")) {
 		     <%uiform.renderField(childs.get(0)); %>
 		     <a id="SearchButton" title="$findSpaceLabel" class="SpaceSearchIcon" onclick="$searchAction">&nbsp;</a>
 		   </div>
-		   <div class="UIAction">
-		     <span class="ActionButton LightBlueStyle"><a class="AddSpaceIcon" href="#" onclick="<%= uicomponent.event("AddSpace") %>" ><%= labelActionAddSpace %></a></span>
-		   </div>
 		   <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc" />
     </div>
     
     <!--search by directory-->
     <div class="BoxSpaceList">
             <div class="SpaceListTitle">
-              $spaceDirectoryLabel
+              $spaceFilterLabel
             </div>
             <div class="DirectoryNormalBox">
                 <ul class="LetterList">
@@ -129,14 +130,17 @@ if (selectedNode.equals("all-spaces")) {
 	        <li class="Line FL">&nbsp;</li>
 	        <li class="FL"><a href="$mySpaceURL" class="$mySpaceDisplayModeStyle">$labelMySpace</a></li>
 	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationDisplayModeStyle">$labelReceivedInvitations</a></li>
+	        <li class="FL"><a href="$invitationsReceivedURL" class="$receivedInvitationDisplayModeStyle">$labelInvitationsReceived</a></li>
 	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$sentInvitationURL" class="$sentInvitationDisplayModeStyle">$labelSentInvitations</a></li>
+	        <li class="FL"><a href="$requestPendingURL" class="$sentInvitationDisplayModeStyle">$labelRequestsPending</a></li>
         </ul>
         
      <div class="BoxSpaceList">
 	     <div class="SpaceListTitle">
 	          $labelSpaceFoundListing
+            <%if (uicomponent.getSpaceNum() > 0) {%>
+                $spacesOrder
+            <%}%>
 	     </div>
      </div>
 </div>

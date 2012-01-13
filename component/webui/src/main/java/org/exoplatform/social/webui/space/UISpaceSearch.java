@@ -402,6 +402,6 @@ public class UISpaceSearch extends UIForm {
     return ResourceBundleUtil.
     replaceArguments(WebuiRequestContext.getCurrentInstance()
                      .getApplicationResourceBundle().getString(labelArg), new String[] {
-                 Integer.toString(getSpaceNum()), searchCondition != null ? searchCondition : " " });
+                 Integer.toString(getSpaceNum())});
   }
 }
