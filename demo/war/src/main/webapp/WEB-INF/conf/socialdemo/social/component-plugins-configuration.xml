@@ -171,6 +171,18 @@
               </field>
             </object>
           </object-param>
+          <object-param>
+            <name>blockquote tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>blockquote</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>q tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>q</string></field>
+            </object>
+          </object-param>
         </init-params>
       </component-plugin>
   </external-component-plugins>

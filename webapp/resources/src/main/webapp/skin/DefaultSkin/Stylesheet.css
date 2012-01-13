@@ -69,6 +69,14 @@ ul {
 	margin: 0px;
 }
 
+blockquote {
+	color: #333333;
+	border-left: 2px solid #3C78B5;
+	font-size: 1em;
+	margin-left: 0;
+	padding-left: 1em;
+}
+
 .FL {
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
