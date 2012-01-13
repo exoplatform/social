@@ -132,7 +132,7 @@ public class MySpaceListenerPlugin extends SpaceListenerPlugin {
 }
 {code}
 
-As an example, see [SpaceActivityPublisher|http://fisheye.exoplatform.org/browse/social/trunk/component/exosocial/src/main/java/org/exoplatform/social/space/SpaceActivityPublisher.java?r=HEAD] that publishes an activity based on an event that happened in a space.
+As an example, see [SpaceActivityPublisher|https://fisheye.exoplatform.org/browse/social/branches/1.2.x/component/core/src/main/java/org/exoplatform/social/core/application/SpaceActivityPublisher.java?hb=true] that publishes an activity based on an event that happened in a space.
 
 To register your listener, configure it as a plugin to the SpaceService like this:
 

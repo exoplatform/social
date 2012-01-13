@@ -214,7 +214,7 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 
 Note that _{noformat}exosocial:spaces{noformat}_ must have its value matching with the activity's type that you want to display with your UI component.
 
-Assume that you have already built the Social project with version 1.1. If you do not know how to, have a look at [Building from Sources|Main.Building from sources] with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see the space's activity of type "exosocial:spaces" is displayed by default in Social:
+Assume that you have already built the Social project with version 1.1. If you do not know how to, have a look at building from sources with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see the space's activity of type "exosocial:spaces" is displayed by default in Social:
 
 !images/SimpleSpaceActivity-default.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
