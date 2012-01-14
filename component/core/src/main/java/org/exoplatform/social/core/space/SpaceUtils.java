@@ -100,6 +100,10 @@ public class SpaceUtils {
 
   public static final String PLATFORM_USERS_GROUP = "/platform/users";
 
+  /**
+   * @deprecated
+   * Will be removed by 1.2.9
+   */
   public static final String MANAGER = "manager";
   
   public static final String MEMBER = "member";
@@ -786,7 +790,7 @@ public class SpaceUtils {
    * @since 1.2.0-GA
    */
   public static void addUserToGroupWithManagerMembership(String remoteId, String groupId) {
-    addUserToGroupWithMembership(remoteId, groupId, MANAGER);
+    addUserToGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
   
   /**
@@ -812,8 +816,8 @@ public class SpaceUtils {
             Membership mbShip = itr.next();
             memberShipHandler.removeMembership(mbShip.getId(), true);
           }
-      } else if (MANAGER.equals(membership)) {
-          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MANAGER);
+      } else if (getUserACL().getAdminMSType().equals(membership)) {
+          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, getUserACL().getAdminMSType());
           if (memberShip == null) {
             LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
             return;
@@ -849,7 +853,7 @@ public class SpaceUtils {
    * @since 1.2.0-GA
    */
   public static void removeUserFromGroupWithManagerMembership(String remoteId, String groupId) {
-    removeUserFromGroupWithMembership(remoteId, groupId, MANAGER);
+    removeUserFromGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
   
   /**
@@ -1397,5 +1401,14 @@ public class SpaceUtils {
     }
     
     return checkedPrettyName;
+  }
+  
+  /**
+   * Gets the UserACL which helps to get Membership role to avoid hard code.
+   * @return UserACL object
+   */
+  public static UserACL getUserACL() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    return (UserACL) container.getComponentInstanceOfType(UserACL.class);
   }
 }

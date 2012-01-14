@@ -111,7 +111,7 @@ public class UISpaceGroupBound extends UIContainer {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     RequestContext reqCtx = RequestContext.getCurrentInstance();
     String remoteUser = reqCtx.getRemoteUser();
-    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.MANAGER);
+    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.getUserACL().getAdminMSType());
     return (groups.size() > 0);    
   }
   
