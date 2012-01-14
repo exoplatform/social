@@ -28,9 +28,12 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.webui.StringListAccess;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
@@ -807,6 +810,15 @@ public class UISpaceMember extends UIForm {
     }
     return spaceService;
   }
+  
+  /**
+   * Gets IdentityStorage
+   *
+   * @return IdentityStorage
+   */
+  private IdentityStorage getIdentityStorage() {
+    return getApplicationComponent(IdentityStorageImpl.class);
+  }
 
   /**
    * Gets userACL
@@ -826,6 +838,18 @@ public class UISpaceMember extends UIForm {
    */
   private String getRemoteUser() throws Exception {
     return Util.getPortalRequestContext().getRemoteUser();
+  }
+  
+  /**
+   * Get full name from userId.
+   * 
+   * @param userId
+   * @return Full name
+   */
+  public String getFullName(String userId) {
+    
+    return getIdentityStorage().findIdentity(OrganizationIdentityProvider.NAME, userId)
+        .getProfile().getFullName();
   }
 
   public boolean isNewSearch() {

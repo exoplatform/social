@@ -98,7 +98,7 @@
 		  <% } else { %>
 		  <tr class="OddRow">
 		  <% } %>
-			<td><%=pendingUser %></td>
+			<td><%= uicomponent.getFullName(pendingUser) %></td>
 			<td class="ActionContainer">
 			  <a href="#" class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"></a>
 			  <a href="#" class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"></a>
@@ -136,7 +136,7 @@
 		  <% } else { %>
 		  <tr class="OddRow">
 		  <% } %>
-			<td><%=invitedUser %></td>
+			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
 			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction"></a>
 			</td>
@@ -182,7 +182,7 @@
 			<% } else { %>
 			<tr class="OddRow">
 			<% } %>
-			  <td><%= user %></td>
+			  <td><%= uicomponent.getFullName(user) %></td>
 			  <% if(isLeader) { %>
 			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
