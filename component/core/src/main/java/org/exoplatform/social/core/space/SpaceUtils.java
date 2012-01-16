@@ -101,9 +101,10 @@ public class SpaceUtils {
   public static final String PLATFORM_USERS_GROUP = "/platform/users";
 
   /**
-   * @deprecated
+   * @deprecated Use {@link UserACL#getAdminMSType()} instead. 
    * Will be removed by 1.2.9
    */
+  @Deprecated
   public static final String MANAGER = "manager";
   
   public static final String MEMBER = "member";
