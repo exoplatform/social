@@ -131,9 +131,9 @@
    </div>
     
     <div class="UISocTitleBar">
-        <h5 class="TitleBar">
+        <div class="TitleBar Bold">
 		  ${contactsDirectory}
-		</h5>
+		</div>
     </div>
 
     <ul class="DirectorySpaces LetterList"  id="DirectorySpaces">
@@ -177,7 +177,7 @@
     <% } %>
  
 	 <div class="UISocTitleBar">
-	  <h5 class="TitleBar"> $peopleFoundLabel </h5>
+	  <div class="TitleBar Bold"> $peopleFoundLabel </div>
 	 </div>
  <% uiform.end() %>
  

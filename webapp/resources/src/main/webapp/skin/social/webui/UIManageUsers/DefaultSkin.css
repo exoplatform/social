@@ -34,6 +34,10 @@
 	display: block;
 }
 
+.UISocApplication .UISocTitleBar .Bold {
+	font-weight: bold;
+}
+
 /***************************************************************************/
 .UISocApplication .CommonTitleBar {
 	background: #EBEBEB;

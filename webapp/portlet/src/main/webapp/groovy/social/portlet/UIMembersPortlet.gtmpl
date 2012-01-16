@@ -64,7 +64,7 @@
       </div>
       <!-- Leaders section -->
       <div class="UISocTitleBar">
-				<h5 class="TitleBar">$administratorLabel</h5>
+				<div class="TitleBar Bold">$administratorLabel</div>
       </div>
       <div class="ClearFix">
 	      <% if (managerList.size() > 0) {
@@ -100,7 +100,7 @@
       <!-- End leaders section -->
       <!-- Members section -->
       <div class="UISocTitleBar">
-				<h5 class="TitleBar">$spaceMemberLabel</h5>
+				<div class="TitleBar Bold">$spaceMemberLabel</div>
       </div>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="ClearFix">

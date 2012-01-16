@@ -122,6 +122,10 @@ blockquote {
     margin: 0 4px;
 }
 
+.UISocApplication .UISocTitleBar .Bold {
+	font-weight: bold;
+}
+
 .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock{
        background: #eee;
 }

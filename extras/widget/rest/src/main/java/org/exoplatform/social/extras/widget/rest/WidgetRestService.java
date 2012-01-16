@@ -142,11 +142,11 @@ public class WidgetRestService implements ResourceContainer {
                                .build(containerName);
 
     Space space = service.getSpaceByPrettyName(spacePrettyName);
-    response.append("<h3 class=\"space_name\"><a href=\"")
+    response.append("<h2 class=\"space_name\"><a href=\"")
             .append(goToSpace.toString())
             .append("\" target=\"_blank\">")
             .append(spaceName)
-            .append("</a></h3>");
+            .append("</a></h2>");
     if (space != null) {
       String username = ConversationState.getCurrent().getIdentity().getUserId();
 
