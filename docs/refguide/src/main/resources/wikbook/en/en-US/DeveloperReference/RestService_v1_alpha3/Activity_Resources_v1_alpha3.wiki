@@ -1,6 +1,6 @@
-h3. activity {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity}
+h1. activity {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity}
 
-h4. POST activity.*format*{anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Post}
+h2. POST activity.*format*{anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Post}
 
 *Description*: Creates an activity to an identity's activity stream. If no _{noformat}identity_id{noformat}_ is specified, the activity will be created to the authenticated identity's activity stream.
 
@@ -68,7 +68,7 @@ BODY: {"title": "Hello World!!!"}
 }
 {code}
 
-h4. GET activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Get}
+h2. GET activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Get}
 
 *Description*: Gets an activity object from a specified activity Id.
 
@@ -135,7 +135,7 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 {code}
 
 
-h4. DELETE activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Delete}
+h2. DELETE activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Delete}
 
 *Description*: Deletes an existing activity by its Id using the DELETE method. The deleted activity information will be returned in the specified format.
 
@@ -171,7 +171,7 @@ DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3
 }
 {code}
 
-h4. POST activity/destroy/:activityId.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.PostDelete.}
+h2. POST activity/destroy/:activityId.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.PostDelete.}
 
 *Description*: Deletes an existing activity by its Id using the POST method. The deleted activity information will be returned in the specified format. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
 
@@ -209,9 +209,9 @@ POST: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/sociald
 {code}
 
 
-h3. activity/:activityId/comments {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments}
+h1. activity/:activityId/comments {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments}
 
-h4. GET activity/:activityId/comments.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Get}
+h2. GET activity/:activityId/comments.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Get}
 
 *Description*: Gets all comments on an activity.
 
@@ -262,9 +262,9 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 }
 {code}
 
-h3. activity/:activityId/comment {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomment}
+h1. activity/:activityId/comment {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomment}
 
-h4. POST activity/:activityId/comment.format   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Post}
+h2. POST activity/:activityId/comment.format   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Post}
 
 *Description*: Posts a new comment on an existing activity. The poster of this comment is an authenticated identity.
 
@@ -311,7 +311,7 @@ BODY: {"text": "My comment here!!!"}
 }
 {code}
 
-h4. DELETE activity/:activityId/comment/:commentId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Delete}
+h2. DELETE activity/:activityId/comment/:commentId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Delete}
 
 *Description*: Deletes an existing comment by its Id.
 
@@ -347,7 +347,7 @@ DELETE: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socia
 }
 {code}
 
-h4. POST activity/:activityId/comment/destroy/:commentId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.PostDelete}
+h2. POST activity/:activityId/comment/destroy/:commentId.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.PostDelete}
 
 *Description*: Deletes an existing comment by its Id using the POST method. The deleted activity information will be returned in a specified format. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
 
@@ -383,9 +383,9 @@ POST: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/sociald
 }
 {code}
 
-h3. activity/:activityId/likes {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLikes}
+h1. activity/:activityId/likes {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLikes}
 
-h4. GET activity/:activityId/likes.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLikes.GET}
+h2. GET activity/:activityId/likes.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLikes.GET}
 *Description*: Gets all the identities who like an existing activity.
 
 *URL*:
@@ -431,9 +431,9 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 }
 {code}
 
-h3. activity/:activityId/like    {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike}
+h1. activity/:activityId/like    {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike}
 
-h4. POST activity/:activityId/like.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Post}
+h2. POST activity/:activityId/like.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Post}
 
 *Description*: Allows an authenticated identity to do the "like" action on an existing activity.
 
@@ -469,7 +469,7 @@ http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/ac
 }
 {code}
 
-h4. DELETE activity/:activityId/like.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Delete}
+h2. DELETE activity/:activityId/like.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Delete}
 
 *Description*: Allows an identity to remove his "like" action on an activity.
 
@@ -505,7 +505,7 @@ DELETE: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socia
 }
 {code}
 
-h4. POST activity/:activityId/like/destroy.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Postdestroy}
+h2. POST activity/:activityId/like/destroy.format  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Postdestroy}
 
 *Description*: Allows an identity to remove his "like" action on an activity. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
 

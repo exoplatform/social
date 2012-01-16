@@ -1,6 +1,6 @@
-h3. {noformat}activity_stream/:identityId{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity}
+h1. {noformat}activity_stream/:identityId{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity}
 
-h4. GET {noformat}activity_stream/:identityId.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity.GetDefault}
+h2. GET {noformat}activity_stream/:identityId.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Identity.GetDefault}
 
 *Description*: Gets activities of a defined identity which can be a user identity, a space identity, or any type of identities.
 There is one special _identityId_ called "me" which stands for the authenticated user who makes this request.
@@ -147,9 +147,9 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 }
 {code}
 
-h3. {noformat}activity_stream/feed{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed}
+h1. {noformat}activity_stream/feed{noformat}  {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Feed}
 
-h4. GET {noformat}activity_stream/feed.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Feed.Getlastest}
+h2. GET {noformat}activity_stream/feed.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResource.Feed.Getlastest}
 
 *Description*: Gets the activity stream feed of the authenticated user identity who makes this request.
 
@@ -292,10 +292,10 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 }
 {code}
 
-h3. {noformat}activity_stream/connections{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection}
+h1. {noformat}activity_stream/connections{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection}
 
 
-h4. GET {noformat}activity_stream/connections.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection.default}
+h2. GET {noformat}activity_stream/connections.format{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Connection.default}
 
 *Description*: Gets activities of connections of the authenticated user identity who makes this request.
 
@@ -441,10 +441,10 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 {code}
 
 
-h3. {noformat}activity_stream/spaces{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces}
+h1. {noformat}activity_stream/spaces{noformat} {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces}
 
 
-h4. GET {noformat}activity_stream/spaces.format{noformat}   {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.GetDefault}
+h2. GET {noformat}activity_stream/spaces.format{noformat}   {anchor:id=SOCref.DevRef.V1alpha1.ActivityStreamResources.Spaces.GetDefault}
 
 *Description*: Gets activities of spaces in which the authenticated user identity is a member or a manager making this request.
 

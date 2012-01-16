@@ -1,10 +1,10 @@
-h3. identity    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity}
+h1. identity    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity}
 {note}
 *Avatar link*
 
 If the avatar is not uploaded yet by users, the default avatar link will be returned and this link must be an absolute link.
 {note}
-h4. GET identity/:providerId/:remoteId.format    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity.Get}
+h2. GET identity/:providerId/:remoteId.format    {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.identity.Get}
 
 *Description*: Gets the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
  its providerId and remoteId. There could be as many identities as possible. Currently, there are 2 built-in types of identities
@@ -52,7 +52,7 @@ GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialde
 }
 {code}
 
-h4. GET: {noformat}identity/:identityId.format{noformat} {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.Notes.Get}
+h2. GET: {noformat}identity/:identityId.format{noformat} {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.IdentityResources.Notes.Get}
 
 *Description*: Gets the identity and its associated profile by the identityId.
 
