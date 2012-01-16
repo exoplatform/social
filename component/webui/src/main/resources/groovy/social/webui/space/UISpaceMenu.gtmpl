@@ -67,7 +67,7 @@
   }
 
   def spaceName = uicomponent.getSpaceName();
-  def spaceNameDisplay = getFitString(spaceName, 20);
+  def spaceNameDisplay = spaceName;
   def homeUrl = Utils.getSpaceHomeURL(space);
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
