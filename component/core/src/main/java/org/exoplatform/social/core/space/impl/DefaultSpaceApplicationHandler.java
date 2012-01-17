@@ -123,6 +123,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   private static Map<ApplicationCategory, List<Application>> appStoreCache = null;
 
   private static List<Application> appCache = new ArrayList<Application>();
+  
+  private List<SpaceApplication> spaceApplications = new ArrayList<SpaceApplication>();
 
   /**
    * Constructor.
@@ -148,7 +150,8 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
 
       userPortal.updateNode(parentNode, Scope.CHILDREN, null);
 
-      for (SpaceApplication spaceApplication : spaceApplicationConfigPlugin.getSpaceApplicationList()) {
+      spaceApplications = spaceApplicationConfigPlugin.getSpaceApplicationList();
+      for (SpaceApplication spaceApplication : spaceApplications) {
         UserNode appNode = createPageNodeFromApplication(homeNode, space, spaceApplication, null, false);
         spaceService.installApplication(space, spaceApplication.getPortletName());
       }
@@ -289,6 +292,15 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       removedNode = homeNode.getChild(nodeName);
       if (removedNode == null) {
         removedNode = homeNode.getChild(nodeName.toLowerCase());
+      }
+      
+      // In case of cannot find the removed node, try one more time
+      if (removedNode == null) {
+        for (SpaceApplication spaceApplication : spaceApplications) {
+          if (appId.equals(spaceApplication.getPortletName())) {
+            removedNode = homeNode.getChild(spaceApplication.getUri());
+          }
+        }
       }
       
       if (removedNode != null) {
