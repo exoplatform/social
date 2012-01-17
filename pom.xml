@@ -953,6 +953,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.surefire.plugin}</version>
           <configuration>
+            <forkMode>always</forkMode>
             <argLine>-Xms1024m -Xmx1024m</argLine>
             <systemProperties>
               <property>
@@ -1087,6 +1088,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${version.surefire.plugin}</version>
             <configuration>
+              <forkMode>always</forkMode>
               <systemProperties>
                 <property>
                   <name>java.util.logging.config.class</name>
