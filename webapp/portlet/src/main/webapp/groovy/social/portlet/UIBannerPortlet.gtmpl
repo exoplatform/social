@@ -30,7 +30,7 @@
 <div id="$portletId" class="UIBannerPortlet UIApplication">
   <div class="ApplicationMinWidth">
     <div class="InlineContainer">
-      <a href="$homeURI" class="LogoBlock"><span></span></a>
+      <a href="$homeURI" class="LogoBlock" title="<%= _ctx.appRes("UISocialBannerPortlet.title.Logo") %>"><span></span></a>
         <%if(prContext.getRemoteUser() != null) {%>
           <div class="BannerTitle"><span></span></div>
         <%} else {%>

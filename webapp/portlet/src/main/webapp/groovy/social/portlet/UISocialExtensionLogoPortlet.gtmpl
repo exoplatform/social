@@ -19,7 +19,8 @@
 
 -->
 */
+  def titleLogo = _ctx.appRes("UISocialExtensionLogoPortlet.title.Logo")
 %>
 <div class="UILogoSocialEx">
-	<a href="#"></a>
+	<a href="#" title="$titleLogo"></a>
 </div>

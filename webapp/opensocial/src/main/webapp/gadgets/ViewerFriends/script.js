@@ -145,14 +145,14 @@ ViewerFriend.prototype.registerPagingAction = function() {
 ViewerFriend.prototype.setDisplayPaging = function(currentPage) {
   var rtnHTML="";
   var totalPage = eXo.social.viewerFriend.totalPages;
-  var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.viewerFriend.lastPage()");
-  var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.viewerFriend.nextPage()");
-  var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.viewerFriend.previousPage()");
-  var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.viewerFriend.firstPage()");
-  var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()");
-  var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()");
-  var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()");
-  var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()");
+  var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.viewerFriend.lastPage()","last");
+  var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.viewerFriend.nextPage()","next");
+  var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.viewerFriend.previousPage()","previous");
+  var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.viewerFriend.firstPage()","first");
+  var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()","previous");
+  var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()","first");
+  var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()","last");
+  var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()","next");
   var pagesTag = "<div id='pages'></div>";
 
   if (totalPage == 1) {
@@ -171,7 +171,7 @@ ViewerFriend.prototype.setDisplayPaging = function(currentPage) {
 ViewerFriend.prototype.createHTML = function(last, next, pages, previous, first) {
   var HTML="";
   HTML+= "<a class='TotalPages'>Total pages:</a>";
-  HTML+="<a class='PagesTotalNumber' id='totalPages'></a>";
+  HTML+="<a class='PagesTotalNumber' id='totalPages' title='Total pages'></a>";
 
   HTML+= last;
   HTML+= next;
@@ -182,8 +182,8 @@ ViewerFriend.prototype.createHTML = function(last, next, pages, previous, first)
   return HTML;
 }
 
-ViewerFriend.prototype.createTag = function(id, cls, action) {
-  return "<a  id='" +id+"' class='"+cls+"' href='#' onclick='"+action+"'> </a>";
+ViewerFriend.prototype.createTag = function(id, cls, action, title) {
+  return "<a  id='" +id+"' class='"+cls+"' href='#' onclick='"+action+"' title='" + title + "'></a>";
 }
 
 ViewerFriend.prototype.getEl = function (elId) {
