@@ -29,7 +29,8 @@
 
   def uicomponentId = uicomponent.id
   
-  // All actions: Join(Public), Cancel (Sent), Accept-Deny(Invited), Edit-Leave-Delete(My Space or Manager), Leave(Member Only) 
+  // All actions: Join(Public), Cancel (Sent), Accept-Deny(Invited), Edit-Leave-Delete(My Space or Manager), Leave(Member Only)
+  def joinSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_join")
   def requestToJoinSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_request_to_join")
   def leaveSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_leave_space")
   def editSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_edit_space")
@@ -164,8 +165,13 @@
   	          <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>" class="Action">$leaveSpaceLabel</a></li>
   	          <li class="Line FL">&nbsp;</li>
   	          <li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>" class="Action">$deleteSpaceLabel</a></li>
-		        <%} else { %>
+		        <%} else {
+		              if (Space.VALIDATION.equals(registration)) {
+		        %>
 		          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" title="<%= requestToJoinSpaceLabel %>" class="Action">$requestToJoinSpaceLabel</a></li>
+		        <%    } else if (Space.OPEN.equals(registration)) { %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" title="<%= joinSpaceLabel %>" class="Action">$joinSpaceLabel</a></li>
+		        <%    } %>
 		       <% } %>
 			     
 		      </ul>
