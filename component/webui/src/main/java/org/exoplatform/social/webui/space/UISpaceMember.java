@@ -98,6 +98,11 @@ public class UISpaceMember extends UIForm {
   private static final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
   private static final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER_YOU = "UISpaceMember.msg.error_self_remove_leader_you";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER_ARE = "UISpaceMember.msg.error_self_remove_leader_are";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER_IS = "UISpaceMember.msg.error_self_remove_leader_is";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER_LEAVING_IT = "UISpaceMember.msg.error_self_remove_leader_leaving_it";
+  private static final String MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS = "UISpaceMember.msg.error_self_remove_leader_removing_the_rights";
   private static final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
   private static final String MSG_ERROR_DECLINE_USER = "UISpaceMember.msg.error_decline_user";
   private static final String MSG_ERROR_VALIDATE_USER = "UISpaceMember.msg.error_validate_user";
@@ -536,7 +541,9 @@ public class UISpaceMember extends UIForm {
       }
 
       if (spaceService.isOnlyManager(space, userName)) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER,
+                                                uiSpaceMember.makeParamSelfRemoveLeaderErrorMessage(userName, currentUser),
+                                                ApplicationMessage.WARNING));
         return;
       }
 
@@ -599,7 +606,9 @@ public class UISpaceMember extends UIForm {
       }
 
       if (spaceService.isOnlyManager(space, userName)) {
-        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, null, ApplicationMessage.WARNING));
+        uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER,
+                                                uiSpaceMember.makeParamSelfRemoveLeaderErrorMessage(userName, currentUser),
+                                                ApplicationMessage.WARNING));
         return;
       }
       spaceService.setManager(space, userName, false);
@@ -854,5 +863,15 @@ public class UISpaceMember extends UIForm {
 
   public void setNewSearch(boolean isNewSearch) {
     this.isNewSearch = isNewSearch;
+  }
+  
+  private String[] makeParamSelfRemoveLeaderErrorMessage(String userName, String currentUser) {
+    if (userName == null || currentUser == null) {
+      return null;
+    }
+    if (currentUser.equals(userName)) {
+      return new String[] {MSG_ERROR_SELF_REMOVE_LEADER_YOU, MSG_ERROR_SELF_REMOVE_LEADER_ARE, MSG_ERROR_SELF_REMOVE_LEADER_LEAVING_IT};
+    }
+    return new String[] {getFullName(userName), MSG_ERROR_SELF_REMOVE_LEADER_IS, MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS};
   }
 }
