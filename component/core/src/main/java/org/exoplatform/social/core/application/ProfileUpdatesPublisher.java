@@ -76,7 +76,7 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
       Profile profile = event.getProfile();
       Identity identity = profile.getIdentity();
       reloadIfNeeded(identity);
-      activityManager.recordActivity(identity,
+      activityManager.saveActivity(identity,
                                      PeopleService.PEOPLE_APP_ID,
                                      message);
     } catch (Exception e) {

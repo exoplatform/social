@@ -148,7 +148,7 @@ public abstract class AbstractFeedmashJob implements Job {
     activity.setUserId(from.getId());
 
     ActivityManager activityManager = getExoComponent(ActivityManager.class);
-    activityManager.saveActivity(to, activity);
+    activityManager.saveActivityNoReturn(to, activity);
 
   }
 

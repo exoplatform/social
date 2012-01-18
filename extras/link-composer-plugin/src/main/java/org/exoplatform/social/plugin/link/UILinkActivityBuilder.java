@@ -82,7 +82,7 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
     activity.setTemplateParams(templateParams);
     ActivityManager am = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
     try {
-      am.saveActivity(activity);
+      am.saveActivityNoReturn(activity);
     } catch (ActivityStorageException ase) {
       LOG.warn("Could not save new data format for document activity.", ase);
     }

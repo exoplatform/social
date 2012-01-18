@@ -19,8 +19,10 @@ package org.exoplatform.social.webui.space;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.webui.activity.SpaceActivityListAccess;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -85,12 +87,15 @@ public class UISpaceActivitiesDisplay extends UIContainer {
       return;
     }
 
+    Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
+                                                                            space.getPrettyName(), false);
+    
     removeChild(UIActivitiesLoader.class);
     activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     activitiesLoader.setSpace(space);
     activitiesLoader.setPostContext(PostContext.SPACE);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
-    activitiesLoader.setActivityListAccess(new SpaceActivityListAccess(space));
+    activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesWithListAccess(spaceIdentity));
     activitiesLoader.init();
   }
 }

@@ -971,7 +971,8 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       activity.setType("exosocial:core");
       activity.setTitle("title " + i);
       activity.setUserId(posterIdentity.getId());
-      activity = activityManager.saveActivity(identityStream, activity);
+      activityManager.saveActivityNoReturn(identityStream, activity);
+      activity = activityManager.getActivity(activity.getId());
       tearDownActivityList.add(activity);
     }
   }
@@ -984,12 +985,13 @@ public class ActivityResourcesTest extends AbstractResourceTest {
    * @param number the number of comments
    */
   private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, int number) {
+    int maxActivities = 20;
     for (int i = 0; i < number; i++) {
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment " + i);
       comment.setUserId(posterIdentity.getId());
       activityManager.saveComment(existingActivity, comment);
-      comment = activityManager.getComments(existingActivity).get(0);
+      comment = activityManager.getCommentsWithListAccess(existingActivity).loadAsList(0, maxActivities).get(0);
     }
   }
 

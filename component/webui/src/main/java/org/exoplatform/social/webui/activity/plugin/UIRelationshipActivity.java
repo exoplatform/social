@@ -110,7 +110,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getSender() {
     if (sender == null) {
-      sender = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
+      sender = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderName, false);
     }
     return sender;
   }
@@ -121,7 +121,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getReceiver() {
     if (receiver == null) {
-      receiver = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
+      receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
     }
     return receiver;
   }
@@ -171,7 +171,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
     String receiverLink = LinkProvider.getProfileLink(receiverName);
 
     if (titleId == TitleId.CONNECTION_CONFIRMED) {
-      if (isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS)) {
+      if (isActivityStreamOwner() && (displayMode == DisplayMode.USER_ACTIVITIES)) {
         if(isSender()) {
           return ResourceBundleUtil.
                   replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
@@ -193,7 +193,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
         }
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
-      if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
+      if (isActivityStreamOwner() && ((displayMode == DisplayMode.USER_ACTIVITIES))) {
         if(isSender()) {
           return ResourceBundleUtil.
                   replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),

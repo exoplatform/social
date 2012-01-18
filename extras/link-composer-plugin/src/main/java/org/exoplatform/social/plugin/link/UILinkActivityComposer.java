@@ -203,7 +203,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
     String remoteUser = requestContext.getRemoteUser();
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser, true);
 
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
@@ -234,22 +234,22 @@ public class UILinkActivityComposer extends UIActivityComposer {
       Space space = uiDisplaySpaceActivities.getSpace();
 
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       
-      activityManager.saveActivity(spaceIdentity, activity);
+      activityManager.saveActivityNoReturn(spaceIdentity, activity);
 
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   ownerName);
+                                                                   ownerName, false);
       
-      activityManager.saveActivity(ownerIdentity, activity);
+      activityManager.saveActivityNoReturn(ownerIdentity, activity);
       
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.CONNECTIONS_ACTIVITIES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.USER_SPACE_ACTIVITIES)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.USER_ACTIVITIES);
       }
     }
   }

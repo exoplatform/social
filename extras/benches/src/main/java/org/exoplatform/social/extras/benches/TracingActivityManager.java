@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -42,8 +43,9 @@ public class TracingActivityManager extends ActivityManagerImpl {
   private static final Log LOG = ExoLogger.getExoLogger(TracingActivityManager.class);
 
   private ActivityManager  activityManager;
-
-
+  
+  private static final int DEFAULT_LIMIT = 20;
+  
   /**
    * Constructor
    *
@@ -60,7 +62,8 @@ public class TracingActivityManager extends ActivityManagerImpl {
   public List<ExoSocialActivity> getActivities(Identity identity) {
     long t1 = System.currentTimeMillis();
     try {
-      return activityManager.getActivities(identity);
+      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = activityManager.getActivitiesWithListAccess(identity);
+      return activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
     } catch (ActivityStorageException e) {
       LOG.warn("Failed to getActivities");
     } finally {

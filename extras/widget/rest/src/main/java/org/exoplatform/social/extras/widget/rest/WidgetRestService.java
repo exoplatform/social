@@ -37,6 +37,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -51,6 +52,8 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 public class WidgetRestService implements ResourceContainer {
   private static Log log = ExoLogger.getLogger(WidgetRestService.class.getName());
 
+  private static final int DEFAULT_LIMIT = 20;
+  
   @GET
   @Path("go_to_space")
   public Response goToSpace(@PathParam("containerName") String containerName,
@@ -152,8 +155,10 @@ public class WidgetRestService implements ResourceContainer {
 
       if (service.hasAccessPermission(space, username)) {
         Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                     space.getPrettyName());
-        List<ExoSocialActivity> activities = activityManager.getActivities(spaceIdentity);
+                                                                     space.getPrettyName(), true);
+        RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+        
+        List<ExoSocialActivity> activities = spaceActivitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
 
         if (activities.size() > 0) {
           response.append("<i>" + activities.get(0).getTitle() + "</i>");

@@ -240,8 +240,8 @@ public class ActivitiesRestService implements ResourceContainer {
 
         activity.setLikeIdentityIds(identityIds);
         try {
-          Identity user = getIdentityManager().getIdentity(activity.getUserId());
-          _activityManager.saveActivity(user, activity);
+          Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
+          _activityManager.saveActivityNoReturn(user, activity);
         } catch(Exception ex) {
           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }

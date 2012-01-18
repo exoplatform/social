@@ -94,6 +94,9 @@ public class PeopleRestService implements ResourceContainer{
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
   
+  /** Number of default limit activities. */
+  private static final int DEFAULT_LIMIT = 20;
+  
   private String portalName_;
   private IdentityManager identityManager;
   private ActivityManager activityManager;
@@ -447,7 +450,9 @@ public class PeopleRestService implements ResourceContainer{
     
     peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
     
-    List<ExoSocialActivity> activities = getActivityManager().getActivities(identity);
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
+    
+    List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
     if (activities.size() > 0) {
       peopleInfo.setActivityTitle(activities.get(0).getTitle());
     } else { // Default title of activity

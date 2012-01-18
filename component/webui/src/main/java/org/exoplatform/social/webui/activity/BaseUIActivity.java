@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -62,6 +63,8 @@ public class BaseUIActivity extends UIForm {
   private int commentMinCharactersAllowed = 0;
   private int commentMaxCharactersAllowed = 100;
 
+  private static final int DEFAULT_LIMIT = 20;
+  
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
     public String getStatus() {
@@ -354,7 +357,8 @@ public class BaseUIActivity extends UIForm {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
             SpaceService.SPACES_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
-    comments = Utils.getActivityManager().getComments(getActivity());
+    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+    comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     setCommentListStatus(CommentStatus.ALL);
   }
 
@@ -365,7 +369,7 @@ public class BaseUIActivity extends UIForm {
     if (isLiked) {
       Utils.getActivityManager().saveLike(activity, viewerIdentity);
     } else {
-      Utils.getActivityManager().removeLike(activity, viewerIdentity);
+      Utils.getActivityManager().deleteLike(activity, viewerIdentity);
     }
     activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
@@ -390,7 +394,8 @@ public class BaseUIActivity extends UIForm {
       LOG.info("activity_ is null, not found. It can be deleted!");
       return;
     }
-    comments = Utils.getActivityManager().getComments(activity);
+    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
+    comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     identityLikes = activity.getLikeIdentityIds();
   }
 
@@ -420,9 +425,9 @@ public class BaseUIActivity extends UIForm {
         return true;
       }
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_ACTIVITIES) {
           return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_SPACE_ACTIVITIES) {
           //currently displays only
           return false;
         } else {
@@ -468,9 +473,9 @@ public class BaseUIActivity extends UIForm {
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
         if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_ACTIVITIES) {
             return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
+          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_SPACE_ACTIVITIES) {
             return false;
           } else {
             //connections
