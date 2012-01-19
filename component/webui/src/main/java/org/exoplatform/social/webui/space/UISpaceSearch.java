@@ -319,9 +319,9 @@ public class UISpaceSearch extends UIForm {
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if ((searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) && charSearch == null) {
-        uiSpaceSearch.setSelectedChar(null);
-        uiSpaceSearch.setSpaceNameSearch(null);
-        ctx.addUIComponentToUpdateByAjax(uiSpaceSearch);
+        uiSpaceSearch.setSelectedChar(ALL);
+        uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
+        uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
           searchCondition = searchCondition.trim();
