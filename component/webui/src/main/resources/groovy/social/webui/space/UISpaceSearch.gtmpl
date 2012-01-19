@@ -41,6 +41,7 @@ jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "space";');
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
+def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
 def spaceFilterLabel = _ctx.appRes("${uicomponentId}.label.SpaceFilter");
 def labelSpaceFoundListing = uicomponent.getLabelSpaceFound();
 def searchId = "SpaceSearch";
@@ -90,8 +91,10 @@ if (selectedNode.equals("all-spaces")) {
 		   </label>
 		   <div class="SearchContent">
 		     <%uiform.renderField(childs.get(0)); %>
-		     <a id="SearchButton" title="$findSpaceLabel" class="SpaceSearchIcon" onclick="$searchAction">&nbsp;</a>
 		   </div>
+       <div class="UIAction">
+        <span class="ActionButton LightBlueStyle"><a id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></a></span>
+       </div>		   
 		   <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc" />
     </div>
     
