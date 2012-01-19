@@ -187,9 +187,9 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
       numberOfUser = longValue("mU", value);
       
       //Gets the maximum the Relationship using for creating Relationships
-      value = paramsMap.get("mR");
+      value = paramsMap.get("mRpU");
       String[] values = value.split(",");
-      relationRanks = longValues("mR", values);
+      relationRanks = longValues("mRpU", values);
       
       //Gets the maximum the Activity using for creating Activities
       value = paramsMap.get("mA");
