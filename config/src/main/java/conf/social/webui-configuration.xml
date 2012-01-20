@@ -63,6 +63,8 @@
           <value>locale.social.webui.UIActivitiesContainer</value>
           <value>locale.social.webui.UIAvatarUploadContent</value>
           <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.UIApplicationCategorySelector</value>
+          <value>locale.social.webui.UIApplicationListSelector</value>
           <value>locale.social.webui.activity.UIDefaultActivity</value>
           <value>locale.social.webui.composer.UIComposer</value>
           <value>locale.social.webui.connections.UIInvitations</value>
@@ -86,7 +88,7 @@
           <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
           <value>locale.social.webui.space.UISpaceAddForm</value>
           <value>locale.social.webui.space.UISpaceApplication</value>
-          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceApplicationInstaller</value>
           <value>locale.social.webui.space.UISpaceGroupBound</value>
           <value>locale.social.webui.space.UISpaceInfo</value>
           <value>locale.social.webui.space.UISpaceMember</value>
@@ -108,6 +110,8 @@
           <value>locale.social.webui.UIActivitiesContainer</value>
           <value>locale.social.webui.UIAvatarUploadContent</value>
           <value>locale.social.webui.UIAvatarUploader</value>
+          <value>locale.social.webui.UIApplicationCategorySelector</value>
+          <value>locale.social.webui.UIApplicationListSelector</value>
           <value>locale.social.webui.activity.UIDefaultActivity</value>
           <value>locale.social.webui.composer.UIComposer</value>
           <value>locale.social.webui.connections.UIInvitations</value>
@@ -131,7 +135,7 @@
           <value>locale.social.webui.space.UISpaceActivitiesDisplay</value>
           <value>locale.social.webui.space.UISpaceAddForm</value>
           <value>locale.social.webui.space.UISpaceApplication</value>
-          <value>locale.social.webui.space.UISpaceApplicationList</value>
+          <value>locale.social.webui.space.UISpaceApplicationInstaller</value>
           <value>locale.social.webui.space.UISpaceGroupBound</value>
           <value>locale.social.webui.space.UISpaceInfo</value>
           <value>locale.social.webui.space.UISpaceMember</value>

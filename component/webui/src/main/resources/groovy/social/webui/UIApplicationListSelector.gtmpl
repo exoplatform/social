@@ -1,0 +1,78 @@
+<%
+/*
+<!--
+
+    Copyright (C) 2003-2012 eXo Platform SAS.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program; if not, see<http://www.gnu.org/licenses/>.
+
+-->
+*/
+def uicomponentId = uicomponent.id;
+def selectApplicationsLabel = _ctx.appRes("${uicomponentId}.label.select_applications");
+def typeLabel = _ctx.appRes("${uicomponentId}.label.type");
+def descriptionLabel = _ctx.appRes("${uicomponentId}.label.description");
+def installApplicationLabel = _ctx.appRes("${uicomponentId}.label.install_application");
+
+def applicationList = uicomponent.getApplicationList();
+
+%>
+<div id="$uicomponent.id" class="ItemDetailList">
+  <div class="ItemDetailTitle">
+    <div class="TitleIcon ViewListIcon"></div>
+    <div class="Title">$selectApplicationsLabel</div>
+    <div class="ClearLeft"></div>
+  </div>
+  <div class="ApplicationListContainer">
+    <div class="ItemDetail">
+    <%
+      def srcErrorBG = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+      for (application in applicationList) {
+        def addApplicationAction = uicomponent.event("InstallApplication", application.applicationName);
+        def srcBG = application.getIconURL();
+    %>
+      <div class="Application">
+        <div class="ApplicationDescription">
+          <div class="PortletIcon" title="Application Registry">
+            <span><img onerror="src='$srcErrorBG'" title="$application.displayName" alt="$application.displayName" src="$srcBG"></span>
+          </div>
+          <div class="ApplicationContent">
+            <div class="TitleBarApplication">
+              <div class="Title">
+                $application.displayName
+              </div>
+              <div class="ApplicationButton">
+                <div class="AddButton" title="$installApplicationLabel" onclick="$addApplicationAction"></div>
+              </div>
+            </div>
+            <div class="ApplicationContentLabel">
+              <div class="ContentLabel">
+                <span class="LeftLabel">$typeLabel:</span>
+                <span class="RightLabel">$application.type.name</span>
+              </div>
+              <div class="ContentLabel">
+                <span class="LeftLabel">$descriptionLabel:</span>
+                <span class="RightLabel">$application.description</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ClearRight"></div>
+      </div>
+      <%
+      }
+    %>
+    </div>
+  </div>
+</div>

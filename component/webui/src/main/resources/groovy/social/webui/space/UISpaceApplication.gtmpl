@@ -32,6 +32,13 @@
   List<Application> applications = uicomponent.getApplications();
 %>
 <div class="$uicomponent.id">
+  <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
+  <div class="UIAction">
+    <span class="ActionButton LightBlueStyle">
+      <a href="#" class="AddAplicationIcon" onclick="$addApplication">$addApplicationLabel</a>
+    </span>
+  </div>
+  <div class="ClearLeft"></div>
   <% uiform.begin() %>
   <div class="ContainerSpace">
   <% for(app in applications) {
@@ -61,9 +68,6 @@
     <% } %>
   <% } %>
   </div>
-  
-  <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-  <a href="#" class="AddAplicationButton" onclick="<%= addApplication %>">$addApplicationLabel</a>
   <div class="FR">
     <%
       if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
