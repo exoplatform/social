@@ -152,12 +152,12 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
     if (DisplayMode.ACTIVITY_FEED.equals(getSelectedDisplayMode())) {
       activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
-    } else if (DisplayMode.USER_ACTIVITIES.equals(getSelectedDisplayMode())) {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+    } else if (DisplayMode.CONNECTIONS_ACTIVITIES.equals(getSelectedDisplayMode())) {
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
     } else if (DisplayMode.USER_SPACE_ACTIVITIES.equals(getSelectedDisplayMode())) {
       activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
     } else {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
     }
     activitiesLoader.init();
   }
