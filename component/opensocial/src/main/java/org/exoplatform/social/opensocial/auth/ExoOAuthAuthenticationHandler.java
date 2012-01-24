@@ -9,8 +9,8 @@ import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.util.TimeSource;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.monitor.jvm.J2EEServerInfo;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
@@ -90,21 +90,20 @@ public class ExoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
    * Method returns a path to the file containing the encryption key
    */
   private String getKeyFilePath() {
-    J2EEServerInfo info = new J2EEServerInfo();
-    String confPath = info.getExoConfigurationDirectory();
-    File keyFile = null;
 
-    if (confPath != null) {
-      File confDir = new File(confPath);
-      if (confDir != null && confDir.exists() && confDir.isDirectory()) {
-        keyFile = new File(confDir, "gadgets/key.txt");
-      }
+    String keyPath = PropertyManager.getProperty("gatein.gadgets.securitytokenkeyfile");
+
+    File tokenKeyFile = null;
+    if (keyPath == null) {
+       LOG.warn("The gadgets token key is not configured. The default key.txt file in /bin will be used");
+       tokenKeyFile = new File("key.txt");
+    }
+    else {
+       tokenKeyFile = new File(keyPath);
     }
 
-    if (keyFile == null) {
-      keyFile = new File("key.txt");
-    }
-
-    return keyFile.getAbsolutePath();
+    return tokenKeyFile.getAbsolutePath();
+    
   }
+  
 }
