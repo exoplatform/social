@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ActivityCountKey extends MultitenantCacheKey {
+public class ActivityCountKey extends ScopeCacheKey {
 
   private IdentityKey key;
 
@@ -41,6 +41,10 @@ public class ActivityCountKey extends MultitenantCacheKey {
     this.key = key;
     this.baseId = baseId;
     this.type = type;
+  }
+
+  public IdentityKey getKey() {
+    return key;
   }
 
   @Override

@@ -21,9 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
@@ -40,6 +43,7 @@ import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpaceMembersKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceKey;
+import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 /**
@@ -49,6 +53,9 @@ import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
  * @version $Revision$
  */
 public class CachedIdentityStorage implements IdentityStorage {
+
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(CachedIdentityStorage.class);
 
   private final ExoCache<IdentityKey, IdentityData> exoIdentityCache;
   private final ExoCache<IdentityCompositeKey, IdentityKey> exoIdentityIndexCache;
@@ -63,6 +70,18 @@ public class CachedIdentityStorage implements IdentityStorage {
   private final FutureExoCache<ListIdentitiesKey, ListIdentitiesData, ServiceContext<ListIdentitiesData>> identitiesCache;
 
   private final IdentityStorageImpl storage;
+
+  private void clearCache() {
+
+    try {
+      exoIdentitiesCache.select(new IdentityCacheSelector(OrganizationIdentityProvider.NAME));
+      exoIdentitiesCountCache.select(new IdentityCacheSelector(OrganizationIdentityProvider.NAME));
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+  }
 
   /**
    * Build the identity list from the caches Ids.
@@ -134,8 +153,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.put(key, new IdentityData(identity));
-    exoIdentitiesCountCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearCache();
   }
 
   /**
@@ -146,8 +164,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(identity.getId()));
     exoIdentityCache.remove(key);
-    exoIdentitiesCountCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearCache();
 
     //
     return storage.updateIdentity(identity);
@@ -194,8 +211,7 @@ public class CachedIdentityStorage implements IdentityStorage {
       exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
     }
     exoProfileCache.remove(key);
-    exoIdentitiesCountCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearCache();
 
   }
 
@@ -214,8 +230,7 @@ public class CachedIdentityStorage implements IdentityStorage {
       exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), data.getRemoteId()));
     }
     exoProfileCache.remove(key);
-    exoIdentitiesCountCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearCache();
 
   }
 
@@ -294,8 +309,7 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     IdentityKey key = new IdentityKey(new Identity(profile.getIdentity().getId()));
     exoProfileCache.remove(key);
-    exoIdentitiesCountCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearCache();
 
   }
 

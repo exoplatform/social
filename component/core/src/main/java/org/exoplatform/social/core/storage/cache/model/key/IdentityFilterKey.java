@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityFilterKey extends MultitenantCacheKey {
+public class IdentityFilterKey extends ScopeCacheKey {
 
   private final String providerId;
   private final String remoteId;

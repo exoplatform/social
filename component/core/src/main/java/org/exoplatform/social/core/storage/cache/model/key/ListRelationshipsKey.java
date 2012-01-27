@@ -35,6 +35,10 @@ public class ListRelationshipsKey <T> extends ListCacheKey {
     this.key = key;
   }
 
+  public T getKey() {
+    return key;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {

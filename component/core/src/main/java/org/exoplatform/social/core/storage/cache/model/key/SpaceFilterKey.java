@@ -26,7 +26,7 @@ import org.exoplatform.social.core.space.SpaceFilter;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceFilterKey extends MultitenantCacheKey {
+public class SpaceFilterKey extends ScopeCacheKey {
 
   private String userId;
   private char firstCharacterOfSpaceName;
@@ -82,4 +82,5 @@ public class SpaceFilterKey extends MultitenantCacheKey {
     result = 31 * result + (type != null ? type.hashCode() : 0);
     return result;
   }
+
 }

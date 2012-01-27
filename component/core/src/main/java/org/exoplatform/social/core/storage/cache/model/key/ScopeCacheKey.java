@@ -26,27 +26,30 @@ import javax.jcr.RepositoryException;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class MultitenantCacheKey implements CacheKey {
+public class ScopeCacheKey implements CacheKey {
 
-  private final String repositoryName;
+  private final String scope;
 
-  public MultitenantCacheKey() {
-    repositoryName = getCurrentRepositoryName();
+  public ScopeCacheKey() {
+    scope = getCurrentRepositoryName();
   }
 
+  public String getScope() {
+    return scope;
+  }
 
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof MultitenantCacheKey)) {
+    if (!(o instanceof ScopeCacheKey)) {
       return false;
     }
 
-    MultitenantCacheKey that = (MultitenantCacheKey) o;
+    ScopeCacheKey that = (ScopeCacheKey) o;
 
-    if (repositoryName != null ? !repositoryName.equals(that.repositoryName) : that.repositoryName != null) {
+    if (scope != null ? !scope.equals(that.scope) : that.scope != null) {
       return false;
     }
 
@@ -55,10 +58,10 @@ public class MultitenantCacheKey implements CacheKey {
 
   @Override
   public int hashCode() {
-    return repositoryName != null ? repositoryName.hashCode() : 0;
+    return scope != null ? scope.hashCode() : 0;
   }
 
-  private String getCurrentRepositoryName() {
+  public static String getCurrentRepositoryName() {
     RepositoryService repositoryService = (RepositoryService)
                                           PortalContainer.getInstance().getComponentInstanceOfType(RepositoryService.class);
     try {

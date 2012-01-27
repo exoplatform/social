@@ -19,6 +19,9 @@ package org.exoplatform.social.core.storage.cache;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
@@ -29,6 +32,8 @@ import org.exoplatform.social.core.storage.cache.model.key.ListIdentitiesKey;
 import org.exoplatform.social.core.storage.cache.model.key.ListSpacesKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceFilterKey;
 import org.exoplatform.social.core.storage.cache.model.key.SpaceType;
+import org.exoplatform.social.core.storage.cache.selector.IdentityCacheSelector;
+import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -44,6 +49,9 @@ import java.util.List;
  * @version $Revision$
  */
 public class CachedSpaceStorage implements SpaceStorage {
+
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(CachedSpaceStorage.class);
 
   private final ExoCache<SpaceKey, SpaceData> exoSpaceCache;
   private final ExoCache<SpaceRefKey, SpaceKey> exoRefSpaceCache;
@@ -126,6 +134,29 @@ public class CachedSpaceStorage implements SpaceStorage {
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, removed.getUrl()));
   }
 
+  private void clearIdentityCache() {
+
+    try {
+      exoIdentitiesCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+  }
+
+  private void clearSpaceCache() {
+
+    try {
+      exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>());
+      exoSpacesCountCache.select(new ScopeCacheSelector<SpaceFilterKey, IntegerData>());
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -171,9 +202,8 @@ public class CachedSpaceStorage implements SpaceStorage {
 
     //
     SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
-    exoSpacesCountCache.clearCache();
-    exoSpacesCache.clearCache();
-    exoIdentitiesCache.clearCache();
+    clearSpaceCache();
+    clearIdentityCache();
     if (removed != null) {
       cleanRef(removed);
     }
@@ -186,18 +216,18 @@ public class CachedSpaceStorage implements SpaceStorage {
   public void deleteSpace(final String id) throws SpaceStorageException {
 
     //
+    Space space = storage.getSpaceById(id);
     storage.deleteSpace(id);
 
     //
     SpaceData removed = exoSpaceCache.remove(new SpaceKey(id));
-    exoSpacesCountCache.clearCache();
-    exoSpacesCache.clearCache();
+    clearSpaceCache();
     if (removed != null) {
       cleanRef(removed);
     }
 
     //
-    getCachedActivityStorage().invalidate();
+    getCachedActivityStorage().clearCache();
 
   }
 

@@ -43,6 +43,10 @@ public class ListActivitiesKey extends ListCacheKey {
     this.identities = identities;
   }
 
+  public ActivityCountKey getKey() {
+    return key;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {

@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class ListCacheKey extends MultitenantCacheKey {
+public class ListCacheKey extends ScopeCacheKey {
 
   private final long offset;
   private final long limit;

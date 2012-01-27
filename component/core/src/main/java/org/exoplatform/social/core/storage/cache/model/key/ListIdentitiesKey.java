@@ -34,6 +34,10 @@ public class ListIdentitiesKey extends ListCacheKey {
     this.key = key;
   }
 
+  public IdentityFilterKey getKey() {
+    return key;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
@@ -61,5 +65,5 @@ public class ListIdentitiesKey extends ListCacheKey {
     result = 31 * result + (key != null ? key.hashCode() : 0);
     return result;
   }
-
+  
 }

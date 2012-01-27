@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceRefKey extends MultitenantCacheKey {
+public class SpaceRefKey extends ScopeCacheKey {
 
   private final String displayName;
   private final String prettyName;
@@ -78,6 +78,7 @@ public class SpaceRefKey extends MultitenantCacheKey {
     }
 
     return true;
+
   }
 
   @Override

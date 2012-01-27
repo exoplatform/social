@@ -18,6 +18,8 @@
 package org.exoplatform.social.core.storage.cache;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -26,6 +28,7 @@ import org.exoplatform.social.core.storage.cache.model.data.ListActivitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.key.ActivityType;
 import org.exoplatform.social.core.storage.cache.model.key.ListActivitiesKey;
+import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -45,6 +48,9 @@ import java.util.SortedSet;
  */
 public class CachedActivityStorage implements ActivityStorage {
 
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(CachedActivityStorage.class);
+
   private final ExoCache<ActivityKey, ActivityData> exoActivityCache;
   private final ExoCache<ActivityCountKey, IntegerData> exoActivitiesCountCache;
   private final ExoCache<ListActivitiesKey, ListActivitiesData> exoActivitiesCache;
@@ -54,6 +60,20 @@ public class CachedActivityStorage implements ActivityStorage {
   private final FutureExoCache<ListActivitiesKey, ListActivitiesData, ServiceContext<ListActivitiesData>> activitiesCache;
 
   private final ActivityStorageImpl storage;
+
+  public void clearCache() {
+
+    try {
+      exoActivitiesCache.select(new ScopeCacheSelector<ListActivitiesKey, ListActivitiesData>());
+      exoActivitiesCountCache.select(new ScopeCacheSelector<ActivityCountKey, IntegerData>());
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+
+
+  }
 
   /**
    * Build the activity list from the caches Ids.
@@ -189,7 +209,7 @@ public class CachedActivityStorage implements ActivityStorage {
     //
     ActivityKey key = new ActivityKey(a.getId());
     exoActivityCache.put(key, new ActivityData(getActivity(a.getId())));
-    invalidate();
+    clearCache();
 
     //
     return a;
@@ -209,12 +229,13 @@ public class CachedActivityStorage implements ActivityStorage {
   public void deleteActivity(final String activityId) throws ActivityStorageException {
 
     //
+    ExoSocialActivity a = storage.getActivity(activityId);
     storage.deleteActivity(activityId);
 
     //
     ActivityKey key = new ActivityKey(activityId);
     exoActivityCache.remove(key);
-    invalidate();
+    clearCache();
 
   }
 
@@ -866,11 +887,6 @@ public class CachedActivityStorage implements ActivityStorage {
     ActivityKey key = new ActivityKey(existingActivity.getId());
     exoActivityCache.remove(key);
 
-  }
-
-  public void invalidate() {
-    exoActivitiesCountCache.clearCache();
-    exoActivitiesCache.clearCache();
   }
   
 }

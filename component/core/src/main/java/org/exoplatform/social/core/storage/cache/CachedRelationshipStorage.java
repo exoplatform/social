@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -40,6 +42,7 @@ import org.exoplatform.social.core.storage.cache.model.key.RelationshipCountKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipIdentityKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipKey;
 import org.exoplatform.social.core.storage.cache.model.key.RelationshipType;
+import org.exoplatform.social.core.storage.cache.selector.RelationshipCacheSelector;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
@@ -49,6 +52,9 @@ import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
  * @version $Revision$
  */
 public class CachedRelationshipStorage implements RelationshipStorage {
+
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(CachedRelationshipStorage.class);
 
   //
   private final ExoCache<RelationshipKey, RelationshipData> exoRelationshipCache;
@@ -73,6 +79,26 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   //
   private static final RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
 
+  private void clearCacheFor(Relationship r) {
+
+    List<String> identities = new ArrayList<String>();
+
+    if (r.getSender() != null) {
+      identities.add(r.getSender().getId());
+    }
+    if (r.getReceiver() != null) {
+      identities.add(r.getReceiver().getId());
+    }
+
+    try {
+      exoRelationshipsCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
+      exoRelationshipCountCache.select(new RelationshipCacheSelector(identities.toArray(new String[]{})));
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+  }
 
   /**
    * Build the identity list from the caches Ids.
@@ -108,6 +134,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     return new ListIdentitiesData(data);
 
   }
+
   public CachedActivityStorage getCachedActivityStorage() {
     if (cachedActivityStorage == null) {
       cachedActivityStorage = (CachedActivityStorage)
@@ -155,9 +182,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     exoRelationshipCache.put(key, new RelationshipData(r));
     exoRelationshipByIdentityCache.put(identityKey1, key);
     exoRelationshipByIdentityCache.put(identityKey2, key);
-    exoRelationshipsCache.clearCache();
-    exoRelationshipCountCache.clearCache();
-    getCachedActivityStorage().invalidate();
+    clearCacheFor(relationship);
+    getCachedActivityStorage().clearCache();
 
     return r;
 
@@ -171,9 +197,8 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     storage.removeRelationship(relationship);
 
     exoRelationshipCache.remove(new RelationshipKey(relationship.getId()));
-    exoRelationshipsCache.clearCache();
-    exoRelationshipCountCache.clearCache();
-    getCachedActivityStorage().invalidate();
+    clearCacheFor(relationship);
+    getCachedActivityStorage().clearCache();
     
   }
 

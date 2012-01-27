@@ -15,47 +15,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.exoplatform.social.core.storage.cache.model.key;
+package org.exoplatform.social.core.storage.cache.selector;
+
+import org.exoplatform.services.cache.CachedObjectSelector;
+import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.services.cache.ObjectCacheInfo;
+import org.exoplatform.social.core.storage.cache.model.key.ScopeCacheKey;
 
 /**
- * Immutable space key.
- *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceKey extends ScopeCacheKey {
-
-  private final String id;
-
-  public SpaceKey(final String id) {
-    this.id = id;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof SpaceKey)) {
-      return false;
-    }
-
-    SpaceKey spaceKey = (SpaceKey) o;
-
-    if (id != null ? !id.equals(spaceKey.id) : spaceKey.id != null) {
-      return false;
-    }
-
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return id != null ? id.hashCode() : 0;
-  }
+public class ScopeCacheSelector<T extends ScopeCacheKey, U> implements CachedObjectSelector<T, U> {
   
+  public boolean select(final T key, final ObjectCacheInfo<? extends U> ocinfo) {
+    return ScopeCacheKey.getCurrentRepositoryName().equals(key.getScope());
+  }
+
+  public void onSelect(final ExoCache<? extends T, ? extends U> exoCache, final T key, final ObjectCacheInfo<? extends U> ocinfo) throws Exception {
+    exoCache.remove(key);
+  }
+
 }
