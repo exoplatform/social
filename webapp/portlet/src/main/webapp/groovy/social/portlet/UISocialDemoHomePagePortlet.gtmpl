@@ -141,6 +141,15 @@
                <% if(prContext.getRemoteUser() == null) { %>
                 <a href="${_ctx.getPortalContextPath()}/login?username=root&amp;password=gtn&amp;initialURI=${initialURI}">
                   <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Root") %>
+                </a>,
+                <a href="${_ctx.getPortalContextPath()}/login?username=john&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_John") %>
+                </a>, 
+                <a href="${_ctx.getPortalContextPath()}/login?username=mary&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Mary") %>
+                </a>,
+                <a href="${_ctx.getPortalContextPath()}/login?username=demo&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Demo") %>
                 </a>
                <%} else {%>
                   <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.You_Are_Loginned_As_Root") %>
