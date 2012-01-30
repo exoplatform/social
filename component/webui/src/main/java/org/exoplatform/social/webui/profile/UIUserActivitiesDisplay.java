@@ -53,13 +53,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
 
   public enum DisplayMode {
-    ACTIVITY_FEED,
-    USER_ACTIVITIES,
-    CONNECTIONS_ACTIVITIES,
-    USER_SPACE_ACTIVITIES,
-    OWNER_STATUS
+    OWNER_STATUS,
+    ALL_UPDATES,
+    NETWORK_UPDATES,
+    SPACE_UPDATES,
+    MY_STATUS
   }
-  private DisplayMode selectedDisplayMode = DisplayMode.ACTIVITY_FEED;
+  private DisplayMode selectedDisplayMode = DisplayMode.ALL_UPDATES;
   private UIActivitiesLoader activitiesLoader;
   private String                ownerName;
   private String                viewerName;
@@ -118,14 +118,14 @@ public class UIUserActivitiesDisplay extends UIContainer {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
-      if (selectedDisplayMode.equals(DisplayMode.ACTIVITY_FEED.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ACTIVITY_FEED);
-      } else if (selectedDisplayMode.equals(DisplayMode.USER_ACTIVITIES.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.USER_ACTIVITIES);
-      } else if (selectedDisplayMode.equals(DisplayMode.USER_SPACE_ACTIVITIES.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.USER_SPACE_ACTIVITIES);
+      if (selectedDisplayMode.equals(DisplayMode.ALL_UPDATES.toString())) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
+      } else if (selectedDisplayMode.equals(DisplayMode.MY_STATUS.toString())) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      } else if (selectedDisplayMode.equals(DisplayMode.SPACE_UPDATES.toString())) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
       } else {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.CONNECTIONS_ACTIVITIES);
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
       }
       requestContext.addUIComponentToUpdateByAjax(uiUserActivitiesDisplay);
     }
@@ -150,14 +150,15 @@ public class UIUserActivitiesDisplay extends UIContainer {
         
     ActivityManager activityManager = Utils.getActivityManager();
 
-    if (DisplayMode.ACTIVITY_FEED.equals(getSelectedDisplayMode())) {
-      activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
-    } else if (DisplayMode.CONNECTIONS_ACTIVITIES.equals(getSelectedDisplayMode())) {
+    if (DisplayMode.MY_STATUS.equals(getSelectedDisplayMode()) || 
+        DisplayMode.OWNER_STATUS.equals(getSelectedDisplayMode())) {
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+    } else if (DisplayMode.NETWORK_UPDATES.equals(getSelectedDisplayMode())) {
       activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
-    } else if (DisplayMode.USER_SPACE_ACTIVITIES.equals(getSelectedDisplayMode())) {
+    } else if (DisplayMode.SPACE_UPDATES.equals(getSelectedDisplayMode())) {
       activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
     } else {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+      activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
     }
     activitiesLoader.init();
   }

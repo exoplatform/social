@@ -247,9 +247,9 @@ public class UILinkActivityComposer extends UIActivityComposer {
       
       activityManager.saveActivityNoReturn(ownerIdentity, activity);
       
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.CONNECTIONS_ACTIVITIES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.USER_SPACE_ACTIVITIES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.USER_ACTIVITIES);
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       }
     }
   }

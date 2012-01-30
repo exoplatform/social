@@ -425,9 +425,9 @@ public class BaseUIActivity extends UIForm {
         return true;
       }
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_ACTIVITIES) {
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
           return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_SPACE_ACTIVITIES) {
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
           //currently displays only
           return false;
         } else {
@@ -473,9 +473,9 @@ public class BaseUIActivity extends UIForm {
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
         if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_ACTIVITIES) {
+          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
             return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.USER_SPACE_ACTIVITIES) {
+          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
             return false;
           } else {
             //connections
