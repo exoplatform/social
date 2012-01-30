@@ -76,9 +76,19 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
       if (space != null) {
         String userName = m.getUserName();
         if (acl.getAdminMSType().equalsIgnoreCase(m.getMembershipType())) {
-          spaceService.addMember(space, userName);
-          spaceService.setManager(space, userName, true);
+          if (spaceService.isManager(space, userName)) {
+            return;
+          }
+          if (spaceService.isMember(space, userName)) {
+            spaceService.setManager(space, userName, true);
+          } else {
+            spaceService.addMember(space, userName);
+            spaceService.setManager(space, userName, true);
+          }
         } else if (SpaceUtils.MEMBER.equalsIgnoreCase(m.getMembershipType())) {
+          if (spaceService.isMember(space, userName)) {
+            return;
+          }
           spaceService.addMember(space, userName);
         }
         //Refresh GroupNavigation

@@ -498,8 +498,8 @@ public class SpaceServiceImpl implements SpaceService {
     if (!ArrayUtils.contains(members, userId)) {
       members = (String[]) ArrayUtils.add(members, userId);
       space.setMembers(members);
-      SpaceUtils.addUserToGroupWithMemberMembership(userId, space.getGroupId());
       this.updateSpace(space);
+      SpaceUtils.addUserToGroupWithMemberMembership(userId, space.getGroupId());
       spaceLifeCycle.memberJoined(space, userId);
     }
   }
@@ -518,9 +518,9 @@ public class SpaceServiceImpl implements SpaceService {
     String[] members = space.getMembers();
     if (ArrayUtils.contains(members, userId)) {
       members = (String[]) ArrayUtils.removeElement(members, userId);
-      SpaceUtils.removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
       space.setMembers(members);
       this.updateSpace(space);
+      SpaceUtils.removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
       spaceLifeCycle.memberLeft(space, userId);
     }
   }
@@ -1331,16 +1331,16 @@ public class SpaceServiceImpl implements SpaceService {
       if (!ArrayUtils.contains(managers, userId)) {
         managers = (String[]) ArrayUtils.add(managers, userId);
         space.setManagers(managers);
-        SpaceUtils.addUserToGroupWithManagerMembership(userId, space.getGroupId());
         this.updateSpace(space);
+        SpaceUtils.addUserToGroupWithManagerMembership(userId, space.getGroupId());
         spaceLifeCycle.grantedLead(space, userId);
       }
     } else {
       if (ArrayUtils.contains(managers, userId)) {
         managers = (String[]) ArrayUtils.removeElement(managers, userId);
         space.setManagers(managers);
-        SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
         this.updateSpace(space);
+        SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
         spaceLifeCycle.revokedLead(space, userId);
       }
     }
