@@ -32,6 +32,13 @@
   List<Application> applications = uicomponent.getApplications();
 %>
 <div class="$uicomponent.id">
+  <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
+  <div class="UIAction">
+    <span class="ActionButton LightBlueStyle">
+      <a href="#" class="AddAplicationIcon" onclick="$addApplication">$addApplicationLabel</a>
+    </span>
+  </div>
+  <div class="ClearLeft"></div>
   <% uiform.begin() %>
   <div class="ContainerSpace">
   <% for(app in applications) {
@@ -41,9 +48,10 @@
          def appName = uicomponent.getAppName(app);
          def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
          def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+         def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
   %>
     <div class="ContentSpace ClearFix">
-      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" alt=""/></div>
+      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" title="$applicationIconTitle" alt="$applicationIconTitle" /></div>
       <div class="CommunityContainer">
         <div class="CommunityMane ClearFix Line">
           <div class="CommunityName FL"><%= appName %></div>
@@ -60,9 +68,6 @@
     <% } %>
   <% } %>
   </div>
-  
-  <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-  <a href="#" class="AddAplicationButton" onclick="<%= addApplication %>">$addApplicationLabel</a>
   <div class="FR">
     <%
       if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {

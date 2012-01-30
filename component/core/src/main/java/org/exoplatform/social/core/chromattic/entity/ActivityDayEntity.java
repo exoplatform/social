@@ -19,7 +19,6 @@ package org.exoplatform.social.core.chromattic.entity;
 
 import java.util.List;
 
-import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.ManyToOne;

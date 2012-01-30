@@ -32,7 +32,9 @@
   def isEditable = uicomponent.isEditable();
   def currIdentity = Utils.getOwnerIdentity();
   def pendingRelationIdx = 0;
-  def cancelLabel = _ctx.appRes(uicomponent.getId() + ".label.Cancel")
+  def pendingLabel = _ctx.appRes(uicomponent.getId() + ".label.Pending")
+  def invitationSentLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationSent")
+  def cancelRequestLabel = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
   
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -51,20 +53,19 @@
 
       <%if ((list == null) || (list.size() == 0)) {%>
 		<div class="NoneContentSpace">
-			<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
 			<% def peopleURL = Utils.getURI("people") %>
-			</div>
 		</div>
       <%}%>
       <div class="ClearFix">
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
-          def actionLink = uicomponent.event("DenyContact", identity.getId());
+          def ignoreAction = uicomponent.event("Ignore", identity.getId());
           def position = identity.profile.position;
+          def email= identity.profile.email;
+          if (!email) email = "";
           pendingRelationIdx += 1;
           if (!position) position = "";
-          def email="";
           String imageSource = identity.profile.avatarUrl;
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
@@ -75,13 +76,12 @@
 	<% }%>
 				
             <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="#"/>
+              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
               <span class="BorderTop"></span>
               <span class="BorderBottom"></span>
             </a>
 			<div class="CommunityMane ClearFix">
 			 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-			 <img src="$LinkProvider.WAITING_CONFIRMATION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
 		      <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>
@@ -94,19 +94,20 @@
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="Email">
-	                  ${email}
+	                  <a href="mailto:${email}">${email}</a>
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
 	                <%  } %>
                 <% } %>
-			 <% if (isEditable) {%>
-			 <ul class="InviteTitle">
-		       <li class="FL"><a href="javascript:void(0)" class="WaitingIcon" title="$cancelLabel" onclick="$actionLink" >$cancelLabel</a></li>
-		     </ul>
-			<% } %>
-			</div>
 
+			</div>
+       <% if (isEditable) {%>
+       <ul class="InviteTitle">
+              <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
+       </ul>
+      <% } %>
 		</div>
   <% } %>
   

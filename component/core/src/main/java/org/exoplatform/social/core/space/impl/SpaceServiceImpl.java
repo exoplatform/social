@@ -29,7 +29,6 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
@@ -44,13 +43,13 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
+import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceLifecycle;
 import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.SpaceApplication;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
@@ -365,7 +364,7 @@ public class SpaceServiceImpl implements SpaceService {
     // Creates new space by creating new group
     String groupId = null;
     try {
-      groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
+      groupId = SpaceUtils.createGroup(space.getPrettyName(), creator);
     } catch (SpaceException e) {
       LOG.error("Error while creating group", e);
     }
@@ -410,7 +409,8 @@ public class SpaceServiceImpl implements SpaceService {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
       spaceApplicationHandler.initApps(space, getSpaceApplicationConfigPlugin());
       for (SpaceApplication spaceApplication : getSpaceApplicationConfigPlugin().getSpaceApplicationList()) {
-        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(), Space.ACTIVE_STATUS);
+        setApp(space, spaceApplication.getPortletName(), spaceApplication.getAppTitle(), spaceApplication.isRemovable(),
+               Space.ACTIVE_STATUS);
       }
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
@@ -431,6 +431,10 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void deleteSpace(Space space) {
     try {
+      
+      // remove memberships of users with deleted space.
+      SpaceUtils.removeMembershipFromGroup(space);
+      
       spaceStorage.deleteSpace(space.getId());
       
       OrganizationService orgService = getOrgService();
@@ -494,8 +498,8 @@ public class SpaceServiceImpl implements SpaceService {
     if (!ArrayUtils.contains(members, userId)) {
       members = (String[]) ArrayUtils.add(members, userId);
       space.setMembers(members);
-      SpaceUtils.addUserToGroupWithMemberMembership(userId, space.getGroupId());
       this.updateSpace(space);
+      SpaceUtils.addUserToGroupWithMemberMembership(userId, space.getGroupId());
       spaceLifeCycle.memberJoined(space, userId);
     }
   }
@@ -514,9 +518,9 @@ public class SpaceServiceImpl implements SpaceService {
     String[] members = space.getMembers();
     if (ArrayUtils.contains(members, userId)) {
       members = (String[]) ArrayUtils.removeElement(members, userId);
-      SpaceUtils.removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
       space.setMembers(members);
       this.updateSpace(space);
+      SpaceUtils.removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
       spaceLifeCycle.memberLeft(space, userId);
     }
   }
@@ -1327,16 +1331,16 @@ public class SpaceServiceImpl implements SpaceService {
       if (!ArrayUtils.contains(managers, userId)) {
         managers = (String[]) ArrayUtils.add(managers, userId);
         space.setManagers(managers);
-        SpaceUtils.addUserToGroupWithManagerMembership(userId, space.getGroupId());
         this.updateSpace(space);
+        SpaceUtils.addUserToGroupWithManagerMembership(userId, space.getGroupId());
         spaceLifeCycle.grantedLead(space, userId);
       }
     } else {
       if (ArrayUtils.contains(managers, userId)) {
         managers = (String[]) ArrayUtils.removeElement(managers, userId);
         space.setManagers(managers);
-        SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
         this.updateSpace(space);
+        SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
         spaceLifeCycle.revokedLead(space, userId);
       }
     }

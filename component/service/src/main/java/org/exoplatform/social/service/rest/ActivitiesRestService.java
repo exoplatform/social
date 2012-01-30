@@ -240,8 +240,8 @@ public class ActivitiesRestService implements ResourceContainer {
 
         activity.setLikeIdentityIds(identityIds);
         try {
-          Identity user = getIdentityManager().getIdentity(activity.getUserId());
-          _activityManager.saveActivity(user, activity);
+          Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
+          _activityManager.saveActivityNoReturn(user, activity);
         } catch(Exception ex) {
           throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -405,7 +405,8 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     if (identity == null) {
-      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);  
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                    false);
     }
     
      //TODO hoatle set current userId from authentication context instead of getting userId from comment
@@ -621,13 +622,15 @@ public class ActivitiesRestService implements ResourceContainer {
       model.setTotalNumberOfLikes(null);
     }
     
-    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true).getId(),activity)){
+    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                  true).getId(),activity)){
       model.setLiked(true);
     } else {
       model.setLiked(false);
     }
     
-    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).getCommentsWithListAccess(activity);
+    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).
+                                                                           getCommentsWithListAccess(activity);
     model.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
     
     Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
@@ -642,7 +645,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     
     if (isPassed(showActivityStream)) {
-      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
+      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
     }
     
     model.setNumberOfComments(numberOfComments, activity, portalContainerName);
@@ -700,7 +703,8 @@ public class ActivitiesRestService implements ResourceContainer {
       
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
 
-    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), false);
+    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                                       Util.getViewerId(uriInfo), false);
     ActivityManager activityManager = Util.getActivityManager(portalName);
     ExoSocialActivity activity = null;
     

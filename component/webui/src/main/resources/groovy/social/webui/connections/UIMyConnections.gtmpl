@@ -34,7 +34,10 @@
   def profileURL, activitiesURL, fullName, possition, actionAccept, actionDeny, position;
   def relationIdx = 0;
   def isOwner = Utils.isOwner();
-  def deleteLabel = _ctx.appRes(uicomponent.getId() + ".label.Delete")
+  def removeConnectionLabel = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+  def connectionLabel = _ctx.appRes(uicomponent.getId() + ".label.Connection")
+  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+  
       
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
@@ -53,9 +56,7 @@
         <%if ((myRelation == null) || (myRelation.size() == 0)) {%>
 
         <div class="NoneContentSpace">
-            <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%>
             <% def peopleURL = Utils.getURI("people") %>
-            </p>
          </div>
       <%}%>
       
@@ -64,11 +65,12 @@
         <%  for(id in myRelation) {
             profileURL = LinkProvider.getUserProfileUri(id.getRemoteId());
             fullName = id.profile.fullName;
-            def actionLink = uicomponent.event("Remove",id.getId());
+            def removeConnectionAction = uicomponent.event("RemoveConnection",id.getId());
             position = id.profile.position;
             relationIdx += 1;
             if (!position) position = "";
-            def email="";
+            def email= id.profile.email;
+            if (!email) email = "";
             String imageSource = id.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
             if (relationIdx % 2 == 0) { %>
@@ -76,15 +78,12 @@
          <% } else {%>
           <div class="ContentSpace ClearFix"><% }%>
             <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="#"/>
+              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
               <span class="BorderTop"></span>
               <span class="BorderBottom"></span>
             </a>
             <div class="CommunityMane">
               <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-              <% if (Utils.isOwner()) { %>
-                <img src="$LinkProvider.HAS_CONNECTION_ICON" alt="" width='14px' height='14px' class="StatusIcon"/>
-              <% } %>
               <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>
                 <% } else {%>
@@ -97,20 +96,19 @@
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
 	                <div class="Email">
-	                  ${email}
+	                  <a href="mailto:${email}">${email}</a>
 	                </div>
 	                <%  } else {%>
 	                <span class="NoneEmail"></span>
 	                <%  } %>
                 <% } %>
-
-			<% if (isEditable) {%>
-			   <ul class="InviteTitle">
-		         <li class="FL"><a href="javascript:void(0)" onclick="$actionLink" title="$deleteLabel" class="Delete">$deleteLabel</a></li>
-		       </ul>
-		    <% } %>
-			   
 	         </div>
+        <% if (isEditable) {%>
+         <ul class="InviteTitle">
+              <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
+              <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" title="$removeTitle">$removeTitle</a></li>
+         </ul>
+        <% } %>	         
 	   </div>
     <%  } %>
     

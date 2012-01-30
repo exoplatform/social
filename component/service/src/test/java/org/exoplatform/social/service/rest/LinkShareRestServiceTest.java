@@ -33,7 +33,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
 public class LinkShareRestServiceTest extends AbstractResourceTest {
 
   static private LinkShareRestService linkShareRestService;
-  private final String RIGHT_LINK = "http://google.com";
+  private final String RIGHT_LINK = "hTTp://google.com";
   private final String WRONG_LINK = "http://google.com/ahgo/ahgoeh";
   public void setUp() throws Exception {
     super.setUp();
@@ -56,7 +56,7 @@ public class LinkShareRestServiceTest extends AbstractResourceTest {
     ByteArrayContainerResponseWriter writer = new ByteArrayContainerResponseWriter();
     ContainerResponse response = service("POST", "/social/linkshare/show.json", "", h, data, writer);
     assertEquals(200, response.getStatus());
-    assertEquals("application/json", response.getContentType().toString());
+    assertEquals("application/json;charset=utf-8", response.getContentType().toString());
     LinkShare linkShare = (LinkShare) response.getEntity();
     assertEquals(RIGHT_LINK, linkShare.getLink());
     assertNotNull(linkShare.getTitle());

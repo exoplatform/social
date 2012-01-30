@@ -26,7 +26,8 @@ import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 
 /**
- * {@link SynchronizedSpaceStorage} as a decorator to {@link org.exoplatform.social.core.storage.impl.SpaceStorageImpl} for synchronization management.
+ * {@link SynchronizedSpaceStorage} as a decorator to
+ * {@link org.exoplatform.social.core.storage.impl.SpaceStorageImpl} for synchronization management.
  *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
@@ -503,7 +504,8 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<Space> getVisibleSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit) throws SpaceStorageException {
+  public List<Space> getVisibleSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit)
+                                      throws SpaceStorageException {
 
     boolean created = startSynchronization();
     try {

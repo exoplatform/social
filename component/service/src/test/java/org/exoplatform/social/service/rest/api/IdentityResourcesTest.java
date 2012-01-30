@@ -40,7 +40,7 @@ import org.exoplatform.social.service.test.AbstractResourceTest;
  */
 public class IdentityResourcesTest extends AbstractResourceTest {
 
-  private final String RESOURCE_URL = "/api/social/v1-alpha2/portal/";
+  private final String RESOURCE_URL = "/api/social/v1-alpha3/portal/";
 
   private IdentityManager identityManager;
 
@@ -118,7 +118,7 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     
     //wrong portalContainer
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" +
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" +
         demoIdentity.getId() + ".json", "", null, null);
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     
@@ -139,17 +139,17 @@ public class IdentityResourcesTest extends AbstractResourceTest {
    */
   public void testGetIdentityByIdWithWrongPortalContainerName() throws Exception {
     startSessionAs("demo");
-    ContainerResponse response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+    ContainerResponse response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" + 
                                          demoIdentity.getId() +".json", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     
     //Not supported type
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" +
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" +
         demoIdentity.getId() + ".xml", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     
     //IdentityId not exist
-    response = service("GET","/api/social/v1-alpha2/notExistPortalContainer/identity/notExistIdentity.json", "", null, null);
+    response = service("GET","/api/social/v1-alpha3/notExistPortalContainer/identity/notExistIdentity.json", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
   }
 
@@ -205,7 +205,7 @@ public class IdentityResourcesTest extends AbstractResourceTest {
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     
     // wrong portal Container
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" + 
         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
         ".json", "", null, null);
     assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
@@ -234,24 +234,24 @@ public class IdentityResourcesTest extends AbstractResourceTest {
    */  
   public void testGetIdentityByProviderIdAndRemoteIdWithWrongPortalContainerName() throws Exception {
     startSessionAs("demo");
-    ContainerResponse response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+    ContainerResponse response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" + 
                                          demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
                                          ".json", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     
     //not supported media type
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + 
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" + 
         demoIdentity.getProviderId() + "/" + demoIdentity.getRemoteId() + 
         ".xml", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     
     // not exist providerId
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/notExistProviderId/demo.json", "", 
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/notExistProviderId/demo.json", "", 
         null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     
     // not exist remoteId
-    response = service("GET", "/api/social/v1-alpha2/notExistPortalContainer/identity/" + demoIdentity.getProviderId() + 
+    response = service("GET", "/api/social/v1-alpha3/notExistPortalContainer/identity/" + demoIdentity.getProviderId() + 
         "/notExistRemoteId.json", "", null, null);
     assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
   }

@@ -46,30 +46,38 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 
 @ComponentConfigs({
-@ComponentConfig(template = "classpath:groovy/social/webui/space/UISpaceNavigationManagement.gtmpl", events = {
-    @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
-    @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class),
-    @EventConfig(listeners = UISpaceNavigationManagement.SaveActionListener.class)
-    }),
-    @ComponentConfig(
-                     type = UIPageNodeForm.class,
-                     lifecycle = UIFormLifecycle.class,
-                     template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
-                     events = {
-                       @EventConfig(listeners = UIPageNodeForm.SaveActionListener.class),
-                       @EventConfig(listeners = UISpaceNavigationManagement.BackActionListener.class, phase = Phase.DECODE),
-                       @EventConfig(listeners = UIPageNodeForm.SwitchPublicationDateActionListener.class, phase = Phase.DECODE),
-                       @EventConfig(listeners = UIPageNodeForm.ClearPageActionListener.class, phase = Phase.DECODE),
-                       @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE)
-                     }
-                   ),
-    @ComponentConfig(
-                     type = UIPopupWindow.class,
-                     id = "AddNode",
-                     template =  "system:/groovy/webui/core/UIPopupWindow.gtmpl",
-                     events = @EventConfig(listeners = UISpaceNavigationManagement.ClosePopupActionListener.class, name = "ClosePopup")
-                  )
-                  })
+  @ComponentConfig(
+    template = "classpath:groovy/social/webui/space/UISpaceNavigationManagement.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationManagement.SaveActionListener.class)
+    }
+  ),
+  @ComponentConfig(
+    type = UIPageNodeForm.class,
+    lifecycle = UIFormLifecycle.class,
+    template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
+    events = {
+      @EventConfig(listeners = UIPageNodeForm.SaveActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationManagement.BackActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.ChangeLanguageActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.SwitchLabelModeActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.SwitchPublicationDateActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.SwitchVisibleActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.ClearPageActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.CreatePageActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIPageNodeForm.SelectTabActionListener.class, phase = Phase.DECODE)
+    }
+  ),
+  @ComponentConfig(
+    type = UIPopupWindow.class,
+    id = "AddNode",
+    template =  "system:/groovy/webui/core/UIPopupWindow.gtmpl",
+    events =
+      @EventConfig(listeners = UISpaceNavigationManagement.ClosePopupActionListener.class, name = "ClosePopup")
+  )
+})
                   
 /**
  * Editor : hanhvq@exoplatfor.com Jun 22, 2011 
@@ -84,7 +92,7 @@ public class UISpaceNavigationManagement extends UIContainer {
   
   public UISpaceNavigationManagement() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "AddNode", null);
-    uiPopup.setWindowSize(800, 500);
+    uiPopup.setWindowSize(800, 445);
     uiPopup.setShow(false);
     addChild(uiPopup);
     

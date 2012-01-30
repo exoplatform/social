@@ -19,6 +19,7 @@ package org.exoplatform.social.plugin.link;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -79,12 +80,19 @@ public class UILinkActivityComposer extends UIActivityComposer {
   private boolean linkInfoDisplayed_ = false;
   private Map<String, String> templateParams;
   
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    */
   public UILinkActivityComposer() {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     setReadyForPostingActivity(false);
-    addChild(new UIFormStringInput("InputLink", "InputLink", null));
+    UIFormStringInput inputLink = new UIFormStringInput("InputLink", "InputLink", null);
+    inputLink.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UILinkComposerPlugin.label.InputLink"));
+    addChild(inputLink);
   }
 
   public void setLinkInfoDisplayed(boolean displayed) {
@@ -195,11 +203,16 @@ public class UILinkActivityComposer extends UIActivityComposer {
     ActivityManager activityManager = uiComposer.getApplicationComponent(ActivityManager.class);
     IdentityManager identityManager = uiComposer.getApplicationComponent(IdentityManager.class);
     String remoteUser = requestContext.getRemoteUser();
-    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser, true);
 
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
     templateParams.put(COMMENT_PARAM, postedMessage);
+    
+    if(templateParams.get(IMAGE_PARAM) == null){
+      templateParams.put(IMAGE_PARAM, "");
+    }
+    
     setTemplateParams(templateParams);
 
     if (templateParams.size() == 0) {
@@ -221,18 +234,18 @@ public class UILinkActivityComposer extends UIActivityComposer {
       Space space = uiDisplaySpaceActivities.getSpace();
 
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                   space.getName(),
+                                                                   space.getPrettyName(),
                                                                    false);
       
-      activityManager.saveActivity(spaceIdentity, activity);
+      activityManager.saveActivityNoReturn(spaceIdentity, activity);
 
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       String ownerName = uiUserActivitiesDisplay.getOwnerName();
       Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   ownerName);
+                                                                   ownerName, false);
       
-      activityManager.saveActivity(ownerIdentity, activity);
+      activityManager.saveActivityNoReturn(ownerIdentity, activity);
       
       if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
           || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {

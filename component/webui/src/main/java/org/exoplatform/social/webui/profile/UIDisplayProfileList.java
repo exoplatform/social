@@ -28,7 +28,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
-import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -49,9 +48,9 @@ import org.exoplatform.webui.event.EventListener;
 @ComponentConfig(
   template = "classpath:groovy/social/webui/connections/UIAllPeople.gtmpl",
   events = {
-    @EventConfig(listeners = UIDisplayProfileList.AddContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.AcceptContactActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.DenyContactActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.ConnectActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.ConfirmActionListener.class),
+    @EventConfig(listeners = UIDisplayProfileList.IgnoreActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UIDisplayProfileList.LoadMorePeopleActionListener.class)
   }
@@ -63,12 +62,12 @@ public class UIDisplayProfileList extends UIContainer {
   /**
    * Label for display invoke action
    */
-  private static final String INVITATION_REVOKED_INFO = "UIAllPeople.label.RevokedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIDisplayProfileList.label.RevokedInfo"; 
 
   /**
    * Label for display established invitation
    */
-  private static final String INVITATION_ESTABLISHED_INFO = "UIAllPeople.label.InvitationEstablishedInfo";
+  private static final String INVITATION_ESTABLISHED_INFO = "UIDisplayProfileList.label.InvitationEstablishedInfo";
 
   /**
    * Number element per page.
@@ -95,8 +94,9 @@ public class UIDisplayProfileList extends UIContainer {
    * @throws Exception
    */
   public UIDisplayProfileList() throws Exception {
-	  uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-	  uiProfileUserSearch.setHasPeopleTab(false);
+    uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
+    uiProfileUserSearch.setHasPeopleTab(false);
+    uiProfileUserSearch.setHasConnectionLink(true);
     init();
   }
   
@@ -196,9 +196,9 @@ public class UIDisplayProfileList extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= PEOPLE_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -274,18 +274,18 @@ public class UIDisplayProfileList extends UIContainer {
   private List<Identity> loadPeople(int index, int length) throws Exception {
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
     setPeopleListAccess(Utils.getIdentityManager().getIdentitiesByProfileFilter(
-         	            OrganizationIdentityProvider.NAME, filter, true));
+            OrganizationIdentityProvider.NAME, filter, true));
     
     setPeopleNum(getPeopleListAccess().getSize());
     uiProfileUserSearch.setPeopleNum(getPeopleNum());
     Identity[] people = getPeopleListAccess().load(index, length);
-    
+
 //  This is the lack of API, filter by code is not good, that's the reason why we commented these lines.    
 //    if (filter.getSkills().length() > 0) { 
 //      return uiProfileUserSearch.getIdentitiesBySkills(
-//    		  new ArrayList<Identity>(Arrays.asList(people)));
+//        new ArrayList<Identity>(Arrays.asList(people)));
 //    }
-    
+
     return new ArrayList<Identity>(Arrays.asList(people));
   }
   
@@ -301,7 +301,7 @@ public class UIDisplayProfileList extends UIContainer {
       if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
         uiAllPeople.loadNext();
       } else {
-    	uiAllPeople.setEnableLoadNext(false);
+        uiAllPeople.setEnableLoadNext(false);
       }
     }
   }
@@ -311,7 +311,7 @@ public class UIDisplayProfileList extends UIContainer {
    * information of user is invited.<br> - Checks the relationship to confirm that there have not
    * got connection yet.<br> - Saves the new connection.<br>
    */
-  public static class AddContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class ConnectActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -338,7 +338,7 @@ public class UIDisplayProfileList extends UIContainer {
    * user who made request.<br> - Checks the relationship to confirm that there still got invited
    * connection.<br> - Makes and Save the new relationship.<br>
    */
-  public static class AcceptContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class ConfirmActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);
@@ -364,7 +364,7 @@ public class UIDisplayProfileList extends UIContainer {
    * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
    * Removes the current relation and save the new relation.<br>
    */
-  public static class DenyContactActionListener extends EventListener<UIDisplayProfileList> {
+  public static class IgnoreActionListener extends EventListener<UIDisplayProfileList> {
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
       UIDisplayProfileList   uiAllPeople = event.getSource();
       String userId = event.getRequestContext().getRequestParameter(OBJECTID);

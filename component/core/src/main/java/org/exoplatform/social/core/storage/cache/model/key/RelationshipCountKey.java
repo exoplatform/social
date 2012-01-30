@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipCountKey <T> extends MultitenantCacheKey {
+public class RelationshipCountKey <T> extends ScopeCacheKey {
 
   private final T key;
 
@@ -33,6 +33,10 @@ public class RelationshipCountKey <T> extends MultitenantCacheKey {
   public RelationshipCountKey(final T key, final RelationshipType type) {
     this.key = key;
     this.type = type;
+  }
+
+  public T getKey() {
+    return key;
   }
 
   @Override

@@ -19,59 +19,59 @@
 -->
 
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-	xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-	<component>
-		<type>org.exoplatform.social.extras.benches.ExoSocialDataInjectionExecutor
-		</type>
-	</component>
+  <component>
+    <type>org.exoplatform.social.extras.benches.ExoSocialDataInjectionExecutor
+    </type>
+  </component>
 
   <component>
     <type>org.exoplatform.services.bench.DataInjectorService</type>
   </component>
-	<!-- Remove this comment here, Data Injector will execute when startup Tomcat server -->
+  <!-- Remove this comment here, Data Injector will execute when startup Tomcat server -->
   <!--
-	<component>
-		<type>org.exoplatform.social.extras.benches.StartupInjectionConfig
-		</type>
-		<init-params>
-			<properties-param>
-				<name>inject.conf</name>
-				<description>possible properties are 'people', 'relations' and
-					'activities' or USERNAME.activities (ex: john.activities) as long
-					values</description>
-				<property name="people" value="100" />
-				<property name="relations" value="100" />
-				<property name="activities" value="100" />
-				<property name="john.activities" value="10" />
+  <component>
+    <type>org.exoplatform.social.extras.benches.StartupInjectionConfig
+    </type>
+    <init-params>
+      <properties-param>
+        <name>inject.conf</name>
+        <description>possible properties are 'people', 'relations' and
+          'activities' or USERNAME.activities (ex: john.activities) as long
+          values</description>
+        <property name="people" value="100" />
+        <property name="relations" value="100" />
+        <property name="activities" value="100" />
+        <property name="john.activities" value="10" />
 
-			</properties-param>
-		</init-params>
-	</component> -->
+      </properties-param>
+    </init-params>
+  </component> -->
 
 
-	<external-component-plugins>
-		<target-component>org.exoplatform.services.bench.DataInjectorService</target-component>
-		<component-plugin>
-			<name>ExoSocialDataInjector</name>
-			<set-method>addInjector</set-method>
-			<type>org.exoplatform.social.extras.benches.ExoSocialDataInjector</type>
-			<description>inject data for eXo Social</description>
-			<init-params>
-				<value-param>
-					<name>mU</name> <!-- maximum peoples -->
-					<value>500</value>
-				</value-param>
-				<value-param>
-					<name>mR</name> <!-- maximum size of relationships -->
-					<value>50</value>
-				</value-param>
-				<value-param>
-					<name>mA</name> <!-- maximum activities -->
-					<value>500</value>
-				</value-param>
-				<value-param>
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.bench.DataInjectorService</target-component>
+    <component-plugin>
+      <name>ExoSocialDataInjector</name>
+      <set-method>addInjector</set-method>
+      <type>org.exoplatform.social.extras.benches.ExoSocialDataInjector</type>
+      <description>inject data for eXo Social</description>
+      <init-params>
+        <value-param>
+          <name>mU</name> <!-- maximum peoples -->
+          <value>10</value>
+        </value-param>
+        <value-param>
+          <name>mRpU</name> <!-- maximum size of relationships per user -->
+          <value>50</value>
+        </value-param>
+        <value-param>
+          <name>mA</name> <!-- maximum activities -->
+          <value>500</value>
+        </value-param>
+        <value-param>
           <name>mS</name> <!-- maximum spaces -->
           <value>10</value>
         </value-param>
@@ -79,9 +79,9 @@
           <name>mSA</name> <!-- maximum spaces activities -->
           <value>10</value>
         </value-param>
-			</init-params>
-		</component-plugin>
-		<component-plugin>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
       <name>ExoSocialExtensionDataInjector</name>
       <set-method>addInjector</set-method>
       <type>org.exoplatform.social.extras.benches.ExoSocialExtensionDataInjector</type>
@@ -92,12 +92,12 @@
           <value>100</value>
         </value-param>
         <value-param>
-          <name>mR</name> <!-- maximum size of relationships -->
-          <value>10,20,30</value> <!-- [0,33] has [10] relations; [33,66] has [20] relations ; [66, 99] has [30] relations -->
+          <name>mRpU</name> <!-- maximum size of relationships -->
+          <value>10,20,30</value> <!-- [0,33] has [10] relations per user; [33,66] has [20] relations per user; [66, 99] has [30] relations per user-->
         </value-param>
         <value-param>
           <name>mA</name> <!-- maximum activities -->
-          <value>10,20,30</value> <!-- [0,33] has [10] space activities; [33,66] has [20] space activities ; [66, 99] has [30] space activities -->
+          <value>10,20,30</value> <!-- [0,33] has [10] space activities per user; [33,66] has [20] space activities per user; [66, 99] has [30] space activities per user-->
         </value-param>
         <value-param>
           <name>mS</name> <!-- maximum spaces -->
@@ -109,5 +109,5 @@
         </value-param>
       </init-params>
     </component-plugin>
-	</external-component-plugins>
+  </external-component-plugins>
 </configuration>

@@ -31,7 +31,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityFilterKey extends MultitenantCacheKey {
+public class IdentityFilterKey extends ScopeCacheKey {
 
   private final String providerId;
   private final String remoteId;
@@ -39,7 +39,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
   private final String position;
   private final String company;
   private final String skills;
-  private final String gender;
   private final char firstChar;
   private final List<IdentityKey> excluded;
   
@@ -56,7 +55,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     this.position = filter.getPosition();
     this.company = filter.getCompany();
     this.skills = filter.getSkills();
-    this.gender = filter.getGender();
     this.firstChar = filter.getFirstCharacterOfName();
 
     List<IdentityKey> keys = new ArrayList<IdentityKey>();
@@ -76,7 +74,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     this.position = filter.getPosition();
     this.company = filter.getCompany();
     this.skills = filter.getSkills();
-    this.gender = filter.getGender();
     this.firstChar = filter.getFirstCharacterOfName();
 
     List<IdentityKey> keys = new ArrayList<IdentityKey>();
@@ -106,10 +103,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
 
   public String getSkills() {
     return skills;
-  }
-
-  public String getGender() {
-    return gender;
   }
 
   public char getFirstChar() {
@@ -143,9 +136,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     if (excluded != null ? !excluded.equals(that.excluded) : that.excluded != null) {
       return false;
     }
-    if (gender != null ? !gender.equals(that.gender) : that.gender != null) {
-      return false;
-    }
     if (name != null ? !name.equals(that.name) : that.name != null) {
       return false;
     }
@@ -174,7 +164,6 @@ public class IdentityFilterKey extends MultitenantCacheKey {
     result = 31 * result + (position != null ? position.hashCode() : 0);
     result = 31 * result + (company != null ? company.hashCode() : 0);
     result = 31 * result + (skills != null ? skills.hashCode() : 0);
-    result = 31 * result + (gender != null ? gender.hashCode() : 0);
     result = 31 * result + (int) firstChar;
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
     

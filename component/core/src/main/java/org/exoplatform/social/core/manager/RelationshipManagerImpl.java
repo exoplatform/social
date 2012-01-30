@@ -544,15 +544,18 @@ public class RelationshipManagerImpl implements RelationshipManager {
   }
 
   public ListAccess<Identity> getConnectionsByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+                                          ConnectionFilterListAccess.Type.PROFILE_FILTER_CONNECTION);
   }
 
   public ListAccess<Identity> getIncomingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+                                          ConnectionFilterListAccess.Type.PROFILE_FILTER_INCOMMING);
   }
 
   public ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter) {
     
-    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter, ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
+    return new ConnectionFilterListAccess(this.storage, existingIdentity, profileFilter,
+                                          ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 }

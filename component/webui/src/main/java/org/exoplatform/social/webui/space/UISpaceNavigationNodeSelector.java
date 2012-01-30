@@ -18,6 +18,8 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
 
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
@@ -26,6 +28,8 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.Visibility;
+import org.exoplatform.portal.mop.Described.State;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.Scope;
@@ -61,21 +65,41 @@ import org.exoplatform.webui.event.EventListener;
 import org.gatein.common.util.ParameterValidation;
 
 @ComponentConfigs({
-    @ComponentConfig(template = "classpath:groovy/social/webui/space/UISpaceNavigationNodeSelector.gtmpl", events = { @EventConfig(listeners = UISpaceNavigationNodeSelector.ChangeNodeActionListener.class) }),
-    @ComponentConfig(id = "SpaceNavigationNodePopupMenu", type = UIRightClickPopupMenu.class, template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl", events = {
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.EditPageNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.EditSelectedNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CopyNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CutNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.CloneNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveUpActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveDownActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.DeleteNodeActionListener.class, confirm = "UIPageNodeSelector.deleteNavigation") }),
-    @ComponentConfig(id = "UISpaceNavigationNodeSelectorPopupMenu", type = UIRightClickPopupMenu.class, template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl", events = {
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
-        @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class) }) })
+  @ComponentConfig(
+    template = "classpath:groovy/social/webui/space/UISpaceNavigationNodeSelector.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.ChangeNodeActionListener.class)
+    }
+  ),
+  @ComponentConfig(
+    id = "SpaceNavigationNodePopupMenu",
+    type = UIRightClickPopupMenu.class,
+    template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.EditPageNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.EditSelectedNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CopyNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CutNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.CloneNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveUpActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.MoveDownActionListener.class),
+      @EventConfig(
+        listeners = UISpaceNavigationNodeSelector.DeleteNodeActionListener.class,
+        confirm = "UIPageNodeSelector.deleteNavigation")
+    }
+  ),
+  @ComponentConfig(
+    id = "UISpaceNavigationNodeSelectorPopupMenu",
+    type = UIRightClickPopupMenu.class,
+    template = "system:/groovy/webui/core/UIRightClickPopupMenu.gtmpl",
+    events = {
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.AddNodeActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationNodeSelector.PasteNodeActionListener.class)
+    }
+  )
+})
         
 /**
  * Editor : hanhvq@exoplatfor.com Jun 22, 2011 
@@ -96,6 +120,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
   private UserNodeFilterConfig filterConfig;
 
   private static final Scope   NODE_SCOPE = Scope.GRANDCHILDREN;
+  
+  private static final String CHILDNODES_DELIMITER = "/";
 
   public UISpaceNavigationNodeSelector() throws Exception {
     UIRightClickPopupMenu rightClickPopup = addChild(UIRightClickPopupMenu.class,
@@ -334,7 +360,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       uiNodeForm.setSelectedParent(node);
       UserNavigation edittedNavigation = uiNodeSelector.getEdittedNavigation();
       uiNodeForm.setContextPageNavigation(edittedNavigation);
-      uiManagementPopup.setWindowSize(800, 500);
+      uiManagementPopup.setWindowSize(800, 445);
       uiManagementPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagementPopup.getParent());
     }
@@ -450,6 +476,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         }
       }
 
+      if (node.getI18nizedLabels() == null) {
+         uiNodeSelector.invokeI18NizedLabels(node);
+      }
+      
       UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
       UIPopupWindow uiManagementPopup = uiSpaceNavigationManagement.getChild(UIPopupWindow.class);
       UIPageNodeForm uiNodeForm = uiApp.createUIComponent(UIPageNodeForm.class, null, null);
@@ -459,7 +489,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       uiNodeForm.setContextPageNavigation(edittedNav);
       uiNodeForm.setValues(node);
       uiNodeForm.setSelectedParent(node.getParent());
-      uiManagementPopup.setWindowSize(800, 500);
+      uiManagementPopup.setWindowSize(800, 445);
       
       uiManagementPopup.setShow(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagementPopup.getParent());
@@ -726,6 +756,16 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       if (childNode == null) {
         return;
       }
+      
+      //If is a root node, not allow delete. As comment by Portal team, we can use "/" to check
+      // a node is root node or not. If it's a root node, it doesn't contain "/" in URI.
+      if (!childNode.getURI().contains(CHILDNODES_DELIMITER)) {
+        UIApplication uiApp = pcontext.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
+                                                null));
+        return;
+      }
+      
       String pageRef = childNode.getPageRef();
       if (pageRef != null) {
         String appName = pageRef.substring(pageRef.lastIndexOf(":") + 1);
@@ -753,14 +793,14 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       }      
       
       TreeNode parentNode = childNode.getParent();
-
+      
       if (Visibility.SYSTEM.equals(childNode.getVisibility())) {
         UIApplication uiApp = pcontext.getUIApplication();
         uiApp.addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.systemnode-delete",
                                                 null));
         return;
       }
-
+      
       parentNode.removeChild(childNode);
       uiNodeSelector.selectNode(parentNode);
       uiNodeSelector.save();
@@ -771,5 +811,17 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
   public TreeNode getSelectedNode() {
     return getChild(UITree.class).getSelected();
+  }
+  
+  private void invokeI18NizedLabels(TreeNode node) {
+    DescriptionService descriptionService = this.getApplicationComponent(DescriptionService.class);
+    try {
+      Map<Locale, State> labels = descriptionService.getDescriptions(node.getId());
+      node.setI18nizedLabels(labels);
+    } catch (NullPointerException npe) {
+      // set label list is null if Described mixin has been removed or not
+      // exists.
+      node.setI18nizedLabels(null);
+    }
   }
 }

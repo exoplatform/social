@@ -20,7 +20,6 @@ package org.exoplatform.social.extras.benches;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.exoplatform.services.bench.DataInjector;
 import org.exoplatform.services.log.ExoLogger;
@@ -188,9 +187,9 @@ public class ExoSocialExtensionDataInjector extends DataInjector {
       numberOfUser = longValue("mU", value);
       
       //Gets the maximum the Relationship using for creating Relationships
-      value = paramsMap.get("mR");
+      value = paramsMap.get("mRpU");
       String[] values = value.split(",");
-      relationRanks = longValues("mR", values);
+      relationRanks = longValues("mRpU", values);
       
       //Gets the maximum the Activity using for creating Activities
       value = paramsMap.get("mA");

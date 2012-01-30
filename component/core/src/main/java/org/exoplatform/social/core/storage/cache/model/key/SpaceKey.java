@@ -23,7 +23,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class SpaceKey extends MultitenantCacheKey {
+public class SpaceKey extends ScopeCacheKey {
 
   private final String id;
 

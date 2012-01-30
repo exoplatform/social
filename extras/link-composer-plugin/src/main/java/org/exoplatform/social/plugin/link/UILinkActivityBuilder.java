@@ -22,7 +22,6 @@ import java.util.Map;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -83,7 +82,7 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
     activity.setTemplateParams(templateParams);
     ActivityManager am = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
     try {
-      am.saveActivity(activity);
+      am.saveActivityNoReturn(activity);
     } catch (ActivityStorageException ase) {
       LOG.warn("Could not save new data format for document activity.", ase);
     }

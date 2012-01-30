@@ -60,7 +60,7 @@
                 <tr>
                   <td width='45'>
                     <a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
-                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/activity/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/activity/MyStatusAvatar.gif" width="26" height="26" title="Avatar" alt="Avatar" />
                     </a>
                 </td>
                   <td width='100%'>
@@ -75,7 +75,7 @@
                           <div class="MyStatusInputR">
                             <div class="MyStatusInputM">
                                 <div style="height: 2px;"><span></span></div>
-                                <input type="text" id="UIComposerTextArea" class="Textbox" value="__MSG_what_are_you_doing__" />
+                                <input type="text" title="__MSG_what_are_you_doing__" id="UIComposerTextArea" class="Textbox" value="__MSG_what_are_you_doing__" />
                             </div>
                              <div id="UIComposerExtension" class="ExtensionInput">
                                <!-- dynamic loading -->
@@ -163,7 +163,7 @@
                 <tr>
                   <td width='45'>
                     <a id="UIOwnerAvatar" href="#OwnerAvatar" target="_parent" class="MyStatusAvatarBG">
-                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/activity/MyStatusAvatar.gif" width="26" height="26" title="" alt="" />
+                      <img id="ImgOwnerAvatar" src="/social-resources/skin/ShareImages/activity/MyStatusAvatar.gif" width="26" height="26" title="" title="Avatar" alt="Avatar" />
                     </a>
                   </td>
                   <td width='100%'>
@@ -178,7 +178,7 @@
                           <div class="MyStatusInputR">
                             <div class="MyStatusInputM">
                                 <div style="height: 2px;"><span></span></div>
-                                <textarea id="UIComposerTextArea" class="Textbox">__MSG_what_are_you_doing__</textarea>
+                                <textarea title="__MSG_what_are_you_doing__" id="UIComposerTextArea" class="Textbox">__MSG_what_are_you_doing__</textarea>
                             </div>
                            </div>
                         </div>

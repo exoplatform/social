@@ -76,6 +76,14 @@ public class DOMParser {
           parsingNode.setParentNode(currentNode);
           currentNode.addChildNode(parsingNode);
           parsingNode.setTitle(tag);
+          String tokenBody = startMatcher.group(2);
+          Matcher attributes = ATTRIBUTESPATTERN.matcher(tokenBody);
+
+          while (attributes.find()) {
+            String attr = attributes.group(1).toLowerCase();
+            String val = attributes.group(4) == null ? attributes.group(3) : attributes.group(4);
+            parsingNode.addAttribute(attr, val);
+          }
         } else {
           int findDeep = 0;
           int matchedEnd = 0;

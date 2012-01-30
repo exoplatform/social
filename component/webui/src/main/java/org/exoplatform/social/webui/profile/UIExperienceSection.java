@@ -22,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
@@ -38,14 +38,17 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
+import org.exoplatform.webui.form.validator.MandatoryValidator;
+import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
+import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
  * Component manages all experience informations
@@ -98,10 +101,7 @@ public class UIExperienceSection extends UIProfileSection {
   /** DATE TIME VALIDATE EXPRESSION. */
   private static final String DATETIME_REGEX =
      "^(\\d{1,2}\\/\\d{1,2}\\/\\d{1,4})\\s*(\\s+\\d{1,2}:\\d{1,2}:\\d{1,2})?$";
-  
-  /** COMPANY AND POSITION VALIDATE EXPRESSION. */
-  private static final String COMPANY_AND_POSITION_STRINGLENGTH_REGEX = "^[\\w\\W]{3,90}+$";
-    
+      
   /** MANDATORY START DATE MESSAGE. */
   private static final String INVALID_START_DATE_MANDATORY = "UIExperienceSection.msg.Invalid-startdate-mandatory";
   
@@ -126,6 +126,9 @@ public class UIExperienceSection extends UIProfileSection {
   /** MANDATORY POSITION MESSAGE. */
   private static final String INVALID_POSITION_MANDATORY = "UIExperienceSection.msg.Invalid-position-mandatory";
 
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * Number of components.
    */
@@ -197,8 +200,10 @@ public class UIExperienceSection extends UIProfileSection {
    */
   protected String calendarToString(Calendar cal) {
     String sDate = "" ;
-    SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
-    sDate = sd.format(cal.getTime());
+    if (cal != null) {
+      SimpleDateFormat sd = new SimpleDateFormat(DATE_FORMAT_MMDDYYYY, Locale.ENGLISH);
+      sDate = sd.format(cal.getTime());
+    }
     return sDate ;
   }
 
@@ -398,17 +403,24 @@ public class UIExperienceSection extends UIProfileSection {
           ((UIFormInput) listChildForSetValue.get(idx + 3)).setValue(listProfile.get(idx + 2)); // des
           ((UIFormInput) listChildForSetValue.get(idx + 4)).setValue(listProfile.get(idx + 3)); // skills
 
-          ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 4)
-                                                                                                                         .toString())); // start date
+          if (listProfile.get(idx + 4) != null) {
+            // start date
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 5)).setCalendar(uiExpSection.stringToCalendar(
+                                                                                  listProfile.get(idx + 4).toString()));
+          }
+          
           if (listProfile.get(idx + 5) != null) {
-            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(listProfile.get(idx + 5)
-                                                                                                                           .toString())); // end date
+            // end date
+            ((UIFormDateTimeInput) listChildForSetValue.get(idx + 6)).setCalendar(uiExpSection.stringToCalendar(
+                                                                                  listProfile.get(idx + 5).toString()));
           } else {
-            ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5)); // end date
+            // end date
+            ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5));
           }
 
           ((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
-          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!((UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
+          ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!(
+                                (UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
         }
       }
 
@@ -548,58 +560,71 @@ public class UIExperienceSection extends UIProfileSection {
       uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 4);
       Locale locale = context.getParentAppRequestContext().getLocale();
       String currentPartern = uiDateTimeInput.getDatePattern_();
-
+      
       SimpleDateFormat sf = new SimpleDateFormat(currentPartern, locale);
       Calendar cal = Calendar.getInstance();
-      cal.setTime(sf.parse(uiDateTimeInput.getValue()));
-      startDate = calendarToString(cal);
-
-      if ((startDate == null) || (startDate.length() == 0)) {
-        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        return 2;
+      
+      if (!"".equals(uiDateTimeInput.getValue())) { 
+        cal.setTime(sf.parse(uiDateTimeInput.getValue()));
+        startDate = calendarToString(cal);
+        if ((startDate == null) || (startDate.length() == 0)) {
+          uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+          return 2;
+        }
       }
-
+      
       try {
         uiDateTimeInput = (UIFormDateTimeInput) listUIComp.get(i + 5);
-        
-        cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        if (!"".equals(uiDateTimeInput.getValue())) {
+          cal.setTime(sf.parse(uiDateTimeInput.getValue())) ;
+        }
       } catch (Exception e) {
         endDate = null;
       }
-      endDate = calendarToString(cal);
-
-      sDate = stringToDate(startDate);
-      eDate = stringToDate(endDate);
-      if (sDate.after(today)) {
-        uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
-        return 2;
-      }
-
+      
       uiCheckBox = (UIFormCheckBoxInput<Boolean>) listUIComp.get(i + 6);
       isCurrent = uiCheckBox.getValue();
-
-      if (!isCurrent) {
-        if ((endDate == null) || (endDate.length() == 0)) {
-          uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
-          return 2;
-        }
-        
-        if ((eDate != null) && eDate.after(today)) {
-          uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
-          return 2;
-        }
-        if ((sDate != null) && sDate.after(eDate)) {
-          uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
-          return 1;
-        }
-      } else {
-        endDate = null;
+      
+      if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
+          "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
+        uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
+        return 2;
       }
+      
+      if (startDate != null && !"".equals(startDate)) {
+        endDate = calendarToString(cal);
 
+        sDate = stringToDate(startDate);
+        eDate = stringToDate(endDate);
+        if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
+          uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
+          return 2;
+        }
+
+        if (!isCurrent) {
+          if ((endDate == null) || (endDate.length() == 0)) {
+            uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
+            return 2;
+          }
+          
+          if ((eDate != null) && eDate.after(today)) {
+            uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
+            return 2;
+          }
+          if ((sDate != null) && sDate.after(eDate)) {
+            uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
+            return 1;
+          }
+        } else {
+          endDate = null;
+        }
+      }
+      
       uiMap.put(Profile.EXPERIENCES_COMPANY, escapeHtml(company));
       uiMap.put(Profile.EXPERIENCES_POSITION, escapeHtml(position));
       uiMap.put(Profile.EXPERIENCES_DESCRIPTION, escapeHtml(description));
       uiMap.put(Profile.EXPERIENCES_SKILLS, escapeHtml(skills));
+      
       uiMap.put(Profile.EXPERIENCES_START_DATE, startDate);
       uiMap.put(Profile.EXPERIENCES_END_DATE, endDate);
       uiMap.put(Profile.EXPERIENCES_IS_CURRENT, isCurrent);
@@ -619,27 +644,37 @@ public class UIExperienceSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput() throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
-      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_COMPANY_STRINGLENGTH));
+      .addValidator(MandatoryValidator.class)
+      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
-      .addValidator(ExpressionValidator.class, COMPANY_AND_POSITION_STRINGLENGTH_REGEX, INVALID_POSITION_STRINGLENGTH));
+      .addValidator(MandatoryValidator.class)
+      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
 
-    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null));
+    UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
+    description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));
+    addUIFormInput(description);
     UIFormTextAreaInput uiDespcription = getChildById(Profile.EXPERIENCES_DESCRIPTION + expIdx);
     uiDespcription.setColumns(28);
     uiDespcription.setRows(3);
 
-    addUIFormInput(new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + expIdx, null, null));
+    UIFormTextAreaInput skills = new UIFormTextAreaInput(Profile.EXPERIENCES_SKILLS + expIdx, null, null);
+    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.skills"));
+    addUIFormInput(skills);
     UIFormTextAreaInput uiFormTextAreaInput = getChildById(Profile.EXPERIENCES_SKILLS + expIdx);
     uiFormTextAreaInput.setColumns(28);
     uiFormTextAreaInput.setRows(3);
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false)
-                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
+    UIFormDateTimeInput startDate = new UIFormDateTimeInput(Profile.EXPERIENCES_START_DATE + expIdx, null, null, false);
+    startDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.startDate"));
+    addUIFormInput(startDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_START_DATE_FORMAT));
 
-    addUIFormInput(new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false)
-                        .addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
+    UIFormDateTimeInput endDate = new UIFormDateTimeInput(Profile.EXPERIENCES_END_DATE + expIdx, null, null, false);
+    endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
+    addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
 
     UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
     uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");

@@ -45,6 +45,7 @@ import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
@@ -61,7 +62,8 @@ import org.exoplatform.webui.form.UIForm;
   template =  "classpath:groovy/social/webui/space/UISpaceApplication.gtmpl",
   events = {
     @EventConfig(listeners = UISpaceApplication.AddApplicationActionListener.class),
-    @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class)
+    @EventConfig(listeners = UISpaceApplication.RemoveApplicationActionListener.class),
+    @EventConfig(listeners = UISpaceApplication.InstallApplicationActionListener.class, phase = Phase.DECODE)
   }
 )
 public class UISpaceApplication extends UIForm {
@@ -71,7 +73,7 @@ public class UISpaceApplication extends UIForm {
    */
   private static final Log LOG = ExoLogger.getLogger(UISpaceApplication.class);
 
-  private static final int APPLICATIONS_PER_PAGE = 3;
+  private static final int APPLICATIONS_PER_PAGE = 10;
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
@@ -281,9 +283,9 @@ public class UISpaceApplication extends UIForm {
     public void execute(Event<UISpaceApplication> event) throws Exception {
       UISpaceApplication uiSpaceApp = event.getSource();
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
-      UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
-      uiSpaceAppList.setSpace(uiSpaceApp.space);
-      uiPopup.getChild(UIPopupWindow.class).setId("AddApplication");
+      UISpaceApplicationInstaller uiSpaceAppInstaller = uiPopup.activate(UISpaceApplicationInstaller.class, 700);
+      uiSpaceAppInstaller.setSpace(uiSpaceApp.space);
+      uiPopup.getChild(UIPopupWindow.class).setId("UIAddApplication");
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
@@ -315,8 +317,8 @@ public class UISpaceApplication extends UIForm {
 
       // hanhvq. add removed application into uipopup container if it is displayed
       if (uiPopup.getChild(UIPopupWindow.class).isShow()) {
-        UISpaceApplicationList uiSpaceAppList = (UISpaceApplicationList) uiPopup.activate(UISpaceApplicationList.class, 400);
-        uiSpaceAppList.setSpace(uiSpaceApp.space);
+        UISpaceApplicationInstaller uiSpaceApplicationInstaller = uiPopup.activate(UISpaceApplicationInstaller.class, 700);
+        uiSpaceApplicationInstaller.setSpace(uiSpaceApp.space);
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
       SpaceUtils.updateWorkingWorkSpace();
@@ -324,9 +326,22 @@ public class UISpaceApplication extends UIForm {
   }
 
   /**
+   * Handles the event broadcasted from {@inheritDoc UISpaceApplicationInstaller}.
+   */
+  public static class InstallApplicationActionListener extends EventListener<UISpaceApplication> {
+    @Override
+    public void execute(Event<UISpaceApplication> event) throws Exception {
+      //refresh
+      UISpaceApplication uiSpaceApplication = event.getSource();
+      uiSpaceApplication.setValue(uiSpaceApplication.space);
+      SpaceUtils.updateWorkingWorkSpace();
+    }
+  }
+
+  /**
    * Checks if an application exists in list or not.
    *
-   * @param appLst List of application
+   * @param appList List of application
    * @param app    Application for checking
    * @return true or false
    */
@@ -368,4 +383,5 @@ public class UISpaceApplication extends UIForm {
     return app;
 
   }
+
 }

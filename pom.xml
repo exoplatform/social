@@ -30,7 +30,7 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-project</artifactId>
-  <version>1.2.7-SNAPSHOT</version>
+  <version>1.2.8-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -87,15 +87,15 @@
     <quartz.version>1.5.2</quartz.version>
     <picocontainer.version>1.1</picocontainer.version>
 
-    <org.exoplatform.kernel.version>2.3.4-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.4-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.4-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.4-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.2-PLF-SNAPSHOT</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.3.5-SNAPSHOT</org.exoplatform.ecms.version>  
+    <org.exoplatform.kernel.version>2.3.5-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.5-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.5-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.5-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.2.3-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.3.6-SNAPSHOT</org.exoplatform.ecms.version>  
 
    
-    <org.exoplatform.commons.version>1.1.6-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>1.1.7-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
@@ -999,6 +999,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.surefire.plugin}</version>
           <configuration>
+            <forkMode>always</forkMode>
             <argLine>-Xms1024m -Xmx1024m</argLine>
             <systemProperties>
               <property>
@@ -1143,6 +1144,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${version.surefire.plugin}</version>
             <configuration>
+              <forkMode>always</forkMode>
               <systemProperties>
                 <property>
                   <name>java.util.logging.config.class</name>

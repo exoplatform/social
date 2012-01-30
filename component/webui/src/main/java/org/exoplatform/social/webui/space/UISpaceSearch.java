@@ -87,6 +87,9 @@ public class UISpaceSearch extends UIForm {
   
   private final String POPUP_ADD_SPACE = "UIPopupAddSpace";
 
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * The spaceService is used for SpaceService instance storage.
    */
@@ -289,7 +292,11 @@ public class UISpaceSearch extends UIForm {
    * @throws Exception
    */
   public UISpaceSearch() throws Exception {
-    addUIFormInput(new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH));
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    UIFormStringInput findSpace = new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH);
+    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSearch.label.FindSpace"));
+    addUIFormInput(findSpace);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
@@ -312,9 +319,9 @@ public class UISpaceSearch extends UIForm {
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if ((searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) && charSearch == null) {
-        uiSpaceSearch.setSelectedChar(null);
-        uiSpaceSearch.setSpaceNameSearch(null);
-        ctx.addUIComponentToUpdateByAjax(uiSpaceSearch);
+        uiSpaceSearch.setSelectedChar(ALL);
+        uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
+        uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
           searchCondition = searchCondition.trim();
@@ -395,6 +402,6 @@ public class UISpaceSearch extends UIForm {
     return ResourceBundleUtil.
     replaceArguments(WebuiRequestContext.getCurrentInstance()
                      .getApplicationResourceBundle().getString(labelArg), new String[] {
-                 Integer.toString(getSpaceNum()), searchCondition != null ? searchCondition : " " });
+                 Integer.toString(getSpaceNum())});
   }
 }

@@ -167,7 +167,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   
   private RelationshipStorage getRelationshipStorage() {
     if (relationshipStorage == null) {
-      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipStorage.class);
+      relationshipStorage = (RelationshipStorage) PortalContainer.getInstance().
+                                                                  getComponentInstanceOfType(RelationshipStorage.class);
     }
 
     return relationshipStorage;
@@ -198,7 +199,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     whereExpression.startGroup();
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");;
 
@@ -361,7 +363,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     Collection<SpaceRef> refs = identityEntity.getManagerSpaces().getRefs().values();
     for (SpaceRef ref : refs) {
       if (ref.getSpaceRef() != null && ref.getSpaceRef().getManagerMembersId().length == 1) {
-        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY, "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
+        throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_DELETE_IDENTITY,
+                                           "Unable to remove the last manager of space " + ref.getSpaceRef().getName());
       }
     }
 
@@ -675,14 +678,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     if (avatar != null) {
       ChromatticSession chromatticSession = getSession();
       try {
-        StringBuilder avatarUrlSB = new StringBuilder(); 
-        avatarUrlSB = avatarUrlSB.append("/").append(container.getRestContextName()).append("/jcr/").
-                                  append(lifeCycle.getRepositoryName()).append("/").
-                                  append(chromatticSession.getJCRSession().getWorkspace().getName()).
-                                  append(chromatticSession.getPath(avatar)).
-                                  append("/?upd=").append(avatar.getLastModified().getTime());
+        String avatarPath = chromatticSession.getPath(avatar);
+        long lastModified = avatar.getLastModified().getTime();
+        // workaround: as dot character (.) breaks generated url (Ref: SOC-2283)
+        String avatarUrl = StorageUtils.encodeUrl(avatarPath) + "/?upd=" + lastModified;
         
-        profile.setProperty(Profile.AVATAR_URL, LinkProvider.escapeJCRSpecialCharacters(avatarUrlSB.toString()));
+        profile.setProperty(Profile.AVATAR_URL, LinkProvider.escapeJCRSpecialCharacters(avatarUrl));
       } catch (Exception e) {
         LOG.warn("Failed to build file url from fileResource: " + e.getMessage());
       }
@@ -883,7 +884,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -919,7 +921,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -946,7 +949,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
 .and()
 .not().equals(ProfileEntity.deleted, "true");
 
@@ -973,7 +977,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     WhereExpression whereExpression = new WhereExpression();
 
     whereExpression
-        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
         .and()
         .not().equals(ProfileEntity.deleted, "true");
 
@@ -1049,7 +1054,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
 
     List<Identity> listIdentity = new ArrayList<Identity>();
-    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, false);
+    QueryResult<ProfileEntity> results = getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset,
+                                                                                             limit, false);
 
     while (results.hasNext()) {
       ProfileEntity profileEntity = results.next();

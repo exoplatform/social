@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -46,6 +47,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
   private Identity johnIdentity;
   private Identity maryIdentity;
   private Identity demoIdentity;
+  private Identity ghostIdentity;
+  private Identity raulIdentity;
+  private Identity jameIdentity;
+  private Identity paulIdentity;
 
   private IdentityManager identityManager;
   private RelationshipManager relationshipManager;
@@ -64,6 +69,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john", false);
     maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary", false);
     demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+    ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost", true);
+    raulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
+    jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame", true);
+    paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
 
   }
 
@@ -80,6 +89,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
     identityManager.deleteIdentity(demoIdentity);
+    identityManager.deleteIdentity(ghostIdentity);
+    identityManager.deleteIdentity(jameIdentity);
+    identityManager.deleteIdentity(raulIdentity);
+    identityManager.deleteIdentity(paulIdentity);
     super.tearDown();
   }
 
@@ -1361,10 +1374,10 @@ this.populateActivityMass(johnIdentity, 10);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
-    String[] managers = new String[] { "demo", "rault" };
-    String[] members = new String[] { "raul", "ghost", "dragon", "john" };
-    String[] invitedUsers = new String[] { "register1", "mary" };
-    String[] pendingUsers = new String[] { "jame", "paul", "hacker" };
+    String[] managers = new String[] { "demo", "john" };
+    String[] members = new String[] { "raul", "ghost" };
+    String[] invitedUsers = new String[] { "mary", "paul"};
+    String[] pendingUsers = new String[] { "jame"};
     space.setInvitedUsers(invitedUsers);
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);

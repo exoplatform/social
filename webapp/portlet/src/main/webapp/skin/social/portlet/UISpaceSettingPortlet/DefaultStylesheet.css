@@ -15,10 +15,10 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
- @import url('/social-resources/skin/social/webui/UIAutoSuggestControl/DefaultSkin.css');
+@import url('/social-resources/skin/social/webui/UIAutoSuggestControl/DefaultSkin.css');
+@import url('/social-resources/skin/social/webui/UISpaceApplicationInstaller/DefaultSkin.css');
 
 .UISpaceSettingPortlet {
-  border: 1px solid #e6e6e6;
   padding: 1px;
   background: white;
 }
@@ -383,6 +383,19 @@
   color: #7f7a77;
   font-size: 11px;
   cursor: pointer;
+}
+
+
+.UISpaceSettingPortlet .UISpaceApplication .UIAction {
+  border-top: 0 none;
+  margin: 10px 15px 0;
+  float: left;
+}
+
+.UISpaceSettingPortlet .UISpaceApplication .AddAplicationIcon {
+  background: url("/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin/background/AddSpaceIcon.gif") no-repeat scroll left center transparent;
+  line-height: 18px;
+  padding-left: 15px;
 }
 
 .UISpaceSettingPortlet .AddAplicationButton {
@@ -776,7 +789,6 @@ padding: 0px 12px;
 
 .UISpaceSettingPortlet .UIAction {
   padding:10px 0px 15px 0px;
-  text-align: left;
   border-top: 1px solid #ededed;
   margin: 10px 0px 0px 0px;
 }

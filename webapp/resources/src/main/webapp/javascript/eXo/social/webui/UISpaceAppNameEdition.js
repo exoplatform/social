@@ -65,15 +65,16 @@ UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
 /**
  * Change label into editable status for input new space application label. 
  * @param selectedElement Label is edited.
- * @param nodeIndex 
  * @param currentContent
+ * @param titleEditable
  */
-UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, currentContent){
+UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, currentContent, titleEditable){
 		eXo.social.webui.UISpaceAppNameEdition.backupElement = selectedElement;
 		var prNode = selectedElement.parentNode;
 		var selectedElementId = selectedElement.id;
 		
 		var inputElement = document.createElement("input");
+		inputElement.title = titleEditable;
 		inputElement.type = "text";
 		inputElement.id = selectedElementId;
 		inputElement.name = selectedElementId; // To store old value

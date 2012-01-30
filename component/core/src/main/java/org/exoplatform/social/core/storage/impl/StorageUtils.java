@@ -1,14 +1,18 @@
 package org.exoplatform.social.core.storage.impl;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.chromattic.api.ChromatticSession;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -29,7 +33,6 @@ public class StorageUtils {
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
     processUsernameSearchPattern(inputName.trim());
     String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
-    String gender = profileFilter.getGender().trim();
     inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
     String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
     char firstChar = profileFilter.getFirstCharacterOfName();
@@ -61,10 +64,6 @@ public class StorageUtils {
           whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
-    }
-
-    if (gender.length() != 0) {
-      whereExpression.and().equals(ProfileEntity.gender, gender);
     }
   }
 
@@ -133,4 +132,24 @@ public class StorageUtils {
     return EMPTY_STR;
   }
 
+  /**
+   * Encodes Url to conform to the generated Url of WEBDAV.
+   * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
+   * This method replace any percent character (%) by (%25) to solve this problem. 
+   * @param avatar 
+   * @return
+   */
+  public static String encodeUrl(String path) {
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle)
+                                          manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    ChromatticSession chromatticSession = lifeCycle.getSession();
+    StringBuilder encodedUrl = new StringBuilder(); 
+    encodedUrl = encodedUrl.append("/").append(container.getRestContextName()).append("/jcr/").
+                              append(lifeCycle.getRepositoryName()).append("/").
+                              append(chromatticSession.getJCRSession().getWorkspace().getName()).
+                              append(path.replaceAll("%", "%25"));
+    return encodedUrl.toString();
+  }
 }

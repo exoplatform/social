@@ -16,10 +16,6 @@
  */
 package org.exoplatform.social.core.activity.model;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 /**
  * An activity is a piece of message aimed at sharing some status, mood, idea, notification, data...
  * @deprecated Use {@link org.exoplatform.social.core.activity.model.ExoSocialActivityImpl} instead.

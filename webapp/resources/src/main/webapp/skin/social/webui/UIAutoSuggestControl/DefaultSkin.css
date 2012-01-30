@@ -45,8 +45,8 @@ div.peoplesuggestions {
     border: 1px solid #cdcdc1;
     border-top: 1px solid #b7b7b7;
     position: absolute;   
-    min-width: 283px;
-    *width: 285px;
+    min-width: 258px;
+    *width: 258px;
     background: white; 
     color: #3A3A3A;
     max-height: 150px;

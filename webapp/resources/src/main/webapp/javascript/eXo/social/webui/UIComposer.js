@@ -31,6 +31,35 @@
     this.configure(params);
     this.init();
   }
+  
+  function handleShareButtonState(uiComposer) {
+	  if (uiComposer.minCharactersRequired !== 0) {
+      //TODO hoatle handle backspace problem
+      if (uiComposer.composer.value.length >= uiComposer.minCharactersRequired) {
+        uiComposer.shareButton.className = 'ShareButtonDisable';
+        if(document.getElementById("ComposerContainer") == null){
+          uiComposer.shareButton.disabled = false;
+          uiComposer.shareButton.className = 'ShareButton';
+        }
+      } else {
+        uiComposer.shareButton.style.background = '';
+        uiComposer.shareButton.className = 'ShareButton';
+      }
+    } else {
+      if(document.getElementById("ComposerContainer") == null){
+        uiComposer.shareButton.disabled = false;
+        uiComposer.shareButton.className = 'ShareButton';
+      }
+    }
+    
+    if (uiComposer.maxCharactersAllowed !== 0) {
+      if (uiComposer.composer.value.length >= uiComposer.maxCharactersAllowed) {
+        //substitue it
+        //TODO hoatle have a countdown displayed on the form
+        uiComposer.composer.value = uiComposer.composer.value.substring(0, uiComposer.maxCharactersAllowed);
+      }
+    }
+  }
 
   UIComposer.prototype.configure = function(params) {
     this.composerId = params.composerId || 'composerInput';
@@ -68,6 +97,7 @@
     var composerContainerEl = document.getElementById("ComposerContainer");
    	var isReadyVal;
     Util.addEventListener(this.composer, 'focus', function() {
+    	handleShareButtonState(uiComposer);
       if (uiComposer.composer.value === uiComposer.defaultInput) {
         uiComposer.composer.value = '';
       }
@@ -99,37 +129,7 @@
       }
     }, false);
 
-    Util.addEventListener(this.composer, 'keypress', function() {
-      if (uiComposer.minCharactersRequired !== 0) {
-        //TODO hoatle handle backspace problem
-        if (uiComposer.composer.value.length >= uiComposer.minCharactersRequired) {
-          uiComposer.shareButton.className = 'ShareButtonDisable';
-          if(document.getElementById("ComposerContainer") == null){
-            uiComposer.shareButton.disabled = false;
-            uiComposer.shareButton.className = 'ShareButton';
-          }
-        } else {
-          uiComposer.shareButton.style.background = '';
-          uiComposer.shareButton.className = 'ShareButton';
-        }
-      } else {
-        if(document.getElementById("ComposerContainer") == null){
-          uiComposer.shareButton.disabled = false;
-          uiComposer.shareButton.className = 'ShareButton';
-        }
-      }
-      
-      if (uiComposer.maxCharactersAllowed !== 0) {
-        if (uiComposer.composer.value.length >= uiComposer.maxCharactersAllowed) {
-          //substitue it
-          //TODO hoatle have a countdown displayed on the form
-          uiComposer.composer.value = uiComposer.composer.value.substring(0, uiComposer.maxCharactersAllowed);
-        }
-      }
-      if (uiComposer.keypressCallback) {
-        uiComposer.keypressCallback();
-      }
-    }, false);
+    Util.addEventListener(this.composer, 'keypress', handleShareButtonState(uiComposer), false);
   }
 
   UIComposer.prototype.getValue = function() {

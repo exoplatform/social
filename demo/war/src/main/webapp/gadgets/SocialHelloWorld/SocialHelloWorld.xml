@@ -99,9 +99,9 @@
 
          if (allPeople[i].getField(opensocial.Person.Field.THUMBNAIL_URL)
              && allPeople[i].getField(opensocial.Person.Field.THUMBNAIL_URL).indexOf('null') == -1) {
-           html += '<img src="' + allPeople[i].getField(opensocial.Person.Field.THUMBNAIL_URL) + '"/>';
+           html += '<img src="' + allPeople[i].getField(opensocial.Person.Field.THUMBNAIL_URL) + '" title="' + allPeople[i].getField(opensocial.Person.Field.NICKNAME) + '" alt="' + allPeople[i].getField(opensocial.Person.Field.NICKNAME) + '" />';
          } else {
-           html += '<img src="/gadgets/files/samplecontainer/examples/nophoto.gif"/>';
+           html += '<img src="/gadgets/files/samplecontainer/examples/nophoto.gif" title="' + allPeople[i].getField(opensocial.Person.Field.NICKNAME) + '" alt="' + allPeople[i].getField(opensocial.Person.Field.NICKNAME) + '"/>';
          }
          html += '<br style="clear:both"></div>';
        }

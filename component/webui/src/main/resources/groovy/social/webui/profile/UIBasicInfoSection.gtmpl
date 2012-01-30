@@ -40,7 +40,7 @@
     <table class="UIFormGrid">
       <tbody>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:&nbsp</td>
+          <td class="FieldLabel"><label for="<%=children.get(1).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:&nbsp</label></td>
           <td class="FieldComponent">
           <% if (isEdit && isEditable) {
               uiform.renderField(children.get(1));
@@ -50,7 +50,7 @@
           </td>
         </tr>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:&nbsp</td>
+          <td class="FieldLabel"><label for="<%=children.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:&nbsp</label></td>
           <td class="FieldComponent">
           <% if (isEdit && isEditable) {
                uiform.renderField(children.get(2));
@@ -60,7 +60,7 @@
           </td>
         </tr>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:&nbsp</td>
+          <td class="FieldLabel"><label for="<%=children.get(3).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:&nbsp</label></td>
           <td class="FieldComponent">
             <% if (isEdit && isEditable) {
                  uiform.renderField(children.get(3));
@@ -70,15 +70,15 @@
           </td>
         </tr>
         <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:&nbsp</td>
-          <td class="FieldComponent">
-			<a href="#" class="ColorLink">
-            <% if (isEdit && isEditable) {
-              uiform.renderField(children.get(4));
-               } else { %>
-               <%=children.get(4).getValue();%>
-            <% } %>
-				</a>
+          <td class="FieldLabel"><label for="<%=children.get(4).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:&nbsp</label></td>
+          <td class="FieldComponent">  
+          <% if (isEdit && isEditable) {
+            uiform.renderField(children.get(4));
+             } else { %>
+             <a href="#" class="ColorLink">
+              <%=children.get(4).getValue();%>
+             </a>
+          <% } %>
           </td>
         </tr>
       </tbody>

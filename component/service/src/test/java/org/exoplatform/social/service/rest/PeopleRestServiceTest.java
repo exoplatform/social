@@ -54,7 +54,7 @@ public class PeopleRestServiceTest  extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/social/people/suggest.json?nameToSearch=R&currentUser=root", "", h, null, writer);
     assertNotNull(response);
     assertEquals(200, response.getStatus());
-    assertEquals("application/json", response.getContentType().toString());
+    assertEquals("application/json;charset=utf-8", response.getContentType().toString());
     if (response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
       throw new AssertionFailedError("Service not found");
   }

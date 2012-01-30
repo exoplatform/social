@@ -17,19 +17,17 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import org.chromattic.api.ChromatticSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
-import org.chromattic.ext.ntdef.NTFile;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -38,13 +36,13 @@ import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
+import org.exoplatform.social.core.storage.query.Order;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
@@ -83,8 +81,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     space.setApp(entity.getApp());
     space.setId(entity.getId());
-    space.setPrettyName(entity.getPrettyName());
     space.setDisplayName(entity.getDisplayName());
+    space.setPrettyName(entity.getPrettyName());
     space.setRegistration(entity.getRegistration());
     space.setDescription(entity.getDescription());
     space.setType(entity.getType());
@@ -405,23 +403,44 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
     WhereExpression whereExpression = new WhereExpression();
 
-    _applyFilter(whereExpression, spaceFilter);
+    if (validateFilter(spaceFilter)) {
+      _applyFilter(whereExpression, spaceFilter);
+    }
 
-    if (userId != null) {
+    if (userId != null && validateFilter(spaceFilter)) {
       whereExpression
           .and()
           .equals(SpaceEntity.membersId, userId);
+    } else if (userId != null && !validateFilter(spaceFilter)) {
+      whereExpression
+          .equals(SpaceEntity.membersId, userId);
     }
-
+    
+    // work-around for SOC-2374 to wait chromattic project release
     if (whereExpression.toString().length() == 0) {
-      return builder.get();
-    }
-    else {
+      return builder.where("jcr:primaryType = 'soc:spacedefinition' ORDER BY soc:displayName ASC").get();
+    } else {
+      whereExpression.orderBy(SpaceEntity.name, Order.ASC);
       return builder.where(whereExpression.toString()).get();
     }
 
   }
 
+  private Query<SpaceEntity> getAllSpacesQuery(SpaceFilter spaceFilter) {
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    if (validateFilter(spaceFilter)) {
+      _applyFilter(whereExpression, spaceFilter);
+      whereExpression.and();
+      whereExpression.startGroup();
+    }
+    
+    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
+
+    return builder.where(whereExpression.toString()).get();
+  }
+  
   private Query<SpaceEntity> getAccessibleSpacesByFilterQuery(String userId, SpaceFilter spaceFilter) {
 
     QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
@@ -438,8 +457,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         .or()
         .equals(SpaceEntity.managerMembersId, userId);
 
-
     whereExpression.endAllGroup();
+    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
 
     return builder.where(whereExpression.toString()).get();
 
@@ -464,6 +483,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         .and().not().equals(SpaceEntity.managerMembersId, userId)
         .and().not().equals(SpaceEntity.invitedMembersId, userId)
         .and().not().equals(SpaceEntity.pendingMembersId, userId)
+        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
@@ -483,6 +503,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.pendingMembersId, userId)
+        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
@@ -502,6 +523,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.invitedMembersId, userId)
+        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
@@ -521,6 +543,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.managerMembersId, userId)
+        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
@@ -650,24 +673,19 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    */
   public List<Space> getMemberSpaces(String userId) throws SpaceStorageException {
 
-    try {
+    List<Space> spaces = new ArrayList<Space>();
 
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
+    //
+    QueryResult<SpaceEntity> results = _getSpacesByFilterQuery(userId, null).objects();
 
-      List<Space> spaces = new ArrayList<Space>();
-      for (SpaceRef space : identityEntity.getSpaces().getRefs().values()) {
-
-        Space newSpace = new Space();
-        fillSpaceFromEntity(space.getSpaceRef(), newSpace);
-        spaces.add(newSpace);
-      }
-
-      return spaces;
-
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
-    catch (NodeNotFoundException e) {
-      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_GET_MEMBER_SPACES, e.getMessage(), e);
-    }
+
+    return spaces;
   }
 
   /**
@@ -677,34 +695,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
+    //
+    QueryResult<SpaceEntity> results = _getSpacesByFilterQuery(userId, null).objects(offset, limit);
 
-      int i = 0;
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getSpaces().getRefs().values();
-
-      if (spaceEntities != null) {
-
-        Iterator<SpaceRef> it = spaceEntities.iterator();
-        _skip(it, offset);
-
-        while (it.hasNext()) {
-
-          SpaceRef spaceRef = it.next();
-
-          Space space = new Space();
-          fillSpaceFromEntity(spaceRef.getSpaceRef(), space);
-          spaces.add(space);
-
-          if (++i >= limit) {
-            return spaces;
-          }
-        }
-      }
-
-    }
-    catch (NodeNotFoundException e) {
-      return spaces;
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -763,19 +761,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getPendingSpaces().getRefs().values();
+    //
+    QueryResult<SpaceEntity> results = getPendingSpacesFilterQuery(userId, null).objects();
 
-      for (SpaceRef ref : spaceEntities) {
-
-        Space space = new Space();
-        fillEntityFromSpace(space, ref.getSpaceRef());
-        spaces.add(space);
-      }
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -788,35 +781,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
+    //
+    QueryResult<SpaceEntity> results = getPendingSpacesFilterQuery(userId, null).objects(offset, limit);
 
-      int i = 0;
-
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getPendingSpaces().getRefs().values();
-
-      if (spaceEntities != null) {
-
-        Iterator<SpaceRef> it = spaceEntities.iterator();
-        _skip(it, offset);
-
-        while (it.hasNext()) {
-
-          SpaceRef spaceRef = it.next();
-
-          Space space = new Space();
-          fillSpaceFromEntity(spaceRef.getSpaceRef(), space);
-          spaces.add(space);
-
-          if (++i >= limit) {
-            return spaces;
-          }
-        }
-      }
-
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -859,7 +831,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     catch (NodeNotFoundException e) {
       return 0;
     }
-
   }
 
   /**
@@ -882,19 +853,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getInvitedSpaces().getRefs().values();
+    //
+    QueryResult<SpaceEntity> results = getInvitedSpacesFilterQuery(userId, null).objects();
 
-      for (SpaceRef ref : spaceEntities) {
-
-        Space space = new Space();
-        fillEntityFromSpace(space, ref.getSpaceRef());
-        spaces.add(space);
-      }
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -904,36 +870,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * {@inheritDoc}
    */
   public List<Space> getInvitedSpaces(String userId, long offset, long limit) throws SpaceStorageException {
+    
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
+    //
+    QueryResult<SpaceEntity> results = getInvitedSpacesFilterQuery(userId, null).objects(offset, limit);
 
-      int i = 0;
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getInvitedSpaces().getRefs().values();
-
-      if (spaceEntities != null) {
-
-        Iterator<SpaceRef> it = spaceEntities.iterator();
-        _skip(it, offset);
-
-        while (it.hasNext()) {
-
-          SpaceRef spaceRef = it.next();
-
-          Space space = new Space();
-          fillSpaceFromEntity(spaceRef.getSpaceRef(), space);
-          spaces.add(space);
-
-          if (++i >= limit) {
-            return spaces;
-          }
-        }
-      }
-
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -1121,7 +1068,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   /**
    * {@inheritDoc}
    */
-  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException {
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException {
     List<Space> spaces = new ArrayList<Space>();
 
     //
@@ -1174,6 +1122,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     whereExpression.endGroup();
     whereExpression.endAllGroup();
 
+    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
+    
     return builder.where(whereExpression.toString()).get();
 
   }
@@ -1249,27 +1199,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
+    //
+    QueryResult<SpaceEntity> results = getEditableSpacesFilterQuery(userId, null).objects();
 
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getManagerSpaces().getRefs().values();
-
-      if (spaceEntities != null) {
-        for (SpaceRef spaceRef : spaceEntities) {
-
-          Space space = new Space();
-          fillSpaceFromEntity(spaceRef.getSpaceRef(), space);
-          spaces.add(space);
-        }
-      }
-
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
-
   }
 
   /**
@@ -1279,34 +1219,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    try {
+    //
+    QueryResult<SpaceEntity> results = getEditableSpacesFilterQuery(userId, null).objects(offset, limit);
 
-      int i = 0;
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userId);
-      Collection<SpaceRef> spaceEntities = identityEntity.getManagerSpaces().getRefs().values();
-
-      if (spaceEntities != null) {
-
-        Iterator<SpaceRef> it = spaceEntities.iterator();
-        _skip(it, offset);
-
-        while (it.hasNext()) {
-
-          SpaceRef spaceRef = it.next();
-
-          Space space = new Space();
-          fillSpaceFromEntity(spaceRef.getSpaceRef(), space);
-          spaces.add(space);
-
-          if (++i >= limit) {
-            return spaces;
-          }
-        }
-      }
-
-    }
-    catch (NodeNotFoundException e) {
-      LOG.debug(e.getMessage(), e);
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
     }
 
     return spaces;
@@ -1354,14 +1274,15 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    for (SpaceEntity spaceEntity : getSpaceRoot().getSpaces().values()) {
+    QueryResult<SpaceEntity> results = getSpacesByFilterQuery(null).objects();
+
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
       Space space = new Space();
-      fillSpaceFromEntity(spaceEntity, space);
+      fillSpaceFromEntity(currentSpace, space);
       spaces.add(space);
     }
-
     return spaces;
-
   }
 
   /**
@@ -1387,30 +1308,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * {@inheritDoc}
    */
   public List<Space> getSpaces(long offset, long limit) throws SpaceStorageException {
-
     List<Space> spaces = new ArrayList<Space>();
 
-    int i = 0;
+    QueryResult<SpaceEntity> results = getSpacesByFilterQuery(null).objects(offset, limit);
 
-    Iterator<SpaceEntity> it = getSpaceRoot().getSpaces().values().iterator();
-    _skip(it, offset);
-    
-    while (it.hasNext()) {
-
-      SpaceEntity spaceEntity = it.next();
-
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
       Space space = new Space();
-      fillSpaceFromEntity(spaceEntity, space);
+      fillSpaceFromEntity(currentSpace, space);
       spaces.add(space);
-
-      if (++i >= limit) {
-        break;
-      }
-
     }
-
     return spaces;
-
   }
 
   /**
@@ -1420,11 +1328,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     List<Space> spaces = new ArrayList<Space>();
 
-    if (!validateFilter(spaceFilter)) {
-      return spaces;
-    }
-
-    //
     QueryResult<SpaceEntity> results = getSpacesByFilterQuery(spaceFilter).objects(offset, limit);
 
     while (results.hasNext()) {
@@ -1433,7 +1336,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       fillSpaceFromEntity(currentSpace, space);
       spaces.add(space);
     }
-
     return spaces;
   }
 

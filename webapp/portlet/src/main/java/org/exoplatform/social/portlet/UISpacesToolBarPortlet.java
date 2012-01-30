@@ -19,6 +19,7 @@ package org.exoplatform.social.portlet;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,6 +139,7 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       }
     }
 
+    Collections.sort(navigations, new SpaceNameComparator());
     return navigations;
   }
 
@@ -337,5 +339,18 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
       throw new IllegalArgumentException("node can't be null");
     }
     return node.getURI();
+  }
+  
+  /**
+   * Sorts space name in ascending order.
+   * 
+   * @author quangpld
+   */
+  private class SpaceNameComparator implements Comparator<UserNavigation> {
+
+    @Override
+    public int compare(UserNavigation u1, UserNavigation u2) {
+      return u1.getKey().getName().compareToIgnoreCase(u2.getKey().getName());
+    }
   }
 }

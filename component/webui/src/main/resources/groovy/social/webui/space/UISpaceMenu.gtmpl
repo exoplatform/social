@@ -25,6 +25,8 @@
   import org.exoplatform.social.core.space.SpaceUtils;
   import org.exoplatform.social.core.service.LinkProvider;
 
+  def uicomponentId = uicomponent.id;
+	
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
@@ -34,6 +36,7 @@
   if (imageSource == null) {
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
+  def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 
   public String getFitString(String nodeLabel, int maxLen) {
     def labelStr = "";
@@ -64,9 +67,10 @@
   }
 
   def spaceName = uicomponent.getSpaceName();
-  def spaceNameDisplay = getFitString(spaceName, 20);
+  def spaceNameDisplay = spaceName;
   def homeUrl = Utils.getSpaceHomeURL(space);
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
+  def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
   jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
@@ -78,7 +82,7 @@
 <div class="UISpaceMenu" id="UISpaceMenu">
   <div class="SpaceMenuPortlet ClearFix">
     <div class="UISpaceName FL ">
-      <a class="Avartar" href="$homeUrl"><img alt="Avatar" src="$imageSource" width="35" height="35" /></a>
+      <a class="Avartar" href="$homeUrl"><img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
       <a title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
       <% if (uicomponent.hasSettingPermission()) { %>
       <a class="SpaceSettingIcon" href='$homeUrl/settings' title="$settingsLabel"><span>&nbsp</span></a>
@@ -122,7 +126,7 @@
                 }
                 if (!nodeName.equals("settings")) {
                 
-                def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\")";
+                def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\"," + "\"" + titleEditable + "\")";
               %>
               <div class="UITab NormalTabStyle">
                 <div class="$appTabClass">

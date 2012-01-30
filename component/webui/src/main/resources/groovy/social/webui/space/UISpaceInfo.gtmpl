@@ -24,10 +24,12 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.social.core.service.LinkProvider;
 
+	def uicomponentId = uicomponent.id;
   def imageSource = uicomponent.getImageSource();
   if (imageSource == null) {
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
+  def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
 
   def changeAvatar = uicomponent.event('ChangeAvatar');
   def saveAction = uicomponent.url('Save');
@@ -39,7 +41,7 @@
     <div class="SpaceContainer">
       <div class="SpaceInfoLeft">
 		<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-		  <img src="$imageSource" height="64px" width="64px"/>
+		  <img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
 		</a>
         <div class="ChangeAvaButton">
             <a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
@@ -49,13 +51,13 @@
         <tbody>
           <tr>
             <td class="FieldLabel">
-              <%= _ctx.appRes(uicomponent.getId() + ".label.name") %>
+              <label for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
             </td>
             <td class="FieldComponent"><% uiform.renderField(childs.get(1))%></td>
           </tr>
           <tr>
             <td class="FieldLabel">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.description")%>
+              <label for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
             </td>
             <td class="FieldComponent"><% uiform.renderField(childs.get(2)); %></td>
           </tr>

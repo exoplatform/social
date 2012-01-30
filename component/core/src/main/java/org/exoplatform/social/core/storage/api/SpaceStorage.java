@@ -17,22 +17,11 @@
 
 package org.exoplatform.social.core.storage.api;
 
-import org.chromattic.api.query.QueryBuilder;
-import org.chromattic.api.query.QueryResult;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceRef;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import java.util.List;
+
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
-import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-import org.exoplatform.social.core.storage.query.WhereExpression;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -332,7 +321,8 @@ public interface SpaceStorage {
    * @throws SpaceStorageException
    * @since 1.2.5-GA
    */
-  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit) throws SpaceStorageException;
+  public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException;
   
   /**
    * Gets the spaces of a user which that user has the "member" role or edit permission.

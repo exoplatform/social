@@ -7,7 +7,7 @@ h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
 h1. Social RSS Reader {anchor:id=SOCref.List_Of_Gadget_in_Social.SocialRSSReader}
 
 * *Description*: Fetch, parse and display RSS from a specific URL. 
-* *Description of user preferences*: There are 2 preference fields: URL input box (default value is http://blog.exoplatform.org/feed/) and Number of RSS per page selector (default value is 10).
+* *Description of user preferences*: There are 2 preference fields: URL input box (default value is [http://blog.exoplatform.org/feed/]) and Number of RSS per page selector (default value is 10).
 * *Used REST services*: N/A.
 
 

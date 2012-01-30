@@ -101,7 +101,7 @@
 		var userBlock = [];
 		$.each(userConnectionActivities, function(index, userConnection) {
 			userBlock.push('<li class="ClearFix ListListContent">');
-				userBlock.push('<a target="_blank" href="' + userConnection.profileUrl + '" class="Avatar"><img alt="" width="30px" height="30px" src="' + userConnection.avatarUrl + '"/></a>');
+				userBlock.push('<a target="_blank" href="' + userConnection.profileUrl + '" class="Avatar"><img title="' + userConnection.displayName + '" alt="' + userConnection.displayName + '" width="30px" height="30px" src="' + userConnection.avatarUrl + '"/></a>');
 				userBlock.push('<div class="Content">');
 					userBlock.push('<a target="_blank" href="' + userConnection.profileUrl + '" class="User">' + userConnection.displayName +'</a><span class="Member">' + userConnection.position +'</span>');
 					userBlock.push('<div class="Work">' + userConnection.activityTitle + '</div>');

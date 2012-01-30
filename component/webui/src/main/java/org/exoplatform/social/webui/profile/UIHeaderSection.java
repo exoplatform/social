@@ -16,10 +16,13 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import java.util.ResourceBundle;
+
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
@@ -51,17 +54,24 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
 public class UIHeaderSection extends UIProfileSection {
 
   /** Label for display invoke action */
-  private static final String INVITATION_REVOKED_INFO = "UIProfileNavigationPortlet.label.RevokedInfo";
+  private static final String INVITATION_REVOKED_INFO = "UIHeaderSection.label.RevokedInfo";
 
   /** Label for display established invitation */
-  private static final String INVITATION_ESTABLISHED_INFO = "UIProfileNavigationPortlet.label.InvitationEstablishedInfo";
-	  
-  
+  private static final String INVITATION_ESTABLISHED_INFO = "UIHeaderSection.label.InvitationEstablishedInfo";
+
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+
   /**
    * Initializes components for header form.<br>
    */
   public UIHeaderSection() throws Exception {
-    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, null).
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, null);
+    
+    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIHeaderSection.label.yourPosition"));
+    addUIFormInput(position.
                    addValidator(MandatoryValidator.class).addValidator(SpecialCharacterValidator.class).
                    addValidator(StringLengthValidator.class, 3, 30));
   }

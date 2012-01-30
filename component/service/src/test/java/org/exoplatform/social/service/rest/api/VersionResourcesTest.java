@@ -19,7 +19,7 @@ package org.exoplatform.social.service.rest.api;
 import javax.ws.rs.core.MediaType;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.social.service.rest.api_v1alpha1.models.Versions;
+import org.exoplatform.social.service.rest.api.models.Versions;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 /**
@@ -55,15 +55,14 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetLatestVersionWithJsonFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/latest.json", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: MediaType.APPLICATION_JSON_TYPE",
-            MediaType.APPLICATION_JSON_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
 
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
-    final String expectedResponse = "{\"version\": \"v1-alpha2\"}";
+    final String expectedResponse = "{\"version\": \"v1-alpha3\"}";
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 
@@ -99,14 +98,13 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetSupportedVersionsWithJsonFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/supported.json", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
     Object entity = containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
-    final String expectedResponse = "{\"versions\": [\"v1-alpha2\", \"v1-alpha1\"]}";
+    final String expectedResponse = "{\"versions\": [\"v1-alpha3\"]}";
     assertJsonStringEqualsEntity(expectedResponse, entity);
   }
 
@@ -117,15 +115,14 @@ public class VersionResourcesTest extends AbstractResourceTest {
    */
   public void testGetSupportedVersionsWithXmlFormat() throws Exception {
     ContainerResponse containerResponse = service("GET", "/api/social/version/supported.xml", "", null, null);
-    assertEquals("containerResponse.getContentType() must return: " + MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_XML_TYPE,
-            containerResponse.getContentType());
+    assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
+        containerResponse.getContentType().toString().startsWith(MediaType.APPLICATION_XML.toString()));
     assertEquals("containerResponse.getStatus() must return: " + 200, 200, containerResponse.getStatus());
     Versions entity = (Versions) containerResponse.getEntity();
     assertNotNull("entity must not be null", entity);
 
     final String expectedResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-            "<versions><version>v1-alpha2</version><version>v1-alpha1</version></versions>";
+            "<versions><version>v1-alpha3</version></versions>";
     assertXmlStringEqualsEntity(expectedResponse, entity);
   }
 

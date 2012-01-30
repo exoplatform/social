@@ -24,7 +24,7 @@
   def cancelLabel = _ctx.appRes(componentId + ".label.Cancel");
   def saveLabel = _ctx.appRes(componentId + ".label.Save");
 %>
-<div class="UISocTitleBar" id="$uicomponent.id">
+<div class="UISocTitleBar">
 	<h5 class="TitleBar ClearFix">
 	  <% if (isEditable) { %>
 		<% if (!isEdit) { %>

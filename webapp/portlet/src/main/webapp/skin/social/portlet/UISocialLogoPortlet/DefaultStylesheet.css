@@ -23,19 +23,6 @@
 	line-height: 38px;
 }
 
-.ClearFix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-.ClearFix {
-	!display: inline-block;
-  !zoom: 1;
-  !display: block; 
-}
 
 .UISocialLogoPortlet .Img img {
 	height: 38px;

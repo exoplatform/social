@@ -25,7 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class IdentityKey extends MultitenantCacheKey {
+public class IdentityKey extends ScopeCacheKey {
 
   private final String id;
 

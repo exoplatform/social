@@ -28,6 +28,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -65,28 +66,28 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       Space space = uiDisplaySpaceActivities.getSpace();
 
       Identity spaceIdentity = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                               space.getName(),
+                                                               space.getPrettyName(),
                                                                false);
       ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                    SpaceService.SPACES_APP_ID,
                                    postedMessage,
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
-      Utils.getActivityManager().saveActivity(spaceIdentity, activity);
+      Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                   uiUserActivitiesDisplay.getOwnerName());
+                                                                   uiUserActivitiesDisplay.getOwnerName(), false);
       ExoSocialActivity activity = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
                                        PeopleService.PEOPLE_APP_ID,
                                        postedMessage,
                                        null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
-      Utils.getActivityManager().saveActivity(ownerIdentity, activity);
+      Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.NETWORK_UPDATES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.SPACE_UPDATES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.NETWORK_UPDATES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
       }
     }
   }

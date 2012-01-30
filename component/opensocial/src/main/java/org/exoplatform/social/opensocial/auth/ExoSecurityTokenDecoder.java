@@ -55,12 +55,12 @@ public class ExoSecurityTokenDecoder implements SecurityTokenCodec {
   }
   
   public String encodeToken(final SecurityToken token) throws SecurityTokenException {
-	// TODO Need to check gadget (Activity Stream ... ) for this change.
+    // TODO Need to check gadget (Activity Stream ... ) for this change.
     throw new RuntimeException();
   }
 
   public Long getTokenExpiration(final SecurityToken token) throws SecurityTokenException {
-	// TODO Need to check gadget (Activity Stream ... ) for this change.
+    // TODO Need to check gadget (Activity Stream ... ) for this change.
     throw new RuntimeException();
   }
 

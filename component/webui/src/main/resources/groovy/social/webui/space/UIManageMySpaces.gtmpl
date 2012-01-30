@@ -41,7 +41,6 @@
   def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
   def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
   def fieldLabelUrl = _ctx.appRes("${uicomponentId}.fieldLabel.url")
-  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.no_spaces")
   def mySpaceIdx = 0
   def hasInvited = false
   def style="display:none;"
@@ -60,14 +59,8 @@
 <div class="$uicomponent.id" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
   <div class="BoxSpaceList ClearFix">
-    <%if ((userSpaces.size() == 0)) {%>
-    <div class="NoneBox">
-      <div class="NotYet"><%= labelNoSpaces %></div>
-    </div>
-    <%}%>
     <%for (space in userSpaces) {
         def iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
-        def iconImgSource = LinkProvider.SPACE_MANAGER_ICON
         def editSpaceAction = uicomponent.event("EditSpace", space.id) + "; return false"
         def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
         def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
@@ -96,6 +89,7 @@
         if (imageSource == null) {
           imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
         }
+        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
         mySpaceIdx += 1;
     %>
 
@@ -105,16 +99,18 @@
     <div class="NormalBox ClearFix FL">
     <% } %>
       <!-- Leader -->
-      <% if (role == 1) {%>
+      <% if (role == 1) {
+      	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
+      %>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
-          <img alt="#" src="$imageSource" />
+          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
             <a class="Text" href="<%= spaceUrl %>"><%= space.displayName %></a>
-            <img title="$iconImgLabel" src="$iconImgSource" />
+            ($iconImgLabel)
           </div>
           <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">
@@ -134,17 +130,16 @@
       <% }%>
       <!-- Member -->
       <%if (role == 2) {
-        iconImgSource = LinkProvider.SPACE_MEMBER_ICON
       %>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
-          <img alt="#" src="$imageSource" />
+          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
         <div class="ContentBox">
           <div class="TitleContent">
             <a class="Text" href="<%= spaceUrl %>">$space.displayName</a> 
-            <img title="$iconImgLabel" src="$iconImgSource" />
+            ($iconImgLabel)
           </div>
           <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
           <div class="Content">

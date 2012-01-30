@@ -17,12 +17,12 @@
 
 package org.exoplatform.social.extras.migration.rw;
 
-import javax.jcr.ItemExistsException;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>

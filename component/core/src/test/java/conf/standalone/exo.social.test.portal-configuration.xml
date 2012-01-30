@@ -23,6 +23,58 @@
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
+  <component>
+    <key>org.exoplatform.portal.config.UserACL</key>
+    <type>org.exoplatform.portal.config.UserACL</type>   
+    <init-params>       
+      <value-param>
+        <name>super.user</name>
+        <description>administrator</description>
+        <value>root</value>      
+      </value-param>
+      
+      <value-param>
+        <name>portal.administrator.groups</name>
+        <description>administrator</description>
+        <value>/platform/administrators</value>
+      </value-param>
+      
+      <value-param>
+        <name>portal.administrator.mstype</name>
+        <description>administrator</description>
+        <value>manager</value>
+      </value-param>
+      
+      <value-param>
+        <name>portal.creator.groups</name>
+        <description>groups with membership type have permission to manage portal</description>
+        <value>*:/platform/administrators,*:/organization/management/executive-board</value>      
+      </value-param>
+      
+      <value-param>
+        <name>navigation.creator.membership.type</name>
+        <description>specific membership type have full permission with group navigation</description>
+        <value>manager</value>      
+      </value-param>
+      <value-param>
+        <name>guests.group</name>
+        <description>guests group</description>
+        <value>/platform/guests</value>      
+      </value-param>     
+    <values-param>
+      <name>mandatory.groups</name>
+      <description>Groups that can not be deleted.</description>
+      <value>/platform/administrators</value>
+      <value>/platform/users</value>
+      <value>/platform/guests</value>
+    </values-param> 
+    <values-param>
+      <name>mandatory.mstypes</name>
+      <description>Membership type that can not be deleted.</description>
+      <value>member</value>      
+    </values-param>                  
+    </init-params>   
+  </component>
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
@@ -155,6 +207,54 @@
                     </field>
                   </object>
                 </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>ghost</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Ghost</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>ghost@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>paul</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Paul</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>paul@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>raul</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Raul</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>raul@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
+                <value>
+                  <object type="org.exoplatform.services.organization.OrganizationConfig$User">
+                    <field  name="userName"><string>jame</string></field>
+                    <field  name="password"><string>gtn</string></field>
+                    <field  name="firstName"><string>Jame</string></field>
+                    <field  name="lastName"><string>gtn</string></field>
+                    <field  name="email"><string>jame@localhost</string></field>
+                    <field  name="groups">
+                      <string>member:/platform/users</string>
+                    </field>
+                  </object>
+                </value>
               </collection>
             </field>
           </object>
@@ -262,5 +362,5 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
+  
 </configuration>

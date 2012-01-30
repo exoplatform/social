@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.WebAppController;
@@ -266,20 +269,23 @@ public class SpacesRestService implements ResourceContainer {
     portalContainerName = portalName;
     SpaceService spaceSrv = getSpaceService();
 
-    List<Space> spaces = spaceSrv.getSpacesBySearchCondition(conditionToSearch);
-
+    SpaceListAccess listAccess = spaceSrv.getVisibleSpacesWithListAccess(userId, new SpaceFilter(conditionToSearch));
+    List<Space> spaces = Arrays.asList(listAccess.load(0, 10));
+    
     for (Space space : spaces) {
-      if (PENDING_STATUS.equals(typeOfRelation) && (spaceSrv.isPending(space, userId))) {
+      if (ALL_SPACES_STATUS.equals(typeOfRelation)) {
         nameList.addName(space.getDisplayName());
-        continue;
-      } else if (INCOMING_STATUS.equals(typeOfRelation) && (spaceSrv.isInvited(space, userId))) {
-        nameList.addName(space.getDisplayName());
-        continue;
-      } else if (CONFIRMED_STATUS.equals(typeOfRelation) && (spaceSrv.isMember(space, userId))) {
-        nameList.addName(space.getDisplayName());
-        continue;
-      } else if (ALL_SPACES_STATUS.equals(typeOfRelation)) {
-        nameList.addName(space.getDisplayName());
+      } else {
+        if (PENDING_STATUS.equals(typeOfRelation) && (spaceSrv.isPending(space, userId))) {
+          nameList.addName(space.getDisplayName());
+          continue;
+        } else if (INCOMING_STATUS.equals(typeOfRelation) && (spaceSrv.isInvited(space, userId))) {
+          nameList.addName(space.getDisplayName());
+          continue;
+        } else if (CONFIRMED_STATUS.equals(typeOfRelation) && (spaceSrv.isMember(space, userId))) {
+          nameList.addName(space.getDisplayName());
+          continue;
+        }
       }
     }
 

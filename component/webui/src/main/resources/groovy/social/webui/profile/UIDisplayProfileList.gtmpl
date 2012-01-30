@@ -54,7 +54,7 @@
 
   <% if ((list == null) || (list.size() == 0)) {%>
     <div class="NoneContentSpace">
-      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoPersonFound")%></p>
+      <p class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NoContactFound")%></p>
     </div>
   <%}%>
   <div class="ClearFix">
@@ -78,10 +78,13 @@
       if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       
       def statusIconSrc = LinkProvider.HAS_CONNECTION_ICON;
+      def statusIconDesc = _ctx.appRes(uicomponent.getId() + ".title.HasConnection");
       if (contactStatus == null) {
         statusIconSrc = null;
+        statusIconDesc = null;
       } else if (contactStatus == Relationship.Type.PENDING) {
         statusIconSrc = LinkProvider.WAITING_CONFIRMATION_ICON;
+        statusIconDesc = _ctx.appRes(uicomponent.getId() + ".title.WaitingConfirmationIcon");
       }
   %>
     <% if (peopleIdx % 2 == 0) { %>
@@ -90,7 +93,7 @@
        <div class="ContentSpace ClearFix">
     <% }%>
          <a class="AvatarUser">
-           <img title="${fullName}" src="$imageSource" alt="#"/>
+           <img title="${fullName}" src="$imageSource" alt="${fullName}" />
            <span class="BorderTop"></span>
            <span class="BorderBottom"></span>
          </a>
@@ -98,7 +101,7 @@
           <div class="CommunityMane">
                 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
                 <%if (statusIconSrc != null) { %>
-                  <img src="$statusIconSrc" alt="" width='14px' height='14px' class="StatusIcon"/>
+                  <img title="$statusIconDesc" src="$statusIconSrc" alt="$statusIconDesc" width='14px' height='14px' class="StatusIcon"/>
                 <%}%>
                 <%if ((position.length() + email.length()) == 0 ) {%>
                   <span class="NonePositionAndEmail"></span>

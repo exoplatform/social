@@ -53,8 +53,8 @@ public class URLUtils {
         if (id != null) return currentUserName;
       }
     } catch (Exception e) {
-      if(LOG.isWarnEnabled()) {
-        LOG.warn("Could not found Identity of user " + currentUserName);
+      if(LOG.isDebugEnabled()) {
+        LOG.debug("Could not found Identity of user " + currentUserName);
       }
       return null;
     }

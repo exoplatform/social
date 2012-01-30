@@ -17,15 +17,14 @@
 
 package org.exoplatform.social.core.storage.api;
 
+import java.util.List;
+
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
-import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -201,7 +200,7 @@ public interface IdentityStorage {
    * @param limit
    * @return
    * @throws IdentityStorageException
-   * @throws NodeNotFoundException
+   * @throws org.exoplatform.social.core.storage.exception.NodeNotFoundException
    */
   public List<Identity> getSpaceMemberIdentitiesByProfileFilter(final Space space, 
                                                                 final ProfileFilter profileFilter,

@@ -17,8 +17,6 @@
 
 package org.exoplatform.social.core.storage.query;
 
-import com.google.caja.parser.js.QuotedExpression;
-
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
@@ -81,7 +79,8 @@ public class WhereExpression {
   public <T> WhereExpression like(CallExpression<T> call, T value) {
     checkParam(call.getProperty(), value);
 
-    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(), value)));
+    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(),
+                                 value)));
     return this;
   }
 

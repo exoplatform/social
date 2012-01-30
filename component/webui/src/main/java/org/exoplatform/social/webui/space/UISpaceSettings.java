@@ -62,6 +62,9 @@ public class UISpaceSettings extends UIFormInputSet {
   // Message
   private final String MSG_INVALID_SPACE_NAME = "UISpaceSettings.msg.invalid_space_name";
 
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    *
@@ -70,7 +73,11 @@ public class UISpaceSettings extends UIFormInputSet {
    */
   public UISpaceSettings(String name) throws Exception {
     super(name);
-    addUIFormInput(new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null).
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    UIFormStringInput spaceDisplayName = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
+    spaceDisplayName.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSettings.label.spaceDisplayName"));
+    addUIFormInput(spaceDisplayName.
                    addValidator(MandatoryValidator.class).
                    //addValidator(ExpressionValidator.class, "^[\\p{L}\\s\\d]+$", "ResourceValidator.msg.Invalid-char").
                    addValidator(ExpressionValidator.class, "^([\\p{L}\\s\\d]+[\\s]?)+$", MSG_INVALID_SPACE_NAME).
@@ -96,7 +103,8 @@ public class UISpaceSettings extends UIFormInputSet {
     String interMePrio = resApp.getString("UISpaceSettings.label.InterMePrio");
     priorityInfo.setValue(interMePrio);
     addUIFormInput(priorityInfo);
-    addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
-                   addValidator(StringLengthValidator.class, 0,255));
+    UIFormTextAreaInput description = new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null);
+    description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSettings.label.spaceDescription"));
+    addUIFormInput(description.addValidator(StringLengthValidator.class, 0,255));
   }
 }

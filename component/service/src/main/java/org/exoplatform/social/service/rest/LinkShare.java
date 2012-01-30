@@ -95,6 +95,9 @@ public class LinkShare extends DefaultFilter {
   private final String MEDIUM_TYPE_VIDEO = "video";
   private final String MEDIUM_TYPE_BLOG = "blog";
   private final String MEDIUM_TYPE_MULT = "mult";
+  
+  private static final String IMAGE_MIME_TYPE = "image/";
+  private static final String HTML_MIME_TYPE = "text/html";
   //default medium_type = "news"
   private String mediumType = MEDIUM_TYPE_NEWS;
   private String mediaSrc;
@@ -151,7 +154,7 @@ public class LinkShare extends DefaultFilter {
    * @return provided link
    */
   public String getLink() {
-    return link;
+    return this.escapeSpecialCharacters(this.link);
   }
 
   /**
@@ -159,7 +162,7 @@ public class LinkShare extends DefaultFilter {
    * @return title
    */
   public String getTitle() {
-    return title;
+    return this.escapeSpecialCharacters(this.title);
   }
   
   /**
@@ -167,7 +170,7 @@ public class LinkShare extends DefaultFilter {
    * @return description
    */
   public String getDescription() {
-    return description;
+    return this.escapeSpecialCharacters(this.description);
   }
 
   /**
@@ -333,7 +336,7 @@ public class LinkShare extends DefaultFilter {
     if (!Util.isValidURL(link))
       return null;
     
-    if (!(link.startsWith(HTTP_PROTOCOL) || link.startsWith(HTTPS_PROTOCOL))) {
+    if (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL))) {
       URI uri = URI.create(link);
       String uriScheme = uri.getScheme();
       if (uriScheme != null) {
@@ -346,7 +349,20 @@ public class LinkShare extends DefaultFilter {
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;
     LinkShare.lang = lang;
-    linkShare.get();
+    
+    String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
+    mimeType = mimeType.toLowerCase();
+    
+    if(mimeType.startsWith(IMAGE_MIME_TYPE)){
+      linkShare.images = new ArrayList<String>(0);
+      linkShare.images.add(link);
+      linkShare.description = "";
+    } else if(mimeType.startsWith(HTML_MIME_TYPE)){
+      linkShare.get();
+    } else {
+      linkShare.images = new ArrayList<String>(0);
+      linkShare.description = "";
+    }
     
     if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
     
@@ -391,6 +407,8 @@ public class LinkShare extends DefaultFilter {
           onPParsing = true;
         }
       }
+    } else if ("title".equalsIgnoreCase(element.rawname)) {
+      onPParsing = true;
     }
   }
 
@@ -404,9 +422,13 @@ public class LinkShare extends DefaultFilter {
     //if detect <meta name="title" content="meta_title" />, reset title
       if ("title".equalsIgnoreCase(element.rawname)) {
         if (title == null) {
-          title = temp;
-          //remove new line character \n
-          title = title.replaceAll("\n", "");
+          if (onPParsing) {
+            title = pText.toString();
+            onPParsing = false;
+            pText = null;
+          } else {
+            title = temp;
+          }
         }
       }
     //set headEnded
@@ -603,5 +625,20 @@ public class LinkShare extends DefaultFilter {
       intVal = Integer.parseInt(strNum);
     }
     return intVal;
+  }
+  
+  /**
+   * Escapes the special characters.
+   * 
+   * @param str
+   * @return
+   * @since 1.2.7
+   */
+  private String escapeSpecialCharacters(String str) {
+    if (str != null) {
+      return str.replaceAll("\r\n|\n\r|\n|\r", "");
+    } else {
+      return "";
+    }
   }
 }

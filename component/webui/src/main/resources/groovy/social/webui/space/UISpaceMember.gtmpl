@@ -56,14 +56,27 @@
   def pendingIdx = 0;
   def invitedIdx = 0;
   def existingIdx = 0;
+  def invitedUserNames = uicomponent.invitedUserNames;
 %>
 <div class="$uicomponent.id">
 <% uiform.begin() %>
   <% def searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
   <% def inviteAction = uicomponent.event("Invite") + "; return false;"%>
-		<span class="AddInvite"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%> :<% uiform.renderField("user") %></span>
+		<span class="AddInvite"><label for="user"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%></label> :<% uiform.renderField("user") %></span>
 		<a href="#" class="SearchAddMemberIcon SearchInviteButton" onclick="$inviteAction" title="$labelInviteAction">&nbsp;</a>
 		<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction" title="$labelSearchUserAction">&nbsp;</a>
+  <%
+    if ((invitedUserNames != null) && uicomponent.isHasErr()) {
+  %>
+      <script type="text/javascript">
+        try{
+          var userEl = document.getElementById("user");
+          userEl.value = "$invitedUserNames";
+        }catch(e){};
+      </script>
+  <%
+    } 
+  %>
   <!-- pending -->
   <% if (pendingUsers.size() > 0) { %>
 
@@ -85,7 +98,7 @@
 		  <% } else { %>
 		  <tr class="OddRow">
 		  <% } %>
-			<td><%=pendingUser %></td>
+			<td><%= uicomponent.getFullName(pendingUser) %></td>
 			<td class="ActionContainer">
 			  <a href="#" class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"></a>
 			  <a href="#" class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"></a>
@@ -123,9 +136,9 @@
 		  <% } else { %>
 		  <tr class="OddRow">
 		  <% } %>
-			<td><%=invitedUser %></td>
+			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
-			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction">&nbsp;</a>
+			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction"></a>
 			</td>
 		  </tr>
 		<% } /*end for*/%>
@@ -169,25 +182,25 @@
 			<% } else { %>
 			<tr class="OddRow">
 			<% } %>
-			  <td><%= user %></td>
+			  <td><%= uicomponent.getFullName(user) %></td>
 			  <% if(isLeader) { %>
 			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader">&nbsp;</a>
+				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader"></a>
 			  <% } else {%>
-				<a href="#" class="ManageMemButtonSub label" id="label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader">&nbsp;</a>
+				<a href="#" class="ManageMemButtonSub label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader"></a>
 			  <% } %>
 			  </td>
 			  <% } else { %>
 			  <td>
-				<a class="ManageMemButtonAdd label" id="label" onclick="$makeLeader" title="$labelMakeLeader">&nbsp;</a>
+				<a class="ManageMemButtonAdd label" onclick="$makeLeader" title="$labelMakeLeader"></a>
 			  </td>
 			  <% } %>
 			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteButton IconDelete">&nbsp;</a>
+				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
 			  <% } else { %>
-				<a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteButton IconDelete">&nbsp;</a>
+				<a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
 			  <% } %> 
 			  </td>
 			</tr>

@@ -52,7 +52,7 @@
            adminProfileURL = LinkProvider.getUserProfileUri(admin.getRemoteId());
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
-				<img class="ImgAvatarRoot" src="$adminImageSource" alt=""/>
+				<img class="ImgAvatarRoot" src="$adminImageSource" title="$adminName" alt="$adminName" />
         <a href="${adminProfileURL}" class="TitleAvatarRoot">($adminLabel $adminName)</a>
     </div>
     <!-- End left section -->
@@ -64,42 +64,43 @@
       </div>
       <!-- Leaders section -->
       <div class="UISocTitleBar">
-				<h5 class="TitleBar">$administratorLabel</h5>
+				<div class="TitleBar Bold">$administratorLabel</div>
       </div>
-      <% if (managerList.size() > 0) {
-        for(user in managerList) {
-          def userName = user.getProfile().getFullName();
-          position = user.getProfile().getPosition();
-          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-          if (!position) position = "";
-          def leaderImageSource = user.profile.avatarUrl;
-          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-          leaderIdx += 1;
-          clzz = "ContentSpace";
-          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
-      %>
       <div class="ClearFix">
-        <div class="$clzz ClearFix">
-					<img class="ImgAvatar" src="$leaderImageSource" alt=""/>
-					<div class="CommunityMane ClearFix">
-						<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
-					</div>
-					<% if(position.length() > 0) { %>
-				 <div class="CommunityContent">
-					 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-				 </div>
-					<% } %>
-        </div>
-      <% }
+	      <% if (managerList.size() > 0) {
+	        for(user in managerList) {
+	          def userName = user.getProfile().getFullName();
+	          position = user.getProfile().getPosition();
+	          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+	          if (!position) position = "";
+	          def leaderImageSource = user.profile.avatarUrl;
+	          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+	          leaderIdx += 1;
+	          clzz = "ContentSpace";
+	          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
+	      	%>
+	        <div class="$clzz ClearFix">
+						<img class="ImgAvatar" src="$leaderImageSource" title="$userName" alt="$userName" />
+						<div class="CommunityMane ClearFix">
+							<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
+						</div>
+						<% if(position.length() > 0) { %>
+						 <div class="CommunityContent">
+							 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+						 </div>
+						<% } %>
+	        </div>
+	      <% }%>
+      </div>
+      <%
       } else { %>
 				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
       <% } %>
       
-      </div>
       <!-- End leaders section -->
       <!-- Members section -->
       <div class="UISocTitleBar">
-				<h5 class="TitleBar">$spaceMemberLabel</h5>
+				<div class="TitleBar Bold">$spaceMemberLabel</div>
       </div>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="ClearFix">
@@ -118,7 +119,7 @@
 				  }
       %>
         <div class="$cssClass ClearFix">
-					<img class="ImgAvatar" src="$memberImageSource" alt=""/>
+					<img class="ImgAvatar" src="$memberImageSource" title="$memberUserName" alt="$memberUserName" />
 					<div class="CommunityMane ClearFix">
 							<a href="${profileURL}" class="CommunityName InviteTitle">$memberUserName</a>
 					</div>

@@ -1,4 +1,5 @@
 /*
+
  * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
@@ -19,10 +20,13 @@ package org.exoplatform.social.webui.space;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.portal.webui.workspace.UIPortalApplication;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -44,6 +48,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
+import org.exoplatform.webui.form.UIFormRadioBoxInput;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormTabPane;
 
@@ -68,7 +73,7 @@ import org.exoplatform.webui.form.UIFormTabPane;
 public class UISpaceAddForm extends UIFormTabPane {
 
   private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
-
+  
   static private final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   static private final String MSG_ERROR_SPACE_CREATION = "UISpaceAddForm.msg.error_space_creation";
   static private final String MSG_ERROR_DATASTORE = "UISpaceAddForm.msg.error_space_not_saved";
@@ -140,6 +145,14 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (spaceService.getSpaceByPrettyName(space.getPrettyName()) != null) {
           throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
         }
+        
+        ExoContainer container = ExoContainerContext.getCurrentContainer();
+        IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+        Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), true);
+        if (identity != null) {
+          space.setPrettyName(SpaceUtils.buildPrettyName(space));
+        }
+
         space.setType(DefaultSpaceApplicationHandler.NAME);
         if (selectedGroup != null) {// create space from an existing group
           space = spaceService.createSpace(space, creator, selectedGroup);
@@ -175,7 +188,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       // TODO Re-check and re-confirm that navigation is ok then re-direct into Home of space.
       JavascriptManager jsManager = ctx.getJavascriptManager();
       jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
-      		"window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
+              "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
     }
   }
 
@@ -209,33 +222,36 @@ public class UISpaceAddForm extends UIFormTabPane {
     private final String HIGH_PRIORITY_LABEL = "UISpaceSettings.label.HighPrio";
     private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
     private final String LOW_PRIORITY_LABEL = "UISpaceSettings.label.lowPrio";
-
+    
     @Override
     public void execute(Event<UISpaceAddForm> event) throws Exception {
-      UISpaceAddForm uiSpaceAddForm = event.getSource();
       WebuiRequestContext ctx = event.getRequestContext();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
-
       String highPrio = resApp.getString(HIGH_PRIORITY_LABEL);
       String interMePrio = resApp.getString(INTERMEDIATE_PRIORITY_LABEL);
       String lowPrio = resApp.getString(LOW_PRIORITY_LABEL);
+      
+      UISpaceAddForm uiSpaceAddForm = event.getSource();
 
-      Space space = new Space();
-      uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceSettings = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_SETTINGS);
+      
+      UIFormSelectBox selectedPriority = uiSpaceSettings.getChild(UIFormSelectBox.class);
+      
       UIFormInputInfo uiFormInfo = uiSpaceSettings.getChild(UIFormInputInfo.class);
-      int selectedValue = Integer.parseInt(space.getPriority());
+      
+      int selectedValue = Integer.parseInt(selectedPriority.getValue());
+
       switch (selectedValue) {
         case 1:
           uiFormInfo.setValue(highPrio);
           break;
-        case 2:
+       case 2:
           uiFormInfo.setValue(interMePrio);
           break;
-        case 3:
+       case 3:
           uiFormInfo.setValue(lowPrio);
           break;
-        default:
+       default:
           break;
       }
     }
@@ -258,13 +274,16 @@ public class UISpaceAddForm extends UIFormTabPane {
       String visibleAndCloseSpace = resApp.getString(VISIBLE_CLOSE_SPACE);
       String hiddenSpace = resApp.getString(HIDDEN_SPACE);
 
-      Space space = new Space();
-      uiSpaceAddForm.invokeSetBindingBean(space);
+      //Space space = new Space();
+      //uiSpaceAddForm.invokeSetBindingBean(space);
       UIFormInputSet uiSpaceVisibility = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectPriority = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_VISIBILITY);
+      UIFormRadioBoxInput selectRegistration = uiSpaceVisibility.getChildById(UISpaceVisibility.UI_SPACE_REGISTRATION);
+      
       UIFormInputInfo uiFormInfo = uiSpaceVisibility.getChild(UIFormInputInfo.class);
 
-      String currentVisibility = space.getVisibility();
-      String currentRegistration = space.getRegistration();
+      String currentVisibility = selectPriority.getValue();
+      String currentRegistration = selectRegistration.getValue();
       boolean isPrivate = Space.PRIVATE.equals(currentVisibility);
       boolean isOpen = Space.OPEN.equals(currentRegistration);
       boolean isValidation = Space.VALIDATION.equals(currentRegistration);

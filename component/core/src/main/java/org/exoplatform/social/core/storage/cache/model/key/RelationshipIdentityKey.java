@@ -24,7 +24,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipIdentityKey extends MultitenantCacheKey {
+public class RelationshipIdentityKey extends ScopeCacheKey {
 
   private final String identityId1;
   private final String identityId2;

@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Request;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
@@ -51,8 +50,6 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -439,7 +436,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    * @throws Exception
    */
   private String getURIForPeople(PortalContainer portalContainer, String remoteId) throws Exception {
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)portalContainer.getComponentInstanceOfType(UserPortalConfigService.class);
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
+                                                  portalContainer.getComponentInstanceOfType(UserPortalConfigService.class);
     
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
@@ -453,7 +451,8 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
     StringBuffer stringBuffer = new StringBuffer();
     try {
       RequestLifeCycle.begin(portalContainer);
-      UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+      UserPortalConfig userPortalCfg = userPortalConfigSer.
+                                       getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
       UserPortal userPortal = userPortalCfg.getUserPortal();
       
       SiteKey siteKey = SiteKey.portal(userPortalConfigSer.getDefaultPortal());

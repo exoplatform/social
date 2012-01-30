@@ -17,17 +17,17 @@
 
 package org.exoplatform.social.core.storage.synchronization;
 
+import java.util.List;
+import java.util.SortedSet;
+
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
-import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-
-import java.util.List;
-import java.util.SortedSet;
+import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -80,7 +80,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getUserActivities(final Identity owner, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getUserActivities(final Identity owner, final long offset, final long limit)
+                                                                                            throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -176,7 +177,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getActivitiesOfIdentities(final List<Identity> connectionList, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfIdentities(final List<Identity> connectionList, final long offset,
+                                                           final long limit) throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -192,7 +194,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getActivitiesOfIdentities(final List<Identity> connectionList, final TimestampType type, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfIdentities(final List<Identity> connectionList, final TimestampType type,
+                                                           final long offset, final long limit) throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -240,7 +243,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getNewerOnUserActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getNewerOnUserActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity,
+                                                          final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -272,7 +276,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getOlderOnUserActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getOlderOnUserActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity,
+                                                          final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -336,7 +341,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getNewerOnActivityFeed(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getNewerOnActivityFeed(final Identity ownerIdentity, final ExoSocialActivity baseActivity,
+                                                        final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -368,7 +374,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getOlderOnActivityFeed(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getOlderOnActivityFeed(final Identity ownerIdentity, final ExoSocialActivity baseActivity,
+                                                        final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -416,7 +423,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getActivitiesOfIdentity(final Identity ownerIdentity, final long offset, final long limit) throws ActivityStorageException {
+  public List<ExoSocialActivity> getActivitiesOfIdentity(final Identity ownerIdentity, final long offset, final long limit)
+                                                                                       throws ActivityStorageException {
 
     boolean created = startSynchronization();
     try {
@@ -448,7 +456,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getNewerOnActivitiesOfConnections(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final long limit) {
+  public List<ExoSocialActivity> getNewerOnActivitiesOfConnections(final Identity ownerIdentity,
+                                                                   final ExoSocialActivity baseActivity, final long limit) {
 
     boolean created = startSynchronization();
     try {
@@ -480,7 +489,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getOlderOnActivitiesOfConnections(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getOlderOnActivitiesOfConnections(final Identity ownerIdentity,
+                                                                   final ExoSocialActivity baseActivity, final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -544,7 +554,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getNewerOnUserSpacesActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getNewerOnUserSpacesActivities(final Identity ownerIdentity,
+                                                                final ExoSocialActivity baseActivity, final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -576,7 +587,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getOlderOnUserSpacesActivities(final Identity ownerIdentity, final ExoSocialActivity baseActivity, final int limit) {
+  public List<ExoSocialActivity> getOlderOnUserSpacesActivities(final Identity ownerIdentity,
+                                                                final ExoSocialActivity baseActivity, final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -640,7 +652,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getNewerComments(final ExoSocialActivity existingActivity, final ExoSocialActivity baseComment, final int limit) {
+  public List<ExoSocialActivity> getNewerComments(final ExoSocialActivity existingActivity, final ExoSocialActivity baseComment,
+                                                  final int limit) {
 
     boolean created = startSynchronization();
     try {
@@ -672,7 +685,8 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
-  public List<ExoSocialActivity> getOlderComments(final ExoSocialActivity existingActivity, final ExoSocialActivity baseComment, final int limit) {
+  public List<ExoSocialActivity> getOlderComments(final ExoSocialActivity existingActivity, final ExoSocialActivity baseComment,
+                                                  final int limit) {
 
     boolean created = startSynchronization();
     try {

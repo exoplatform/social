@@ -24,15 +24,6 @@
   import org.exoplatform.webui.form.UIFormStringInput;
   import org.exoplatform.social.plugin.link.UILinkUtil;
 
-  def removeAllNewLines(def str) {
-    if (str) {
-      str = str.replaceAll("\r\n|\n\r|\n|\r", "");
-      return str.replaceAll("'", " ");
-    } else {
-      return "";
-    }
-  }
-
   def uicomponentId = uicomponent.id;
   def labelAttachLink = _ctx.appRes("UILinkComposerPlugin.label.Attach_Link");
   def labelAttach = _ctx.appRes("UILinkComposerPlugin.label.Attach");
@@ -50,18 +41,19 @@
   def noThumbnail = _ctx.appRes("UILinkComposerPlugin.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("UILinkComposerPlugin.msg.Previous_Image"),
       nextImage = _ctx.appRes("UILinkComposerPlugin.msg.Next_Image");
+      titleEditable = _ctx.appRes("UILinkComposerPlugin.msg.Editable_Title_Element");
 
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData;
   if (linkShare) {
-    link = removeAllNewLines(linkShare.getLink());
+    link = linkShare.getLink().replaceAll("'", "&#039;");
     images = linkShare.getImages();
     def image;
     if (images.size() > 0) {
       image = images.get(0);
     }
-    title = removeAllNewLines(linkShare.getTitle());
-    description = removeAllNewLines(linkShare.getDescription());
+    title = linkShare.getTitle().replaceAll("'", "&#039;");
+    description = linkShare.getDescription().replaceAll("'", "&#039;");
     linkData = "{"+
                   "link: '$link',"+
                   "image: '$image',"+
@@ -78,9 +70,9 @@
                   "attachButtonId: 'AttachButton',"+
                   "attachUrl: '${uicomponent.url("Attach")}',"+
                   "changeLinkContentUrl: '${uicomponent.url("ChangeLinkContent")}',"+
-                  "linkData: $linkData"+
+                  "linkData: $linkData,"+
+                  "titleEditable: '$titleEditable'"+
                 "}";
-
 
   jsManager.addOnLoadJavascript("initComposerLinkExtension");
 
@@ -94,12 +86,12 @@
 <% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
                            %>
-  <div class="UILinkShareDisplay">
+  <div class="UILinkShareDisplay ClearFix">
     <%
       if(UILinkUtil.isImageLink(link)){
         %>
           <div>
-            <a href="$link" target="_blank"><img src="$link" alt=" " height="120"/></a> 
+            <a href="$link" target="_blank"><img src="$link" title="$title" alt="$title" height="120"/></a> 
           </div>
         <%
       }
@@ -112,12 +104,12 @@
                 <%
                   def thumbnailClass = "ThumbnailShown";
                   images.each({ %>
-                   <img src="$it" class="$thumbnailClass" />
+                   <img src="$it" class="$thumbnailClass" title="$title" alt="$title" />
                   <%
                     thumbnailClass = "ThumbnailHidden";
                   })%>
               </div>
-              <div class="ThumbnailAction">
+              <div class="ThumbnailAction ClearFix">
                 <div class="BackIcon" id="BackThumbnail">
                   <span></span>
                 </div>
@@ -127,14 +119,12 @@
                 <div class="NextIcon" id="NextThumbnail">
                   <span></span>
                 </div>
-                <div style="clear: both;">
-                  <span></span>
-                </div>
+               
               </div>
             </div>
-            <div class="ThumbnailOption">
-              <input id="ThumbnailCheckbox" type="checkbox" />
-                $noThumbnail
+            <div class="ThumbnailOption ClearFix">
+              <input title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
+              <label for="ThumbnailCheckbox" class="Label FL">$noThumbnail</label>
             </div>
           <% } %>
           </div>
@@ -152,7 +142,6 @@
         <%
       }
     %>
-    <div class="ClearLeft"><span></span></div>
   </div>
 <% } else { %>
   <div class="UIComposerExtensionContainer">

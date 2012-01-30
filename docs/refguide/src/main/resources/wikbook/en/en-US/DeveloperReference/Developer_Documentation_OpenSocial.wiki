@@ -5,23 +5,22 @@ h1. Gadget {anchor:id=Developer_document.Open_social.Gadget}
 
 Gadgets are web-based software components based on HTML, CSS, JavaScript; defined by using an XML declaration syntax. They allow developers to easily write social applications that work on the social networks supporting OpenSocial APIs without modification. See the following links for detailed information:
 
-* [Gadgets Specification|http//code:google.com-apis-gadgets-docs-spec.html]
+* [Gadgets Specification v1.1|http://opensocial-resources.googlecode.com/svn/spec/1.1/Social-Gadget.xml]
 
-* [OpenSocial Core Gadget Specification v0.8|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadget-spec.html]
+* [OpenSocial Core Gadget Specification v1.1|http://opensocial-resources.googlecode.com/svn/spec/1.1/Core-Gadget.xml]
 
-* [Gadgets APIs|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08/gadgets-reference08]
 
 To know how to create an OpenSocial gadget, see [here|http://wiki.opensocial.org/index.php?title=Gadget_Developer's_Guide].
 
 {note}
 Gadgets will work out of the box on Dashboard. In eXo, gadgets are wrapped by GadgetWrapperPortlet so they can work as any other portlet applications. 
-At present, eXo Social supports [OpenSocial v0.8.|http://www.opensocial.org/Technical-Resources/opensocial-spec-v08.html]
+At present, eXo Social supports [OpenSocial Specification v1.1| http://opensocial-resources.googlecode.com/svn/spec/1.1/OpenSocial-Specification.xml].
 {note}
 
 h2. Supported APIs {anchor:id=Developer_document.Open_social.Supported_APIs}
 eXo Social leverages [Apache Shindig|http://shindig.apache.org/overview.html] - an OpenSocial reference implementation to provide and extend OpenSocial APIs which is compatible with the common OpenSocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com] and more.
 
-To get more details about Supported APIs, refer to [Opensocial Specs|http://www.opensocial.org/page/specs-1].
+To get more details about Supported APIs, refer to [OpenSocial Specification|http://docs.opensocial.org/display/OSD/Specs].
 
 h3. REST/RPC API {anchor:id=Developer_document.Open_social.REST-RPC_API}
 

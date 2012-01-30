@@ -40,11 +40,9 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
-import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
-import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
@@ -75,21 +73,6 @@ public class UIProfileUserSearch extends UIForm {
   public static final String USER_CONTACT = "name";
 
   /**
-   * DEFAULT GENDER.
-   */
-  public static final String GENDER_DEFAULT = "Gender";
-
-  /**
-   * MALE.
-   */
-  public static final String MALE = "male";
-
-  /**
-   * FEMALE.
-   */
-  public static final String FEMALE = "female";
-
-  /**
    * REGEX FOR SPLIT STRING
    */
   public static final String REG_FOR_SPLIT = "[^_A-Za-z0-9-.\\s[\\n]]";
@@ -115,10 +98,18 @@ public class UIProfileUserSearch extends UIForm {
   /** All people filter. */
   private static final String ALL_FILTER = "All";
   
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * List used for identities storage.
    */
   private List<Identity> identityList = null;
+  
+  /**
+   * The input conditional of search
+   */
+  private String rawSearchConditional;
 
   /**
    * Stores selected character when search by alphabet
@@ -156,6 +147,11 @@ public class UIProfileUserSearch extends UIForm {
   private boolean hasPeopleTab;
   
   /**
+   * Set flag to determine this has link to connection page.
+   */
+  private boolean hasConnectionLink;
+  
+  /**
    * Number of matching people.
    */
   private int peopleNum;
@@ -165,7 +161,7 @@ public class UIProfileUserSearch extends UIForm {
    * @return
    */
   public boolean isHasPeopleTab() {
-	return hasPeopleTab;
+    return hasPeopleTab;
   }
 
   /**
@@ -173,7 +169,21 @@ public class UIProfileUserSearch extends UIForm {
    * @param hasPeopleTab
    */
   public void setHasPeopleTab(boolean hasPeopleTab) {
-	this.hasPeopleTab = hasPeopleTab;
+    this.hasPeopleTab = hasPeopleTab;
+  }
+
+  /**
+   * @return the hasConnectionLink
+   */
+  public boolean isHasConnectionLink() {
+    return hasConnectionLink;
+  }
+
+  /**
+   * @param hasConnectionLink the hasConnectionLink to set
+   */
+  public void setHasConnectionLink(boolean hasConnectionLink) {
+    this.hasConnectionLink = hasConnectionLink;
   }
 
   /**
@@ -183,7 +193,7 @@ public class UIProfileUserSearch extends UIForm {
    * @since 1.2.2
    */
   public int getPeopleNum() {
-	return peopleNum;
+    return peopleNum;
   }
   
   /**
@@ -193,7 +203,7 @@ public class UIProfileUserSearch extends UIForm {
    * @since 1.2.2
    */
   public void setPeopleNum(int peopleNum) {
-	this.peopleNum = peopleNum;
+    this.peopleNum = peopleNum;
   }
 
 /**
@@ -216,6 +226,14 @@ public class UIProfileUserSearch extends UIForm {
    */
   public final List<Identity> getIdentityList() {
     return identityList;
+  }
+
+  public String getRawSearchConditional() {
+    return rawSearchConditional;
+  }
+
+  public void setRawSearchConditional(String rawSearchConditional) {
+    this.rawSearchConditional = rawSearchConditional;
   }
 
   /**
@@ -308,56 +326,45 @@ public class UIProfileUserSearch extends UIForm {
    * @throws Exception
    */
   public UIProfileUserSearch() throws Exception {
-	ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-	
-	String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
-	String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
-	String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
-	String defaultGender = resourceBudle.getString("UIProfileUserSearch.label.AllGender");
-	String defaultMale = resourceBudle.getString("UIProfileUserSearch.label.Male");
-	String defaultFeMale = resourceBudle.getString("UIProfileUserSearch.label.FeMale");
-	
-    List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
-    options.add(new SelectItemOption<String>(defaultGender));
-    options.add(new SelectItemOption<String>(defaultMale));
-    options.add(new SelectItemOption<String>(defaultFeMale));
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
 
-    addUIFormInput(new UIFormStringInput(SEARCH, USER_CONTACT, defaultName));
-    addUIFormInput(new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos));
-    addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills));
-    addUIFormInput(new UIFormSelectBox(Profile.GENDER, Profile.GENDER, options)).setId("GenderList");
+    String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+    String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+    String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+
+    UIFormStringInput search = new UIFormStringInput(SEARCH, USER_CONTACT, defaultName);
+    search.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultName);
+    addUIFormInput(search);
+    UIFormStringInput position = new UIFormStringInput(Profile.POSITION, Profile.POSITION, defaultPos);
+    position.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultPos);
+    addUIFormInput(position);
+    UIFormStringInput skills = new UIFormStringInput(Profile.EXPERIENCES_SKILLS, Profile.EXPERIENCES_SKILLS, defaultSkills);
+    skills.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, defaultSkills);
+    addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
     setSelectedChar(ALL_FILTER);
   }
 
   protected void resetUIComponentValues() {
-	UIFormStringInput uiName = getChildById(SEARCH);
-	UIFormStringInput uiPos = getChildById(Profile.POSITION);
-	UIFormStringInput uiSkills = getChildById(Profile.EXPERIENCES_SKILLS);
-	UIFormSelectBox uiGender = getChildById(Profile.GENDER);
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
 
-	//
-	ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-	
-	String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
-	String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
-	String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
-	String defaultGender = resourceBudle.getString("UIProfileUserSearch.label.AllGender");
-	String defaultMale = resourceBudle.getString("UIProfileUserSearch.label.Male");
-	String defaultFeMale = resourceBudle.getString("UIProfileUserSearch.label.FeMale");
-	
-	//
-	uiName.setValue(defaultName);
-	uiPos.setValue(defaultPos);
-	uiSkills.setValue(defaultSkills);
-	uiGender.setDefaultValue(defaultGender);
-	uiGender.getOptions().get(0).setValue(defaultGender);
-	uiGender.getOptions().get(1).setValue(defaultMale);
-	uiGender.getOptions().get(2).setValue(defaultFeMale);
-	uiGender.getOptions().get(0).setLabel(defaultGender);
-	uiGender.getOptions().get(1).setLabel(defaultMale);
-	uiGender.getOptions().get(2).setLabel(defaultFeMale);
+    if(profileFilter != null && profileFilter.getName() !=null && profileFilter.getName().equals("")){
+      UIFormStringInput uiName = getChildById(SEARCH);
+      String defaultName = resourceBudle.getString("UIProfileUserSearch.label.Name");
+      uiName.setValue(defaultName);
+    }
+    if(profileFilter != null && profileFilter.getPosition() !=null && profileFilter.getPosition().equals("")){
+      UIFormStringInput uiPos = getChildById(Profile.POSITION);
+      String defaultPos = resourceBudle.getString("UIProfileUserSearch.label.Position");
+      uiPos.setValue(defaultPos);
+    }
+    
+    if(profileFilter != null && profileFilter.getSkills() !=null && profileFilter.getSkills().equals("")){
+      UIFormStringInput uiSkills = getChildById(Profile.EXPERIENCES_SKILLS);
+      String defaultSkills = resourceBudle.getString("UIProfileUserSearch.label.Skills");
+      uiSkills.setValue(defaultSkills);
+    }
   }
   
   /**
@@ -397,56 +404,65 @@ public class UIProfileUserSearch extends UIForm {
       String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
-      String defaultGenderVal = resApp.getString(uiSearch.getId() + ".label.AllGender");
       try {
         uiSearch.setSelectedChar(charSearch);
         if (charSearch != null) { // search by alphabet
           ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
           ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
           ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.GENDER)).setValue(defaultGenderVal);
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setSkills("");
-          filter.setGender("");
           filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
           if (ALL_FILTER.equals(charSearch)) {
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
             filter.setName("");
           }
-          
-          uiSearch.setProfileFilter(filter);
+          uiSearch.setRawSearchConditional("");
         } else {
           uiSearch.setSelectedChar(null);
-          if (!isValidInput(filter)) { // is invalid condition input
-            uiSearch.setIdentityList(new ArrayList<Identity>());
+          StringBuffer rawSearchMessageStringBuffer = new StringBuffer();
+          if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+            filter.setName("");
           } else {
-            if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
-              filter.setName("");
-            }
-            if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+            rawSearchMessageStringBuffer.append(defaultNameVal + ":" + filter.getName());
+          }
+          
+          if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+            filter.setPosition("");
+          } else {
+            rawSearchMessageStringBuffer
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultPosVal + ":" + filter.getPosition());
+          }
+          if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
+            filter.setSkills("");
+          } else {
+            rawSearchMessageStringBuffer
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultSkillsVal + ":" + filter.getSkills());
+          }
+          
+          if(rawSearchMessageStringBuffer.length() > 0){
+            uiSearch.setRawSearchConditional(rawSearchMessageStringBuffer.toString());
+            // Eliminates space characters.
+            if(!isValidInput(filter)){
+              filter.setName("@");
+              filter.setCompany("");
+              filter.setSkills("");
               filter.setPosition("");
             }
-            if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
-              filter.setSkills("");
-            }
-            if (filter.getGender().equals(defaultGenderVal)) {
-              filter.setGender("");
-            }
-            if (filter.getSkills().equals(defaultSkillsVal)) {
-              filter.setSkills("");
-            }
-
-            // Eliminates space characters.
-            filter.setName(filter.getName().trim());
-            filter.setPosition(filter.getPosition().trim());
-            filter.setSkills(filter.getSkills().trim());
-            
-            uiSearch.setProfileFilter(filter);
-
+          } else {
+            uiSearch.setSelectedChar(ALL_FILTER);
+            uiSearch.setRawSearchConditional(ALL_FILTER);
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
+            filter.setName("");
+            filter.setCompany("");
+            filter.setSkills("");
+            filter.setPosition("");
           }
         }
+        uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
+        
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
@@ -457,6 +473,7 @@ public class UIProfileUserSearch extends UIForm {
       }
     }
 
+    
     /**
      * Checks input values follow regular expression.
      *
@@ -466,18 +483,52 @@ public class UIProfileUserSearch extends UIForm {
     private boolean isValidInput(final ProfileFilter input) {
       // Check contact name
       String contactName = input.getName();
+      String position = input.getPosition();
+      String skills = input.getSkills();
+      String company = input.getCompany();
+      
       // Eliminate '*' and '%' character in string for checking
       String contactNameForCheck = null;
       if (contactName != null) {
-        contactNameForCheck = contactName.trim().replace("*", "");
-        contactNameForCheck = contactNameForCheck.replace("%", "");
+        contactNameForCheck = contactName.replaceAll("[/*%]", "").trim();
         // Make sure string for checking is started by alphabet character
         contactNameForCheck = PREFIX_ADDED_FOR_CHECK + contactNameForCheck;
         if (!contactNameForCheck.matches(RIGHT_INPUT_PATTERN)) {
           return false;
         }
       }
+      // Eliminate '*' and '%' character in string for checking
+      String positionForCheck = null;
+      if (contactName != null) {
+        positionForCheck = position.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        positionForCheck = PREFIX_ADDED_FOR_CHECK + positionForCheck;
+        if (!positionForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
 
+      // Eliminate '*' and '%' character in string for checking
+      String skillsForCheck = null;
+      if (contactName != null) {
+        skillsForCheck = skills.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        skillsForCheck = PREFIX_ADDED_FOR_CHECK + skillsForCheck;
+        if (!skillsForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
+      
+      // Eliminate '*' and '%' character in string for checking
+      String companyForCheck = null;
+      if (contactName != null) {
+        companyForCheck = company.replaceAll("[/*%]", "").trim();
+        // Make sure string for checking is started by alphabet character
+        companyForCheck = PREFIX_ADDED_FOR_CHECK + companyForCheck;
+        if (!companyForCheck.matches(RIGHT_INPUT_PATTERN)) {
+          return false;
+        }
+      }
       return true;
     }
   }
@@ -532,19 +583,19 @@ public class UIProfileUserSearch extends UIForm {
    * @since 1.2.2
    */
   protected String getPeopleFoundLabel() {
-    String labelArg = "UIProfileUserSearch.label.FoundPersonFilter"; 
+    String labelArg = "UIProfileUserSearch.label.FoundContactFilter"; 
     
     if (getPeopleNum() > 1) {
-      labelArg = "UIProfileUserSearch.label.FoundPeopleFilter";
+      labelArg = "UIProfileUserSearch.label.FoundContactsFilter";
     }
     
     String searchCondition = getSelectedChar();
     if (selectedChar == null) {
-      labelArg = "UIProfileUserSearch.label.FoundPersonSearch";
+      labelArg = "UIProfileUserSearch.label.FoundContactSearch";
       if (getPeopleNum() > 1) {
-        labelArg = "UIProfileUserSearch.label.FoundPeopleSearch";
+        labelArg = "UIProfileUserSearch.label.FoundContactsSearch";
       }
-      searchCondition = getProfileFilter().getName();
+      searchCondition = getRawSearchConditional();
     }
     if(ALL_FILTER.equals(searchCondition)) {
       searchCondition = WebuiRequestContext.getCurrentInstance()
@@ -554,7 +605,7 @@ public class UIProfileUserSearch extends UIForm {
     return ResourceBundleUtil.
     replaceArguments(WebuiRequestContext.getCurrentInstance()
                      .getApplicationResourceBundle().getString(labelArg), new String[] {
-                 Integer.toString(getPeopleNum()), searchCondition != null ? searchCondition : " " });
+                 Integer.toString(getPeopleNum()) });
   }
   
   /**

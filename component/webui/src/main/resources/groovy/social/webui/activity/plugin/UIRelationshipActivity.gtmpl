@@ -34,6 +34,7 @@
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
   def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
+  def streamOwner = activity.getStreamOwner();
 
   def isConnectionRequested = (uicomponent.getTitleId() == TitleId.CONNECTION_REQUESTED);
   def isConnectionConfirmed = (uicomponent.getTitleId() == TitleId.CONNECTION_CONFIRMED);
@@ -162,7 +163,7 @@
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
     <a class="Avatar" title="$ownerName" href="$ownerUri">
-      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName">
+      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName" />
       <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
@@ -185,7 +186,7 @@
     				def spaceName = spaceSource.displayName;
     				activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
           %>
-          <span class="DateTime">$activityPostedTimeInSpace <b><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></b> *</span>
+          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
         <%} else {%>
           <span class="DateTime">$activityPostedTime *</span>
         <% } %>
@@ -288,7 +289,7 @@
       <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
       <% } %>
         <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
-          <img width="38px" height="36px" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+          <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>
@@ -322,7 +323,7 @@
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
         <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-          <img src="$currentCommenterAvatar">
+          <img title="$currentCommenterName" src="$currentCommenterAvatar" alt="$currentCommenterName" />
 		      <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
 		    </a>

@@ -32,9 +32,8 @@
   def uicomponentId = uicomponent.id
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
   def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation")
-  def denySpaceActionLabel = _ctx.appRes("${uicomponentId}.label.deny_invitation")
   def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
-  def labelNoSpaces = _ctx.appRes("${uicomponentId}.label.NoSpace")
+  def ignoreSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.ignore_invitation")
   def labelMembers = _ctx.appRes("${uicomponentId}.label.Members")
   def mySpaceIdx = 0
   def style="display:none;"
@@ -56,19 +55,15 @@
   <% uicomponent.renderChild(UISpaceSearch.class); %>
   <div class="BoxSpaceList ClearFix">
 
-  <%if ((invitedSpaces.size() == 0)) {%>
-    <div class="NoneBox">
-      <div class="NotYet">$labelNoSpaces</div>
-    </div>
-  <%}%>
   <%for (space in invitedSpaces) {
       def spaceUrl = Utils.getSpaceHomeURL(space)
       def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
-      def denySpaceAction = uicomponent.event("Deny", space.id) + "; return false"
+      def ignoreSpaceAction = uicomponent.event("Ignore", space.id) + "; return false"
       def imageSource = uicomponent.getImageSource(space);
       if (imageSource == null) {
         imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
       }
+      def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
       def visibility = space.visibility
        //trick, temporary use private as visible
       if (visibility.equals(Space.PRIVATE)) visibility = "visible"
@@ -81,14 +76,14 @@
     <div class="NormalBox ClearFix FL">
     <% } %>
       <div class="AvatarSpace">
-        <img alt="#" src="$imageSource" />
+        <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
         <span class="BorderTop"></span>
         <span class="BorderBottom"></span>
       </div>
       <div class="ContentBox">
         <div class="TitleContent">
           <a class="Text" href="javascript:void(0)">$space.displayName</a> 
-          <img title="$iconImgLabel" src="$LinkProvider.SPACE_WAITING_CONFIRM_ICON" />
+          ($iconImgLabel)
         </div>
         <div><span class="MembersCount" />$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
         <div class="Content">
@@ -97,7 +92,7 @@
 	      <ul class="ActionContent ClearFix">
 		      <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptSpaceAction %>" title="<%= acceptSpaceActionLabel %>" class="Action">$acceptSpaceActionLabel</a></li>
 		      <li class="Line FL">&nbsp;</li>
-		      <li class="FL"><a href="javascript:void(0)" onclick="<%= denySpaceAction %>" title="<%= denySpaceActionLabel %>" class="Action">$denySpaceActionLabel</a></li>
+		      <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreSpaceAction %>" title="<%= ignoreSpaceActionLabel %>" class="Action">$ignoreSpaceActionLabel</a></li>
 	      </ul>
       </div>
     </div>

@@ -16,6 +16,22 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
@@ -33,18 +49,6 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Util.java: utility class for rest <br />.
@@ -69,9 +73,9 @@ public final class Util {
    * @return response the response object
    */
   public static Response getResponse(Object entity, UriInfo uriInfo, MediaType mediaType, Response.Status status) {
-    return Response.created(UriBuilder.fromUri(uriInfo.getAbsolutePath()).build())
+    return Response.created(uriInfo.getAbsolutePath())
                    .entity(entity)
-                   .type(mediaType)
+                   .type(mediaType.toString() + "; charset=utf-8")
                    .status(status)
                    .build();
   }
@@ -504,5 +508,40 @@ public final class Util {
       }
     }
     return false;
+  }
+  
+  /**
+   * Try to guess the mime type of url using the Content-Type from header, the extension of filename or some bytes of content.
+   * This method can be wrong if server don't provide the Content-Type, wrong or unknown file extension. So use it as your risk.
+   * @param urlString
+   * @return
+   * @since 1.2.7
+   */
+  public static String getMimeTypeOfURL(String urlString){
+    URLConnection urlConnection = null;
+    try {
+      String mimeType = null;
+      URL url = new URL(urlString); 
+      urlConnection = url.openConnection();
+      mimeType = urlConnection.getContentType();
+      if(mimeType != null){
+        return mimeType;
+      }
+      mimeType = URLConnection.guessContentTypeFromName(urlString);
+      if(mimeType != null){
+        return mimeType;
+      }
+      mimeType = URLConnection.guessContentTypeFromStream(urlConnection.getInputStream());
+      if(mimeType != null){
+        return mimeType;
+      }
+      return "";
+    } catch (MalformedURLException e) {
+      return "";
+    } catch (IOException e) {
+      return "";
+    } finally {
+      urlConnection = null;
+    }
   }
 }

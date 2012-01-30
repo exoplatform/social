@@ -71,13 +71,13 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
               "I am now connected with @" + relationship.getReceiver().getRemoteId(), null);
       activity1.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       activity1.setTemplateParams(params);
-      activityManager.saveActivity(relationship.getSender(), activity1);
+      activityManager.saveActivityNoReturn(relationship.getSender(), activity1);
 
       ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getReceiver().getId(), RELATIONSHIP_ACTIVITY_TYPE,
               "I am now connected with @" +  relationship.getSender().getRemoteId(), null);
       activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
       activity2.setTemplateParams(params);
-      activityManager.saveActivity(relationship.getReceiver(), activity2);
+      activityManager.saveActivityNoReturn(relationship.getReceiver(), activity2);
 
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
@@ -118,7 +118,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
                                                               + relationship.getReceiver().getRemoteId() + " to connect", null);
       activity1.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity1.setTemplateParams(params);
-      activityManager.saveActivity(relationship.getSender(), activity1);
+      activityManager.saveActivityNoReturn(relationship.getSender(), activity1);
 
       //TODO hoatle a quick fix for activities gadget to allow deleting this activity
       ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getReceiver().getId(), 
@@ -127,7 +127,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
                                                               + relationship.getReceiver().getRemoteId() + " to connect", null);
       activity2.setTitleId(TitleId.CONNECTION_REQUESTED.toString());
       activity2.setTemplateParams(params);
-      activityManager.saveActivity(relationship.getReceiver(), activity2);
+      activityManager.saveActivityNoReturn(relationship.getReceiver(), activity2);
 
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());

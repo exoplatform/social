@@ -4,7 +4,7 @@ The eXo Social JCR structure is organized to conform to the data storage for the
 
 See the eXo Social JCR structure in the chart below:
 
-!images/Social-Workspace.png|align="center"!
+!images/Social-Workspace.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 
 The root node of Social workspace is _/production/_ which consists of two child nodes named _{noformat}soc:providers{noformat}_, and _{noformat}soc:spaces{noformat}_.

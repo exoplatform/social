@@ -19,6 +19,7 @@
 <%
   import org.exoplatform.web.application.JavascriptManager;
   import org.exoplatform.social.core.service.LinkProvider;
+  import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.portal.application.PortalRequestContext;
 
@@ -26,7 +27,7 @@
 	
 	def rcontext = _ctx.getRequestContext() ;
 	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-    jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',LinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',LinkProvider.JAVASCRIPT_RESOURCE_URL);
 	jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', LinkProvider.JAVASCRIPT_RESOURCE_URL);
 
@@ -36,26 +37,18 @@
 	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'" ;');
 	jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "people";');
 
-	def findContactLabel = _ctx.appRes("${uicomponentId}.label.ContactSearch");
+  def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
+	def searchByNameLabel = _ctx.appRes("${uicomponentId}.label.SearchByName");
 	def nameDefaultVal = _ctx.appRes("${uicomponentId}.label.Name");
-	def moreLabel = _ctx.appRes("${uicomponentId}.label.MoreOptionLabel");
-	def hideLabel = _ctx.appRes("${uicomponentId}.label.HideOptionLabel");
-	def filterByLabel = _ctx.appRes("${uicomponentId}.label.FilterBy");
-	def filterLabel = _ctx.appRes("${uicomponentId}.label.Search");
-	def maleLabel = _ctx.appRes("${uicomponentId}.label.Male");
-	def femaleLabel = _ctx.appRes("${uicomponentId}.label.FeMale");
+	def searchByRoleLabel = _ctx.appRes("${uicomponentId}.label.SearchByRole");
 	def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
+	def andOrLabel = _ctx.appRes("${uicomponentId}.label.AndOr");
 	def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
-	def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
-	def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
+	def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactDirectory");
 	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-	def filterId = "Filter";
 	def searchId = "Search";
-	def moreSearchId = "MoreSearch";
-	def hideMoreSearchId = "HideMoreSearch";
 	def positionId = "position";
 	def skillsId = "skills";
-	def genderId = "gender";
 	def selectedStartChar = uicomponent.getSelectedChar();
 	def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 	def childs = uicomponent.getChildren();
@@ -64,19 +57,15 @@
       uicomponentId: '${uicomponentId}',
       defaultUserContact: '${nameDefaultVal}',
       defaultPos: '${positionDefaultVal}',
-      defaultSkills: '${skillsDefaultVal}',
-      defaultGender: '${allGenderLabel}',
-      defaultMale: '${maleLabel}',
-      defaultFeMale: '${femaleLabel}' 
+      defaultSkills: '${skillsDefaultVal}'
     } """
   
     jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
 	
 	
-	def labelAllPeople = _ctx.appRes("${uicomponentId}.label.AllPeople")
-    def labelNetwork = _ctx.appRes("${uicomponentId}.label.Network")
-    def labelReceivedInvitations = _ctx.appRes("${uicomponentId}.label.ReceivedInvitations")
-    def labelPendingRequests = _ctx.appRes("${uicomponentId}.label.PendingRequests")
+	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
+    def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
+    def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
     def portalURI = Utils.getURI("");
     def ownerIdentity = Utils.getOwnerIdentity();
     def ownerId = ownerIdentity.getRemoteId();
@@ -103,8 +92,15 @@
  
     def searchAction = uicomponent.event('Search');
     def peopleFoundLabel = uicomponent.getPeopleFoundLabel();
-	uicomponent.resetUIComponentValues();
-	
+	  
+	  uicomponent.resetUIComponentValues();
+	  
+	  def myConnectionsLink = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
+  
+    if (!Utils.isOwner()) {
+      myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
+    }
+    def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
 %>
 <div class="UIProfileUserSearch">
 <script type="text/javascript">
@@ -114,34 +110,30 @@
 </script>
 
 <% uiform.begin() %>
-   <div class="SearchSpacesBG ClearFix" name="SearchSpaces">	
+   <div class="SearchSpacesBG ClearFix">	
     <div class="ClearFix">
-      <div class="Lable">${findContactLabel}:&nbsp</div>
-      <div class="SearchContent">
-        <% uiform.renderField(childs.get(0));%>
-        <a class="SearchIcon" id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>"><span></span></a>
-      </div> 
-       <a href="#" id="$moreSearchId" class="AdvanceSearchLableBlock">${moreLabel}</a>
+      <label for="<%=childs.get(0).getId()%>" class="Lable">${searchByNameLabel}:&nbsp;</label>
+    	<% uiform.renderField(childs.get(0));%>
+    	<div class="UIAction">
+	     <span class="ActionButton LightBlueStyle"><a id="SearchButton" class="AddSpaceIcon" href="#" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></a></span>
+	    </div>
     </div>
 	<div class="ClearFix">
-     <div class="HideFilter ClearFix" id="$filterId">
-       <div class="Lable">${filterByLabel}:&nbsp</div>
+     <div class="HideFilter ClearFix">
+       <div class="Lable">${searchByRoleLabel}:&nbsp</div>
 		   <div class="MoreContent">
-			   <% uiform.renderField(childs.get(1))%>
-			   <% uiform.renderField(childs.get(2))%>
-			   <% uiform.renderField(childs.get(3))%>
-
+			   <% uiform.renderField(childs.get(1))%>&nbsp;
+			   $andOrLabel
+			   <% uiform.renderField(childs.get(2))%>&nbsp;
        </div>
-       <a href="#" id="$hideMoreSearchId" class="HideAdvanceSearchLableNone">${hideLabel}</a>
       </div>
-    </div>       
-      <input id="searchAll" type="hidden" value="$searchAll">
+    </div>
    </div>
     
     <div class="UISocTitleBar">
-        <h5 class="TitleBar">
-		  ${relationDirectory}
-		</h5>
+        <div class="TitleBar Bold">
+		  ${contactsDirectory}
+		</div>
     </div>
 
     <ul class="DirectorySpaces LetterList"  id="DirectorySpaces">
@@ -161,28 +153,31 @@
      <% for (ch in alphabets) { %>
           <li>
      <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
-            <a href="#$ch" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+            <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
      <%   } else {%>
-            <a href="#$ch" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+            <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
      <%   } %>
           </li>
      <% } %>
-        
+     <% if (uicomponent.isHasConnectionLink()) {%>
+          <li><a href="${myConnectionsLink}" id="MyConnectionLink" class="LinkMC">$myConnectionsLabel</a></li>
+     <% } %>
     </ul>
+    
      <% if (uicomponent.isHasPeopleTab()) {%>
      <ul class="MenuSpace ClearFix">
-		  <li class="FL"><a href="$allPeopleURL" class="$allPeopleDisplayModeStyle">$labelAllPeople</a></li>
+		  <li class="FL"><a href="$allPeopleURL" class="$allPeopleDisplayModeStyle">$labelEveryone</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$networkURL" class="$networkDisplayModeStyle">$labelNetwork</a></li>
+		  <li class="FL"><a href="$networkURL" class="$networkDisplayModeStyle">$myConnectionsLabel</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationsDisplayModeStyle">$labelReceivedInvitations</a></li>
+		  <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationsDisplayModeStyle">$labelRequestsReceived</a></li>
 		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$sentInvitationURL" class="$pendingRequestsDisplayModeStyle">$labelPendingRequests</a></li>
+		  <li class="FL"><a href="$sentInvitationURL" class="$pendingRequestsDisplayModeStyle">$labelRequestsSent</a></li>
      </ul>
     <% } %>
  
 	 <div class="UISocTitleBar">
-	  <h5 class="TitleBar"> $peopleFoundLabel </h5>
+	  <div class="TitleBar Bold"> $peopleFoundLabel </div>
 	 </div>
  <% uiform.end() %>
  

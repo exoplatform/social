@@ -214,13 +214,13 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 
 Note that _{noformat}exosocial:spaces{noformat}_ must have its value matching with the activity's type that you want to display with your UI component.
 
-Assume that you have already built the Social project with version 1.1. If you do not know how to, have a look at [Building from Sources|Main.Building from sources] with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see the space's activity of type "exosocial:spaces" is displayed by default in Social:
+Assume that you have already built the Social project with version 1.1. If you do not know how to, have a look at building from sources with [Social 1.1.0-CR01|http://svn.exoplatform.org/projects/social/tags/1.1.0-CR01]. Next, build a sample project and copy the jar file to /tomcat/lib. Then, run Social, create a space and access it, you can see the space's activity of type "exosocial:spaces" is displayed by default in Social:
 
-!images/SimpleSpaceActivity-default.png!
+!images/SimpleSpaceActivity-default.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 The custom UI component for displaying activity of type "exosocial:spaces" is like below:
 
-!images/SimpleSpaceActivity-custom.png!
+!images/SimpleSpaceActivity-custom.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 *5.* Make the custom UI activity display have the look, feel and function like the default one.
 
@@ -562,7 +562,7 @@ And you should make needed modifications for this template:
 
 *8.* Rebuild the sample project, copy the *.jar* file to tomcat/lib. Run the server again and see the result:
 
-!images/LookAndFeelSpaceActivity.png!
+!images/LookAndFeelSpaceActivity.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 {note}
 Currently, you have to copy and paste in the template file. By this way, you have full control of the UI but it is not a good way when there are changes in UIDefaultActivity. This will be improved soon so that no copy/paste is needed.

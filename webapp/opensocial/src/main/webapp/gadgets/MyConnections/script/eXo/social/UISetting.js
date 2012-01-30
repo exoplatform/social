@@ -105,8 +105,8 @@
 		  '</div>' +
 		  
 		  '<div class="Row ClearFix">' +
-		    '<div class="LabelNIV">' + Locale.getMsg('number_item_per_view') + '</div>' +
-			  '<input id="ItemPerViewNum" class="InputNIV" type="text" value="10"/>' +
+		    '<label class="LabelNIV" for="ItemPerViewNum">' + Locale.getMsg('number_item_per_view') + '</label>' +
+			  '<input title="' + Locale.getMsg('number_item_per_view') + '" id="ItemPerViewNum" class="InputNIV" type="text" value="10"/>' +
 		  '</div>' +
 		  
 		  '<a href="#" id="SaveButton" class="MCSettingButton">' + Locale.getMsg('save') + '</a>' +

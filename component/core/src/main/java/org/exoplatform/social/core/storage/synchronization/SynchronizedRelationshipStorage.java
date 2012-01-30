@@ -17,17 +17,17 @@
 
 package org.exoplatform.social.core.storage.synchronization;
 
+import java.util.List;
+
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-
-import java.util.List;
+import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 
 /**
- * {@link SynchronizedRelationshipStorage} as a decorator to {@link org.exoplatform.social.core.storage.api.RelationshipStorage} for synchronization
- * management.
+ * {@link SynchronizedRelationshipStorage} as a decorator to {@link org.exoplatform.social.core.storage.api.RelationshipStorage}
+ * for synchronization management.
  *
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$

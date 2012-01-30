@@ -18,7 +18,6 @@ package org.exoplatform.social.webui.connections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -54,7 +53,7 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIMyConnections.gtmpl",
     events = {
-      @EventConfig(listeners = UIMyConnections.RemoveActionListener.class),
+      @EventConfig(listeners = UIMyConnections.RemoveConnectionActionListener.class),
       @EventConfig(listeners = UIMyConnections.SearchActionListener.class, phase = Phase.DECODE),
       @EventConfig(listeners = UIMyConnections.LoadMorePeopleActionListener.class)
     }
@@ -101,6 +100,7 @@ public class UIMyConnections extends UIContainer {
     } else {
       uiProfileUserSearch.setHasPeopleTab(false);
     }
+    uiProfileUserSearch.setHasConnectionLink(false);
     addChild(uiProfileUserSearch);
     init();
   }
@@ -216,9 +216,9 @@ public class UIMyConnections extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= MY_CONNECTION_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= MY_CONNECTION_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -329,9 +329,9 @@ public class UIMyConnections extends UIContainer {
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
       if (uiMyConnections.currentLoadIndex < uiMyConnections.peopleNum) {
-    	  uiMyConnections.loadNext();
+        uiMyConnections.loadNext();
       } else {
-    	  uiMyConnections.setEnableLoadNext(false);
+        uiMyConnections.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiMyConnections);
     }
@@ -344,15 +344,15 @@ public class UIMyConnections extends UIContainer {
    *   - Removes the current relation.<br>
    *
    */
-  public static class RemoveActionListener extends EventListener<UIMyConnections> {
+  public static class RemoveConnectionActionListener extends EventListener<UIMyConnections> {
     @Override
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
       String identityId = event.getRequestContext().getRequestParameter(OBJECTID);
       Identity requestedIdentity = Utils.getIdentityManager().getIdentity(identityId, true);
       Relationship relationship = Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), requestedIdentity);
-      
-	  uiMyConnections.setLoadAtEnd(false);
+
+      uiMyConnections.setLoadAtEnd(false);
       if (relationship == null || relationship.getStatus() != Relationship.Type.CONFIRMED) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(RELATION_DELETED_INFO, null, ApplicationMessage.INFO));

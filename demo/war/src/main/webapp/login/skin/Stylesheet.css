@@ -75,16 +75,6 @@
   text-align: left;
 }
 
-.UILogin .LoginContent .FieldContainer label {
-  float: left;
-  width: 80px ; height: 20px; 
-  line-height: 20px; 
-	text-align: right;
-	font-weight: bold ;
-	margin-right: 5px;
-	color: #3f3f3f;
-}
-
 .UILogin .LoginContent .FieldContainer input.UserName {
   float: left;
   width: 160px ;  

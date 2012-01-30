@@ -30,6 +30,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -52,7 +53,7 @@ import org.exoplatform.webui.event.Event.Phase;
     @EventConfig(listeners = UIManageAllSpaces.RequestToJoinActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.CancelInvitationActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.AcceptInvitationActionListener.class),
-    @EventConfig(listeners = UIManageAllSpaces.DenyInvitationActionListener.class),
+    @EventConfig(listeners = UIManageAllSpaces.IgnoreInvitationActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.LeaveSpaceActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.DeleteSpaceActionListener.class,
                  confirm = "UIManageAllSpaces.msg.confirm_space_delete"),
@@ -74,7 +75,7 @@ public class UIManageAllSpaces extends UIContainer {
   private final Integer SPACES_PER_PAGE = 20;
   private static final String ALL_SPACES_STATUS = "all_spaces";
   private List<Space> spaces; // for search result
-  private static UISpaceSearch uiSpaceSearch = null;
+  private UISpaceSearch uiSpaceSearch = null;
 
   private boolean loadAtEnd = false;
   private boolean hasUpdatedSpace = false;
@@ -200,8 +201,8 @@ public class UIManageAllSpaces extends UIContainer {
     
     uiSpaceSearch.setSpaceNameForAutoSuggest(getSpacesNames());
     
-    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE) 
-    		&& (this.spacesList.size() < getSpacesNum()));
+    setEnableLoadNext((this.spacesList.size() >= SPACES_PER_PAGE)
+            && (this.spacesList.size() < getSpacesNum()));
     
     return this.spacesList;
   }
@@ -555,14 +556,18 @@ public class UIManageAllSpaces extends UIContainer {
       spaceService.addMember(space, userId);
       uiManageAllSpaces.setHasUpdatedSpace(true);
       SpaceUtils.updateWorkingWorkSpace();
+      
+      JavascriptManager jsManager = ctx.getJavascriptManager();
+      jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
+          "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
     }
   }
 
   /**
-   * This action is triggered when user clicks on Deny Space Invitation. When denying, that space
+   * This action is triggered when user clicks on Ignore Space Invitation. When ignore, that space
    * will remove the user from pending list.
    */
-  public static class DenyInvitationActionListener extends EventListener<UIManageAllSpaces> {
+  public static class IgnoreInvitationActionListener extends EventListener<UIManageAllSpaces> {
 
     @Override
     public void execute(Event<UIManageAllSpaces> event) throws Exception {

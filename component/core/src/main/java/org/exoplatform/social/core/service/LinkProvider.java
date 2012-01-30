@@ -41,11 +41,16 @@ public class LinkProvider {
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript";
   public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
   public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
-  public static final String HAS_CONNECTION_ICON = RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/StatusIcon.png";
-  public static final String WAITING_CONFIRMATION_ICON = RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/WaittingConfirm.png";
-  public static final String SPACE_MANAGER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Manager.png";
-  public static final String SPACE_MEMBER_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
-  public static final String SPACE_WAITING_CONFIRM_ICON = RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
+  public static final String HAS_CONNECTION_ICON =
+          RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/StatusIcon.png";
+  public static final String WAITING_CONFIRMATION_ICON =
+          RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/WaittingConfirm.png";
+  public static final String SPACE_MANAGER_ICON =
+          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Manager.png";
+  public static final String SPACE_MEMBER_ICON =
+          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
+  public static final String SPACE_WAITING_CONFIRM_ICON =
+          RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
   
   public static final String ROUTE_DELIMITER = "/";
   
@@ -196,9 +201,9 @@ public class LinkProvider {
   public static String getActivityUri(final String providerId, final String remoteId) {
     final String prefix = getBaseUri(null, null) + "/";
     if (providerId.equals(OrganizationIdentityProvider.NAME)) {
-      return prefix + "activities" + ROUTE_DELIMITER + remoteId;
+      return String.format("%sactivities/%s",prefix,remoteId);
     } else if (providerId.equals(SpaceIdentityProvider.NAME)) {
-      return prefix + ROUTE_DELIMITER + remoteId;
+      return String.format("/%s/g/:spaces:%s/%s",getPortalName(null),remoteId,remoteId);
     } else {
       LOG.warn("Failed to getActivityLink with providerId: " + providerId);
     }

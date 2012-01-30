@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.identity.model;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -360,7 +359,7 @@ public class Profile {
    * @return email in String format
    */
   public final String getEmail() {
-	return (String)getProperty(EMAIL);
+    return (String) getProperty(EMAIL);
   }
   
   /**

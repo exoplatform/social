@@ -19,20 +19,18 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.mop.navigation.NavigationContext;
-import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -45,7 +43,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
-import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
@@ -85,13 +82,22 @@ public class UISpaceInfo extends UIForm {
   private static final String SPACE_DESCRIPTION = "description";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
+  private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
+  
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    * 
    * @throws Exception
    */
   public UISpaceInfo() throws Exception {
-    addUIFormInput((UIFormStringInput)new UIFormStringInput(SPACE_ID, SPACE_ID, null).setRendered(false));
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+    UIFormStringInput spaceId = new UIFormStringInput(SPACE_ID, SPACE_ID, null);
+    spaceId.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.SpaceId"));
+    addUIFormInput((UIFormStringInput)spaceId.setRendered(false));
 
     UIFormStringInput spaceDisplayNameInput = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
     spaceDisplayNameInput.setEditable(false);
@@ -103,7 +109,6 @@ public class UISpaceInfo extends UIForm {
                    addValidator(StringLengthValidator.class, 3, 30));
 
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
-                   addValidator(MandatoryValidator.class).
                    addValidator(StringLengthValidator.class, 0, 255));
 
     List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
@@ -116,7 +121,9 @@ public class UISpaceInfo extends UIForm {
     UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
     addUIFormInput(selectPriority);
     //temporary disable tag
-    addUIFormInput((UIFormStringInput)new UIFormStringInput("tag","tag",null).setRendered(false));
+    UIFormStringInput tag = new UIFormStringInput("tag","tag",null);
+    tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
+    addUIFormInput((UIFormStringInput)tag.setRendered(false));
 
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
     uiPopup.setWindowSize(500, 0);
@@ -131,6 +138,8 @@ public class UISpaceInfo extends UIForm {
    */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
+    String descValue = ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).getValue();
+    ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).setValue(StringEscapeUtils.unescapeHtml(descValue));
     //TODO: have to find the way to don't need the line code below.
     getUIStringInput("tag").setValue(space.getTag());
   }
@@ -231,7 +240,16 @@ public class UISpaceInfo extends UIForm {
         SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
-      space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+      
+      String spaceDescription = space.getDescription();
+      if (spaceDescription == null || spaceDescription.trim().length() == 0) {
+        ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
+        space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+        uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
+      } else {
+        space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+      }
+
       spaceService.updateSpace(space);
       if (nameChanged) {
         //update Space Navigation (change name).

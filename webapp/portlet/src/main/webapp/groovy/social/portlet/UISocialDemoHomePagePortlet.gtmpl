@@ -21,8 +21,18 @@
 */
 %>
 <%
+  import org.apache.commons.lang.WordUtils;
+  import org.exoplatform.social.common.ResourceBundleUtil;
+
   def prContext = _ctx.getRequestContext().getParentAppRequestContext();
   def initialURI = _ctx.getRequestContext().getParentAppRequestContext().getRequestContextPath() + "/private/" + _ctx.getRequestContext().getParentAppRequestContext().getPortalOwner();
+  
+  def titleContactUs = _ctx.appRes("UISocialDemoHomePagePortlet.label.Contact_Us")
+  def titleResourceCenter = _ctx.appRes("UISocialDemoHomePagePortlet.label.Resource_Center")
+  def titleSupport = _ctx.appRes("UISocialDemoHomePagePortlet.label.Support")
+  def titleTraining = _ctx.appRes("UISocialDemoHomePagePortlet.label.Training")
+  def titleExoBlog = _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Blog")
+  def titleExoWebsite = _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Website")
 %>
 
 <div class="UISocialHomepage ClearFix" id="$uicomponent.id">
@@ -52,32 +62,32 @@
         <div class="RightSocialHomepage">
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon"></a>
-              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Contact_Us") %></a>
+              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon" title="$titleContactUs"></a>
+              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">$titleContactUs</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon"></a>
-              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Resource_Center") %></a>
+              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon" title="$titleResourceCenter"></a>
+              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">$titleResourceCenter</a>
             </div>
           </div>
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon"> </a>
-              <a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Support") %></a>
+              <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon" title="$titleSupport"></a>
+              <a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">$titleSupport</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon"></a>
-              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Training") %></a>
+              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon" title="$titleTraining"></a>
+              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">$titleTraining</a>
             </div>
           </div>
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon"> </a>
-              <a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Blog") %></a>
+              <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon" title="$titleExoBlog"></a>
+              <a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">$titleExoBlog</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon"> </a>
-              <a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Website") %></a>
+              <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon" title="$titleExoWebsite"></a>
+              <a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">$titleExoWebsite</a>
             </div>
           </div>
         </div>
@@ -130,13 +140,26 @@
             </div>
           </div>
           <div class="RowContent ClearFix">
-            <p class="Introduction Information"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social") %>
                <% if(prContext.getRemoteUser() == null) { %>
+            <p class="Introduction Information"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social_Login_As") %>
                 <a href="${_ctx.getPortalContextPath()}/login?username=root&amp;password=gtn&amp;initialURI=${initialURI}">
                   <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Root") %>
                 </a>
-               <%} else {%>
-                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.You_Are_Loginned_As_Root") %>
+                <a href="${_ctx.getPortalContextPath()}/login?username=john&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_John") %>
+                </a>
+                <a href="${_ctx.getPortalContextPath()}/login?username=mary&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Mary") %>
+                </a>
+                <a href="${_ctx.getPortalContextPath()}/login?username=demo&amp;password=gtn&amp;initialURI=${initialURI}">
+                  <%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Login_As_Demo") %>
+                </a>
+               <%} else {
+                 def loggedInAsLabel = _ctx.appRes("UISocialDemoHomePagePortlet.label.You_Are_Logged_In_As_User");
+                 loggedInAsLabel = ResourceBundleUtil.replaceArguments(loggedInAsLabel, [WordUtils.capitalize(prContext.getRemoteUser())]);
+               %>
+            <p class="Introduction Information"><%= _ctx.appRes("UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social") %>
+                  <%= loggedInAsLabel %>
                <%}%>
             </p>
           </div>

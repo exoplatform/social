@@ -43,19 +43,16 @@ public class UIEmotionActivityComposer extends UIActivityComposer {
 
   @Override
   protected void onActivate(Event<UIActivityComposer> event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   protected void onClose(Event<UIActivityComposer> event) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   protected void onSubmit(Event<UIActivityComposer> event) {
-    // TODO Auto-generated method stub
 
   }
 
@@ -65,7 +62,6 @@ public class UIEmotionActivityComposer extends UIActivityComposer {
                            UIComponent source,
                            WebuiRequestContext requestContext,
                            String postedMessage) throws Exception {
-    // TODO Auto-generated method stub
 
   }
 

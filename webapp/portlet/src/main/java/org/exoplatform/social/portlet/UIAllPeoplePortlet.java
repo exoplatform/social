@@ -17,7 +17,6 @@
 package org.exoplatform.social.portlet;
 
 import org.exoplatform.social.webui.connections.UIAllPeople;
-import org.exoplatform.social.webui.connections.UIMyConnections;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;

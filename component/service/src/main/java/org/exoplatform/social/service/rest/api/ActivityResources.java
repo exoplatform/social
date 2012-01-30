@@ -35,21 +35,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.service.rest.RestChecker;
 import org.exoplatform.social.service.rest.SecurityManager;
 import org.exoplatform.social.service.rest.Util;
-import org.exoplatform.social.service.rest.api.VersionResources;
 import org.exoplatform.social.service.rest.api.models.ActivityRestIn;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
 import org.exoplatform.social.service.rest.api.models.ActivityStreamRestOut;
@@ -176,7 +173,7 @@ public class ActivityResources implements ResourceContainer {
 
     //
     if (isPassed(showActivityStream)) {
-      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream()));
+      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
     }
     
     model.setNumberOfComments(numberOfComments, activity, portalContainerName);

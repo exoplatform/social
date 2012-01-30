@@ -40,7 +40,7 @@ import org.exoplatform.webui.event.EventListener;
  lifecycle = UIApplicationLifecycle.class,
  template = "app:/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl",
  events = {
-   @EventConfig(listeners = UIProfileNavigationPortlet.ChangeAvatarActionListener.class)
+   @EventConfig(listeners = UIProfileNavigationPortlet.ChangePictureActionListener.class)
  }
 )
 public class UIProfileNavigationPortlet extends UIPortletApplication {
@@ -53,8 +53,8 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public UIProfileNavigationPortlet() throws Exception {
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_AVATAR_UPLOADER);
-	uiPopup.setWindowSize(500, 0);
-	addChild(uiPopup);
+    uiPopup.setWindowSize(510, 0);
+    addChild(uiPopup);
   }
 
   /**
@@ -85,10 +85,10 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
   }
 
   /**
-   * Action trigger for editting avatar. An UIAvatarUploader popup should be displayed.
+   * Action trigger for editting picture. An UIAvatarUploader popup should be displayed.
    * @since 1.2.2
    */
-  public static class ChangeAvatarActionListener extends EventListener<UIProfileNavigationPortlet> {
+  public static class ChangePictureActionListener extends EventListener<UIProfileNavigationPortlet> {
 
     @Override
     public void execute(Event<UIProfileNavigationPortlet> event) throws Exception {

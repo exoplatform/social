@@ -132,6 +132,62 @@ public class ExoSocialDataInjectionExecutor {
     }
     return relationships;
   }
+  
+  /**
+   * This method which implement base on the TQA's algorithm.
+   * More detail please refer to SOC-2414
+   * 
+   * @param count
+   * @return
+   */
+  public Collection<Relationship> generateRelationsForTQA(int numberOfUser, int numberOfRelationship, Identity[] identities) {
+    Collection<Relationship> relationships = new ArrayList<Relationship>();
+    int groupNo = calculateGroups(numberOfUser, numberOfRelationship);
+    int low = 0;
+    int high = numberOfRelationship + 1;
+    for (int i = 0; i< groupNo; i++) {
+      generateRelationship(low, high, identities, relationships);
+      low = high;
+      //next high = (i + 2) * (numberofRelationship +1)
+      high = ((i+2) * (numberOfRelationship + 1));
+      
+      if (high > numberOfUser) {
+        high = numberOfUser;
+      }
+    }
+
+    return relationships;
+  }
+  
+  private int calculateGroups(int numberOfUser, int numberOfRelationship) {
+    int groupNo = numberOfUser/(numberOfRelationship +1);
+    if (numberOfUser%(numberOfRelationship +1) > 0) {
+      groupNo++;
+    }
+    return groupNo;
+  }
+  
+  private void generateRelationship(int low, int high, Identity[] identities, Collection<Relationship> relationships) {
+    int k = 0;
+    Relationship relationship = null;
+    for(int j=low; j< high; j++) {
+      k = j + 1;
+      //only for last group.
+      if (k > high) {
+        break;
+      }
+      for(;k < high; k++) {
+        LOG.info("Identity[" + (j) + "] connected with Identity[" + k + "]");
+        
+        relationship = relationshipManager.inviteToConnect(identities[j], identities[k]);
+        relationshipManager.confirm(identities[j], identities[k]);
+        LOG.info("created connection " + relationship + ".");
+        if (relationship != null) {
+          relationships.add(relationship);
+        }
+      }
+    }
+  }
 
 
   /**
@@ -219,11 +275,7 @@ public class ExoSocialDataInjectionExecutor {
     Identity id1 = selectRandomUser(null);
     return generateActivity(id1);
   }
-  
-  private ExoSocialActivity generateRandomUserActivity() {
-    Identity id1 = selectRandomUser(null);
-    return generateActivity(id1);
-  }
+
 
   /**
    * Gets the random value for Activity

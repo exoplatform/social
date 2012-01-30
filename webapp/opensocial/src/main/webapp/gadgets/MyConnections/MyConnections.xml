@@ -68,8 +68,8 @@
 		</div>
     
     <div class="SearchContent ClearFix" id="UISearchContent">
-			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
-			<a href="javascript:void(0)" id="SearchButton" class="IconSearch"></a>
+			<input type="text" id="SearchTextBox" value="__MSG_quick_search__" class="Search" title="__MSG_quick_search__">
+			<a href="javascript:void(0)" id="SearchButton" class="IconSearch" title="__MSG_quick_search__"></a>
 		</div>
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">
@@ -120,8 +120,8 @@
 		</div>
     
     <div class="SearchContent ClearFix" id="UISearchContent">
-			<input type="text" id="SearchTextBox" value="Quick Search" class="Search">
-			<a href="javascript:void(0)" id="SearchButton" class="IconSearch"></a>
+			<input type="text" id="SearchTextBox" value="__MSG_quick_search__" class="Search" title="__MSG_quick_search__">
+			<a href="javascript:void(0)" id="SearchButton" class="IconSearch" title="__MSG_quick_search__"></a>
 		</div>
     
     <div class="GadgetConnection GadgetConnectionSearch" id="GadgetUITextList" style="display: none;">

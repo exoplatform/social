@@ -260,7 +260,8 @@ public class Utils {
   public static String getSpaceHomeURL(Space space) {
     RequestContext ctx = RequestContext.getCurrentInstance();
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/" + space.getPrettyName(), space.getPrettyName());
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/" + space.getPrettyName(),
+                                                         space.getPrettyName());
     return nodeURL.setResource(resource).toString(); 
   }
 }

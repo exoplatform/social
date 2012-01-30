@@ -20,7 +20,7 @@
     templateRenderer;
     
     function getIframe(spaceName, description) {
-        return '<iframe  scrolling="no" height="180" frameborder="no" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + configuration.containerName + "/space_info?spaceName=" + encodeURIComponent(spaceName) + '&portalName=' + encodeURIComponent(configuration.portalName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
+        return '<iframe  scrolling="no" height="180" frameborder="0" width="220" src="' + configuration.serverURL + configuration.spaceServicePath + configuration.containerName + "/space_info?spaceName=" + encodeURIComponent(spaceName) + '&portalName=' + encodeURIComponent(configuration.portalName) + '&description=' + encodeURIComponent(description) + '"></iframe>'
     }
     
     function createSpaceBox(container, spaceName, description) {

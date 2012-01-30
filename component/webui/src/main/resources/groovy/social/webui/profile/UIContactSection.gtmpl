@@ -56,7 +56,7 @@
   def imChild = uicomponent.IM;
   def key = uicomponent.KEY;
   def value = uicomponent.VALUE;
-  def defaultURL = uicomponent.URL_EXAMPLE;
+  def sampleURL = uicomponent.getSampleURL();
 
   def phoneChilds = uicomponent.getPhoneChilds();
   def urlChilds = uicomponent.getUrlChilds();
@@ -113,7 +113,7 @@
       if (uiContactSection) {
         var ids = '' + \'$ids\';
         if (ids != '') {
-          uiContactSection.initInputTextBox(ids, \'$defaultURL\');
+          uiContactSection.initInputTextBox(ids, \'$sampleURL\');
         }
       } else {
         uiContactSection = new eXo.social.webui.UIContactSection();
@@ -203,7 +203,7 @@
             <%
             if (isEdit) {
             %>  
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>
@@ -273,7 +273,7 @@
             <%
             if (isEdit) {
             %>
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>
@@ -339,7 +339,7 @@
             <%
             if (isEdit) {
             %>  
-                <a class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>
+                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>
             <% } %>
             </td>
           </tr>

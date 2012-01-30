@@ -36,7 +36,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialBannerPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social Banner Portlet</title>
       <short-title>Social Banner Portlet</short-title>
@@ -65,7 +65,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialExtensionLogoPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social Extension Logo Portlet</title>
       <short-title>Social Extension Logo Portlet</short-title>
@@ -94,7 +94,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialExtensionHomePagePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Extension Home Page Portlet</title>
       <short-title>Extension Home Page Portlet</short-title>
@@ -123,7 +123,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialDemoHomePagePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social Demo Home Page Portlet</title>
       <short-title>Social Demo Home Page Portlet</short-title>
@@ -152,7 +152,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialNavigationPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social Navigation Portlet</title>
       <short-title>Social Navigation Portlet</short-title>
@@ -174,7 +174,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.HomeSpacePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Home Space Portlet</title>
       <short-title>Home Space Portlet</short-title>
@@ -203,7 +203,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.MembersPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Members Portlet</title>
       <short-title>Members Portlet</short-title>
@@ -225,7 +225,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SpaceMenuPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Space Menu</title>
       <short-title>Space Menu</short-title>
@@ -248,7 +248,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SpaceSettingPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Space Setting</title>
       <short-title>Space Setting</short-title>
@@ -270,7 +270,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.MySpacesPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>My Spaces Portlet</title>
       <short-title>My Spaces</short-title>
@@ -292,7 +292,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.InvitationSpacesPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Invitation Spaces Portlet</title>
       <short-title>Invitation Spaces</short-title>
@@ -314,7 +314,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.PendingSpacesPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Pending Spaces Portlet</title>
       <short-title>Pending Spaces</short-title>
@@ -336,7 +336,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.AllSpacesPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>All Spaces Portlet</title>
       <short-title>All Spaces</short-title>
@@ -358,7 +358,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SpacesToolBarPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Spaces ToolBar</title>
       <short-title>Spaces ToolBar</short-title>
@@ -408,7 +408,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialUserToolBarGroupPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social User ToolBar Group Portlet</title>
       <short-title>Social User ToolBar Group Portlet</short-title>
@@ -431,7 +431,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialFooterPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Footer Portlet</title>
       <short-title>Footer Portlet</short-title>
@@ -461,7 +461,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SpaceActivityStreamPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Space Activity Stream Portlet</title>
       <short-title>Space Activity Stream</short-title>
@@ -485,7 +485,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.UserActivityStreamPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>User Activity Stream Portlet</title>
       <short-title>User Activity Stream</short-title>
@@ -507,7 +507,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.PeoplePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>People Directory Portlet</title>
       <short-title>People Directory</short-title>
@@ -529,7 +529,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.ProfileNavigationPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Profile Navigation Portlet</title>
       <short-title>Profile Navigation</short-title>
@@ -551,7 +551,7 @@
      <mime-type>text/html</mime-type>
    </supports>
    <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.ConnectionsNavigationPortlet</resource-bundle>
+   <resource-bundle>locale.portlet.Portlets</resource-bundle>
    <portlet-info>
      <title>Connections Navigation Portlet</title>
      <short-title>Connections Navigation</short-title>
@@ -573,7 +573,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.ProfilePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Profile Portlet</title>
       <short-title>Profile Portlet</short-title>
@@ -603,7 +603,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.AllPeoplePortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>All People Portlet</title>
       <short-title>All People Portlet</short-title>
@@ -626,7 +626,7 @@
       <portlet-mode>help</portlet-mode>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.ConnectionsPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Connections Portlet</title>
       <short-title>Connections Portlet</short-title>
@@ -648,7 +648,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.InvitationsPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Invitations Portlet</title>
       <short-title>Invitation Portlet</short-title>
@@ -670,7 +670,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.RequestsPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Requests Portlet</title>
       <short-title>Requests Portlet</short-title>
@@ -712,7 +712,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.UserProfileToolBarPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>User Profile Toolbar Portlet</title>
       <short-title>User Profile Toolbar Portlet</short-title>
@@ -734,7 +734,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.PeopleToolBarPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>People Toolbar Portlet</title>
       <short-title>People Toolbar Portlet</short-title>
@@ -756,7 +756,7 @@
       <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.SocialLogoPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
       <title>Social Logo Portlet</title>
       <short-title>Social Logo Portlet</short-title>
@@ -778,7 +778,7 @@
      <mime-type>text/html</mime-type>
    </supports>
    <supported-locale>en</supported-locale>
-   <resource-bundle>locale.portlet.MyConnectionsNavigationPortlet</resource-bundle>
+   <resource-bundle>locale.portlet.Portlets</resource-bundle>
    <portlet-info>
      <title>My Connections Navigation</title>
      <short-title>My Connections</short-title>

@@ -63,17 +63,4 @@
   </component>
 <!-- Social Rest API resources for latest -->
 
-
-<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
-  <component>
-    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityResources</type>
-  </component>
-  <component>
-    <type>org.exoplatform.social.service.rest.api_v1alpha1.ActivityStreamResources</type>
-  </component>
-  <component>
-    <type>org.exoplatform.social.service.rest.api_v1alpha1.IdentityResources</type>
-  </component>
-<!-- Social Rest API v1-alpha1 resources for backward-compatible -->
-
 </configuration>

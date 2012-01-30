@@ -26,7 +26,7 @@
   }
 %>
 	<div class="MiddleLeftContainerOptions" $popupMenu>
-			<div class="UISpaceNavigationNodeSelector" id="UISpaceNavigationNodeSelector">
+			<div class="UISpaceNavigationNodeSelector">
 			  <%/*Begin PortalNodeSelectorContainer*/%>					
 						<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
 							<%

@@ -101,7 +101,8 @@ public class ConnectionFilterListAccess implements ListAccess<Identity> {
     ListAccessValidator.validateIndex(offset, limit, getSize());
     List<Identity> identities = null;
     switch (type) {
-      case PROFILE_FILTER_CONNECTION: identities = relationshipStorage.getConnectionsByFilter(identity, profileFilter, offset, limit);
+      case PROFILE_FILTER_CONNECTION: identities = relationshipStorage.
+                                                   getConnectionsByFilter(identity, profileFilter, offset, limit);
         break;
       case PROFILE_FILTER_INCOMMING: identities = relationshipStorage.getIncomingByFilter(identity, profileFilter, offset, limit);
         break;

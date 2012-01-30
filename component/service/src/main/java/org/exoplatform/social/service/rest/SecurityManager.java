@@ -18,14 +18,12 @@ package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -99,7 +97,6 @@ public class SecurityManager {
                                           ExoSocialActivity existingActivity) {
 
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
 
     if(authenticatedIdentity == null || existingActivity == null){
       return false;
@@ -127,21 +124,7 @@ public class SecurityManager {
         break;
 
       case USER:
-
-        // My stream
-        if (authenticatedIdentity.getId().equals(existingActivity.getActivityStream().getId())) {
-          return true;
-        }
-
-        // My netword stream
-        String contactId = existingActivity.getActivityStream().getId();
-        Relationship relationship = relationshipManager.get(authenticatedIdentity, new Identity(contactId));
-        if (relationship != null && Relationship.Type.CONFIRMED.equals(relationship.getStatus())) {
-          return true;
-        }
-
-        break;
-
+        return true;
     }
 
     return false;
@@ -166,7 +149,8 @@ public class SecurityManager {
                                         Identity ownerIdentityStream) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
     
-    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);    
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
     String posterID =  authenticatedIdentity.getId();
     String ownerID = ownerIdentityStream.getId();
     
@@ -209,36 +193,31 @@ public class SecurityManager {
   public static boolean canDeleteActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                           ExoSocialActivity existingActivity) {
     SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
-    IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
 
-    String removerUserId =  authenticatedIdentity.getId();
-    String ownerId = existingActivity.getUserId();    
-
-    
-    if(removerUserId.equals(ownerId)){
+    // My activity
+    if (authenticatedIdentity.getId().equals(existingActivity.getUserId())) {
       return true;
     }
-    
-    String streamOwnerRemoteID = existingActivity.getStreamOwner();
-    Identity streamOwnerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, streamOwnerRemoteID, false);
-    String streamOwnerId  = null;
-    if(streamOwnerIdentity!=null){
-      streamOwnerId = streamOwnerIdentity.getId();
-    }
-    
-    if(removerUserId.equals(streamOwnerId)){
-      return true;
-    }
-    
-    Space spaceOfActivity = spaceService.getSpaceByPrettyName(existingActivity.getActivityStream().getPrettyId());
-    if(spaceOfActivity != null){
-      String[] adminsOfSpaceArray = spaceOfActivity.getManagers();
-      
-      for (int i = 0; i < adminsOfSpaceArray.length; i++) {
-        if(adminsOfSpaceArray[i].equals(authenticatedIdentity.getRemoteId())){
+
+    switch (existingActivity.getActivityStream().getType()) {
+      case SPACE:
+        // member or manager
+        String spaceName = existingActivity.getActivityStream().getPrettyId();
+        Space space = spaceService.getSpaceByPrettyName(spaceName);
+        List<String> allIds = new ArrayList<String>();
+        allIds.addAll(Arrays.asList(space.getManagers()));
+        if (allIds.contains(authenticatedIdentity.getRemoteId())) {
           return true;
         }
-      }
+        break;
+      case USER:
+        // My stream
+        if (authenticatedIdentity.getId().equals(existingActivity.getActivityStream().getId())) {
+          return true;
+        }
+        break;
     }
     return false;
   }
@@ -258,11 +237,53 @@ public class SecurityManager {
    */
   public static boolean canCommentToActivity(PortalContainer portalContainer, Identity authenticatedIdentity,
                                        ExoSocialActivity existingActivity) {
-    IdentityManager identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-    Identity ownerIdentityStream = identityManager.getIdentity(existingActivity.getUserId(), false);
-    if(canPostActivity(portalContainer, authenticatedIdentity, ownerIdentityStream)){
+    SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+    RelationshipManager relationshipManager = (RelationshipManager) portalContainer.
+                                                                    getComponentInstanceOfType(RelationshipManager.class);
+
+    if(authenticatedIdentity == null || existingActivity == null){
+      return false;
+    }
+
+    // My activity
+    if (authenticatedIdentity.getId().equals(existingActivity.getUserId())) {
       return true;
     }
+
+    switch (existingActivity.getActivityStream().getType()) {
+
+      case SPACE:
+
+        // member or manager
+        String spaceName = existingActivity.getActivityStream().getPrettyId();
+        Space space = spaceService.getSpaceByPrettyName(spaceName);
+        List<String> allIds = new ArrayList<String>();
+        allIds.addAll(Arrays.asList(space.getMembers()));
+        allIds.addAll(Arrays.asList(space.getManagers()));
+        if (allIds.contains(authenticatedIdentity.getRemoteId())) {
+          return true;
+        }
+
+        break;
+
+      case USER:
+
+        // My stream
+        if (authenticatedIdentity.getId().equals(existingActivity.getActivityStream().getId())) {
+          return true;
+        }
+
+        // My netword stream
+        String contactId = existingActivity.getActivityStream().getId();
+        Relationship relationship = relationshipManager.get(authenticatedIdentity, new Identity(contactId));
+        if (relationship != null && Relationship.Type.CONFIRMED.equals(relationship.getStatus())) {
+          return true;
+        }        
+
+        break;
+
+    }
+
     return false;
   }
   

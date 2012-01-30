@@ -39,7 +39,7 @@
     connectionsDisplayModeStyle = "DarkBlueStyle";
   } else if (selectedDisplayMode.toString().equals("SPACE_UPDATES")) {
     mySpacesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("MY_STATUS")) {
+  } else if (selectedDisplayMode.toString().equals("MY_STATUS") || selectedDisplayMode.toString().equals("OWNER_STATUS")) {
     myStatusDisplayModeStyle = "DarkBlueStyle";
   }
 

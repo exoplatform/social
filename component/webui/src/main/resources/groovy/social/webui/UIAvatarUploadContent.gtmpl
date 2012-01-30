@@ -28,23 +28,24 @@
   def labelFileType = _ctx.appRes("${uicomponentId}.label.file_type")
   def labelImageSize = _ctx.appRes("${uicomponentId}.label.image_size")
   def labelSave = _ctx.appRes("${uicomponentId}.label.save")
-  def labelAbort = _ctx.appRes("${uicomponentId}.label.abort")
+  def labelCancel = _ctx.appRes("${uicomponentId}.label.cancel")
+  def avatarTitle = _ctx.appRes("${uicomponentId}.title.Avatar");
   
   def saveAction = uicomponent.event("Save")
-  def abortAction = uicomponent.event("Abort")
+  def cancelAction = uicomponent.event("Cancel")
   def imageSource = uicomponent.imageSource;
 %>
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
-  <div class="AvatarInfo">
-    <a class="ImageAvatar"><img src="$imageSource" /></a>
+  <div class="AvatarInfo ClearFix">
+    <a class="ImageAvatar"><img src="$imageSource" title="$avatarTitle" alt="$avatarTitle" /></a>
     <div><span>$lalbelFileName</span></span> <%= avatarAttachment.fileName %></div>
     <div><span>$labelFileType</span> <%= avatarAttachment.mimeType %></div>
     <div><span>$labelImageSize</span> <%= avatarAttachment.size %></div>
-    <div class="ClearLeft"><span></span></div>
+    
   </div>
   <div class="UIAction">
       <a onclick="$saveAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelSave</a>
-      <a onclick="$abortAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelAbort</a>
+      <a onclick="$cancelAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelCancel</a>
     </div>
 </div>

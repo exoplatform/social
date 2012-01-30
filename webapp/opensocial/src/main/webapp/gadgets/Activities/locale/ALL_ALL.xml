@@ -23,6 +23,8 @@
   <msg name="expand_all_activities">Expand</msg>
   <msg name="comment">Comment</msg>
   <msg name="write_a_comment">Write a comment...</msg>
+  <msg name="you_can_edit_the_title_of_shared_link">You can edit the title of shared link</msg>
+  <msg name="you_can_edit_the_description_of_shared_link">You can edit the description of shared link</msg>
   <msg name="user_commented_on_an_activity">{0} commented on an activity.</msg>
   <msg name="show_all_num_comments">Show all {0} comments.</msg>
   <msg name="hide_all_comments">Hide all comments.</msg>

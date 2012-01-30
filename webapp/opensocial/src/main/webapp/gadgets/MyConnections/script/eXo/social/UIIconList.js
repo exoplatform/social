@@ -420,7 +420,7 @@
   	var userBlock = [];
 		
 		userBlock.push('<div class="MemberProptile ClearFix" id="MemberProptileDetail">');
-			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img alt="" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
+			userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="Avatar"><img title="' + Comment.refer.connectionActivity.displayName + '" alt="' + Comment.refer.connectionActivity.displayName + '" width="44px" height="44px" src="' + Comment.refer.connectionActivity.avatarUrl + '"/></a>');
 			userBlock.push('<div class="Content">');
 				userBlock.push('<a target="_blank" href="' + Comment.refer.connectionActivity.profileUrl + '" class="User">' + Comment.refer.connectionActivity.displayName + '</a>');
 				userBlock.push('<div class="Member"> Member</div>');
@@ -441,7 +441,7 @@
 		userBlock.push('</div>');
 	  
 	  userBlock.push('<div class="QuickCommentBox" style="display: none;" id="QuickCommentDiv">');
-	  	userBlock.push('<input id="QuickCommentInput" type="text" value="' + Locale.getMsg('comment_here') + '"/>');
+	  	userBlock.push('<input id="QuickCommentInput" type="text" title="' + Locale.getMsg('comment_here') + '" value="' + Locale.getMsg('comment_here') + '"/>');
 	  	userBlock.push('<div class="ShareBT"><a id="ShareComment" href="javascript:void(0)">' + Locale.getMsg('share') + '</a></div>');
 	  userBlock.push('</div>');
 		

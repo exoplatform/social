@@ -19,7 +19,6 @@ package org.exoplatform.social.service.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,8 +31,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.shindig.social.opensocial.model.Activity;
@@ -95,6 +94,9 @@ public class PeopleRestService implements ResourceContainer{
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
   
+  /** Number of default limit activities. */
+  private static final int DEFAULT_LIMIT = 20;
+  
   private String portalName_;
   private IdentityManager identityManager;
   private ActivityManager activityManager;
@@ -129,7 +131,6 @@ public class PeopleRestService implements ResourceContainer{
     
     filter.setName(name);
     filter.setCompany("");
-    filter.setGender("");
     filter.setPosition("");
     filter.setSkills("");
     filter.setExcludedIdentityList(excludedIdentityList);
@@ -191,7 +192,8 @@ public class PeopleRestService implements ResourceContainer{
     identityManager = Util.getIdentityManager(portalName);
     
     List<Identity> excludedIdentityList = new ArrayList<Identity>();
-    Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    Identity currentUser = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                                   Util.getViewerId(uriInfo), true);
     
     excludedIdentityList.add(currentUser);
 
@@ -207,8 +209,8 @@ public class PeopleRestService implements ResourceContainer{
       ProfileFilter filter = new ProfileFilter();
       filter.setName(nameToSearch);
       filter.setExcludedIdentityList(excludedIdentityList);
-      
-      identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);// will be getConnectionsByProfileFilter      
+      // will be getConnectionsByProfileFilter
+      identities = relationshipManager.getConnectionsByFilter(currentUser, filter).load(offset, limit);
     }
     
     for(Identity identity : identities){
@@ -298,7 +300,8 @@ public class PeopleRestService implements ResourceContainer{
       calendar.setLenient(false);
       int gmtoffset = calendar.get(Calendar.DST_OFFSET) + calendar.get(Calendar.ZONE_OFFSET);
       calendar.setTimeInMillis(lastestActivity.getPostedTime() - gmtoffset);
-      this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang), TimeConvertUtils.MONTH));
+      this.setPrettyPostedTime(TimeConvertUtils.convertXTimeAgo(calendar.getTime(), "EEE,MMM dd,yyyy", new Locale(lang),
+                                                                TimeConvertUtils.MONTH));
       
       this.setPosition(identity.getProfile().getPosition());
       this.setActivityId(lastestActivity.getId());
@@ -447,7 +450,9 @@ public class PeopleRestService implements ResourceContainer{
     
     peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
     
-    List<ExoSocialActivity> activities = getActivityManager().getActivities(identity);
+    RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
+    
+    List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
     if (activities.size() > 0) {
       peopleInfo.setActivityTitle(activities.get(0).getTitle());
     } else { // Default title of activity

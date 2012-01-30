@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
@@ -62,16 +63,24 @@ public class UISpaceGroupBound extends UIContainer {
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
 
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
   /**
    * constructor
    * @throws Exception
    */
   public UISpaceGroupBound() throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
+    uiUseExisting.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceGroupBound.label.useExistingGroup"));
+    uiUseExisting.setId(USE_EXISTING_GROUP);
     uiUseExisting.setOnChange("ToggleUseGroup");
     addChild(uiUseExisting);
     
     UIFormInputInfo uiFormInputInfo = new UIFormInputInfo(SELECTED_GROUP, null, null);
+    uiFormInputInfo.setId(SELECTED_GROUP);
     addChild(uiFormInputInfo);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, "SelectGroup", POPUP_GROUP_BOUND);
     uiPopup.setWindowSize(550, 0);
@@ -102,7 +111,7 @@ public class UISpaceGroupBound extends UIContainer {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     RequestContext reqCtx = RequestContext.getCurrentInstance();
     String remoteUser = reqCtx.getRemoteUser();
-    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.MANAGER);
+    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.getUserACL().getAdminMSType());
     return (groups.size() > 0);    
   }
   

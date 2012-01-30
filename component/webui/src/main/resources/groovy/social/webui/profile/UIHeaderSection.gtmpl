@@ -78,7 +78,7 @@
 	<% } %>
   </h2>
   
-  <span>
+  <p>
       <% if(!isEdit) { %>
             <%=position %><% if(isEditable) { %> <a class="ColorLink" href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a> <% } %>
       <% } else {
@@ -92,6 +92,6 @@
             <%=position%>
           <%}%>
       <% }%>
-  </span>
+  </p>
 <% uiform.end() %>
 </div>

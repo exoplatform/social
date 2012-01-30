@@ -35,6 +35,7 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -78,8 +79,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
         // TODO filter by appID
-        List<ExoSocialActivity> activities = am.getActivities(id, options.getFirst(), options.getMax());
-        result.addAll(convertToOSActivities(activities, fields));
+        RealtimeListAccess<ExoSocialActivity> activityListAccess = am.getActivitiesWithListAccess(id);
+        result.addAll(convertToOSActivities(activityListAccess.loadAsList(options.getFirst(), options.getMax()), fields));
       }
 
       return ImmediateFuture.newInstance(new RestfulCollection<Activity>(result, 0, result.size()));
@@ -116,7 +117,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       String user = userId.getUserId(token);
       Identity id = getIdentity(user, token);
 
-      List<ExoSocialActivity> exoActivities = am.getActivities(id, options.getFirst(), options.getMax());
+      List<ExoSocialActivity> exoActivities = am.getActivitiesWithListAccess(id)
+                                                .loadAsList(options.getFirst(), options.getMax());
 
       // TODO : this is not efficient, this should be done by the JCR
       for (ExoSocialActivity exoActivity : exoActivities) {
@@ -233,7 +235,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
         }
       }
 
-      am.saveActivity(targetStream, exoActivity);
+      am.saveActivityNoReturn(targetStream, exoActivity);
 
       return ImmediateFuture.newInstance(null);
     } catch (Throwable e) {

@@ -22,10 +22,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -88,9 +91,6 @@ public class UIContactSection extends UIProfileSection {
   /** WEBSITE TITLE. */
   public static final String WEBSITE_TITLE = "Website Title";
 
-  /** URL EXAMPLE. */
-  public static final String URL_EXAMPLE = "http://exoplatform.org";
-
   /** KEY. */
   public static final String KEY = "key";
 
@@ -115,6 +115,9 @@ public class UIContactSection extends UIProfileSection {
 
   /** INVALID URL. */
   public static final String INVALID_URL = "UIContactSect.msg.Invalid-url";
+  
+  /** Html attribute title. */
+  private static final String HTML_ATTRIBUTE_TITLE   = "title";
 
   /** Number of phone. */
   private int phoneCount = 0;
@@ -124,6 +127,8 @@ public class UIContactSection extends UIProfileSection {
 
   /** Number of url. */
   private int urlCount = 0;
+  
+  private String sampleURL;
 
   /** Get the number of phone. */
   /**
@@ -150,6 +155,20 @@ public class UIContactSection extends UIProfileSection {
   }
 
   /**
+   * @return the sampleURL
+   */
+  public String getSampleURL() {
+    return sampleURL;
+  }
+
+  /**
+   * @param sampleURL the sampleURL to set
+   */
+  public void setSampleURL(String sampleURL) {
+    this.sampleURL = sampleURL;
+  }
+
+  /**
    * Initializes contact form.<br>
    *
    * @throws Exception
@@ -161,6 +180,10 @@ public class UIContactSection extends UIProfileSection {
     options.add(new SelectItemOption<String>(VALUE_GENDER_MALE));
     options.add(new SelectItemOption<String>(VALUE_GENDER_FEMALE));
     addUIFormInput(new UIFormSelectBox(GENDER_CHILD, GENDER_CHILD, options));
+    
+    // Get sample url message from resource bundle and set to variable.
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+    setSampleURL(resourceBudle.getString("UIContactSection.msg.sampleUrl"));
   }
 
   /**
@@ -297,7 +320,7 @@ public class UIContactSection extends UIProfileSection {
         id1 = ((UIFormSelectBox) listUIComp.get(i)).getName();
       }
 
-      if ((value == null) || (value.length() == 0) || (URL_EXAMPLE.startsWith(value))) {
+      if ((value == null) || (value.length() == 0) || (value.startsWith(getSampleURL()))) {
         removeFormInput(id1, id2);
       }
     }
@@ -507,23 +530,34 @@ public class UIContactSection extends UIProfileSection {
    * @throws Exception
    */
   private void addUIFormInput(final String type) throws Exception {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     if (PHONE.equals(type)) {
       int phoneIdx = phoneCount;
       createUISelectBox(PHONE_TYPES, PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'));
-      addUIFormInput(new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null)
+      UIFormStringInput phone = new UIFormStringInput(PHONE + StringUtils.leftPad(String.valueOf(phoneIdx++), 3, '0'),null,null);
+      phone.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.phones"));
+      addUIFormInput(phone
       .addValidator(ExpressionValidator.class, PHONE_REGEX_EXPRESSION, INVALID_PHONE));
       phoneCount += 2;
     } else if (IM.equals(type)) {
       int imIdx = imCount;
       createUISelectBox(IM_TYPES, IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'));
-      addUIFormInput(new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null)
+      UIFormStringInput im = new UIFormStringInput(IM + StringUtils.leftPad(String.valueOf(imIdx++), 3, '0'), null, null);
+      im.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.ims"));
+      addUIFormInput(im
       .addValidator(ExpressionValidator.class, IM_STRINGLENGTH_REGEX_EXPRESSION, INVALID_IM));
       imCount += 2;
     } else if (URL.equals(type)) {
       int urlIdx = urlCount;
-      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, WEBSITE_TITLE));
-      addUIFormInput(new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'), null, URL_EXAMPLE)
-      .addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
+      UIFormStringInput websiteTitle = new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'),
+                                                             null, WEBSITE_TITLE);
+      websiteTitle.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.websiteTitle"));
+      addUIFormInput(websiteTitle);
+      UIFormStringInput sampleUrlForm = new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'),
+                                                              null, getSampleURL());
+      sampleUrlForm.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.urls"));
+      addUIFormInput(sampleUrlForm.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
       urlCount += 2;
     }
   }

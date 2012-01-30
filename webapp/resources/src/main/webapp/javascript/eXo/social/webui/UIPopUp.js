@@ -37,15 +37,15 @@
 			  for (var i = 0; i < numOfEls; i++) {
 				  (function(idx) { 
 						 this.targetEl = listEls[idx];
-				     Util.addEventListener(this.targetEl, 'mouseover', function() {
+				     Util.addEventListener(this.targetEl, ['mouseover', 'focus'], function() {
 						  	var hrefValue = this.href;
 						  	uiPopup.personId = hrefValue.substr(hrefValue.lastIndexOf("/") + 1);
-						  	
+
 						  	if (uiPopup.timeOutId) clearTimeout(uiPopup.timeOutId);
-					
+
 					      var popUp = document.getElementById('UIPopup');
 					      if (!popUp) {
-					      	uiPopup.buildPopup(this);	  	
+					      	uiPopup.buildPopup(this);
 					      }
 					 	    
 					 	  	// Upadates user information
@@ -55,7 +55,7 @@
 						  	uiPopup.displayPopup(this.parentNode);
 		         }, false);
 		         
-		         Util.addEventListener(this.targetEl, 'mouseout', function() {
+		         Util.addEventListener(this.targetEl, ['mouseout', 'blur'], function() {
   			       var popUp = document.getElementById('UIPopup');
 		         	 if (uiPopup.timeOutId) clearTimeout(uiPopup.timeOutId);
 		           Util.hideElement(popUp.id);
@@ -168,12 +168,12 @@
 
 				var uiPopup = this;
 				
-				Util.addEventListener(this.boundPopup, 'mouseover', function() {
+				Util.addEventListener(this.boundPopup, ['mouseover', 'focus'], function() {
        	  if (uiPopup.timeOutId) clearTimeout(uiPopup.timeOutId);
   				Util.showElement(this.id);
         }, false);
 		         
-				Util.addEventListener(this.boundPopup, 'mouseout', function() {
+				Util.addEventListener(this.boundPopup, ['mouseout', 'blur'], function() {
 					Util.hideElement(this.id);
         }, false);
 		         
@@ -185,7 +185,7 @@
 			  html.push('<div id="ClosePopup" class="ClosePopup" title="Close">[x]</div>');
 			  html.push('</div>');
 			  html.push('<div id="UserAvatar" class="UserAvatar">');
-			  html.push('<img></img>');	
+			  html.push('<img title="Avatar" alt="Avatar"></img>');	
 			  html.push('</div>');
 			  html.push('<div id="UserTitle" class="UserTitle">');
 			  html.push('<span></span>');

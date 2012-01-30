@@ -110,7 +110,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getSender() {
     if (sender == null) {
-      sender = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, senderName, false);
+      sender = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderName, false);
     }
     return sender;
   }
@@ -121,7 +121,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   public Identity getReceiver() {
     if (receiver == null) {
-      receiver = Utils.getIdentityManager().getIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
+      receiver = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverName, false);
     }
     return receiver;
   }

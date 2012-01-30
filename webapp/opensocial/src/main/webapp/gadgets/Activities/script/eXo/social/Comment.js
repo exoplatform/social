@@ -274,7 +274,7 @@ eXo.social.Comment.setComment = function(activityId, activityUserId) {
       html.push('<div class="CommentBorder">')
         html.push('<div class="CommentActivitiesContent">');
           html.push('<a href="' + profileUrl + '" target="_parent" title="' + userName + '" class="AvatarPeopleBG">');
-            html.push('<img height="47px" width="47px" src="' + statusUpdate.getAvatar(comment.userId) + '" />');
+            html.push('<img height="47px" width="47px" title="' + userName + '" alt="' + userName + '" src="' + statusUpdate.getAvatar(comment.userId) + '" />');
           html.push('</a>');
           html.push('<div class="Content">');
             html.push('<div class="Titlecontent" style="height: 24px;">');

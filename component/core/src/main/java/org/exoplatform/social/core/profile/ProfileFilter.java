@@ -44,9 +44,6 @@ public class ProfileFilter {
   /* filer by user profile professional*/
   /** The skills. */
   private String skills;
-  /* filer by user profile gender*/
-  /** The gender. */
-  private String gender;
 
   /** the list of identity to be excluded from profile filter **/
   private List<Identity> excludedIdentityList;
@@ -59,7 +56,6 @@ public class ProfileFilter {
     this.position = "";
     this.company = "";
     this.skills = "";
-    this.gender = "";
     this.firstCharacterOfName = '\u0000';
     this.excludedIdentityList = new ArrayList<Identity>();
   }
@@ -104,20 +100,6 @@ public class ProfileFilter {
    * @param skills the new skills
    */
   public void setSkills(String skills) { this.skills = skills;}
-
-  /**
-   * Gets the gender.
-   *
-   * @return the gender
-   */
-  public String getGender() { return gender; }
-
-  /**
-   * Sets the gender.
-   *
-   * @param gender the new gender
-   */
-  public void setGender(String gender) { this.gender = gender; }
 
   /**
    * Sets the name.

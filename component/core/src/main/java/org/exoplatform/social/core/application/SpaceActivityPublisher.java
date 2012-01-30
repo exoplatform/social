@@ -89,7 +89,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void applicationActivated(SpaceLifeCycleEvent event) {
-    LOG.debug("application <b>" + event.getTarget() + "</b> was activated in space "
+    LOG.debug("application <strong>" + event.getTarget() + "</strong> was activated in space "
             + event.getSpace().getDisplayName());
   }
 
@@ -98,7 +98,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void applicationAdded(SpaceLifeCycleEvent event) {
-    LOG.debug("application <b>" + event.getTarget() + "</b> was added in space "
+    LOG.debug("application <strong>" + event.getTarget() + "</strong> was added in space "
             + event.getSpace().getDisplayName());
   }
 
@@ -173,7 +173,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
               space.getPrettyName(),
               false);
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
+      activityManager.saveActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
     } catch (Exception e) {
       LOG.error("Failed to record activity: " + activityMessage, e);
     }

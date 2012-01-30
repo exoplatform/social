@@ -71,7 +71,7 @@ RssFetch.prototype.loadPage = function() {
   var feedEl = _gel("rssFeed");
   var currentView = gadgets.views.getCurrentView().getName();
 
-  var bullet = "<img src='" + eXo.social.thisRssFetch.getFavicon(feedurl) + "' alt='' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
+  var bullet = "<img src='" + eXo.social.thisRssFetch.getFavicon(feedurl) + "' tilte='rssIcon' alt='rssIcon' border=0 align='absmiddle' style='height:16;width:16;' onerror='this.style.visibility=\"hidden\";'>&nbsp;&nbsp;";
 
   while ( feedEl.hasChildNodes() )
   {
@@ -196,14 +196,14 @@ RssFetch.prototype.loadPage = function() {
 RssFetch.prototype.setDisplayPaging = function(currentPage) {
   var rtnHTML="";
   var totalPage = eXo.social.thisRssFetch.totalPages;
-  var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.thisRssFetch.lastPage()");
-  var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.thisRssFetch.nextPage()");
-  var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.thisRssFetch.previousPage()");
-  var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.thisRssFetch.firstPage()");
-  var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()");
-  var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()");
-  var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()");
-  var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()");
+  var lastPageTag = this.createTag("last", "Icon NextTopPageIcon","eXo.social.thisRssFetch.lastPage()","last");
+  var nextPageTag = this.createTag("next", "Icon NextPageIcon","eXo.social.thisRssFetch.nextPage()","next");
+  var previousPageTag = this.createTag("previous", "Icon LastPageIcon","eXo.social.thisRssFetch.previousPage()","previous");
+  var firstPageTag = this.createTag("first", "Icon LastTopPageIcon","eXo.social.thisRssFetch.firstPage()","first");
+  var previousDisTag = this.createTag("previous", "Icon DisableLastPageIcon","void()","previous");
+  var firstDisTag = this.createTag("first", "Icon DisableLastTopPageIcon","void()","first");
+  var lastDisTag = this.createTag("last", "Icon DisableNextTopPageIcon","void()","last");
+  var nextDisTag = this.createTag("next", "Icon DisableNextPageIcon","void()","next");
   var pagesTag = "<div id='pages'></div>";
 
   if (totalPage == 1) {
@@ -228,13 +228,13 @@ RssFetch.prototype.createHTML = function(last, next, pages, previous, first) {
   HTML+= pages;
   HTML+= previous;
   HTML+= first;
-  HTML+="<a class='PagesTotalNumber' id='totalPages'></a>";
+  HTML+="<a class='PagesTotalNumber' id='totalPages' title='Total pages'></a>";
   HTML+= "<a class='TotalPages'>Total pages:</a>";
 
   return HTML;
 }
-RssFetch.prototype.createTag = function(id, cls, action) {
-  return "<a  id='" +id+"' class='"+cls+"' onclick='"+action+"'> </a>";
+RssFetch.prototype.createTag = function(id, cls, action, title) {
+  return "<a  id='" +id+"' class='"+cls+"' onclick='"+action+"' title='" + title + "'></a>";
 }
 
 RssFetch.prototype.getEl = function (elId) {

@@ -74,6 +74,9 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -97,6 +100,11 @@ public class SpaceUtils {
 
   public static final String PLATFORM_USERS_GROUP = "/platform/users";
 
+  /**
+   * @deprecated Use {@link UserACL#getAdminMSType()} instead. 
+   * Will be removed by 1.2.9
+   */
+  @Deprecated
   public static final String MANAGER = "manager";
   
   public static final String MEMBER = "member";
@@ -117,6 +125,10 @@ public class SpaceUtils {
   private static final Transliterator ACCENTS_CONVERTER = Transliterator.getInstance("Latin; NFD; [:Nonspacing " +
           "Mark:] Remove; NFC;");
 
+  private static String NUMBER_REG_PATTERN = "[0-9]";
+  private static String UNDER_SCORE_STR = "_";
+  private static String SPACE_STR = " ";
+  
   /**
    * Creates a new group from an existing group. This new group will get all data from existing group except for group
    * name
@@ -348,7 +360,10 @@ public class SpaceUtils {
    * @return cleaned string
    */
   public static String cleanString(String str) {
-
+    if (str == null) {
+      throw new IllegalArgumentException("String argument must not be null.");
+    }
+      
     str = ACCENTS_CONVERTER.transliterate(str);
 
     // the character ? seems to not be changed to d by the transliterate
@@ -651,7 +666,7 @@ public class SpaceUtils {
     }
 
     try {
-      // adds user as creator (manager)
+      // adds user as creator (member, manager)
       addCreatorToGroup(creator, groupId);
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
@@ -674,6 +689,29 @@ public class SpaceUtils {
       groupHandler.removeGroup(group, true);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_GROUP, e);
+    }
+  }
+
+  /**
+   * Removes membership of users with a deleted spaces.
+   * 
+   * @param space
+   */
+  public static void removeMembershipFromGroup(Space space) {
+    if (space == null) return;
+    
+    // remove users from group with role is member
+    if (space.getMembers() != null) {
+      for (String userId : space.getMembers()) {
+        removeUserFromGroupWithMemberMembership(userId, space.getGroupId());
+      }
+    }
+    
+    // remove users from group with role is manager
+    if (space.getManagers() != null) {
+      for (String userId : space.getManagers()) {
+        removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
+      }
     }
   }
 
@@ -702,7 +740,8 @@ public class SpaceUtils {
    * @throws SpaceException with code UNABLE_TO_ADD_CREATOR
    */
   public static void addCreatorToGroup(String creator, String groupId) {
-    addUserToGroupWithMembership(creator, groupId, MANAGER);
+    addUserToGroupWithMemberMembership(creator, groupId);
+    addUserToGroupWithManagerMembership(creator, groupId);
   }
 
   /**
@@ -717,16 +756,22 @@ public class SpaceUtils {
     OrganizationService organizationService = getOrganizationService();
     try {
       // TODO: checks whether user is already manager?
+      MembershipHandler membershipHandler = organizationService.getMembershipHandler();
+      Membership found = membershipHandler.findMembershipByUserGroupAndType(remoteId, groupId, membership);
+      if (found != null) {
+        LOG.info("user: " + remoteId + " was already added to group: " + groupId + " with membership: " + membership);
+        return;
+      }
       User user = organizationService.getUserHandler().findUserByName(remoteId);
       MembershipType membershipType = organizationService.getMembershipTypeHandler().findMembershipType(membership);
       GroupHandler groupHandler = organizationService.getGroupHandler();
       Group existingGroup = groupHandler.findGroupById(groupId);
-      organizationService.getMembershipHandler().linkMembership(user, existingGroup, membershipType, true);
+      membershipHandler.linkMembership(user, existingGroup, membershipType, true);
     } catch (Exception e) {
       LOG.warn("Unable to add user: " + remoteId + " to group: " + groupId + " with membership: " + membership);
     }
   }
-  
+
   /**
    * Adds the user to group with the membership (member). 
    * 
@@ -746,7 +791,7 @@ public class SpaceUtils {
    * @since 1.2.0-GA
    */
   public static void addUserToGroupWithManagerMembership(String remoteId, String groupId) {
-    addUserToGroupWithMembership(remoteId, groupId, MANAGER);
+    addUserToGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
   
   /**
@@ -764,17 +809,18 @@ public class SpaceUtils {
       if (MEMBER.equals(membership)) {
           Collection<Membership> memberships = memberShipHandler.findMembershipsByUserAndGroup(remoteId, groupId);
           if (memberships.size() == 0) {
-            LOG.warn("User " + remoteId + " is not member");
+            LOG.info("User: " + remoteId + " is not a member of group: " + groupId);
+            return;
           }
           Iterator<Membership> itr = memberships.iterator();
           while (itr.hasNext()) {
             Membership mbShip = itr.next();
             memberShipHandler.removeMembership(mbShip.getId(), true);
           }
-      } else if (MANAGER.equals(membership)) {
-          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, MANAGER);
+      } else if (getUserACL().getAdminMSType().equals(membership)) {
+          Membership memberShip = memberShipHandler.findMembershipByUserGroupAndType(remoteId, groupId, getUserACL().getAdminMSType());
           if (memberShip == null) {
-            LOG.warn("User: " + remoteId + " is not manager of group: ");
+            LOG.info("User: " + remoteId + " is not a manager of group: " + groupId);
             return;
           }
           UserHandler userHandler = organizationService.getUserHandler();
@@ -808,7 +854,7 @@ public class SpaceUtils {
    * @since 1.2.0-GA
    */
   public static void removeUserFromGroupWithManagerMembership(String remoteId, String groupId) {
-    removeUserFromGroupWithMembership(remoteId, groupId, MANAGER);
+    removeUserFromGroupWithMembership(remoteId, groupId, getUserACL().getAdminMSType());
   }
   
   /**
@@ -847,7 +893,20 @@ public class SpaceUtils {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
     }
   }
-  
+
+  /**
+   * Refreshes the current user portal (navigation caching refresh).
+   *
+   * @since 1.2.8
+   */
+  public static void refreshNavigation() {
+    UserPortal userPortal = getUserPortal();
+
+    if (userPortal != null) {
+      userPortal.refresh();
+    }
+  }
+
   /**
    * Using this method to get the UserPortal make sure that the data is latest.
    * It's will remove the caching.
@@ -874,7 +933,8 @@ public class SpaceUtils {
    */
   public static UserPortal getUserPortalForRest() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
+    UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
+                                                  container.getComponentInstanceOfType(UserPortalConfigService.class);
 
     UserPortalContext NULL_CONTEXT = new UserPortalContext() {
       public ResourceBundle getBundle(UserNavigation navigation) {
@@ -887,7 +947,8 @@ public class SpaceUtils {
     };
     
     String remoteId = ConversationState.getCurrent().getIdentity().getUserId();
-    UserPortalConfig userPortalCfg = userPortalConfigSer.getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
+    UserPortalConfig userPortalCfg = userPortalConfigSer.
+                                     getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
     return userPortalCfg.getUserPortal();
   }
 
@@ -1308,5 +1369,47 @@ public class SpaceUtils {
     String result = input.replaceAll("[^\\pL\\pM\\p{Nd}\\p{Nl}\\p{Pc}[\\p{InEnclosedAlphanumerics}&&\\p{So}]\\?\\*%0-9]", " ");
     result = result.replaceAll("\\s+", " ");
     return result.trim();
+  }
+
+  /**
+   * Builds pretty name base on the basic name in case create more than one space with the same name.
+   * 
+   * @param space
+   * @return
+   */
+  public static String buildPrettyName(Space space) {
+    String checkedPrettyName = space.getPrettyName();
+    String mainPatternPrettyName = null;
+    String numberPattern = NUMBER_REG_PATTERN;
+    if (checkedPrettyName.substring(checkedPrettyName.lastIndexOf(UNDER_SCORE_STR) + 1).matches(numberPattern)) {
+      mainPatternPrettyName = checkedPrettyName.substring(0, checkedPrettyName.lastIndexOf(UNDER_SCORE_STR));
+    } else {
+      mainPatternPrettyName = checkedPrettyName;
+    }
+    
+    boolean hasNext = true;
+    int extendPattern = 0;
+    
+    while (hasNext) {
+      ++extendPattern;
+      checkedPrettyName = cleanString(mainPatternPrettyName + SPACE_STR + extendPattern);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, checkedPrettyName, true);
+      if (identity == null) {
+        hasNext = false;
+      }
+    }
+    
+    return checkedPrettyName;
+  }
+  
+  /**
+   * Gets the UserACL which helps to get Membership role to avoid hard code.
+   * @return UserACL object
+   */
+  public static UserACL getUserACL() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    return (UserACL) container.getComponentInstanceOfType(UserACL.class);
   }
 }

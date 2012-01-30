@@ -17,15 +17,14 @@
 
 package org.exoplatform.social.core.chromattic.utils;
 
-import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
-import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
-
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Locale;
+
+import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>

@@ -53,8 +53,8 @@ import org.exoplatform.webui.event.Event.Phase;
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIInvitations.gtmpl",
     events = {
-      @EventConfig(listeners = UIInvitations.AcceptActionListener.class),
-      @EventConfig(listeners = UIInvitations.DenyActionListener.class),
+      @EventConfig(listeners = UIInvitations.ConfirmActionListener.class),
+      @EventConfig(listeners = UIInvitations.IgnoreActionListener.class),
       @EventConfig(listeners = UIInvitations.SearchActionListener.class, phase = Phase.DECODE),
       @EventConfig(listeners = UIInvitations.LoadMorePeopleActionListener.class)
     }
@@ -93,7 +93,8 @@ public class UIInvitations extends UIContainer {
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     uiProfileUserSearch.setHasPeopleTab(true);
-	  addChild(uiProfileUserSearch);
+    uiProfileUserSearch.setHasConnectionLink(false);
+    addChild(uiProfileUserSearch);
     init();
   }
   
@@ -202,9 +203,9 @@ public class UIInvitations extends UIContainer {
     }
     
     int realPeopleListSize = this.peopleList.size();
-    
-    setEnableLoadNext((realPeopleListSize >= RECEIVED_INVITATION_PER_PAGE) 
-    		&& (realPeopleListSize < getPeopleNum()));
+
+    setEnableLoadNext((realPeopleListSize >= RECEIVED_INVITATION_PER_PAGE)
+            && (realPeopleListSize < getPeopleNum()));
     
     return this.peopleList;
   }
@@ -288,7 +289,7 @@ public class UIInvitations extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-	  Identity owner = Utils.getOwnerIdentity();
+    Identity owner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
@@ -316,7 +317,7 @@ public class UIInvitations extends UIContainer {
       if (uiInvitations.currentLoadIndex < uiInvitations.peopleNum) {
         uiInvitations.loadNext();
       } else {
-    	uiInvitations.setEnableLoadNext(false);
+        uiInvitations.setEnableLoadNext(false);
       }
       event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
@@ -328,7 +329,7 @@ public class UIInvitations extends UIContainer {
    *   - Checks the relation to confirm that there still got invited relation.<br>
    *   - Makes and Save the new relation.<br>
    */
-  public static class AcceptActionListener extends EventListener<UIInvitations> {
+  public static class ConfirmActionListener extends EventListener<UIInvitations> {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations   uiInvitations = event.getSource();
@@ -337,8 +338,8 @@ public class UIInvitations extends UIContainer {
       Identity invitingIdentity = Utils.getOwnerIdentity();
 
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
-      
-	  uiInvitations.setLoadAtEnd(false);
+
+      uiInvitations.setLoadAtEnd(false);
       if (relationship == null ||relationship.getStatus() != Relationship.Type.PENDING) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
@@ -356,7 +357,7 @@ public class UIInvitations extends UIContainer {
    *   - Removes the current relation and save the new relation.<br>
    *
    */
-  public static class DenyActionListener extends EventListener<UIInvitations> {
+  public static class IgnoreActionListener extends EventListener<UIInvitations> {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();

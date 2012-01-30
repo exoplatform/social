@@ -22,9 +22,9 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-import org.exoplatform.social.webui.activity.UserActivityListAccess;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -53,11 +53,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
 
   public enum DisplayMode {
+    OWNER_STATUS,
     ALL_UPDATES,
     NETWORK_UPDATES,
     SPACE_UPDATES,
-    MY_STATUS,
-    OWNER_STATUS
+    MY_STATUS
   }
   private DisplayMode selectedDisplayMode = DisplayMode.ALL_UPDATES;
   private UIActivitiesLoader activitiesLoader;
@@ -145,8 +145,21 @@ public class UIUserActivitiesDisplay extends UIContainer {
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
-    Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName);
-    activitiesLoader.setActivityListAccess(new UserActivityListAccess(ownerIdentity,getSelectedDisplayMode()));
+    
+    Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+        
+    ActivityManager activityManager = Utils.getActivityManager();
+
+    if (DisplayMode.MY_STATUS.equals(getSelectedDisplayMode()) || 
+        DisplayMode.OWNER_STATUS.equals(getSelectedDisplayMode())) {
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+    } else if (DisplayMode.NETWORK_UPDATES.equals(getSelectedDisplayMode())) {
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
+    } else if (DisplayMode.SPACE_UPDATES.equals(getSelectedDisplayMode())) {
+      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
+    } else {
+      activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
+    }
     activitiesLoader.init();
   }
 }

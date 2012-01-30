@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -129,9 +130,10 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanAccessActivityUnknown() {
     createActivities(demoIdentity, demoIdentity, 2);
-    ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity activity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
   }
 
   /**
@@ -139,7 +141,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanAccessActivityMine() {
     createActivities(demoIdentity, demoIdentity, 2);
-    ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity activity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity, activity));
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity.getRemoteId(), activity));
   }
@@ -150,15 +153,16 @@ public class SecurityManagerTest extends AbstractServiceTest {
   public void testCanAccessActivityNetwork() {
     createActivities(demoIdentity, demoIdentity, 2);
     connectIdentities(demoIdentity, johnIdentity, true);
-    ExoSocialActivity activity = activityManager.getActivities(demoIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity activity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
 
     // In network stream
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity, activity));
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), johnIdentity.getRemoteId(), activity));
 
     // Out network stream
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
-    assertEquals(false, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity, activity));
+    assertEquals(true, SecurityManager.canAccessActivity(getContainer(), maryIdentity.getRemoteId(), activity));
   }
 
   /**
@@ -170,9 +174,11 @@ public class SecurityManagerTest extends AbstractServiceTest {
 
     //
     Space space1 = spaceService.getAllSpaces().get(0);
-    Identity spaceIdentity = identityManager.getIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space1.getPrettyName(), false);
     createActivities(spaceIdentity, spaceIdentity, 2);
-    ExoSocialActivity activity = activityManager.getActivities(spaceIdentity).get(0);
+    
+    RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+    ExoSocialActivity activity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
 
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity, activity));
     assertEquals(true, SecurityManager.canAccessActivity(getContainer(), demoIdentity.getRemoteId(), activity));
@@ -229,7 +235,9 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanDeleteActivity() {
     createActivities(demoIdentity, demoIdentity, 2);
-    ExoSocialActivity demoActivity = activityManager.getActivities(demoIdentity).get(1);
+    
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity demoActivity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(1);
     boolean demoDeleteDemoActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, demoActivity);
     assertTrue("demoDeleteDemoActivity must be true", demoDeleteDemoActivity);
 
@@ -240,13 +248,15 @@ public class SecurityManagerTest extends AbstractServiceTest {
     //demo connects to john
     createActivities(johnIdentity, johnIdentity, 1);
     connectIdentities(demoIdentity, johnIdentity, false);
-    ExoSocialActivity johnActivity = activityManager.getActivities(johnIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> johnActivitiesListAccess = activityManager.getActivitiesWithListAccess(johnIdentity);
+    ExoSocialActivity johnActivity = johnActivitiesListAccess.loadAsList(0, johnActivitiesListAccess.getSize()).get(0);
     boolean demoDeleteJohnActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, johnActivity);
     assertFalse("demoDeleteDemoActivity must be false", demoDeleteJohnActivity);
 
     connectIdentities(demoIdentity, johnIdentity, true);
     createActivities(demoIdentity, johnIdentity, 1);
-    demoActivity = activityManager.getActivities(johnIdentity).get(0); //newest
+    johnActivitiesListAccess = activityManager.getActivitiesWithListAccess(johnIdentity);
+    demoActivity = johnActivitiesListAccess.loadAsList(0, johnActivitiesListAccess.getSize()).get(0); //newest
     demoDeleteDemoActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, demoActivity);
     assertTrue("demoDeleteDemoActivity must be true", demoDeleteDemoActivity);
     boolean johnDeleteDemoActivity = SecurityManager.canDeleteActivity(getContainer(), johnIdentity, demoActivity);
@@ -259,7 +269,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
                                                                  createdSpace.getPrettyName(), false);
     tearDownIdentityList.add(spaceIdentity);
     createActivities(spaceIdentity, spaceIdentity, 1);
-    ExoSocialActivity spaceActivity = activityManager.getActivities(spaceIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+    ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
     boolean demoDeleteSpaceActivity = SecurityManager.canDeleteActivity(getContainer(), demoIdentity, spaceActivity);
     assertTrue("demoDeleteDemoActivity must be true", demoDeleteSpaceActivity);
     boolean maryDeleteSpaceActivity = SecurityManager.canDeleteActivity(getContainer(), maryIdentity, spaceActivity);
@@ -267,7 +278,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
     boolean johnDeleteSpaceActivity = SecurityManager.canDeleteActivity(getContainer(), johnIdentity, spaceActivity);
     assertFalse("johnDeleteSpaceActivity must be false", johnDeleteSpaceActivity);
     createActivities(demoIdentity, spaceIdentity, 1);
-    ExoSocialActivity demoToSpaceActivity = activityManager.getActivities(spaceIdentity).get(0);
+    spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+    ExoSocialActivity demoToSpaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
     boolean demoDeleteDemoToSpaceActivity = SecurityManager.canDeleteActivity(getContainer(),
                                                                               demoIdentity, demoToSpaceActivity);
     assertTrue("demoDeleteDemoToSpaceActivity must be true", demoDeleteDemoToSpaceActivity);
@@ -285,7 +297,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanCommentToActivity() {
     createActivities(demoIdentity, demoIdentity, 1);
-    ExoSocialActivity demoActivity = activityManager.getActivities(demoIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity demoActivity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
     boolean demoCommentToDemoActivity = SecurityManager.canCommentToActivity(getContainer(),
                                                                              demoIdentity, demoActivity);
     assertTrue("demoCommentToDemoActivity must be true", demoCommentToDemoActivity);
@@ -304,7 +317,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
                                                                  createdSpace.getPrettyName(), false);
     tearDownIdentityList.add(spaceIdentity);
     createActivities(spaceIdentity, spaceIdentity, 1);
-    ExoSocialActivity spaceActivity = activityManager.getActivities(spaceIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity);
+    ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
     boolean demoCommentToSpaceActivity = SecurityManager.canCommentToActivity(getContainer(),
                                                                               demoIdentity, spaceActivity);
     assertTrue("demoCommentToSpaceActivity must be true", demoCommentToSpaceActivity);
@@ -323,9 +337,11 @@ public class SecurityManagerTest extends AbstractServiceTest {
    */
   public void testCanDeleteComment() {
     createActivities(demoIdentity, demoIdentity, 1);
-    ExoSocialActivity demoActivity = activityManager.getActivities(demoIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity); 
+    ExoSocialActivity demoActivity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
     createComment(demoActivity, demoIdentity, 1);
-    ExoSocialActivity demoComment = activityManager.getComments(demoActivity).get(0);
+    RealtimeListAccess<ExoSocialActivity> demoCommentsListAccess = activityManager.getCommentsWithListAccess(demoActivity);
+    ExoSocialActivity demoComment = demoCommentsListAccess.loadAsList(0, demoCommentsListAccess.getSize()).get(0);
 
     boolean demoDeleteDemoComment = SecurityManager.canDeleteComment(getContainer(), demoIdentity, demoComment);
     assertTrue("demoDeleteDemoComment must be true", demoDeleteDemoComment);
@@ -336,10 +352,12 @@ public class SecurityManagerTest extends AbstractServiceTest {
 
     connectIdentities(maryIdentity, demoIdentity, true);
     createActivities(maryIdentity, demoIdentity, 1);
-    ExoSocialActivity maryActivity = activityManager.getActivities(demoIdentity).get(0);
+    demoActivitiesListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
+    ExoSocialActivity maryActivity = demoActivitiesListAccess.loadAsList(0, demoActivitiesListAccess.getSize()).get(0);
     createComment(maryActivity, demoIdentity, 1);
     createComment(maryActivity, maryIdentity, 1);
-    List<ExoSocialActivity> comments = activityManager.getComments(maryActivity);
+    RealtimeListAccess<ExoSocialActivity> maryActivityCommentListAccess = activityManager.getCommentsWithListAccess(maryActivity);
+    List<ExoSocialActivity> comments = maryActivityCommentListAccess.loadAsList(0, maryActivityCommentListAccess.getSize());
     assertEquals(2, comments.size());
 
     //BUG of ActivityManager, FIX IT and change these lines below following its changes.
@@ -367,11 +385,13 @@ public class SecurityManagerTest extends AbstractServiceTest {
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
                                                                  createdSpace.getPrettyName(), false);
     createActivities(spaceIdentity, spaceIdentity, 1);
-    ExoSocialActivity spaceActivity = activityManager.getActivities(spaceIdentity).get(0);
+    RealtimeListAccess<ExoSocialActivity> spaceActivitiesListAccess = activityManager.getActivitiesWithListAccess(spaceIdentity); 
+    ExoSocialActivity spaceActivity = spaceActivitiesListAccess.loadAsList(0, spaceActivitiesListAccess.getSize()).get(0);
 
     createComment(spaceActivity, maryIdentity, 1);
     createComment(spaceActivity, demoIdentity, 1);
-    List<ExoSocialActivity> spaceActivityComments = activityManager.getComments(spaceActivity);
+    RealtimeListAccess<ExoSocialActivity> spaceActivityCommentsListAccess = activityManager.getCommentsWithListAccess(spaceActivity);
+    List<ExoSocialActivity> spaceActivityComments = spaceActivityCommentsListAccess.loadAsList(0, spaceActivityCommentsListAccess.getSize());
     ExoSocialActivity maryCommentSpaceActivity = spaceActivityComments.get(0);// must be demo's comment
     ExoSocialActivity demoCommentSpaceActivity = spaceActivityComments.get(1);// must be mary's comment
 
@@ -422,7 +442,8 @@ public class SecurityManagerTest extends AbstractServiceTest {
       activity.setType("exosocial:core");
       activity.setTitle("title " + i);
       activity.setUserId(posterIdentity.getId());
-      activity = activityManager.saveActivity(identityStream, activity);
+      activityManager.saveActivityNoReturn(identityStream, activity);
+      activity = activityManager.getActivity(activity.getId());
       tearDownActivityList.add(activity);
     }
   }
@@ -435,12 +456,14 @@ public class SecurityManagerTest extends AbstractServiceTest {
    * @param number the number of comments
    */
   private void createComment(ExoSocialActivity existingActivity, Identity posterIdentity, int number) {
+    RealtimeListAccess<ExoSocialActivity> existingActivityCommentListAccess = null;
     for (int i = 0; i < number; i++) {
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment " + i);
       comment.setUserId(posterIdentity.getId());
       activityManager.saveComment(existingActivity, comment);
-      comment = activityManager.getComments(existingActivity).get(0);
+      existingActivityCommentListAccess = activityManager.getCommentsWithListAccess(existingActivity);
+      comment = existingActivityCommentListAccess.loadAsList(0, existingActivityCommentListAccess.getSize()).get(0);
     }
   }
 

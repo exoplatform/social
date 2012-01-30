@@ -44,11 +44,11 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
   template = "classpath:groovy/social/webui/space/UIVisibilityFormInputSet.gtmpl"
 )
 public class UISpaceVisibility extends UIFormInputSet {
-  private final String UI_SPACE_VISIBILITY   = "UIVisibility";
-  private final String UI_SPACE_REGISTRATION = "UIRegistration";
-  private final String VISIBILITY_BINDING    = "visibility";
-  private final String REGISTRATION_BINDING  = "registration";
-  private final String VISIBLE_VALIDATION_SPACE = "UISpaceVisibility.label.VisibleAndValidationSpace";
+  public static final String UI_SPACE_VISIBILITY   = "UIVisibility";
+  public static final String UI_SPACE_REGISTRATION = "UIRegistration";
+  private static final String VISIBILITY_BINDING    = "visibility";
+  private static final String REGISTRATION_BINDING  = "registration";
+  private static final String VISIBLE_VALIDATION_SPACE = "UISpaceVisibility.label.VisibleAndValidationSpace";
 
   /**
    * Constructor

@@ -1,18 +1,5 @@
 /*========================gadget my connection===============================*/
 
-.ClearFix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-.ClearFix {
-	!display: inline-block;
-  !zoom: 1;
-  !display: block; 
-}
 
 .FL{
 	float: left;

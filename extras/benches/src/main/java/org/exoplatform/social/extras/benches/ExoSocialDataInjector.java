@@ -37,9 +37,9 @@ import org.exoplatform.social.core.space.model.Space;
 public class ExoSocialDataInjector extends DataInjector {
 
   private static Log LOG = ExoLogger.getLogger(ExoSocialDataInjector.class);
-  private long       numberOfUser;
-  private long       numberOfRelation;
-  private long       numberOfActivity;
+  private int       numberOfUser;
+  private int       numberOfRelation;
+  private int       numberOfActivity;
   private int        numberOfSpace;
   private int        numberOfActivitySpace;
   private ExoSocialDataInjectionExecutor injector;
@@ -83,7 +83,9 @@ public class ExoSocialDataInjector extends DataInjector {
     if (numberOfRelation > 0) {
       nothingWasDone = false;
       LOG.info("\t> about to inject " + numberOfRelation + " connections.");
-      injector.generateRelations(numberOfRelation);
+      Identity[] identityArray = identities.toArray(new Identity[0]);
+      //injector.generateRelations(numberOfRelation);
+      injector.generateRelationsForTQA(numberOfUser, numberOfRelation, identityArray);
     }
     if (numberOfActivity > 0) {
       nothingWasDone = false;
@@ -133,15 +135,15 @@ public class ExoSocialDataInjector extends DataInjector {
     if (paramsMap != null) {
       //Gets the maximum the User using for creating Users
       String value = paramsMap.get("mU");
-      numberOfUser = longValue("mU", value);
+      numberOfUser = intValue("mU", value);
       
       //Gets the maximum the Relationship using for creating Relationships
-      value = paramsMap.get("mR");
-      numberOfRelation = longValue("mR", value);
+      value = paramsMap.get("mRpU");
+      numberOfRelation = intValue("mRpU", value);
       
       //Gets the maximum the Activity using for creating Activities
       value = paramsMap.get("mA");
-      numberOfActivity = longValue("mA", value);
+      numberOfActivity = intValue("mA", value);
       
      //Gets the maximum the Space using for creating Spaces
       value = paramsMap.get("mS");

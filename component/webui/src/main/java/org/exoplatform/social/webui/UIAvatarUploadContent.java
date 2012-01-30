@@ -23,12 +23,10 @@ import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.image.ImageUtils;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.profile.UIProfile;
 import org.exoplatform.social.webui.space.UISpaceInfo;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -48,7 +46,7 @@ import org.exoplatform.webui.event.EventListener;
   template = "classpath:groovy/social/webui/UIAvatarUploadContent.gtmpl",
   events = {
     @EventConfig(listeners = UIAvatarUploadContent.SaveActionListener.class),
-    @EventConfig(listeners = UIAvatarUploadContent.AbortActionListener.class)
+    @EventConfig(listeners = UIAvatarUploadContent.CancelActionListener.class)
   }
 )
 public class UIAvatarUploadContent extends UIContainer {
@@ -173,10 +171,10 @@ public class UIAvatarUploadContent extends UIContainer {
   }
   
   /**
-   * Aborts, close the popup window.
+   * Cancels, close the popup window.
    *
    */
-  public static class AbortActionListener extends EventListener<UIAvatarUploadContent> {
+  public static class CancelActionListener extends EventListener<UIAvatarUploadContent> {
     @Override
     public void execute(Event<UIAvatarUploadContent> event) throws Exception {
       UIAvatarUploadContent uiAvatarUploadContent = event.getSource();
