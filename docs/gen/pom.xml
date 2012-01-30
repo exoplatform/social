@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.wikbook</groupId>
       <artifactId>wikbook.template.core</artifactId>
-      <version>0.9.37</version>
     </dependency>
 
     <dependency>

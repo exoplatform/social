@@ -936,6 +936,12 @@
         <artifactId>wikbook.docbkxstyle</artifactId>
         <version>${org.wikbook.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.template.core</artifactId>
+        <version>${org.wikbook.version}</version>
+      </dependency>
+
 
     </dependencies>
   </dependencyManagement>
