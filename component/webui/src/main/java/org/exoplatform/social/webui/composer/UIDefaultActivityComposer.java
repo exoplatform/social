@@ -28,6 +28,7 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -84,9 +85,9 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.CONNECTIONS_ACTIVITIES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.USER_SPACE_ACTIVITIES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.USER_ACTIVITIES);
+      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.NETWORK_UPDATES)
+          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
       }
     }
   }
