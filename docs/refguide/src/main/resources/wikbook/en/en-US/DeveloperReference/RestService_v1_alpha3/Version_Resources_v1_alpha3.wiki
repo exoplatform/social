@@ -1,5 +1,5 @@
-h1. version/latest  {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha1.VersionResources.Versionlastest}
-h2. GET version/latest.format    {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get}
+h1. version/latest  {anchor:id=SOCref.DevRef.RestService_APIs_v1alpha3.VersionResources.Versionlastest}
+h2. GET version/latest.format    {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get}
 
 *Description*: Gets the latest eXo Social REST API version. This version number should be used as the latest and stable version that is considered to include all new features and updates of eXo Social REST services.
 
@@ -49,13 +49,16 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
 <version>v1-alpha3</version>
 {code}
 
-h1. version/supported {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionsupport}
+h1. version/supported {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionsupport}
 
-h2. GET version/supported.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get}
+h2. GET version/supported.format {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get}
 
-*Description*: Gets eXo Social REST API versions that are supported. This is for backward compatibility. If a client application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST have the latest to oldest order. For example, {noformat}[v2-alpha3, v1]{noformat}, but not {noformat}[v1, v2-alpha3]{noformat}.
+*Description*: Gets eXo Social REST API versions that are supported. This is for backward compatibility. If a client application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST have the latest to oldest order. For example, \[v2-alpha3, v1], but not \[v1, v2-alpha3].
 
-*Url*: {code}http://{domain_name}/{rest_context_name}/api/social/version/supported.format{code}
+*Url*:
+{code}
+ http://{domain_name}/{rest_context_name}/api/social/version/supported.format
+{code}
 
 For example:
 * [http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json]
@@ -98,4 +101,4 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xm
 <versions>
   <version>v1-alpha3</version>
 </versions>
-{code}
+{code}
