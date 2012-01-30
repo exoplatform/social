@@ -106,6 +106,8 @@
     <org.gatein.mop.version>1.1.0-GA</org.gatein.mop.version>
     <org.shindig.version>2.0.2</org.shindig.version>
     <org.chromattic.version>1.1.1</org.chromattic.version>
+    <org.wikbook.version>0.9.37</org.wikbook.version>
+    <docbkx-maven-plugin.version>2.0.13</docbkx-maven-plugin.version>
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
@@ -928,6 +930,13 @@
         <artifactId>staxnav.core</artifactId>
         <version>${org.staxnav.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.docbkxstyle</artifactId>
+        <version>${org.wikbook.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -1027,6 +1036,16 @@
             <meminitial>256m</meminitial>
             <maxmem>1024m</maxmem>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.wikbook</groupId>
+          <artifactId>wikbook.maven</artifactId>
+          <version>${org.wikbook.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.agilejava.docbkx</groupId>
+          <artifactId>docbkx-maven-plugin</artifactId>
+          <version>${docbkx-maven-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
