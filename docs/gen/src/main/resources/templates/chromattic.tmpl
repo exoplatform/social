@@ -1,6 +1,6 @@
 <#list @PrimaryType.children("@Property", "@ManyToOne") as property>
 <#if property_index == 0>
-The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following properties:
+The _{{{${@PrimaryType.attribute("name")}}}}_ node type has the following properties:
 || Property Name || Required Type ||Mutiple|| Description ||
 </#if>
 <#if property.name == "Property">
@@ -16,7 +16,7 @@ The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the fo
 <#list @PrimaryType.children("@OneToOne", "@OneToMany") as child>
 <#if child.doc() != "">
 <#if child_index == 0>
-The _{noformat}${@PrimaryType.attribute("name")}{noformat}_ node type has the following child nodes:
+The _{{{${@PrimaryType.attribute("name")}}}}_ node type has the following child nodes:
 || Child Nodes || Default Primary Type || Description ||
 </#if>
 <#if child.sibling("@MappedBy")??>

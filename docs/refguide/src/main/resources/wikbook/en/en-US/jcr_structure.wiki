@@ -7,16 +7,16 @@ See the eXo Social JCR structure in the chart below:
 !images/Social-Workspace.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
 
-The root node of Social workspace is _/production/_ which consists of two child nodes named _{noformat}soc:providers{noformat}_, and _{noformat}soc:spaces{noformat}_.
+The root node of Social workspace is _/production/_ which consists of two child nodes named _{{{soc:providers}}}_, and _{{{soc:spaces}}}_.
 
 h1. soc:providers  {anchor:id=SOCref.Social_JCR_Structure.socproviders}
-The _{noformat}soc:providers{noformat}_ node is used to store the provider entities. In eXo Social, there are two built-in provider entities, including _organization_, and _space_.
-Its type is _{noformat}soc:providers{noformat}_ that has child nodes of the _{noformat}soc:providerdefinition{noformat}_ type.
+The _{{{soc:providers}}}_ node is used to store the provider entities. In eXo Social, there are two built-in provider entities, including _organization_, and _space_.
+Its type is _{{{soc:providers}}}_ that has child nodes of the _{{{soc:providerdefinition}}}_ type.
 
 h2. soc:<provider_name>   {anchor:id=SOCref.Social_JCR_Structure.socproviders.provider_Name}
-The <provider_name> parameter in the _{noformat}soc:<provider_name>{noformat}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
+The <provider_name> parameter in the _{{{soc:<provider_name>}}}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
 
-The _{noformat}soc:<provider_name>{noformat}_ node of the _{noformat}soc:providerdefinition{noformat}_ type has the _{noformat}soc:<identityRemoteId>{noformat}_ child nodes that have the _{noformat}soc:identitydefinition{noformat}_ type.
+The _{{{soc:<provider_name>}}}_ node of the _{{{soc:providerdefinition}}}_ type has the _{{{soc:<identityRemoteId>}}}_ child nodes that have the _{{{soc:identitydefinition}}}_ type.
 
 h1. Identity  {anchor:id=SOCref.Social_JCR_Structure.IdentityEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}
@@ -56,7 +56,7 @@ h1. Activity {anchor:id=SOCref.Social_JCR_Structure.ActivityEntity}
 
 h1. Activity parameters {anchor:id=SOCref.Social_JCR_Structure.ActivityParametersEntity}
 
-The _{noformat}soc:activityparam{noformat}_ node type has the following property:
+The _{{{soc:activityparam}}}_ node type has the following property:
 || Property Name || Required Type || Multiple|| Description ||
 |*|String|false|A map of key-values. |
 

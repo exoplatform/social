@@ -4,11 +4,11 @@
 
 *Conventions*:
 
-The entry point for Social Rest service must be: _{noformat}/{rest_context_name}/private/api/social/{version}/{portalContainerName}/{social_resources}/{noformat}_. An example of activities resources: /rest/private/api/social/v1-alpha1/portal/activity/.
+The entry point for Social Rest service must be: _{{{/{rest_context_name}/private/api/social/{version}/{portalContainerName}/{social_resources}/}}}_. An example of activities resources: /rest/private/api/social/v1-alpha1/portal/activity/.
 
 There are 3 types of parameters on each URL:
 
-* *{noformat}{server_params}{noformat}*: this is the unchanged parameter for a specified server.
+* *{{{{server_params}}}}*: this is the unchanged parameter for a specified server.
 
 * *:id*: this param is for a specified data object, for example, activity Id and identity Id.
 
@@ -20,15 +20,15 @@ Currently, only the basic authentication is supported. Please see more details a
 
 The JSON support is mandatory. The other format SHOULD be supported too (XML, RSS, ATOM). The supported formats will be specified by the detailed documentation for the REST resources.
 
-The _{noformat}rest_context_name{noformat}_ and _{noformat}portal_container_name{noformat}_ parameters are used as follows:
+The _{{{{rest_context_name}}}}_ and _{{{portal_container_name}}}_ parameters are used as follows:
 
 * On eXo Social standalone: 
-** _{noformat}rest_context_name{noformat}_: _{noformat}rest-socialdemo{noformat}_; 
-** _{noformat}portal_container_name{noformat}_: _{noformat}socialdemo{noformat}_;
+** _{{{rest_context_name}}}_: _{{{rest-socialdemo}}}_;
+** _{{{portal_container_name}}}_: _{{{socialdemo}}}_;
 
 * On eXo Platform:
-** _{noformat}rest_context_name{noformat}_: _rest_;
-** _{noformat}portal_container_name{noformat}_: _portal_;
+** _{{{rest_context_name}}}_: _rest_;
+** _{{{portal_container_name}}}_: _portal_;
 
 h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
 {include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.ActivityResources.wiki"}

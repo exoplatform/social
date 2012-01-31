@@ -43,9 +43,9 @@ h1. Built-in XMLProcessor Plugins {anchor:id="SOCref_developreference_XMLProcess
 In eXo Social, there are the following built-in XMLProcessor plugins (also known as *filters*) that filter the input texts of users.
 || Filters || Description ||
 |*DOMContentEscapeFilter*|Process the *DOM tree* input and escape all *text nodes*.|
-|*DOMLineBreakerFilter*|Process the *DOM tree* input and add <br /> to all *text nodes* which contain {noformat}\n{noformat}.|
+|*DOMLineBreakerFilter*|Process the *DOM tree* input and add <br /> to all *text nodes* which contain {{{\n}}}.|
 |*DOMXMLTagFilter*|Process the *DOM tree* input and convert all *tag nodes* which do not exist in whitelist into *text Node*.|
-|*LineBreakerFilter*|Process the String input and replace {noformat}\n{noformat} to <br />.|
+|*LineBreakerFilter*|Process the String input and replace {{{\n}}} to <br />.|
 |*XMLBalancer*|Process the String input and add missing close tags to input.|
 |*XMLTagFilter*|Processes the String input and convert all tags which do not exist in whitelist into the escapsed String.|
 

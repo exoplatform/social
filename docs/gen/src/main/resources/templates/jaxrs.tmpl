@@ -20,11 +20,11 @@ http://platform35.demo.exoplatform.org/rest/private/${@Path.attribute("value")}$
 *Parameters*:
 * *Required (path parameters)*: <#if verb.children("@PathParam")?size = 0>No</#if>
 <#list verb.children("@PathParam") as param>
-** *{noformat}${param.attribute("flat:value")}{noformat}*: ${param.doc()}
+** *{{{${param.attribute("flat:value")}}}}*: ${param.doc()}
 </#list>
 * *Optional (query paramters)*: <#if verb.children("@QueryParam")?size = 0>No</#if>
 <#list verb.children("@QueryParam") as param>
-** *{noformat}${param.attribute("flat:value")}{noformat}*: ${param.doc()}
+** *{{{${param.attribute("flat:value")}}}}*: ${param.doc()}
 </#list>
 
 *Request*:

@@ -61,27 +61,26 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Gets the latest eXo Social REST services version. This version number should be used as the latest and stable
+   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable
    * version that is considered to include all new features and updates of eXo Social REST services.
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get
    * @request
-   * {code}
+   *{code}
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
    * or
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
-   * {code}
+   *{code}
    * @response
-   * {code:json}
-   *   {"version": "v1-alpha1"}
-   * {code}
+   *{code:json}
+   * {"version": "v1-alpha3"}
+   *{code}
    * or
-   * {code:xml}
-   *   <?xml version="1.0" encoding="UTF-8"?>
-   *   <version>v1-alpha1</version>
-   * {code}
+   *{code:xml}
+   * <version>v1-alpha3</version>
+   *{code}
    * @return response of the request, the type bases on the format param
    */
   @GET
@@ -100,29 +99,28 @@ public class VersionResources implements ResourceContainer {
   /**
    * Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client
    * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
-   * have the latest to oldest order. For example, {noformat}[v2, v1, v1-beta1]{noformat}, but not
-   * {noformat}[v1, v2, v1-beta1]{noformat}.
+   * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
+   * {{{[v1, v2, v1-beta3]}}}.
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get
    * @request
-   * {code}
+   *{code}
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json
    * or
    * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xml
-   * {code}
+   *{code}
    * @response
-   * {code:json}
-   *   {"versions": ["v1-alpha1"]}
-   * {code}
+   *{code:json}
+   * {"versions": ["v1-alpha3"]}
+   *{code}
    * or
-   * {code:xml}
-   *   <?xml version="1.0" encoding="UTF-8"?>
-   *   <versions>
-   *     <version>v1-alpha1</version>
-   *   </versions>
-   * {code}
+   *{code:xml}
+   * <versions>
+   *   <version>v1-alpha3</version>
+   * </versions>
+   *{code}
    * @return response of the request, the type bases on the format param
    */
   @GET
