@@ -1,0 +1,79 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/composer/UIDefaultActivityComposer.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/composer/UIDefaultActivityComposer.java	(revision 78587)
++++ component/webui/src/main/java/org/exoplatform/social/webui/composer/UIDefaultActivityComposer.java	(working copy)
+@@ -81,7 +81,7 @@
+       
+       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+       activitiesContainer.addActivity(activity);
+-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++      requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+       requestContext.addUIComponentToUpdateByAjax(uiComposer);
+     } else if(postContext == PostContext.USER){
+       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+@@ -101,7 +101,7 @@
+           requestContext.addUIComponentToUpdateByAjax(uiComposer);
+         } else {
+           activitiesContainer.addActivity(activity);
+-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++          requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+         }
+       } else{
+         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+Index: component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java	(revision 78587)
++++ component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java	(working copy)
+@@ -642,7 +642,7 @@
+       activitiesContainer.removeChildById(uiActivity.getId());
+       activitiesContainer.removeActivity(uiActivity.getActivity());
+ 
+-      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
++      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+     }
+   }
+ 
+Index: extras/document-composer-plugin/src/main/java/org/exoplatform/social/plugin/doc/UIDocActivityComposer.java
+===================================================================
+--- extras/document-composer-plugin/src/main/java/org/exoplatform/social/plugin/doc/UIDocActivityComposer.java	(revision 78587)
++++ extras/document-composer-plugin/src/main/java/org/exoplatform/social/plugin/doc/UIDocActivityComposer.java	(working copy)
+@@ -211,7 +211,7 @@
+         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+       } else {
+         activitiesContainer.addActivity(activity);
+-        requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++        requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+         requestContext.addUIComponentToUpdateByAjax(uiComposer);
+       }
+     } else{
+@@ -237,7 +237,7 @@
+     UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
+     UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+     activitiesContainer.addActivity(activity);
+-    requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++    requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+     requestContext.addUIComponentToUpdateByAjax(uiComposer);
+   }
+ 
+Index: extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java
+===================================================================
+--- extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java	(revision 78587)
++++ extras/link-composer-plugin/src/main/java/org/exoplatform/social/plugin/link/UILinkActivityComposer.java	(working copy)
+@@ -229,7 +229,7 @@
+ 
+       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
+       activitiesContainer.addActivity(activity);
+-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++      requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+       requestContext.addUIComponentToUpdateByAjax(uiComposer);
+     } else if (postContext == PostContext.USER) {
+       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+@@ -245,7 +245,7 @@
+           uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+         } else {
+           activitiesContainer.addActivity(activity);
+-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
++          requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
+           requestContext.addUIComponentToUpdateByAjax(uiComposer);
+         }
+       } else{

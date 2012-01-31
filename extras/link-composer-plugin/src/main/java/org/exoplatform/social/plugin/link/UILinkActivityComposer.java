@@ -229,7 +229,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
 
       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
       activitiesContainer.addActivity(activity);
-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+      requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
@@ -245,7 +245,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
           uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
         } else {
           activitiesContainer.addActivity(activity);
-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+          requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
           requestContext.addUIComponentToUpdateByAjax(uiComposer);
         }
       } else{

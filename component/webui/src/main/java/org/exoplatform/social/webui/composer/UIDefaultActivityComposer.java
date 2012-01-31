@@ -81,7 +81,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       
       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
       activitiesContainer.addActivity(activity);
-      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+      requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
       requestContext.addUIComponentToUpdateByAjax(uiComposer);
     } else if(postContext == PostContext.USER){
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
@@ -101,7 +101,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
           requestContext.addUIComponentToUpdateByAjax(uiComposer);
         } else {
           activitiesContainer.addActivity(activity);
-          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+          requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
         }
       } else{
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);

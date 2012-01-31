@@ -211,7 +211,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
         uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
       } else {
         activitiesContainer.addActivity(activity);
-        requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+        requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
         requestContext.addUIComponentToUpdateByAjax(uiComposer);
       }
     } else{
@@ -237,7 +237,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
     UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
     activitiesContainer.addActivity(activity);
-    requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+    requestContext.addUIComponentToUpdateByAjax(activitiesContainer.getParent());
     requestContext.addUIComponentToUpdateByAjax(uiComposer);
   }
 
