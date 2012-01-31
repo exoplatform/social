@@ -80,6 +80,11 @@ public class ActivityResources implements ResourceContainer {
    * must be equal or less than 100. If the actual number of comments is less than the provided positive number, the
    * number of actual comments must be returned. If the total number of comments is more than 100, it is recommended to
    * use activity/:id/comments.format instead.
+   * @param numberOfLikes Specifies the number of latest detailed likes to be returned along with this activity. By
+   * default, *number\_of\_likes=0*. If *number\_of\_likes* is a positive number, this number is considered as a limit
+   * number that must be equal or less than 100. If the total number of likes is less than the provided positive number,
+   * the number of actual likes must be returned. If the total number of likes is more than 100, it is recommended to
+   * use _activity/\:activityId/likes.format_ instead.
    * @param showActivityStream When this parameter is set to true, t or 1, the returned activity will provide more
    * information for the activity stream that this activity belongs to.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Get
