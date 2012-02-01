@@ -2577,9 +2577,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
       assertEquals("visibleSpaces() must return: " + countSpace, countSpace, visibleAllSpaces.size());
     }
     
-    //visible with remoteId = 'mary'  return 0 spaces: don't see
+    //visible with remoteId = 'mary'  return 6 spaces: can see
     {
-      int registrationCloseSpaceCount = 0;
+      int registrationCloseSpaceCount = 6;
       List<Space> registrationCloseSpaces = spaceService.getVisibleSpaces("mary", null);
       assertNotNull("registrationCloseSpaces must not be  null", registrationCloseSpaces);
       assertEquals("registrationCloseSpaces must return: " + registrationCloseSpaceCount, registrationCloseSpaceCount, registrationCloseSpaces.size());
@@ -2635,9 +2635,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
       assertEquals("invitedSpaces must return: " + invitedSpaceCount1, invitedSpaceCount1, invitedSpaces1.size());
     }
     
-    //visible with invited = 'paul'  return 0 spaces
+    //visible with invited = 'paul'  return 6 spaces
     {
-      int invitedSpaceCount2 = 0;
+      int invitedSpaceCount2 = 6;
       List<Space> invitedSpaces2 = spaceService.getVisibleSpaces("paul", null);
       assertNotNull("invitedSpaces must not be  null", invitedSpaces2);
       assertEquals("invitedSpaces must return: " + invitedSpaceCount2, invitedSpaceCount2, invitedSpaces2.size());
