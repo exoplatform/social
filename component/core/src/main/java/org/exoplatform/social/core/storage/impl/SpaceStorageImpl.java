@@ -1096,15 +1096,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       whereExpression.startGroup();
     }
     
-    //visibility::(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate')) 
+    //visibility::(soc:visibily like 'private') 
     whereExpression.startGroup();
     whereExpression.like(SpaceEntity.visibility, Space.PRIVATE);
-    whereExpression.and();
-    whereExpression.startGroup();
-    whereExpression.like(SpaceEntity.registration, Space.OPEN);
-    whereExpression.or();
-    whereExpression.like(SpaceEntity.registration, Space.VALIDATION);
-    whereExpression.endGroup();
     whereExpression.endGroup();
     
     //(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate'))
