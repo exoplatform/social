@@ -1,0 +1,13 @@
+Index: component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMember.java
+===================================================================
+--- component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMember.java	(revision 75759)
++++ component/webui/src/main/java/org/exoplatform/social/webui/space/UISpaceMember.java	(working copy)
+@@ -130,7 +130,7 @@
+   public UISpaceMember() throws Exception {
+     addUIFormInput(new UIFormStringInput(USER,null,null)
+                     .addValidator(MandatoryValidator.class)
+-                    .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d\\s._,]+$", "UISpaceMember.msg.Invalid-char"));
++                    .addValidator(ExpressionValidator.class, "^[\\p{L}][\\p{L}._\\-\\d]+$", "UISpaceMember.msg.Invalid-char"));
+     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
+     searchUserPopup.setWindowSize(640, 0);
+     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
