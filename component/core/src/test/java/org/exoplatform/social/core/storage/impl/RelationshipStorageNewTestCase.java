@@ -315,14 +315,12 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     Profile profile1 = new Profile(tmp1);
     profile1.setProperty(Profile.FIRST_NAME, "p1 first");
     profile1.setProperty(Profile.LAST_NAME, "p1 last");
-    profile1.setProperty(Profile.URL, "p1 url");
     tmp1.setProfile(profile1);
     identityStorage._createProfile(profile1);
 
     Profile profile2 = new Profile(tmp2);
     profile2.setProperty(Profile.FIRST_NAME, "p2 first");
     profile2.setProperty(Profile.LAST_NAME, "p2 last");
-    profile2.setProperty(Profile.URL, "p2 url");
     tmp2.setProfile(profile2);
     identityStorage._createProfile(profile2);
 
@@ -402,14 +400,12 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     Profile profile1 = new Profile(tmp1);
     profile1.setProperty(Profile.FIRST_NAME, "p1 first");
     profile1.setProperty(Profile.LAST_NAME, "p1 last");
-    profile1.setProperty(Profile.URL, "p1 url");
     tmp1.setProfile(profile1);
     identityStorage._createProfile(profile1);
 
     Profile profile2 = new Profile(tmp2);
     profile2.setProperty(Profile.FIRST_NAME, "p2 first");
     profile2.setProperty(Profile.LAST_NAME, "p2 last");
-    profile2.setProperty(Profile.URL, "p2 url");
     tmp2.setProfile(profile2);
     identityStorage._createProfile(profile2);
 
@@ -553,7 +549,6 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     profile = identityStorage.loadProfile(profile);
 
     profile.setProperty(Profile.POSITION, "my position");
-    profile.setProperty(Profile.AVATAR_URL, "my avatar url");
     identityStorage.saveProfile(profile);
 
     //
@@ -607,7 +602,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     for (Identity currentIdentity : storage.getConnections(tmp1, 0, 10)) {
       if (currentIdentity.getId().equals(tmp1)) {
         assertEquals(currentIdentity.getProfile().getProperty(Profile.POSITION), "my position");
-        assertEquals(currentIdentity.getProfile().getProperty(Profile.AVATAR_URL), "my avatar url");
+        assertNotNull(currentIdentity.getProfile().getAvatarUrl());
       }
     }
 

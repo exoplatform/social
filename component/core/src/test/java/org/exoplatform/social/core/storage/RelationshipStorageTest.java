@@ -185,11 +185,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
     
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -437,11 +437,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check root hasn't avatar but empty profile
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary has avatar
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNotNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(1).getProfile().getAvatarUrl());
 
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -523,11 +523,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
     
     for (Identity identity : listIdentities) {
       Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());

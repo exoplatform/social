@@ -43,6 +43,10 @@ public class ProfileData implements CacheData<Profile> {
 
   private final Map<String, Object> data;
 
+  private final String url;
+
+  private final String avatarUrl;
+
   public ProfileData(final Profile profile) {
     this.profileId = profile.getId();
     this.identityId = profile.getIdentity().getId();
@@ -50,6 +54,8 @@ public class ProfileData implements CacheData<Profile> {
     this.remoteId = profile.getIdentity().getRemoteId();
     this.hasChanged = profile.hasChanged();
     this.data = Collections.unmodifiableMap(profile.getProperties());
+    this.url = profile.getUrl();
+    this.avatarUrl = profile.getAvatarUrl();
   }
 
   public String getProfileId() {
@@ -79,6 +85,8 @@ public class ProfileData implements CacheData<Profile> {
 
     Profile profile = new Profile(identity);
     profile.setId(profileId);
+    profile.setUrl(url);
+    profile.setAvatarUrl(avatarUrl);
     for(String key : data.keySet()) {
       profile.setProperty(key, data.get(key));
     }

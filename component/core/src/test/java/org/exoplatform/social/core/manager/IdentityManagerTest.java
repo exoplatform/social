@@ -719,8 +719,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
     assertEquals("gotRootIdentity.getProfile().getProperty(Profile.FIRST_NAME) must be updated: "
         + newFirstName, newFirstName, gotRootIdentity.getProfile().getProperty(Profile.FIRST_NAME));
 
-    final String johnAvatarUrl = "http://domain.com/avatar/john.jpg";
-    johnProfile.setProperty(Profile.AVATAR_URL, johnAvatarUrl);
     try {
       identityManager.updateAvatar(johnProfile);
     } catch (Exception e1) {
@@ -729,10 +727,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
 
     Identity gotJohnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                    "john");
-    
-    assertEquals("gotJohnIdentity.getProfile().getProperty(Profile.AVATAR_URL) must return "
-        + johnAvatarUrl, johnAvatarUrl, gotJohnIdentity.getProfile()
-                                                       .getProperty(Profile.AVATAR_URL));
     tearDownIdentityList.add(johnIdentity);
     tearDownIdentityList.add(rootIdentity);
     // an activity for avatar created, clean it up here

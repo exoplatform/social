@@ -491,7 +491,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
     storage._saveProfile(profile);
 
     //
@@ -499,13 +498,15 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNull(toLoadProfile.getProperty(Profile.USERNAME));
     assertNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
     assertNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-    assertNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+    assertNull(toLoadProfile.getAvatarUrl());
     storage._loadProfile(toLoadProfile);
     assertNotNull(toLoadProfile.getId());
     assertNotNull(toLoadProfile.getProperty(Profile.USERNAME));
     assertNotNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
     assertNotNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-    assertNotNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+
+    // No avatar saved
+    assertNull(toLoadProfile.getAvatarUrl());
 
     tearDownIdentityList.add(newIdentity.getId());
   }
@@ -570,7 +571,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    profile.setProperty(Profile.USERNAME, "user");
    profile.setProperty(Profile.FIRST_NAME, "first");
    profile.setProperty(Profile.LAST_NAME, "last");
-   profile.setProperty(Profile.AVATAR_URL, "avatarurl");
    storage._saveProfile(profile);
 
    //
@@ -578,7 +578,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    assertNull(toLoadProfile.getProperty(Profile.USERNAME));
    assertNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
    assertNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-   assertNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+   assertNull(toLoadProfile.getAvatarUrl());
 
    //
    storage._loadProfile(toLoadProfile);
@@ -586,7 +586,9 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    assertNotNull(toLoadProfile.getProperty(Profile.USERNAME));
    assertNotNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
    assertNotNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-   assertNotNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+
+   // No avatar saved
+   assertNull(toLoadProfile.getAvatarUrl());
 
    //
    Profile updaterProfile = new Profile(newIdentity);
@@ -602,7 +604,10 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    toLoadAfterUpdateProfile = storage.loadProfile(toLoadAfterUpdateProfile);
    assertEquals("updated user", toLoadAfterUpdateProfile.getProperty(Profile.USERNAME));
    assertEquals("updated last", toLoadAfterUpdateProfile.getProperty(Profile.LAST_NAME));
-   assertEquals("avatarurl", toLoadAfterUpdateProfile.getProperty(Profile.AVATAR_URL));
+
+   // No avatar saved
+   assertNull(toLoadAfterUpdateProfile.getAvatarUrl());
+
    assertEquals("first", toLoadAfterUpdateProfile.getProperty(Profile.FIRST_NAME));
    assertEquals("new full", toLoadAfterUpdateProfile.getProperty(Profile.FULL_NAME));
 
@@ -869,7 +874,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
 
     // urls
     List<Map<String, String>> urls = new ArrayList<Map<String, String>>();
@@ -926,13 +930,15 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNull(toLoadProfile.getProperty(Profile.USERNAME));
     assertNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
     assertNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-    assertNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+    assertNull(toLoadProfile.getAvatarUrl());
     storage._loadProfile(toLoadProfile);
     assertNotNull(toLoadProfile.getId());
     assertNotNull(toLoadProfile.getProperty(Profile.USERNAME));
     assertNotNull(toLoadProfile.getProperty(Profile.FIRST_NAME));
     assertNotNull(toLoadProfile.getProperty(Profile.LAST_NAME));
-    assertNotNull(toLoadProfile.getProperty(Profile.AVATAR_URL));
+
+    // No avatar saved
+    assertNull(toLoadProfile.getAvatarUrl());
 
     List<Map<String, String>> loadedIms = (List<Map<String, String>>) toLoadProfile.getProperty(Profile.CONTACT_IMS);
     List<Map<String, String>> loadedUrls = (List<Map<String, String>>) toLoadProfile.getProperty(Profile.CONTACT_URLS);
@@ -976,7 +982,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
 
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
@@ -1056,8 +1061,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
-
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
     Map<String, Object> xp1 = new HashMap<String, Object>();
@@ -1101,7 +1104,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
 
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();
@@ -1146,7 +1148,6 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     profile.setProperty(Profile.USERNAME, "user");
     profile.setProperty(Profile.FIRST_NAME, "first");
     profile.setProperty(Profile.LAST_NAME, "last");
-    profile.setProperty(Profile.AVATAR_URL, "avatarurl");
 
     // xps
     List<Map<String, Object>> xps = new ArrayList<Map<String, Object>>();

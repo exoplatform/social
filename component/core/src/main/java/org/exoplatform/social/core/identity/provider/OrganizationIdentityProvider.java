@@ -129,7 +129,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.EMAIL, user.getEmail());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
-    profile.setProperty(Profile.URL, lp.getProfileUri(user.getUserName()));
   }
 
   /**

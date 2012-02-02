@@ -174,7 +174,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final String userName = "username";
     final String firstName = "FirstName";
     final String lastName = "LastName";
-    final String avatarUrl = "http://localhost:8080/rest-socialdemo/username/avatar.jpg";
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, userName);
     identityStorage.saveIdentity(tobeSavedIdentity);
 
@@ -183,7 +182,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tobeSavedProfile.setProperty(Profile.USERNAME, userName);
     tobeSavedProfile.setProperty(Profile.FIRST_NAME, firstName);
     tobeSavedProfile.setProperty(Profile.LAST_NAME, lastName);
-    tobeSavedProfile.setProperty(Profile.AVATAR_URL, avatarUrl);
 
     assertTrue(tobeSavedProfile.hasChanged());
     identityStorage.saveProfile(tobeSavedProfile);
@@ -194,7 +192,6 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(userName, tobeSavedProfile.getProperty(Profile.USERNAME));
     assertEquals(firstName, tobeSavedProfile.getProperty(Profile.FIRST_NAME));
     assertEquals(lastName, tobeSavedProfile.getProperty(Profile.LAST_NAME));
-    assertEquals(avatarUrl, tobeSavedProfile.getProperty(Profile.AVATAR_URL));
     assertEquals(firstName + " " + lastName, tobeSavedProfile.getFullName());
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName));
   }

@@ -82,9 +82,14 @@ public class LinkProvider {
     SpaceService spaceService = getSpaceService();
     Space space = spaceService.getSpaceByPrettyName(prettyName);
     RequestContext ctx = RequestContext.getCurrentInstance();
-    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
-    return nodeURL.setResource(resource).toString();  
+    if (ctx != null) {
+      NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+      NavigationResource resource = new NavigationResource(SiteType.GROUP, space.getGroupId(), space.getUrl());
+      return nodeURL.setResource(resource).toString();
+    }
+    else {
+      return null;
+    }
   }
 
   /**
@@ -294,7 +299,7 @@ public class LinkProvider {
    * @deprecated use {@link Profile#getAvatarUrl()}. Will be removed at 1.3.x
    */
   public static String getAvatarImageSource(final Profile profile) {
-    String avatarUrl = (String) profile.getProperty(Profile.AVATAR_URL);
+    String avatarUrl = profile.getAvatarUrl();
     if (avatarUrl != null) {
       return avatarUrl;
     }
@@ -302,7 +307,7 @@ public class LinkProvider {
     final AvatarAttachment avatarAttachment = (AvatarAttachment) profile.getProperty(Profile.AVATAR);
     if (avatarAttachment != null) {
       avatarUrl = buildAvatarImageUri(avatarAttachment);
-      profile.setProperty(Profile.AVATAR_URL, avatarUrl);
+      profile.setAvatarUrl(avatarUrl);
       getIdentityManager().saveProfile(profile);
       return avatarUrl;
     }
