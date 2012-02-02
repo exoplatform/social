@@ -117,16 +117,19 @@ visibility: hidden;
   background: url('images/ATitleBarL.gif') no-repeat left top;
   padding-left: 4px;
   margin-top: 8px;
+  height:25px;
 }
 
 .ATitleBarR {
   background: url('images/ATitleBarR.gif') no-repeat right top;
   padding-right: 4px;
+  height:25px;
 }
 
 .ATitleBarM {
   background: url('images/ATitleBarM.gif') repeat-x;
   padding-left: 4px;
+  height:25px;
 }
 
 .ATitleBarC {

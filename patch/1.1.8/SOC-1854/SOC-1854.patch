@@ -1,0 +1,36 @@
+Index: webapp/portlet/src/main/webapp/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css
+===================================================================
+--- webapp/portlet/src/main/webapp/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css	(revision 76927)
++++ webapp/portlet/src/main/webapp/skin/social/portlet/UISpaceActivityStreamPortlet/DefaultStylesheet.css	(working copy)
+@@ -117,16 +117,19 @@
+   background: url('images/ATitleBarL.gif') no-repeat left top;
+   padding-left: 4px;
+   margin-top: 8px;
++  height:25px;
+ }
+ 
+ .ATitleBarR {
+   background: url('images/ATitleBarR.gif') no-repeat right top;
+   padding-right: 4px;
++  height:25px;
+ }
+ 
+ .ATitleBarM {
+   background: url('images/ATitleBarM.gif') repeat-x;
+   padding-left: 4px;
++  height:25px;
+ }
+ 
+ .ATitleBarC {
+Index: webapp/resources/src/main/webapp/skin/social/webui/UIComposer/DefaultSkin.css
+===================================================================
+--- webapp/resources/src/main/webapp/skin/social/webui/UIComposer/DefaultSkin.css	(revision 76927)
++++ webapp/resources/src/main/webapp/skin/social/webui/UIComposer/DefaultSkin.css	(working copy)
+@@ -7,6 +7,7 @@
+   border:1px solid #EBE8D9;
+   margin-top:5px;
+   padding: 8px;
++  width: 98%;
+ }
+ 
+ .UIComposer .BlastContainer .BlastInputPeople {
