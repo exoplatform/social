@@ -734,8 +734,9 @@ public class SpaceUtils {
     String space_Name = spaceName.replaceAll(" ", "_"); // Compares with Existing Pages
     String spacePrettyName = cleanString(spaceName); // Compares with Existing DashBoard Tabs's & Spaces's Names
     for (PageNavigation pn : allNavs) {
-      if ((pn.getNode(space_Name) != null) ||
-          (pn.getNode(spacePrettyName) != null)) return true;
+      if (((pn.getNode(space_Name) != null) ||
+          (pn.getNode(spacePrettyName) != null)) && 
+          (getSpaceByGroupId(pn.getOwnerId()) != null)) return true;
       ArrayList<PageNode> nodes = pn.getNodes();
       for (PageNode node : nodes) {
         if ((node.getChild(space_Name) != null) || 
