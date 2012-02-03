@@ -51,10 +51,19 @@
     this.commentFormBlockId = 'CommentFormBlock' + this.activityId;
     this.commentTextareId = 'CommentTextarea' + this.activityId;
     this.commentButtonId = 'CommentButton' + this.activityId;
+    this.deleteCommentButtonIds = [];
     this.contentBoxId = 'ContextBox' + this.activityId;
     this.deleteActivityButtonId = 'DeleteActivityButton' + this.activityId;
     this.allCommentSize = parseInt(params.allCommentSize);
     this.commentBlockBoundId = "CommentBlockBound" + this.activityId;
+    this.commentBlockIds = [];
+    this.activityContextBoxId = "ActivityContextBox" + this.activityId;
+    if (this.allCommentSize > 0) {
+      for (var i = 1; i <= this.allCommentSize; i++) {
+        this.deleteCommentButtonIds[i - 1] = 'DeleteCommentButton' + this.activityId + i;
+        this.commentBlockIds[i - 1] = "CommentBlock" + this.activityId + i;
+      }
+    }
   }
 
   UIActivity.prototype.init = function() {
@@ -63,9 +72,18 @@
     this.commentFormBlockEl = Util.getElementById(this.commentFormBlockId);
     this.commentTextareaEl = Util.getElementById(this.commentTextareId);
     this.commentButtonEl = Util.getElementById(this.commentButtonId);
+    this.deleteCommentButtonEls = [];
     this.contentBoxEl = Util.getElementById(this.contentBoxId);
     this.deleteActivityButtonEl = Util.getElementById(this.deleteActivityButtonId);
     this.commentBlockBoundEl = Util.getElementById(this.commentBlockBoundId);
+    this.commentBlockEls = [];
+    this.activityContextBoxEl = Util.getElementById(this.activityContextBoxId);
+    if(this.allCommentSize > 0) {
+      for(var i=0; i<this.allCommentSize; i++) {
+        this.deleteCommentButtonEls[i] = Util.getElementById(this.deleteCommentButtonIds[i]);
+        this.commentBlockEls[i] = Util.getElementById(this.commentBlockIds[i]);
+      }
+    }
     
     if (!(this.commentFormBlockEl && this.commentTextareaEl && this.commentButtonEl)) {
       alert('err: init uiActivity!');
@@ -139,16 +157,32 @@
     }
 
     if (this.deleteActivityButtonEl !== null) {
-      Util.addEventListener(this.contentBoxEl, ['mouseover', 'focus'], function(evt) {
+      Util.addEventListener(this.activityContextBoxEl, ['mouseover', 'focus'], function(evt) {
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxHilight';
       }, false);
 
-      Util.addEventListener(this.contentBoxEl, ['mouseout', 'blur'], function(evt) {
+      Util.addEventListener(this.activityContextBoxEl, ['mouseout', 'blur'], function(evt) {
         uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxNormal';
       }, false);
 
     }
 
+    if (this.allCommentSize > 0) {
+      for (var i = 0; i < this.allCommentSize; i++) {
+        (function(i) {
+          //when this element is displayed
+          if (uiActivity.commentBlockEls[i]) {
+            Util.addEventListener(uiActivity.commentBlockEls[i], ['mouseover', 'focus'], function(evt) {
+              uiActivity.deleteCommentButtonEls[i].className = 'CloseContentBoxHilight';
+            }, false);
+
+            Util.addEventListener(uiActivity.commentBlockEls[i], ['mouseout', 'blur'], function(evt) {
+              uiActivity.deleteCommentButtonEls[i].className = 'CloseContentBoxNormal';
+            }, false);
+          }
+        })(i);
+      }
+    }
   }
   //expose
   window_.eXo = window_.eXo || {};
