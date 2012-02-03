@@ -1152,37 +1152,40 @@
 	height: 100% !important;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound {
+  padding: 0 112px;
+}
+
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft {
 	height: 116px;
 	width: 116px;
-	margin: 0 112px;
 	border: 1px solid #e6e6e6;
 	border-radius: 5px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .Image {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft .Image {
 	margin: 0px 0 0px 25px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .Image img {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft .Image img {
 	margin: 22px 0 8px 0px;
 }
 
-.UISpaceInfo .SpaceContainer .UIFormGrid td.FieldLabel {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .UIFormGrid td.FieldLabel {
 	width: 100px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft .ChangeAvaButton {
 	margin-right: 8px;
 	text-align: right;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .ChangeAvaButton .ChangeAva {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft .ChangeAvaButton .ChangeAva {
 	background: url('DefaultSkin/background/ChangeAva.gif') no-repeat right;
 	padding: 2px 6px;
 }
 
-.UISpaceInfo .SpaceContainer .SpaceInfoLeft .Arrow {
+.UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft .Arrow {
 	background: url('DefaultSkin/background/Arrow.gif') no-repeat right 5px;
 	line-height: 15px;
 	padding: 0 12px 0 5px;

@@ -39,6 +39,7 @@
 <div class="$uicomponent.id">
   <% uiform.begin() %>
     <div class="SpaceContainer">
+    <div class="SpaceInfoBound">
       <div class="SpaceInfoLeft">
 		<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
 		  <img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
@@ -46,6 +47,7 @@
         <div class="ChangeAvaButton">
             <a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
         </div>
+      </div>
       </div>
       <table class="UIFormGrid">
         <tbody>
