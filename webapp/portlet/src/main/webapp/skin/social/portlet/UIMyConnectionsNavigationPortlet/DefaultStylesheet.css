@@ -32,12 +32,12 @@
 	background: #f3f3f3;
 }
 
-.UIMyConnectionsNavigationPortlet{
+.UIMyConnectionsNavigationPortlet {
 	background: #F3F3F3;
 }
 
 .UIMyConnectionsNavigationPortlet .RelTitle {
-	background: url(DefaultSkin/background/RelTitle.gif) no-repeat center top;
+	background: url('DefaultSkin/background/RelTitle.gif') no-repeat center top;
 	color: #2f2f2f;
 	font-weight: bold;
 	height: 26px;
@@ -50,7 +50,7 @@
 }
 
 .UIMyConnectionsNavigationPortlet .UIVerclTab .SelectedTab {
-	background: url(DefaultSkin/background/SeldTab.gif) no-repeat left top;
+	background: url('DefaultSkin/background/SeldTab.gif') no-repeat left top;
 }
 
 .UIVerclTab {
@@ -60,14 +60,14 @@
 }
 
 .UIVerclTab .Tab {
-	height:23px;
-	line-height:23px;
-	padding-right:20px;
-	text-align:right;
+	height: 23px;
+	line-height: 23px;
+	padding-right: 20px;
+	text-align: right;
 }
 
 .UIVerclTab .SelectedTab {
-	background: url(DefaultSkin/background/SelectedTab.gif) no-repeat left top;
+	background: url('DefaultSkin/background/SelectedTab.gif') no-repeat left top;
 }
 
 .UIVerclTab .SelectedTab a {

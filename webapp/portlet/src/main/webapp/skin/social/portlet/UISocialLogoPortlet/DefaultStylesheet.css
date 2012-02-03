@@ -23,19 +23,18 @@
 	line-height: 38px;
 }
 
-
 .UISocialLogoPortlet .Img img {
 	height: 38px;
 }
 
-.UISocialLogoPortlet .Img,.UISocialLogoPortlet .BannerTitle {
+.UISocialLogoPortlet .Img, .UISocialLogoPortlet .BannerTitle {
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
 	color: #3c3c3c;
 	font-size: 17px;
 }
 
-.UISocialLogoPortlet .Signin a,.UISocialLogoPortlet .Signout a,
+.UISocialLogoPortlet .Signin a, .UISocialLogoPortlet .Signout a,
 .UISocialLogoPortlet .Signout span {
 	display: block;
 	float: right; /* orientation=lt */
@@ -58,7 +57,7 @@
 .UISocialLogoPortlet a.User {
 	padding: 0 4px; 
 	background: none;
-	color: #e66a1f;;
+	color: #e66a1f;
 }
 
 .UISocialLogoPortlet a:hover {

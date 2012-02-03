@@ -17,22 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-.UISocialExtensionLogoContainerTDContainer{
+.UISocialExtensionLogoContainerTDContainer {
 	width: 175px;
 }
- 
-.UISocialExtensionBannerAndNavigationContainerTDContainer{
-} 
 
-.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx{
+.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx {
 	background: #20263f;
 	height: 56px;
 	padding: 18px 0 0 30px;
 }
 
-.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx a{
- 	background: url('DefaultSkin/background/LogoSocialEx.png') no-repeat left top;
- 	height: 45px;
- 	width: 144px;
- 	display: block;
+.UISocialExtensionLogoContainerTDContainer .UILogoSocialEx a {
+	background: url('DefaultSkin/background/LogoSocialEx.png') no-repeat left top;
+	height: 45px;
+	width: 144px;
+	display: block;
  }

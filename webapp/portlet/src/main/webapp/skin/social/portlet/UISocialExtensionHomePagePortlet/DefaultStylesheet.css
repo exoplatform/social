@@ -18,7 +18,7 @@ a {
 	text-decoration: none;
 }
 
-h1,h2,h3,h4,h5,h6, p {
+h1, h2, h3, h4, h5, h6, p {
 	margin: 0px;
 }
 
@@ -40,26 +40,26 @@ h6 {font-size: 11px;}
 
 /***************** UIWorkingWorkspace **********************/
 
-div, table, tr, td, img, form{
-	font-family:Lucida Sans,arial,tahoma;
+div, table, tr, td, img, form {
+	font-family: Lucida Sans, arial, tahoma;
 }
 
-.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage{
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage {
 	padding: 0px;
 	width: 983px;
 	margin: 0 auto;
 }
 
-.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock{
+.UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY .UIPage .UIComponentBlock {
 	background-color: #eeeeee;
 }
 
-.UIContenSocialExtan{
+.UIContenSocialExtan {
 	width: 983px;
 	margin: 0 auto;
 }
 
-.UIContenSocialExtan .BgBannerHomepage{
+.UIContenSocialExtan .BgBannerHomepage {
 	background: url('DefaultSkin/background/BannerSocialExtan.jpg') no-repeat left top;
 	height: 292px;
 	width: 979px;
@@ -67,71 +67,71 @@ div, table, tr, td, img, form{
 }
 
 .UIContenSocialExtan .BgBannerHomepage .Title {
-	float:right;
-	letter-spacing:-1px;
-	margin-right:52px;
-	padding-top:48px;
-	text-align:right;
+	float: right;
+	letter-spacing: -1px;
+	margin-right: 52px;
+	padding-top: 48px;
+	text-align: right;
 }
 
 .UIContenSocialExtan .BgBannerHomepage .Title .TxtLarge {
-	font-size:50px;
+	font-size: 50px;
 	color: #5cc4af;
 }
 
 .UIContenSocialExtan .BgBannerHomepage .Title .TxtSmall {
-	font-size:26px;
+	font-size: 26px;
 	color: #4ebba5;
 }
 
-.UIContenSocialExtan .BgTL{
+.UIContenSocialExtan .BgTL {
 	background: url('DefaultSkin/background/BgBorder.gif') no-repeat left top;
 	padding-left: 12px;
 }
 
-.UIContenSocialExtan .BgTC{
+.UIContenSocialExtan .BgTC {
 	background: url('DefaultSkin/background/BgBorder.gif') repeat-x left -8px;
 	height: 8px;
 }
 
-.UIContenSocialExtan .BgTR{
+.UIContenSocialExtan .BgTR {
 	background: url('DefaultSkin/background/BgBorder.gif') no-repeat right -16px;
 	padding-right: 12px;
 }
 
-.UIContenSocialExtan .BgBL{
+.UIContenSocialExtan .BgBL {
 	background: url('DefaultSkin/background/BgBorder.gif') no-repeat left -24px;
 	padding-left: 12px;
 }
 
-.UIContenSocialExtan .BgBC{
+.UIContenSocialExtan .BgBC {
 	background: url('DefaultSkin/background/BgBorder.gif') repeat-x left -37px;
 	height: 8px;
 }
 
-.UIContenSocialExtan .BgBR{
+.UIContenSocialExtan .BgBR {
 	background: url('DefaultSkin/background/BgBorder.gif') no-repeat right -50px;
 	padding-right: 12px;
 }
 	
-.UIContenSocialExtan .BgML{
+.UIContenSocialExtan .BgML {
 	background: url('DefaultSkin/background/BgLeftM.gif') repeat-y left top;
 	padding-left: 12px;
 }
 
-.UIContenSocialExtan .BgMR{
+.UIContenSocialExtan .BgMR {
 	background: url('DefaultSkin/background/BgRightM.gif') repeat-y right top;
 	padding-right: 11px;
 }
 
-.UIContenSocialExtan .BgMC{
+.UIContenSocialExtan .BgMC {
 	background-color: #fff;
 	padding-bottom: 19px;
 	letter-spacing: -1px;
 	padding-top: 13px;
 }
 
-.UIContenSocialExtan .ColsPeople{
+.UIContenSocialExtan .ColsPeople {
 	width: 280px;
 	border-right: solid 1px #c5c5c5;
 	padding-right: 15px;
@@ -139,7 +139,7 @@ div, table, tr, td, img, form{
 	white-space: nowrap;
 }
 
-.UIContenSocialExtan .ColsSpace{
+.UIContenSocialExtan .ColsSpace {
 	width: 322px;
 	border-right: solid 1px #c5c5c5;
 	padding-right: 30px;
@@ -147,19 +147,19 @@ div, table, tr, td, img, form{
 	white-space: nowrap;
 }
 
-.UIContenSocialExtan .ColsIconExtan{
+.UIContenSocialExtan .ColsIconExtan {
 	width: auto;
 	margin: 0 auto;
 }
 
-.UIContenSocialExtan .TxtTile{
+.UIContenSocialExtan .TxtTile {
 	font-weight: bold;
 	font-size: 18px;
 	color: #f58220;
 	overflow: hidden;
 }
 
-.UIContenSocialExtan .TxtPeople{
+.UIContenSocialExtan .TxtPeople {
 	border-left: solid 1px #c5c5c5;
 	padding-left: 10px;
 	margin-left: 10px;
@@ -168,7 +168,7 @@ div, table, tr, td, img, form{
 }
 
 
-.UIContenSocialExtan ul{
+.UIContenSocialExtan ul {
 	margin: 0px;
 	padding: 0px;
 	list-style: none;
@@ -176,19 +176,19 @@ div, table, tr, td, img, form{
 	font-size: 12px;
 }
 
-.UIContenSocialExtan ul li{
+.UIContenSocialExtan ul li {
 	background: url('DefaultSkin/background/ArrowTxt.gif') no-repeat left top;
 	padding-left: 10px;
 }
 
 
-.ColsIconExtan .BlockWebsite{
+.ColsIconExtan .BlockWebsite {
 	width: 90px;
 	text-align: center;
 	margin-top: 8px;
 }
 
-.ColsIconExtan .IconChatOnline{
+.ColsIconExtan .IconChatOnline {
 	background: url('DefaultSkin/background/IconSocialExtan.gif') no-repeat center -111px;
 	height: 55px;
 	width: 59px;
@@ -196,7 +196,7 @@ div, table, tr, td, img, form{
 	margin: auto;
 }
 
-.ColsIconExtan .IconChatOffline{
+.ColsIconExtan .IconChatOffline {
 	background: url('DefaultSkin/background/IconSocialExtan.gif') no-repeat center -166px;
 	height: 55px;
 	width: 59px;
@@ -204,7 +204,7 @@ div, table, tr, td, img, form{
 	margin: auto;
 }
 
-.ColsIconExtan .IconForum{
+.ColsIconExtan .IconForum {
 	background: url('DefaultSkin/background/IconSocialExtan.gif') no-repeat center top;
 	height: 55px;
 	width: 59px;
@@ -212,7 +212,7 @@ div, table, tr, td, img, form{
 	margin: auto;
 }
 
-.ColsIconExtan .IconContact{
+.ColsIconExtan .IconContact {
 	background: url('DefaultSkin/background/IconSocialExtan.gif') no-repeat center -55px;
 	height: 55px;
 	width: 59px;
@@ -220,7 +220,7 @@ div, table, tr, td, img, form{
 	margin: auto;
 }
 
-.ColsIconExtan .TxtLinkIcon{
+.ColsIconExtan .TxtLinkIcon {
 	color: #565759;
 	font-size: 14px;
 	font-weight: bold;
@@ -228,14 +228,14 @@ div, table, tr, td, img, form{
 	margin-top: 3px;
 }
 
-.UIWorkingWorkspace .UIPageBody .BLPagebody{
-	background:none;
+.UIWorkingWorkspace .UIPageBody .BLPagebody {
+	background: none;
 }
 
 .UIWorkingWorkspace .UIPageBody .BRPagebody {
-	background:none;
+	background: none;
 }
 
 .UIWorkingWorkspace .UIPageBody .BMPagebody {
-	background:none;
+	background: none;
 }

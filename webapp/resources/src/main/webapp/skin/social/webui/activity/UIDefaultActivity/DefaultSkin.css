@@ -20,22 +20,22 @@
 }
 
 .UIActivity .AvatarPeopleBG img {
-	height:47px;
-	width:47px;
+	height: 47px;
+	width: 47px;
 }
 
 .UIActivity .Avatar {
-	background:none;
-	float:left; /* orientation=lt */
-	float:right; /* orientation=rt */
-	width:56px;
+	background: none;
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
+	width: 56px;
 	position: relative;
 }
 
 .UIActivity .Avatar img {
-	width:56px;
-	height:56px;
-	-moz-border-radius: 3px 3px 3px 3px;
+	width: 56px;
+	height: 56px;
+	border-radius: 3px 3px 3px 3px;
 }
 
 .UIActivity .Avatar span {
@@ -57,25 +57,24 @@
 }
 
 .UIActivity .AvatarCM {
-	background:none;
-	float:left; /* orientation=lt */
-	float:right; /* orientation=rt */
+	background: none;
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
 	margin: 0px 10px 0px 0px;
-	width:38px;
+	width: 38px;
 	position: relative;
 }
 
 .UIActivity .AvatarCM img {
-	width:38px;
-	height:37px;
+	width: 38px;
+	height: 37px;
 }
 
-.UIActivity .CommentInputBox{
+.UIActivity .CommentInputBox {
 	margin-left: 50px;
 	padding-right: 15px;
 	border: 1px solid #e1e1e1;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	overflow: hidden;
 }
 
@@ -100,7 +99,6 @@
 .UIActivity .NormalBox {
 	padding: 10px 0px;
 	border-bottom: 1px solid #e2ddc7;
-	*margin-left: -74px;
 	margin-left: 1px;
 }
 
@@ -114,36 +112,36 @@
 	font-size: 11px;
 	padding: 5px;
 	border: 1px solid white;
-	*margin-left: -50px;
+}
+
+*+html .UIActivity .NormalBox .CommentBox textarea {
+	margin-left: -50px;
 }
 
 .UIActivity .NormalBox .CommentBox .CommentButton {
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    background: none repeat scroll 0 0 #6C6C6C !important;
-    border: 1px solid #7B7B7B;
-    color: #FFFFFF;
-    cursor: pointer;
-    float: right;
-    font-size: 12px;
-    font-weight: bold;
-    margin: 5px 0px 0px 0px;
-    padding: 3px 15px;
+	border-radius: 3px;
+	background: #6C6C6C !important;
+	border: 1px solid #7B7B7B;
+	color: #FFFFFF;
+	cursor: pointer;
+	float: right;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 5px 0px 0px 0px;
+	padding: 3px 15px;
 }
 
 .UIActivity .CommentBlockBound {
-    -moz-border-radius: 3px;
-    -uebkit-border-radius: 3px;
-    background: #F8F8F8;
-    border: 1px solid #E1E1E1;
-    margin: 8px 0;
-    padding: 10px;
+	border-radius: 3px;
+	background: #F8F8F8;
+	border: 1px solid #E1E1E1;
+	margin: 8px 0;
+	padding: 10px;
 }
 
 .UIActivity .CommentBlockBoundNone {
-    -moz-border-radius: 3px;
-    -uebkit-border-radius: 3px;
-    margin: 8px 0;
+	border-radius: 3px;
+	margin: 8px 0;
 }
 
 .UIActivity .CommentBox {
@@ -160,34 +158,31 @@
 	padding: 7px 0 0;
 }
 
-.UIActivity .QuoterBox ,.UIActivity .BoxGray{
+.UIActivity .QuoterBox, .UIActivity .BoxGray {
 	padding: 15px 25px;
-	background: #f8f8f8 ;
+	background: #f8f8f8;
 	border: 1px solid #e1e1e1;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	margin: 7px 0;
 } 
 
 .UIActivity .BoxGray {
 	padding:10px 15px;
-	
 }
 
 .UIActivity .QuoterClose {
 	background: #f8f8f8 url('/social-resources/skin/social/webui/activity/UIDefaultActivity/background/quoterClose.png') no-repeat right bottom;
-	margin:0;	
-	display:inline-block;
+	margin: 0;	
+	display: inline-block;
 	padding-right: 15px;
 }
 
-.UIActivity .QuoterBox  {
-	background: #f8f8f8  url('/social-resources/skin/social/webui/activity/UIDefaultActivity/background/quoterOpen.png') no-repeat 10px 12px;
+.UIActivity .QuoterBox {
+	background: #f8f8f8 url('/social-resources/skin/social/webui/activity/UIDefaultActivity/background/quoterOpen.png') no-repeat 10px 12px;
 }
 
 *+html .UIActivity .QuoterClose {
-	display:inline;
+	display: inline;
 }
 
 .UIActivity .CommentFormBox {
@@ -220,7 +215,7 @@
 .UIActivity .CommentBox .ContentBox {
 	margin: 0 0 0 4px; /* orientation=lt */
 	margin: 0 4px 0 0; /* orientation=rt */
-	padding:0;
+	padding: 0;
 	width: 88%;
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
@@ -232,7 +227,7 @@
 	margin: 0;
 }
 
-.UIActivity .ContentBox .Content ,.AnswerActivity  .BoxGray p{
+.UIActivity .ContentBox .Content, .AnswerActivity .BoxGray p {
 	margin: 0;
 }
 
@@ -243,36 +238,35 @@
 	padding-left: 20px;
 }
 
-
 .UIActivity .ContentBox .DefaultActivityIcon {
 	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -448px;
 	padding-left: 20px;
 }
 
-.UIActivity .ContentBox .ActivityIcon  {
-	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat ;	
+.UIActivity .ContentBox .ActivityIcon {
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat;	
 	padding-left: 25px;
 }
-.UIActivity .ContentBox  .WikiActivityIcon {
+.UIActivity .ContentBox .WikiActivityIcon {
 	background-position: left -502px;
 }
 
-.UIActivity .ContentBox  .ForumActivityIcon {
+.UIActivity .ContentBox .ForumActivityIcon {
 	background-position: left -468px;
 }
 
-.UIActivity .ContentBox  .AnswerActivityIcon {
+.UIActivity .ContentBox .AnswerActivityIcon {
 	background-position: left -449px;
 }
 
-.UIActivity .ContentBox  .AskedActivityIcon {
+.UIActivity .ContentBox .AskedActivityIcon {
 	background-position: left -527px;
 }
 
-.UIActivity .ContentBox  .EventActivityIcon {
+.UIActivity .ContentBox .EventActivityIcon {
 	background-position: left -600px;
 }
-.UIActivity .ContentBox  .TaskActivityIcon {
+.UIActivity .ContentBox .TaskActivityIcon {
 	background-position: left -551px;
 }
 
@@ -288,14 +282,13 @@
 	padding-left: 20px;
 }
 
-
 .UIActivity .ContentBox .DateTime {
 	margin-top: 5px;
 	color: #808080;
 }
 
 .UIActivity .ContentBox .LinkCM a {
-	height:20px;
+	height: 20px;
 	color: #115ead;
 	margin: 0px 3px;
 }
@@ -307,22 +300,19 @@
 	text-decoration: none;
 }
 
-.UIActivity  .TextBold a {
+.UIActivity .TextBold a {
 	font-weight: bold;
 }
 
 .UIActivity .ContentBox .Content a {
 	color: #115ead;
-	text-decoration:none;
+	text-decoration: none;
 }
 
 .UIActivity .ListPeopleLikeBG {
 	border: 1px solid #E5E1E2;
-	margin-bottom: 3px;
-	margin-top: 10px;
-	-moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
+	margin: 10px 0 3px 0px;
+	border-radius: 3px;
 }
 
 .ListPeopleContent {
@@ -337,7 +327,7 @@
 }
 
 .UIActivity .HideBottomLine {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .UIActivity .CommentListInfo a {
@@ -386,12 +376,12 @@
 	height: 16px;
 }
 
-.UIActivity  .LinkShare .Thumbnail  img{
+.UIActivity .LinkShare .Thumbnail img {
 	width: 108px;
-	height:108px;
+	height: 108px;
 }
 
-.UIActivity .LinkShare  {
+.UIActivity .LinkShare {
 	padding: 10px 15px;
 }
 
