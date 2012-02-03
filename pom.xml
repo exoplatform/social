@@ -79,6 +79,7 @@
     <hsqldb.version>2.0.0</hsqldb.version>
     <javassist.version>3.14.0-GA</javassist.version>
     <junit.version>3.8.2</junit.version>
+    <byteman.version>1.5.1</byteman.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
     <rome.version>1.0</rome.version>
     <stax.version>1.0</stax.version>
@@ -900,6 +901,26 @@
         <artifactId>staxnav.core</artifactId>
         <version>${org.staxnav.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman</artifactId>
+        <version>${byteman.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-install</artifactId>
+        <version>${byteman.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-bmunit</artifactId>
+        <version>${byteman.version}</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -976,7 +997,12 @@
                 <name>java.naming.factory.initial</name>
                 <value>org.exoplatform.services.naming.SimpleContextFactory</value>
               </property>
+              <property>
+                    <name>org.jboss.byteman.home</name>
+                    <value></value>
+                </property>
             </systemProperties>
+            <useManifestOnlyJar>false</useManifestOnlyJar>
           </configuration>
         </plugin>
         <!--

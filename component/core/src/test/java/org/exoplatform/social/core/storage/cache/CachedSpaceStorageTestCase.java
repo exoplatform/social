@@ -7,6 +7,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,8 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class CacheSpaceStorageTestCase extends AbstractCoreTest {
+@QueryNumberTest
+public class CachedSpaceStorageTestCase extends AbstractCoreTest {
 
   private CachedSpaceStorage cachedSpaceStorage;
   private SocialStorageCacheService cacheService;
@@ -33,6 +36,7 @@ public class CacheSpaceStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(150)
   public void testRemoveSpace() throws Exception {
 
     //

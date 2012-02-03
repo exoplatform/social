@@ -32,6 +32,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 /**
  * Unit Tests for {@link org.exoplatform.social.core.storage.api.SpaceStorage}
@@ -39,7 +41,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @since Nov 3, 2010
  * @copyright eXo SAS
  */
-
+@QueryNumberTest
 public class SpaceStorageTest extends AbstractCoreTest {
 
   private List<Space>  tearDownSpaceList;
@@ -215,6 +217,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(750)
   public void testGetAllSpaces() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -232,6 +235,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetSpaces() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -260,6 +264,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetAllSpacesCount() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -277,6 +282,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetSpacesByFilter() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -319,6 +325,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetAllSpacesByFilterCount() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -349,111 +356,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getSpacesBySearchCondition(String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetSpacesBySearchConditionWithListAccess() throws Exception {
-    int totalSpaces = 10;
-    for (int i = 1; i <= totalSpaces; i++) {
-      Space space = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(space, true);
-      tearDownSpaceList.add(space);
-    }
-    int offset = 0;
-    int limit = 10;
-    List<Space> spaceListAccess = spaceStorage.getSpacesBySearchCondition("my", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("space", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("*", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("m*", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("add new", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("a*", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("a*n", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("a%n", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("*a%n", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("***", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("*%*%", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("%%%%", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesBySearchCondition("nothing", offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getSpacesByFirstCharacterOfName(char, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetSpacesByFirstCharacterOfNameWithListAccess() throws Exception {
-    int totalSpaces = 10;
-    for (int i = 1; i <= totalSpaces; i++) {
-      Space space = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(space, true);
-      tearDownSpaceList.add(space);
-    }
-    int offset = 0;
-    int limit = 10;
-    List<Space> spaceListAccess = spaceStorage.getSpacesByFirstCharacterOfName('m', offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesByFirstCharacterOfName('M', offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + totalSpaces, totalSpaces, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesByFirstCharacterOfName('h', offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-
-    spaceListAccess = spaceStorage.getSpacesByFirstCharacterOfName('*', offset, limit);
-    assertNotNull("spaceListAccess must not be  null", spaceListAccess);
-    assertEquals("spaceListAccess.size() must return: " + 0, 0, spaceListAccess.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getAccessibleSpaces(String)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetAccessibleSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -473,6 +381,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(1400)
   public void testGetAccessibleSpacesByFilter() throws Exception {
     int countSpace = 20;
     Space []listSpace = new Space[countSpace];
@@ -520,6 +429,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(1400)
   public void testGetAccessibleSpacesByFilterCount() throws Exception {
     int countSpace = 20;
     Space []listSpace = new Space[countSpace];
@@ -559,6 +469,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testgetAccessibleSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -578,114 +489,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getAccessibleSpacesBySearchCondition(String, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetAccessibleSpacesBySearchCondition() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "my space", 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("tom", "my space", 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("tom", "*", 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "add new", 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", null, 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", null, 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "m*e", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 5, 5, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "a*e", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 5, 5, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "m*", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 5, 5, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "a*", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 5, 5, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "*a*", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 5, 5, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "*****", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesBySearchCondition("demo", "%%%%", 0, 5);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getAccessibleSpacesByFirstCharacterOfName(char, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetAccessibleSpacesByFirstCharacterOfName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> accessibleSpaces = spaceStorage.getAccessibleSpacesByFirstCharacterOfName("tom", 'M', 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesByFirstCharacterOfName("demo", '*', 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesByFirstCharacterOfName("demo", 'm', 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesByFirstCharacterOfName("demo", 'M', 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + countSpace, countSpace, accessibleSpaces.size());
-
-    accessibleSpaces = spaceStorage.getAccessibleSpacesByFirstCharacterOfName("demo", 'A', 0, countSpace);
-    assertNotNull("accessibleSpaces must not be  null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getAccessibleSpaces(String, long, long)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetAccessibleSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -705,6 +514,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetEditableSpaces () throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -732,6 +542,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetEditableSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -795,6 +606,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetEditableSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -841,157 +653,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getEditableSpacesBySearchCondition(String, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetEditableSpacesBySpaceNameSearchCondition() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("demo", "add new", 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("demo", "m", 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("demo", "M", 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("tom", "add new", 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("top", "my space", 0, 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesBySearchCondition("dragon", "m", 0, 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getEditableSpacesBySearchConditionCount(String, String)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetEditableSpacesBySpaceNameSearchConditionCount() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    int editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("demo", "add new");
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("demo", "m");
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("demo", "M");
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("tom", "add new");
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("top", "my space");
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesBySearchConditionCount("dragon", "m");
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getEditableSpacesByFirstCharacterOfSpaceName(String, char, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetEditableSpacesByFirstCharacterOfSpaceName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-
-    List<Space> editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("demo", 'm', 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("demo", 'M', 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + countSpace, countSpace, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("demo", 'K', 0 , 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("dragon", 'm', 0, 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("dragon", 'M', 0, 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-
-    editableSpaces = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceName("dragon", 'k', 0, 10);
-    assertNotNull("editableSpaces must not be  null", editableSpaces);
-    assertEquals("editableSpaces.size() must return: " + 0, 0, editableSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getEditableSpacesByFirstCharacterOfSpaceNameCount(String, char)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetEditableSpacesByFirstCharacterOfSpaceNameCount() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-
-    int editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("demo", 'm');
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("demo", 'M');
-    assertEquals("editableSpacesCount must be: " + countSpace, countSpace, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("demo", 'K');
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("dragon", 'm');
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("dragon", 'M');
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-
-    editableSpacesCount = spaceStorage.getEditableSpacesByFirstCharacterOfSpaceNameCount("dragon", 'k');
-    assertEquals("editableSpacesCount must be: " + 0, 0, editableSpacesCount);
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getEditableSpaces(String, long, long)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetEditableSpacesWithListAccess() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1019,6 +686,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetInvitedSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1050,6 +718,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetInvitedSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1093,6 +762,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetInvitedSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1129,6 +799,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetInvitedSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1160,6 +831,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetInvitedSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1179,121 +851,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getInvitedSpacesBySearchCondition(String, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetInvitedSpacesBySearchCondition() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("register1", "my", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "my space", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "add new", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "*a*", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "a*w", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "%a%", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "***", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "*%*%*%*%", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "%%%%%%%", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", "%a*w", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", null, 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("mary", null, 0, 5);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesBySearchCondition("tom", "my space", 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getInvitedSpacesByFirstCharacterOfName(String, char, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetInvitedSpacesByFirstCharacterOfName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("register1", 'm', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("register1", 'M', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("mary", 'm', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("mary", 'M', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + countSpace, countSpace, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("mary", '*', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("mary", 'H', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-
-    invitedSpaces = spaceStorage.getInvitedSpacesByFirstCharacterOfName("tom", 'm', 0, countSpace);
-    assertNotNull("invitedSpaces must not be  null", invitedSpaces);
-    assertEquals("invitedSpaces.size() must return: " + 0, 0, invitedSpaces.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPendingSpaces(String)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPendingSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1329,6 +892,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPendingSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1388,6 +952,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPendingSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1436,6 +1001,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPendingSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1467,6 +1033,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPendingSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1489,125 +1056,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPendingSpacesBySearchCondition(String, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetPendingSpacesBySearchCondition() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("hacker", "my", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("hacker", "*", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("paul", "space", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "my space", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "*m*e*", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "*m%e*", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "*m%", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "*m", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "m%", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "%m%", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "%*%*", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "%%%%%%%%", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "*******", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "my space", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", null, 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("jame", "add ", 0, countSpace);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + countSpace, countSpace, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesBySearchCondition("victory", "my space ", 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPendingSpacesByFirstCharacterOfName(String, char, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetPendingSpacesByFirstCharacterOfName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> pendingSpaces = spaceStorage.getPendingSpacesByFirstCharacterOfName("hacker", 'm', 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 5, 5, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesByFirstCharacterOfName("hacker", 'M', 0, countSpace);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + countSpace, countSpace, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesByFirstCharacterOfName("jame", '*', 0, countSpace);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-
-    pendingSpaces = spaceStorage.getPendingSpacesByFirstCharacterOfName("victory", 'm', 0, 5);
-    assertNotNull("pendingSpaces must not be  null", pendingSpaces);
-    assertEquals("pendingSpaces.size() must return: " + 0, 0, pendingSpaces.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPublicSpaces(String)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPublicSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1631,6 +1085,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPublicSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1682,6 +1137,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPublicSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1724,6 +1180,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetPublicSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1755,6 +1212,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @since 1.20.-GA
    * @throws Exception
    */
+  @MaxQueryNumber(700)
   public void testGetPublicSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1777,153 +1235,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPublicSpacesBySearchCondition(String, String, long, long)}, parameter is
-   * name or description of space
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetPublicSpacesBySearchCondition() throws Exception {
-    int totalNumber = 10;
-    for (int i = 0; i < totalNumber; i++) {
-      Space sp = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(sp, true);
-      tearDownSpaceList.add(sp);
-    }
-
-    // get space by search name
-    String nameSpace = "my space";
-    List<Space> foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("register1", nameSpace, 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: 0 ", 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("demo", nameSpace, 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: 0 ", 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("kratos", nameSpace, 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("kratos", null, 0, 5);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", nameSpace, 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "m*", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "*m", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "*m*s", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "*m*s*", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "*m%s%", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "%m*s%", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "%m%s%", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "****", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "%%%%%%%", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getPublicSpacesBySearchCondition("stranger", "*%*%%%%**", 0, totalNumber);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    // get space by search description
-    String description = "add new space ";
-    List<Space> descriptionSearch = new ArrayList<Space>();
-    descriptionSearch = spaceStorage.getPublicSpacesBySearchCondition("dontcare", description, 0, totalNumber);
-    assertNotNull("descriptionSearch must not be null", descriptionSearch);
-    assertEquals("tearDownSpaceList.size() must return: " + totalNumber, totalNumber, descriptionSearch.size());
-
-    descriptionSearch = spaceStorage.getPublicSpacesBySearchCondition("tom", description, 0, totalNumber);
-    assertNotNull("descriptionSearch must not be null", descriptionSearch);
-    assertEquals("tearDownSpaceList.size() must return: 0" + 0, 0, descriptionSearch.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getPublicSpacesByFirstCharacterOfName(String, char)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetPublicSpacesByFirstCharacterOfName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      listSpace[i].setDisplayName("hand of god");
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-
-    List<Space> foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("tom", 'H', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: 0", 0, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("tomhank", 'h', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + countSpace, countSpace, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("tomhank", 'h', 0, 5);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 5, 5, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("tomhank", '*', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 0, 0, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("tomhank", 'H', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + countSpace, countSpace, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("bigbang", 'I', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 0, 0, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("bigbang", 'I', 0, 5);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 0, 0, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("bigbang", '*', 0, countSpace);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 0, 0, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getPublicSpacesByFirstCharacterOfName("bigbang", 'H', 0, 5);
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 5, 5, foundSpacesList.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpaces(String)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetMemberSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1956,6 +1273,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetMemberSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2008,6 +1326,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetMemberSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2046,149 +1365,12 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpacesBySpaceNameSearchCondition(String, String, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetMemberSpacesBySpaceNameSearchCondition() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("raul", "my space", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("ghost", "add new", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("ghost", "space", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("ghost", "new", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("dragon", "add", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesBySpaceNameSearchCondition("demo", "space", 0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: 0", 0, memberSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpacesBySpaceNameSearchConditionCount(String, String)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetMemberSpacesBySpaceNameSearchConditionCount() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    int memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("raul", "my space");
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("ghost", "add new");
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("ghost", "space");
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("ghost", "new");
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("dragon", "add");
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesBySpaceNameSearchConditionCount("demo", "space");
-    assertEquals("memberSpacesCount must be: 0", 0, memberSpacesCount);
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpacesByFirstCharacterOfSpaceName(String, char, long, long)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetMemberSpacesByFirstCharacterOfSpaceName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    List<Space> memberSpaces = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceName("ghost", 'm',  0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceName("ghost", 'M',  0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceName("raul", 'M',  0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceName("dragon", 'M',  0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + countSpace, countSpace, memberSpaces.size());
-
-    memberSpaces = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceName("ghost", 'K',  0, 10);
-    assertNotNull("memberSpaces must not be  null", memberSpaces);
-    assertEquals("memberSpaces.size() must return: " + 0, 0, memberSpaces.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpacesByFirstCharacterOfSpaceNameCount(String, char)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetMemberSpacesByFirstCharacterOfSpaceNameCount() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-    int memberSpacesCount = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceNameCount("ghost", 'm');
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceNameCount("ghost", 'M');
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceNameCount("raul", 'M');
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceNameCount("dragon", 'M');
-    assertEquals("memberSpacesCount must be: " + countSpace, countSpace, memberSpacesCount);
-
-    memberSpacesCount = spaceStorage.getMemberSpacesByFirstCharacterOfSpaceNameCount("ghost", 'K');
-    assertEquals("memberSpacesCount must be: " + 0, 0, memberSpacesCount);
-  }*/
-
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getMemberSpaces(String, long, long)}
    *
    * @throws Exception
    * @since 1.2.0-GA
    */
+  @MaxQueryNumber(700)
   public void testGetMemberSpacesWithListAccess() throws Exception {
     int countSpace = 10;
     for (int i = 0; i < countSpace; i++) {
@@ -2219,6 +1401,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(100)
   public void testGetSpaceById() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2244,6 +1427,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(100)
   public void testGetSpaceByGroupId() throws Exception {
     Space space = getSpaceInstance(1);
     spaceStorage.saveSpace(space, true);
@@ -2258,132 +1442,11 @@ public class SpaceStorageTest extends AbstractCoreTest {
   }
 
   /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getSpacesBySearchCondition(String)}, parameter is
-   * name or description of space}
-   *
-   * @throws Exception
-   */
-  /*public void testGetSpacesBySearchCondition() throws Exception {
-    int totalNumber = 10;
-    for (int i = 0; i < totalNumber; i++) {
-      Space sp = this.getSpaceInstance(i);
-      spaceStorage.saveSpace(sp, true);
-      tearDownSpaceList.add(sp);
-    }
-
-    // get space by search name
-    String nameSpace = "my space";
-    List<Space> foundSpaceList = spaceStorage.getSpacesBySearchCondition(nameSpace);
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("m*e");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("y *e");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("m*ce");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*m*ce*");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*m*ce");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*m*");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*m");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%m");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%m%");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%m*e");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%m*e%");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%m*e%");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + totalNumber, totalNumber, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("******");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("%%%%%%%%");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    foundSpaceList = spaceStorage.getSpacesBySearchCondition("*%*%*%*%*%");
-    assertNotNull("foundSpaceList must not be null", foundSpaceList);
-    assertEquals("foundSpaceList.size() must return: " + 0, 0, foundSpaceList.size());
-
-    // get space by search description
-    String description = "add new space ";
-    List<Space> descriptionSearch = new ArrayList<Space>();
-    descriptionSearch = spaceStorage.getSpacesBySearchCondition(description);
-    assertNotNull("descriptionSearch must not be null", descriptionSearch);
-    assertEquals("tearDownSpaceList.size() must return: " + totalNumber, totalNumber, descriptionSearch.size());
-
-    descriptionSearch = new ArrayList<Space>();
-    descriptionSearch = spaceStorage.getSpacesBySearchCondition("add*");
-    assertNotNull("descriptionSearch must not be null", descriptionSearch);
-    assertEquals("tearDownSpaceList.size() must return: " + totalNumber, totalNumber, descriptionSearch.size());
-  }*/
-
-  /**
-   * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getSpacesByFirstCharacterOfName(String)}
-   *
-   * @throws Exception
-   * @since 1.2.0-GA
-   */
-  /*public void testGetSpacesByFirstCharacterOfName() throws Exception {
-    int countSpace = 10;
-    Space []listSpace = new Space[10];
-    for (int i = 0; i < countSpace; i ++) {
-      listSpace[i] = this.getSpaceInstance(i);
-      listSpace[i].setDisplayName("hand of god");
-      spaceStorage.saveSpace(listSpace[i], true);
-      tearDownSpaceList.add(listSpace[i]);
-    }
-
-    List<Space> foundSpacesList = spaceStorage.getSpacesByFirstCharacterOfName("H");
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + countSpace, countSpace, foundSpacesList.size());
-
-    foundSpacesList = spaceStorage.getSpacesByFirstCharacterOfName("I");
-    assertNotNull("foundSpacesList must not be null", foundSpacesList);
-    assertEquals("savedSpaces.size() must return: " + 0, 0, foundSpacesList.size());
-  }*/
-
-  /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getSpaceByUrl(String)}
    *
    * @throws Exception
    */
+  @MaxQueryNumber(100)
   public void testGetSpaceByUrl() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2428,6 +1491,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(100)
   public void testGetSpaceByPrettyName() throws Exception {
     // number for method getSpaceInstance(int number)
     int number = 1;
@@ -2471,6 +1535,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(350)
   public void testDeleteSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2483,6 +1548,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(150)
   public void testSaveSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2506,6 +1572,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(150)
   public void testSaveSpaceAvatar() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2549,6 +1616,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
+  @MaxQueryNumber(200)
   public void testUpdateSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -2577,13 +1645,13 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("avatar URL should not be null",got.getAvatarUrl());
   }
   
-  
   /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#getVisibleSpaces(String)}
    *
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(200)
   public void testGetVisibleSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2657,6 +1725,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(200)
   public void testGetVisibleSpacesWithValidate() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2730,6 +1799,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(200)
   public void testGetVisibleSpacesFilterByName() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2803,6 +1873,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(200)
   public void testGetVisibleSpacesCloseRegistration() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2845,6 +1916,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(200)
   public void testGetVisibleSpacesCloseRegistrationByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -2940,6 +2012,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.5-GA
    */
+  @MaxQueryNumber(250)
   public void testGetVisibleSpacesInvitedMember() throws Exception {
     int countSpace = 10;
     Space[] listSpace = new Space[10];

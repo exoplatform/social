@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -32,19 +30,20 @@ import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.ActivityStorageException;
-import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
+@QueryNumberTest
 public class IdentityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorageImpl storage;
   private RelationshipStorage relationshipStorage;
@@ -53,7 +52,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
   private List<String> tearDownIdentityList;
 
   @Override
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     super.setUp();
     storage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
     relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorageImpl.class);
@@ -71,6 +70,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
+  @MaxQueryNumber(100)
   public void testCreateIdentitty() throws Exception {
     Identity newIdentity = new Identity("organization", "new");
 
@@ -95,6 +95,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+
+  @MaxQueryNumber(50)
   public void testCreateIdentittyExits() throws Exception {
     Identity newIdentity = new Identity("organization", "newDuplicate");
 
@@ -112,6 +114,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(5)
   public void testFindByIdDoesntExists() throws Exception {
 
     try {
@@ -123,6 +126,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(50)
   public void testFindByIdExists() throws Exception {
     Identity newIdentity = new Identity("organization", "exists");
 
@@ -143,6 +147,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(150)
   public void testDeleteIdentityExists() throws Exception {
     Identity newIdentity = new Identity("organization", "newToDelete");
 
@@ -167,6 +172,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(5)
   public void testDeleteIdentityDoesntExists() throws Exception {
     Identity newIdentity = new Identity("organization", "doesn't exists");
     newIdentity.setId("fakeId");
@@ -181,6 +187,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(0)
   public void testDeleteInvalidIdentity() throws Exception {
     Identity newIdentity = new Identity("organization", "doesn't exists");
 
@@ -203,6 +210,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(100)
   public void testHardDelete() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -221,6 +229,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(450)
   public void testHardDeleteRelationship() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -261,6 +270,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(350)
   public void testHardDeleteSpace() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -300,6 +310,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(100)
   public void testHardDeleteSpaceLastManager() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -323,6 +334,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(50)
   public void testCreateProfile() throws Exception {
     Identity newIdentity = new Identity("organization", "identityForProfile");
 
@@ -342,6 +354,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testLoadProfileExists() throws Exception {
     Identity newIdentity = new Identity("organization", "identityForLoadProfile");
 
@@ -375,6 +388,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(50)
   public void testLoadProfileDoesntExists() throws Exception {
     Identity newIdentity = new Identity("organization", "identityForLoadProfile");
 
@@ -399,6 +413,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(50)
   public void testGetIdentityNoProvider() throws Exception {
     Identity newIdentity = new Identity("organization", "checkProviderNotFound");
 
@@ -423,6 +438,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(50)
   public void testGetIdentityNoRemote() throws Exception {
     Identity newIdentity = new Identity("organization", "checkRemoteNotFound");
 
@@ -447,6 +463,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(50)
   public void testGetIdentity() throws Exception {
     Identity newIdentity = new Identity("organization", "remoteid");
 
@@ -469,6 +486,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testProfile() throws Exception {
     Identity newIdentity = new Identity("organization", "remoteid");
 
@@ -511,6 +529,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testMoveIdentity() throws Exception {
     Identity newIdentity = new Identity("organization", "checkMove");
 
@@ -541,6 +560,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(0)
   public void testGetType() throws Exception {
     assertEquals("String", storage.getType("soc:identitydefinition", "soc:providerId"));
     assertNull(storage.getType("soc:profiledefinition", "doesn't exists"));
@@ -549,6 +569,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNull(storage.getType(null, null));
   }
 
+  @MaxQueryNumber(100)
   public void testUpdateProfileProperties() throws Exception {
    Identity newIdentity = new Identity("organization", "checksaveprofile");
 
@@ -614,6 +635,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(400)
   public void testFindIdentityByFirstCharCount() throws Exception {
 
     addIdentity("o", "a1", "male", "");
@@ -650,6 +672,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(1, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterB2Skills));
   }
 
+  @MaxQueryNumber(450)
   public void testFindIdentityByFirstChar() throws Exception {
 
     addIdentity("o", "a1", "", "");
@@ -691,6 +714,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals("b2", storage.getIdentitiesByFirstCharacterOfName("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
+  @MaxQueryNumber(200)
   public void testFindIdentityWithFilterCount() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
@@ -731,6 +755,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", filterB2Skills));
   }
 
+  @MaxQueryNumber(200)
   public void testFindIdentityWithFilter() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
@@ -776,6 +801,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals("totota", storage.getIdentitiesByProfileFilter("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
+  @MaxQueryNumber(100)
   public void testAvatar() throws Exception {
     Identity newIdentity = new Identity("organization", "remoteid");
 
@@ -852,6 +878,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     return filter;
   }
 
+  @MaxQueryNumber(100)
   public void testProfileContact() throws Exception {
     Identity newIdentity = new Identity("organization", "withcontact");
 
@@ -960,6 +987,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
+  @MaxQueryNumber(200)
   public void testProfileXp() throws Exception {
     Identity newIdentity = new Identity("organization", "withxp");
 
@@ -1038,7 +1066,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
-  
+
+  @MaxQueryNumber(100)
   public void testProfileXpWithSkillsNull() throws Exception {
     Identity newIdentity = new Identity("organization", "withxp");
 
@@ -1081,7 +1110,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
-  
+
+  @MaxQueryNumber(100)
   public void testProfileXpWithDescriptionNull() throws Exception {
     Identity newIdentity = new Identity("organization", "withxp");
 
@@ -1125,7 +1155,8 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
     tearDownIdentityList.add(newIdentity.getId());
   }
-  
+
+  @MaxQueryNumber(100)
   public void testProfileXpWithSkillDescNull() throws Exception {
     Identity newIdentity = new Identity("organization", "withxp");
 

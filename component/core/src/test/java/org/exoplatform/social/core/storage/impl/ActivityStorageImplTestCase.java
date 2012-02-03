@@ -32,11 +32,14 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
+@QueryNumberTest
 public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityStorageImpl activityStorage;
@@ -93,6 +96,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
+  @MaxQueryNumber(10)
   public void testSaveActivity() throws Exception {
 
     //
@@ -107,7 +111,8 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(activity.getTitle(), got.getTitle());
 
   }
-  
+
+  @MaxQueryNumber(10)
   public void testUpdateActivity() throws Exception {
 
     //
@@ -131,7 +136,8 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(activity.getTitle(), got.getTitle());
 
   }
-  
+
+  @MaxQueryNumber(10)
   public void testUpdateActivityForLike() throws Exception {
 
     //
@@ -157,7 +163,6 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(got.getBody(), updatedActivity.getBody());
 
   }
-  
 
   /**
    * Wrong due to not set:
@@ -166,6 +171,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
+  @MaxQueryNumber(10)
   public void testUpdateActivityForWrong() throws Exception {
 
     //
@@ -189,7 +195,8 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertNotSame(got.getBody(), updatedActivity.getBody());
 
   }
-  
+
+  @MaxQueryNumber(10)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //
@@ -223,6 +230,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
+  @MaxQueryNumber(10)
   public void testUpdateActivityForUnLikeWrong() throws Exception {
 
     //
@@ -248,9 +256,8 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertNotSame(got.getBody(), updatedActivity.getBody());
 
   }
-  
-  
 
+  @MaxQueryNumber(10)
   public void testSaveComment() throws Exception {
 
     //
@@ -285,6 +292,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(350)
   public void testActivityCount() throws Exception {
 
     // fill 10 activities
@@ -311,6 +319,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   /**
    * Test {@link org.exoplatform.social.core.storage.impl.ActivityStorageImpl#getActivity(String)}
    */
+  @MaxQueryNumber(300)
   public void testUserPostActivityToSpace() throws ActivityStorageException {
     // Create new Space and its Identity
     Space space = getSpaceInstance();
@@ -333,6 +342,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     identityStorage.deleteIdentity(spaceIdentity);
   }
 
+  @MaxQueryNumber(10)
   public void testActivityOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -348,6 +358,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(10)
   public void testActivityOrderByPostedTime() throws Exception {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
@@ -377,6 +388,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(400)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -408,6 +420,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(10)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -437,6 +450,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  @MaxQueryNumber(250)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -467,6 +481,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(5, activityStorage.getActivity(activity.getId()).getReplyToId().length);
   }
 
+  @MaxQueryNumber(100)
   public void testLike() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -490,6 +505,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertTrue(!ids.contains(maryIdentity.getId()));
   }
 
+  @MaxQueryNumber(1500)
   public void testContactActivities() throws Exception {
 
     //
@@ -528,6 +544,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(60)
   public void testTimeStamp() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -550,6 +567,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(400)
   public void testManyDays() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -583,6 +601,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(150)
   public void testManyDaysNoActivityOnDay() throws Exception {
 
     long timestamp1 = timestamp(2001, 1, 1);
@@ -599,6 +618,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(250)
   public void testManyDaysNoActivityOnMonth() throws Exception {
 
     long timestamp11 = timestamp(2001, 1, 1);
@@ -621,6 +641,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(500)
   public void testManyDaysNoActivityOnYear() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -655,6 +676,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(550)
   public void testManyDaysNoActivityOnAll() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -689,6 +711,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(50)
   public void testRelationshipActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("I am now connected with @receiverRemoteId");
@@ -745,6 +768,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
+  @MaxQueryNumber(10)
   public void testActivityProcessing() throws Exception {
 
     //
