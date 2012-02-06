@@ -10,7 +10,7 @@ h2. POST activity.*format*{anchor:id=SOCref.DevelopersReferences.RestService_API
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity.json]
 
 *Body Data*: The data for an activity
@@ -78,7 +78,7 @@ h2. GET activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.RestS
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4d5e6f7g8h9i.json]
 
 *Supported Format*: json
@@ -144,7 +144,7 @@ h2. DELETE activity/:activityId.format {anchor:id=SOCref.DevelopersReferences.Re
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity/:activityId.format{code}
 
 For example:
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4d5e6f7g8h9i.json]
 
 *Supported Format*: json
@@ -160,7 +160,7 @@ For example:
 *Request*:
 
 {code:}
-DELETE: http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
+DELETE: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
 {code}
 
 *Response*:
@@ -181,7 +181,7 @@ h2. POST activity/destroy/:activityId.format  {anchor:id=SOCref.DevelopersRefere
 
 For example:
 
-[http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json]
+[http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json]
 
 [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/destroy/1a2b3c4d5e6f7g8h9i.json]
 
@@ -220,7 +220,7 @@ h2. GET activity/:activityId/comments.format {anchor:id=SOCref.DevelopersReferen
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/comments.json]
 
 *Supported Format*: json
@@ -274,7 +274,7 @@ h2. POST activity/:activityId/comment.format   {anchor:id=SOCref.DevelopersRefer
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/comment.json]
 
 *Body data*:
@@ -321,7 +321,7 @@ h2. DELETE activity/:activityId/comment/:commentId.format {anchor:id=SOCref.Deve
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/123456.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/123456.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/comment/123456.json]
 
 *Supported Format*: json
@@ -357,7 +357,7 @@ h2. POST activity/:activityId/comment/destroy/:commentId.format {anchor:id=SOCre
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/123456.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/123456.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/comment/destroy/123456.json]
 
 *Supported Format*: json
@@ -393,7 +393,7 @@ h2. GET activity/:activityId/likes.format {anchor:id=SOCref.DevelopersReferences
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/likes.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/likes.json]
 
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/likes.json]
 
@@ -443,7 +443,7 @@ h2. POST activity/:activityId/like.format  {anchor:id=SOCref.DevelopersReference
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/like.json]
 
 *Supported Format*: json
@@ -479,7 +479,7 @@ h2. DELETE activity/:activityId/like.format {anchor:id=SOCref.DevelopersReferenc
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/like.json]
 
 *Supported Format*: json
@@ -515,7 +515,7 @@ h2. POST activity/:activityId/like/destroy.format  {anchor:id=SOCref.DevelopersR
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.json]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity/1a2b3c4e5e/like/destroy.json]
 
 *Supported Format*: json

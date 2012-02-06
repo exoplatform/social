@@ -11,8 +11,8 @@ There is one special _identityId_ called "me" which stands for the authenticated
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/1234567890.json]
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/1234567890.json?limit=20]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/1234567890.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/1234567890.json?limit=20]
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json]
 
 *Supported Format*: json
@@ -157,7 +157,7 @@ h2. GET activity\_stream/feed.format{anchor:id=SOCref.DevRef.V1alpha3.ActivitySt
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/feed.{format}{code}
 
 For example:
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/feed.json?limit=20&since_id=12345]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/feed.json?limit=20&since_id=12345]
 * [http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feed.json?limit=20&max_id=123456&number_of_comments=10]
 
 *Supported Format*: json
@@ -303,8 +303,8 @@ h2. GET activity\_stream/connections.format{anchor:id=SOCref.DevRef.V1alpha3.Act
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json]
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json?limit=20]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json?limit=20]
 
 *Supported Format*: json
 
@@ -452,8 +452,8 @@ h2. GET activity\_stream/spaces.format  {anchor:id=SOCref.DevRef.V1alpha3.Activi
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/activity_stream/spaces.{format}{code}
 
 For example:
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json]
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json?limit=20]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json?limit=20]
 
 *Supported Format*: json
 

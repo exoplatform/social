@@ -8,7 +8,7 @@ h2. GET version/latest.format    {anchor:id=SOCref.DevelopersReferences.RestServ
 {code}http://{domain_name}/{rest_context_name}/api/social/version/latest.format{code}
 
 For example:
-* [http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json]
+* [http://cloud-workspaces.com/rest/api/social/version/latest.json]
 
 * [http://localhost:8080/rest-socialdemo/api/social/version/latest.json]
 
@@ -25,7 +25,7 @@ For example:
 *Request*:
 
 {code}
-GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
+GET: http://cloud-workspaces.com/rest/api/social/version/latest.json
 {code}
 
 *Response*:
@@ -39,7 +39,7 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
 *Request*:
 
 {code}
-GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
+GET: http://cloud-workspaces.com/rest/api/social/version/latest.xml
 {code}
 
 *Response*:
@@ -61,7 +61,7 @@ h2. GET version/supported.format {anchor:id=SOCref.DevelopersReferences.RestServ
 {code}
 
 For example:
-* [http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json]
+* [http://cloud-workspaces.com/rest/api/social/version/supported.json]
 
 * [http://localhost:8080/rest-socialdemo/api/social/version/supported.json]
 
@@ -77,7 +77,7 @@ For example:
 *Request*:
 
 {code}
-GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json
+GET: http://cloud-workspaces.com/rest/api/social/version/supported.json
 {code}
 
 *Response*:
@@ -91,7 +91,7 @@ GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.js
 *Request*:
 
 {code}
-GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xml
+GET: http://cloud-workspaces.com/rest/api/social/version/supported.xml
 {code}
 
 *Response*:

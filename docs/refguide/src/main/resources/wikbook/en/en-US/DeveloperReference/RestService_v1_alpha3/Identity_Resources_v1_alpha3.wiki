@@ -17,7 +17,7 @@ h2. GET identity/:providerId/:remoteId.format    {anchor:id=SOCref.DevRef.RestSe
 {code}http://{domain_name}/{rest_context_name}/private/api/social/{version}/{portal_container_name}/identity/:providerId/:remoteId.format{code}
 
 *For example*:
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json]
 
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/identity/organization/demo.json]
 
@@ -62,7 +62,7 @@ h2. GET: identity/:identityId.format {anchor:id=SOCref.DevRef.RestService_APIs_v
 
 For example:
 
-* [http://platform35.demo.exoplatform.org/rest/private/api/social/v1-alpha3/portal/identity/387cab38c0a8013768f5a753041b17dc.json]
+* [http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/identity/387cab38c0a8013768f5a753041b17dc.json]
 
 * [http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/identity/387cab38c0a8013768f5a753041b17dc.json]
 
