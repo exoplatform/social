@@ -25,6 +25,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.Application;
+import org.exoplatform.social.core.identity.provider.FakeIdentityProvider;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -320,6 +322,32 @@ public class IdentityManagerTest extends AbstractCoreTest {
     Profile profile = identityManager.getProfile(identity);
     assertNotNull("Profile must not be null.", profile);
     assertNotNull("Profile status must be loaded.", identity.getProfile().getId());
+    
+    FakeIdentityProvider fakeIdentityProvider = (FakeIdentityProvider) getContainer().getComponentInstanceOfType(FakeIdentityProvider.class);
+    
+    Application application = new Application();
+    application.setId("externalApp");
+    application.setName("External Application");
+    application.setDescription("external application identity");
+    application.setUrl("http://google.com/");
+    application.setIcon("http://google.com/logo.png");
+    
+    Identity appIdentity = fakeIdentityProvider.createIdentity(application);
+    fakeIdentityProvider.addApplication(application);
+    //From Identity Provider
+    appIdentity = identityManager.getOrCreateIdentity(FakeIdentityProvider.NAME, appIdentity.getRemoteId(), true);
+    assertNotNull("Identity must be create", appIdentity);
+
+    Profile profile1 = appIdentity.getProfile();
+    
+    assertEquals("http://google.com/", profile1.getUrl());
+    assertEquals("http://google.com/logo.png", profile1.getAvatarUrl());
+    //From JCR storage
+    Identity appIdentityRecheck = identityManager.getOrCreateIdentity(FakeIdentityProvider.NAME, appIdentity.getRemoteId(), true);
+    Profile appProfileRecheck = appIdentityRecheck.getProfile();
+    
+    assertEquals("http://google.com/", appProfileRecheck.getUrl());
+    assertEquals("http://google.com/logo.png", appProfileRecheck.getAvatarUrl());
   }
   
   /**

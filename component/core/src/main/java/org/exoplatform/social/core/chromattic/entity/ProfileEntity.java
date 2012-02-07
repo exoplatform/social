@@ -58,6 +58,14 @@ public abstract class ProfileEntity {
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
 
+  @Property(name = "soc:externalUrl")
+  public abstract String getExternalUrl();
+  public abstract void setExternalUrl(String profileUrl);
+
+  @Property(name = "soc:externalAvatarUrl")
+  public abstract String getExternalAvatarUrl();
+  public abstract void setExternalAvatarUrl(String avatarUrl);
+
   // TODO : find better
   @Property(name = "soc:parentId")
   public abstract String getParentId();

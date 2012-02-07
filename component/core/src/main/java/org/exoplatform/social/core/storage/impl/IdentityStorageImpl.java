@@ -494,6 +494,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     //
     ProfileEntity profileEntity = _findById(ProfileEntity.class, profile.getId());
+    String providerId = profile.getIdentity().getProviderId();
 
     Map<String, List<String>> phonesData = new HashMap<String, List<String>>();
 
@@ -567,6 +568,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     // TODO : find better
     profileEntity.setParentId(profile.getIdentity().getId());
+
+    // External profile
+    if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
+      profileEntity.setExternalUrl(profile.getUrl());
+      profileEntity.setExternalAvatarUrl(profile.getAvatarUrl());
+    }
 
     getSession().save();
 
@@ -669,11 +676,34 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       }
     }
 
-    //
-    if (OrganizationIdentityProvider.NAME.equals(providerId)) {
-      profile.setUrl(LinkProvider.getUserProfileUri(remoteId));
-    } else if (SpaceIdentityProvider.NAME.equals(providerId)) {
-      profile.setUrl(LinkProvider.getSpaceUri(remoteId));
+    if (OrganizationIdentityProvider.NAME.equals(providerId) || SpaceIdentityProvider.NAME.equals(providerId)) {
+
+      //
+      if (OrganizationIdentityProvider.NAME.equals(providerId)) {
+        profile.setUrl(LinkProvider.getUserProfileUri(remoteId));
+      } else if (SpaceIdentityProvider.NAME.equals(providerId)) {
+        profile.setUrl(LinkProvider.getSpaceUri(remoteId));
+      }
+      
+      //
+      NTFile avatar = profileEntity.getAvatar();
+      if (avatar != null) {
+        try {
+          String avatarPath = getSession().getPath(avatar);
+          long lastModified = avatar.getLastModified().getTime();
+          // workaround: as dot character (.) breaks generated url (Ref: SOC-2283)
+          String avatarUrl = StorageUtils.encodeUrl(avatarPath) + "/?upd=" + lastModified;
+          profile.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(avatarUrl));
+        } catch (Exception e) {
+          LOG.warn("Failed to build file url from fileResource: " + e.getMessage());
+        }
+      }
+
+    }
+    // External profile
+    else {
+      profile.setUrl(profileEntity.getExternalUrl());
+      profile.setAvatarUrl(profileEntity.getExternalAvatarUrl());
     }
 
     //
@@ -685,20 +715,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
     if (urls.size() > 0) {
       profile.setProperty(Profile.CONTACT_URLS, urls);
-    }
-
-    //
-    NTFile avatar = profileEntity.getAvatar();
-    if (avatar != null) {
-      try {
-        String avatarPath = getSession().getPath(avatar);
-        long lastModified = avatar.getLastModified().getTime();
-        // workaround: as dot character (.) breaks generated url (Ref: SOC-2283)
-        String avatarUrl = StorageUtils.encodeUrl(avatarPath) + "/?upd=" + lastModified;
-        profile.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(avatarUrl));
-      } catch (Exception e) {
-        LOG.warn("Failed to build file url from fileResource: " + e.getMessage());
-      }
     }
 
     //
