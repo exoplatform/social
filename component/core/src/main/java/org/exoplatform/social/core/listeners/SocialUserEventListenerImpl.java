@@ -52,7 +52,6 @@ public class SocialUserEventListenerImpl extends UserEventListener {
     }
 
     RequestLifeCycle.end();
-
   }
 
   /**
@@ -65,21 +64,27 @@ public class SocialUserEventListenerImpl extends UserEventListener {
   public void postSave(User user, boolean isNew) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
+    //
     IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+     
+    //
+    Profile profile = identity.getProfile();
+    
+    //
+    boolean hasUpdated = false;
     
     if(!isNew) {
-      Profile profile = identity.getProfile();
       String uFirstName = user.getFirstName();
       String uLastName = user.getLastName();
       String uFullName = user.getFullName();
       String uEmail = user.getEmail();
 
+      //
       String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
       String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
       String pEmail = (String) profile.getProperty(Profile.EMAIL);
-
-      boolean hasUpdated = false;
+     
 
       if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
         profile.setProperty(Profile.FIRST_NAME, uFirstName);
@@ -92,15 +97,18 @@ public class SocialUserEventListenerImpl extends UserEventListener {
         profile.setProperty(Profile.FULL_NAME, uFullName);
         hasUpdated = true;
       }
-
+      
       if ((pEmail == null) || (!pEmail.equals(uEmail))) {
         profile.setProperty(Profile.EMAIL, uEmail);
         hasUpdated = true;
       }
+      
+    }
+    
+    
 
-      if (hasUpdated) {
-        idm.updateProfile(profile);
-      }
+    if (hasUpdated) {
+      idm.updateProfile(profile);
     }
     RequestLifeCycle.end();
   }

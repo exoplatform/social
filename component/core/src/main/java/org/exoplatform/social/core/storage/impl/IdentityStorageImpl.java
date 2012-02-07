@@ -554,7 +554,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
           //need to check here to avoid to set property with name: "void-skills"
           if (Profile.EXPERIENCES_SKILLS.equals(key) == false) {
             if (value != null) {
-              List<String> lvalue = new ArrayList();
+              List<String> lvalue = new ArrayList<String>();
               lvalue.add((String) value);
               profileEntity.setProperty(PropNs.VOID.nameOf(key), lvalue);
             } else {
