@@ -209,3 +209,8 @@
 	font-size: 10px;
 }
 
+.UISpaceActivityStreamPortlet .UIActivity .Content li {
+	list-style: disc inside none;
+	padding: 0px 0px 0px 20px;
+	margin: 0px 0px 0px 0px;
+}

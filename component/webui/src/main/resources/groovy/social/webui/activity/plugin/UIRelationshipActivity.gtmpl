@@ -176,9 +176,9 @@
       <%}%>
       </h5>
 	  
-      <p class="Content">
+      <div class="Content">
         $activityContentTitle 
-      </p>
+      </div>
       <div class="LinkCM">
         <% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
         	<%

@@ -72,3 +72,9 @@
 	color: white;
 	border-radius: 4px;
  }
+
+.UIUserActivityStreamPortlet .UIActivity .Content li {
+  list-style: disc inside none;
+  padding: 0px 0px 0px 20px;
+  margin: 0px 0px 0px 0px;
+}
