@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.extras.samples.feedmash;
+package org.exoplatform.social.extras.feedmash.consumer;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -47,20 +47,9 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
   protected boolean accept(SyndEntryImpl entry) {
     if (alreadyChecked(entry.getUpdatedDate())) {
       return false;
-    }
-    String currentStatus = (String) getState(HUDSON_STATUS);
-
-    if (currentStatus == null) {
-      return true;
     } else {
-
-      if (currentStatus.equals(BuildStatus.FAILURE.name())) {
-        return entry.getTitle().contains(BuildStatus.SUCCESS.name());
-      } else {
-        return entry.getTitle().contains(BuildStatus.FAILURE.name());
-      }
+      return true;
     }
-
   }
 
   @Override
@@ -69,7 +58,10 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
 
       Identity targetStream = getIdentity(targetActivityStream);
       if (targetStream == null) {
+        saveState(feedLastCheck, null);
         return;
+      } else {
+        saveState(feedLastCheck, entry.getPublishedDate());
       }
 
       String currentStatus = currentStatus(entry);
@@ -98,6 +90,7 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
     if (feedUrl == null) {
       feedUrl = baseUrl + "/job/" + project + "/rssAll";
     }
+    feedLastCheck = LAST_CHECKED + "." + feedUrl + "." + targetActivityStream;
   }
 
   private String currentStatus(SyndEntryImpl entry) {
@@ -112,8 +105,8 @@ public class HudsonFeedConsumer extends AbstractFeedmashJob {
   }
 
   private String message(String status, String link, String title) {
-    String icon = (status == BuildStatus.SUCCESS.name()) ? successIcon : failureIcon;
-    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" />&nbsp;" +
+    String icon = (status == BuildStatus.FAILURE.name()) ? successIcon : successIcon;
+    return "<img src=\""+icon+ "\" alt=\"failure\" title=\"failure\" /> " +
             "<a href=\""+ link+"\" target=\"_blank\">" + title + "</a>";
   }
 

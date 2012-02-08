@@ -129,12 +129,16 @@
     ownerAvatar = ownerIdentity.profile.avatarUrl;
     ownerName = ownerIdentity.profile.fullName;
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-  } else {
+  } else if(uicomponent.isSpaceActivity()){
     Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
     ownerUri = Utils.getSpaceHomeURL(space);
     ownerAvatar = space.avatarUrl;
     ownerName = space.displayName;
     if (!ownerAvatar) ownerAvatar = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+  } else {
+    ownerUri = ownerIdentity.profile.url;
+    ownerAvatar = ownerIdentity.profile.avatarUrl;
+    ownerName = ownerIdentity.profile.fullName;     
   }
 %>
 

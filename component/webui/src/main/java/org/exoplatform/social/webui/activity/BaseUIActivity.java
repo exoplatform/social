@@ -399,13 +399,21 @@ public class BaseUIActivity extends UIForm {
     identityLikes = activity.getLikeIdentityIds();
   }
 
-  public boolean isUserActivity(String id) {
+  public boolean isUserActivity() {
     boolean isUserActivity = false;
     if (getOwnerIdentity() != null) {
       isUserActivity = getOwnerIdentity().getProviderId().equals(OrganizationIdentityProvider.NAME);
     }
     return isUserActivity;
   }
+  
+  public boolean isSpaceActivity() {
+    boolean isSpaceActivity = false;
+    if (getOwnerIdentity() != null) {
+      isSpaceActivity = getOwnerIdentity().getProviderId().equals(SpaceIdentityProvider.NAME);
+    }
+    return isSpaceActivity;
+  }  
 
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);

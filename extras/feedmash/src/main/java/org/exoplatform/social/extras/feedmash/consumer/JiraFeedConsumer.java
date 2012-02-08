@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.extras.samples.feedmash;
-
-import java.util.List;
+package org.exoplatform.social.extras.feedmash.consumer;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -25,7 +23,6 @@ import org.exoplatform.social.extras.feedmash.AbstractFeedmashJob;
 import org.exoplatform.social.extras.feedmash.Application;
 import org.quartz.JobDataMap;
 
-import com.sun.syndication.feed.synd.SyndCategoryImpl;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 
 /**
@@ -36,11 +33,10 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 public class JiraFeedConsumer extends AbstractFeedmashJob {
 
   private static final Log LOG = ExoLogger.getLogger(JiraFeedConsumer.class);
-  private String jiraLogo = "http://www.meta-inf.hu/images/atlassian/logo-jira.gif";
+  private String jiraLogo = "http://www.getzephyr.com/images/LOGO_JIRA.png";
   private String baseUrl;
   private String project;
-  private String categoryMatch;
-
+  
   public JiraFeedConsumer() {
   }
 
@@ -56,14 +52,7 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
       return false;
     }
 
-    // find match by category
-    List<SyndCategoryImpl> cats = entry.getCategories();
-    for (SyndCategoryImpl category : cats) {
-      if (category.getName().matches(categoryMatch))
-        return true;
-    }
-
-    return false;
+    return true;
   }
 
   /**
@@ -77,7 +66,10 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
 
       Identity space = getIdentity(targetActivityStream);
       if (space == null) {
+        saveState(feedLastCheck, null);
         return;
+      } else {
+        saveState(feedLastCheck, entry.getPublishedDate());
       }
 
       String message = entry.getTitle();
@@ -96,7 +88,7 @@ public class JiraFeedConsumer extends AbstractFeedmashJob {
     if (feedUrl == null) {
       feedUrl = baseUrl + "/plugins/servlet/streams?key=" + project;
     }
-    categoryMatch = dataMap.getString("categoryMatch");
+    feedLastCheck = LAST_CHECKED + "." + feedUrl + "." + targetActivityStream;
   }
 
   private Identity getJiraIdentity() throws Exception {
