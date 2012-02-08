@@ -73,22 +73,6 @@ public class WhereExpressionValuesTestCase extends TestCase {
 
   }
 
-  public void testStringOrderBy() throws Exception {
-
-    WhereExpression expression = new WhereExpression();
-    expression.orderBy(FakeEntity.strProperty, Order.ASC);
-    assertEquals("ORDER BY strProperty ASC", expression.toString());
-
-  }
-
-  public void testIntegerOrderBy() throws Exception {
-
-    WhereExpression expression = new WhereExpression();
-    expression.orderBy(FakeEntity.intProperty, Order.DESC);
-    assertEquals("ORDER BY intProperty DESC", expression.toString());
-
-  }
-
   public void testOr() throws Exception {
 
     WhereExpression expression = new WhereExpression();

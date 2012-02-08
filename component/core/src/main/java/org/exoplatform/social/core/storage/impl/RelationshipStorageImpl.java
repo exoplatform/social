@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.exoplatform.services.log.ExoLogger;
@@ -34,7 +35,6 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
-import org.exoplatform.social.core.storage.query.Order;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 import java.util.ArrayList;
@@ -680,9 +680,11 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
       WhereExpression whereExpression = new WhereExpression();
       whereExpression.like(JCRProperties.path, identityEntity.getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
-      whereExpression.orderBy(RelationshipEntity.createdTime, Order.DESC);
 
-      QueryResult<RelationshipEntity> results = builder.where(whereExpression.toString()).get().objects(offset, limit);
+      builder.where(whereExpression.toString());
+      builder.orderBy(RelationshipEntity.createdTime.getName(), Ordering.DESC);
+
+      QueryResult<RelationshipEntity> results = builder.get().objects(offset, limit);
 
       while (results.hasNext()) {
 

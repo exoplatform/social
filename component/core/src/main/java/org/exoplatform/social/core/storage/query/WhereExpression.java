@@ -92,11 +92,6 @@ public class WhereExpression {
     return this;
   }
 
-  public <T> WhereExpression orderBy(PropertyLiteralExpression<T> property, Order order) {
-    builder.append(String.format("ORDER BY %s %s", property.getName(), order.toString()));
-    return this;
-  }
-
   public WhereExpression startGroup() {
     builder.append("(");
     ++openGroup;
