@@ -12,10 +12,6 @@
 
   <name>eXo Social Documentation</name>
 
-  <modules>
-    <module>gen</module>
-  </modules>
-
   <profiles>
     <profile>
       <id>distrib</id>
