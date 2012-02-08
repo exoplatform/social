@@ -38,7 +38,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  *          exo@exoplatform.com
  * Feb 6, 2012  
  */
-public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
+public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
   private final Log  LOG = ExoLogger.getLogger(SocialUserProfileEventListenerImplTest.class);
 
   private IdentityManager identityManager;
@@ -50,23 +50,35 @@ public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
   
   private Identity paul;
   private Identity raul;
+  private boolean alreadyAddedPlugins = false;
 
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     organizationService = (OrganizationService) getContainer().getComponentInstanceOfType(OrganizationService.class);
+    fakePlugins();
 
     paul = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
     raul = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "raul", true);
     tearDownIdentityList = new ArrayList<Identity>();
+    tearDownIdentityList.add(paul);
+    tearDownIdentityList.add(raul);
+  }
+  
+  private void fakePlugins() throws Exception {
+    if (alreadyAddedPlugins == false) {
+      organizationService.addListenerPlugin(new SocialUserEventListenerImpl());
+      organizationService.addListenerPlugin(new SocialUserProfileEventListenerImpl());
+      alreadyAddedPlugins = true;
+    }
+    
   }
 
   public void tearDown() throws Exception {
+    
     for (Identity identity : tearDownIdentityList) {
       identityManager.deleteIdentity(identity);
     }
-    paul = null;
-    raul = null;
     super.tearDown();
   }
   
@@ -77,7 +89,7 @@ public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
    */
   public void testSynchronizeFromSocialToPortal() throws Exception {
     String paulRemoteId = "paul";
-    Identity paulIdentity = populateProfile(paul, true);
+    Identity paulIdentity = populateProfile(paul);
     assertNotNull(paulIdentity);
     //
     UserProfile pProfile = organizationService.getUserProfileHandler().findUserProfileByName(paulRemoteId);
@@ -128,7 +140,7 @@ public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
    */
   public void testSynchronizeFromProtalToSocial() throws Exception {
     String raulRemoteId = "raul";
-    Identity raulIdentity = populateProfile(raul, true);
+    Identity raulIdentity = populateProfile(raul);
     assertNotNull(raulIdentity);
     
     User pUser = organizationService.getUserHandler().findUserByName(raulRemoteId);
@@ -148,7 +160,7 @@ public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
    * @param numberOfItems
    * @param addedToTearDownList
    */
-  private Identity populateProfile(Identity identity, boolean addedToTearDownList) {
+  private Identity populateProfile(Identity identity) {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     Profile profile = identity.getProfile();
     assertNotNull(profile);
@@ -170,9 +182,6 @@ public class SocialUserProfileEventListenerImplTest  extends AbstractCoreTest {
 
     RequestLifeCycle.end();
     identity.setProfile(profile);
-    if (addedToTearDownList) {
-      tearDownIdentityList.add(identity);
-    }
     
     return identity;
 
