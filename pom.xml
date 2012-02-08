@@ -133,6 +133,8 @@
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
 
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
+    
+    <org.exoplatform.doc.doc-style.version>1.0.5-SNAPSHOT</org.exoplatform.doc.doc-style.version>
 
 
     <!-- ************** -->
@@ -838,6 +840,7 @@
         <artifactId>exo.social.docs</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!--
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.docs.gen</artifactId>
@@ -848,7 +851,7 @@
         <artifactId>exo.social.docs.gen</artifactId>
         <version>${project.version}</version>
         <classifier>templates</classifier>
-      </dependency>
+      </dependency> -->
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.extension.config</artifactId>

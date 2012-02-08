@@ -37,15 +37,16 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.docs.gen</artifactId>
-      <scope>compile</scope>
+     <groupId>org.exoplatform.doc</groupId>
+     <artifactId>doc-style</artifactId>
+     <version>${org.exoplatform.doc.doc-style.version}</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.docs.gen</artifactId>
+      <groupId>org.exoplatform.doc</groupId>
+      <artifactId>doc-style</artifactId>
+      <version>${org.exoplatform.doc.doc-style.version}</version>
       <classifier>templates</classifier>
     </dependency>
 
@@ -249,8 +250,8 @@
               <goal>unpack-dependencies</goal>
             </goals>
             <configuration>
-              <includeGroupIds>org.exoplatform.social</includeGroupIds>
-              <includeArtifactIds>exo.social.docs.gen</includeArtifactIds>
+              <includeGroupIds>org.exoplatform.doc</includeGroupIds>
+              <includeArtifactIds>doc-style</includeArtifactIds>
               <includeClassifiers>templates</includeClassifiers>
               <excludes>META-INF/**</excludes>
               <outputDirectory>${project.build.directory}/templates</outputDirectory>
