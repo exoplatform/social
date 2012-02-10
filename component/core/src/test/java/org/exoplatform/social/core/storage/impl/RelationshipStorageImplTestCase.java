@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -629,5 +630,98 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp3.getId());
     tearDownIdentityList.add(tmp4.getId());
     tearDownIdentityList.add(tmp5.getId());
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetConnectionsByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(spearsIdentity, williamsIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, christmasIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, kellyIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, tweedyIdentity, Relationship.Type.CONFIRMED);
+    
+    List<Identity> got = storage.getConnectionsByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetIncomingByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(williamsIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(christmasIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(kellyIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(tweedyIdentity, spearsIdentity, Relationship.Type.PENDING);
+    
+    List<Identity> got = storage.getIncomingByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetOutgoingByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(spearsIdentity, williamsIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, christmasIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, kellyIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, tweedyIdentity, Relationship.Type.PENDING);
+    
+    List<Identity> got = storage.getOutgoingByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  private Identity createIdentity(String remoteId) throws Exception {
+    Identity identity = new Identity("organization", remoteId);
+    identityStorage.saveIdentity(identity);
+    identity.getProfile().setProperty(Profile.LAST_NAME, remoteId);
+    identityStorage._createProfile(identity.getProfile());
+    tearDownIdentityList.add(identity.getId());
+    
+    return identity;
+  }
+  
+  private Relationship createRelationship(Identity sender, Identity receiver, Relationship.Type status) throws Exception {
+    Relationship relationship = new Relationship(sender, receiver);
+    relationship.setStatus(status);
+    storage.saveRelationship(relationship);
+    
+    return relationship;
   }
 }

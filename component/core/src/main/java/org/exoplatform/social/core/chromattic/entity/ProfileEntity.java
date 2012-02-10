@@ -81,6 +81,9 @@ public abstract class ProfileEntity {
   public abstract Map<String, List<String>> getProperties();
   public static final PropertyLiteralExpression<String> firstName =
       new PropertyLiteralExpression<String>(String.class, "void-firstName");
+  
+  public static final PropertyLiteralExpression<String> lastName =
+      new PropertyLiteralExpression<String>(String.class, "void-lastName");
 
   public static final PropertyLiteralExpression<String> fullName =
       new PropertyLiteralExpression<String>(String.class, "void-fullName");

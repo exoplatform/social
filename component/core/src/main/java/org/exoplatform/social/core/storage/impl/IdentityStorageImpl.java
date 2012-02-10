@@ -239,7 +239,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.fullName.getName(), Ordering.ASC);
+    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
 
     if(count){
      return builder.where(whereExpression.toString()).get().objects();
@@ -921,7 +921,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.fullName.getName(), Ordering.ASC);
+    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -1014,7 +1014,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.where(whereExpression.toString()).get().objects(offset, limit);
+    QueryResult<ProfileEntity> results = builder.where(whereExpression.toString())
+                                                .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
+                                                .get().objects(offset, limit);
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
