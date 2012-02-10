@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.core.processor;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,8 +46,16 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
   public void processActivity(ExoSocialActivity activity) {
     if (activity != null) {
-    activity.setTitle(substituteUsernames(activity.getTitle()));
-    activity.setBody(substituteUsernames(activity.getBody()));
+      activity.setTitle(substituteUsernames(activity.getTitle()));
+      activity.setBody(substituteUsernames(activity.getBody()));
+      Map<String,String> templateParams = activity.getTemplateParams();
+      if (templateParams != null) {
+        Iterator<Entry<String,String>> iterator = templateParams.entrySet().iterator();
+        while (iterator.hasNext()) {
+          Entry<String, String> entry = iterator.next();
+          templateParams.put(entry.getKey(), substituteUsernames(entry.getValue()));
+        }
+      }
     }
   }
 

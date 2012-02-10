@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.common;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ import java.util.List;
  */
 public class ResourceBundleUtil {
 
+  private static final MessageFormat messageFormat = new MessageFormat("");
+
   /**
    * Replace convention arguments of pattern {index} with messageArguments[index].
    * @param message
@@ -34,10 +37,8 @@ public class ResourceBundleUtil {
    * @return expected message with replaced arguments
    */
   public static String replaceArguments(String message, String[] messageArguments) {
-    for (int i = 0; i < messageArguments.length; i++) {
-      message = message.replace("{" + i + "}", messageArguments[i]);
-    }
-    return message;
+    messageFormat.applyPattern(message);
+    return messageFormat.format(messageArguments);
   }
   
   /**
@@ -48,10 +49,7 @@ public class ResourceBundleUtil {
    * @since 1.2.2
    */
   public static String replaceArguments(String message, List<String> messageArguments) {
-    for (int i = 0; i < messageArguments.size(); i++) {
-      message = message.replace("{" + i + "}", messageArguments.get(i));
-    }
-    return message;
+    return replaceArguments(message, messageArguments.toArray(new String[0]));
   }
 
 }
