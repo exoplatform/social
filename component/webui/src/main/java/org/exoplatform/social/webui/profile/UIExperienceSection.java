@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.exoplatform.social.core.identity.model.Profile;
@@ -68,7 +67,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
       @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
       @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class,
                    confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
-      @EventConfig(listeners = UIExperienceSection.CancelActionListener.class, phase=Phase.DECODE)
+      @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
     }
   ),
   @ComponentConfig(
@@ -303,7 +302,6 @@ public class UIExperienceSection extends UIProfileSection {
       uiForm.removeChildById(startDateId);
       uiForm.removeChildById(endDateId);
       uiForm.removeChildById(isCurrentId);
-      uiForm.expIdx -= 1;
     }
   }
 
@@ -378,13 +376,13 @@ public class UIExperienceSection extends UIProfileSection {
         } else if (totalProfiles < childSize) {
           numberOfChildren = childSize;
           while (totalProfiles < numberOfChildren) {
-            companyId = listChild.get(numberOfChildren - 6).getName();
-            positionId = listChild.get(numberOfChildren - 5).getName();
-            descriptionId = listChild.get(numberOfChildren - 4).getName();
-            skillsId = listChild.get(numberOfChildren - 3).getName();
-            startDateId = listChild.get(numberOfChildren - 2).getName();
-            endDateId = listChild.get(numberOfChildren - 1).getName();
-            isCurrentId = listChild.get(numberOfChildren).getName();
+            companyId = listChild.get(childSize - 6).getName();
+            positionId = listChild.get(childSize - 5).getName();
+            descriptionId = listChild.get(childSize - 4).getName();
+            skillsId = listChild.get(childSize - 3).getName();
+            startDateId = listChild.get(childSize - 2).getName();
+            endDateId = listChild.get(childSize - 1).getName();
+            isCurrentId = listChild.get(childSize).getName();
 
             sect.removeChildById(companyId);
             sect.removeChildById(positionId);
@@ -444,25 +442,6 @@ public class UIExperienceSection extends UIProfileSection {
       uiDateTime.setRendered(!isCheck);
 
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
-    }
-  }
-  
-  /**
-   * Listens to cancel event and change the form to non edit mode.<br>
-   * 
-   * @author quangpld
-   */
-  public static class CancelActionListener extends UIProfileSection.CancelActionListener {
-    
-    @Override
-    public void execute(Event<UIProfileSection> event) throws Exception {
-      UIProfileSection sect = event.getSource();
-      UIExperienceSection uiExperienceSectionSect = (UIExperienceSection) sect;
-      
-      Profile p = sect.getProfile();
-      List<Map<String, Object>> experiences = (List<Map<String, Object>>) p.getProperty(Profile.EXPERIENCES);
-      uiExperienceSectionSect.expIdx = experiences != null ? experiences.size() : 0;
-      super.execute(event);
     }
   }
 
