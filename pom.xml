@@ -78,7 +78,7 @@
     <html-parser.version>1.6</html-parser.version>
     <hsqldb.version>2.0.0</hsqldb.version>
     <javassist.version>3.14.0-GA</javassist.version>
-    <junit.version>3.8.2</junit.version>
+    <junit.version>4.10</junit.version>
     <byteman.version>1.5.1</byteman.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
     <rome.version>1.0</rome.version>
@@ -133,6 +133,34 @@
 
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
 
+
+    <!-- ***************************************************** -->
+    <!-- Plugin versions (waiting for an upgrade in exo parent -->
+    <!-- ***************************************************** -->
+    <version.antrun.plugin>1.7</version.antrun.plugin>
+    <version.assembly.plugin>2.3</version.assembly.plugin>
+    <version.archetype.plugin>2.0-alpha-5</version.archetype.plugin>
+    <version.buildhelper.plugin>1.7</version.buildhelper.plugin>
+    <version.buildnumber.plugin>1.0</version.buildnumber.plugin>
+    <version.clean.plugin>2.4.1</version.clean.plugin>
+    <version.compiler.plugin>2.3.2</version.compiler.plugin>
+    <version.dependency.plugin>2.4</version.dependency.plugin>
+    <version.deploy.plugin>2.5</version.deploy.plugin>
+    <version.docbkx.plugin>2.0.13</version.docbkx.plugin>
+    <version.ear.plugin>2.7</version.ear.plugin>
+    <version.enforcer.plugin>1.0.1</version.enforcer.plugin>
+    <version.exec.plugin>1.2.1</version.exec.plugin>
+    <version.install.plugin>2.3.1</version.install.plugin>
+    <version.jar.plugin>2.3.1</version.jar.plugin>
+    <version.jmeter.plugin>1.0</version.jmeter.plugin>
+    <version.resources.plugin>2.5</version.resources.plugin>
+    <version.release.plugin>2.2.1</version.release.plugin>
+    <version.source.plugin>2.1.2</version.source.plugin>
+    <version.surefire.plugin>2.12</version.surefire.plugin>
+    <version.versions.plugin>1.2</version.versions.plugin>
+    <version.war.plugin>2.1</version.war.plugin>
+    <version.wikbook.plugin>0.9.35</version.wikbook.plugin>
+    <version.xml.plugin>1.0-beta-3</version.xml.plugin>
 
     <!-- ************** -->
     <!-- Build settings -->
@@ -967,7 +995,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.4</version>
+          <version>${version.buildhelper.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1142,6 +1170,7 @@
           
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+            <version>${version.assembly.plugin}</version>
             <dependencies>
               <dependency>
                 <groupId>org.apache.apache.resources</groupId>
