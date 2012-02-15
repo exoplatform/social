@@ -188,11 +188,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>javascript</servlet-name>
-    <servlet-class>org.exoplatform.portal.webui.javascript.JavascriptServlet</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>Controller</servlet-name>
     <servlet-class>org.exoplatform.frameworks.jcr.web.CommandControllerServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
@@ -244,11 +239,6 @@
   <servlet-mapping>
     <servlet-name>DoLoginServlet</servlet-name>
     <url-pattern>/dologin</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>javascript</servlet-name>
-    <url-pattern>/javascript/*</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>

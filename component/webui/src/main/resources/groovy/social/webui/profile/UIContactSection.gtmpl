@@ -43,8 +43,7 @@
 
   def rcontext = _ctx.getRequestContext();
   def jsManager = rcontext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", '/social-resources/javascript');
-  jsManager.importJavascript('eXo.social.webui.UIContactSection', '/social-portlet/javascript');
+  jsManager.loadScriptResource("social-ui-contact-section");
 
   def gender = profile.getProperty(Profile.GENDER);
   def phones = profile.getProperty(Profile.CONTACT_PHONES);

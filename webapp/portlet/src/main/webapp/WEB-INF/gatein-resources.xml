@@ -20,8 +20,8 @@
 
 <gatein-resources
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2 http://www.gatein.org/xml/ns/gatein_resources_1_2"
-  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2">
+  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2_1 http://www.gatein.org/xml/ns/gatein_resources_1_2_1"
+  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2_1">
 
   <!-- GadgetPortlet skins -->
 
@@ -248,5 +248,209 @@
     <css-path>/skin/social/portlet/UISocialLogoPortlet/DefaultStylesheet.css</css-path>
     <css-priority>1</css-priority>
   </portlet-skin>
+  
+  <!-- Portlet javascript -->  
+  <portlet>
+     <name>PeopleToolbarPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>navigation</scripts>
+       </depends>
+     </scripts>
+  </portlet>
+  
+  <portlet>
+     <name>SpacesToolbarPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>navigation</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>SocialUserToolBarGroupPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>navigation</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>UserProfileToolBarPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>navigation</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>PeoplePortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>ProfilePortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+       <depends>
+         <scripts>webui-ext</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>ProfileNavigationPortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui-ext</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>AllPeoplePortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>ConnectionsPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>InvitationsPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>RequestsPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>UserActivityStreamPortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>AllSpacesPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+      
+   <portlet>
+     <name>MySpacesPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+      
+   <portlet>
+     <name>PendingSpacesPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+      
+   <portlet>
+     <name>InvitationSpacesPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
+     <name>SpaceActivityStreamPortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>SpaceSettingPortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui-ext</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>SpaceMenuPortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet>
+   
+   <portlet>
+     <name>MembersPortlet</name>     
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>webui</scripts>
+       </depends>
+     </scripts>
+   </portlet>
 </gatein-resources>
 

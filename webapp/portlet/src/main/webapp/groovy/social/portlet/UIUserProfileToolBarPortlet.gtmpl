@@ -26,9 +26,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 
 def requestContext = _ctx.getRequestContext();
 def jsManager = requestContext.getJavascriptManager();
-jsManager.importJavascript('eXo.portal.UIPortalNavigation');
-jsManager.importJavascript('eXo.portal.UIAdminToolbar');
-jsManager.addCustomizedOnLoadScript('eXo.portal.UIAdminToolbar.onLoad("' + uicomponent.id + '");');
+jsManager.addCustomizedOnLoadScript('eXo.portal.UIPortalNavigation.onLoad("' + uicomponent.id + '");');
 
 def accountSettingsLink = "javascript:if(document.getElementById('UIMaskWorkspace')) ajaxGet(eXo.env.server.createPortalURL('UIPortal', 'AccountSettings', true));";
 def user = uicomponent.getUser();

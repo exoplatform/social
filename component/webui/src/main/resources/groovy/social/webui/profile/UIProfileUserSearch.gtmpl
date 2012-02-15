@@ -26,15 +26,12 @@
 	def uicomponentId = uicomponent.id;
 	
 	def rcontext = _ctx.getRequestContext() ;
-	JavascriptManager jsmanager = rcontext.getJavascriptManager();
-  jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl',LinkProvider.JAVASCRIPT_RESOURCE_URL);
-	jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-	jsmanager.importJavascript('eXo.social.webui.UIProfileUserSearch', LinkProvider.JAVASCRIPT_RESOURCE_URL);
-
-	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
-	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
-	jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
-	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'" ;');
+	def jsmanager = rcontext.getJavascriptManager();
+  jsmanager.loadScriptResource("social-ui-user-search");
+	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'"') ;
+	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'"');
+	jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'"');
+	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'"');
 	jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "people";');
 
   def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
@@ -54,13 +51,13 @@
 	def childs = uicomponent.getChildren();
 	
 	def params = """ {
-      uicomponentId: '${uicomponentId}',
-      defaultUserContact: '${nameDefaultVal}',
-      defaultPos: '${positionDefaultVal}',
-      defaultSkills: '${skillsDefaultVal}'
-    } """
+	  uicomponentId: '${uicomponentId}',
+	  defaultUserContact: '${nameDefaultVal}',
+	  defaultPos: '${positionDefaultVal}',
+	  defaultSkills: '${skillsDefaultVal}'
+	} """
   
-    jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
+  jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
 	
 	
 	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
