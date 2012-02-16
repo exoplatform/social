@@ -1,0 +1,1119 @@
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIInvitations_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+-UIInvitations.label.Deny=
+-UIInvitations.label.Accept=
++UIInvitations.label.Deny=\u0631\u0641\u0636
++UIInvitations.label.Accept=\u0642\u0628\u0648\u0644
+ UIInvitations.label.NotYet=\u0644\u064A\u0633 \u0644\u062F\u064A\u0643 \u0628\u0639\u062F \u0623\u064A\u0651 \u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A
+-UIInvitations.label.Position=
++UIInvitations.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIInvitations.label.RelationsListing=\u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A \u0644\u0644\u062A\u0648\u0627\u0635\u0644 \u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u0625\u062C\u0627\u0628\u062A\u0643
+ UIInvitations.label.MyInvitationsList=\u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A \u0644\u0644\u062A\u0648\u0627\u0635\u0644
+ UIInvitations.label.RevokedInfo=\u062A\u0645\u0651 \u0625\u0644\u063A\u0627\u0621 \u0623\u0648 \u062D\u0630\u0641 \u0647\u0630\u0647 \u0627\u0644\u062F\u0639\u0648\u0629 \u0645\u0646 \u0642\u0628\u0644 \u0634\u062E\u0635 \u0622\u062E\u0631
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIPendingRelation_ar.properties	(working copy)
+@@ -1,8 +1,8 @@
+-UIPendingRelation.label.Position=
++UIPendingRelation.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIPendingRelation.label.Revoke=
+ UIPendingRelation.label.WaitForConfirmation=\u0641\u064A \u0627\u0646\u062A\u0638\u0627\u0631\u00a0\u0645\u0648\u0627\u0641\u0642\u062A\u0643 \u0639\u0644\u064A\u0647\u0627
+ UIPendingRelation.label.NotYet=\u0644\u0627 \u064A\u0648\u062C\u062F \u0644\u062F\u064A\u0643\u00a0\u0623\u064A \u0637\u0644\u0628 \u0627\u062A\u0635\u0627\u0644\u00a0\u0625\u0644\u0649\u00a0\u062D\u062F\u0651 \u0627\u0644\u0622\u0646.
+-UIPendingRelation.label.AddConnections=
++UIPendingRelation.label.AddConnections=\u0627\u0636\u0627\u0641\u0629 \u062C\u0647\u0627\u062A \u0627\u062A\u0635\u0627\u0644
+ UIPendingRelation.label.RelationsListing=\u0627\u0644\u0623\u0634\u062E\u0627\u0635\u00a0\u0627\u0644\u0630\u064A\u0646 \u0643\u0646\u062A \u062A\u0631\u063A\u0628 \u0641\u064A\u00a0\u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0645\u0639\u0647\u0645
+ UIPendingRelation.label.MyRequestsList=\u0637\u0644\u0628\u0627\u062A \u0627\u0644\u0627\u062A\u0635\u0627\u0644
+ UIPendingRelation.label.RevokedInfo=\u0644\u0642\u062F \u062A\u0645\u0651 \u0625\u0644\u063A\u0627\u0621\u00a0\u0627\u0644\u0637\u0644\u0628 \u0623\u0648 \u0631\u0628\u0645\u0627\u00a0\u062A\u0645 \u062D\u0630\u0641\u0647 \u0645\u0646 \u0642\u0628\u0644\u00a0\u0634\u062E\u0635 \u0622\u062E\u0631.
+Index: component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/connections/UIMyConnections_ar.properties	(working copy)
+@@ -1,11 +1,11 @@
+-UIMyConnections.label.Deny=
+-UIMyConnections.label.Remove=
+-UIMyConnections.label.Accept=
+-UIMyConnections.label.Profile=
++UIMyConnections.label.Deny=\u0631\u0641\u0636
++UIMyConnections.label.Remove=\u062D\u0630\u0641
++UIMyConnections.label.Accept=\u0642\u0628\u0648\u0644
++UIMyConnections.label.Profile=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A
+ UIMyConnections.label.NotYet=\u0644\u0645 \u062A\u062A\u0645 \u062A\u0623\u0633\u064A\u0633 \u0623\u064A\u00a0\u0639\u0644\u0627\u0642\u0629\u00a0\u0625\u0644\u0649 \u062D\u062A\u0649 \u0627\u0644\u0627\u0646.
+-UIMyConnections.label.AddConnections=\u0625\u0636\u0627\u0641\u0629\u00a0\u0639\u0644\u0627\u0642\u0627\u062A \u062C\u062F\u064A\u062F\u0629
+-UIMyConnections.label.Position=
++UIMyConnections.label.AddConnections=\u0627\u0636\u0627\u0641\u0629 \u062C\u0647\u0627\u062A \u0627\u062A\u0635\u0627\u0644
++UIMyConnections.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIMyConnections.label.RelationsListing=\u0627\u0644\u0623\u0634\u062E\u0627\u0635 \u0627\u0644\u0630\u064A\u0646\u00a0\u0642\u0627\u0645\u0648\u0627 \u0628\u062A\u0623\u0633\u064A\u0633 \u0639\u0644\u0627\u0642\u0627\u062A \u062C\u062F\u064A\u062F\u0629
+-UIMyConnections.label.MyRelationsList=
++UIMyConnections.label.MyRelationsList=\u0634\u0628\u0643\u0629 \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0627\u0644\u062E\u0627\u0635\u0651\u0629 \u0628\u064A
+ UIMyConnections.label.UserRelationList={0} \u0634\u0628\u0643\u0627\u062A
+ UIMyConnections.label.DeletedInfo=\u062A\u0645 \u062D\u0630\u0641\u00a0\u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0645\u0646 \u0642\u0628\u0644\u00a0\u0634\u062E\u0635 \u0622\u062E\u0631.
+Index: component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/UIAvatarUploader_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+-UIAvatarUploader.msg.img_not_loaded=
++UIAvatarUploader.msg.img_not_loaded=\u062D\u062F\u062B \u062E\u0637\u0623 \u0623\u062B\u0646\u0627\u0621 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629.
+ UIAvatarUploader.msg.mimetype_not_accepted=\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u062A\u0639\u0631\u0641 \u0639\u0644\u0649 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0630\u064A \u062A\u0645 \u062A\u062D\u0645\u064A\u0644\u0647 \u0643\u0635\u0648\u0631\u0629. \u064A\u0631\u062C\u0649 \u0627\u0633\u062A\u0639\u0645\u0627\u0644 \u0645\u0644\u0641\u0627\u062A \u0630\u0627\u062A \u0645\u0644\u062D\u0642 PNG \u0623\u0648 JPG \u0641\u0642\u0637.
+ UIAvatarUploader.label.info=\u064A\u0631\u062C\u0649 \u062A\u062D\u0645\u064A\u0644 \u0635\u0648\u0631\u0629 \u0628\u062D\u062C\u0645 \u0623\u0642\u0644 \u0645\u0646 2 \u0645\u064A\u063A\u0627\u0628\u0627\u064A\u062A.
+-UIAvatarUploader.label.Name=
+-UIAvatarUploader.label.Uploader=
+-UIAvatarUploader.action.Confirm=
+-UIAvatarUploader.action.Cancel=
++UIAvatarUploader.label.Name=\u0627\u0644\u0627\u0633\u0645:
++UIAvatarUploader.label.Uploader=\u062A\u0646\u0632\u064A\u0644 \u0627\u0644\u0645\u0644\u0641\u0627\u062A:
++UIAvatarUploader.action.Confirm=\u062A\u0623\u0643\u064A\u062F
++UIAvatarUploader.action.Cancel=\u0627\u0644\u063A\u0627\u0621
+Index: component/webui/src/main/resources/locale/social/webui/composer/UIComposer_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/composer/UIComposer_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/composer/UIComposer_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+ UIComposer.input.Write_Something=\u0645\u0627\u0630\u0627 \u064A\u062E\u0637\u0631\u064F \u0628\u0628\u0640\u0627\u0644\u0643\u061F
+ UIComposer.input.What_Are_You_Working_On=\u0623\u0646\u062A \u0628\u0635\u062F\u062F \u0627\u0644\u0642\u064A\u0627\u0645 \u0628\u0645\u0627\u0630\u0627\u061F
+-UIComposer.label.Attach=
++UIComposer.label.Attach=\u0627\u0631\u0641\u0627\u0642
+ UIComposer.label.Share=\u0627\u0644\u0645\u064F\u0640\u0634\u0627\u0631\u064E\u0643\u0629
+ UIComposer.msg.error.Empty_Message=\u0627\u0644\u0631\u0633\u0627\u0644\u0629 \u0641\u0627\u0631\u063A\u0629
+-UIPopupWindow.title.UIPopupWindow=\u0627\u0644\u0646\u0627\u0641\u0630\u0629\u00a0\u0627\u0644\u0645\u0646\u0628\u062B\u0642\u0629
++UIPopupWindow.title.UIPopupWindow=\u0627\u0644\u0646\u0627\u0641\u0630\u0629 \u0627\u0644\u0645\u0639\u0631\u0648\u0636\u0629
+ OptionPopupWindow.title.OptionPopupWindow=
+Index: component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/UIAvatarUploadContent_ar.properties	(working copy)
+@@ -1,5 +1,5 @@
+-UIAvatarUploadContent.label.file_name=
+-UIAvatarUploadContent.label.file_type=
+-UIAvatarUploadContent.label.image_size=
+-UIAvatarUploadContent.label.save=
+-UIAvatarUploadContent.label.abort=
++UIAvatarUploadContent.label.file_name=\u0627\u0633\u0645 \u0627\u0644\u0645\u0644\u0641 :
++UIAvatarUploadContent.label.file_type=\u0646\u0648\u0639 \u0627\u0644\u0645\u0644\u0641 :
++UIAvatarUploadContent.label.image_size=\u062D\u062C\u0645 \u0627\u0644\u0635\u0648\u0631\u0629:
++UIAvatarUploadContent.label.save=\u062D\u0641\u0638
++UIAvatarUploadContent.label.abort=\u0625\u062D\u0628\u0627\u0637
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceAddForm_ar.properties	(working copy)
+@@ -1,15 +1,15 @@
+ UISpaceAddForm.action.Create=\u0627\u0646\u0634\u0627\u0621
+-UISpaceAddForm.tab.label.UISpaceSettings=
+-UISpaceAddForm.tab.label.UISpaceVisibility=\u0627\u0644\u0631\u0624\u064A\u0629
++UISpaceAddForm.tab.label.UISpaceSettings=\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A
++UISpaceAddForm.tab.label.UISpaceVisibility=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UISpaceAddForm.tab.label.UISpaceGroupBound=\u062F\u0639\u0648\u0629 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0645\u0646 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629
+-UISpaceAddForm.label.name=
+-UISpaceAddForm.label.priority=
+-UISpaceAddForm.label.description=
+-UISpaceAddForm.label.UIVisibility=
++UISpaceAddForm.label.name=\u0627\u0644\u0627\u0633\u0645
++UISpaceAddForm.label.priority=\u0627\u0644\u0623\u0648\u0644\u0648\u064A\u0629
++UISpaceAddForm.label.description=\u0627\u0644\u0648\u0635\u0641
++UISpaceAddForm.label.UIVisibility=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UISpaceAddForm.label.UIRegistration=\u062A\u0633\u062C\u064A\u0644
+-UISpaceAddForm.label.option.1=\u0627\u0631\u062A\u0641\u0627\u0639
++UISpaceAddForm.label.option.1=\u0642\u0635\u0648\u0649
+ UISpaceAddForm.label.option.2=\u0645\u062A\u0648\u0633\u0637
+-UISpaceAddForm.label.option.3=\u0645\u0646\u062E\u0641\u0636
++UISpaceAddForm.label.option.3=\u0636\u0626\u064A\u0644\u0629
+ UISpaceAddForm.msg.default_space_description=\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0644\u0627 \u064A\u0648\u062C\u062F \u0644\u062F\u064A\u0647 \u0645\u0644\u062E\u0635 \u0648\u0635\u0641\u064A.
+ UISpaceAddForm.msg.error_space_already_exist=\u0641\u0636\u0627\u0621 \u0628\u0646\u0641\u0633 \u0627\u0644\u0627\u0633\u0645 \u0645\u0648\u062C\u0648\u062F \u0645\u0633\u0628\u0642\u0627.
+ UISpaceAddForm.msg.error_space_creation=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0627\u0621 \u062C\u062F\u064A\u062F
+@@ -18,15 +18,15 @@
+ UISpaceAddForm.msg.error_unable_to_add_creator=\u063A\u064A\u0631 \u0642\u0627\u062F\u0631 \u0639\u0644\u0649 \u0625\u0636\u0627\u0641\u0629 \u062E\u0627\u0644\u0642 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u062C\u062F\u064A\u062F.
+ UISpaceAddForm.msg.error_unable_to_add_application=\u063A\u064A\u0631 \u0642\u0627\u062F\u0631 \u0639\u0644\u0649 \u0625\u0636\u0627\u0641\u0629 \u0628\u0639\u0636 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u062C\u062F\u064A\u062F.
+ UISpaceAddForm.msg.error_unable_to_retrieve_user=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0626\u064A\u0629 \u062C\u062F\u064A\u062F\u0629.\u00a0\u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u063A\u064A\u0631 \u0642\u0627\u062F\u0631 \u0639\u0644\u0649 \u0627\u0633\u062A\u0631\u062F\u0627\u062F \u0623\u0648 \u062A\u062D\u0630\u0641 \u0645\u0646 \u0642\u0628\u0644 \u0627\u0644\u0628\u0639\u0636.
+-UIVisibility.label.public=
+-UIVisibility.label.private=
+-UIVisibility.label.hidden=
+-UIRegistration.label.open=
+-UIRegistration.label.validation=
+-UIRegistration.label.close=
++UIVisibility.label.public=\u0639\u0627\u0645\u0651
++UIVisibility.label.private=\u0645\u0631\u0626\u064A
++UIVisibility.label.hidden=\u0645\u062E\u0641\u064A
++UIRegistration.label.open=\u0645\u0641\u062A\u0648\u062D
++UIRegistration.label.validation=\u0627\u0644\u0645\u0635\u0627\u062F\u0642\u0629
++UIRegistration.label.close=\u0627\u063A\u0644\u0627\u0642
+ UISpaceSettings.msg.invalid_space_name=\u0627\u0644\u0631\u062C\u0627\u0621 \u0625\u062F\u062E\u0627\u0644 \u0627\u0633\u0645 \u0635\u062D\u064A\u062D \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 :  \u0627\u0644\u0623\u062D\u0631\u0641 \u0627\u0644\u0623\u0628\u062C\u062F\u064A\u0629 \u060C \u0648\u0623\u062D\u0631\u0641 \u0627\u0644\u0641\u0631\u0627\u063A \u0648 \u0627\u0644\u0623\u0631\u0642\u0627\u0645  \u0647\u064A \u0641\u0642\u0637 \u0627\u0644\u0645\u0633\u0645\u0648\u062D \u0628\u0647\u0627
+ UISpaceSettings.label.HighPrio=(\u0633\u0648\u0641 \u064A\u062A\u0645 \u062A\u0631\u062A\u064A\u0628 \u0627\u0644\u0641\u0636\u0627\u0621 \u0639\u0644\u0649 \u0631\u0623\u0633 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 )
+ UISpaceSettings.label.InterMePrio=(\u0633\u0648\u0641 \u064A\u062A\u0645 \u062A\u0631\u062A\u064A\u0628 \u0627\u0644\u0641\u0636\u0627\u0621 \u0641\u064A \u0645\u0646\u062A\u0635\u0641 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 )
+ UISpaceSettings.label.lowPrio=(\u0633\u0648\u0641 \u064A\u062A\u0645 \u062A\u0631\u062A\u064A\u0628 \u0627\u0644\u0641\u0636\u0627\u0621 \u0641\u064A \u0622\u062E\u0631 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 )
+ UIPopupWindow.Close=
+-UINavigationManagement.action.Save=
++UINavigationManagement.action.Save=\u062D\u0641\u0638
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceGroupBound_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+ UISpaceGroupBound.label.checkbox=\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0641\u0626\u0629 \u0627\u0644\u0645\u0633\u062A\u0647\u062F\u0641\u0629 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+-UISpaceGroupBound.label.description=<p>\u0628\u0645\u062C\u0631\u062F \u0625\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0627\u0621 \u062C\u062F\u064A\u062F \u0628\u0646\u062C\u0627\u062D \u060C \u0648\u0633\u0648\u0641 \u062A\u0643\u0648\u0646 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629 \u0645\u0639 \u0627\u0633\u0645 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u0630\u064A \u062A\u0645 \u0625\u0646\u0634\u0627\u0624\u0647 \u062A\u0644\u0642\u0627\u0626\u064A\u0627. </ P>
+-UISpaceGroupBound.label.description_hasGroupManagerRole=<p>\u0625\u0630\u0627 \u0643\u0646\u062A \u062A\u0631\u064A\u062F \u062A\u062D\u062F\u064A\u062F \u0645\u062C\u0645\u0648\u0639\u0629 \u0644\u062F\u0639\u0648\u0629 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0644\u0644\u0627\u0646\u0636\u0645\u0627\u0645 \u0627\u0644\u0649 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u062A\u064A \u0623\u0646\u0634\u0626\u062A \u062D\u062F\u064A\u062B\u0627 \u060C \u0627\u0644\u0631\u062C\u0627\u0621 \u0627\u0646\u0642\u0631 \u0641\u0648\u0642 \u062E\u0627\u0646\u0629 \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631 </ P>
+-UISpaceGroupBound.label.description_notHasGroupManagerRole=\u0639\u0644\u0649 <strong><p>\u0648\u064A\u062A\u0645 \u062A\u0639\u0637\u064A\u0644 \u0647\u0630\u0647 \u0627\u0644\u0645\u064A\u0632\u0629 \u0644\u0623\u0646\u0643 \u062A\u062D\u062A\u0627\u062C \u0625\u0644\u0649 \u0645\u062F\u064A\u0631 \u0645\u062C\u0645\u0648\u0639\u0629 \u0644\u062F\u0639\u0648\u0629 \u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0647\u0627 \u0641\u064A \u0627\u0644\u0641\u0636\u0627\u0621. </ \u0642\u0648\u064A> </ P>
++UISpaceGroupBound.label.description=<p>\u0628\u0645\u062C\u0631\u062F \u0625\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0627\u0621 \u062C\u062F\u064A\u062F \u0628\u0646\u062C\u0627\u062D \u060C \u0648\u0633\u0648\u0641 \u062A\u0643\u0648\u0646 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629 \u0645\u0639 \u0627\u0633\u0645 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u0630\u064A \u062A\u0645 \u0625\u0646\u0634\u0627\u0624\u0647 \u062A\u0644\u0642\u0627\u0626\u064A\u0627. </p>
++UISpaceGroupBound.label.description_hasGroupManagerRole=<p>\u0625\u0630\u0627 \u0643\u0646\u062A \u062A\u0631\u064A\u062F \u062A\u062D\u062F\u064A\u062F \u0645\u062C\u0645\u0648\u0639\u0629 \u0644\u062F\u0639\u0648\u0629 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0644\u0644\u0627\u0646\u0636\u0645\u0627\u0645 \u0627\u0644\u0649 \u0627\u0644\u0641\u0636\u0627\u0621 \u0627\u0644\u062A\u064A \u0623\u0646\u0634\u0626\u062A \u062D\u062F\u064A\u062B\u0627 \u060C \u0627\u0644\u0631\u062C\u0627\u0621 \u0627\u0646\u0642\u0631 \u0641\u0648\u0642 \u062E\u0627\u0646\u0629 \u0627\u0644\u0627\u062E\u062A\u064A\u0627\u0631 </p>
++UISpaceGroupBound.label.description_notHasGroupManagerRole=<p><strong>\u062A\u0645 \u062A\u0639\u0637\u064A\u0644 \u0647\u0630\u0647 \u0627\u0644\u0648\u0638\u064A\u0641\u0629\u060C \u0623\u0646\u062A \u0628\u062D\u0627\u062C\u0629 \u0644\u0623\u0646 \u062A\u0643\u0648\u0646 \u0645\u062F\u064A\u0631\u064B\u0627 \u0644\u0644\u0645\u062C\u0645\u0648\u0639\u0629 \u062D\u062A\u0649 \u062A\u062A\u0645\u0643\u0646 \u0645\u0646 \u062F\u0639\u0648\u0629 \u0623\u0639\u0636\u0627\u0626\u0647\u0627</strong></p>
+ UISpaceGroupBound.label.selected_group=\u0645\u062C\u0645\u0648\u0639\u0629 \u0645\u062E\u062A\u0627\u0631\u0629
+ UIPopupGroupBound.title.UIPopupGroupBound=\u062F\u0639\u0648\u0629 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0645\u0646 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629
+ UIPopupGroupBound.title.UISocialGroupSelector=\u0627\u062E\u062A\u064A\u0627\u0631 \u0639\u0644\u0627\u0645\u0629 \u0644\u0645\u062C\u0645\u0648\u0639\u0629 \u0627\u0644\u0627\u0634\u062E\u0627\u0635 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceInfo_ar.properties	(working copy)
+@@ -1,14 +1,14 @@
+-UISpaceInfo.action.Save=
+-UISpaceInfo.label.name=
+-UISpaceInfo.label.description=
++UISpaceInfo.action.Save=\u062D\u0641\u0638
++UISpaceInfo.label.name=\u0627\u0644\u0627\u0633\u0645:
++UISpaceInfo.label.description=\u0627\u0644\u0648\u0635\u0641:
+ UISpaceInfo.label.priority=\u0627\u0644\u0623\u0648\u0644\u0648\u064A\u0629
+ UISpaceInfo.title.ClickChangeAvatar=\u0627\u0646\u0642\u0631 \u0644\u062A\u063A\u064A\u064A\u0631 \u0634\u0639\u0627\u0631 \u0627\u0644\u0641\u0636\u0627\u0621
+-UISpaceInfo.label.option.1=\u0642\u0635\u0648\u0649:
++UISpaceInfo.label.option.1=\u0642\u0635\u0648\u0649
+ UISpaceInfo.label.option.2=\u0639\u0627\u062F\u064A\u0629
+-UISpaceInfo.label.option.3=\u062F\u0646\u064A\u0627
++UISpaceInfo.label.option.3=\u0636\u0626\u064A\u0644\u0629
+ UISpaceInfo.label.tag=\u0627\u0644\u0639\u0644\u0627\u0645\u0629 :
+ UISpaceInfo.msg.name-invalid=\u0627\u0644\u0631\u062C\u0627\u0621 \u0625\u062F\u062E\u0627\u0644 \u0627\u0633\u0645 \u0635\u062D\u064A\u062D \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 :  \u0627\u0644\u0623\u062D\u0631\u0641 \u0627\u0644\u0623\u0628\u062C\u062F\u064A\u0629 \u060C \u0648\u0623\u062D\u0631\u0641 \u0627\u0644\u0641\u0631\u0627\u063A \u0648 \u0627\u0644\u0623\u0631\u0642\u0627\u0645  \u0647\u064A \u0641\u0642\u0637 \u0627\u0644\u0645\u0633\u0645\u0648\u062D \u0628\u0647\u0627
+ UISpaceInfo.msg.update-success=\u062A\u062D\u062F\u064A\u062B \u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0627\u0644\u0641\u0636\u0627\u0621 \u0628\u0646\u062C\u0627\u062D.
+ UISpaceInfo.msg.current-name-exist=\u0647\u0630\u0627 \u0627\u0644\u0627\u0633\u0645 \u0648\u064F\u062C\u062F \u0645\u064F\u0633\u0628\u0642\u0627
+-UISpaceInfo.label.ChangeAvatar=
+-UISpaceInfo.label.Public=
++UISpaceInfo.label.ChangeAvatar=\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
++UISpaceInfo.label.Public=\u0639\u0627\u0645\u0651
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceApplication_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UISpaceApplication.button.remove=
+-UISpaceApplication.button.add=
++UISpaceApplication.button.remove=\u062D\u0630\u0641
++UISpaceApplication.button.add=\u0627\u0636\u0627\u0641\u0629
+ AddApplication.title.UISpaceApplicationList=\u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceMenu_ar.properties	(working copy)
+@@ -1 +1 @@
+-UISpaceMenu.label.Home=
++UISpaceMenu.label.Home=\u0627\u0644\u0627\u0633\u062A\u0642\u0628\u0627\u0644
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationNodeSelector_ar.properties	(working copy)
+@@ -1,16 +1,16 @@
+-UISpaceNavigationNodeSelector.msg.systemnode-delete=
+-UISpaceNavigationNodeSelector.msg.systemnode-move=
+-UISpaceNavigationNodeSelectorPopupMenu.event.AddNode=
+-UISpaceNavigationNodeSelectorPopupMenu.event.PasteNode=
+-SpaceNavigationNodePopupMenu.event.AddNode=
++UISpaceNavigationNodeSelector.msg.systemnode-delete=\u0644\u0627 \u064A\u0645\u0643\u0646 \u062D\u0630\u0641 \u0627\u0644\u0639\u0642\u062F\u0629 \u0627\u0644\u0645\u0631\u062A\u0628\u0637\u0629 \u0628\u0627\u0644\u0646\u0638\u0627\u0645
++UISpaceNavigationNodeSelector.msg.systemnode-move=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0642\u0637\u0639 \u0627\u0644\u0639\u0642\u062F\u0629 \u0627\u0644\u0645\u0631\u062A\u0628\u0637\u0629 \u0628\u0627\u0644\u0646\u0638\u0627\u0645
++UISpaceNavigationNodeSelectorPopupMenu.event.AddNode=\u0625\u0636\u0627\u0641\u0629 \u0639\u0642\u062F\u0629 \u062C\u062F\u064A\u062F\u0629
++UISpaceNavigationNodeSelectorPopupMenu.event.PasteNode=\u0644\u0635\u0642 \u0627\u0644\u0639\u0642\u062F\u0629
++SpaceNavigationNodePopupMenu.event.AddNode=\u0625\u0636\u0627\u0641\u0629 \u0639\u0642\u062F\u0629 \u062C\u062F\u064A\u062F\u0629
+ SpaceNavigationNodePopupMenu.event.EditPageNode=\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0639\u0642\u062F \u0627\u0644\u062E\u0627\u0635\u0651\u0629 \u0628\u0627\u0644\u0635\u0651\u0641\u062D\u0629
+ SpaceNavigationNodePopupMenu.event.EditSelectedNode=\u062A\u063A\u064A\u064A\u0631 \u0647\u0630\u0647 \u0627\u0644\u0639\u0642\u062F\u0629
+ SpaceNavigationNodePopupMenu.event.EditNavigation=\u062A\u0639\u062F\u064A\u0644 \u0627\u0644\u062A\u0635\u0641\u062D
+ SpaceNavigationNodePopupMenu.event.CopyNode=\u0646\u0633\u062E \u0627\u0644\u0639\u0642\u062F\u0629
+ SpaceNavigationNodePopupMenu.event.CloneNode=\u0627\u0633\u062A\u0646\u0633\u0627\u062E \u0627\u0644\u0639\u0642\u062F\u0629
+ SpaceNavigationNodePopupMenu.event.CutNode=\u0642\u0635\u0651 \u0627\u0644\u0639\u0642\u062F\u0629
+-SpaceNavigationNodePopupMenu.event.MoveUp=
+-SpaceNavigationNodePopupMenu.event.MoveDown=
+-SpaceNavigationNodePopupMenu.event.PasteNode=
++SpaceNavigationNodePopupMenu.event.MoveUp=\u062A\u062D\u0631\u0643 \u0641\u064A \u0627\u062A\u062C\u0627\u0647 \u0627\u0644\u0623\u0639\u0644\u0649
++SpaceNavigationNodePopupMenu.event.MoveDown=\u062A\u062D\u0631\u0643 \u0641\u064A \u0627\u062A\u062C\u0627\u0647 \u0627\u0644\u0623\u0633\u0641\u0644
++SpaceNavigationNodePopupMenu.event.PasteNode=\u0644\u0635\u0642 \u0627\u0644\u0639\u0642\u062F\u0629
+ SpaceNavigationNodePopupMenu.event.SaveNavigation=\u062D\u0641\u0638 \u0627\u0644\u062A\u0635\u0641\u0640\u0651\u062D
+ SpaceNavigationNodePopupMenu.event.DeleteNode=\u062D\u0630\u0641 \u0627\u0644\u0639\u0642\u062F\u0629
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManagePublicSpaces_ar.properties	(working copy)
+@@ -1,10 +1,10 @@
+-UIManagePublicSpaces.label.SpaceListing=
++UIManagePublicSpaces.label.SpaceListing=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0645\u0651 \u0627\u0644\u0639\u062B\u0648\u0631\u0639\u0644\u064A\u0647\u0627
+ UIManagePublicSpaces.label.action_request_to_join=\u0637\u0644\u0628 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+-UIManagePublicSpaces.fieldLabel.description=
+-UIManagePublicSpaces.fieldLabel.members=
+-UIManagePublicSpaces.fieldLabel.url=
+-UIManagePublicSpaces.fieldLabel.status=
+-UIManagePublicSpaces.status.visible=
++UIManagePublicSpaces.fieldLabel.description=\u0627\u0644\u0648\u0635\u0641:
++UIManagePublicSpaces.fieldLabel.members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621 :
++UIManagePublicSpaces.fieldLabel.url=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u0648\u062D\u062F:
++UIManagePublicSpaces.fieldLabel.status=\u0627\u0644\u062D\u0627\u0644\u0629 :
++UIManagePublicSpaces.status.visible=\u064A\u0645\u0643\u0646 \u0631\u0624\u064A\u0629 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0645\u0646 \u0642\u0650\u0640\u0628\u0640\u064E\u0640\u0644 \u0623\u064A\u0651 \u0634\u062E\u0635 \u0648
+ UIManagePublicSpaces.status.open=\u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647 \u0628\u0643\u0644 \u062D\u0631\u064A\u0651\u0629
+ UIManagePublicSpaces.status.validation=\u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647 \u0634\u0631\u064A\u0637\u0629 \u062A\u062D\u0635\u0644\u0647\u0645 \u0639\u0644\u0649 \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0645\u0646 \u0642\u0650\u0640\u0640\u0628\u0644 \u0645\u062F\u064A\u0631 \u0627\u0644\u0641\u0636\u0627\u0621
+ UIManagePublicSpaces.status.close=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0627\u0631\u0633\u0627\u0644 \u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A \u0628\u064F\u063A\u064A\u0629 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManagePendingSpaces_ar.properties	(working copy)
+@@ -1,4 +1,4 @@
+-UIManagePendingSpaces.label.SpaceListing=
++UIManagePendingSpaces.label.SpaceListing=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0645\u0651 \u0627\u0644\u0639\u062B\u0648\u0631\u0639\u0644\u064A\u0647\u0627
+ UIManagePendingSpaces.label.NoSpace=\u0644\u0627 \u062A\u0648\u062C\u062F \u0641\u064A \u0627\u0644\u0648\u0642\u062A \u0627\u0644\u062D\u0627\u0644\u064A \u0623\u064A\u0651 \u0637\u0644\u0628\u0627\u062A \u0644\u0644\u0627\u0646\u0636\u0645\u0627\u0645
+-UIManagePendingSpaces.fieldLabel.members=
++UIManagePendingSpaces.fieldLabel.members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621 :
+ UIManagePendingSpaces.msg.DeletedInfo=\u062A\u0645 \u062D\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0645\u0646 \u0642\u0628\u0644 \u0634\u062E\u0635 \u0645\u0627.
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceVisibility_ar.properties	(working copy)
+@@ -2,7 +2,7 @@
+ UISpaceVisibility.label.VisibleAndValidationSpace=(\u064A\u062A\u0637\u0644\u0628 \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0635\u062D\u0629 \u0627\u0644\u0639\u0636\u0648\u064A\u0629 )
+ UISpaceVisibility.label.VisibleAndCloseSpace=(\u0627\u0644\u0627\u0634\u062A\u0631\u0627\u0643 \u0631\u0647\u064A\u0646 \u062F\u0639\u0648\u0629 \u0645\u0646 \u0642\u0628\u0644 \u0627\u0644\u0645\u0633\u0624\u0648\u0644)
+ UISpaceVisibility.label.HiddenSpace=(\u0644\u0645 \u064A\u062A\u0645 \u0633\u0631\u062F \u0627\u0644\u0641\u0636\u0627\u0621)
+-UISpaceVisibility.label.UIVisibility=
++UISpaceVisibility.label.UIVisibility=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UISpaceVisibility.label.UIRegistration=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
+-UISpaceVisibility.label.Visibility=
++UISpaceVisibility.label.Visibility=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UISpaceVisibility.label.Registration=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpacePermission_ar.properties	(working copy)
+@@ -1,4 +1,4 @@
+-UISpacePermission.action.Save=
++UISpacePermission.action.Save=\u062D\u0641\u0638
+ UISpacePermission.msg.update-success=\u062A\u0645 \u062A\u062D\u062F\u064A\u062B \u0635\u0644\u0627\u062D\u064A\u0627\u062A \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0628\u0646\u062C\u0627\u062D.
+-UISpacePermission.label.Visibility=
++UISpacePermission.label.Visibility=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UISpacePermission.label.Registration=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceUserSearch_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+ UISpaceUserSearch.label.search=\u0627\u0644\u062A\u0631\u062A\u064A\u0628:
+ UISpaceUserSearch.label.by=\u0645\u0646 \u0642\u0628\u0644 :
+-UISpaceUserSearch.label.search_action=
+-UISpaceUserSearch.label.option.userName=
++UISpaceUserSearch.label.search_action=\u062A\u0631\u062A\u064A\u0628
++UISpaceUserSearch.label.option.userName=\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645
+ UISpaceUserSearch.label.option.firstName=\u0627\u0644\u0627\u0633\u0645
+ UISpaceUserSearch.label.option.lastName=\u0627\u0644\u0644\u0642\u0628
+-UISpaceUserSearch.label.option.email=
++UISpaceUserSearch.label.option.email=\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManageInvitationSpaces_ar.properties	(working copy)
+@@ -1,6 +1,6 @@
+-UIManageInvitationSpaces.label.SpaceListing=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u0645\u0648\u062C\u0648\u062F\u0629
++UIManageInvitationSpaces.label.SpaceListing=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0645\u0651 \u0627\u0644\u0639\u062B\u0648\u0631\u0639\u0644\u064A\u0647\u0627
+ UIManageInvitationSpaces.label.NoSpace=\u0644\u0627 \u062A\u0648\u062C\u062F \u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A \u062A\u062E\u0640\u064F\u0640\u0635\u0651 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+-UIManageInvitationSpaces.label.Members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621:
++UIManageInvitationSpaces.label.Members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621 :
+ UIManageInvitationSpaces.msg.DeletedInfo=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C\u0644\u0627 \u064A\u064F\u0645\u0643\u0646 \u0625\u062A\u0645\u0627\u0645 \u0647\u0630\u0647 \u0627\u0644\u0645\u0647\u0645\u0651\u0629. \u062A\u0645\u0651 \u062D\u0630\u0641 \u0627\u0644\u0641\u0636\u0627\u0621 \u0645\u0646 \u0642\u0650\u0640\u0640\u0628\u064E\u0640\u0644 \u0623\u062D\u062F\u064D \u0645\u0627.
+ UIManageInvitationSpaces.msg.error_accept_invitation=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C \u062A\u0645\u0651 \u0627\u0644\u063A\u0627\u0621 \u0627\u0644\u062F\u0639\u0648\u0629 \u0623\u0648 \u0631\u0628\u0651\u0645\u0627 \u062D\u062F\u062B \u062E\u0637\u0623 \u0645\u0627. \u064A\u064F\u0631\u062C\u0649 \u0625\u0639\u0627\u062F\u0629  \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0641\u064A \u0648\u0642\u062A \u0622\u062E\u0631
+ UIManageInvitationSpaces.msg.error_deny_invitation=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C \u062A\u0645\u0651 \u0627\u0644\u063A\u0627\u0621 \u0627\u0644\u062F\u0639\u0648\u0629 \u0623\u0648 \u0631\u0628\u0651\u0645\u0627 \u062D\u062F\u062B \u062E\u0637\u0623 \u0645\u0627. \u064A\u064F\u0631\u062C\u0649 \u0625\u0639\u0627\u062F\u0629  \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0641\u064A \u0648\u0642\u062A \u0622\u062E\u0631
+Index: component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UIManageMySpaces_ar.properties	(working copy)
+@@ -1,4 +1,4 @@
+-UIManageMySpaces.label.SpaceListing=
++UIManageMySpaces.label.SpaceListing=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0645\u0651 \u0627\u0644\u0639\u062B\u0648\u0631\u0639\u0644\u064A\u0647\u0627
+ UIManageMySpaces.msg.confirm_space_delete=\u0647\u0644 \u062A\u0631\u063A\u0628 \u062D\u0642\u0640\u0640\u064B\u0627 \u0641\u064A \u062D\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621\u061F  \u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u0639\u0648\u062F\u0629 \u0625\u0644\u0649 \u0627\u0644\u0648\u0631\u0627\u0621 \u0628\u0639\u062F \u0630\u0644\u0643. \u0633\u064A\u0646\u062C\u0631\u0651 \u0639\u0646 \u0647\u0630\u0647 \u0627\u0644\u0639\u0645\u0644\u064A\u0629 \u0623\u064A\u0636\u0627 \u0641\u0642\u062F\u0627\u0646 \u062C\u0645\u064A\u0639 \u0627\u0644\u062A\u0635\u0641\u062D\u0627\u062A \u0627\u0644\u062E\u0627\u0635\u0629 \u0628\u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629 \u0625\u0644\u0649 \u062C\u0627\u0646\u0628 \u062D\u0630\u0641 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629.
+ UIManageMySpaces.label.invited_spaces=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u062A\u064A \u062A\u0645\u0651 \u0627\u0633\u062A\u062F\u0639\u0627\u0624\u0647\u0627:
+ UIManageMySpaces.label.my_spaces=\u0641\u0636\u0627\u0621\u0627\u062A\u064A:
+@@ -8,20 +8,20 @@
+ UIManageMySpaces.label.action_edit_space_navigation=\u062A\u063A\u064A\u064A\u0631 \u062A\u0635\u0641\u0640\u0651\u062D\u0627\u062A \u0627\u0644\u0641\u0636\u0627\u0621
+ UIManageMySpaces.label.action_delete_space=\u062D\u0630\u0641 \u0627\u0644\u0641\u0636\u0627\u0621
+ UIManageMySpaces.label.action_leave_space=\u0645\u063A\u0627\u062F\u0631\u0629 \u0627\u0644\u0641\u0636\u0627\u0621
+-UIManageMySpaces.label.action_add_space=
+-UIManageMySpaces.fieldLabel.description=
+-UIManageMySpaces.fieldLabel.members=
+-UIManageMySpaces.fieldLabel.url=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u062D\u062F\u062F (Url):
+-UIManageMySpaces.fieldLabel.status=\u0627\u0644\u062D\u0627\u0644\u0629:
++UIManageMySpaces.label.action_add_space=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
++UIManageMySpaces.fieldLabel.description=\u0627\u0644\u0648\u0635\u0641:
++UIManageMySpaces.fieldLabel.members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621 :
++UIManageMySpaces.fieldLabel.url=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u0648\u062D\u062F:
++UIManageMySpaces.fieldLabel.status=\u0627\u0644\u062D\u0627\u0644\u0629 :
+ UIManageMySpaces.msg.warning_space_not_available=\u0644\u0627 \u064A\u0645\u0643\u0646 \u062A\u0635\u0641\u0640\u0651\u062D \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0645\u064F\u0640\u062C\u062F\u0651\u062F\u064B\u0627. \u0631\u0628\u0651\u0645\u0627 \u062A\u0645\u0651 \u062D\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u0623\u062E\u064A\u0631
+ UIManageMySpaces.msg.group_unable_to_retrieve=\u0644\u0627 \u064A\u0645\u0643\u0646 \u062A\u063A\u064A\u064A\u0631 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621. \u0644\u0627 \u064A\u0648\u062C\u062F \u0628\u0639\u062F \u0623\u064A \u0645\u062C\u0645\u0648\u0639\u0629 \u0641\u0636\u0627\u0621\u0627\u062A
+-UIManageMySpaces.status.visible=\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u064A\u0645\u0643\u0646 \u0627\u0644\u0648\u0635\u0648\u0644 \u0625\u0644\u064A\u0647 \u0645\u0646 \u0642\u0650\u0640\u0640\u0628\u064E\u0644 \u0623\u064A\u0651 \u0645\u0633\u062A\u062E\u062F\u0645 \u0648 \u0623\u064A\u0636\u064B\u0623
++UIManageMySpaces.status.visible=\u064A\u0645\u0643\u0646 \u0631\u0624\u064A\u0629 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0645\u0646 \u0642\u0650\u0640\u0628\u0640\u064E\u0640\u0644 \u0623\u064A\u0651 \u0634\u062E\u0635 \u0648
+ UIManageMySpaces.status.hidden=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0631\u0624\u064A\u0629 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0625\u0644\u0627 \u0645\u0646 \u0637\u0631\u0641 \u0623\u0639\u0636\u0627\u0626\u0647 \u0627\u0644\u0645\u0634\u062A\u0631\u0643\u064A\u0646 \u0628\u062D\u064A\u062B \u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0623\u064A \u0645\u0633\u062A\u062E\u062F\u0645 \u0628\u0623\u0646 \u064A\u0635\u0628\u062D \u0639\u064F\u0636\u0648\u064B\u0627 \u0625\u0644\u0627 \u0628\u0639\u062F \u0627\u0644\u0645\u0648\u0627\u0641\u0642\u0629 \u0639\u0644\u0649 \u062F\u0639\u0648\u062A\u0647 \u0645\u0646 \u0642\u0650\u0640\u0628\u0644 \u0627\u0644\u0645\u0633\u0624\u0648\u0644 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+ UIManageMySpaces.status.open=\u064A\u0645\u0643\u0646 \u0644\u0623\u064A\u0651 \u0645\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0628\u062F\u0648\u0646 \u0623\u064A\u0629 \u0645\u064F\u0640\u0648\u0627\u0641\u0642\u0629
+ UIManageMySpaces.status.validation=\u0644\u0627 \u064A\u064F\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0625\u0644\u0627 \u0628\u0639\u062F \u0645\u0648\u0627\u0641\u0642\u0629 \u0627\u0644\u0645\u0633\u0624\u0648\u0644 \u0639\u0644\u0649 \u0645\u0637\u0627\u0644\u0628 \u0627\u0644\u0627\u0646\u0636\u0645\u0627\u0645.
+ UIManageMySpaces.status.close=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0627\u0631\u0633\u0627\u0644 \u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A \u0628\u064F\u063A\u064A\u0629 \u0627\u0644\u0627\u0644\u062A\u062D\u0627\u0642 \u0628\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0644\u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0623\u062E\u064A\u0631 \u0645\u063A\u0644\u0642 \u0623\u0645\u0627\u0645 \u062C\u0645\u064A\u0639 \u0637\u0644\u0628\u0627\u062A \u0627\u0644\u0627\u0646\u0636\u0645\u0627\u0645.
+ UIManageMySpaces.label.no_spaces=\u0644\u064A\u0633 \u0644\u062F\u064A\u0643 \u0623\u064A\u0651 \u0641\u0636\u0627\u0621 \u0625\u0644\u0649 \u062D\u062F\u0651 \u0627\u0644\u0622\u0646
+-UIManageMySpaces.msg.warning_leave_space=\u0623\u0646\u062A \u0627\u0644\u0623\u0646 \u0622\u062E\u0631 \u0645\u062F\u064A\u0631 \u062A\u0645\u0651 \u0627\u062E\u062A\u064A\u0627\u0631\u0647 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621. \u0648 \u0628\u0627\u0644\u062A\u0627\u0644\u064A \u0644\u0627 \u064A\u064F\u0645\u0643\u0646\u0643 \u0645\u063A\u0627\u062F\u0631\u0629 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0625\u0644\u0627 \u0628\u0639\u062F \u062A\u0641\u0648\u064A\u0636 \u0645\u0647\u0645\u0651\u0629 \u0627\u0644\u0625\u062F\u0627\u0631\u0629 \u0625\u0644\u0649 \u0623\u062D\u062F \u0627\u0644\u0623\u0639\u0636\u0627\u0621 \u0627\u0644\u0645\u0648\u062C\u0648\u062F\u064A\u0646.
++UIManageMySpaces.msg.warning_leave_space=\u0623\u0646\u062A \u0622\u062E\u0631 \u0645\u062F\u064A\u0631 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621.  \u062A\u062D\u062A\u0627\u062C \u0627\u0644\u0622\u0646 \u0625\u0644\u0649 \u062A\u0639\u0632\u064A\u0632 \u0639\u0636\u0648 \u0622\u062E\u0631 \u0628\u0648\u0635\u0641\u0647 \u0645\u062F\u064A\u0631\u064B\u0627 \u0644\u0644\u0641\u0636\u0627\u0621 \u0642\u0628\u0644 \u0623\u0646 \u062A\u062A\u0645\u0643\u0646 \u0645\u0646 \u0645\u063A\u0627\u062F\u0631\u062A\u0647.
+ UIManageMySpaces.msg.error_leave_space=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C \u0631\u064F\u0628\u0651\u0645\u0627 \u062D\u062F\u062B \u062E\u0637\u0623 \u0645\u0627 \u0623\u062B\u0646\u0627\u0621 \u0642\u064A\u0627\u0645\u0643 \u0628\u0645\u063A\u0627\u062F\u0631\u0629 \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621. \u064A\u064F\u0631\u062C\u0649 \u0625\u0639\u0627\u062F\u0629  \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0641\u064A \u0648\u0642\u062A \u0622\u062E\u0631
+ UIManageMySpaces.msg.error_accept_invitation=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C \u0631\u064F\u0628\u0651\u0645\u0627 \u062D\u062F\u062B \u062E\u0637\u0623 \u0645\u0627 \u0623\u062B\u0646\u0627\u0621 \u0642\u0628\u0648\u0644\u0643 \u0644\u0647\u0630\u0647 \u0627\u0644\u062F\u0651\u0639\u0648\u0629. \u064A\u064F\u0631\u062C\u0649 \u0625\u0639\u0627\u062F\u0629  \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0641\u064A \u0648\u0642\u062A \u0622\u062E\u0631
+ UIManageMySpaces.msg.error_deny_invitation=\u0639\u064F\u0640\u0630\u0631\u064B\u0627\u060C \u0631\u064F\u0628\u0651\u0645\u0627 \u062D\u062F\u062B \u062E\u0637\u0623 \u0645\u0627 \u0623\u062B\u0646\u0627\u0621 \u0631\u0641\u0636\u0643 \u0644\u0647\u0630\u0647 \u0627\u0644\u062F\u0651\u0639\u0648\u0629. \u064A\u064F\u0631\u062C\u0649 \u0625\u0639\u0627\u062F\u0629  \u0627\u0644\u0645\u062D\u0627\u0648\u0644\u0629 \u0641\u064A \u0648\u0642\u062A \u0622\u062E\u0631
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceNavigationManagement_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+ UIPopupWindow.Close=
+ UIPopupWindow.title.UIPageNodeForm=
+-UIPopupWindow.title.UINavigationManagement=
++UIPopupWindow.title.UINavigationManagement=\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u062A\u0635\u0641\u0640\u0651\u062D
+ UIPopupWindow.title.UIPageNavigationForm=\u0646\u0645\u0648\u0630\u062C \u0627\u0644\u062A\u0635\u0641\u0651\u062D\u00a0\u0627\u0644\u062E\u0627\u0635\u00a0\u0628\u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062D\u0629
+ UISpaceNavigationManagement.action.addNode=\u0625\u0636\u0627\u0641\u0629 \u0639\u0642\u062F\u0629
+-UISpaceNavigationManagement.action.Save=
++UISpaceNavigationManagement.action.Save=\u062D\u0641\u0638
+ UISpaceNavigationManagement.msg.NavigationNotExistAnymore=\u064A\u0645\u0643\u0646 \u062D\u0630\u0641 \u0627\u0644\u062A\u0635\u0641\u062D
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceSearch_ar.properties	(working copy)
+@@ -1,5 +1,5 @@
+ UISpaceSearch.label.DefaultSpaceNameAndDesc=\u0627\u0633\u0645 \u0623\u0648 \u0648\u0635\u0641
+-UISpaceSearch.label.SearchAll=
++UISpaceSearch.label.SearchAll=\u0627\u0644\u062C\u0645\u064A\u0639
+ UISpaceSearch.label.FindSpace=\u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0641\u0636\u0627\u0621
+ UISpaceSearch.label.SpaceDirectory=\u0627\u0644\u062A\u0631\u062A\u064A\u0628 \u062D\u0633\u0628 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0623\u0628\u062C\u062F\u064A\u0629
+-UISpaceSearch.label.AddNewSpace=
++UISpaceSearch.label.AddNewSpace=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
+Index: component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UISpaceMember_ar.properties	(working copy)
+@@ -1,10 +1,10 @@
+ UISpaceMember.msg.user-is-invited=\u0648\u0642\u062F \u0648\u062C\u062F\u062A \u0628\u0639\u0636 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0628\u0627\u0644\u0641\u0639\u0644 \u0641\u064A \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u062F\u0639\u0648\u0629 \u060C \u0628\u0645\u0627 \u0641\u064A \u0630\u0644\u0643 : {0}
+ UISpaceMember.msg.user-is-member=\u0648\u0642\u062F \u0648\u062C\u062F\u062A \u0628\u0639\u0636 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0628\u0627\u0644\u0641\u0639\u0644 \u0641\u064A \u0627\u0644\u0641\u0636\u0627\u0621 \u060C \u0628\u0645\u0627 \u0641\u064A \u0630\u0644\u0643 : {0}
+ UISpaceMember.msg.user-not-exist=\u0628\u0639\u0636 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0644\u0627 \u0648\u062C\u0648\u062F \u0644\u0647\u0627 \u060C \u0628\u0645\u0627 \u0641\u064A \u0630\u0644\u0643 : {0}
+-UISpaceMember.msg.Invalid-char=
++UISpaceMember.msg.Invalid-char=\u0627\u0644\u0645\u062C\u0627\u0644 {0}\u00a0\u064A\u062D\u062A\u0648\u064A \u0641\u0642\u0637 \u0639\u0644\u0649\u00a0\u0623\u062D\u0631\u0641 \u062E\u0627\u0635\u0629 \u0645\u0646 \u0641\u0626\u0629\u00a0\u0623\u0644\u0641\u0627 \u0623\u0648 \u0641\u0648\u0627\u0635\u0644 \u0641\u0644\u0627\u0628\u062F \u0623\u0646 \u064A\u0628\u062F\u0623 \u0647\u0630\u0627 \u0627\u0644\u0623\u062E\u064A\u0631\u00a0\u0648\u064A\u0646\u062A\u0647\u064A\u00a0\u0628\u0623\u062D\u0631\u0641 \u0639\u0627\u062F\u064A\u0629 \u0648 \u063A\u064A\u0631 \u062E\u0627\u0635\u0629
+ UISpaceMember.msg.error_remove_member=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0623\u0639\u0636\u0627\u0621.\u00a0\u062A\u0623\u0643\u062F \u0645\u0646 \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u064A\u0646\u062A\u0645\u064A \u0625\u0644\u0649 \u0647\u0630\u0647 \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629.
+ UISpaceMember.msg.error_remove_leader=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0645\u0633\u0624\u0648\u0644.\u00a0\u062A\u0623\u0643\u062F \u0645\u0646 \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u0644\u064A\u0633 \u0627\u0644\u0645\u0633\u0624\u0648\u0644 \u0627\u0644\u0648\u062D\u064A\u062F.
+-UISpaceMember.msg.error_self_remove_leader=
++UISpaceMember.msg.error_self_remove_leader=\u0623\u0646\u062A \u0622\u062E\u0631 \u0645\u062F\u064A\u0631 \u0644\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621.  \u062A\u062D\u062A\u0627\u062C \u0627\u0644\u0622\u0646 \u0625\u0644\u0649 \u062A\u0639\u0632\u064A\u0632 \u0639\u0636\u0648 \u0622\u062E\u0631 \u0628\u0648\u0635\u0641\u0647 \u0645\u062F\u064A\u0631\u064B\u0627 \u0644\u0644\u0641\u0636\u0627\u0621 \u0642\u0628\u0644 \u0623\u0646 \u062A\u062A\u0645\u0643\u0646 \u0645\u0646 \u0645\u063A\u0627\u062F\u0631\u062A\u0647.
+ UISpaceMember.msg.error_revoke_invited=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0625\u0644\u063A\u0627\u0621 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u0627\u0644\u0645\u062F\u0639\u0648\u064A\u0646.\u00a0\u062A\u0623\u0643\u062F \u0645\u0646 \u0623\u0646 \u064A\u062F\u0639\u0649 \u0644\u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645.
+ UISpaceMember.msg.error_decline_user=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0631\u0641\u0636 \u0637\u0644\u0628 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645.\u00a0\u062A\u0623\u0643\u062F \u0645\u0646 \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u0647\u0648 \u0644\u0627 \u064A\u0632\u0627\u0644 \u0637\u0627\u0644\u0628\u0627 \u0644\u0644\u0627\u0646\u0636\u0645\u0627\u0645.
+ UISpaceMember.msg.error_validate_user=\u0644\u0627 \u064A\u0645\u0643\u0646 \u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0635\u062D\u0629 \u0637\u0644\u0628 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645.\u00a0\u062A\u0623\u0643\u062F \u0645\u0646 \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645 \u0647\u0648 \u0644\u0627 \u064A\u0632\u0627\u0644 \u0637\u0627\u0644\u0628\u0627 \u0644\u0644\u0627\u0646\u0636\u0645\u0627\u0645.
+@@ -14,20 +14,20 @@
+ UISpaceMember.button.decline=\u0647\u0628\u0648\u0637
+ UISpaceMember.button.validate=\u0627\u0644\u062A\u062D\u0642\u0642 \u0645\u0646 \u0635\u062D\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0629
+ UISpaceMember.button.revoke=\u0625\u0644\u063A\u0627\u0621 \u062F\u0639\u0648\u0629
+-UISpaceMember.button.remove=
++UISpaceMember.button.remove=\u062D\u0630\u0641
+ UISpaceMember.button.actions=\u0627\u0644\u0627\u062C\u0631\u0627\u0621\u0627\u062A
+ UISpaceMember.title.members=\u0627\u0644\u0623\u0639\u0636\u0627\u0621
+-UISpaceMember.title.leader=
++UISpaceMember.title.leader=\u0645\u062F\u064A\u0631
+ UISpaceMember.title.invited=\u062F\u0639\u0648\u0629
+-UISpaceMember.title.pending=
++UISpaceMember.title.pending=\u0628\u0627\u0646\u062A\u0638\u0627\u0631 \u0627\u0644\u0645\u0635\u0627\u062F\u0642\u0629
+ UISpaceMember.label.removeLeader=\u0625\u0632\u0627\u0644\u0629 \u0645\u062F\u064A\u0631
+ UISpaceMember.label.makeLeader=\u062A\u0639\u064A\u064A\u0646\u0647 \u0645\u062F\u064A\u0631
+ UISpaceMember.mail.header=\u0627\u0644\u0633\u0644\u0627\u0645 \u0639\u0644\u064A\u0643\u0645\u060C  \u0646\u062D\u0646 \u0646\u0631\u063A\u0628 \u0641\u064A \u0627\u0646\u0636\u0645\u0627\u0645\u0643 \u0627\u0644\u0649 \u0641\u0636\u0627\u0626\u0646\u0627 \u0628\u0643\u0644 \u0633\u0631\u0648\u0631
+ UISpaceMember.mail.footer=\u0634\u0643\u0631\u0627 \u0644\u0643.
+-UISpaceMember.label.SelectUser=
+-UISpaceMember.label.RemoveAction=
++UISpaceMember.label.SelectUser=\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646
++UISpaceMember.label.RemoveAction=\u062D\u0630\u0641
+ UISpaceMember.label.RevokeInvitedAction=\u0625\u0644\u063A\u0627\u0621 \u062F\u0639\u0648\u0629
+ UISpaceMember.label.DeclineAction=\u0647\u0628\u0648\u0637
+ UISpaceMember.label.ValidateAction=\u062A\u0623\u0643\u064A\u062F
+ UISpaceMember.label.InviteAction=\u062F\u0639\u0648\u0629
+-UISpaceMember.label.SearchUserAction=
++UISpaceMember.label.SearchUserAction=\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646
+Index: component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/space/UIAddApplicationSpace_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UIAddApplicationSpace.label.Close=
++UIAddApplicationSpace.label.Close=\u0627\u063A\u0644\u0627\u0642
+ UIAddApplicationSpace.label.empty=\u0644\u064A\u0633 \u0647\u0646\u0627\u0643 \u0623\u064A\u0651 \u062A\u0637\u0628\u064A\u0642 \u0639\u0644\u0649 \u0627\u0644\u0642\u0627\u0626\u0645\u0629.
+ UIAddApplicationSpace.msg.app-exist=\u0647\u0630\u0627 \u0627\u0644\u062A\u0637\u0628\u064A\u0642 \u0645\u0648\u062C\u0648\u062F \u0645\u064F\u0633\u0628\u0640\u0642\u0640\u064B\u0627 \u0641\u064A \u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621
+Index: component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/activity/UIDefaultActivity_ar.properties	(working copy)
+@@ -1,6 +1,6 @@
+-UIActivity.label.Source=
++UIActivity.label.Source=\u0627\u0644\u0645\u0635\u062F\u0631
+ UIActivity.label.Activity_Can_Be_Deleted=\u0644\u0645 \u064A\u062A\u0645\u0651 \u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0646\u0634\u0627\u0637
+-UIActivity.label.Comment=
++UIActivity.label.Comment=\u062A\u0639\u0644\u064A\u0642
+ UIActivity.label.Like=\u0623\u0639\u062C\u0628\u0646\u064A
+ UIActivity.label.Unlike=\u0625\u0644\u063A\u0627\u0621 \u0625\u0639\u062C\u0627\u0628\u064A
+ UIActivity.input.Write_A_Comment=\u0627\u0636\u0627\u0641\u0629 \u062A\u0639\u0644\u064A\u0642
+Index: component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/activity/plugin/UIRelationshipActivity_ar.properties	(working copy)
+@@ -1,6 +1,6 @@
+-UIRelationshipActivity.label.Accept=
+-UIRelationshipActivity.label.Refuse=
+-UIRelationshipActivity.label.Revoke=
++UIRelationshipActivity.label.Accept=\u0642\u0628\u0648\u0644
++UIRelationshipActivity.label.Refuse=\u0631\u0641\u0636
++UIRelationshipActivity.label.Revoke=\u0625\u0644\u063A\u0627\u0621
+ UIRelationshipActivity.msg.You_Invited_UserName_To_Connect=\u0642\u0645\u062A\u00a0\u0628\u062F\u0639\u0648\u0629\u00a0{0}\u00a0\u0644\u0644\u0627\u062A\u0635\u0627\u0644.
+ UIRelationshipActivity.msg.UserName_Invited_You_To_Connect={0}\u00a0\u064A\u062F\u0639\u0648\u0643\u00a0\u0644\u0644\u0627\u062A\u0635\u0627\u0644.
+ UIRelationshipActivity.msg.UserName_Invited_UserName_To_Connect={0}\u00a0{1}\u00a0\u0642\u0627\u0645 \u0628\u062F\u0639\u0648\u0629\u00a0\u0644\u0644\u0627\u062A\u0635\u0627\u0644.
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIContactSection_ar.properties	(working copy)
+@@ -1,5 +1,5 @@
+-UIContactSection.label.gender=
+-UIContactSection.label.phones=\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641
++UIContactSection.label.gender=\u0627\u0644\u062C\u0646\u0633
++UIContactSection.label.phones=\u0627\u0644\u0647\u0627\u062A\u0641
+ UIContactSection.label.title=\u062C\u0647\u0629 \u0627\u062A\u0635\u0627\u0644
+ UIContactSection.label.urls=\u0639\u0646\u0627\u0648\u064A\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u0648\u062D\u0651\u062F\u0629 (Urls)
+ UIContactSection.label.ims=\u0627\u0644\u0645\u064F\u0631\u0627\u0633\u0644\u0629 \u0627\u0644\u0641\u0648\u0631\u064A\u0651\u0629
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIBasicInfoSection_ar.properties	(working copy)
+@@ -1,6 +1,6 @@
+ UIBasicInfoSection.label.title=\u0645\u0639\u0644\u0648\u0645\u0627\u062A \u0623\u0633\u0627\u0633\u064A\u0629
+-UIBasicInfoSection.label.userName=
++UIBasicInfoSection.label.userName=\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645
+ UIBasicInfoSection.label.firstName=\u0627\u0644\u0627\u0633\u0645
+ UIBasicInfoSection.label.lastName=\u0627\u0644\u0644\u0642\u0628
+-UIBasicInfoSection.label.email=
+-UIBasicInfoSection.msg.Invalid-char=\u0627\u0644\u0645\u062C\u0627\u0644 {0} \u0641\u0642\u0637 \u0647\u0648 \u0627\u0644\u0630\u064A \u064A\u0645\u0643\u0646 \u0623\u0646 \u064A\u0634\u062A\u0645\u0644 \u0639\u0644\u0649 \u0623\u0644\u0641\u0627 \u062F\u064A\u062C\u064A\u062A\u060C \u0641\u0648\u0627\u0635\u0644 \u0643\u0645\u0627 \u0644\u0627\u0628\u062F \u0648 \u0623\u0646 \u064A\u0628\u062A\u062F\u0623 \u0648\u064A\u0646\u062A\u0647\u064A \u0628\u0623\u062D\u0631\u0641 \u0646\u0635\u064A\u0651\u0629
++UIBasicInfoSection.label.email=\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A
++UIBasicInfoSection.msg.Invalid-char=\u0627\u0644\u0645\u062C\u0627\u0644 {0}\u00a0\u064A\u062D\u062A\u0648\u064A \u0641\u0642\u0637 \u0639\u0644\u0649\u00a0\u0623\u062D\u0631\u0641 \u062E\u0627\u0635\u0629 \u0645\u0646 \u0641\u0626\u0629\u00a0\u0623\u0644\u0641\u0627 \u0623\u0648 \u0641\u0648\u0627\u0635\u0644 \u0641\u0644\u0627\u0628\u062F \u0623\u0646 \u064A\u0628\u062F\u0623 \u0647\u0630\u0627 \u0627\u0644\u0623\u062E\u064A\u0631\u00a0\u0648\u064A\u0646\u062A\u0647\u064A\u00a0\u0628\u0623\u062D\u0631\u0641 \u0639\u0627\u062F\u064A\u0629 \u0648 \u063A\u064A\u0631 \u062E\u0627\u0635\u0629
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIDisplayProfileList_ar.properties	(working copy)
+@@ -1,6 +1,6 @@
+ UIDisplayProfileList.label.Revoke=
+ UIDisplayProfileList.label.WaitForConfirmation=\u0627\u0631\u0633\u0627\u0644 \u062F\u0639\u0648\u0629 \u0644\u0644\u062A\u0648\u0627\u0635\u0644
+-UIDisplayProfileList.label.Position=
++UIDisplayProfileList.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIDisplayProfileList.label.NotYet=\u0644\u0627 \u064A\u0648\u062C\u062F \u0623\u064A\u0651 \u0634\u062E\u0635
+ UIDisplayProfileList.label.RelationsListing=\u0627\u0644\u0623\u0634\u062E\u0627\u0635 \u0627\u0644\u0645\u062A\u0648\u0627\u062C\u062F\u0648\u0646
+ UIDisplayProfileList.label.RevokedInfo=\u062A\u0645\u0651 \u0625\u0644\u063A\u0627\u0621 \u0623\u0648 \u062D\u0630\u0641 \u0647\u0630\u0647 \u0627\u0644\u062F\u0639\u0648\u0629 \u0645\u0646 \u0642\u0628\u0644 \u0634\u062E\u0635 \u0645\u0627
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIProfileUserSearch_ar.properties	(working copy)
+@@ -1,14 +1,14 @@
+-UIProfileUserSearch.label.Name=
++UIProfileUserSearch.label.Name=\u0627\u0644\u0627\u0633\u0645
+ UIProfileUserSearch.label.ContactSearch=\u0627\u0644\u0639\u062B\u0648\u0631 \u0639\u0644\u0649\u00a0\u062C\u0647\u0627\u062A \u0627\u062A\u0635\u0627\u0644
+-UIProfileUserSearch.label.MoreLabel=
++UIProfileUserSearch.label.MoreLabel=\u0627\u0644\u0645\u0632\u064A\u062F
+ UIProfileUserSearch.label.HideLabel=\u0627\u062E\u0641\u0627\u0621
+-UIProfileUserSearch.label.Search=
+-UIProfileUserSearch.label.FilterBy=
+-UIProfileUserSearch.label.Male=
+-UIProfileUserSearch.label.FeMale=
+-UIProfileUserSearch.label.Position=
++UIProfileUserSearch.label.Search=\u0628\u062D\u062B
++UIProfileUserSearch.label.FilterBy=\u062A\u0635\u0646\u064A\u0641  \u0628\u062D\u0633\u0628
++UIProfileUserSearch.label.Male=\u0630\u0643\u0631
++UIProfileUserSearch.label.FeMale=\u0623\u0646\u062B\u0649
++UIProfileUserSearch.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIProfileUserSearch.label.Company=\u0627\u0644\u0634\u0631\u0643\u0629
+ UIProfileUserSearch.label.Skills=\u0627\u0644\u0645\u0647\u0627\u0631\u0627\u062A
+-UIProfileUserSearch.label.AllGender=
++UIProfileUserSearch.label.AllGender=\u0627\u0644\u062C\u0646\u0633
+ UIProfileUserSearch.label.RelationDirectory=\u0627\u0644\u062F\u0644\u064A\u0644 \u0627\u0644\u062F\u0648\u0631\u064A\u00a0\u0644\u0644\u0623\u0634\u062E\u0627\u0635
+-UIProfileUserSearch.label.SearchAll=
++UIProfileUserSearch.label.SearchAll=\u0627\u0644\u062C\u0645\u064A\u0639
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIExperienceSection_ar.properties	(working copy)
+@@ -1,26 +1,26 @@
+ UIExperienceSection.label.title=\u0627\u0644\u062E\u0628\u0631\u0627\u062A
+ UIExperienceSection.label.month_1=\u062C\u0627\u0646\u0641\u064A
+-UIExperienceSection.label.month_2=
++UIExperienceSection.label.month_2=\u0641\u064A\u0641\u0631\u064A
+ UIExperienceSection.label.month_3=\u0645\u0627\u0631\u0633
+-UIExperienceSection.label.month_4=
++UIExperienceSection.label.month_4=\u0623\u0641\u0631\u064A\u0644
+ UIExperienceSection.label.month_5=\u0645\u0627\u064A
+ UIExperienceSection.label.month_6=\u062C\u0648\u0627\u0646
+ UIExperienceSection.label.month_7=\u062C\u0648\u064A\u0644\u064A\u0629
+-UIExperienceSection.label.month_8=
++UIExperienceSection.label.month_8=\u0623\u0648\u062A
+ UIExperienceSection.label.month_9=\u0633\u0628\u062A\u0645\u0628\u0631
+ UIExperienceSection.label.month_10=\u0623\u0643\u062A\u0648\u0628\u0631
+ UIExperienceSection.label.month_11=\u0646\u0648\u0641\u0645\u0628\u0631
+-UIExperienceSection.label.month_12=
++UIExperienceSection.label.month_12=\u062F\u064A\u0633\u0645\u0628\u0631
+ UIExperienceSection.label.company=\u0627\u0644\u0645\u0646\u0638\u0645\u0629
+-UIExperienceSection.label.position=
++UIExperienceSection.label.position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIExperienceSection.label.skills=\u0645\u0647\u0627\u0631\u0627\u062A \u0645\u0640\u064F\u0640\u0640\u0643\u062A\u0633\u0628\u0629
+ UIExperienceSection.label.startDate=\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0628\u062F\u0621
+ UIExperienceSection.label.endDate=\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0646\u0647\u0627\u064A\u0629
+-UIExperienceSection.label.choose=
++UIExperienceSection.label.choose=\u0627\u062E\u062A\u0631
+ UIExperienceSection.label.description=\u062A\u0641\u0627\u0635\u064A\u0644 \u0627\u0644\u0645\u0647\u0646\u0629
+ UIExperienceSection.label.StillInPosition=\u0644\u0627 \u064A\u0632\u0627\u0644 / \u062A\u0632\u0627\u0644 \u0641\u064A \u0647\u0630\u0627 \u0627\u0644\u0645\u0646\u0635\u0628
+ UIExperienceSection.label.untilNow=\u0625\u0644\u0649 \u062D\u062F\u0651 \u0627\u0644\u0622\u0646
+-UIExperienceSection.label.Add=
++UIExperienceSection.label.Add=\u0627\u0636\u0627\u0641\u0629
+ UIExperienceSection.msg.startDateBeforeEndDate=\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0628\u062F\u0621 \u064A\u062C\u0628 \u0623\u0646 \u064A\u0623\u062A\u064A \u0642\u0628\u0644 \u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0646\u0647\u0627\u064A\u0629
+ UIExperienceSection.msg.StartDateAfterToday=\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0628\u062F\u0621 \u064A\u062C\u0628 \u0623\u0646 \u064A\u0623\u062A\u064A \u0642\u0628\u0644 \u062A\u0627\u0631\u064A\u062E \u0627\u0644\u064A\u0648\u0645
+ UIExperienceSection.msg.EndDateAfterToday=\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u0646\u0647\u0627\u064A\u0629 \u064A\u062C\u0628 \u0623\u0646 \u064A\u0623\u062A\u064A \u0642\u0628\u0644 \u062A\u0627\u0631\u064A\u062E \u0627\u0644\u064A\u0648\u0645
+@@ -28,6 +28,6 @@
+ UIExperienceSection.label.noneExperienceOther=\u0625\u0644\u0649 \u062D\u062F\u0651 \u0627\u0644\u0622\u0646\u060C \u0644\u0645 \u064A\u062A\u0645\u0651 \u0625\u062F\u062E\u0627\u0644 \u0623\u064A\u0629 \u0645\u0639\u0644\u0648\u0645\u0629 \u0628\u062E\u0635\u0648\u0635 \u0627\u0644\u062E\u0628\u0631\u0627\u062A
+ UIExperienceSection.label.Current=\u0627\u0644\u062D\u0627\u0644\u064A
+ UIExperienceSection.label.Past=\u0641\u064A \u0627\u0644\u0645\u0627\u0636\u064A
+-UIExperienceSection.label.to=\u0627\u0644\u0649
+-UIExperienceSection.label.at=
++UIExperienceSection.label.to=\u0625\u0644\u0649
++UIExperienceSection.label.at=\u0641\u064A
+ UIExperienceSection.msg.confirmDeleteExp=\u0647\u0644 \u0623\u0646\u062A \u0645\u062A\u0623\u0643\u062F / \u0629  \u0645\u0646 \u062D\u0630\u0641 \u0647\u0630\u0647 \u0627\u0644\u062A\u062C\u0631\u0628\u0629\u061F
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIHeaderSection_ar.properties	(working copy)
+@@ -1,4 +1,4 @@
+ UIHeaderSection.label.yourPosition=\u0627\u0644\u0648\u0638\u064A\u0641\u0629 \u0627\u0644\u062D\u0627\u0644\u064A\u0629\u00a0\u0627\u0644\u062E\u0627\u0635\u0629 \u0628\u0643
+-UIHeaderSection.label.edit=
+-UIHeaderSection.label.Cancel=
+-UIHeaderSection.label.Send=
++UIHeaderSection.label.edit=\u062A\u063A\u064A\u064A\u0631
++UIHeaderSection.label.Cancel=\u0627\u063A\u0644\u0627\u0642
++UIHeaderSection.label.Send=\u062D\u0641\u0638
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIUserActivitiesDisplay_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UIUserActivitiesDisplay.label.Connections=
+-UIUserActivitiesDisplay.label.Spaces=
++UIUserActivitiesDisplay.label.Connections=\u0639\u0644\u0627\u0642\u0627\u062A
++UIUserActivitiesDisplay.label.Spaces=\u0641\u0636\u0627\u0621\u0627\u062A
+ UIUserActivitiesDisplay.label.My_Status=\u0648\u0636\u0639\u064A \u0627\u0644\u062D\u0627\u0644\u064A
+Index: component/webui/src/main/resources/locale/social/webui/profile/UIProfile_ar.properties
+===================================================================
+--- component/webui/src/main/resources/locale/social/webui/profile/UIProfile_ar.properties	(revision 79505)
++++ component/webui/src/main/resources/locale/social/webui/profile/UIProfile_ar.properties	(working copy)
+@@ -1,2 +1,2 @@
+-UIProfile.label.ChangeAvatar=\u062A\u063A\u064A\u064A\u0631\u00a0\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
++UIProfile.label.ChangeAvatar=\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+ UIProfile.label.Click_To_Change_Avatar=\u0627\u0646\u0642\u0631 \u0647\u0646\u0627\u00a0\u0644\u062A\u063A\u064A\u064A\u0631\u00a0\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+Index: demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties	(revision 79505)
++++ demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties	(working copy)
+@@ -1,22 +1,22 @@
+-portal.classic.myprofile=
++portal.classic.myprofile=\u0645\u0644\u0641\u064A \u0627\u0644\u0634\u062E\u0635\u064A
+ portal.classic.connections=\u062C\u0647\u0627\u062A \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0627\u0644\u062E\u0627\u0635\u0651\u0629 \u0628\u064A
+-portal.classic.people=
+-portal.classic.spaces=
+-portal.classic.home=
+-portal.classic.webexplorer=
+-portal.classic.canvas=
+-portal.classic.register=
+-portal.classic.gwtgadget=
+-portal.classic.activities=
+-portal.classic.groupnavigation=
+-portal.classic.portalnavigation=
+-portal.classic.activity=
+-portal.classic.profile=
+-portal.classic.yours=
+-portal.classic.invitations=
+-portal.classic.requests=
+-portal.classic.invitationSpace=
+-portal.classic.pendingSpace=
+-portal.classic.publicSpace=
+-UIPortalToolPanel.label.copyrightText=
+-UIPortalToolPanel.label.companyTitleText=\u0625\u0643\u0632\u0648\u00a0\u0628\u0644\u0627\u062A\u0641\u0648\u0631\u0645\u00a0SAS
++portal.classic.people=\u0627\u0644\u0623\u0634\u062E\u0627\u0635
++portal.classic.spaces=\u0641\u0636\u0627\u0621\u0627\u062A
++portal.classic.home=\u0627\u0644\u0627\u0633\u062A\u0642\u0628\u0627\u0644
++portal.classic.webexplorer=\u0645\u0633\u062A\u0643\u0634\u0641 \u0627\u0644\u0648\u0627\u0628
++portal.classic.canvas=\u0627\u0644\u0627\u0637\u0627\u0631
++portal.classic.register=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
++portal.classic.gwtgadget=\u062A\u0637\u0628\u064A\u0642\u0629 GWT
++portal.classic.activities=\u0627\u0644\u0623\u0646\u0634\u0637\u0629
++portal.classic.groupnavigation=\u062A\u0635\u0641\u062D \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629
++portal.classic.portalnavigation=\u062A\u0635\u0641\u062D \u0627\u0644\u0628\u0648\u0627\u0628\u0629
++portal.classic.activity=\u0627\u0644\u0646\u0634\u0627\u0637
++portal.classic.profile=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A
++portal.classic.yours=\u0639\u0644\u0627\u0642\u0627\u062A
++portal.classic.invitations=\u0627\u0644\u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A
++portal.classic.requests=\u0627\u0644\u0637\u0644\u0628\u0627\u062A
++portal.classic.invitationSpace=\u062F\u0639\u0648\u0629 \u0627\u0644\u0649 \u0627\u0644\u0641\u0636\u0627\u0621
++portal.classic.pendingSpace=\u0641\u0636\u0627\u0621 \u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631
++portal.classic.publicSpace=\u0641\u0636\u0627\u0621 \u0639\u0627\u0645
++UIPortalToolPanel.label.copyrightText=\u00a9 2010. \u062C\u0645\u064A\u0639 \u0627\u0644\u062D\u0642\u0648\u0642 \u0645\u062D\u0641\u0648\u0638\u0629
++UIPortalToolPanel.label.companyTitleText=\u0623\u0643\u0632\u0648 \u0628\u0644\u0627\u062A\u0641\u0648\u0631\u0645
+Index: demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties
+===================================================================
+--- demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties	(revision 79505)
++++ demo/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties	(working copy)
+@@ -1 +1 @@
+-developer.canvas=
++developer.canvas=\u0627\u0644\u0627\u0637\u0627\u0631
+Index: extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_ar.properties
+===================================================================
+--- extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_ar.properties	(revision 79505)
++++ extras/document-composer-plugin/src/main/resources/locale/social/plugin/doc/UIDocumentComposerPlugin_ar.properties	(working copy)
+@@ -1,5 +1,5 @@
+ UIActivityComposer.label.UIDocActivityComposer=\u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0648\u062B\u064A\u0642\u0629
+ UIComposerDocumentExtension.label.Select_Document=\u0627\u062E\u062A\u0631 \u0648\u062B\u064A\u0642\u0629
+-UIComposerDocumentExtension.label.Download=
+-UIComposerDocumentExtension.label.View_Document=
++UIComposerDocumentExtension.label.Download=\u062A\u062D\u0645\u064A\u0644
++UIComposerDocumentExtension.label.View_Document=\u0639\u0631\u0636
+ UIPopupWindow.title.UIOneNodePathSelector=\u0645\u0646\u062A\u0642\u00a0\u0627\u0644\u0648\u062B\u0627\u0626\u0642
+Index: extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_ar.properties
+===================================================================
+--- extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_ar.properties	(revision 79505)
++++ extras/link-composer-plugin/src/main/resources/locale/social/plugin/link/UILinkComposerPlugin_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+-UIActivityComposer.label.UILinkActivityComposer=
++UIActivityComposer.label.UILinkActivityComposer=\u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0631\u0627\u0628\u0637
+ UILinkComposerPlugin.label.Attach_Link=\u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u0631\u0651\u0627\u0628\u0637:
+-UILinkComposerPlugin.label.Close=
+-UILinkComposerPlugin.label.Attach=\u0625\u0631\u0641\u0627\u0642 \u0645\u0644\u0641\u0627\u062A
++UILinkComposerPlugin.label.Close=\u0627\u063A\u0644\u0627\u0642
++UILinkComposerPlugin.label.Attach=\u0627\u0631\u0641\u0627\u0642
+ UILinkComposerPlugin.msg.No_Thumbnail=\u0639\u062F\u0645 \u0627\u0633\u062A\u0639\u0645\u0627\u0644 \u062E\u0627\u0635\u064A\u0629 \u0627\u0644\u062A\u0635\u063A\u064A\u0631
+ UILinkComposerPlugin.msg.Previous_Image=\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629
+ UILinkComposerPlugin.msg.Next_Image=\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0645\u0648\u0627\u0644\u064A\u0629
+Index: extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties	(revision 79505)
++++ extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/portal/classic_ar.properties	(working copy)
+@@ -1,20 +1,20 @@
+-portal.classic.myprofile=
+-portal.classic.connections=
+-portal.classic.people=
+-portal.classic.spaces=
+-portal.classic.home=
+-portal.classic.webexplorer=
+-portal.classic.canvas=
+-portal.classic.register=
+-portal.classic.gwtgadget=
+-portal.classic.activities=
+-portal.classic.groupnavigation=
+-portal.classic.portalnavigation=
+-portal.classic.activity=
+-portal.classic.profile=
+-portal.classic.yours=
+-portal.classic.invitations=
+-portal.classic.requests=
+-portal.classic.invitationSpace=
+-portal.classic.pendingSpace=
+-portal.classic.publicSpace=
++portal.classic.myprofile=\u0645\u0644\u0641\u064A \u0627\u0644\u0634\u062E\u0635\u064A
++portal.classic.connections=\u062C\u0647\u0627\u062A \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0627\u0644\u062E\u0627\u0635\u0651\u0629 \u0628\u064A
++portal.classic.people=\u0627\u0644\u0623\u0634\u062E\u0627\u0635
++portal.classic.spaces=\u0641\u0636\u0627\u0621\u0627\u062A
++portal.classic.home=\u0627\u0644\u0627\u0633\u062A\u0642\u0628\u0627\u0644
++portal.classic.webexplorer=\u0645\u0633\u062A\u0643\u0634\u0641 \u0627\u0644\u0648\u0627\u0628
++portal.classic.canvas=\u0627\u0644\u0627\u0637\u0627\u0631
++portal.classic.register=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
++portal.classic.gwtgadget=\u062A\u0637\u0628\u064A\u0642\u0629 GWT
++portal.classic.activities=\u0627\u0644\u0623\u0646\u0634\u0637\u0629
++portal.classic.groupnavigation=\u062A\u0635\u0641\u062D \u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629
++portal.classic.portalnavigation=\u062A\u0635\u0641\u062D \u0627\u0644\u0628\u0648\u0627\u0628\u0629
++portal.classic.activity=\u0627\u0644\u0646\u0634\u0627\u0637
++portal.classic.profile=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A
++portal.classic.yours=\u0639\u0644\u0627\u0642\u0627\u062A
++portal.classic.invitations=\u0627\u0644\u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A
++portal.classic.requests=\u0627\u0644\u0637\u0644\u0628\u0627\u062A
++portal.classic.invitationSpace=\u062F\u0639\u0648\u0629 \u0627\u0644\u0649 \u0627\u0644\u0641\u0636\u0627\u0621
++portal.classic.pendingSpace=\u0641\u0636\u0627\u0621 \u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631
++portal.classic.publicSpace=\u0641\u0636\u0627\u0621 \u0639\u0627\u0645
+Index: extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties
+===================================================================
+--- extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties	(revision 79505)
++++ extension/war/src/main/webapp/WEB-INF/classes/locale/navigation/group/developer_ar.properties	(working copy)
+@@ -1 +1 @@
+-developer.canvas=
++developer.canvas=\u0627\u0644\u0627\u0637\u0627\u0631
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserActivityStreamPortlet_ar.properties	(working copy)
+@@ -1,4 +1,4 @@
+-UIUserActivityStreamPortlet.label.Connections=
+-UIUserActivityStreamPortlet.label.Spaces=
++UIUserActivityStreamPortlet.label.Connections=\u0639\u0644\u0627\u0642\u0627\u062A
++UIUserActivityStreamPortlet.label.Spaces=\u0641\u0636\u0627\u0621\u0627\u062A
+ UIUserActivityStreamPortlet.label.My_Status=\u0648\u0636\u0639\u064A \u0627\u0644\u062D\u0627\u0644\u064A
+ UIUserActivityStreamPortlet.label.UserActivities=\u0622\u062E\u0631 \u0623\u062E\u0628\u0627\u0631 \u0644\u0647\u0630\u0627 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MyConnectionsNavigationPortlet_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+-UIMyConnectionsNavigationPortlet.label.Relation=
+-UIMyConnectionsNavigationPortlet.label.Relations=
+-UIMyConnectionsNavigationPortlet.label.Invitations=
+-UIMyConnectionsNavigationPortlet.label.Requests=
+-UIMyConnectionsNavigationPortlet.label.RelationTitle=
+-UIMyConnectionsNavigationPortlet.label.InvitationTitle=
+-UIMyConnectionsNavigationPortlet.label.RequestTitle=
++UIMyConnectionsNavigationPortlet.label.Relation=\u0639\u0644\u0627\u0642\u0627\u062A
++UIMyConnectionsNavigationPortlet.label.Relations=\u0627\u0644\u0634\u0628\u0643\u0629
++UIMyConnectionsNavigationPortlet.label.Invitations=\u0627\u0644\u0648\u0627\u0631\u062F
++UIMyConnectionsNavigationPortlet.label.Requests=\u0627\u0644\u0645\u063A\u0627\u062F\u0631
++UIMyConnectionsNavigationPortlet.label.RelationTitle=\u0623\u0634\u062E\u0627\u0635 \u0623\u0646\u062A \u0641\u064A \u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0647\u0645
++UIMyConnectionsNavigationPortlet.label.InvitationTitle=\u0623\u0634\u062E\u0627\u0635 \u0642\u062F \u062A\u0639\u0631\u0641\u0647\u0645 \u064A\u0631\u063A\u0628\u0648\u0646 \u0641\u064A \u0627\u0644\u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0643
++UIMyConnectionsNavigationPortlet.label.RequestTitle=\u0623\u0634\u062E\u0627\u0635 \u062A\u0631\u063A\u0628 \u0641\u064A \u0627\u0644\u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0647\u0645
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfileNavigationPortlet_ar.properties	(working copy)
+@@ -1,11 +1,11 @@
+ UIProfileNavigationPortlet.label.Me=\u0623\u0646\u0627
+-UIProfileNavigationPortlet.label.Activity=
+-UIProfileNavigationPortlet.label.Profile=
+-UIProfileNavigationPortlet.label.Relations=
++UIProfileNavigationPortlet.label.Activity=\u0627\u0644\u0646\u0634\u0627\u0637
++UIProfileNavigationPortlet.label.Profile=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A
++UIProfileNavigationPortlet.label.Relations=\u0639\u0644\u0627\u0642\u0627\u062A
+ UIProfileNavigationPortlet.label.InviteToConnect=\u062F\u0639\u0648\u0629\u00a0\u0644\u0644\u062A\u0648\u0627\u0635\u0644
+ UIProfileNavigationPortlet.label.Connect=\u0627\u062A\u0635\u0627\u0644
+-UIProfileNavigationPortlet.label.Deny=
+-UIProfileNavigationPortlet.label.Revoke=\u0627\u0644\u063A\u0627\u0621
++UIProfileNavigationPortlet.label.Deny=\u0631\u0641\u0636
++UIProfileNavigationPortlet.label.Revoke=\u0625\u0644\u063A\u0627\u0621
+ UIProfileNavigationPortlet.label.Disconnect=\u0642\u0637\u0639 \u0627\u0644\u0627\u062A\u0635\u0627\u0644
+ UIProfileNavigationPortlet.label.InviteToConnectTitle=\u062F\u0639\u0648\u0629\u00a0{0}\u00a0\u0644\u0625\u062C\u0631\u0627\u0621\u00a0\u0627\u062A\u0635\u0627\u0644
+ UIProfileNavigationPortlet.label.ConnectTitle=\u0642\u0628\u0648\u0644\u00a0{0} '\u0627\u0644\u0640\u0640\u00a0\u062F\u0639\u0648\u0629
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ConnectionsNavigationPortlet_ar.properties	(working copy)
+@@ -1,8 +1,8 @@
+-UIConnectionsNavigationPortlet.label.My-Relations=
+-UIConnectionsNavigationPortlet.label.Relations=\u0634\u0628\u0643\u0629 \u0627\u0644\u0627\u0635\u062F\u0642\u0627\u0621
+-UIConnectionsNavigationPortlet.label.Invitations=\u062C\u0627\u0624\u0648\u0627 \u0627\u0644\u0622\u0646
+-UIConnectionsNavigationPortlet.label.Requests=\u063A\u0627\u062F\u0631\u0648\u0627 \u0645\u0646\u0630 \u0642\u0644\u064A\u0644
+-UIConnectionsNavigationPortlet.label.RelationTitle=\u0623\u0634\u062E\u0627\u0635 \u0623\u0646\u062A \u0639\u0644\u0649 \u0627\u062A\u0635\u0627\u0644 \u0628\u0647\u0645
+-UIConnectionsNavigationPortlet.label.InvitationTitle=\u0623\u0634\u062E\u0627\u0635 \u064A\u0631\u063A\u0628\u0648\u0646 \u0641\u064A \u0623\u0646 \u064A\u0643\u0648\u0646\u0648\u0627 \u0639\u0644\u0649 \u0627\u062A\u0635\u0627\u0644 \u0645\u0639\u0643
+-UIConnectionsNavigationPortlet.label.RequestTitle=\u0623\u0634\u062E\u0627\u0635 \u062A\u0631\u063A\u0628 \u0623\u0646 \u062A\u0643\u0648\u0646 \u0641\u064A \u0627\u062A\u0635\u0627\u0644 \u0645\u0639\u0647\u0645
++UIConnectionsNavigationPortlet.label.My-Relations=\u062C\u0647\u0627\u062A \u0627\u0644\u0627\u062A\u0635\u0627\u0644 \u0627\u0644\u062E\u0627\u0635\u0651\u0629 \u0628\u064A
++UIConnectionsNavigationPortlet.label.Relations=\u0627\u0644\u0634\u0628\u0643\u0629
++UIConnectionsNavigationPortlet.label.Invitations=\u0627\u0644\u0648\u0627\u0631\u062F
++UIConnectionsNavigationPortlet.label.Requests=\u0627\u0644\u0645\u063A\u0627\u062F\u0631
++UIConnectionsNavigationPortlet.label.RelationTitle=\u0623\u0634\u062E\u0627\u0635 \u0623\u0646\u062A \u0641\u064A \u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0647\u0645
++UIConnectionsNavigationPortlet.label.InvitationTitle=\u0623\u0634\u062E\u0627\u0635 \u0642\u062F \u062A\u0639\u0631\u0641\u0647\u0645 \u064A\u0631\u063A\u0628\u0648\u0646 \u0641\u064A \u0627\u0644\u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0643
++UIConnectionsNavigationPortlet.label.RequestTitle=\u0623\u0634\u062E\u0627\u0635 \u062A\u0631\u063A\u0628 \u0641\u064A \u0627\u0644\u062A\u0648\u0627\u0635\u0644 \u0645\u0639\u0647\u0645
+ UIConnectionsNavigationPortlet.label.UserConnections={0} \u0639\u0644\u0627\u0642\u0629 /\u0639\u0644\u0627\u0642\u0627\u062A
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialLogoPortlet_ar.properties	(working copy)
+@@ -1,10 +1,10 @@
+-UISocialLogoPortlet.note.Text=
+-UILogoEditMode.title=
+-UILogoEditMode.label.logoUrl=
+-UILogoEditMode.label.editmode=
+-UILogoEditMode.action.Save=
+-UISocialLogoPortlet.action.changeLanguage=
+-UISocialLogoPortlet.action.Register=
+-UISocialLogoPortlet.action.signout=
+-UISocialLogoPortlet.action.signin=
+-UISocialLogoPortlet.label.Welcome=
++UISocialLogoPortlet.note.Text=\u0647\u0630\u0627 \u0647\u0648 \u0627\u0644\u0634\u0639\u0627\u0631
++UILogoEditMode.title=\u062A\u063A\u064A\u064A\u0631 \u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u0648\u062D\u062F
++UILogoEditMode.label.logoUrl=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0648\u0627\u0631\u062F \u0627\u0644\u0645\u0648\u062D\u0651\u062F
++UILogoEditMode.label.editmode=\u0646\u0645\u0637 \u0627\u0644\u062A\u063A\u064A\u064A\u0631
++UILogoEditMode.action.Save=\u062D\u0641\u0638
++UISocialLogoPortlet.action.changeLanguage=\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0644\u063A\u0629
++UISocialLogoPortlet.action.Register=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
++UISocialLogoPortlet.action.signout=\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062E\u0631\u0648\u062C
++UISocialLogoPortlet.action.signin=\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644
++UISocialLogoPortlet.label.Welcome=\u0645\u0631\u062D\u0628\u0640\u0640\u064B\u0640\u0640\u0627 \u0628\u0643\u0645
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MySpacesPortlet_ar.properties	(working copy)
+@@ -1,9 +1,9 @@
+ UIMySpacesPortlet.label.MySpaceList=\u0641\u0636\u0627\u0621\u0627\u062A\u064A
+-UITabPane.title.UIManageMySpaces=
++UITabPane.title.UIManageMySpaces=\u0641\u0636\u0627\u0621\u0627\u062A\u064A
+ UITabPane.title.UIManagePublicSpaces=\u0627\u0644\u0641\u0636\u0627\u0621\u0627\u062A \u0627\u0644\u0639\u0627\u0645\u0629
+ UITabPane.title.UIManagePendingSpaces=\u0637\u0644\u0628\u0627\u062A \u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631
+ UIPopupWindow.title.UISpaceAddForm=\u0627\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
+-UIPopupAddSpace.title.UIPopupAddSpace=\u0625\u0636\u0627\u0641\u0629\u00a0\u0641\u0636\u0627\u0621
++UIPopupAddSpace.title.UIPopupAddSpace=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621
+ UIPopupAddSpace.title.UIPageNodeForm2=\u0627\u0644\u0646\u0645\u0648\u0630\u062C \u0627\u0644\u062E\u0627\u0635\u00a0\u0628\u0635\u0641\u062D\u0629\u00a0\u0627\u0644\u0639\u0642\u062F\u0629
+-UIPopupAddSpace.title.UISpaceAddForm=\u0625\u0636\u0627\u0641\u0629\u00a0\u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
+-UIPopupAddSpace.title.UINavigationManagement=\u0625\u062F\u0627\u0631\u0629\u00a0\u0627\u0644\u062A\u0635\u0641\u062D
++UIPopupAddSpace.title.UISpaceAddForm=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
++UIPopupAddSpace.title.UINavigationManagement=\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u062A\u0635\u0641\u0640\u0651\u062D
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesToolBarPortlet_ar.properties	(working copy)
+@@ -1 +1 @@
+-UISpacesToolBarPortlet.label.Spaces=
++UISpacesToolBarPortlet.label.Spaces=\u0641\u0636\u0627\u0621\u0627\u062A
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeopleToolBarPortlet_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UIPeopleToolBarPortlet.label.People=
++UIPeopleToolBarPortlet.label.People=\u0627\u0644\u0623\u0634\u062E\u0627\u0635
+ UIPeopleToolBarPortlet.label.Directory=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u062F\u0644\u064A\u0644
+-UIPeopleToolBarPortlet.label.Connections=
++UIPeopleToolBarPortlet.label.Connections=\u0639\u0644\u0627\u0642\u0627\u062A
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialUserToolBarGroupPortlet_ar.properties	(working copy)
+@@ -1 +1 @@
+-UISocialUserToolBarGroupPortlet.label.group=
++UISocialUserToolBarGroupPortlet.label.group=\u0627\u0644\u0645\u062C\u0645\u0648\u0639\u0629
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceMenuPortlet_ar.properties	(working copy)
+@@ -1,8 +1,8 @@
+-UITabPane.title.UIManageMySpaces=
++UITabPane.title.UIManageMySpaces=\u0641\u0636\u0627\u0621\u0627\u062A\u064A
+ UITabPane.title.UIManagePublicSpaces=\u0641\u0636\u0627\u0621\u0627\u062A \u0639\u0645\u0648\u0645\u064A\u0629
+ UITabPane.title.UIManagePendingSpaces=\u0637\u0644\u0628\u0627\u062A \u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0638\u0627\u0631
+ UISpaceMenuPortlet.msg.invalidAppName=\u0647\u0630\u0627 \u0627\u0644\u0627\u0633\u0645 \u063A\u064A\u0631 \u0635\u0627\u0644\u062D.\u00a0\u0627\u0644\u0627\u0633\u0645 \u064A\u062C\u0628 \u0623\u0646 \u064A\u0643\u0648\u0646 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644 \u062B\u0644\u0627\u062B\u0629 \u0623\u062D\u0631\u0641 \u060C \u0644\u0627 \u064A\u0628\u062F\u0623 \u0628 '_' \u0627\u0644\u0637\u0627\u0628\u0639 \u060C \u0648\u0644\u0627 \u062A\u062D\u062A\u0648\u064A \u0639\u0644\u0649 \u0623\u062D\u0631\u0641 \u062E\u0627\u0635\u0629 \u0623\u062E\u0631\u0649.
+ UISpaceMenuPortlet.msg.existingAppName=\u0647\u0630\u0627 \u0627\u0644\u0627\u0633\u0645 \u0645\u0648\u062C\u0648\u062F \u0645\u0633\u0628\u0642\u0627.\u00a0\u0627\u0644\u0631\u062C\u0627\u0621 \u0627\u062E\u062A\u064A\u0627\u0631 \u0627\u0633\u0645 \u0622\u062E\u0631.
+-UIPopupWindow.title.UISpaceAddForm=
+-UIPopupAddSpace.title.UIPopupAddSpace=
+-UIPopupAddSpace.title.UISpaceAddForm=
++UIPopupWindow.title.UISpaceAddForm=\u0627\u0646\u0634\u0627\u0621 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
++UIPopupAddSpace.title.UIPopupAddSpace=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621
++UIPopupAddSpace.title.UISpaceAddForm=\u0625\u0636\u0627\u0641\u0629 \u0641\u0636\u0627\u0621 \u062C\u062F\u064A\u062F
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/UserProfileToolBarPortlet_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UIUserToolBarPortlet.label.activities=
+-UIUserToolBarPortlet.label.profile=
+-UIUserToolBarPortlet.label.relations=
++UIUserToolBarPortlet.label.activities=\u0627\u0644\u0623\u0646\u0634\u0637\u0629
++UIUserToolBarPortlet.label.profile=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A
++UIUserToolBarPortlet.label.relations=\u0639\u0644\u0627\u0642\u0627\u062A
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/PeoplePortlet_ar.properties	(working copy)
+@@ -1 +1 @@
+-UIPeoplePortlet.label.People=
++UIPeoplePortlet.label.People=\u0627\u0644\u0623\u0634\u062E\u0627\u0635
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/ProfilePortlet_ar.properties	(working copy)
+@@ -1,7 +1,7 @@
+ UIProfilePortlet.label.Public=\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A\u00a0\u0627\u0644\u0639\u0627\u0645
+-UIPopupAvatarUploader.title.UIPopupAvatarUploader=\u062C\u0647\u0627\u0632 \u062A\u062D\u0645\u064A\u0644\u00a0\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+-UIPopupAvatarUploader.title.UIAvatarUploader=\u062A\u062D\u0645\u064A\u0644\u00a0\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+-UIPopupAvatarUploader.title.UIAvatarUploadContent=\u0627\u0633\u062A\u0639\u0631\u0627\u0636 \u0645\u064F\u0640\u0633\u0628\u0642\u00a0\u0644\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0651\u0645\u0632\u064A\u0629
+-UITitleBar.label.cancel=
+-UITitleBar.label.save=
+-UITitleBar.label.edit=
++UIPopupAvatarUploader.title.UIPopupAvatarUploader=\u062C\u0647\u0627\u0632 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
++UIPopupAvatarUploader.title.UIAvatarUploader=\u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
++UIPopupAvatarUploader.title.UIAvatarUploadContent=\u0627\u0633\u062A\u0639\u0631\u0627\u0636 \u0645\u064F\u0640\u0633\u0628\u0642 \u0644\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0651\u0645\u0632\u064A\u0629
++UITitleBar.label.cancel=\u0627\u0644\u063A\u0627\u0621
++UITitleBar.label.save=\u062D\u0641\u0638
++UITitleBar.label.edit=\u062A\u063A\u064A\u064A\u0631
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/MembersPortlet_ar.properties	(working copy)
+@@ -3,13 +3,13 @@
+ UIMembersPortlet.label.empty=\u0644\u0627 \u0648\u062C\u0648\u062F \u0644\u0623\u064A\u0651 \u0639\u0636\u0648 \u0628\u0635\u062F\u062F \u062A\u062A\u0628\u0640\u0651\u0639 \u0647\u0630\u0627 \u0627\u0644\u0641\u0644\u062A\u0631
+ UIMembersPortlet.label.FirstName=\u0627\u0644\u0627\u0633\u0645
+ UIMembersPortlet.label.LastName=\u0627\u0644\u0644\u0642\u0628
+-UIMembersPortlet.label.EmailAddress=
+-UIMembersPortlet.label.Membership=
+-UIMembersPortlet.label.manager=
+-UIMembersPortlet.label.Position=
++UIMembersPortlet.label.EmailAddress=\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A
++UIMembersPortlet.label.Membership=\u0627\u0644\u0639\u0636\u0648\u064A\u0651\u0640\u0629
++UIMembersPortlet.label.manager=\u0645\u062F\u064A\u0631
++UIMembersPortlet.label.Position=\u0627\u0644\u0645\u0648\u0642\u0641
+ UIMembersPortlet.label.NotLeaderYet=\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0644\u0627 \u064A\u0634\u062A\u0645\u0644 \u0639\u0644\u0649 \u0645\u0633\u0624\u0648\u0644 \u0625\u0644\u0649 \u062D\u062F\u0651 \u0627\u0644\u0622\u0646
+ UIMembersPortlet.label.NotMemberYet=\u0647\u0630\u0627 \u0627\u0644\u0641\u0636\u0627\u0621 \u0644\u0627 \u064A\u0634\u062A\u0645\u0644 \u0639\u0644\u0649 \u0623\u064A\u0651 \u0639\u0636\u0648 \u0625\u0644\u0649 \u062D\u062F\u0651 \u0627\u0644\u0622\u0646
+ UIMembersPortlet.label.Admin=\u0627\u0644\u0645\u062F\u064A\u0631
+ UIMembersPortlet.label.SpaceAdmin=\u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0641\u0636\u0627\u0621
+-UIMembersPortlet.label.Administrator=
+-UIMembersPortlet.label.SpaceMember=
++UIMembersPortlet.label.Administrator=\u0645\u062F\u064A\u0631
++UIMembersPortlet.label.SpaceMember=\u0623\u0639\u0636\u0627\u0621 \u0627\u0644\u0641\u0636\u0627\u0621
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialDemoHomePagePortlet_ar.properties	(working copy)
+@@ -1,18 +1,18 @@
+ UISocialDemoHomePagePortlet.label.eXo_Social=\u0625\u0643\u0632\u0648 \u0627\u0644\u0627\u062C\u062A\u0645\u0627\u0639\u064A
+-UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform=
+-UISocialDemoHomePagePortlet.label.Community_Members=
++UISocialDemoHomePagePortlet.label.An_Extended_Service_Of_eXo_Platform=\u0627\u0644\u062E\u062F\u0645\u0627\u062A \u0627\u0644\u0645\u0645\u062A\u062F\u0629 \u0644\u0627\u0643\u0632\u0648 \u0628\u0644\u0627\u062A\u0641\u0648\u0631\u0645 3
++UISocialDemoHomePagePortlet.label.Community_Members=\u0623\u0639\u0636\u0627\u0621 \u0627\u062C\u062A\u0645\u0627\u0639\u064A\u0648\u0646
+ UISocialDemoHomePagePortlet.label.Download_eXo_Social_Documentation=\u062A\u0646\u0632\u064A\u0644 \u0627\u0644\u0648\u062B\u0627\u0626\u0642 \u0625\u0643\u0632\u0648 \u0627\u0644\u0627\u062C\u062A\u0645\u0627\u0639\u064A
+-UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use=
+-UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3=
+-UISocialDemoHomePagePortlet.label.Contact_Us=
+-UISocialDemoHomePagePortlet.label.Resource_Center=
+-UISocialDemoHomePagePortlet.label.Support=
+-UISocialDemoHomePagePortlet.label.Training=
+-UISocialDemoHomePagePortlet.label.eXo_Blog=
+-UISocialDemoHomePagePortlet.label.eXo_Website=
++UISocialDemoHomePagePortlet.label.Enterprise_Or_Production_Use=\u0645\u0624\u0633\u0633\u0629 \u0623\u0648 \u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0642\u0635\u062F \u0627\u0644\u0625\u0646\u062A\u0627\u062C\u061F
++UISocialDemoHomePagePortlet.label.Try_eXo_Platform_3=\u062C\u0631\u0651\u0628 \u0627\u0643\u0632\u0648 \u0628\u0644\u0627\u062A\u0641\u0648\u0631\u0645 3
++UISocialDemoHomePagePortlet.label.Contact_Us=\u0627\u062A\u0640\u0651\u0635\u0644 \u0628\u0646\u0627
++UISocialDemoHomePagePortlet.label.Resource_Center=\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0648\u0627\u0631\u062F
++UISocialDemoHomePagePortlet.label.Support=\u0641\u0631\u064A\u0642 \u0627\u0644\u062F\u0639\u0645
++UISocialDemoHomePagePortlet.label.Training=\u0627\u0644\u062A\u062F\u0631\u064A\u0628
++UISocialDemoHomePagePortlet.label.eXo_Blog=\u0645\u064F\u0640\u0640\u062F\u0648\u0651\u0646\u0629 \u0627\u0643\u0632\u0648
++UISocialDemoHomePagePortlet.label.eXo_Website=\u0645\u0648\u0642\u0639 \u0627\u0644\u0648\u0627\u0628 \u0644\u0623\u0643\u0632\u0648
+ UISocialDemoHomePagePortlet.label.New_To_eXo_Social_Question=\u062C\u062F\u064A\u062F \u0645\u0639 \u0625\u0643\u0632\u0648 \u0627\u0644\u0627\u062C\u062A\u0645\u0627\u0639\u064A\u061F
+-UISocialDemoHomePagePortlet.label.Watch_The=
+-UISocialDemoHomePagePortlet.label.Getting_Started_Guide=
++UISocialDemoHomePagePortlet.label.Watch_The=\u062A\u062A\u0628\u0651\u0640\u0640\u0639
++UISocialDemoHomePagePortlet.label.Getting_Started_Guide=\u0627\u0644\u062D\u0635\u0648\u0644 \u0639\u0644\u0649 \u062F\u0644\u064A\u0644 \u0627\u0644\u0627\u0633\u062A\u0639\u0645\u0627\u0644
+ UISocialDemoHomePagePortlet.label.Or_Start_Exploring_Some_Of_The_Key_Features=\u060C \u0623\u0648 \u0627\u0644\u0628\u062F\u0621 \u0641\u064A \u0627\u0633\u062A\u0643\u0634\u0627\u0641 \u0628\u0639\u0636 \u0627\u0644\u0645\u0644\u0627\u0645\u062D \u0627\u0644\u0631\u0626\u064A\u0633\u064A\u0629 :
+ UISocialDemoHomePagePortlet.label.People_And_Connections=\u0627\u0644\u0623\u0634\u062E\u0627\u0635 \u0648 \u0627\u0644\u0627\u062A\u0635\u0627\u0644\u0627\u062A
+ UISocialDemoHomePagePortlet.label.Profiles=\u0645\u0644\u0627\u0645\u062D : \u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0625\u0636\u0627\u0641\u0629 \u0627\u0644\u062E\u0628\u0631\u0629 \u0641\u064A \u0627\u0644\u0639\u0645\u0644 \u0648\u0627\u0644\u062A\u0648\u0635\u064A\u0641 \u0627\u0644\u0648\u0638\u064A\u0641\u064A \u0648\u063A\u064A\u0631\u0647\u0627 \u0645\u0646 \u0627\u0644\u062A\u0641\u0627\u0635\u064A\u0644
+@@ -35,5 +35,5 @@
+ UISocialDemoHomePagePortlet.label.Connection_Viewer=\u0627\u0644\u0645\u0634\u0627\u0647\u062F \u0625\u062A\u0635\u0627\u0644 : \u0639\u0631\u0636 \u0642\u0627\u0626\u0645\u0629 \u0627\u062A\u0635\u0627\u0644\u0627\u062A \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645
+ UISocialDemoHomePagePortlet.label.Build_Custom_Gadgets=\u0628\u0646\u0627\u0621 \u0623\u062F\u0648\u0627\u062A \u0645\u062E\u0635\u0635\u0629 \u0628\u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0648\u0627\u062C\u0647\u0627\u062A \u0628\u0631\u0645\u062C\u0629 \u0627\u0644\u062A\u0637\u0628\u064A\u0642\u0627\u062A OpenSocial
+ UISocialDemoHomePagePortlet.label.Start_Using_eXo_Social=\u0628\u062F\u0621 \u0627\u0633\u062A\u062E\u062F\u0627\u0645 \u0625\u0643\u0632\u0648 \u0627\u0644\u0627\u062C\u062A\u0645\u0627\u0639\u064A \u060C
+-UISocialDemoHomePagePortlet.label.Login_As_Root=
++UISocialDemoHomePagePortlet.label.Login_As_Root=\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644 \u0643\u0645\u0633\u062A\u062E\u062F\u0645 \u062C\u0630\u0631\u064A (Root)
+ UISocialDemoHomePagePortlet.label.You_Are_Loginned_As_Root=\u064A\u062A\u0645 \u062A\u0633\u062C\u064A\u0644 \u062F\u062E\u0648\u0644\u0643 \u0628\u062E\u0627\u0635\u064A\u0629 \u0631\u0648\u062A
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpacesNavigationPortlet_ar.properties	(working copy)
+@@ -1,5 +1,5 @@
+-UISpacesNavigationPortlet.label.Space=
+-UISpacesNavigationPortlet.label.MySpace=
+-UISpacesNavigationPortlet.label.Invitation=
++UISpacesNavigationPortlet.label.Space=\u0641\u0636\u0627\u0621\u0627\u062A
++UISpacesNavigationPortlet.label.MySpace=\u0641\u0636\u0627\u0621\u0627\u062A\u064A
++UISpacesNavigationPortlet.label.Invitation=\u0627\u0644\u0627\u0633\u062A\u062F\u0639\u0627\u0621\u0627\u062A
+ UISpacesNavigationPortlet.label.Pending=\u0641\u064A \u0627\u0644\u0627\u0646\u062A\u0636\u0627\u0631
+ UISpacesNavigationPortlet.label.Public=\u0627\u0644\u0639\u0645\u0648\u0645\u064A /\u0640\u0629
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialExtensionHomePagePortlet_ar.properties	(working copy)
+@@ -1,11 +1,11 @@
+-UISocialExtensionHomePagePortlet.label.People=
++UISocialExtensionHomePagePortlet.label.People=\u0627\u0644\u0623\u0634\u062E\u0627\u0635
+ UISocialExtensionHomePagePortlet.label.Your_Own_Enterprise_Social_Network=\u0634\u0628\u0643\u0629 \u0627\u0644\u0645\u0624\u0633\u0633\u0629 \u0627\u0644\u062E\u0627\u0635\u0629 \u0628\u0643 \u0627\u0644\u0627\u062C\u062A\u0645\u0627\u0639\u064A\u0629
+ UISocialExtensionHomePagePortlet.label.Turn_Your_Directory_Into_A_Social_Network=\u062A\u062D\u0648\u064A\u0644\u0647 \u0628\u062F\u0648\u0631\u0647 \u0627\u0644\u062F\u0644\u064A\u0644 \u0627\u0644\u062E\u0627\u0635 \u0628\u0643 \u0625\u0644\u0649 \u0634\u0628\u0643\u0629 \u0627\u062C\u062A\u0645\u0627\u0639\u064A\u0629
+ UISocialExtensionHomePagePortlet.label.Users_Can_Fill_Their_Profile=\u064A\u0645\u0643\u0646 \u0644\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646 \u0645\u0644\u0621 \u0645\u0644\u0641\u0627\u062A\u0647\u0645 \u0627\u0644\u0634\u062E\u0635\u064A\u0629
+ UISocialExtensionHomePagePortlet.label.Search_By_Skills_And_Experience=\u0627\u0644\u0628\u062D\u062B \u0639\u0646 \u0637\u0631\u064A\u0642 \u0627\u0644\u0645\u0647\u0627\u0631\u0627\u062A \u0648\u0627\u0644\u062E\u0628\u0631\u0627\u062A
+ UISocialExtensionHomePagePortlet.label.Activity_MicroBlogging=\u0627\u0644\u0646\u0634\u0627\u0637 \u0627\u0644\u0645\u062F\u0648\u0646\u0627\u062A \u0627\u0644\u0635\u063A\u064A\u0631\u0629
+ UISocialExtensionHomePagePortlet.label.OpenSocial_API_Support=OpenSocial \u062F\u0639\u0645 API
+-UISocialExtensionHomePagePortlet.label.Spaces=
++UISocialExtensionHomePagePortlet.label.Spaces=\u0641\u0636\u0627\u0621\u0627\u062A
+ UISocialExtensionHomePagePortlet.label.Collaborative_Workspaces_For_Communities=\u0645\u0633\u0627\u062D\u0627\u062A \u0627\u0644\u0639\u0645\u0644 \u0627\u0644\u062A\u0639\u0627\u0648\u0646\u064A\u0629 \u0644\u0644\u0645\u062C\u062A\u0645\u0639\u0627\u062A
+ UISocialExtensionHomePagePortlet.label.Reveal_Domant_Communities=\u0627\u0643\u062A\u0634\u0641 \u0627\u0644\u0645\u062C\u062A\u0645\u0639\u0627\u062A \u0627\u0644\u0646\u0627\u0626\u0645\u0629
+ UISocialExtensionHomePagePortlet.label.Open_Community_Management=\u0641\u062A\u062D \u0625\u062F\u0627\u0631\u0629 \u0627\u0644\u0645\u062C\u062A\u0645\u0639
+@@ -13,4 +13,4 @@
+ UISocialExtensionHomePagePortlet.label.Add_Custom_Applications=\u0625\u0636\u0627\u0641\u0629 \u062A\u0637\u0628\u064A\u0642\u0627\u062A \u0645\u062E\u0635\u0635\u0629
+ UISocialExtensionHomePagePortlet.label.Live_Chat=\u0627\u0644\u062F\u0631\u062F\u0634\u0629 \u0641\u064A \u0627\u0644\u0645\u0628\u0627\u0634\u0631
+ UISocialExtensionHomePagePortlet.label.eXo_Forums=\u0645\u0646\u062A\u062F\u064A\u0627\u062A \u0625\u0643\u0632\u0648
+-UISocialExtensionHomePagePortlet.label.Contact_Us=
++UISocialExtensionHomePagePortlet.label.Contact_Us=\u0627\u062A\u0640\u0651\u0635\u0644 \u0628\u0646\u0627
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SpaceSettingPortlet_ar.properties	(working copy)
+@@ -1,41 +1,41 @@
+-UITabPane.title.UISpaceInfo=
++UITabPane.title.UISpaceInfo=\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A
+ UITabPane.title.UISpaceMember=\u0623\u0639\u0636\u0627\u0621
+ UITabPane.title.UISpaceApplication=\u062A\u0637\u0628\u064A\u0642\u0627\u062A
+-UITabPane.title.UISpacePermission=\u0627\u0644\u0631\u0624\u064A\u0629
++UITabPane.title.UISpacePermission=\u0627\u0644\u0631\u0651\u0624\u064A\u0629
+ UITabPane.title.UISpaceNavigationManagement=\u062A\u0635\u0641\u062D\u0627\u062A \u0627\u0644\u0641\u0636\u0627\u0621
+ InviteUsers.title.UIInviteUsers=\u062F\u0639\u0648\u0629 \u0645\u064F\u0640\u0633\u062A\u062E\u062F\u0645 / \u0645\u064A\u0646
+-UIInviteUsers.header.userName=
++UIInviteUsers.header.userName=\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645
+ UIInviteUsers.header.lastName=\u0627\u0644\u0644\u0642\u0628
+ UIInviteUsers.header.firstName=\u0627\u0644\u0627\u0633\u0645
+-UIInviteUsers.header.email=
+-UIInviteUsers.header.action=
+-UIInviteUsers.action.title.SelectUser=
++UIInviteUsers.header.email=\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A
++UIInviteUsers.header.action=\u0627\u0644\u0625\u062C\u0631\u0627\u0621
++UIInviteUsers.action.title.SelectUser=\u0627\u062E\u062A\u064A\u0627\u0631
+ UIInviteUsers.label.option.userName=#{word.userName}
+ UIInviteUsers.label.option.firstName=#{word.firstName}
+ UIInviteUsers.label.option.lastName=#{word.lastName}
+ UIInviteUsers.label.option.email=#{word.email}
+ UIPopupWindow.title.UIAvatarUploader=\u0627\u062E\u062A\u0631\u00a0\u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+-UIPopupAvatarUploader.title.UIAvatarUploader=
++UIPopupAvatarUploader.title.UIAvatarUploader=\u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
+ UIAvatarUploader.action.Change=\u062A\u063A\u064A\u064A\u0631
+-UIAvatarUploader.action.Cancel=
+-UIAvatarUploadContent.label.file_name=\u0627\u0633\u0645 \u0627\u0644\u0645\u0644\u0641:
+-UIAvatarUploadContent.label.file_type=\u0646\u0648\u0639 \u0627\u0644\u0645\u0644\u0641:
++UIAvatarUploader.action.Cancel=\u0627\u0644\u063A\u0627\u0621
++UIAvatarUploadContent.label.file_name=\u0627\u0633\u0645 \u0627\u0644\u0645\u0644\u0641 :
++UIAvatarUploadContent.label.file_type=\u0646\u0648\u0639 \u0627\u0644\u0645\u0644\u0641 :
+ UIAvatarUploadContent.label.image_size=\u062D\u062C\u0645 \u0627\u0644\u0635\u0648\u0631\u0629:
+-UIAvatarUploadContent.label.save=
+-UIAvatarUploadContent.label.abort=
+-UIPopupAvatarUploader.title.UIPopupAvatarUploader=
+-UIPopupAvatarUploader.title.UIAvatarUploadContent=
++UIAvatarUploadContent.label.save=\u062D\u0641\u0638
++UIAvatarUploadContent.label.abort=\u0625\u062D\u0628\u0627\u0637
++UIPopupAvatarUploader.title.UIPopupAvatarUploader=\u062C\u0647\u0627\u0632 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0645\u0632\u064A\u0629
++UIPopupAvatarUploader.title.UIAvatarUploadContent=\u0627\u0633\u062A\u0639\u0631\u0627\u0636 \u0645\u064F\u0640\u0633\u0628\u0642 \u0644\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0631\u0651\u0645\u0632\u064A\u0629
+ UIAvatarUploader.msg.img_not_loaded=\u062D\u062F\u062B \u062E\u0637\u0623 \u0623\u062B\u0646\u0627\u0621 \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0635\u0648\u0631\u0629.
+ UIAvatarUploader.msg.mimetype_not_accepted=\u0644\u0645 \u064A\u062A\u0645 \u0627\u0644\u062A\u0639\u0631\u0641 \u0639\u0644\u0649 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0630\u064A \u062A\u0645 \u062A\u062D\u0645\u064A\u0644\u0647 \u0643\u0635\u0648\u0631\u0629. \u064A\u0631\u062C\u0649 \u0627\u0633\u062A\u0639\u0645\u0627\u0644 \u0645\u0644\u0641\u0627\u062A \u0630\u0627\u062A \u0645\u0644\u062D\u0642 PNG \u0623\u0648 JPG \u0641\u0642\u0637.
+ UIAvatarUploader.label.info=\u0627\u0644\u0631\u062C\u0627\u0621 \u0627\u062E\u062A\u064A\u0627\u0631 \u0635\u0648\u0631\u0629 (PNG\u060C GIF \u060C JPG. JPEG) \u0644\u0644\u062A\u062D\u0645\u064A\u0644 \u0628\u062D\u062C\u0645 \u0644\u0627 \u064A\u0641\u0648\u0642 2 \u0645\u064A\u063A\u0627\u0628\u0627\u064A\u062A.
+-UIAvatarUploader.label.Name=
+-UIAvatarUploader.label.Uploader=\u062A\u062D\u0645\u064A\u0644:
+-UIAvatarUploader.action.Confirm=\u0645\u0648\u0627\u0641\u0642
+-SearchUser.title.UIUserSelector=\u062A\u062D\u062F\u064A\u062F \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646
+-SearchUser.title.SearchUser=
+-Visibility.label.public=
+-Visibility.label.private=
+-Visibility.label.hidden=
+-Registration.label.open=
+-Registration.label.validation=
+-Registration.label.close=
++UIAvatarUploader.label.Name=\u0627\u0644\u0627\u0633\u0645:
++UIAvatarUploader.label.Uploader=\u062A\u0646\u0632\u064A\u0644 \u0627\u0644\u0645\u0644\u0641\u0627\u062A:
++UIAvatarUploader.action.Confirm=\u062A\u0623\u0643\u064A\u062F
++SearchUser.title.UIUserSelector=\u0627\u062E\u062A\u064A\u0627\u0631 \u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646
++SearchUser.title.SearchUser=\u0644\u0628\u062D\u062B \u0639\u0646 \u0645\u0633\u062A\u062E\u062F\u0645
++Visibility.label.public=\u0639\u0627\u0645\u0651
++Visibility.label.private=\u0645\u0631\u0626\u064A
++Visibility.label.hidden=\u0645\u062E\u0641\u064A
++Registration.label.open=\u0645\u0641\u062A\u0648\u062D
++Registration.label.validation=\u0627\u0644\u0645\u0635\u0627\u062F\u0642\u0629
++Registration.label.close=\u0627\u063A\u0644\u0627\u0642
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_ar.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_ar.properties	(revision 79505)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/SocialBannerPortlet_ar.properties	(working copy)
+@@ -1,3 +1,3 @@
+-UISocialBannerPortlet.label.Sign_In=
+-UISocialBannerPortlet.label.ChangeLanguage=
+-UISocialBannerPortlet.label.Register=
++UISocialBannerPortlet.label.Sign_In=\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062F\u062E\u0648\u0644
++UISocialBannerPortlet.label.ChangeLanguage=\u062A\u063A\u064A\u064A\u0631 \u0627\u0644\u0644\u063A\u0629
++UISocialBannerPortlet.label.Register=\u0627\u0644\u062A\u0633\u062C\u064A\u0644
