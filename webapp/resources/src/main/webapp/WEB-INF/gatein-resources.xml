@@ -40,21 +40,34 @@
   </scripts>
 
   <scripts>
-    <name>social-core</name> <!-- provides core utility for reuse -->
-    <module>
-      <name>eXo.social.PortalHttpRequest</name> <!-- function not available from PortalHttpRequest -->
-      <path>/javascript/eXo/social/PortalHttpRequest.js</path>
-    </module>
-    <module>
-      <name>eXo.social.webui.UIForm</name><!-- function not available from Portal UIForm -->
-      <path>/javascript/eXo/social/webui/UIForm.js</path>
-    </module>
+    <name>social-core</name> <!-- provides core utility for reuse (browser, dom level) -->
     <module>
       <name>eXo.social.Util</name>
       <path>/javascript/eXo/social/Util.js</path>
     </module>
+    <module>
+      <name>eXo.social.PortalHttpRequest</name> <!-- function not available from PortalHttpRequest -->
+      <path>/javascript/eXo/social/PortalHttpRequest.js</path>
+    </module>
+    <depends>
+      <scripts>base</scripts>
+    </depends>
     <depends>
       <scripts>social-common</scripts>
+    </depends>
+  </scripts>
+
+  <scripts>
+    <name>social-webui</name> <!-- webui level -->
+    <module>
+      <name>eXo.social.webui.UIForm</name><!-- function not available from Portal UIForm -->
+      <path>/javascript/eXo/social/webui/UIForm.js</path>
+    </module>
+    <depends>
+      <scripts>webui</scripts>
+    </depends>
+    <depends>
+      <scripts>social-core</scripts>
     </depends>
   </scripts>
 
@@ -64,10 +77,6 @@
     <module>
        <name>eXo.social.webui.UIAutoSuggestControl</name>
        <path>/javascript/eXo/social/webui/UIAutoSuggestControl.js</path>
-    </module>
-    <module>
-       <name>eXo.social.webui.UIAutoSuggestMultiValueControl</name>
-       <path>/javascript/eXo/social/webui/UIAutoSuggestMultiValueControl.js</path>
     </module>
     <module>
        <name>eXo.social.webui.UIProfileUserSearch</name>
@@ -96,9 +105,16 @@
   <scripts>
     <name>social-ui-space-member-suggestion</name>
     <module>
+       <name>eXo.social.webui.UIAutoSuggestControl</name>
+       <path>/javascript/eXo/social/webui/UIAutoSuggestMultiValueControl.js</path>
+    </module>
+    <module>
        <name>eXo.social.webui.UISpaceMemberSuggestion</name>
        <path>/javascript/eXo/social/webui/UISpaceMemberSuggestion.js</path>
     </module>
+    <depends>
+      <scripts>base</scripts>
+    </depends>
   </scripts>
   
   <scripts>
@@ -109,9 +125,6 @@
     </module>
     <depends>
        <scripts>base</scripts>
-    </depends>
-    <depends>
-       <scripts>social-core</scripts>
     </depends>
   </scripts>
 
@@ -165,6 +178,9 @@
       <name>eXo.social.webui.UICustomizeControl</name>
       <path>/javascript/eXo/social/webui/UICustomizeControl.js</path>
     </module>
+    <depends>
+      <scripts>base</scripts>
+    </depends>
   </scripts>
 
 </gatein-resources>

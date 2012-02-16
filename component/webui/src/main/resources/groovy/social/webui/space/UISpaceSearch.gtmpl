@@ -29,7 +29,7 @@ def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def allSpacesName = uicomponent.getSpaceNameForAutoSuggest().toString();
 def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
-jsManager.loadScriptResource("social-ui-space-search");
+jsmanager.loadScriptResource("social-ui-space-search");
 jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
 jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
 jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
