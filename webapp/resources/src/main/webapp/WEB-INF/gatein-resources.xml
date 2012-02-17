@@ -75,7 +75,6 @@
     </depends>
   </scripts>
 
-  
   <scripts>
     <name>social-ui-user-search</name>
     <module>
@@ -87,7 +86,7 @@
        <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>
     </module>
     <depends>
-       <scripts>social-core</scripts>
+       <scripts>social-webui</scripts>
     </depends>
   </scripts>
   

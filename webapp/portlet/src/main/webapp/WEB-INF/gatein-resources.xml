@@ -291,16 +291,6 @@
    </portlet> 
    
    <portlet>
-     <name>PeoplePortlet</name>
-     <scripts>
-       <mode>on-load</mode>
-       <depends>
-         <scripts>webui</scripts>
-       </depends>
-     </scripts>
-   </portlet> 
-   
-   <portlet>
      <name>ProfilePortlet</name>     
      <scripts>
        <mode>on-load</mode>
@@ -324,11 +314,21 @@
    </portlet>
    
    <portlet>
+     <name>PeoplePortlet</name>
+     <scripts>
+       <mode>on-load</mode>
+       <depends>
+         <scripts>base</scripts>
+       </depends>
+     </scripts>
+   </portlet> 
+   
+   <portlet>
      <name>AllPeoplePortlet</name>
      <scripts>
        <mode>on-load</mode>
        <depends>
-         <scripts>webui</scripts>
+         <scripts>base</scripts>
        </depends>
      </scripts>
    </portlet> 
