@@ -73,8 +73,6 @@
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  //Disable double-click inline feature to make sure tabs just work well first
-  //TODO make double-click inline feature to work well
   jsManager.loadScriptResource("social-ui-space-app-name-edition");
 %>
 
