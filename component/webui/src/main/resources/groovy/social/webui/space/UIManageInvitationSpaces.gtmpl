@@ -41,6 +41,10 @@
   def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
   def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members")
   
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.loadScriptResource("base");
+  
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
   }
