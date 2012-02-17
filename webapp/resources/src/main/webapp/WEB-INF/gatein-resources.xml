@@ -161,7 +161,7 @@
       <path>/javascript/eXo/social/webui/UIActivity.js</path>
     </module>
     <depends>
-      <scripts>social-core</scripts>
+      <scripts>social-webui</scripts>
     </depends>
   </scripts>
 

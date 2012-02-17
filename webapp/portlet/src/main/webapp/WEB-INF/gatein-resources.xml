@@ -370,6 +370,9 @@
        <depends>
          <scripts>webui</scripts>
        </depends>
+       <depends>
+         <scripts>base</scripts>
+       </depends>
      </scripts>
    </portlet>
    
