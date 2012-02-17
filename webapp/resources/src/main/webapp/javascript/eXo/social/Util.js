@@ -321,7 +321,7 @@ eXo.social.Util.removeEventListener = function(obj, evt, func, useCapture) {
  * @static
  */
 eXo.social.Util.stripHtml = function(/*Array*/ allowedTags, /*String*/ escapedHtmlString) {
-  if (!allowedTags) {
+  if (!allowedTags || !escapedHtmlString) {
     return escapedHtmlString;
   }
   escapedHtmlString = escapedHtmlString.replace(/&#60;/g, '<').replace(/&#62;/g, '>').replace(/&#34;/g, '"');

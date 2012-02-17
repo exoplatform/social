@@ -28,6 +28,10 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
+
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.loadScriptResource("base"); //for uicomponent.event()
   
   // All actions: Join(Public), Cancel (Sent), Accept-Deny(Invited), Edit-Leave-Delete(My Space or Manager), Leave(Member Only)
   def joinSpaceLabel = _ctx.appRes("${uicomponentId}.label.action_join")

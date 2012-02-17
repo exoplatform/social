@@ -42,6 +42,10 @@
   <scripts>
     <name>social-core</name> <!-- provides core utility for reuse (browser, dom level) -->
     <module>
+      <name>HTMLParser</name> <!-- this is ugly, must be removed -->
+      <path>/javascript/htmlparser.js</path>
+    </module>
+    <module>
       <name>eXo.social.Util</name>
       <path>/javascript/eXo/social/Util.js</path>
     </module>
