@@ -46,12 +46,12 @@
       <path>/javascript/htmlparser.js</path>
     </module>
     <module>
-      <name>eXo.social.Util</name>
-      <path>/javascript/eXo/social/Util.js</path>
-    </module>
-    <module>
       <name>eXo.social.PortalHttpRequest</name> <!-- function not available from PortalHttpRequest -->
       <path>/javascript/eXo/social/PortalHttpRequest.js</path>
+    </module>
+    <module>
+      <name>eXo.social.Util</name>
+      <path>/javascript/eXo/social/Util.js</path>
     </module>
     <depends>
       <scripts>base</scripts>
