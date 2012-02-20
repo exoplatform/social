@@ -288,7 +288,17 @@
          <scripts>navigation</scripts>
        </depends>
      </scripts>
-   </portlet> 
+   </portlet>
+
+  <portlet>
+    <name>SocialBannerPortlet</name>
+    <scripts>
+      <mode>on-load</mode>
+      <depends>
+        <scripts>base</scripts>
+      </depends>
+    </scripts>
+  </portlet>
    
    <portlet>
      <name>ProfilePortlet</name>     
