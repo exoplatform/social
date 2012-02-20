@@ -139,14 +139,6 @@
 
   <portlet-skin>
     <application-name>social-portlet</application-name>
-    <portlet-name>SocialDemoNavigationPortlet</portlet-name>
-    <skin-name>Default</skin-name>
-    <css-path>/skin/social/portlet/UISocialDemoNavigationPortlet/DefaultStylesheet.css</css-path>
-    <css-priority>1</css-priority>
-  </portlet-skin>
-
-  <portlet-skin>
-    <application-name>social-portlet</application-name>
     <portlet-name>SocialFooterPortlet</portlet-name>
     <skin-name>Default</skin-name>
     <css-path>/skin/social/portlet/UIFooterPortlet/DefaultStylesheet.css</css-path>
