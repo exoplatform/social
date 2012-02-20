@@ -21,21 +21,9 @@
   
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  jsManager.addOnLoadJavascript("fillUpFreeSpace('${uicomponent.id}')");
+  jsManager.addOnLoadJavascript("eXo.core.Browser.fillUpFreeSpace('${uicomponent.id}')");
 %>
 
 <div class="UIRequestPortlet" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
-  
-  <script type="text/javascript">
-	  function fillUpFreeSpace(componentId) {
-	    try{
-	      var filledElement = document.getElementById(componentId);
-	      if (filledElement) {
-	        eXo.core.Browser.fillUpFreeSpace(filledElement);
-	      }      
-	    }catch(e){};
-	  }    
-  </script> 
-  
 </div>
