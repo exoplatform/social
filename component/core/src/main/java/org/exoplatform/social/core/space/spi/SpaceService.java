@@ -627,6 +627,16 @@ public interface SpaceService {
   void saveSpace(Space space, boolean isNew) throws SpaceException;
 
   /**
+   * Renames a space.
+   * 
+   * @param space the existing space
+   * @param newDisplayName  new display name
+   * @throws SpaceException
+   * @since 1.2.8
+   */
+  void renameSpace(Space space, String newDisplayName) throws SpaceException;
+  
+  /**
    * Deletes a space by its id.
    *
    * @param spaceId

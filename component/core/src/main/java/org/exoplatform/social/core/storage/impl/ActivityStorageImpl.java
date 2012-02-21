@@ -219,8 +219,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     stream.setId(identityEntity.getId());
     stream.setPrettyId(identityEntity.getRemoteId());
     stream.setType(identityEntity.getProviderId());
-    stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));
-
+    
+    //Identity identity = identityStorage.findIdentityById(identityEntity.getId());
+    if (identityEntity != null && SpaceIdentityProvider.NAME.equals(identityEntity.getProviderId())) {
+      Space space = spaceStorage.getSpaceByPrettyName(identityEntity.getRemoteId());
+      //work-around for SOC-2366 when rename space's display name.
+      if (space != null) {
+        String groupId = space.getGroupId().split("/")[2];
+        stream.setPermaLink(LinkProvider.getActivityUriForSpace(identityEntity.getProviderId(), 
+                                                                        identityEntity.getRemoteId(), groupId));
+      }
+    } else {
+      stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));
+    }
     //
     activity.setActivityStream(stream);
     activity.setStreamId(stream.getId());

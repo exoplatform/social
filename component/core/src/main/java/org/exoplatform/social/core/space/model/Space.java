@@ -179,8 +179,6 @@ public class Space {
    */
   public void setDisplayName(String spaceDisplayName) {
     displayName = spaceDisplayName;
-    setPrettyName(SpaceUtils.cleanString(spaceDisplayName));
-    
   }
 
   /**
@@ -467,7 +465,7 @@ public class Space {
    * @since 1.2.0-GA
    */
   public void setPrettyName(String prettyName) {
-    this.prettyName = prettyName;
+    this.prettyName = SpaceUtils.cleanString(prettyName);
   }
 
   /**

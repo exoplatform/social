@@ -71,7 +71,7 @@ public class CachedIdentityStorage implements IdentityStorage {
 
   private final IdentityStorageImpl storage;
 
-  private void clearCache() {
+  void clearCache() {
 
     try {
       exoIdentitiesCache.select(new IdentityCacheSelector(OrganizationIdentityProvider.NAME));
@@ -239,7 +239,7 @@ public class CachedIdentityStorage implements IdentityStorage {
    * {@inheritDoc}
    */
   public Profile loadProfile(final Profile profile) throws IdentityStorageException {
-
+    
     IdentityKey key = new IdentityKey(new Identity(profile.getIdentity().getId()));
     return profileCache.get(
         new ServiceContext<ProfileData>() {
@@ -250,9 +250,26 @@ public class CachedIdentityStorage implements IdentityStorage {
         },
         key)
         .build();
-
+    
   }
 
+  /**
+   * Clear identity cache.
+   * 
+   * @param identity
+   * @param oldRemoteId
+   * @since 1.2.8
+   */
+  public void clearIdentityCached(Identity identity, String oldRemoteId) {
+    IdentityKey key = new IdentityKey(new Identity(identity.getId()));
+    IdentityData data = exoIdentityCache.remove(key);
+    if (data != null) {
+      exoIdentityIndexCache.remove(new IdentityCompositeKey(data.getProviderId(), oldRemoteId));
+    }
+    exoProfileCache.remove(key);
+    clearCache();
+  }
+  
   /**
    * {@inheritDoc}
    */

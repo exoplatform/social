@@ -1004,6 +1004,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     for (int i = 0; i < number; i++) {
       Space space = new Space();
       space.setDisplayName("my space " + number);
+      space.setPrettyName(space.getDisplayName());
       space.setRegistration(Space.OPEN);
       space.setDescription("add new space " + number);
       space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1019,6 +1020,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
       space.setPendingUsers(pendingUsers);
       space.setManagers(managers);
       space.setMembers(members);
+      space.setUrl("/space/" + space.getPrettyName());
       try {
         spaceService.saveSpace(space, true);
         tearDownSpaceList.add(space);

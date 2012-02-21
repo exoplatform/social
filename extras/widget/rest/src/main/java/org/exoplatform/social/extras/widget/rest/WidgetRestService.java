@@ -74,6 +74,7 @@ public class WidgetRestService implements ResourceContainer {
         // If the space does not exist, we create it
         space = new Space();
         space.setDisplayName(spaceName);
+        space.setPrettyName(space.getDisplayName());
         space.setRegistration(Space.OPEN);
         space.setDescription(description);
         space.setType(DefaultSpaceApplicationHandler.NAME);

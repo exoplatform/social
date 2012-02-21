@@ -79,7 +79,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   //
   private static final RelationshipKey RELATIONSHIP_NOT_FOUND = new RelationshipKey(null);
 
-  private void clearCacheFor(Relationship r) {
+  void clearCacheFor(Relationship r) {
 
     List<String> identities = new ArrayList<String>();
 

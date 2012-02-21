@@ -79,6 +79,20 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
    * {@inheritDoc}
    */
   @Override
+  public void renameSpace(final Space space, final String newDisplayName) throws SpaceStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.renameSpace(space, newDisplayName);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void deleteSpace(final String id) throws SpaceStorageException {
 
     boolean created = startSynchronization();

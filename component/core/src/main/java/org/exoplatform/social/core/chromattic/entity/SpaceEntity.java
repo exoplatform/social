@@ -35,6 +35,7 @@ public abstract class SpaceEntity {
   
   @Name
   public abstract String getName();
+  public abstract void setName(String name);
 
   @Property(name = "soc:app")
   public abstract String getApp();

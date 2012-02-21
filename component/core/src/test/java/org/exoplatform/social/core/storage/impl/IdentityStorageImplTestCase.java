@@ -284,6 +284,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     //
     Space space = new Space();
     space.setDisplayName("space name");
+    space.setPrettyName(space.getDisplayName());
     space.setMembers(new String[]{user1.getRemoteId()});
     space.setManagers(new String[]{user1.getRemoteId(), user2.getRemoteId()});
     space.setPendingUsers(new String[]{user1.getRemoteId()});
@@ -322,6 +323,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     //
     Space space = new Space();
     space.setDisplayName("space name");
+    space.setPrettyName(space.getDisplayName());
     space.setManagers(new String[]{user1.getRemoteId()});
 
     spaceStorage.saveSpace(space, true);

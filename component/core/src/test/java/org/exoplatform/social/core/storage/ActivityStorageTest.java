@@ -30,7 +30,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
@@ -1782,6 +1781,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1789,6 +1789,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};

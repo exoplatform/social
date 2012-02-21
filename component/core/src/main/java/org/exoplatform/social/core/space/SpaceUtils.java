@@ -60,6 +60,7 @@ import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.mop.user.UserPortalContext;
+import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
@@ -115,6 +116,20 @@ public class SpaceUtils {
 
   public static final String SPACE_URL = "SPACE_URL";
 
+  /**
+   * The id of the container in plf.
+   * 
+   * @since 1.2.8
+   */
+  private static final String SPACE_MENU = "SpaceMenu";
+  
+  /**
+   * The id of the container in plf.
+   * 
+   * @since 1.2.8
+   */
+  private static final String SPACE_APPLICATIONS = "SpaceApplications";
+  
   private static final ConcurrentHashMap<String, Application> appListCache = new ConcurrentHashMap<String,
           Application>();
 
@@ -407,6 +422,35 @@ public class SpaceUtils {
   }
 
   /**
+   * Remove pages and group navigation of space when delete space.
+   * 
+   * @param space
+   * @throws Exception
+   * @since 1.2.8
+   */
+  public static void removePagesAndGroupNavigation(Space space) throws Exception {
+    // remove pages
+    DataStorage dataStorage = getDataStorage();
+    String groupId = space.getGroupId();
+    UserNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+    // return in case group navigation was removed by portal SOC-548
+    if (spaceNav == null) {
+      return;
+    }
+    UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, groupId);
+
+    Collection<UserNode> spaceNodes = userNode.getChildren();
+    for (UserNode spaceNode : spaceNodes) {
+      String pageId = spaceNode.getPageRef();
+      Page page = dataStorage.getPage(pageId);
+      dataStorage.remove(page);
+    }
+    
+    // remove group navigation
+    SpaceUtils.removeGroupNavigation(groupId);
+  }
+  
+  /**
    * change spaceUrl preferences for all applications in a pageNode. This pageNode is the clonedPage of spacetemplate.
    *
    * @param spacePageNode
@@ -417,31 +461,69 @@ public class SpaceUtils {
   public static void changeSpaceUrlPreference(UserNode spacePageNode,
                                               Space space,
                                               String newSpaceName) throws Exception {
-    String pageId = spacePageNode.getPageRef();
     DataStorage dataStorage = getDataStorage();
-    Page page = dataStorage.getPage(pageId);
-    page.setTitle(page.getTitle().replace(space.getDisplayName(), newSpaceName));
-    dataStorage.save(page);
+    Page page = dataStorage.getPage(spacePageNode.getPageRef());
+    
     ArrayList<ModelObject> pageChildren = page.getChildren();
+    
+    //change menu portlet preference
     Container menuContainer = findContainerById(pageChildren, MENU_CONTAINER);
-
-    org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet =
-    (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer
-              .getChildren()
-              .get(0);
-
-    ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
-    org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
-    try {
-      menuPortletPreference = dataStorage.load(menuState, ApplicationType.PORTLET);
-      menuPortletPreference.setValue(SPACE_URL, space.getUrl());
-      dataStorage.save(menuState, menuPortletPreference);
-    } catch (Exception e) {
-      LOG.warn("Can not save menu portlet preference!", e);
+    
+    //This is a workaround for PLF. The workaround should be removed when issue SOC-2074 is resolved.
+    if (menuContainer == null) {
+      menuContainer = findContainerById(pageChildren, SPACE_MENU);
     }
+    changeMenuPortletPreference(menuContainer, dataStorage, space);
 
+    //change applications portlet preference
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
+    if (applicationContainer == null) {
+      applicationContainer = findContainerById(pageChildren, SPACE_APPLICATIONS);
+    }
+    if (applicationContainer.getId().equals(SPACE_APPLICATIONS)) {
+      for (int i = 0; i < applicationContainer.getChildren().size(); i ++) {
+        Container container = (Container) applicationContainer.getChildren().get(i);
+        changeAppPortletPreference(container, dataStorage, space);
+      }
+    } else {
+      changeAppPortletPreference(applicationContainer, dataStorage, space);
+    }
+  }
 
+  /**
+   * Change menu portlet preference.
+   * 
+   * @param menuContainer
+   * @param dataStorage
+   * @param space
+   * @since 1.2.8
+   */
+  public static void changeMenuPortletPreference(Container menuContainer, DataStorage dataStorage, Space space) {
+    org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> menuPortlet =
+      (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) menuContainer
+                .getChildren()
+                .get(0);
+
+      ApplicationState<org.exoplatform.portal.pom.spi.portlet.Portlet> menuState = menuPortlet.getState();
+      org.exoplatform.portal.pom.spi.portlet.Portlet menuPortletPreference;
+      try {
+        menuPortletPreference = dataStorage.load(menuState, ApplicationType.PORTLET);
+        menuPortletPreference.setValue(SPACE_URL, space.getUrl());
+        dataStorage.save(menuState, menuPortletPreference);
+      } catch (Exception e) {
+        LOG.warn("Can not save menu portlet preference!", e);
+      }
+  }
+  
+  /**
+   * Change application portlet preference.
+   * 
+   * @param applicationContainer
+   * @param dataStorage
+   * @param space
+   * @since 1.2.8
+   */
+  public static void changeAppPortletPreference(Container applicationContainer, DataStorage dataStorage, Space space) {
     try {
       org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet> applicationPortlet =
       (org.exoplatform.portal.config.model.Application<org.exoplatform.portal.pom.spi.portlet.Portlet>) applicationContainer
@@ -460,12 +542,12 @@ public class SpaceUtils {
       } catch (Exception e) {
         LOG.warn("Can not save application portlet preference!", e);
       }
-
     } catch (Exception e) {
+      LOG.warn("Error when change application porltet preference!", e);
       // ignore it? exception will happen when this is gadgetApplicationType
     }
   }
-
+  
   /**
    * end the request and push data to JCR.
    */
@@ -651,6 +733,14 @@ public class SpaceUtils {
       newGroup = groupHandler.createGroupInstance();
       shortName = SpaceUtils.cleanString(spaceName);
       groupId = parentGroup.getId() + "/" + shortName;
+      
+      PortalContainer portalContainer = PortalContainer.getInstance();
+      SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+      if (spaceService.getSpaceByGroupId(groupId) != null) {
+        shortName = buildGroupId(shortName);
+        groupId = parentGroup.getId() + "/" + shortName;
+      }
+      
       if (isSpaceNameExisted(spaceName)) {
         throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
       }
@@ -914,8 +1004,8 @@ public class SpaceUtils {
    */
   public static UserPortal getUserPortal() {
     try {
-      UIPortalApplication uiApp = Util.getUIPortalApplication();
-      return uiApp.getUserPortalConfig().getUserPortal();
+      PortalRequestContext prc = Util.getPortalRequestContext();
+      return prc.getUserPortalConfig().getUserPortal();
     } catch (Exception e) {
       //Makes sure that in the RestService still gets the UserPortal.
       try {
@@ -925,7 +1015,29 @@ public class SpaceUtils {
       }
     }
   }
- 
+  
+  /**
+   * Get parent node of the current space.
+   * 
+   * @return
+   * @throws Exception
+   * @since 1.2.8
+   */
+  public static UserNode getParentNode() throws Exception {
+    UIPortal uiPortal = Util.getUIPortal();
+    UserPortal userPortal = getUserPortal();
+    UserNode selectedNode = uiPortal.getSelectedUserNode();
+    UserNode currParent = selectedNode.getParent();
+    if (currParent != null) {
+      try {
+        userPortal.updateNode(currParent, Scope.CHILDREN, null);
+      } catch (NavigationServiceException e) {
+        currParent = null;
+      }
+    }
+    return currParent;
+  }
+  
   /**
    * Gets the UserPortal when uses the RestService.
    * @return
@@ -982,7 +1094,11 @@ public class SpaceUtils {
    * @throws Exception
    */
   public static UserNavigation getGroupNavigation(String groupId) throws Exception {
-    return getUserPortal().getNavigation(SiteKey.group(groupId));
+    UserPortal userPortal = getUserPortal();
+    if (userPortal != null) {
+      return getUserPortal().getNavigation(SiteKey.group(groupId));
+    }
+    return null;
   }
 
   /**
@@ -1371,6 +1487,39 @@ public class SpaceUtils {
     return result.trim();
   }
 
+  /**
+   * Builds pretty name base on the basic name in case create more than one space with the same name.
+   * 
+   * @param groupId
+   * @return
+   */
+  public static String buildGroupId(String groupId) {
+    String checkedGroupId = groupId;
+    String mainPatternGroupId = null;
+    String numberPattern = NUMBER_REG_PATTERN;
+    if (checkedGroupId.substring(checkedGroupId.lastIndexOf(UNDER_SCORE_STR) + 1).matches(numberPattern)) {
+      mainPatternGroupId = checkedGroupId.substring(0, checkedGroupId.lastIndexOf(UNDER_SCORE_STR));
+    } else {
+      mainPatternGroupId = checkedGroupId;
+    }
+    
+    boolean hasNext = true;
+    int extendPattern = 0;
+    
+    while (hasNext) {
+      ++extendPattern;
+      checkedGroupId = cleanString(mainPatternGroupId + SPACE_STR + extendPattern);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, checkedGroupId, true);
+      if (identity == null) {
+        hasNext = false;
+      }
+    }
+    
+    return checkedGroupId;
+  }
+  
   /**
    * Builds pretty name base on the basic name in case create more than one space with the same name.
    * 

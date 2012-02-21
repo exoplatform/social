@@ -395,6 +395,14 @@ public class SpaceServiceImpl implements SpaceService {
         LOG.error("Failed to invite users from group " + invitedGroupId, e);
       }
     }
+    
+    String prettyName = groupId.split("/")[2];
+    
+    if (!prettyName.equals(space.getPrettyName())) {
+      //work around for SOC-2366
+      space.setPrettyName(groupId.split("/")[2]);
+    }
+    
     String[] managers = new String[] {creator};
     String[] members = new String[] {creator};
     space.setManagers(managers);
@@ -429,6 +437,13 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  public void renameSpace(Space space, String newDisplayName) {
+    spaceStorage.renameSpace(space, newDisplayName);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public void deleteSpace(Space space) {
     try {
       
@@ -449,6 +464,10 @@ public class SpaceServiceImpl implements SpaceService {
       } else {
         LOG.warn("deletedGroup is null");
       }
+      
+      //remove pages and group navigation of space
+      SpaceUtils.removePagesAndGroupNavigation(space);
+      
     } catch (Exception e) {
       LOG.error("Unable delete space", e);
     }

@@ -1394,6 +1394,31 @@ public class SpaceServiceTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link SpaceService#renameSpace(Space, String)}
+   *
+   * @throws Exception
+   * @since 1.2.8
+   */
+  public void testRenameSpace() throws Exception {
+    Space space = this.getSpaceInstance(0);
+    tearDownSpaceList.add(space);
+    
+    Identity identity = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    identityStorage.saveIdentity(identity);
+    tearDownUserList.add(identity);
+    
+    String newDisplayName = "new display name";
+    
+    spaceService.renameSpace(space, newDisplayName);
+    
+    Space got = spaceService.getSpaceById(space.getId());
+    assertEquals(newDisplayName, got.getDisplayName());
+    
+    Identity savedIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    assertNotNull(savedIdentity);
+  }
+  
+  /**
    * Test {@link SpaceService#saveSpace(Space, boolean)}
    *
    * @throws Exception
@@ -1476,6 +1501,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     String updateSpaceDisplayName = "update new space display name";
     space.setDisplayName(updateSpaceDisplayName);
+    space.setPrettyName(space.getDisplayName());
     spaceService.updateSpace(space);
     savedSpace = spaceService.getSpaceByDisplayName(updateSpaceDisplayName);
     assertNotNull("savedSpace must not be null", savedSpace);
@@ -1624,6 +1650,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1631,6 +1658,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -1848,6 +1876,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1855,6 +1884,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo"};
     String[] members = new String[] {};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -1899,6 +1929,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1906,6 +1937,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo"};
     String[] members = new String[] {};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -1968,6 +2000,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1975,6 +2008,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -2304,6 +2338,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2311,6 +2346,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo"};
     String[] members = new String[] {};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -2382,6 +2418,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     int number = 0;
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2389,6 +2426,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] spaceManagers = new String[] {"demo"};
     String[] members = new String[] {};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -2649,6 +2687,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space1 = new Space();
     space1.setApp("Calendar;FileSharing");
     space1.setDisplayName(spaceDisplayName);
+    space1.setPrettyName(space1.getDisplayName());
     String shortName = SpaceUtils.cleanString(spaceDisplayName);
     space1.setGroupId("/spaces/" + shortName);
     space1.setUrl(shortName);
@@ -2677,6 +2716,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
   private Space getSpaceInstance(int number) throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2692,6 +2732,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
+    space.setUrl(space.getPrettyName());
     this.spaceService.saveSpace(space, true);
     return space;
   }
@@ -2706,6 +2747,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(registration);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -2719,6 +2761,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
+    space.setUrl(space.getPrettyName());
     return space;
   }
   
@@ -2732,12 +2775,14 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(registration);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setVisibility(visible);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/spaces/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] {manager};
     //String[] invitedUsers = new String[] {invitedMember};
     String[] pendingUsers = new String[] {};
@@ -2752,6 +2797,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space space2 = new Space();
     space2.setApp("Contact,Forum");
     space2.setDisplayName(spaceName);
+    space2.setPrettyName(space2.getDisplayName());
     String shortName = SpaceUtils.cleanString(spaceName);
     space2.setGroupId("/spaces/" + shortName );
     space2.setUrl(shortName);

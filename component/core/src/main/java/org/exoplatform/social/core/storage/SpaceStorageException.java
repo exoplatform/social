@@ -87,7 +87,8 @@ public class SpaceStorageException extends ExoSocialException {
     FAILED_TO_GET_SPACE_BY_PRETTY_NAME("Failed_To_Get_Space_By_Pretty_Name"),
     FAILED_TO_GET_SPACE_BY_URL("Failed_To_Get_Space_By_Url"),
     FAILED_TO_DELETE_SPACE("Failed_To_Delete_Space"),
-    FAILED_TO_SAVE_SPACE("Failed_To_Save_Space");
+    FAILED_TO_SAVE_SPACE("Failed_To_Save_Space"),
+    FAILED_TO_RENAME_SPACE("Failed_To_Rename_Space");
     
     private final String msgKey;
 

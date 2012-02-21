@@ -818,12 +818,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private Space getSpaceInstance() {
     Space space = new Space();
     space.setDisplayName("my space");
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space");
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setVisibility(Space.PUBLIC);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space");
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] {"john", "demo"};
     space.setManagers(managers);
     return space;

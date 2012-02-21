@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -135,6 +136,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -149,6 +151,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
+    space.setUrl(space.getPrettyName());
     return space;
   }
   
@@ -162,6 +165,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(registration);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -175,6 +179,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);
     space.setMembers(members);
+    space.setUrl(space.getPrettyName());
     return space;
   }
   
@@ -188,12 +193,14 @@ public class SpaceStorageTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(registration);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setVisibility(visible);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/spaces/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] {manager};
     //String[] invitedUsers = new String[] {invitedMember};
     String[] pendingUsers = new String[] {};
@@ -1557,6 +1564,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertNotNull("space.getId() must not be null", space.getId());
     String newName = "newnamespace";
     space.setDisplayName(newName);
+    space.setPrettyName(space.getDisplayName());
     spaceStorage.saveSpace(space, false);
     assertEquals("spaceStorage.getSpaceById(space.getId()).getName() must return: "
         + newName, newName, spaceStorage.getSpaceById(space.getId())
@@ -1567,6 +1575,42 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertEquals(null, got.getAvatarUrl());
   }
 
+  /**
+   * Test {@link SpaceStorage#renameSpace(Space, String)}
+   *
+   * @throws Exception
+   * @since 1.2.8
+   */
+  @MaxQueryNumber(400)
+  public void testRenameSpace() throws Exception {
+    int number = 1;
+    Space space = this.getSpaceInstance(number);
+    tearDownSpaceList.add(space);
+    spaceStorage.saveSpace(space, true);
+    assertNotNull("space.getId() must not be null", space.getId());
+    String newName = "newnamespace";
+    space.setDisplayName(newName);
+    space.setPrettyName(space.getDisplayName());
+    spaceStorage.saveSpace(space, false);
+    assertEquals("spaceStorage.getSpaceById(space.getId()).getName() must return: "
+        + newName, newName, spaceStorage.getSpaceById(space.getId())
+                                                                .getPrettyName());
+    assertEquals("space.getName() must return: " + newName, newName, space.getPrettyName());
+
+    Space got = spaceStorage.getSpaceById(space.getId());
+    assertEquals(null, got.getAvatarUrl());
+    
+    Identity spaceIdentity = new Identity(SpaceIdentityProvider.NAME, got.getPrettyName());
+    identityStorage.saveIdentity(spaceIdentity);
+    tearDownIdentityList.add(spaceIdentity);
+    
+    String newDisplayName = "new display name";
+    spaceStorage.renameSpace(space, newDisplayName);
+    
+    got = spaceStorage.getSpaceById(space.getId());
+    assertEquals(newDisplayName, got.getDisplayName());
+  }
+  
   /**
    * Test {@link org.exoplatform.social.core.storage.SpaceStorage#saveSpace(org.exoplatform.social.core.space.model.Space, boolean)}
    *

@@ -308,6 +308,7 @@ public class NodeWriter_11x_12x implements NodeWriter {
       //
       Space space = new Space();
       space.setDisplayName(name);
+      space.setPrettyName(space.getDisplayName());
       space.setApp(app);
       space.setDescription(description);
       space.setGroupId(groupId);

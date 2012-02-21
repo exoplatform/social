@@ -676,13 +676,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       }
     }
 
+
     if (OrganizationIdentityProvider.NAME.equals(providerId) || SpaceIdentityProvider.NAME.equals(providerId)) {
 
       //
       if (OrganizationIdentityProvider.NAME.equals(providerId)) {
         profile.setUrl(LinkProvider.getUserProfileUri(remoteId));
       } else if (SpaceIdentityProvider.NAME.equals(providerId)) {
-        profile.setUrl(LinkProvider.getSpaceUri(remoteId));
+        spaceStorage = getSpaceStorage();
+        if (spaceStorage.getSpaceByPrettyName(remoteId) != null) {
+          profile.setUrl(LinkProvider.getSpaceUri(remoteId));
+        }
       }
       
       //

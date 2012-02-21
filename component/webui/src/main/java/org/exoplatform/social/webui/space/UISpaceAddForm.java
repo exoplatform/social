@@ -132,6 +132,7 @@ public class UISpaceAddForm extends UIFormTabPane {
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setDisplayName(space.getDisplayName().trim());
+      space.setPrettyName(space.getDisplayName());
       String spaceDescription = space.getDescription();
       if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
         space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
@@ -142,7 +143,8 @@ public class UISpaceAddForm extends UIFormTabPane {
       try {
         // Checks user is still existing or not.
         SpaceUtils.checkUserExisting(ctx.getRemoteUser());
-        if (spaceService.getSpaceByPrettyName(space.getPrettyName()) != null) {
+        if (spaceService.getSpaceByPrettyName(space.getPrettyName()) != null || 
+            spaceService.getSpaceByDisplayName(space.getDisplayName()) != null) {
           throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
         }
         

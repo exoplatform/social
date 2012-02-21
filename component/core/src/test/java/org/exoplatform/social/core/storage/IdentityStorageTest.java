@@ -565,12 +565,14 @@ public class IdentityStorageTest extends AbstractCoreTest {
     Space space = new Space();
     space.setApp("app");
     space.setDisplayName("my space");
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space ");
     space.setType(DefaultSpaceApplicationHandler.NAME);
     space.setVisibility(Space.PUBLIC);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space");
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] {};
     String[] members = new String[] {"username1", "username2", "username3"};
     String[] invitedUsers = new String[] {};

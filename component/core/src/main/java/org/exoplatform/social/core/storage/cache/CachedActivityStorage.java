@@ -28,6 +28,7 @@ import org.exoplatform.social.core.storage.cache.model.data.ListActivitiesData;
 import org.exoplatform.social.core.storage.cache.model.data.ListIdentitiesData;
 import org.exoplatform.social.core.storage.cache.model.key.ActivityType;
 import org.exoplatform.social.core.storage.cache.model.key.ListActivitiesKey;
+import org.exoplatform.social.core.storage.cache.selector.ActivityOwnerCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -61,7 +62,7 @@ public class CachedActivityStorage implements ActivityStorage {
 
   private final ActivityStorageImpl storage;
 
-  public void clearCache() {
+  void clearCache() {
 
     try {
       exoActivitiesCache.select(new ScopeCacheSelector<ListActivitiesKey, ListActivitiesData>());
@@ -71,10 +72,33 @@ public class CachedActivityStorage implements ActivityStorage {
       LOG.error(e);
     }
 
+  }
 
+  void clearOwnerCache(String ownerId) {
+
+    try {
+      exoActivityCache.select(new ActivityOwnerCacheSelector(ownerId));
+    }
+    catch (Exception e) {
+      LOG.error(e);
+    }
+
+    clearCache();
 
   }
 
+  /**
+   * Clear activity cached.
+   * 
+   * @param activityId
+   * @since 1.2.8
+   */
+  public void clearActivityCached(String activityId) {
+    ActivityKey key = new ActivityKey(activityId);
+    exoActivityCache.remove(key);
+    clearCache();
+  }
+  
   /**
    * Build the activity list from the caches Ids.
    *
@@ -149,7 +173,7 @@ public class CachedActivityStorage implements ActivityStorage {
     return activity.build();
 
   }
-
+  
   /**
    * {@inheritDoc}
    */
