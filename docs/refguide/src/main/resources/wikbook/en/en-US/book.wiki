@@ -1,11 +1,13 @@
 
 h1. Applications {anchor:id=SOCref.Applications}
+{include:document="Application/Application.wiki"}
 h2. List of Portlets in Social {anchor:id=SOCref.Portlets}
 {include:document="Application/List_of_Portlets.wiki"}
 h2. List of Gadgets in Social {anchor:id=SOCref.List_Of_Gadget_in_Social}
 {include:document="Application/List_of_Gadgets.wiki"}
 
 h1. Configuration {anchor:id=SOCref.Configurations}
+{include:document="Configuration/Configuration_introduction.wiki"}
 {include:document="Configuration/Configuration.wiki"}
 h2. Spaces Template configuration {anchor:id=SOCref.Space_Template_Configuration}
 {include:document="Configuration/Spaces_Template_Configuration.wiki"}
@@ -13,6 +15,7 @@ h2. Configure the oauth 2 legged scenario {anchor:id=SOCref.ConfigureOauth2_Lege
 {include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}
 
 h1. Developers References {anchor:id=SOCref.Developers_References}
+{include:document="DeveloperReference/Developer_References.wiki"}
 h2. UI Extensions {anchor:id=SOCref.DevelopersReferences.UIExtensions}
 {include:document="DeveloperReference/Developer_Documentation_Activity_Plugin.wiki"}
 h2. Overridable Components {anchor:id=SOCref.DevelopersReferences.OverridableComponents}
