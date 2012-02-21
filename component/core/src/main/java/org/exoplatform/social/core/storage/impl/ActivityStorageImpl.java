@@ -226,8 +226,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //work-around for SOC-2366 when rename space's display name.
       if (space != null) {
         String groupId = space.getGroupId().split("/")[2];
-        stream.setPermaLink(LinkProvider.getActivityUriForSpace(identityEntity.getProviderId(), 
-                                                                        identityEntity.getRemoteId(), groupId));
+        stream.setPermaLink(LinkProvider.getActivityUriForSpace(identityEntity.getRemoteId(), groupId));
       }
     } else {
       stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));

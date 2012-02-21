@@ -737,7 +737,7 @@ public class SpaceUtils {
       PortalContainer portalContainer = PortalContainer.getInstance();
       SpaceService spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
       if (spaceService.getSpaceByGroupId(groupId) != null) {
-        shortName = buildGroupId(shortName);
+        shortName = buildGroupId(shortName, parentGroup.getId());
         groupId = parentGroup.getId() + "/" + shortName;
       }
       
@@ -1490,11 +1490,13 @@ public class SpaceUtils {
   /**
    * Builds pretty name base on the basic name in case create more than one space with the same name.
    * 
-   * @param groupId
+   * @param prettyName
+   * @param parentGroupId
    * @return
+   * @since 1.2.8
    */
-  public static String buildGroupId(String groupId) {
-    String checkedGroupId = groupId;
+  public static String buildGroupId(String prettyName, String parentGroupId) {
+    String checkedGroupId = prettyName;
     String mainPatternGroupId = null;
     String numberPattern = NUMBER_REG_PATTERN;
     if (checkedGroupId.substring(checkedGroupId.lastIndexOf(UNDER_SCORE_STR) + 1).matches(numberPattern)) {
@@ -1510,6 +1512,12 @@ public class SpaceUtils {
       ++extendPattern;
       checkedGroupId = cleanString(mainPatternGroupId + SPACE_STR + extendPattern);
       ExoContainer container = ExoContainerContext.getCurrentContainer();
+      
+      SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
+      if (spaceService.getSpaceByGroupId(parentGroupId + "/" + checkedGroupId) != null) {
+        continue;
+      }
+      
       IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
       Identity identity = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, checkedGroupId, true);
       if (identity == null) {

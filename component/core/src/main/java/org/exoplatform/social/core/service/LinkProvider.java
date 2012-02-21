@@ -218,13 +218,12 @@ public class LinkProvider {
   /**
    * Gets activity link of the space.
    *
-   * @param providerId
    * @param remoteId
    * @param groupId
    * @return
    * @since 1.2.8
    */
-  public static String getActivityUriForSpace(final String providerId, final String remoteId, final String groupId) {
+  public static String getActivityUriForSpace(final String remoteId, final String groupId) {
     return String.format("/%s/g/:spaces:%s/%s", getPortalName(null), groupId, remoteId);
   }
   
