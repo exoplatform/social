@@ -375,6 +375,7 @@ public class BaseUIActivity extends UIForm {
     }
     activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
+    activity = getI18N(activity);
   }
 
   /**
