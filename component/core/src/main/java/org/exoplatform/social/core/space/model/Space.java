@@ -89,7 +89,10 @@ public class Space {
    * The creator of space.
    * 
    * @since 1.2.0-GA
+   * @deprecated Use {@link managers} instead.
+   *             Will be removed by 1.2.8
    */
+  @Deprecated
   private String creator;
   
   /** 
@@ -491,7 +494,10 @@ public class Space {
    *  
    * @return
    * @since 1.2.0-GA
+   * @deprecated Use {@link #getManagers()} instead.
+   *             Will be removed by 1.2.8
    */
+  @Deprecated
   public String getCreator() {
     return creator;
   }
