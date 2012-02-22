@@ -1391,6 +1391,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals("savedSpace.getDescription() must return: " + spaceDescription, spaceDescription, savedSpace.getDescription());
     assertEquals("savedSpace.getGroupId() must return: " + groupId, groupId, savedSpace.getGroupId());
     assertEquals(null, savedSpace.getAvatarUrl());
+    assertEquals("demo", savedSpace.getCreator());
   }
 
   /**
@@ -2724,6 +2725,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setCreator("demo");
     String[] managers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
