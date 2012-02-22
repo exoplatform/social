@@ -186,6 +186,7 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public List<Identity> getMemberList() throws Exception {
+    loadSearch();
     int realMemberListSize = memberList.size();
     setEnableLoadNext((realMemberListSize >= MEMBER_PER_PAGE) 
         && (realMemberListSize < getMemberNum()));
@@ -208,6 +209,7 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public List<Identity> getManagerList() throws Exception {
+    initManager();
     return managerList;
   }
   

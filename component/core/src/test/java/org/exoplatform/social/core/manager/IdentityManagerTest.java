@@ -19,16 +19,27 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.Application;
 import org.exoplatform.social.core.identity.provider.FakeIdentityProvider;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -46,11 +57,15 @@ public class IdentityManagerTest extends AbstractCoreTest {
   private List<Identity>  tearDownIdentityList;
 
   private ActivityManager activityManager;
+  private SpaceService spaceService;
 
   public void setUp() throws Exception {
     super.setUp();
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     assertNotNull(identityManager);
+    
+    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+    assertNotNull(spaceService);
 
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     assertNotNull(activityManager);
@@ -161,6 +176,116 @@ public class IdentityManagerTest extends AbstractCoreTest {
     tearDownIdentityList.add(identityManager.getIdentity(foundIdentity.getId(), false));
   }
 
+  /**
+   * 
+   * @throws Exception
+   */
+  public void testGetSpaceMembers() throws Exception {
+    
+    Identity demoIdentity = populateIdentity("demo");
+    Identity johnIdentity = populateIdentity("john");
+    Identity maryIdentity = populateIdentity("mary");
+    int number = 0;
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
+    String[] spaceManagers = new String[] {demoIdentity.getRemoteId()};
+    String[] members = new String[] {demoIdentity.getRemoteId()};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(spaceManagers);
+    space.setMembers(members);
+    
+    space = this.createSpaceNonInitApps(space, demoIdentity.getRemoteId(), null);
+
+    Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
+    assertNotNull("savedSpace must not be null", savedSpace);
+
+    //add member to space
+    spaceService.addMember(savedSpace, johnIdentity.getRemoteId());
+    spaceService.addMember(savedSpace, maryIdentity.getRemoteId());
+
+    {
+      ProfileFilter profileFilter = new ProfileFilter();
+      ListAccess<Identity> spaceMembers = identityManager.getSpaceIdentityByProfileFilter(savedSpace, profileFilter, Type.MEMBER, true);
+      assertEquals(3, spaceMembers.getSize());
+    }
+    
+    //remove member to space
+    spaceService.removeMember(savedSpace, johnIdentity.getRemoteId());
+    {
+      ProfileFilter profileFilter = new ProfileFilter();
+      ListAccess<Identity> got = identityManager.getSpaceIdentityByProfileFilter(savedSpace, profileFilter, Type.MEMBER, true);
+      assertEquals(2, got.getSize());
+    }
+    
+    //clear space
+    spaceService.deleteSpace(savedSpace);
+
+  }
+  
+  /**
+   * Creates new space with out init apps.
+   *
+   * @param space
+   * @param creator
+   * @param invitedGroupId
+   * @return
+   * @since 1.2.0-GA
+   */
+  private Space createSpaceNonInitApps(Space space, String creator, String invitedGroupId) {
+    // Creates new space by creating new group
+    String groupId = null;
+    try {
+      groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
+    } catch (SpaceException e) {
+      LOG.error("Error while creating group", e);
+    }
+
+    if (invitedGroupId != null) {
+      // Invites user in group join to new created space.
+      // Gets users in group and then invites user to join into space.
+      OrganizationService org = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
+      try {
+        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
+        List<User> users = groupMembersAccess.getAll();
+
+        for (User user : users) {
+          String userId = user.getUserName();
+          if (!userId.equals(creator)) {
+            String[] invitedUsers = space.getInvitedUsers();
+            if (!ArrayUtils.contains(invitedUsers, userId)) {
+              invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
+              space.setInvitedUsers(invitedUsers);
+            }
+          }
+        }
+      } catch (Exception e) {
+        LOG.error("Failed to invite users from group " + invitedGroupId, e);
+      }
+    }
+    String[] managers = new String[] { creator };
+    space.setManagers(managers);
+    space.setCreator(creator);
+    space.setGroupId(groupId);
+    space.setUrl(space.getPrettyName());
+    try {
+      spaceService.saveSpace(space, true);
+    } catch (SpaceException e) {
+      LOG.warn("Error while saving space", e);
+    }
+    return space;
+  }
   /**
    * Test {@link IdentityManager#getIdentity(String, boolean)}
    */
