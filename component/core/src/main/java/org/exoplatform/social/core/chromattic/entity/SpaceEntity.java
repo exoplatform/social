@@ -119,7 +119,4 @@ public abstract class SpaceEntity {
   public static final PropertyLiteralExpression<String> managerMembersId =
       new PropertyLiteralExpression<String>(String.class, "soc:managerMembersId");
   
-  @Property(name = "soc:creator")
-  public abstract String getCreator();
-  public abstract void setCreator(String creator);
 }

@@ -154,8 +154,6 @@ public class UISpaceAddForm extends UIFormTabPane {
         if (identity != null) {
           space.setPrettyName(SpaceUtils.buildPrettyName(space));
         }
-        
-        space.setCreator(creator);
 
         space.setType(DefaultSpaceApplicationHandler.NAME);
         if (selectedGroup != null) {// create space from an existing group

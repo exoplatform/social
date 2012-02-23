@@ -407,7 +407,6 @@ public class SpaceServiceImpl implements SpaceService {
     String[] members = new String[] {creator};
     space.setManagers(managers);
     space.setMembers(members);
-    space.setCreator(creator);
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
     saveSpace(space, true);

@@ -430,9 +430,6 @@
       <propertyDefinition name="soc:url" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints/>
       </propertyDefinition>
-      <propertyDefinition name="soc:creator" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
-        <valueConstraints/>
-      </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions/>
   </nodeType>

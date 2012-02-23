@@ -143,7 +143,6 @@ public class SpaceStorageTest extends AbstractCoreTest {
     space.setVisibility(Space.PUBLIC);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/spaces/space" + number);
-    space.setCreator("demo");
     String[] managers = new String[] {"demo", "tom"};
     String[] members = new String[] {"raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
@@ -1571,7 +1570,6 @@ public class SpaceStorageTest extends AbstractCoreTest {
     assertEquals(newName, space.getName());
 
     Space got = spaceStorage.getSpaceById(space.getId());
-    assertEquals("demo", got.getCreator());
     assertEquals(null, got.getAvatarUrl());
   }
 

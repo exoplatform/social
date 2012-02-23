@@ -94,7 +94,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     space.setPriority(entity.getPriority());
     space.setGroupId(entity.getGroupId());
     space.setUrl(entity.getURL());
-    space.setCreator(entity.getCreator());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
 
@@ -145,7 +144,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setRegistration(space.getRegistration());
     entity.setDescription(space.getDescription());
     entity.setType(space.getType());
-    entity.setCreator(space.getCreator());
     entity.setVisibility(space.getVisibility());
     entity.setPriority(space.getPriority());
     entity.setGroupId(space.getGroupId());

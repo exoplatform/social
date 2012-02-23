@@ -276,7 +276,6 @@ public class IdentityManagerTest extends AbstractCoreTest {
     }
     String[] managers = new String[] { creator };
     space.setManagers(managers);
-    space.setCreator(creator);
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
     try {
