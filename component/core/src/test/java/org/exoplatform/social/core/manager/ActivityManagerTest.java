@@ -17,7 +17,9 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -105,6 +107,12 @@ public class ActivityManagerTest extends AbstractCoreTest {
     String activityTitle = "activity title";
     String userId = johnIdentity.getId();
     ExoSocialActivity activity = new ExoSocialActivityImpl();
+    //test for reserving order of map values for i18n activity
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("key1", "value 1");
+    templateParams.put("key2", "value 2");
+    templateParams.put("key3", "value 3");
+    activity.setTemplateParams(templateParams);
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
@@ -114,6 +122,11 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
     assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
+    Map<String, String> gotTemplateParams = activity.getTemplateParams();
+    List<String> values = new ArrayList(gotTemplateParams.values());
+    assertEquals("value 1", values.get(0));
+    assertEquals("value 2", values.get(1));
+    assertEquals("value 3", values.get(2));
   }
   
   /**

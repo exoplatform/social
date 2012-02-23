@@ -37,6 +37,9 @@ public class ResourceBundleUtil {
    * @return expected message with replaced arguments
    */
   public static String replaceArguments(String message, String[] messageArguments) {
+    if (messageArguments == null) {
+      messageArguments = new String[]{};
+    }
     messageFormat.applyPattern(message);
     return messageFormat.format(messageArguments);
   }

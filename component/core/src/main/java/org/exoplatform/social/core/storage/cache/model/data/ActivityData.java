@@ -17,13 +17,13 @@
 
 package org.exoplatform.social.core.storage.cache.model.data;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Immutable activity data.
@@ -105,7 +105,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     activity.setTitleId(titleId);
     activity.setBodyId(bodyId);
     activity.setType(type);
-    activity.setTemplateParams(new HashMap<String, String>(templateParams));
+    activity.setTemplateParams(new LinkedHashMap<String, String>(templateParams));
     activity.setExternalId(externalId);
     activity.setUrl(url);
 

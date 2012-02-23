@@ -17,7 +17,14 @@
 
 package org.exoplatform.social.core.storage.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
@@ -109,6 +116,35 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     ExoSocialActivity got = activityStorage.getActivity(activity.getId());
     assertEquals(activity.getId(), got.getId());
     assertEquals(activity.getTitle(), got.getTitle());
+
+  }
+
+  /**
+   * This is for the requirement from I18N activity type
+   * <pre>
+   *  if that resource bundle message is a compound resource bundle message, provide templateParams. The argument number will
+   *  be counted as it appears on the map.
+   *  For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
+   * </pre>
+   */
+  @MaxQueryNumber(10)
+  public void testTemplateParams() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title ");
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("key1", "value1");
+    templateParams.put("key2", "value2");
+    templateParams.put("key3", "value3");
+    activity.setTemplateParams(templateParams);
+    activityStorage._createActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    Map<String, String> gotTemplateParams = got.getTemplateParams();
+    List<String> arrayList = new ArrayList(gotTemplateParams.values());
+    assertEquals("value1", arrayList.get(0));
+    assertEquals("value2", arrayList.get(1));
+    assertEquals("value3", arrayList.get(2));
 
   }
 

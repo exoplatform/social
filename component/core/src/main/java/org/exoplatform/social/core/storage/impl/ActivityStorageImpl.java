@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -198,7 +199,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     ActivityParameters params = activityEntity.getParams();
     if (params != null) {
-      activity.setTemplateParams(new HashMap<String, String>(params.getParams()));
+      activity.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
     }
     else {
       activity.setTemplateParams(new HashMap<String, String>());

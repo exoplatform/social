@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,6 +67,53 @@ public class ResourceBundleUtilTest extends TestCase {
     String output = ResourceBundleUtil.replaceArguments(input, arguments);
     String expected = "At 02:00 PM on Feb 6, 2012, we detected 10 spaceships on the planet Mars";
     assertEquals("output must be: " + expected, expected, output);
+
+    //NOTICE: the ' must be '' as following this bug report: http://bugs.sun.com/view_bug.do?bug_id=4839037
+    input = "L'espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    List<String> listArguments = new ArrayList<String> (2);
+    listArguments.add("old display name");
+    listArguments.add("new display name");
+    output = ResourceBundleUtil.replaceArguments(input, listArguments);
+    expected = "Lespace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    assertEquals(expected, output);
+
+    input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    output = ResourceBundleUtil.replaceArguments(input, listArguments);
+    expected = "L'espace <strong>old display name</strong> a été renommé à <strong>new display name</strong>.";
+    assertEquals(expected, output);
+    
+    input = "{0} a été renommé à <strong>{1}</strong>.";
+    output = ResourceBundleUtil.replaceArguments(input, listArguments);
+    expected = "old display name a été renommé à <strong>new display name</strong>.";
+    assertEquals(expected, output);
+    
+    
+    input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    arguments = new String [] {"old display name", "new display name"};
+    output = ResourceBundleUtil.replaceArguments(input, listArguments);
+    expected = "L'espace <strong>old display name</strong> a été renommé à <strong>new display name</strong>.";
+    assertEquals(expected, output);
+    
+    input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    arguments = new String [] {"old display name"};
+    output = ResourceBundleUtil.replaceArguments(input, arguments);
+    expected = "L'espace <strong>old display name</strong> a été renommé à <strong>{1}</strong>.";
+    assertEquals(expected, output);
+    
+    input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+
+    arguments = new String [] {null, null};
+    output = ResourceBundleUtil.replaceArguments(input, arguments);
+    expected = "L'espace <strong>null</strong> a été renommé à <strong>null</strong>.";
+    assertEquals(expected, output);
+
+
+    input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    arguments = null;
+    output = ResourceBundleUtil.replaceArguments(input, arguments);
+    expected = "L'espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
+    assertEquals(expected, output);
+
   }
 
 }

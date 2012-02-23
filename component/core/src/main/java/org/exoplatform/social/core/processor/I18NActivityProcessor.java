@@ -45,6 +45,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *     if that resource bundle message is a compound resource bundle message, provide templateParams. The argument number will
  *     be counted as it appears on the map.
  *     For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
+ *     Note: to reserve the order of elements, LinkedHashMap must be used to create templateParams.
  *   </li>
  *   <li>
  *     create a resource bundle file and this file name is called "resourceBundleKeyFile" for configuration later.

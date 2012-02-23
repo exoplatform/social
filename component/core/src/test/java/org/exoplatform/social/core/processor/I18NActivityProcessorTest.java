@@ -18,6 +18,7 @@ package org.exoplatform.social.core.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -113,6 +114,29 @@ public class I18NActivityProcessorTest extends TestCase {
     ExoSocialActivity activity2 = createActivity("hello", title);
     ExoSocialActivity newActivity2 = i18NActivityProcessor.process(activity2, enLocale);
     assertEquals(title, newActivity2.getTitle());
+
+  }
+
+  public void testCompoundMessages() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("spaceships_detected", "FakeResourceBundle.time_day_number_detected_spaceships_on_planet");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("planet", "Mars");
+    templateParams.put("number", "10");
+    templateParams.put("time", "02:00 PM");
+    templateParams.put("date", "Feb 6, 2012");
+
+    final String title = "At 02:00 PM on Feb 6, 2012, we detected 10 spaceships on the planet Mars.";
+    ExoSocialActivity activity = createActivity("spaceships_detected", title);
+    activity.setTemplateParams(templateParams);
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.process(activity, enLocale);
+
+    assertEquals("At 02:00 PM on Feb 6, 2012, we detected 10 spaceships on the planet Mars (EN).", newActivity.getTitle());
 
   }
 
