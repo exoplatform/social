@@ -69,6 +69,8 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case REVOKED_LEAD:
       listener.revokedLead(event);
       break;
+    case SPACE_RENAMED:
+      listener.spaceRenamed(event);
     default:
       break;
     }
@@ -117,6 +119,17 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
 
   public void revokedLead(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.REVOKED_LEAD));
+  }
+  
+  /**
+   * Rename the space.
+   * 
+   * @param space
+   * @param oldDisplayName
+   * @since 1.2.8
+   */
+  public void spaceRenamed(Space space, String oldDisplayName) {
+    broadcast(new SpaceLifeCycleEvent(space, oldDisplayName, Type.SPACE_RENAMED));
   }
 
 }

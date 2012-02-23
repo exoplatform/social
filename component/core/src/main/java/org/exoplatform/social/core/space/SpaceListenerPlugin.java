@@ -78,5 +78,10 @@ public abstract class SpaceListenerPlugin extends ManagedPlugin implements
    * {@inheritDoc}
    */
   public abstract void revokedLead(SpaceLifeCycleEvent event);
+  
+  /**
+   * {@inheritDoc}
+   */
+  public abstract void spaceRenamed(SpaceLifeCycleEvent event);
 
 }

@@ -102,4 +102,11 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    */
   void revokedLead(SpaceLifeCycleEvent event);
 
+  /**
+   * Renames the existing space.
+   * 
+   * @param event
+   * @since 1.2.8
+   */
+  void spaceRenamed(SpaceLifeCycleEvent event);
 }
