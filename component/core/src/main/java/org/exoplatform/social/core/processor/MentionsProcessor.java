@@ -18,6 +18,7 @@ package org.exoplatform.social.core.processor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -51,7 +52,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       activity.setBody(substituteUsernames(activity.getBody()));
       Map<String, String> templateParams = activity.getTemplateParams();
       
-      ArrayList<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
+      List<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
       for(String key : templateParamKeys){
         templateParams.put(key, (String) substituteUsernames(templateParams.get(key)));
       }

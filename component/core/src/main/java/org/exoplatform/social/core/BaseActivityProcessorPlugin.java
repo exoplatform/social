@@ -17,6 +17,7 @@
 package org.exoplatform.social.core;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.container.component.BaseComponentPlugin;
@@ -24,8 +25,6 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-
-import antlr.collections.List;
 
 /**
  * A base plugin to configure {@link ActivityProcessor}s for
@@ -75,7 +74,7 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
    * @param activity
    * @return
    */
-  public ArrayList<String> getTemplateParamKeysToFilter(ExoSocialActivity activity){
+  public List<String> getTemplateParamKeysToFilter(ExoSocialActivity activity){
     Map<String, String> templateParams = activity.getTemplateParams();
     ArrayList<String> keys = new ArrayList<String>();
     

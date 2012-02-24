@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.processor;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
@@ -41,7 +42,7 @@ public class OSHtmlSanitizerProcessor extends BaseActivityProcessorPlugin {
     
     Map<String, String> templateParams = activity.getTemplateParams();
     
-    ArrayList<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
+    List<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
     for(String key : templateParamKeys){
       templateParams.put(key, (String) xmlProcessor.process(templateParams.get(key)));
     }
