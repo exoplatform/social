@@ -1153,7 +1153,7 @@
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoBound {
-  padding: 0 112px;
+  padding: 0 0 30px;
 }
 
 .UISpaceInfo .SpaceContainer .SpaceInfoBound .SpaceInfoLeft {
@@ -1259,7 +1259,6 @@
 
 .UISpaceSettingPortlet .UISpaceSetting .SpaceContainer .UIFormGrid {
 	width: 100%;
-	margin-top: 30px;
 }
 
 .UISpacePermission .HorizontalLayout {

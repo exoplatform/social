@@ -39,18 +39,24 @@
 <div class="$uicomponent.id">
   <% uiform.begin() %>
     <div class="SpaceContainer">
-    <div class="SpaceInfoBound">
-      <div class="SpaceInfoLeft">
-		<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-		  <img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
-		</a>
-        <div class="ChangeAvaButton">
-            <a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
-        </div>
-      </div>
-      </div>
+   
       <table class="UIFormGrid">
         <tbody>
+        	<tr>
+        		<td class="FieldLabel">&nbsp;</td>
+        		<td class="FieldComponent">
+        			<div class="SpaceInfoBound">
+								<div class="SpaceInfoLeft">
+									<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
+										<img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
+									</a>
+									<div class="ChangeAvaButton">
+										<a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
+									</div>
+								</div>
+							</div>
+        		</td>
+        	</tr>
           <tr>
             <td class="FieldLabel">
               <label for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
