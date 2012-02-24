@@ -1,0 +1,186 @@
+package org.exoplatform.social.extras.injection;
+
+import org.chromattic.api.query.QueryBuilder;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.bench.DataInjector;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.extras.injection.utils.LoremIpsum4J;
+import org.exoplatform.social.extras.injection.utils.NameGenerator;
+
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.HashMap;
+import java.util.Random;
+
+/**
+ * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
+ * @version $Revision$
+ */
+public abstract class AbstractSocialInjector extends DataInjector {
+
+  /** . */
+  private static Log LOG = ExoLogger.getLogger(IdentityInjector.class);
+  
+  /** . */
+  protected final static String USER_BASE = "bench.user";
+
+  /** . */
+  protected final static String SPACE_BASE = "bench.space";
+
+  /** . */
+  protected final static String SPACE_BASE_PRETTY_NAME = "benchspace";
+
+  /** . */
+  protected final static String PASSWORD = "exo";
+
+  /** . */
+  protected final static String DOMAIN = "exoplatform.int";
+
+  /** . */
+  protected int userNumber;
+
+  /** . */
+  protected int spaceNumber;
+
+  /** . */
+  protected final IdentityManager identityManager;
+
+  /** . */
+  protected final IdentityStorage identityStorage;
+
+  /** . */
+  protected final RelationshipManager relationshipManager;
+
+  /** . */
+  protected final ActivityManager activityManager;
+
+  /** . */
+  protected final OrganizationService organizationService;
+
+  /** . */
+  protected final SpaceService spaceService;
+
+  /** . */
+  protected final UserHandler userHandler;
+
+  /** . */
+  protected final Random random;
+
+  /** . */
+  protected NameGenerator nameGenerator;
+
+  /** . */
+  protected LoremIpsum4J lorem;
+
+  public AbstractSocialInjector() {
+
+    PortalContainer c = PortalContainer.getInstance();
+    this.identityManager = (IdentityManager) c.getComponentInstanceOfType(IdentityManager.class);
+    this.identityStorage = (IdentityStorage) c.getComponentInstanceOfType(IdentityStorage.class);
+    this.relationshipManager = (RelationshipManager) c.getComponentInstanceOfType(RelationshipManager.class);
+    this.activityManager = (ActivityManager) c.getComponentInstanceOfType(ActivityManager.class);
+    this.spaceService = (SpaceService) c.getComponentInstanceOfType(SpaceService.class);
+    this.organizationService = (OrganizationService) c.getComponentInstanceOfType(OrganizationService.class);
+
+    //
+    this.userHandler = organizationService.getUserHandler();
+    this.nameGenerator = new NameGenerator();
+    this.random = new Random();
+    this.lorem = new LoremIpsum4J();
+
+  }
+
+  public void init() {
+
+    //
+    userNumber = 0;
+    spaceNumber = 0;
+
+    try {
+      userNumber = userNumber(USER_BASE);
+      spaceNumber = userNumber(SPACE_BASE_PRETTY_NAME);
+    }
+    catch (UndeclaredThrowableException e) {
+      // If no user is existing, set keep 0 as value.
+    }
+
+
+    //
+    LOG.info("Initial user number : " + userNumber);
+    LOG.info("Initial space number : " + spaceNumber);
+
+  }
+  
+  @Override
+  public Log getLog() {
+    return ExoLogger.getExoLogger(this.getClass());
+  }
+
+  @Override
+  public Object execute(HashMap<String, String> stringStringHashMap) throws Exception {
+    return null;
+  }
+
+  @Override
+  public void reject(HashMap<String, String> stringStringHashMap) throws Exception {
+  }
+
+  private int userNumber(String base) {
+
+
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    
+    QueryBuilder<IdentityEntity> builder = lifeCycle.getSession().createQueryBuilder(IdentityEntity.class);
+    WhereExpression where = new WhereExpression();
+    where.like(IdentityEntity.remoteId, base + "%");
+    return builder.where(where.toString()).get().objects().size();
+
+  }
+
+  protected String userName() {
+    return USER_BASE + userNumber;
+  }
+
+  protected String spaceName() {
+    return SPACE_BASE + spaceNumber;
+  }
+  
+  protected int param(HashMap<String, String> params, String name) {
+
+    //
+    if (params == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    if (name == null) {
+      throw new NullPointerException();
+    }
+
+    //
+    try {
+      String value = params.get(name);
+      if (value != null) {
+        return Integer.valueOf(value);
+      }
+    } catch (NumberFormatException e) {
+      LOG.warn("Integer number expected for property " + name);
+    }
+    return 0;
+    
+  }
+  
+}
