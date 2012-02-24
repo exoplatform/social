@@ -29,13 +29,17 @@
   
   function changeLinkContent() {
     var link = this.linkData.link,
-        image = this.linkData.image;
-        title = this.linkData.title;
-        description = this.linkData.description;
+    title = this.linkData.title,
+    image = this.linkData.image;
+    description = this.linkData.description;
     var queryString = 'link='+encodeURIComponent(link)
-                    + '&image='+encodeURIComponent(image)
-                    + '&title='+encodeURIComponent(title)
-                    + '&description='+encodeURIComponent(description);
+	    + '&title='+encodeURIComponent(title)
+	    + '&description='+encodeURIComponent(description);
+    
+    if(image != null){
+    	queryString += '&image='+encodeURIComponent(image)
+    }
+
     var url = this.changeLinkContentUrl.replace(/&amp;/g, "&") + "&ajaxRequest=true";
     eXo.social.PortalHttpRequest.ajaxPostRequest(url, queryString, true, function(req) {
      //callbacked
