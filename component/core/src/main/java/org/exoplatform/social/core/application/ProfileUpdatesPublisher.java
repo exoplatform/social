@@ -17,11 +17,13 @@
 package org.exoplatform.social.core.application;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -90,8 +92,9 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
     activity.setType(PeopleService.PEOPLE_APP_ID);
     activity.setTitleId(titleId);
     activity.setTitle(activityMessage);
-    Map<String, String> templateParams = new HashMap<String, String>();
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(USER_NAME_PARAM, "@" + event.getUsername());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
     activity.setTemplateParams(templateParams);
     publish(event, activity);
   }

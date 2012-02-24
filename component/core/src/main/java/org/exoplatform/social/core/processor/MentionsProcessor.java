@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.processor;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -48,13 +49,11 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
     if (activity != null) {
       activity.setTitle(substituteUsernames(activity.getTitle()));
       activity.setBody(substituteUsernames(activity.getBody()));
-      Map<String,String> templateParams = activity.getTemplateParams();
-      if (templateParams != null) {
-        Iterator<Entry<String,String>> iterator = templateParams.entrySet().iterator();
-        while (iterator.hasNext()) {
-          Entry<String, String> entry = iterator.next();
-          templateParams.put(entry.getKey(), substituteUsernames(entry.getValue()));
-        }
+      Map<String, String> templateParams = activity.getTemplateParams();
+      
+      ArrayList<String> templateParamKeys = getTemplateParamKeysToFilter(activity);
+      for(String key : templateParamKeys){
+        templateParams.put(key, (String) substituteUsernames(templateParams.get(key)));
       }
     }
   }

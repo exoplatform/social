@@ -16,7 +16,11 @@
  */
 package org.exoplatform.social.core.processor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -49,7 +53,7 @@ public class MentionsProcessorTest extends AbstractCoreTest {
 
   public void testSubstituteUsernames() throws Exception {
     assertTrue(true);
-    /*MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);
+    MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);
     assertNotNull("prococessor must not be null", processor);
     ExoSocialActivity activity = null;
     processor.processActivity(activity);
@@ -74,6 +78,30 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     activity.setBody("body with @root and @john");
     processor.processActivity(activity);
     assertEquals("Multiple substitution : ",activity.getTitle(), rootLink + " and " + johnLink + " title");
-    assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);*/
+    assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
+  }
+  
+  public void testProcessActivityWithTemplateParam() throws Exception {
+    MentionsProcessor processor = (MentionsProcessor) getContainer().getComponentInstanceOfType(MentionsProcessor.class);
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    String sample = "this is a <strong> tag to keep</strong>";
+    activity.setTitle(sample);
+    activity.setBody(sample);
+    String keysToProcess = "a|b|c";
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("a", "@root and @john");
+    templateParams.put("b", "@john");
+    templateParams.put("d", "@mary");
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, keysToProcess);
+    activity.setTemplateParams(templateParams);
+    processor.processActivity(activity);
+    
+    templateParams = activity.getTemplateParams();
+    assertEquals(LinkProvider.getProfileLink("root", LinkProvider.DEFAULT_PORTAL_OWNER) + " and " + 
+                 LinkProvider.getProfileLink("john", LinkProvider.DEFAULT_PORTAL_OWNER),
+                 templateParams.get("a"));
+    assertEquals(LinkProvider.getProfileLink("john", LinkProvider.DEFAULT_PORTAL_OWNER),
+                 templateParams.get("b"));    
+    assertEquals("@mary", templateParams.get("d"));  
   }
 }

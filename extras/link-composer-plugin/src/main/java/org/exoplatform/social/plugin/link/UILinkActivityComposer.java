@@ -16,7 +16,7 @@
  */
 package org.exoplatform.social.plugin.link;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -135,7 +135,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       return;
     }
     
-    templateParams = new HashMap<String, String>();
+    templateParams = new LinkedHashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
     String image = "";
     List<String> images = linkShare_.getImages();
@@ -169,7 +169,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
     public void execute(Event<UILinkActivityComposer> event) throws Exception {
       WebuiRequestContext requestContext = event.getRequestContext();
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
-      Map<String, String> tempParams = new HashMap<String, String>();
+      Map<String, String> tempParams = new LinkedHashMap<String, String>();
       tempParams.put(LINK_PARAM, requestContext.getRequestParameter(LINK_PARAM));
       tempParams.put(IMAGE_PARAM, requestContext.getRequestParameter(IMAGE_PARAM));
       tempParams.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
@@ -208,6 +208,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
     templateParams.put(COMMENT_PARAM, postedMessage);
+    templateParams.put(org.exoplatform.social.core.BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, COMMENT_PARAM ); 
     
     if(templateParams.get(IMAGE_PARAM) == null){
       templateParams.put(IMAGE_PARAM, "");

@@ -16,11 +16,16 @@
  */
 package org.exoplatform.social.core;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+
+import antlr.collections.List;
 
 /**
  * A base plugin to configure {@link ActivityProcessor}s for
@@ -36,6 +41,9 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
 
   private static final Log LOG = ExoLogger.getLogger(BaseActivityProcessorPlugin.class);
 
+  public static final String TEMPLATE_PARAM_TO_PROCESS = "registeredKeysForProcessor";
+  public static final String TEMPLATE_PARAM_LIST_DELIM = "\\|";
+  
   public BaseActivityProcessorPlugin(InitParams params) {
 
     try {
@@ -61,6 +69,25 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
   public void setPriority(int priority) {
     this.priority = priority;
   }
-
+  
+  /**
+   * This method is helper for ActivityProcessor incase we want to get list of template params to be filter.
+   * @param activity
+   * @return
+   */
+  public ArrayList<String> getTemplateParamKeysToFilter(ExoSocialActivity activity){
+    Map<String, String> templateParams = activity.getTemplateParams();
+    ArrayList<String> keys = new ArrayList<String>();
+    
+    if(templateParams != null && templateParams.containsKey(TEMPLATE_PARAM_TO_PROCESS)){
+      String[] templateParamKeys = activity.getTemplateParams().get(TEMPLATE_PARAM_TO_PROCESS).split(TEMPLATE_PARAM_LIST_DELIM);
+      for(String key : templateParamKeys){
+        if(templateParams.containsKey(key)){
+          keys.add(key);
+        }
+      }
+    }
+    return keys;
+  }
   public abstract void processActivity(ExoSocialActivity activity);
 }
