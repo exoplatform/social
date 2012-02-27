@@ -49,8 +49,8 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 )
 public class UISpacePermission extends UIForm {
 
-  final static private String SPACE_VISIBILITY = "Visibility";
-  final static private String SPACE_REGISTRATION = "Registration";
+  final static private String SPACE_VISIBILITY = "UIVisibility";
+  final static private String SPACE_REGISTRATION = "UIRegistration";
   private String spaceId;
   /**
    * constructor
