@@ -488,11 +488,11 @@ public class IdentityManagerTest extends AbstractCoreTest {
       pf.setFirstCharacterOfName('F');
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());
       pf.setFirstCharacterOfName('L');
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 0, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
       
       // Filter identity by name.
       pf.setFirstCharacterOfName('\u0000');
