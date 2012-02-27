@@ -56,11 +56,17 @@ public abstract class ActivityYearEntity implements NamedEntity, IndexNumber {
   @Id
   public abstract String getId();
 
+  /**
+   * The number of activities in the year. The default value is set to 0.
+   */
   @Property(name = "soc:number")
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
 
+  /**
+   * All the months containing activities in the year.
+   */
   @OneToMany
   public abstract Map<String, ActivityMonthEntity> getMonths();
 

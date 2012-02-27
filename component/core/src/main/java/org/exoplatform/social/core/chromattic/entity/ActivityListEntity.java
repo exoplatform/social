@@ -42,11 +42,17 @@ public abstract class ActivityListEntity {
   @Path
   public abstract String getPath();
 
+  /**
+   * The number of activities in the activities list. The default value is set to 0.
+   */
   @Property(name = "soc:number")
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
-  
+
+  /**
+   * All the years containing activities in the list.
+   */
   @OneToMany
   public abstract Map<String, ActivityYearEntity> getYears();
 

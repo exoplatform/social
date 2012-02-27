@@ -109,6 +109,8 @@
     <org.gatein.mop.version>1.1.1-GA</org.gatein.mop.version>
     <org.shindig.version>2.0.2</org.shindig.version>
     <org.chromattic.version>1.1.2</org.chromattic.version>
+    <org.wikbook.version>0.9.37</org.wikbook.version>
+    <docbkx-maven-plugin.version>2.0.13</docbkx-maven-plugin.version>
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
@@ -134,6 +136,8 @@
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
 
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
+    
+    <org.exoplatform.doc.doc-style.version>1.0.5-SNAPSHOT</org.exoplatform.doc.doc-style.version>
 
 
     <!-- ***************************************************** -->
@@ -810,6 +814,12 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.component.core</artifactId>
+        <version>${project.version}</version>
+        <classifier>doc-chromattic</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.component.opensocial</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -817,6 +827,12 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.component.service</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.component.service</artifactId>
+        <version>${project.version}</version>
+        <classifier>doc-jaxrs</classifier>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -848,6 +864,11 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>exo.social.demo.war</artifactId>
         <type>war</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>exo.social.docs</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -951,6 +972,17 @@
         <scope>test</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.docbkxstyle</artifactId>
+        <version>${org.wikbook.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.template.core</artifactId>
+        <version>${org.wikbook.version}</version>
+      </dependency>
+      
     </dependencies>
   </dependencyManagement>
 
@@ -972,6 +1004,9 @@
           <include>**/*.xml</include>
           <include>**/*.xsd</include>
         </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
     <testResources>
@@ -1053,6 +1088,16 @@
             <meminitial>256m</meminitial>
             <maxmem>1024m</maxmem>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.wikbook</groupId>
+          <artifactId>wikbook.maven</artifactId>
+          <version>${org.wikbook.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.agilejava.docbkx</groupId>
+          <artifactId>docbkx-maven-plugin</artifactId>
+          <version>${docbkx-maven-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
