@@ -32,7 +32,11 @@ public class MashupStateHolder {
   }
 
   public void saveState(String key, Object state) {
-    mashupState.put(key, state);
+    if(state != null){
+      mashupState.put(key, state);
+    } else {
+      mashupState.remove(key);
+    }
   }
 
 }

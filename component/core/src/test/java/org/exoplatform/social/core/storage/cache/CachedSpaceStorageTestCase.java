@@ -3,10 +3,13 @@ package org.exoplatform.social.core.storage.cache;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,8 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class CacheSpaceStorageTestCase extends AbstractCoreTest {
+@QueryNumberTest
+public class CachedSpaceStorageTestCase extends AbstractCoreTest {
 
   private CachedSpaceStorage cachedSpaceStorage;
   private SocialStorageCacheService cacheService;
@@ -33,11 +37,13 @@ public class CacheSpaceStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(150)
   public void testRemoveSpace() throws Exception {
 
     //
     Space space = new Space();
     space.setDisplayName("Hello");
+    space.setPrettyName(space.getDisplayName());
     cachedSpaceStorage.saveSpace(space, true);
 
     //
@@ -61,5 +67,49 @@ public class CacheSpaceStorageTestCase extends AbstractCoreTest {
     cachedSpaceStorage.deleteSpace(space.getId());
     assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
 
+  }
+  
+  /**
+   * Test {@link CachedSpaceStorage#renameSpace(Space, String)}
+   * 
+   * @throws Exception
+   * @since 1.2.8
+   */
+  @MaxQueryNumber(250)
+  public void testRenameSpace() throws Exception {
+    Space space = new Space();
+    space.setDisplayName("Hello");
+    space.setPrettyName(space.getDisplayName());
+    space.setGroupId("/space/Hello");
+    space.setUrl(space.getPrettyName());
+    cachedSpaceStorage.saveSpace(space, true);
+
+    //
+    Identity identitySpace = new Identity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    identityStorage.saveIdentity(identitySpace);
+    identitySpace = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello");
+    activity.setUserId(identitySpace.getId());
+    cachedActivityStorage.saveActivity(identitySpace, activity);
+    
+    //
+    List<Identity> is = new ArrayList<Identity>();
+    is.add(identitySpace);
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+    cachedActivityStorage.getActivitiesOfIdentities(is, 0, 10).size();
+    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+    
+    String newDisplayName = "new display name";
+    
+    cachedSpaceStorage.renameSpace(space, newDisplayName);
+    
+    Space got = cachedSpaceStorage.getSpaceById(space.getId());
+    assertEquals(newDisplayName, got.getDisplayName());
+    
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+    assertEquals(0, cacheService.getIdentitiesCache().getCacheSize());
   }
 }

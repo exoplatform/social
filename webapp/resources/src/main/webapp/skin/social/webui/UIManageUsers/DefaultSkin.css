@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
@@ -41,74 +41,72 @@
 /***************************************************************************/
 .UISocApplication .CommonTitleBar {
 	background: #EBEBEB;
-    color: #7D7D7D;
-    height: 21px;
-    line-height: 21px;
-    margin: 0;
-    text-align: center;
+	color: #7D7D7D;
+	height: 21px;
+	line-height: 21px;
+	margin: 0;
+	text-align: center;
 }
 
 .UISocApplication .ContainerSpace {
 	background: #FFFFFF;
-    padding: 10px;
+	padding: 10px;
 }
 
 .UISocApplication .ContainerSpace .AvatarUser {
-  float:left;
-  width:56px;
-  position: relative;
+	float: left;
+	width: 56px;
+	position: relative;
 }
 
 .UISocApplication .ContainerSpace .AvatarUser .BorderTop {
-  background: url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin/background/BorderThumbT.png') no-repeat left top;
-  top: 0px;
+	background: url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin/background/BorderThumbT.png') no-repeat left top;
+	top: 0px;
 }
 
 .UISocApplication .ContainerSpace .AvatarUser .BorderBottom {
-  background: url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin/background/BorderThumbB.png') no-repeat left bottom;
-  bottom: 0px;
+	background: url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin/background/BorderThumbB.png') no-repeat left bottom;
+	bottom: 0px;
 }
 
 .UISocApplication .ContainerSpace .AvatarUser span {
-  display: block;
-  height: 3px;
-  left: 0;
-  position: absolute;
-  width: 56px;
+	display: block;
+	height: 3px;
+	left: 0;
+	position: absolute;
+	width: 56px;
 }
 
 .UISocApplication .ContainerSpace .AvatarUser img {
-  -moz-border-radius: 3px 3px 3px 3px;
-  -webkit-border-radius: 3px 3px 3px 3px;
-  border-radius: 3px 3px 3px 3px;
-  height: 56px;
-  width: 56px;
+	border-radius: 3px 3px 3px 3px;
+	height: 56px;
+	width: 56px;
 }
 
 .UISocApplication .UITabPane img {
-    height: 47px;
-    width: 47px;
+	height: 47px;
+	width: 47px;
 }
 
 .UISocApplication .ContainerSpace .ContentSpace {
-    border-top: 1px solid #e1e1e1;
-    margin-right: 20px;
-    float: left;
-    width: 31%;
-    padding: 8px 0px;
+	border-top: 1px solid #e1e1e1;
+	margin-right: 20px;
+	float: left;
+	width: 31%;
+	padding: 8px 0px;
 }
 
 .UISocApplication .ContainerSpace .NoneContentSpace {
-    border-top: 1px solid #e1e1e1;
-    padding: 8px 0px;
+	border-top: 1px solid #e1e1e1;
+	padding: 8px 0px;
 }
 
 .UISocApplication .ContainerSpace .ContentSpaceGray {
-    border-top: 1px solid #e1e1e1;
-    margin-right: 20px;
-    float: left;
-    width: 31%;
-    padding: 8px 0px;
+	border-top: 1px solid #e1e1e1;
+	margin-right: 20px;
+	float: left;
+	width: 31%;
+	padding: 8px 0px;
 }
 
 .UISocApplication .ContainerSpace .InviteTitle {
@@ -116,7 +114,7 @@
 }
 
 .UISocApplication .ContainerSpace .InviteTitle a {
-    color: #115ead;
+	color: #115ead;
 }
 
 .UISocApplication .ContainerSpace .InviteTitle .Line {
@@ -125,34 +123,34 @@
 }
 
 .UISocApplication .ContainerSpace .InviteTitle .Status {
-  color: black;
-  cursor: auto;
+	color: black;
+	cursor: auto;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane {
-  color: #0d6e8f;
-  height: 60px;
-  font-size: 12px;
-  font-weight: bold;
-  margin: 0px 0px 5px 92px;
+	color: #0d6e8f;
+	height: 60px;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 0px 0px 5px 92px;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .Status {
-  color: #4D4D4D;
-  font-weight: normal;
+	color: #4D4D4D;
+	font-weight: normal;
 }
 
-.UISocApplication .ContainerSpace .CommunityMane .Delete{
-  background: none;
-  font-weight: normal;
-  color: #115ead;
-  line-height: 18px;
+.UISocApplication .ContainerSpace .CommunityMane .Delete {
+	background: none;
+	font-weight: normal;
+	color: #115ead;
+	line-height: 18px;
 }
 
-.UISocApplication .ContainerSpace .CommunityMane .Position{
-    font-weight: normal;
-    color: #939191;
-    line-height: 14px;
+.UISocApplication .ContainerSpace .CommunityMane .Position {
+	font-weight: normal;
+	color: #939191;
+	line-height: 14px;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NonePosition {
@@ -165,15 +163,15 @@
 	display: block;
 }
 
-.UISocApplication .ContainerSpace .CommunityMane .Email{
-  background: none;
-  font-weight: normal;
-  color: #115ead;
-  line-height: 18px;
+.UISocApplication .ContainerSpace .CommunityMane .Email {
+	background: none;
+	font-weight: normal;
+	color: #115ead;
+	line-height: 18px;
 }
 
-.UISocApplication .ContainerSpace .CommunityMane .Email a{
-  color: #115ead;
+.UISocApplication .ContainerSpace .CommunityMane .Email a {
+	color: #115ead;
 }
 
 .UISocApplication .ContainerSpace .CommunityMane .NonePositionAndEmail {
@@ -181,56 +179,54 @@
 	display: block;
 }
 
-.UISocApplication .ContainerSpace .CommunityMane .StatusIcon{
-  width: 11px;
-  height: 9px;
+.UISocApplication .ContainerSpace .CommunityMane .StatusIcon {
+	width: 11px;
+	height: 9px;
 }
 
 .UISocApplication .ContainerSpace .WaitingConfirmation {
-  font-size: 11px;
-  padding-left: 5px;
+	font-size: 11px;
+	padding-left: 5px;
 }
 
 .UISocApplication .ContainerSpace .NotYet {
-  color:gray; 
-  text-align:center;
+	color: gray; 
+	text-align: center;
 }
 
 .UISocApplication .ContainerSpace .CommunityContent {
-  margin: 0px 0px 0px 92px;
+	margin: 0px 0px 0px 92px;
 }
 
 .UISocApplication .ContainerSpace .MenuSpace {
-  border-bottom: 1px solid #e1e1e1;
-  margin-bottom: 4px;
-  padding: 4px 0 15px 0px;
+	border-bottom: 1px solid #e1e1e1;
+	margin-bottom: 4px;
+	padding: 4px 0 15px 0px;
 }
 
-.UISocApplication .ContainerSpace .MenuSpace .Normal{
-  padding: 4px 12px;
-  margin: 0px 6px;
+.UISocApplication .ContainerSpace .MenuSpace .Normal {
+	padding: 4px 12px;
+	margin: 0px 6px;
 }
 
-.UISocApplication .ContainerSpace .MenuSpace a:hover{
-  background: #757575;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  color: white;
-  padding: 4px 12px;
-  margin: 0px 6px;
+.UISocApplication .ContainerSpace .MenuSpace a:hover {
+	background: #757575;
+	border-radius: 3px;
+	color: white;
+	padding: 4px 12px;
+	margin: 0px 6px;
 }
 
-.UISocApplication .ContainerSpace .MenuSpace .Line{
-  border-right: 1px solid #757575;
+.UISocApplication .ContainerSpace .MenuSpace .Line {
+	border-right: 1px solid #757575;
 }
 
-.UISocApplication .ShowMoreAction{
-  background: #f8f8f8;
-  border-top: 1px solid #e1e1e1;
-  border-bottom: 1px solid #e1e1e1;
-  color: #535656;
-  padding: 4px 0px;
-  text-align: center;
-  cursor: pointer;
+.UISocApplication .ShowMoreAction {
+	background: #f8f8f8;
+	border-top: 1px solid #e1e1e1;
+	border-bottom: 1px solid #e1e1e1;
+	color: #535656;
+	padding: 4px 0px;
+	text-align: center;
+	cursor: pointer;
 }

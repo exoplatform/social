@@ -17,19 +17,19 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -38,11 +38,13 @@ import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
@@ -73,6 +75,9 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   }
 )
 public class UISpaceInfo extends UIForm {
+  
+  private static final Log LOG = ExoLogger.getLogger(UISpaceInfo.class);
+  
   private static final String SPACE_PRIORITY = "priority";
   private static final String PRIORITY_HIGH = "high";
   private static final String PRIORITY_IMMEDIATE = "immediate";
@@ -100,7 +105,6 @@ public class UISpaceInfo extends UIForm {
     addUIFormInput((UIFormStringInput)spaceId.setRendered(false));
 
     UIFormStringInput spaceDisplayNameInput = new UIFormStringInput(SPACE_DISPLAY_NAME, SPACE_DISPLAY_NAME, null);
-    spaceDisplayNameInput.setEditable(false);
     
     addUIFormInput(spaceDisplayNameInput.
                    addValidator(MandatoryValidator.class).
@@ -130,6 +134,28 @@ public class UISpaceInfo extends UIForm {
     addChild(uiPopup);
   }
 
+  /**
+   * Sets the current space to ui component.
+   * 
+   * @param space
+   * @throws Exception
+   * @since 1.2.8
+   */
+  protected void setCurrentSpace(Space space) throws Exception {
+    // reset current space to component of uispacesetting.
+    UITabPane uiTabPane = this.getAncestorOfType(UITabPane.class);
+    uiTabPane.setSelectedTab(1);
+    UISpaceInfo uiSpaceInfo = uiTabPane.getChild(UISpaceInfo.class);
+    uiSpaceInfo.setValue(space);
+    UISpaceMember uiSpaceMember = uiTabPane.getChild(UISpaceMember.class);
+    uiSpaceMember.setValue(space.getId());
+    uiSpaceMember.setSpaceURL(space.getUrl());
+    UISpaceApplication uiSpaceApplication = uiTabPane.getChild(UISpaceApplication.class);
+    uiSpaceApplication.setValue(space);
+    UISpacePermission uiSpacePermission = uiTabPane.getChild(UISpacePermission.class);
+    uiSpacePermission.setValue(space);
+  }
+  
   /**
    * Sets space for this ui component to work with.
    *
@@ -184,60 +210,29 @@ public class UISpaceInfo extends UIForm {
       String id = uiSpaceInfo.getUIStringInput(SPACE_ID).getValue();
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
+      String oldDisplayName = space.getDisplayName();
       if (space == null) {
         //redirect to spaces
         portalRequestContext.getResponse().sendRedirect(Utils.getURI("all-spaces"));
         return;
       }
-      String spaceUrl = space.getUrl();
+      
       UserNode selectedNode = uiPortal.getSelectedUserNode();
-      UserNode homeNode = null;
+      UserNode renamedNode = null;
+      
       boolean nameChanged = (!space.getDisplayName().equals(name));
       if (nameChanged) {
         String cleanedString = SpaceUtils.cleanString(name);
+        space.setUrl(cleanedString);
         if (spaceService.getSpaceByUrl(cleanedString) != null) {
           uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
           return;
         }
-        UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-        UserPortal userPortal = userPortalConfig.getUserPortal();
-        List<UserNavigation> pageNavigations = userPortal.getNavigations();
-        space.setUrl(cleanedString);
-        UserNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
-        for (UserNavigation pageNavigation : pageNavigations) {
-          if (pageNavigation.getKey().getName().equals(spaceNavigation.getKey().getName())) {
-            spaceNavigation = pageNavigation;
-            break;
-          }
+        
+        renamedNode = uiSpaceInfo.renamePageNode(name, space);
+        if (renamedNode == null) {
+          return;
         }
-        homeNode = SpaceUtils.getHomeNodeWithChildren(spaceNavigation, spaceUrl);
-        if (homeNode == null) {
-          throw new Exception("homeNode is null!");
-        }
-        SpaceUtils.changeSpaceUrlPreference(homeNode, space, name);
-        //homeNode.setUri(cleanedString);
-        homeNode.setName(cleanedString);
-        homeNode.setLabel(name);
-        Collection<UserNode> childNodes = homeNode.getChildren();
-        UserNode childNode;
-        String oldUri;
-        String newUri;
-        while(childNodes.iterator().hasNext()) {
-          childNode = childNodes.iterator().next();
-          SpaceUtils.changeSpaceUrlPreference(childNode, space, name);
-          oldUri = childNode.getURI();
-          newUri = oldUri.replace(oldUri.substring(0, oldUri.lastIndexOf("/")), cleanedString);
-          //Need to checking ???
-          //childNode.setUri(newUri);
-          childNode.setName(newUri.substring(newUri.lastIndexOf("/") + 1, newUri.length()));
-          if (selectedNode.getName().equals(childNode.getName())) {
-            selectedNode = childNode;
-          }
-        }
-       
-        //Need to get userPortal clear the caching.
-        userPortalConfig.getUserPortal().saveNode(homeNode, null);
-        SpaceUtils.setNavigation(spaceNavigation);
       }
       uiSpaceInfo.invokeSetBindingBean(space);
       
@@ -250,12 +245,24 @@ public class UISpaceInfo extends UIForm {
         space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
       }
 
-      spaceService.updateSpace(space);
       if (nameChanged) {
-        //update Space Navigation (change name).
-        UISpaceSetting uiSpaceSetting = uiSpaceInfo.getAncestorOfType(UISpaceSetting.class);
-        portalRequestContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
-        return;
+        space.setDisplayName(oldDisplayName);
+        spaceService.renameSpace(space, name);
+      } else {
+        spaceService.updateSpace(space);
+      }
+      
+      //uiSpaceInfo.setCurrentSpace(space);
+      
+      if (nameChanged) {
+        if (renamedNode != null) {
+          //update space navigation (change name).
+          selectedNode = renamedNode;  
+          PortalRequestContext prContext = Util.getPortalRequestContext();
+          prContext.createURL(NodeURL.TYPE).setNode(selectedNode);
+          portalRequestContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
+          return;
+        }
       } else {
         uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.update-success", null, ApplicationMessage.INFO));
       }
@@ -310,4 +317,55 @@ public class UISpaceInfo extends UIForm {
     return getApplicationComponent(DataStorage.class);
   }
 
+  /**
+   * Rename page node.
+   * 
+   * @param newNodeLabel
+   * @param space
+   * @return
+   * @since 1.2.8
+   */
+  private UserNode renamePageNode(String newNodeLabel, Space space) {
+    UserPortalConfigService configService = getApplicationComponent(UserPortalConfigService.class);
+
+    DataStorage dataService = getApplicationComponent(DataStorage.class);
+
+    try {
+      UserNode parentNode = SpaceUtils.getParentNode().getParent().getParent();
+      if (parentNode == null) {
+        parentNode = SpaceUtils.getParentNode().getParent();
+      }
+      if (parentNode == null || parentNode.getChild(SpaceUtils.cleanString(space.getPrettyName())) == null) {
+        return null;
+      }
+      
+      UserNode renamedNode = parentNode.getChild(SpaceUtils.cleanString(space.getPrettyName()));
+      
+      renamedNode.setLabel(newNodeLabel);
+
+      String newNodeName = SpaceUtils.cleanString(newNodeLabel);
+      if (parentNode.getChild(newNodeName) != null) {
+        newNodeName = newNodeName + "_" + System.currentTimeMillis();
+      }
+      renamedNode.setName(newNodeName);
+
+      Page page = configService.getPage(renamedNode.getPageRef());
+      if (page != null) {
+        page.setTitle(newNodeLabel);
+        dataService.save(page);
+      }
+
+      SpaceUtils.getUserPortal().saveNode(parentNode, null);
+      
+      SpaceUtils.changeSpaceUrlPreference(renamedNode, space, newNodeLabel);
+      
+      for (UserNode childNode : renamedNode.getChildren()) {
+        SpaceUtils.changeSpaceUrlPreference(childNode, space, newNodeLabel);
+      }
+      return renamedNode;
+    } catch (Exception e) {
+      LOG.warn(e.getMessage() , e);
+      return null;
+    }
+  }
 }

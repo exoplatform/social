@@ -17,7 +17,7 @@ class SampleIdentityProvider extends OrganizationIdentityProvider{
     profile.setProperty(Profile.FIRST_NAME, "this is first name");
     profile.setProperty(Profile.LAST_NAME, "this is last name");
     profile.setProperty(Profile.USERNAME, "this is user name");
-    profile.setProperty(Profile.URL, "/path/to/profile/");
+    profile.setUrl("/path/to/profile/");
   }
 }
 {code}

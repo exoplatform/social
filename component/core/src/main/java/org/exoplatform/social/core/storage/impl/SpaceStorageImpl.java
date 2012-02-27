@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -35,14 +36,17 @@ import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-import org.exoplatform.social.core.storage.query.Order;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
@@ -131,7 +135,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * @param entity the space entity from chromattic
    */
   private void fillEntityFromSpace(Space space, SpaceEntity entity) {
-
+    
+    entity.setName(space.getPrettyName());
+    
     entity.setApp(space.getApp());
     entity.setPrettyName(space.getPrettyName());
     entity.setDisplayName(space.getDisplayName());
@@ -268,6 +274,33 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   }
 
+  private void changeSpaceRef(SpaceEntity spaceEntity, Space space, RefType type) {
+    String []listUserNames = null;
+    
+    if (RefType.MEMBER.equals(type)) {
+      listUserNames = spaceEntity.getMembersId();
+    } else if (RefType.MANAGER.equals(type)) {
+      listUserNames = spaceEntity.getManagerMembersId();
+    } else if (RefType.INVITED.equals(type)) {
+      listUserNames = spaceEntity.getInvitedMembersId();
+    } else {
+      listUserNames = spaceEntity.getPendingMembersId();
+    }
+    
+    if (listUserNames != null) {
+      for (String userName : listUserNames) {
+        try {
+          IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userName);
+          SpaceListEntity listRef = type.refsOf(identityEntity);
+          SpaceRef ref = listRef.getRef(spaceEntity.getName());
+          ref.setName(space.getPrettyName());
+        } catch (NodeNotFoundException e) {
+          LOG.warn(e.getMessage(), e);
+        }
+      }
+    }
+  }
+  
   private void manageRefList(UpdateContext context, SpaceEntity spaceEntity, RefType type) {
 
     if (context.getAdded() != null) {
@@ -276,6 +309,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, userName);
           SpaceListEntity listRef = type.refsOf(identityEntity);
           SpaceRef ref = listRef.getRef(spaceEntity.getName());
+          if (!ref.getName().equals(spaceEntity.getName())) {
+            ref.setName(spaceEntity.getName());
+          }
           ref.setSpaceRef(spaceEntity);
         }
         catch (NodeNotFoundException e) {
@@ -415,14 +451,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       whereExpression
           .equals(SpaceEntity.membersId, userId);
     }
-    
-    // work-around for SOC-2374 to wait chromattic project release
-    if (whereExpression.toString().length() == 0) {
-      return builder.where("jcr:primaryType = 'soc:spacedefinition' ORDER BY soc:displayName ASC").get();
-    } else {
-      whereExpression.orderBy(SpaceEntity.name, Order.ASC);
-      return builder.where(whereExpression.toString()).get();
+
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
     }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -435,10 +471,15 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       whereExpression.and();
       whereExpression.startGroup();
     }
-    
-    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
+    
   }
   
   private Query<SpaceEntity> getAccessibleSpacesByFilterQuery(String userId, SpaceFilter spaceFilter) {
@@ -458,9 +499,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         .equals(SpaceEntity.managerMembersId, userId);
 
     whereExpression.endAllGroup();
-    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -483,11 +529,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         .and().not().equals(SpaceEntity.managerMembersId, userId)
         .and().not().equals(SpaceEntity.invitedMembersId, userId)
         .and().not().equals(SpaceEntity.pendingMembersId, userId)
-        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -503,11 +554,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.pendingMembersId, userId)
-        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -523,11 +579,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.invitedMembersId, userId)
-        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -543,11 +604,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     builder.where(whereExpression
         .equals(SpaceEntity.managerMembersId, userId)
-        .orderBy(SpaceEntity.name, Order.ASC)
         .toString()
     );
 
-    return builder.where(whereExpression.toString()).get();
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+    
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
 
   }
 
@@ -598,6 +664,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
       //
       createRefs(entity, space);
+      
       fillEntityFromSpace(space, entity);
 
       //
@@ -617,6 +684,63 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public void renameSpace(Space space, String newDisplayName) {
+    SpaceEntity entity;
+
+    try {
+      
+      String oldDisplayName = space.getDisplayName();
+      
+      String oldPrettyName = space.getPrettyName();
+      
+      space.setDisplayName(newDisplayName);
+      space.setPrettyName(space.getDisplayName());
+      space.setUrl(SpaceUtils.cleanString(newDisplayName));
+      
+      entity = _saveSpace(space);
+        
+      //change space ref
+      this.changeSpaceRef(entity, space, RefType.MEMBER);
+      this.changeSpaceRef(entity, space, RefType.MANAGER);
+      this.changeSpaceRef(entity, space, RefType.INVITED);
+      this.changeSpaceRef(entity, space, RefType.PENDING);
+      
+      fillEntityFromSpace(space, entity);
+
+      //
+      getSession().save();
+
+      //change profile of space
+      Identity identitySpace = identityStorage.findIdentity(SpaceIdentityProvider.NAME, oldPrettyName);
+      
+      if (identitySpace != null) {
+        Profile profileSpace = identitySpace.getProfile();
+        profileSpace.setProperty(Profile.FIRST_NAME, space.getDisplayName());
+        profileSpace.setProperty(Profile.USERNAME, space.getPrettyName());
+        //profileSpace.setProperty(Profile.AVATAR_URL, space.getAvatarUrl());
+        profileSpace.setProperty(Profile.URL, space.getUrl());
+        
+        identityStorage.saveProfile(profileSpace);
+        
+        identitySpace.setRemoteId(space.getPrettyName());
+        identityStorage.saveIdentity(identitySpace);
+      }
+      
+      //
+      LOG.debug(String.format(
+          "Space %s (%s) saved",
+          space.getPrettyName(),
+          space.getId()
+      ));
+
+    } catch (NodeNotFoundException e) {
+      throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_RENAME_SPACE, e.getMessage(), e);
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1096,15 +1220,9 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       whereExpression.startGroup();
     }
     
-    //visibility::(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate')) 
+    //visibility::(soc:visibily like 'private') 
     whereExpression.startGroup();
     whereExpression.like(SpaceEntity.visibility, Space.PRIVATE);
-    whereExpression.and();
-    whereExpression.startGroup();
-    whereExpression.like(SpaceEntity.registration, Space.OPEN);
-    whereExpression.or();
-    whereExpression.like(SpaceEntity.registration, Space.VALIDATION);
-    whereExpression.endGroup();
     whereExpression.endGroup();
     
     //(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate'))
@@ -1122,9 +1240,11 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     whereExpression.endGroup();
     whereExpression.endAllGroup();
 
-    whereExpression.orderBy(SpaceEntity.name, Order.ASC);
+
+    builder.where(whereExpression.toString());
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
     
-    return builder.where(whereExpression.toString()).get();
+    return builder.get();
 
   }
 

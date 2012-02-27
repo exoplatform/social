@@ -185,28 +185,25 @@
             </executions>
           </plugin>
 
-		  <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-report-plugin</artifactId>
-			<version>2.5</version>
-			<executions>
-				<execution>
-					<phase>post-integration-test</phase>
-					<goals>
-						<goal>report</goal>
-					</goals>
-					<configuration>
-						<skip>false</skip>
-						<outputName>SeleniumReport-${maven.build.timestamp}</outputName>
-						<outputDirectory>${basedir}/target/tests.exoplatform.org</outputDirectory>
-					</configuration>
-				</execution>
-			</executions>
-		  </plugin>
-		  
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-report-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <phase>post-integration-test</phase>
+                      <goals>
+                        <goal>report</goal>
+                      </goals>
+                      <configuration>
+                        <skip>false</skip>
+                        <outputName>SeleniumReport-${maven.build.timestamp}</outputName>
+                        <outputDirectory>${basedir}/target/tests.exoplatform.org</outputDirectory>
+                      </configuration>
+                  </execution>
+                </executions>
+          </plugin>
         </plugins>
       </build>
-
     </profile>
   </profiles>
 
@@ -228,7 +225,6 @@
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-report-plugin</artifactId>
-			<version>2.5</version>
 			<configuration>
 				<skip>false</skip>
 				<outputName>SeleniumReport-${maven.build.timestamp}</outputName>

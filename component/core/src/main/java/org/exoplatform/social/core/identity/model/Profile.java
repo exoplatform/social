@@ -59,6 +59,7 @@ public class Profile {
   /**
    * url of the avatar (can be used instead of {@link #AVATAR})
    */
+  @Deprecated
   public static final String        AVATAR_URL     = "avatarUrl";
 
   /** EXPERIENCE. */
@@ -129,7 +130,7 @@ public class Profile {
     updateTypes.put(UpdateType.BASIC_INFOR, new String[] {FIRST_NAME, LAST_NAME, EMAIL});
     updateTypes.put(UpdateType.CONTACT, new String[] {GENDER, CONTACT_PHONES, CONTACT_IMS, CONTACT_URLS});
     updateTypes.put(UpdateType.EXPERIENCES, new String[] {EXPERIENCES});
-    updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR, AVATAR_URL});
+    updateTypes.put(UpdateType.AVATAR, new String[] {AVATAR});
   }
 
   /** The identity. */
@@ -146,7 +147,13 @@ public class Profile {
 
   /** Indicates the type of profile are being modified locally */
   private UpdateType                updateType;
-  
+
+  /** Profile url, this will never be stored */
+  private String                    url;
+
+  /** Profile url, this will never be stored */
+  private String                    avatarUrl;
+
   /**
    * Instantiates a new profile.
    *
@@ -260,6 +267,17 @@ public class Profile {
    * @return the property
    */
   public final Object getProperty(final String name) {
+
+    // TODO : remove with Profile.URL
+    if (URL.equals(name)) {
+      return this.url;
+    }
+
+    // TODO : remove with Profile.AVATAR_URL
+    if (AVATAR_URL.equals(name)) {
+      return this.avatarUrl;
+    }
+
     return properties.get(name);
   }
 
@@ -273,6 +291,13 @@ public class Profile {
 
     // TODO : remove with Profile.URL
     if (URL.equals(name)) {
+      this.url = value.toString();
+      return;
+    }
+
+    // TODO : remove with Profile.AVATAR_URL
+    if (AVATAR_URL.equals(name)) {
+      this.avatarUrl = value.toString();
       return;
     }
 
@@ -342,16 +367,16 @@ public class Profile {
    * @return this profile URL
    */
   public final String getUrl() {
-
-    if (OrganizationIdentityProvider.NAME.equals(identity.getProviderId())) {
-      return LinkProvider.getUserProfileUri(identity.getRemoteId());
-    } else if (SpaceIdentityProvider.NAME.equals(identity.getProviderId())) {
-      return LinkProvider.getSpaceUri(identity.getRemoteId());
-    }
-
-    return null;
-
+    return url;
   }
+
+  /**
+   * Set this profile URL
+   */
+  public void setUrl(final String url) {
+    this.url = url;
+  }
+
 
   /**
    * Gets email address of this profile.
@@ -387,8 +412,9 @@ public class Profile {
    * @return avatar image source
    * @deprecated use {@link #getAvatarUrl()}. Will be removed at 1.3.x
    */
+  @Deprecated
   public final String getAvatarImageSource() {
-    return (String) getProperty(Profile.AVATAR_URL);
+    return getAvatarUrl();
   }
 
   /**
@@ -398,7 +424,16 @@ public class Profile {
    * @since 1.2.0-GA
    */
   public final String getAvatarUrl() {
-    return (String) getProperty(Profile.AVATAR_URL);
+    return avatarUrl;
+  }
+
+  /**
+   * Sets avatar url
+   *
+   * @since 1.2.0-GA
+   */
+  public void setAvatarUrl(final String avatarUrl) {
+    this.avatarUrl = avatarUrl;
   }
 
   /**

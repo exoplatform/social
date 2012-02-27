@@ -19,12 +19,14 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -373,6 +375,7 @@ public class BaseUIActivity extends UIForm {
     }
     activity = Utils.getActivityManager().getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
+    activity = getI18N(activity);
   }
 
   /**
@@ -390,8 +393,9 @@ public class BaseUIActivity extends UIForm {
    */
   protected void refresh() throws ActivityStorageException {
     activity = Utils.getActivityManager().getActivity(activity.getId());
+    activity = getI18N(activity);
     if (activity == null) { //not found -> should render nothing
-      LOG.info("activity_ is null, not found. It can be deleted!");
+      LOG.info("activity is null, not found. It can be deleted!");
       return;
     }
     RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
@@ -399,13 +403,21 @@ public class BaseUIActivity extends UIForm {
     identityLikes = activity.getLikeIdentityIds();
   }
 
-  public boolean isUserActivity(String id) {
+  public boolean isUserActivity() {
     boolean isUserActivity = false;
     if (getOwnerIdentity() != null) {
       isUserActivity = getOwnerIdentity().getProviderId().equals(OrganizationIdentityProvider.NAME);
     }
     return isUserActivity;
   }
+  
+  public boolean isSpaceActivity() {
+    boolean isSpaceActivity = false;
+    if (getOwnerIdentity() != null) {
+      isSpaceActivity = getOwnerIdentity().getProviderId().equals(SpaceIdentityProvider.NAME);
+    }
+    return isSpaceActivity;
+  }  
 
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
@@ -634,5 +646,15 @@ public class BaseUIActivity extends UIForm {
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
+  }
+
+  private ExoSocialActivity getI18N(ExoSocialActivity activity) {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    I18NActivityProcessor i18NActivityProcessor = getApplicationComponent(I18NActivityProcessor.class);
+    if (activity.getTitleId() != null) {
+      Locale userLocale = requestContext.getLocale();
+      activity = i18NActivityProcessor.process(activity, userLocale);
+    }
+    return activity;
   }
 }

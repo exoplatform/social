@@ -50,6 +50,16 @@ public interface SpaceStorage {
   public void saveSpace(Space space, boolean isNew) throws SpaceStorageException;
 
   /**
+   * Renames a space.
+   * 
+   * @param space
+   * @param newDisplayName
+   * @throws SpaceStorageException
+   * @since 1.2.8
+   */
+  public void renameSpace(Space space, String newDisplayName) throws SpaceStorageException;
+  
+  /**
    * Deletes a space by space id.
    *
    * @param id

@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.extras.feedmash;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 
@@ -34,10 +36,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import com.google.common.collect.Lists;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+import com.sun.syndication.io.impl.Base64;
 
 public abstract class AbstractFeedmashJob implements Job {
 
@@ -54,6 +58,12 @@ public abstract class AbstractFeedmashJob implements Job {
   protected Integer             rampup       = 5;
 
   protected String              pluginName;
+  
+  protected String              feedLastCheck;
+  
+  protected String              username;
+    
+  protected String              password;
 
   /**
    * Feedmash job. Provides support for fetching the job. Lets subclasses filter
@@ -77,17 +87,33 @@ public abstract class AbstractFeedmashJob implements Job {
 
       // Read the feed
       SyndFeedInput input = new SyndFeedInput();
-      SyndFeed feed = input.build(new XmlReader(new URL(feedUrl)));
+      
+      URLConnection urlConnection = null;
+      URL url = new URL(feedUrl);
+      if(url.getUserInfo() != null){
+        byte[] authEncBytes = Base64.encode(url.getUserInfo().getBytes());
+        String authStringEnc = new String(authEncBytes);
+        urlConnection = url.openConnection();
+        urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+      } else if(username != null && password != null) {
+        byte[] authEncBytes = Base64.encode((username + ":" + password).getBytes());
+        String authStringEnc = new String(authEncBytes);
+        urlConnection = url.openConnection();
+        urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);       
+      } else {
+        urlConnection = url.openConnection();
+      }
+      
+      InputStream is = urlConnection.getInputStream();
+      SyndFeed feed = input.build(new XmlReader(is));
       List<SyndEntryImpl> entries = feed.getEntries();
 
       // process what we are interested in
-      for (SyndEntryImpl entry : entries) {
+      for (SyndEntryImpl entry : Lists.reverse(entries)) {
         if (accept(entry)) {
           handle(entry);
         }
       }
-
-      saveState(LAST_CHECKED, new Date());
     } catch (Exception e) {
       throw new JobExecutionException(e);
     }
@@ -117,11 +143,11 @@ public abstract class AbstractFeedmashJob implements Job {
   }
 
   protected boolean alreadyChecked(Date date) {
-    Date lastChecked = (Date) getState(LAST_CHECKED);
+    Date lastChecked = (Date) getState(feedLastCheck);
     if (lastChecked == null) {
       return false; // case never checked
     } else {
-      return date.before(lastChecked);
+      return !lastChecked.before(date);
     }
   }
 
@@ -154,9 +180,15 @@ public abstract class AbstractFeedmashJob implements Job {
 
   protected Identity getIdentity(String targetUser) {
     Identity identity = null;
+    String[] identityInfo = null;
     try {
+     if(targetUser != null && targetUser.split(":").length == 2){
+       identityInfo = targetUser.split(":");
+     } else {
+       throw new Exception();
+     }
       IdentityManager identityManager = getExoComponent(IdentityManager.class);
-      identity = identityManager.getIdentity(targetUser);
+     identity = identityManager.getOrCreateIdentity(identityInfo[0], identityInfo[1], false);
     } catch (Exception e) {
       LOG.warn("Could not find identity for " + targetUser + ": " + e.getMessage());
     }
@@ -176,8 +208,7 @@ public abstract class AbstractFeedmashJob implements Job {
     ApplicationsIdentityProvider appIdentityProvider = new ApplicationsIdentityProvider();
     appIdentityProvider.addApplication(app);
     identityManager.addIdentityProvider(appIdentityProvider);
-    Identity identity = identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME,
-                                                            app.getId());
+    Identity identity = identityManager.getOrCreateIdentity(ApplicationsIdentityProvider.NAME, app.getId(), true);
     return identity;
   }
 
@@ -186,6 +217,8 @@ public abstract class AbstractFeedmashJob implements Job {
     targetActivityStream = dataMap.getString("targetActivityStream");
     portalContainer = dataMap.getString("portalContainer");
     feedUrl = dataMap.getString("feedURL");
+    username = dataMap.getString("username");
+    password = dataMap.getString("password");        
   }
 
   private boolean severIsStarting(JobDataMap dataMap) {

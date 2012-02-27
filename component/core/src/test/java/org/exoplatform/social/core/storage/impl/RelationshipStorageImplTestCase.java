@@ -22,15 +22,19 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
-public class RelationshipStorageNewTestCase extends AbstractCoreTest {
+@QueryNumberTest
+public class RelationshipStorageImplTestCase extends AbstractCoreTest {
   private RelationshipStorageImpl storage;
 
   private IdentityStorageImpl identityStorage;
@@ -59,6 +63,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(100)
   public void testCreateRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -77,6 +82,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testCreateRelationshipExists() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -104,6 +110,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testGetRelationshipDoesntExists() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -124,6 +131,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(200)
   public void testSaveRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -160,6 +168,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testFindRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -188,6 +197,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(200)
   public void testDeleteRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -220,6 +230,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(200)
   public void testRemoveAcceptedRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -261,6 +272,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testGetSenderRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -295,6 +307,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(150)
   public void testGetSenderRelationshipWithProfile() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -315,14 +328,12 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     Profile profile1 = new Profile(tmp1);
     profile1.setProperty(Profile.FIRST_NAME, "p1 first");
     profile1.setProperty(Profile.LAST_NAME, "p1 last");
-    profile1.setProperty(Profile.URL, "p1 url");
     tmp1.setProfile(profile1);
     identityStorage._createProfile(profile1);
 
     Profile profile2 = new Profile(tmp2);
     profile2.setProperty(Profile.FIRST_NAME, "p2 first");
     profile2.setProperty(Profile.LAST_NAME, "p2 last");
-    profile2.setProperty(Profile.URL, "p2 url");
     tmp2.setProfile(profile2);
     identityStorage._createProfile(profile2);
 
@@ -348,6 +359,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testGetReceiverRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -382,6 +394,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(200)
   public void testGetReceiverRelationshipWithProfile() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -402,14 +415,12 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     Profile profile1 = new Profile(tmp1);
     profile1.setProperty(Profile.FIRST_NAME, "p1 first");
     profile1.setProperty(Profile.LAST_NAME, "p1 last");
-    profile1.setProperty(Profile.URL, "p1 url");
     tmp1.setProfile(profile1);
     identityStorage._createProfile(profile1);
 
     Profile profile2 = new Profile(tmp2);
     profile2.setProperty(Profile.FIRST_NAME, "p2 first");
     profile2.setProperty(Profile.LAST_NAME, "p2 last");
-    profile2.setProperty(Profile.URL, "p2 url");
     tmp2.setProfile(profile2);
     identityStorage._createProfile(profile2);
 
@@ -436,6 +447,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(100)
   public void testGetRelationship() throws Exception {
     Identity tmp1 = new Identity("organization", "tmp1");
     Identity tmp2 = new Identity("organization", "tmp2");
@@ -469,6 +481,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp2.getId());
   }
 
+  @MaxQueryNumber(300)
   public void testGetConnectionsCount() throws Exception {
 
     //
@@ -533,6 +546,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp5.getId());
   }
 
+  @MaxQueryNumber(300)
   public void testGetConnections() throws Exception {
 
     //
@@ -553,7 +567,6 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     profile = identityStorage.loadProfile(profile);
 
     profile.setProperty(Profile.POSITION, "my position");
-    profile.setProperty(Profile.AVATAR_URL, "my avatar url");
     identityStorage.saveProfile(profile);
 
     //
@@ -607,7 +620,7 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     for (Identity currentIdentity : storage.getConnections(tmp1, 0, 10)) {
       if (currentIdentity.getId().equals(tmp1)) {
         assertEquals(currentIdentity.getProfile().getProperty(Profile.POSITION), "my position");
-        assertEquals(currentIdentity.getProfile().getProperty(Profile.AVATAR_URL), "my avatar url");
+        assertNotNull(currentIdentity.getProfile().getAvatarUrl());
       }
     }
 
@@ -617,5 +630,98 @@ public class RelationshipStorageNewTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp3.getId());
     tearDownIdentityList.add(tmp4.getId());
     tearDownIdentityList.add(tmp5.getId());
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetConnectionsByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(spearsIdentity, williamsIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, christmasIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, kellyIdentity, Relationship.Type.CONFIRMED);
+    createRelationship(spearsIdentity, tweedyIdentity, Relationship.Type.CONFIRMED);
+    
+    List<Identity> got = storage.getConnectionsByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetIncomingByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(williamsIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(christmasIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(kellyIdentity, spearsIdentity, Relationship.Type.PENDING);
+    createRelationship(tweedyIdentity, spearsIdentity, Relationship.Type.PENDING);
+    
+    List<Identity> got = storage.getIncomingByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  @MaxQueryNumber(350)
+  public void testGetOutgoingByFilter() throws Exception {
+    
+    //
+    Identity spearsIdentity = createIdentity("spears");
+    Identity williamsIdentity = createIdentity("williams");
+    Identity christmasIdentity = createIdentity("christmas");
+    Identity kellyIdentity = createIdentity("kelly");
+    Identity tweedyIdentity = createIdentity("tweedy");
+    
+    //
+    createRelationship(spearsIdentity, williamsIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, christmasIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, kellyIdentity, Relationship.Type.PENDING);
+    createRelationship(spearsIdentity, tweedyIdentity, Relationship.Type.PENDING);
+    
+    List<Identity> got = storage.getOutgoingByFilter(spearsIdentity, new ProfileFilter(), 0, 10);
+    
+    assertEquals(4, got.size());
+    assertEquals(christmasIdentity, got.get(0));
+    assertEquals(kellyIdentity, got.get(1));
+    assertEquals(tweedyIdentity, got.get(2));
+    assertEquals(williamsIdentity, got.get(3));
+  }
+  
+  private Identity createIdentity(String remoteId) throws Exception {
+    Identity identity = new Identity("organization", remoteId);
+    identityStorage.saveIdentity(identity);
+    identity.getProfile().setProperty(Profile.LAST_NAME, remoteId);
+    identityStorage._createProfile(identity.getProfile());
+    tearDownIdentityList.add(identity.getId());
+    
+    return identity;
+  }
+  
+  private Relationship createRelationship(Identity sender, Identity receiver, Relationship.Type status) throws Exception {
+    Relationship relationship = new Relationship(sender, receiver);
+    relationship.setStatus(status);
+    storage.saveRelationship(relationship);
+    
+    return relationship;
   }
 }

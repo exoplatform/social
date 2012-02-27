@@ -20,7 +20,7 @@
 	height: 74px;
 	font-size: 12px;
 	background-color: #20263f;
-	font-family: Lucida Sans,Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-family: Lucida Sans, Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
 
 .UIBannerPortlet .LogoBlock {
@@ -33,7 +33,7 @@
 	margin-left: 58px; /* orientation=lt */
 	margin-right: 58px; /* orientation=rt */
 	width: 144px;
-	padding-top: 17px
+	padding-top: 17px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer {
@@ -44,18 +44,18 @@
 	padding: 20px 15px 1px 45px; /* orientation=rt */
 	float: right; /* orientation=lt */
 	float: left; /* orientation=rt */
-  padding:20px 45px 1px 15px;
+  padding: 20px 45px 1px 15px;
   float: right;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a {
-	color:#9F9E9E;
-	cursor:pointer;
-	font-weight:normal;
-	height:28px;
-	padding:0 5px;
+	color: #9F9E9E;
+	cursor: pointer;
+	font-weight: normal;
+	height: 28px;
+	padding: 0 5px;
 }
 
 .UIBannerPortlet .MiddleLoginContainer a:hover {
-  	color: #FFD400;
+  color: #FFD400;
 }

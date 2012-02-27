@@ -15,88 +15,92 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-/**
- * Space search.
- * @class
- * @scope public
- */
-function UISpaceSearch() {
-	this.inputTextBoxObj = null;
-	this.searchButton = null;
-	this.allSpaceName = null;
-};
-
-/**
- * Initialize ui controls when the form is loaded.
- * @ uicomponentId Id of current component
- * @ spaceNames All space name of current search.
- */
-UISpaceSearch.prototype.onLoad = function(uicomponentId) {
-	var DOMUtil = eXo.core.DOMUtil;
-	var spaceSearch = document.getElementById(uicomponentId);
-	var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
-	this.searchButton = DOMUtil.findDescendantById(spaceSearch, 'SearchButton');
-	var defaultSpaceNameAndDesc = document.getElementById('defaultSpaceNameAndDesc').value;
-	var defaultUIVal = "name or description";
-	
-	if ((spaceSearchEl.value == defaultUIVal) || (spaceSearchEl.value.trim().length == 0)) spaceSearchEl.value = defaultSpaceNameAndDesc;
-	(spaceSearchEl.value != defaultSpaceNameAndDesc) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
-	
-	this.inputTextBoxObj = spaceSearchEl;
-	// Initialize the input textbox
-	this.initTextBox();
-};
-
-/**
- * Initialize the text-box control. 
- * @scope private.
- */
-UISpaceSearch.prototype.initTextBox = function() {
-	var searchEl = this.inputTextBoxObj;
-	var defaultValue = document.getElementById('defaultSpaceNameAndDesc').value;
-	var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
-	var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
-	// Turn off auto-complete attribute of text-box control
-	searchEl.setAttribute('autocomplete','off');
-	
-	// Add focus event for control
-	searchEl.onfocus = function() {
-		searchEl.style.color="#000000";
-		searchEl.focus();
-		if (searchEl.value == defaultValue) {
-			searchEl.value='';
-		}
-	}
-	
-	// Add blur event for control
-	searchEl.onblur = function() {
-		if ((searchEl.value.trim() == '') || (searchEl.value.trim() == defaultValue)) {
-			searchEl.style.color="#C7C7C7";
-			searchEl.value = defaultValue;
-		}
-		suggestControlObj.hideSuggestions();
-	}
-	
-	var searchBtn = this.searchButton;
-	
-	// Add keydown event for control
-	searchEl.onkeydown = function(event) {
-		var e = event || window.event;
-		var keynum = e.keyCode || e.which;  
+(function() {
+    var window_ = this;
+    var DOMUtil = eXo.core.DOMUtil;
+    var Util = eXo.social.Util;    
+    var FOCUS_COLOR = "#000000",
+        BLUR_COLOR = "#C7C7C7";
+        
+		/**
+		 * Space search.
+		 * @class
+		 * @scope public
+		 */
+		function UISpaceSearch(params) {
+			this.inputTextBoxObj = null;
+			this.searchButton = null;
+			this.allSpaceName = params.allSpacesName || null;
+			this.uicomponentId = params.uicomponentId || null;
+			this.defaultSpaceNameAndDesc = params.defaultSpaceNameAndDesc || null;
+			this.onLoad();
+		};
 		
-		if(keynum == 13) { //Enter key
-			suggestControlObj.hideSuggestions();
-			searchBtn.onclick();
-			return false;
-		} else { // Other keys (up and down key)
-			suggestControlObj.handleKeyDown(e);
-		}
-	}
-	
-	suggestControlObj.load(searchEl, uiSpaceSearchObj);
-}
+		/**
+		 * Initialize ui controls when the form is loaded.
+		 */
+		UISpaceSearch.prototype.onLoad = function() {
+			var spaceSearch = document.getElementById(this.uicomponentId);
+			var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
+			this.searchButton = DOMUtil.findDescendantById(spaceSearch, 'SearchButton');
+			var defaultSpaceNameAndDesc = this.defaultSpaceNameAndDesc;
+			var defaultUIVal = "name or description";
+			
+			if ((spaceSearchEl.value == defaultUIVal) || (spaceSearchEl.value.trim().length == 0)) spaceSearchEl.value = defaultSpaceNameAndDesc;
+			(spaceSearchEl.value != defaultSpaceNameAndDesc) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
+			
+			this.inputTextBoxObj = spaceSearchEl;
+			// Initialize the input textbox
+			this.initTextBox();
+		};
+		
+		/**
+		 * Initialize the text-box control. 
+		 * @scope private.
+		 */
+		UISpaceSearch.prototype.initTextBox = function() {
+			var searchEl = this.inputTextBoxObj;
+			var defaultValue = this.defaultSpaceNameAndDesc;
+			var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
+			var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
+			// Turn off auto-complete attribute of text-box control
+			searchEl.setAttribute('autocomplete','off');
+			
+			Util.addEventListener(searchEl, 'focus', function() {
+				this.style.color="#000000";
+				if (this.value == defaultValue) {
+					this.value='';
+				}
+			}, false);
+			
+			Util.addEventListener(searchEl, 'blur', function() {
+				if ((this.value.trim() == '') || (this.value.trim() == defaultValue)) {
+					this.style.color="#C7C7C7";
+					this.value = defaultValue;
+				}
+				suggestControlObj.hideSuggestions();
+		  }, false);
+		  
+			var searchBtn = this.searchButton;
+			
+			Util.addEventListener(searchEl, 'keydown', function(event) {
+				var e = event || window.event;
+				var keynum = e.keyCode || e.which;  
+				
+				if(keynum == 13) { //Enter key
+					suggestControlObj.hideSuggestions();
+					searchBtn.onclick();
+					return false;
+				} else { // Other keys (up and down key)
+					suggestControlObj.handleKeyDown(e);
+				}
+			}, false);
+				
+			suggestControlObj.load(searchEl, uiSpaceSearchObj);
+	 }
 
-/*===================================================================*/
-if(!eXo.social) eXo.social = {};
-if(!eXo.social.webui) eXo.social.webui = {};
-eXo.social.webui.UISpaceSearch = new UISpaceSearch();
+	 window_.eXo = window_.eXo || {};
+	 window_.eXo.social = window_.eXo.social || {};
+	 window_.eXo.social.webui = window_.eXo.social.webui || {};
+	 window_.eXo.social.webui.UISpaceSearch = UISpaceSearch;
+})();

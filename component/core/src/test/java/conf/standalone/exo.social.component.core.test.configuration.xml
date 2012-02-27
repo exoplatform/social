@@ -217,6 +217,10 @@
   </component>
 
   <component>
+    <type>org.exoplatform.social.core.identity.provider.FakeIdentityProvider</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.social.core.manager.IdentityManager</key>
     <type>org.exoplatform.social.core.manager.IdentityManagerImpl</type>
     <component-plugins>
@@ -229,6 +233,7 @@
           <name>providers</name>
             <description>Identity Providers</description>
             <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+            <value>org.exoplatform.social.core.identity.provider.FakeIdentityProvider</value>
           </values-param>
         </init-params>
       </component-plugin>
@@ -547,6 +552,11 @@
       <name>LineBreakerFilterPlugin</name>
       <set-method>addFilterPlugin</set-method>
       <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
+    </component-plugin>
+    <component-plugin>
+      <name>LineBreakerFilterPlugin</name>
+      <set-method>addFilterPlugin</set-method>
+      <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
     </component-plugin>
   </external-component-plugins>
 

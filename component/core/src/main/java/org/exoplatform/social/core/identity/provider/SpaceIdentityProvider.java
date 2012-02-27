@@ -81,7 +81,7 @@ public class SpaceIdentityProvider extends IdentityProvider<Space> {
   public void populateProfile(Profile profile, Space space) {
     profile.setProperty(Profile.FIRST_NAME, space.getDisplayName());
     profile.setProperty(Profile.USERNAME, space.getPrettyName());
-    profile.setProperty(Profile.AVATAR_URL, space.getAvatarUrl());
-    profile.setProperty(Profile.URL, space.getUrl());
+    profile.setAvatarUrl(space.getAvatarUrl());
+    profile.setUrl(space.getUrl());
   }
 }

@@ -79,6 +79,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
 
     Space space = new Space();
     space.setDisplayName("Toto");
+    space.setPrettyName(space.getDisplayName());
     space.setGroupId("/platform/users");
     spaceService.saveSpace(space, true);
     assertNotNull("space.getId() must not be null", space.getId());

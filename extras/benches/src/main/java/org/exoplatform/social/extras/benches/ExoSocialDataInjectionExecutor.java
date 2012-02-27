@@ -530,6 +530,7 @@ public class ExoSocialDataInjectionExecutor {
           space = new Space();
           space.setGroupId("organization");
           space.setDisplayName(spacename);
+          space.setPrettyName(space.getDisplayName());
           space.setRegistration(Space.OPEN);
           LoremIpsum4J lorem = new LoremIpsum4J();
           space.setDescription(lorem.getWords(10));

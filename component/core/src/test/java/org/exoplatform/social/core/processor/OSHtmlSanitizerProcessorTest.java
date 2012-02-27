@@ -16,7 +16,11 @@
  */
 package org.exoplatform.social.core.processor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -87,4 +91,25 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     assertEquals("<span><strong>foo</strong>bar&lt;script&gt;zed&lt;/script&gt;</span>", activity.getTitle());
   }
+  
+  public void testProcessActivityWithTemplateParam() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    String sample = "this is a <strong> tag to keep</strong>";
+    activity.setTitle(sample);
+    activity.setBody(sample);
+    String keysToProcess = "a|b|c";
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("a", "a\nb");
+    templateParams.put("b", "exoplatform.com");
+    templateParams.put("d", "exoplatform.com");
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, keysToProcess);
+    activity.setTemplateParams(templateParams);
+    processor.processActivity(activity);
+    
+    templateParams = activity.getTemplateParams();
+    assertEquals("a<br />b", templateParams.get("a"));
+    assertEquals("<a href=\"http://exoplatform.com\" target=\"_blank\">exoplatform.com</a>", templateParams.get("b"));
+    assertEquals("exoplatform.com", templateParams.get("d"));
+  }
+  
 }

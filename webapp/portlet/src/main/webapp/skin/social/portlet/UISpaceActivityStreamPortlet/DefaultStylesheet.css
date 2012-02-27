@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -17,9 +17,7 @@
 
 /*UIComposer style*/
 @import url('/social-resources/skin/social/webui/UIComposer/DefaultSkin.css');
-
 @import url('/social-resources/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css');
-
 @import url('/social-resources/skin/social/webui/UIActivitiesLoader/DefaultSkin.css');
 
 /**
@@ -27,194 +25,192 @@
  */
 
 .UISpaceActivityStreamPortlet {
-  font-family: lucida sans;
+	font-family: lucida sans;
 }
 
 .UISpaceActivitiesContainer {
-  padding: 10px 10px 20px 10px;
-  background: #fff;
+	padding: 10px 10px 20px 10px;
+	background: #fff;
 }
 
 .UISpaceActivityStreamPortlet .link {
-  color: gray;
-  text-decoration: none;
+	color: gray;
+	text-decoration: none;
 }
 
 .UISpaceActivityStreamPortlet .link {
-  text-decoration: underline;
+	text-decoration: underline;
 }
-
 
 .UISpaceActivityStreamPortlet .UserName .link {
-  color: #0065CC;
-  text-decoration: none;
-  font-weight: bold;
+	color: #0065CC;
+	text-decoration: none;
+	font-weight: bold;
 }
 
 .UISpaceActivityStreamPortlet .UserName .link:hover {
-  color: #0065CC;
-  text-decoration: underline;
+	color: #0065CC;
+	text-decoration: underline;
 }
 
 .UISpaceActivityStreamPortlet .ColorLink {
-  color: #058EE6;
-  text-decoration: underline;
+	color: #058EE6;
+	text-decoration: underline;
 }
 
 .ADecoratorContainer .ActivitiesContent {
-  background: white;/*#fbfbfb;*/
-  padding: 8px 8px 13px;
+	background: white;
+	padding: 8px 8px 13px;
 }
 
 .ADecoratorContainerGray .ActivitiesContent {
-  background: #f2f2f2;
-  padding: 8px 8px 13px;
-  margin: 2px 0px;
+	background: #f2f2f2;
+	padding: 8px 8px 13px;
+	margin: 2px 0px;
 }
 
-
 .UISpaceActivityStreamPortlet .NewsDate {
-  color:#9e9e9e;
-  line-height: 16px;
-  font-size: 10px;
-  padding-top: 5px;
-  margin-left: 70px;
+	color: #9e9e9e;
+	line-height: 16px;
+	font-size: 10px;
+	padding-top: 5px;
+	margin-left: 70px;
 }
 
 .UISpaceActivityStreamPortlet .CommentLink {
-  margin-left: 70px;
+	margin-left: 70px;
 }
 
 .CommentFormBlock {
-  background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
-  /*width: 685px;*/
-  margin-left: 50px;
-  margin-bottom: 3px;
+	background: url('images/ListPeopleLikeBG1.gif') repeat-x top;
+	margin-left: 50px;
+	margin-bottom: 3px;
 }
 
 .CommentTextarea {
-  font-family: arial,sans-serif;
-  font-size: 11px;
-  border: 1px solid #D7D7D7;
-  width: 100%;
-  height: 20px;
-  color: gray;
+	font-family: arial, sans-serif;
+	font-size: 11px;
+	border: 1px solid #D7D7D7;
+	width: 100%;
+	height: 20px;
+	color: gray;
 }
 
 .CommentButton {
-  border: 1px solid gray;
-  float: right;
-  margin-top: 3px;
-  margin-right: 7px;
-  width: 80px;
+	border: 1px solid gray;
+	float: right;
+	margin-top: 3px;
+	margin-right: 7px;
+	width: 80px;
 }
 
 .AvatarPeopleBG {
-  background: url('images/AvatarPeopleBG.gif') no-repeat left top;
-  width: 52px;
-  height: 52px;
-  padding: 6px 0px 0px 6px;
-  float: left;
-  margin: 8px;
+	background: url('images/AvatarPeopleBG.gif') no-repeat left top;
+	width: 52px;
+	height: 52px;
+	padding: 6px 0px 0px 6px;
+	float: left;
+	margin: 8px;
 }
 
-
 .ActivitiesContainer .UserName {
-  font-weight: bold;
-  color:#424242;
-  line-height: 24px;
-  float: left;
+	font-weight: bold;
+	color: #424242;
+	line-height: 24px;
+	float: left;
 }
 
 .ActivitiesContainer .ActionContenButton {
-  height: 15px;
-  width: 15px;
-  margin: 4px 4px 0px 0px;
-  cursor: pointer;
-  background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
+	height: 15px;
+	width: 15px;
+	margin: 4px 4px 0px 0px;
+	cursor: pointer;
+	background: url('images/BlackBorderDownArrow.gif') no-repeat right top;
 }
 
 .ActivitiesContainer .ActionDeleteButton {
-  height: 15px;
-  width: 15px;
-  margin: 4px 4px 0px 0px;
-  cursor: pointer;
-  background: url('images/CloseButtonNormal.gif') no-repeat right top;
-  padding: 2px 6px;
+	height: 15px;
+	width: 15px;
+	margin: 4px 4px 0px 0px;
+	cursor: pointer;
+	background: url('images/CloseButtonNormal.gif') no-repeat right top;
+	padding: 2px 6px;
 }
 
-.ActivitiesContainer a.ActionDeleteButton:hover{
-  background: url('images/CloseButtonHover.gif') no-repeat right top;
+.ActivitiesContainer a.ActionDeleteButton:hover {
+	background: url('images/CloseButtonHover.gif') no-repeat right top;
 }
 
 .ActivitiesContainer .ActionContent {
-  float: right;
-  position: relative;
-  width: 20px;
+	float: right;
+	position: relative;
+	width: 20px;
 }
 
 .ActivitiesContainer .MenuItemContainer {
-  border:1px solid #9E9FA3;
+	border: 1px solid #9E9FA3;
 }
 
 .ActivitiesContainer .MenuItem {
-  -moz-background-clip:border;
-  -moz-background-inline-policy:continuous;
-  -moz-background-origin:padding;
-  background:#F5F9FA none repeat scroll 0 0;
-  height:28px;
-  line-height:28px;
-  opacity:0.9;
-  width:100%;
+	background: #F5F9FA;
+	height: 28px;
+	line-height: 28px;
+	opacity: 0.9;
+	width: 100%;
 }
 
 .ActivitiesContainer .MenuItem a {
-  padding:0px 20px;
-  color: black;
+	padding: 0px 20px;
+	color: black;
 }
 
 .ActivitiesContainer .MenuItem a:hover {
-  color: #058ee6;
+	color: #058ee6;
 }
 
 .ActivitiesContainer .MenuItem .DefaultPageIcon {
-  background-position: 10px center;
+	background-position: 10px center;
 }
 
 .ActivitiesContainer .Content {
-  color:#424242;
-  line-height: 18px;
+	color: #424242;
+	line-height: 18px;
 }
 
 .ContentArea {
-  line-height: 18px;
-  overflow-x: hidden;
-  font-size: 13px;
-  margin-bottom: 3px;
-  margin-top: -5px;
+	line-height: 18px;
+	overflow-x: hidden;
+	font-size: 13px;
+	margin-bottom: 3px;
+	margin-top: -5px;
 }
 
 .ContentArea a {
-  color:#058EE6;
+	color: #058EE6;
 }
 
-.ContentArea a:HOVER {
-  color:#058EE6;
-  text-decoration: underline;
+.ContentArea a:hover {
+	color: #058EE6;
+	text-decoration: underline;
 }
 
 .ActivitiesContainer .LinkShareContent {
-  color:#424242;
-  line-height: 18px;
-  margin-left: 80px;
+	color: #424242;
+	line-height: 18px;
+	margin-left: 80px;
 }
 
 .ActivitiesContainer .Content span {
-  margin: 0 5px;
+	margin: 0 5px;
 }
 
 .ActivitiesContainer .Likes {
-  line-height: 16px;
-  font-size: 10px;
+	line-height: 16px;
+	font-size: 10px;
 }
 
+.UISpaceActivityStreamPortlet .UIActivity .Content li {
+	list-style: disc inside none;
+	padding: 0px 0px 0px 20px;
+	margin: 0px 0px 0px 0px;
+}

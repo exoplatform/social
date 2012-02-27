@@ -21,8 +21,11 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.cache.model.data.IntegerData;
@@ -66,7 +69,15 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   private final SpaceStorageImpl storage;
   private CachedActivityStorage cachedActivityStorage;
+  private CachedIdentityStorage cachedIdentityStorage;
 
+  /**
+   * Default limit activities to clear cache.
+   * 
+   * @since 1.2.8
+   */
+  private static final int DEFAULT_LIMIT_ACTIVITIES = 200;
+  
   /**
    * Build the activity list from the caches Ids.
    *
@@ -92,6 +103,20 @@ public class CachedSpaceStorage implements SpaceStorage {
     return cachedActivityStorage;
   }
 
+  /**
+   * Get cached identity storage.
+   * 
+   * @return
+   * @since 1.2.8
+   */
+  public CachedIdentityStorage getCachedIdentityStorage() {
+    if (cachedIdentityStorage == null) {
+      cachedIdentityStorage = (CachedIdentityStorage)
+          PortalContainer.getInstance().getComponentInstanceOfType(CachedIdentityStorage.class);
+    }
+    return cachedIdentityStorage;
+  }
+  
   /**
    * Build the ids from the space list.
    *
@@ -134,7 +159,7 @@ public class CachedSpaceStorage implements SpaceStorage {
     exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, removed.getUrl()));
   }
 
-  private void clearIdentityCache() {
+  void clearIdentityCache() {
 
     try {
       exoIdentitiesCache.select(new IdentityCacheSelector(SpaceIdentityProvider.NAME));
@@ -145,7 +170,7 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
-  private void clearSpaceCache() {
+  void clearSpaceCache() {
 
     try {
       exoSpacesCache.select(new ScopeCacheSelector<ListSpacesKey, ListSpacesData>());
@@ -210,6 +235,43 @@ public class CachedSpaceStorage implements SpaceStorage {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  public void renameSpace(Space space, String newDisplayName) throws SpaceStorageException {
+    String oldDisplayName = space.getDisplayName();
+    String oldUrl = SpaceUtils.cleanString(oldDisplayName);
+    String oldPrettyName = space.getPrettyName();
+    storage.renameSpace(space, newDisplayName);
+
+    //remove identity and profile from cache
+    cachedIdentityStorage = this.getCachedIdentityStorage();
+    Identity identitySpace = cachedIdentityStorage.findIdentity(SpaceIdentityProvider.NAME,
+                                                                space.getPrettyName());
+    if (identitySpace == null) {
+      identitySpace = cachedIdentityStorage.findIdentity(SpaceIdentityProvider.NAME, oldPrettyName);
+    }
+    cachedIdentityStorage.clearIdentityCached(identitySpace, oldPrettyName);
+
+    // remove activities cached of a space
+    cachedActivityStorage = this.getCachedActivityStorage();
+    List<ExoSocialActivity> listActivities = cachedActivityStorage.getUserActivities(identitySpace, 0, DEFAULT_LIMIT_ACTIVITIES);
+    for (ExoSocialActivity activity : listActivities) {
+      cachedActivityStorage.clearActivityCached(activity.getId());
+    }
+
+    // remove space cached
+    SpaceData removed = exoSpaceCache.remove(new SpaceKey(space.getId()));
+    clearSpaceCache();
+    clearIdentityCache();
+    if (removed != null) {
+      exoRefSpaceCache.remove(new SpaceRefKey(oldDisplayName));
+      exoRefSpaceCache.remove(new SpaceRefKey(null, oldPrettyName));
+      exoRefSpaceCache.remove(new SpaceRefKey(null, null, removed.getGroupId()));
+      exoRefSpaceCache.remove(new SpaceRefKey(null, null, null, oldUrl));
+    }
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1077,8 +1139,5 @@ public class CachedSpaceStorage implements SpaceStorage {
     }
     
   }
-
-  
-
 }
 

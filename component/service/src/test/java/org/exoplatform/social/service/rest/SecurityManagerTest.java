@@ -476,6 +476,7 @@ public class SecurityManagerTest extends AbstractServiceTest {
     for (int i = 0; i < number; i++) {
       Space space = new Space();
       space.setDisplayName("my space " + number);
+      space.setPrettyName(space.getDisplayName());
       space.setRegistration(Space.OPEN);
       space.setDescription("add new space " + number);
       space.setType(DefaultSpaceApplicationHandler.NAME);

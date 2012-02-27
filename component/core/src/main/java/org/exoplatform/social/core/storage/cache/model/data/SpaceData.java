@@ -86,7 +86,6 @@ public class SpaceData implements CacheData<Space> {
     space.setAvatarUrl(avatarUrl);
     space.setGroupId(groupId);
     space.setUrl(url);
-
     space.setMembers(members);
     space.setManagers(managers);
     space.setPendingUsers(pendingUser);

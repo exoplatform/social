@@ -23,6 +23,8 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
+@QueryNumberTest
 public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   private CachedActivityStorage activityStorage;
@@ -83,6 +86,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(100)
   public void testSaveActivity() throws Exception {
 
     //
@@ -114,6 +118,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(100)
   public void testRemoveActivity() throws Exception {
 
     //
@@ -142,6 +147,8 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
 
   }
+
+  @MaxQueryNumber(200)
   public void testRelationshipActivity() throws Exception {
 
     //
@@ -173,6 +180,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(50)
   public void testSaveComment() throws Exception {
 
     //
@@ -205,6 +213,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
+  @MaxQueryNumber(100)
   public void testRemoveComment() throws Exception {
 
 
@@ -247,4 +256,5 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     assertEquals(0, activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId().length);
 
   }
+
 }

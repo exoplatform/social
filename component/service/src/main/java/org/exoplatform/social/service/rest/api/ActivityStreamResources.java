@@ -94,7 +94,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
+   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -308,7 +308,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -510,7 +510,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -706,7 +706,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}

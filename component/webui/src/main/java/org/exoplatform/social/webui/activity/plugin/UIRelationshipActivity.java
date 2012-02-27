@@ -171,7 +171,8 @@ public class UIRelationshipActivity extends BaseUIActivity {
     String receiverLink = LinkProvider.getProfileLink(receiverName);
 
     if (titleId == TitleId.CONNECTION_CONFIRMED) {
-      if (isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS)) {
+      if ((isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS))
+          || Utils.getViewerRemoteId().equals(getOwnerIdentity().getRemoteId())) {
         if(isSender()) {
           return ResourceBundleUtil.
                   replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
@@ -182,15 +183,9 @@ public class UIRelationshipActivity extends BaseUIActivity {
                                                      new String[] { senderLink });
         }
       } else {
-        if (Utils.getViewerRemoteId().equals(getOwnerIdentity().getRemoteId())) {
-          return ResourceBundleUtil.
-                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Are_Now_Connected_With_UserName"),
-                                             new String[] { senderLink });
-        } else {
-          return ResourceBundleUtil.
-                replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
-                                             new String[] { receiverLink, senderLink });          
-        }
+        return ResourceBundleUtil.
+              replaceArguments(ctx.appRes("UIRelationshipActivity.msg.UserName_Are_Now_Connected_With_UserName"),
+                                           new String[] { receiverLink, senderLink });
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
       if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {

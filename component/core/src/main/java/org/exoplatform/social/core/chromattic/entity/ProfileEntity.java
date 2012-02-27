@@ -61,6 +61,14 @@ public abstract class ProfileEntity {
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
 
+  @Property(name = "soc:externalUrl")
+  public abstract String getExternalUrl();
+  public abstract void setExternalUrl(String profileUrl);
+
+  @Property(name = "soc:externalAvatarUrl")
+  public abstract String getExternalAvatarUrl();
+  public abstract void setExternalAvatarUrl(String avatarUrl);
+
   /**
    * The parent id is the identity id. It is used for queries.
    * @return
@@ -83,6 +91,9 @@ public abstract class ProfileEntity {
   public abstract Map<String, List<String>> getProperties();
   public static final PropertyLiteralExpression<String> firstName =
       new PropertyLiteralExpression<String>(String.class, "void-firstName");
+  
+  public static final PropertyLiteralExpression<String> lastName =
+      new PropertyLiteralExpression<String>(String.class, "void-lastName");
 
   public static final PropertyLiteralExpression<String> fullName =
       new PropertyLiteralExpression<String>(String.class, "void-fullName");

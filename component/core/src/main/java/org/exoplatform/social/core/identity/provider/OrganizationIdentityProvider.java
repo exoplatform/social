@@ -29,6 +29,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -129,7 +130,6 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.EMAIL, user.getEmail());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
-    profile.setProperty(Profile.URL, lp.getProfileUri(user.getUserName()));
   }
 
   /**
@@ -139,27 +139,123 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
    */
   @Override
   public void onUpdateProfile(Profile profile) {
-    UpdateType updateType = profile.getUpdateType();
-    String userName = (String) profile.getProperty(Profile.USERNAME);
-    if (updateType == Profile.UpdateType.BASIC_INFOR) {
+    new UpdateProfileProcess(profile).doUpdate();
+  }
+  
+  /**
+   * synchronous changed profile what is happened in Social to Portal side.
+   * @author thanh_vucong
+   *
+   */
+  private class UpdateProfileProcess {
+    
+    private Profile updatedProfile = null;
+    private UpdateType updateType = null;
+    private String userName = null;
+    
+    public UpdateProfileProcess(Profile updatedProfile) {
+      this.updateType = updatedProfile.getUpdateType();
+      this.updatedProfile = updatedProfile;
+      this.userName = (String) updatedProfile.getProperty(Profile.USERNAME);
+    }
+    
+    /**
+     * update profile information
+     */
+    public void doUpdate() {
       try {
-        String firstName = (String) profile.getProperty(Profile.FIRST_NAME);
-        String lastName = (String) profile.getProperty(Profile.LAST_NAME);
-        String email = (String) profile.getProperty(Profile.EMAIL);
-
-        User foundUser = organizationService.getUserHandler().findUserByName(userName);
-        if (!foundUser.getFirstName().equals(firstName)) {
-          foundUser.setFirstName(firstName);
+        if (Profile.UpdateType.BASIC_INFOR == updateType) {
+          updateBasicInfo();
+        } else if (Profile.UpdateType.POSITION == updateType) {
+          updatePosition();
+        } else if (Profile.UpdateType.CONTACT == updateType) {
+          updateContact();
         }
-        if (!foundUser.getLastName().equals(lastName)) {
-          foundUser.setLastName(lastName);
-        }
-        if (!foundUser.getEmail().equals(email)) {
-          foundUser.setEmail(email);
-        }
-        organizationService.getUserHandler().saveUser(foundUser, true);
       } catch (Exception e) {
         LOG.warn("Failed to update user by profile", e);
+      }
+    }
+
+    /**
+     * Updates profile in Basic Information section
+     * 
+     * @throws Exception
+     */
+    private void updateBasicInfo() throws Exception {
+      //
+      String firstName = (String) updatedProfile.getProperty(Profile.FIRST_NAME);
+      String lastName = (String) updatedProfile.getProperty(Profile.LAST_NAME);
+      String email = (String) updatedProfile.getProperty(Profile.EMAIL);
+      
+      boolean hasUpdate = false;
+
+      //
+      User foundUser = organizationService.getUserHandler().findUserByName(this.userName);
+     
+      //
+      if (!foundUser.getFirstName().equals(firstName)) {
+        foundUser.setFirstName(firstName);
+        hasUpdate = true;
+      }
+      if (!foundUser.getLastName().equals(lastName)) {
+        foundUser.setLastName(lastName);
+        hasUpdate = true;
+      }
+      if (!foundUser.getEmail().equals(email)) {
+        foundUser.setEmail(email);
+        hasUpdate = true;
+      }
+
+      //
+      if (hasUpdate) {
+        organizationService.getUserHandler().saveUser(foundUser, true);        
+      }
+    }
+    
+    /**
+     * Updates profile in Contact section
+     * @throws Exception
+     */
+    private void updateContact() throws Exception {
+      //
+      String gender = (String) updatedProfile.getProperty(Profile.GENDER);
+
+
+      UserProfile foundUserProfile = organizationService.getUserProfileHandler()
+                                                        .findUserProfileByName(userName);
+      //
+      if(foundUserProfile == null) {
+        return;
+      }
+
+      String uGender = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[4]);// "user.gender"
+      
+      if (gender !=null && uGender != gender) {
+        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[4], gender);// "user.gender"
+        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
+      }
+      
+    }
+    
+    /**
+     * Updates profile in Position section
+     * 
+     * @throws Exception
+     */
+    private void updatePosition() throws Exception {
+      //
+      String position = (String) updatedProfile.getProperty(Profile.POSITION);
+      UserProfile foundUserProfile = organizationService.getUserProfileHandler().findUserProfileByName(userName);
+      
+      //
+      if(foundUserProfile == null) {
+        return;
+      }
+      
+      String uPosition = foundUserProfile.getAttribute(UserProfile.PERSONAL_INFO_KEYS[7]);//user.jobtitle
+      if (position != null && uPosition != position) {
+        foundUserProfile.setAttribute(UserProfile.PERSONAL_INFO_KEYS[7], position);//user.jobtitle
+        organizationService.getUserProfileHandler().saveUserProfile(foundUserProfile, false);
       }
     }
   }

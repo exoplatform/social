@@ -55,11 +55,14 @@
     title = linkShare.getTitle().replaceAll("'", "&#039;");
     description = linkShare.getDescription().replaceAll("'", "&#039;");
     linkData = "{"+
-                  "link: '$link',"+
-                  "image: '$image',"+
-                  "title: '$title',"+
-                  "description: '$description'"+
-                "}";
+              "link: '$link',"+
+              "title: '$title',"+
+              "description: '$description'";
+
+    if(image != null){
+      linkData += ",image: '$image',";
+    }
+    linkData += "}";
   } else {
     linkInfoDisplayed = false;
   }

@@ -97,7 +97,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.1</version>
         <executions>
           <execution>
             <id>a</id>
@@ -147,6 +146,7 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
+        <version>${version.docbkx.plugin}</version>
         <!--
           not last generation due to incompatibilities with last docbook
           format

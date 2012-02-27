@@ -17,7 +17,9 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.exoplatform.services.log.ExoLogger;
@@ -29,7 +31,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -106,6 +107,12 @@ public class ActivityManagerTest extends AbstractCoreTest {
     String activityTitle = "activity title";
     String userId = johnIdentity.getId();
     ExoSocialActivity activity = new ExoSocialActivityImpl();
+    //test for reserving order of map values for i18n activity
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("key1", "value 1");
+    templateParams.put("key2", "value 2");
+    templateParams.put("key3", "value 3");
+    activity.setTemplateParams(templateParams);
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
@@ -115,6 +122,11 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertNotNull("activity must not be null", activity);
     assertEquals("activity.getTitle() must return: " + activityTitle, activityTitle, activity.getTitle());
     assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
+    Map<String, String> gotTemplateParams = activity.getTemplateParams();
+    List<String> values = new ArrayList(gotTemplateParams.values());
+    assertEquals("value 1", values.get(0));
+    assertEquals("value 2", values.get(1));
+    assertEquals("value 3", values.get(2));
   }
   
   /**
@@ -1367,6 +1379,7 @@ this.populateActivityMass(johnIdentity, 10);
       throws Exception {
     Space space = new Space();
     space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space " + number);
     space.setType(DefaultSpaceApplicationHandler.NAME);
@@ -1374,6 +1387,7 @@ this.populateActivityMass(johnIdentity, 10);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
     String[] managers = new String[] { "demo", "john" };
     String[] members = new String[] { "raul", "ghost" };
     String[] invitedUsers = new String[] { "mary", "paul"};

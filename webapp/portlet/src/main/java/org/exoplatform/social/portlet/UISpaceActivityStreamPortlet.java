@@ -77,6 +77,7 @@ public class UISpaceActivityStreamPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void refresh() throws Exception {
+    space = getSpaceService().getSpaceByUrl(SpaceUtils.getSpaceUrl());
     uiDisplaySpaceActivities.setSpace(space);
   }
 }

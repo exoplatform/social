@@ -15,7 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 .UIWindow .UISocialHomepage {
-    margin: 0px;
+  margin: 0px;
 }
 
 .UISocialHomepage {
@@ -24,20 +24,20 @@
 	background: #eee;
 }
 
-.UISocialHomepage .ProductImage{
+.UISocialHomepage .ProductImage {
 	background: #eee url('DefaultSkin/background/BannerHomepage.jpg') no-repeat left top; /* orientation=lt */
 	background: #eee url('DefaultSkin/background/BannerHomepage.jpg') no-repeat right top; /* orientation=rt */
 	height: 233px;
 	margin: auto;
-	padding:66px 45px 0;
-	text-align:right; /* orientation=lt */
-	text-align:left; /* orientation=rt */
+	padding: 66px 45px 0;
+	text-align: right; /* orientation=lt */
+	text-align: left; /* orientation=rt */
 	margin-top: 5px;
 }
 
-.UISocialHomepage .ProductImage h2,.UISocialHomepage .ProductImage h3  {
+.UISocialHomepage .ProductImage h2, .UISocialHomepage .ProductImage h3  {
 	color: #FFF;
-	font-family: Hattori,Lucida,Tahoma,Verdana,Arial,Helvetica,sans-serif;
+	font-family: Hattori, Lucida, Tahoma, Verdana, Arial, Helvetica, sans-serif;
 	font-weight: normal;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .UISocialHomepage .ProductImage h3 {
-	font-size:35px;
+	font-size: 35px;
 }
 
 .UIBox  {
@@ -56,21 +56,21 @@
 	background: url('DefaultSkin/background/BgBox-rt.png') repeat-y left top; /* orientation=rt */
 }
 
-.UIBox  .BoxBottom {
+.UIBox .BoxBottom {
 	background: url('DefaultSkin/background/Box.png') no-repeat -982px bottom; /* orientation=lt */
 	background: url('DefaultSkin/background/Box-rt.png') no-repeat -982px bottom; /* orientation=rt */
 }
 
-.UIBox  .BoxTop{
+.UIBox .BoxTop {
 	background: url('DefaultSkin/background/Box.png') no-repeat left top; /* orientation=lt */
 	background: url('DefaultSkin/background/Box-rt.png') no-repeat right top; /* orientation=rt */
 }
 
-.UIBox  .Container {
+.UIBox .Container {
 	width: 490px;
 }
 
-.UIBox  .Container .BoxDocument {
+.UIBox .Container .BoxDocument {
 	padding-left: 66px; /* orientation=lt */
 	padding-right: 66px; /* orientation=rt */
 	background: url('DefaultSkin/background/IconDoc.gif') no-repeat left top; /* orientation=lt */
@@ -84,11 +84,11 @@
 	background: url('DefaultSkin/background/logo.gif') no-repeat left top; /* orientation=lt */
 	background: url('DefaultSkin/background/logo.gif') no-repeat right top; /* orientation=rt */
 	margin: 14px 15px 16px;
-	padding-bottom:2px;
+	padding-bottom: 2px;
 }
 
 .UIBox .Container h4 {
-	font-family:Lucida;
+	font-family: Lucida;
 	font-size: 20px;
 	color: #20263f;
 	line-height: 28px;
@@ -96,9 +96,9 @@
 }
 
 .UIBox .Container .ArrowBlue {
-	font-family:Lucida;
-	padding-left:18px; /* orientation=lt */
-	padding-right:18px; /* orientation=rt */
+	font-family: Lucida;
+	padding-left: 18px; /* orientation=lt */
+	padding-right: 18px; /* orientation=rt */
 	color: #0068ff;
 	background: url('DefaultSkin/background/ArrowBlue.gif') no-repeat left center; /* orientation=lt */
 	background: url('DefaultSkin/background/ArrowBlue-rt.gif') no-repeat right center; /* orientation=rt */
@@ -107,8 +107,7 @@
 	font-weight: bold;
 }
 
-
-.UISocialHomepage  .LeftSocialHomepage {
+.UISocialHomepage .LeftSocialHomepage {
 	margin-right: 241px; /* orientation=lt */
 	margin-left: 241px; /* orientation=rt */
 }
@@ -124,20 +123,20 @@
 /* style for  corner */
 
 .DecorationTop  {
-	background:url('DefaultSkin/background/Decoration.png') no-repeat left top; /* orientation=lt */
-	background:url('DefaultSkin/background/Decoration-rt.png') no-repeat right top; /* orientation=rt */
-	padding-top:8px;
+	background: url('DefaultSkin/background/Decoration.png') no-repeat left top; /* orientation=lt */
+	background: url('DefaultSkin/background/Decoration-rt.png') no-repeat right top; /* orientation=rt */
+	padding-top: 8px;
 }
 
 .DecorationTop  .DecorationBottom {
-	background:url('DefaultSkin/background/Decoration.png') no-repeat -982px bottom; /* orientation=tt */
-	background:url('DefaultSkin/background/Decoration-rt.png') no-repeat -979px bottom; /* orientation=rt */
-	padding-bottom:12px;
+	background: url('DefaultSkin/background/Decoration.png') no-repeat -982px bottom; /* orientation=tt */
+	background: url('DefaultSkin/background/Decoration-rt.png') no-repeat -979px bottom; /* orientation=rt */
+	padding-bottom: 12px;
 }
 
 .DecorationTop .DecorationCenter {
-	background:url('DefaultSkin/background/Decoration.png') repeat-y -1964px center; /* orientation=lt */
-	background:url('DefaultSkin/background/Decoration-rt.png') repeat-y 3px center; /* orientation=rt */
+	background: url('DefaultSkin/background/Decoration.png') repeat-y -1964px center; /* orientation=lt */
+	background: url('DefaultSkin/background/Decoration-rt.png') repeat-y 3px center; /* orientation=rt */
 }
 
 .UISocialHomepage .ContainerLeft {
@@ -151,25 +150,24 @@
 .UISocialHomepage .Introduction {
 	font-size: 14px;
 	color: #20263f;
-
 }
 
-.UISocialHomepage  .TextBold{
+.UISocialHomepage  .TextBold {
 	font-weight: bold;
 	line-height: 20px;
 	font-size: 14px;
 }
 
 .UISocialHomepage .Introduction a {
-	font-family:Lucida;
-	color:#0068ff;
+	font-family: Lucida;
+	color: #0068ff;
 	font-size: 14px;
 }
 
 .UISocialHomepage .LeftSocialHomepage .RowContent  {
 	padding: 5px 0px 5px 24px; /* orientation=lt */
 	padding: 5px 24px 5px 0px; /* orientation=rt */
-	overflow:hidden;
+	overflow: hidden;
 }
 
 .UISocialHomepage .LeftSocialHomepage .ProductTitle {
@@ -180,126 +178,125 @@
 }
 
 .UISocialHomepage  .LeftSocialHomepage ul li {
-	background:url('DefaultSkin/background/IconList.gif') no-repeat left 7px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconList-rt.gif') no-repeat right 7px; /* orientation=rt */
-	color:#565759;
+	background: url('DefaultSkin/background/IconList.gif') no-repeat left 7px; /* orientation=lt */
+	background: url('DefaultSkin/background/IconList-rt.gif') no-repeat right 7px; /* orientation=rt */
+	color: #565759;
 	padding-left: 13px; /* orientation=lt */
 	padding-right: 13px; /* orientation=rt */
 	line-height: 18px;
 	font-size: 12px;
 }
 
-.RowContent .ColsPeople{
+.RowContent .ColsPeople {
 	width: 340px;
 }
 
-.RowContent .ColsCommunity{
+.RowContent .ColsCommunity {
 	width: 335px;
 	margin-left: 15px; /* orientation=lt */
 	margin-right: 15px; /* orientation=rt */
 }
 
-.RowContent .ColsActivity{
+.RowContent .ColsActivity {
 	width: 340px;
 }
 
-.RowContent .ColsGadgets{
-	margin-left:15px; /* orientation=lt */
-	margin-right:15px; /* orientation=rt */
+.RowContent .ColsGadgets {
+	margin-left: 15px; /* orientation=lt */
+	margin-right: 15px; /* orientation=rt */
 	width: 335px;
 }
 
 .UISocialHomepage  .LeftSocialHomepage .Introduction {
-	padding-bottom:0;
+	padding-bottom: 0;
 }
 
 .UISocialHomepage  .LeftSocialHomepage .Information {
-	background:url('DefaultSkin/background/ArrowBlack.gif') no-repeat  left center; /* orientation=lt */
-	background:url('DefaultSkin/background/ArrowBlack-rt.gif') no-repeat  right center; /* orientation=rt */
-	padding-left:15px; /* orientation=lt */
-	padding-right:15px; /* orientation=rt */
+	background: url('DefaultSkin/background/ArrowBlack.gif') no-repeat  left center; /* orientation=lt */
+	background: url('DefaultSkin/background/ArrowBlack-rt.gif') no-repeat  right center; /* orientation=rt */
+	padding-left: 15px; /* orientation=lt */
+	padding-right: 15px; /* orientation=rt */
 }
 
 .RightSocialHomepage {
 	padding: 10px 5px;
-	*min-height: 341px;
 	min-height: 343px;
 }
 
-.UISocialHomepage .RightSocialHomepage  .BlockWebsite {
-	margin-left:11px;
-	padding-bottom:25px;
-	text-align:center;
-	width:90px;
+.UISocialHomepage .RightSocialHomepage .BlockWebsite {
+	margin-left: 11px;
+	padding-bottom: 25px;
+	text-align: center;
+	width: 90px;
 }
 
-.UISocialHomepage .RightSocialHomepage  .BlockResource {
-	margin-left:9px;
-	padding-bottom:25px;
-	text-align:center;
-	width:109px;
+.UISocialHomepage .RightSocialHomepage .BlockResource {
+	margin-left: 9px;
+	padding-bottom: 25px;
+	text-align: center;
+	width: 109px;
 }
 
 .UISocialHomepage .RightSocialHomepage .Icon {
 	display: block;
-	height:55px;
-	margin:auto;
-	width:57px;
+	height: 55px;
+	margin: auto;
+	width: 57px;
 }
 
 .UISocialHomepage .RightSocialHomepage .IconContactUs {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left -278px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -278px; /* orientation=rt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left -278px; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -278px; /* orientation=rt */
 }
 
 .UISocialHomepage .RightSocialHomepage .IconResource {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left top; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right top; /* orientation=rt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left top; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right top; /* orientation=rt */
 }
 
 .UISocialHomepage .RightSocialHomepage .IconSupport {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left -55px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat left -55px; /* orientation=rt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left -55px; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat left -55px; /* orientation=rt */
 }
 
 .UISocialHomepage .RightSocialHomepage .IconTraining {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left -110px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -110px; /* orientation=rt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left -110px; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -110px; /* orientation=rt */
 }
 
 .UISocialHomepage .RightSocialHomepage .IconBlog {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left -165px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -165px; /* orientation=rt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left -165px; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -165px; /* orientation=rt */
 }
 
 .UISocialHomepage .RightSocialHomepage .IconWebsite {
-	background:url('DefaultSkin/background/IconPlatForm.png') no-repeat left -220px; /* orientation=lt */
-	background:url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -220px; /* orientation=rtt */
+  background: url('DefaultSkin/background/IconPlatForm.png') no-repeat left -220px; /* orientation=lt */
+  background: url('DefaultSkin/background/IconPlatForm-rt.png') no-repeat right -220px; /* orientation=rtt */
 }
 
 .RightSocialHomepage .TxtLinkIcon {
-	color:#565759;
-	display:inline-block;
-	font-family:Lucida;
-	font-size:12px;
-	font-weight:bold;
+  color: #565759;
+  display: inline-block;
+	font-family: Lucida;
+	font-size: 12px;
+	font-weight: bold;
 }
 
 .RightSocialHomepage .BlockWebsite .TxtLinkIcon {
-	width:70px;
+	width: 70px;
 }
 
-.UIPageBody .BLPagebody{
+.UIPageBody .BLPagebody {
  	background: none;
- 	background-color: #eeeeee
+ 	background-color: #eeeeee;
  }
 
-.UIPageBody .BRPagebody{
+.UIPageBody .BRPagebody {
  	background: none;
- 	background-color: #eeeeee
+ 	background-color: #eeeeee;
  }
 
-.UIPageBody .BMPagebody{
+.UIPageBody .BMPagebody {
  	background: none;
- 	background-color: #eeeeee
+ 	background-color: #eeeeee;
 }

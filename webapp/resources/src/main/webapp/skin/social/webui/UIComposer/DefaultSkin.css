@@ -1,121 +1,111 @@
-
 /*UILinkComposerPlugin style*/
 @import url('/social-resources/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css');
 
 .UIComposer .BlastContainer {
-  background:#f8f8f8;
-  border:1px solid #e1e1e1;
-  margin-top:5px;
-  padding: 8px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
+	background: #f8f8f8;
+	border: 1px solid #e1e1e1;
+	margin-top: 5px;
+	padding: 8px;
+	border-radius: 3px;
 }
 
 .UIComposer .BlastContainer .BlastInputSpace {
-  margin-bottom: 4px;
+	margin-bottom: 4px;
 }
 
 .UIComposer .BlastContainer textarea {
-  width: 99% !important;
-  border: 1px solid #e1e1e1;
-  font-size: 11px;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  padding: 5px 5px 0px 5px;
+	width: 99% !important;
+	border: 1px solid #e1e1e1;
+	font-size: 11px;
+	border-radius: 2px;
+	padding: 5px 5px 0px 5px;
 }
 
 .UIComposer .BlastContainer .BlastShare {
-  padding: 0px 0px 0px 5px;
+	padding: 0px 0px 0px 5px;
 }
 
-.UIComposer .BlastContainer .Input  {
-  width: 100%;
-  height: 26px;
-  line-height: 26px;
-  border: 1px solid #d6d0b4;
+.UIComposer .BlastContainer .Input {
+	width: 100%;
+	height: 26px;
+	line-height: 26px;
+	border: 1px solid #d6d0b4;
 }
-
 
 .UIComposer .BlastContainer .Image {
-  padding: 4px 7px;
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -282px;
-  margin-right: 8px;
+	padding: 4px 7px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -282px;
+	margin-right: 8px;
 }
 
 .UIComposer .BlastContainer .UILinkActivityComposer {
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -388px;
-  margin-right: 0px;
-  padding: 0px 7px 0px 20px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -388px;
+	margin-right: 0px;
+	padding: 0px 7px 0px 20px;
 }
 
 .UIComposer .BlastContainer .DottedLine {
-  background-position: 8px -300px !important;
-  border-left: 1px dotted #B7B7B7;
-  padding-left: 24px !important;
+	background-position: 8px -300px !important;
+	border-left: 1px dotted #B7B7B7;
+	padding-left: 24px !important;
 }
 
 .UIComposer .BlastContainer .UIDocActivityComposer {
-  padding: 4px 6px 4px 15px;
-  background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -301px;
-  margin-right: 8px;
+	padding: 4px 6px 4px 15px;
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat left -301px;
+	margin-right: 8px;
 }
 
 .UIComposer .BlastContainer .BlastShare .AttachMents {
-  padding-top: 8px;
-  font-weight: bold;
+	padding-top: 8px;
+	font-weight: bold;
 }
 
 .UIComposer .BlastContainer .BlastShare .ShareButton {
-  border: 1px solid #7b7b7b;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: #6c6c6c;
-  padding: 3px 15px;
-  float: right;
-  cursor: pointer;
-  margin-right: 0px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #fff;
+	border: 1px solid #7b7b7b;
+	border-radius: 3px;
+	background: #6c6c6c;
+	padding: 3px 15px;
+	float: right;
+	cursor: pointer;
+	margin-right: 0px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
 }
 
 .UIComposer .BlastContainer .BlastShare .ShareButtonDisable {
-  border: 1px solid #E7E7E7;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: #E7E7E7;
-  padding: 3px 15px;
-  float: right;
-  cursor: pointer;
-  margin-right: 0px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #fff;
+	border: 1px solid #E7E7E7;
+	border-radius: 3px;
+	background: #E7E7E7;
+	padding: 3px 15px;
+	float: right;
+	cursor: pointer;
+	margin-right: 0px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #fff;
 }
 
 .UIComposer .BlastContainer .LinkForm {
-  padding: 4px;
-  background:white;
-  border: 1px solid #d6d0b4;
-  margin: 4px 4px 4px 0px;
+	padding: 4px;
+	background: white;
+	border: 1px solid #d6d0b4;
+	margin: 4px 4px 4px 0px;
 }
 
 .UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer {
-  margin-bottom: 3px;
+	margin-bottom: 3px;
 }
 
 .UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer .Button {
-  border: 1px solid #d6cfb4;
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
-  background: white;
-  padding: 0px 4px;
-  float: right;
-  cursor: pointer;
-  line-height:8px;
-  margin-right:0;
-  padding:0 4px 4px;
+	border: 1px solid #d6cfb4;
+	border-radius: 2px;
+	background: white;
+	padding: 0px 4px;
+	float: right;
+	cursor: pointer;
+	line-height: 8px;
+	margin-right: 0;
+	padding: 0 4px 4px;
 }

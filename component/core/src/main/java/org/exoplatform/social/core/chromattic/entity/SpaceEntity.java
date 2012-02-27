@@ -35,6 +35,7 @@ public abstract class SpaceEntity {
   
   @Name
   public abstract String getName();
+  public abstract void setName(String name);
 
   /**
    * The list of applications with portlet Id, application name, and its state (installed, activated, deactivated).
@@ -162,5 +163,5 @@ public abstract class SpaceEntity {
   public abstract void setManagerMembersId(String[] managerMembersId);
   public static final PropertyLiteralExpression<String> managerMembersId =
       new PropertyLiteralExpression<String>(String.class, "soc:managerMembersId");
-
+  
 }

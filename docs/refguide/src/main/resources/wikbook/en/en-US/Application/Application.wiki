@@ -1,0 +1,5 @@
+This chapter provides you a comprehensive view about applications in eXo Social, including:
+* [Portlets|#SOCref.Portlets]
+* [Gadgets|#SOCref.List_Of_Gadget_in_Social]
+
+These applications are packaged as Web application archives (WARs).

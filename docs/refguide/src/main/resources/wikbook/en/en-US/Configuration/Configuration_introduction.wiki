@@ -1,0 +1,5 @@
+This chapter describes about configurations used in eXo Social. It consists of the following main sections:
+
+* [Components|#SOCref.Configuration.Component]
+* [External component plugins|#SOCref.Configuration.External_component_plugins]
+

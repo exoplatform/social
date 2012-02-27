@@ -19,6 +19,7 @@
 <%
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -28,9 +29,9 @@ def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def allSpacesName = uicomponent.getSpaceNameForAutoSuggest().toString();
 def rcontext = _ctx.getRequestContext() ;
 JavascriptManager jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/social-resources/javascript');
 jsmanager.importJavascript('eXo.social.webui.UISpaceSearch','/social-resources/javascript');
-jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceSearch.onLoad("' + uicomponentId + '","' + allSpacesName + '");');
 jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
 jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
 jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
@@ -68,6 +69,14 @@ def mySpaceDisplayModeStyle = "NotSelectedTab";
 def receivedInvitationDisplayModeStyle = "NotSelectedTab";
 def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
+def params = """ {
+  uicomponentId: '${uicomponentId}',
+  allSpacesName: '${allSpacesName}',
+  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}'
+} """
+
+jsmanager.addOnLoadJavascript("initSpaceSearch");
+
 if (selectedNode.equals("all-spaces")) {
   allSpacesDisplayModeStyle = "SelectedTab";
 } else if (selectedNode.equals("spaces")) {
@@ -79,7 +88,11 @@ if (selectedNode.equals("all-spaces")) {
 }
 %>
 <div class="UISpaceSearch">
-
+<script type="text/javascript">
+  function initSpaceSearch() {
+      new eXo.social.webui.UISpaceSearch($params);
+  }
+</script>
 <% uiform.begin() %>
     <!--search by name-->   
     <div class="SpaceSearchContainer ClearFix">
@@ -95,7 +108,6 @@ if (selectedNode.equals("all-spaces")) {
        <div class="UIAction">
         <span class="ActionButton LightBlueStyle"><a id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></a></span>
        </div>		   
-		   <input id="defaultSpaceNameAndDesc" type="hidden" value="$defaultSpaceNameAndDesc" />
     </div>
     
     <!--search by directory-->

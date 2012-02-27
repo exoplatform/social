@@ -153,6 +153,7 @@
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
+      <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent ClearFix">
           <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a>
         <% if (activityDeletable) {%>
@@ -217,6 +218,7 @@
         </a>
       <% }%>
      <% }%>
+      </div>
     </div>
     <% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
       <div class="ListPeopleLikeBG $listPeopleBGClass">
@@ -286,9 +288,9 @@
     if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   %>
   <% if (commentCounter == commentList.size()) {%>
-    <div id="CommentBlock${activity.id}" class="CommentBox CommentBoxNoneBottomLine ClearFix">
+    <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox CommentBoxNoneBottomLine ClearFix">
   <% } else { %>
-    <div id="CommentBlock${activity.id}" class="CommentBox ClearFix">
+    <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
   <% } %>
       <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
         <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
@@ -307,7 +309,7 @@
     <%
       if (uicomponent.isCommentDeletable(it.userId)) {
     %>
-      <span onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="CloseCMContentHilight"></span>
+      <span id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="CloseContentBoxNormal"></span>
     <% } %>
     </div>
   <% }) %>

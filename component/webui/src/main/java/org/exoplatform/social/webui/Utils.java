@@ -258,10 +258,22 @@ public class Utils {
    * @since 1.2.1
    */
   public static String getSpaceHomeURL(Space space) {
+    // work-around for SOC-2366 when rename existing space
+    String groupId = space.getGroupId();
+    String permanentSpaceName = groupId.split("/")[2];
+    
     RequestContext ctx = RequestContext.getCurrentInstance();
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/" + space.getPrettyName(),
-                                                         space.getPrettyName());
+    NavigationResource resource = null;
+    if (permanentSpaceName.equals(space.getPrettyName())) {
+      //work-around for SOC-2366 when delete space after that create new space with the same name
+      resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
+                                        + permanentSpaceName, permanentSpaceName);
+    } else {
+      resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
+                                        + permanentSpaceName, space.getPrettyName());
+    }
+    
     return nodeURL.setResource(resource).toString(); 
   }
 }

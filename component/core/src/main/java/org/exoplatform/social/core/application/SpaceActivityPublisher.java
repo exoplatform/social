@@ -16,9 +16,16 @@
  */
 package org.exoplatform.social.core.application;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -26,7 +33,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * This listener is responsible for initializing and notifying activity stream for the space. We create a special
@@ -36,6 +42,25 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  * @version $Revision$
  */
 public class SpaceActivityPublisher extends SpaceListenerPlugin {
+
+  /**
+   * The exosocial:spaces activity type
+   * @since 1.2.8
+   */
+  public static final String SPACES_ACTIVITY_TYPE = "exosocial:spaces";
+
+  /**
+   * The SPACE_DISPLAY_NAME_PARAM template param key
+   * @since 1.2.8
+   */
+  public static final String SPACE_DISPLAY_NAME_PARAM = "SPACE_DISPLAY_NAME_PARAM";
+
+  /**
+   * The USER_NAME_PARAM template param key
+   * @since 1.2.8
+   */
+  public static final String USER_NAME_PARAM = "USER_NAME_PARAM";
+
 
   /**
    * The Logger.
@@ -73,7 +98,11 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     final String activityMessage = space.getDisplayName() + " was created by @" + event.getTarget() + " .";
-    recordActivity(event, activityMessage);
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
+    recordActivity(event, createActivity(event, activityMessage, "space_created", templateParams));
   }
 
   /**
@@ -128,7 +157,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   public void grantedLead(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
     final String activityMessage = "@" + event.getTarget() + " was granted manager role.";
-    recordActivity(event, activityMessage);
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
+    recordActivity(event, createActivity(event, activityMessage, "manager_role_granted", templateParams));
     LOG.debug("user " + event.getTarget() + " was granted manager role of space " + space.getDisplayName());
   }
 
@@ -138,7 +170,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   @Override
   public void joined(SpaceLifeCycleEvent event) {
     final String activityMessage = "@" + event.getTarget() + " has joined the space.";
-    recordActivity(event, activityMessage);
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
+    recordActivity(event, createActivity(event, activityMessage, "user_joined", templateParams));
     LOG.debug("user " + event.getTarget() + " joined space " + event.getSpace().getDisplayName());
   }
 
@@ -148,7 +183,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   @Override
   public void left(SpaceLifeCycleEvent event) {
     final String activityMessage = "@" + event.getTarget() + " has left the space.";
-    recordActivity(event, activityMessage);
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
+    recordActivity(event, createActivity(event, activityMessage, "member_left", templateParams));
     LOG.debug("user " + event.getTarget() + " has left of space " + event.getSpace().getDisplayName());
   }
 
@@ -162,21 +200,35 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   }
 
   /**
-   * Records an activity based on space lifecycle event and the activity message.
+   * Creates an activity.
    *
-   * @param event the space lifecycle event
+   * @param event the space lifeclycle event
    * @param activityMessage the activity message
+   * @param titleId the titleId
+   * @param templateParams the template params
+   *
+   * @return the created activity object
    */
-  private void recordActivity(SpaceLifeCycleEvent event, String activityMessage) {
+  private ExoSocialActivity createActivity(SpaceLifeCycleEvent event, String activityMessage, String titleId,
+                                           Map<String, String> templateParams) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setType(SPACES_ACTIVITY_TYPE);
+    activity.setTitle(activityMessage);
+    activity.setTitleId(titleId);
+    activity.setTemplateParams(templateParams);
+    return activity;
+  }
+
+  /**
+   * Records an activity based on space lifecyle event and the activity object.
+   *
+   * @param event the space lifecyle event
+   * @param activity the activity object
+   */
+  private void recordActivity(SpaceLifeCycleEvent event, ExoSocialActivity activity) {
     Space space = event.getSpace();
-    try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-              space.getPrettyName(),
-              false);
-      activityManager.saveActivity(spaceIdentity, SpaceService.SPACES_APP_ID, activityMessage);
-    } catch (Exception e) {
-      LOG.error("Failed to record activity: " + activityMessage, e);
-    }
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    activityManager.saveActivityNoReturn(spaceIdentity, activity);
   }
 
 }

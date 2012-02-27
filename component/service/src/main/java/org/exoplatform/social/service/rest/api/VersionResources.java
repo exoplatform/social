@@ -69,9 +69,9 @@ public class VersionResources implements ResourceContainer {
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get
    * @request
    *{code}
-   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.json
+   * GET: http://cloud-workspaces.com/rest/api/social/version/latest.json
    * or
-   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/latest.xml
+   * GET: http://cloud-workspaces.com/rest/api/social/version/latest.xml
    *{code}
    * @response
    *{code:json}
@@ -107,9 +107,9 @@ public class VersionResources implements ResourceContainer {
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get
    * @request
    *{code}
-   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.json
+   * GET: http://cloud-workspaces.com/rest/api/social/version/supported.json
    * or
-   * GET: http://platform35.demo.exoplatform.org/rest/api/social/version/supported.xml
+   * GET: http://cloud-workspaces.com/rest/api/social/version/supported.xml
    *{code}
    * @response
    *{code:json}

@@ -1,48 +1,46 @@
 /*========================gadget my connection===============================*/
 
 
-.FL{
+.FL {
 	float: left;
 }
 
-.FR{
+.FR {
 	float: right;
 }
 
-.GadgetConnection{
+.GadgetConnection {
 	font-size: 12px;
 	font-family: verdana;
 	margin-top: 12px;
 }
 
-.GadgetConnection a{
+.GadgetConnection a {
 	color: #0053a7;
 	text-decoration: none;
 }
 
-.GadgetConnection img{
+.GadgetConnection img {
 	border: none;
 }
 
-.GadgetConnection ul li{
+.GadgetConnection ul li {
 	list-style: none outside none;
 }
 
-.GadgetConnection ul{
+.GadgetConnection ul {
 	padding: 0px 0px 0px 6px;
 	margin-bottom: 14px;
 }
 
-.SearchContent{
+.SearchContent {
 	border: 1px solid #d5d5d5;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
 	border-radius: 2px;
 	width: 160px;
 	margin: auto;
 }
 
-.SearchContent .Search{
+.SearchContent .Search {
 	border: 1px solid white;
 	width: 136px;
 	float: left;
@@ -51,24 +49,23 @@
 	color: #d5d5d5;
 }
 
-.SearchContent .IconSearch{
+.SearchContent .IconSearch {
 	width: 16px;
 	float: right;
 	height: 20px;
 	line-height: 16px;
 	display: block;
-	background: url("/social-resources/skin/DefaultSkin/portal/background/IconSearch.gif") no-repeat right center;
+	background: url('/social-resources/skin/DefaultSkin/portal/background/IconSearch.gif') no-repeat right center;
 	margin-right: 3px;
 }
 
-.GadgetConnection .ListContent{
+.GadgetConnection .ListContent {
 	overflow-y: auto;
 	overflow-x: hidden;
-	//height: 350px;
 }
 
-.GadgetConnectionSearch .ListContent .Icon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/IconListContent.gif") no-repeat right center;
+.GadgetConnectionSearch .ListContent .Icon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/IconListContent.gif') no-repeat right center;
 	line-height: 20px;
 	padding-right: 13px;
 	margin-right: 7px;
@@ -76,11 +73,11 @@
 	font-weight: bold;
 }
 
-.GadgetConnection .ReadMore{
+.GadgetConnection .ReadMore {
 	color: #535656;
 }
 
-.GadgetConnection .MoreContent{
+.GadgetConnection .MoreContent {
 	text-align: center;
 	margin: 4px 0px;
 	background: #f8f8f8;
@@ -89,29 +86,29 @@
 	line-height: 20px;
 }
 
-.GadgetConnection .Link{
+.GadgetConnection .Link {
 	text-decoration: underline;
 	color: #0053a7;
 	margin-left: 7px;
 }
 
-.GadgetConnection .Avatar{
+.GadgetConnection .Avatar {
 	float: left;
 	display: block;
 	width: 35px;
 }
 
-.GadgetMember .Avatar{
+.GadgetMember .Avatar {
 	width: 50px;
 }
 
-.GadgetConnectionDetail .ListContent .More{
+.GadgetConnectionDetail .ListContent .More {
 	float: right;
 	display: block;
 	margin-right: 10px;
 }
 
-.GadgetConnection .Content{
+.GadgetConnection .Content {
 	display: block;
   float: left;
   margin: 0 0 0 6px;
@@ -119,16 +116,16 @@
   white-space: normal;
 }
 
-.GadgetConnectionDetail .Content .Work{
+.GadgetConnectionDetail .Content .Work {
 	color: #555555;
   width: 95%;
 }
 
 .GadgetConnectionDetail ul li {
-	margin-top: 6px 5px 0 0;
+	margin: 6px 5px 0 0;
 }
 
-.GadgetMember .Content .Work{
+.GadgetMember .Content .Work {
 	color: #0053a7;
   width: 140px;
 	overflow: hidden;
@@ -136,52 +133,52 @@
 	font-size: 12px;
 }
 
-.GadgetMember ul li{
+.GadgetMember ul li {
 	margin-bottom: 8px;
 }
 
-.GadgetConnection .Content .User{
+.GadgetConnection .Content .User {
 	font-weight: bold;
 }
 
-.GadgetConnection .Content .Member{
+.GadgetConnection .Content .Member {
 	color: #aeaeae;
 }
 
-.GadgetConnection .MemberProptile{
+.GadgetConnection .MemberProptile {
 	margin: 16px 0 4px 8px;
 }
 
-.GadgetConnection .ListContent .Commnent{
+.GadgetConnection .ListContent .Commnent {
 	float: left;
 }
 
-.GadgetConnection .ListContent .Commnent .Comm{
+.GadgetConnection .ListContent .Commnent .Comm {
 	width: 170px;
 	overflow: hidden;
   white-space: nowrap;
 }
 
-.GadgetConnection .ListContent .Commnent .TimeComm{
+.GadgetConnection .ListContent .Commnent .TimeComm {
 	width: 170px;
 	overflow: hidden;
   white-space: nowrap;
 	color: #808080;
 }
 
-.GadgetConnection .ListContent .Action{
+.GadgetConnection .ListContent .Action {
 	float: right;
 	width: 40px;
 }
 
-.GadgetConnection .ListContent .Action .CommIcon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/CommIcon.png") no-repeat center;
+.GadgetConnection .ListContent .Action .CommIcon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
 	padding: 2px 6px;
 	margin-right: 7px;
 }
 
-.GadgetConnection .ListContent .Action .LikeIcon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png") no-repeat center;
+.GadgetConnection .ListContent .Action .LikeIcon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
 	padding: 2px 6px;
 }
 
@@ -193,58 +190,56 @@
 	padding: 4px 0px 4px 0px;
 }
 
-.GadgetConnectionSetting .LabelIL{
+.GadgetConnectionSetting .LabelIL {
 	float: left;
 	width: 130px;
 	overflow: hidden;
   white-space: nowrap;
 }
 
-.GadgetConnectionSetting .SelectboxIL{
+.GadgetConnectionSetting .SelectboxIL {
 	float: right;
 	width: 80px;
 }
 
-.GadgetConnectionSetting .LabelUT{
+.GadgetConnectionSetting .LabelUT {
 	float: left;
 	width: 94px;
 	overflow: hidden;
   white-space: nowrap;
 }
 
-.GadgetConnectionSetting .SelectboxUT{
+.GadgetConnectionSetting .SelectboxUT {
 	float: right;
 	width: 118px;
 }
 
-.GadgetConnectionSetting .LabelISB{
+.GadgetConnectionSetting .LabelISB {
 	float: left;
 	width: 104px;
 	overflow: hidden;
   white-space: nowrap;
 }
 
-.GadgetConnectionSetting .SelectboxISB{
+.GadgetConnectionSetting .SelectboxISB {
 	float: right;
 	width: 108px;
 }
 
-.GadgetConnectionSetting .LabelNIV{
+.GadgetConnectionSetting .LabelNIV {
 	float: left;
 	width: 154px;
 	overflow: hidden;
   white-space: nowrap;
 }
 
-.GadgetConnectionSetting .InputNIV{
+.GadgetConnectionSetting .InputNIV {
 	float: right;
 	width: 58px;
 }
 
-.GadgetConnectionSetting .MCSettingButton{
-	background: url("background/MCSettingButton.gif") repeat-x top;
-	-moz-border-radius: 11px;
-	-webkit-border-radius: 11px;
+.GadgetConnectionSetting .MCSettingButton {
+	background: url('background/MCSettingButton.gif') repeat-x top;
 	border-radius: 11px;
 	border: 1px solid #acacac;
 	padding: 3px 12px;
@@ -252,104 +247,98 @@
 	color: #464646;
 }
 
-.GadgetConnectionBar{
+.GadgetConnectionBar {
 	height: 25px;
 	line-height: 24px;
 	background: #f8f8f8;
 	margin: 6px auto;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	border: 1px solid #E1E1E1;
 	padding: 0 3px 0 6px;
 }
 
-.GadgetConnectionBar .Label{
+.GadgetConnectionBar .Label {
 	color: #313332;
-	//margin-right: 80px;
 	white-space: nowrap;
 	overflow: hidden;
 }
 
-.GadgetConnectionBar .SettingIcon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/SettingIcon.png") no-repeat center;
+.GadgetConnectionBar .SettingIcon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/SettingIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
-.GadgetConnectionBar .SettingSelected{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/SettingSelected.png") no-repeat center;
+.GadgetConnectionBar .SettingSelected {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/SettingSelected.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
-.GadgetConnectionBar .ListIcon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/ListNormal.png") no-repeat center;
+.GadgetConnectionBar .ListIcon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/ListNormal.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
-.GadgetConnectionBar .ListSelected{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/ListIcon.png") no-repeat center;
+.GadgetConnectionBar .ListSelected {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/ListIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
-.GadgetConnectionBar .NumberListIcon{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/NumberListIcon.png") no-repeat center;
+.GadgetConnectionBar .NumberListIcon {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/NumberListIcon.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
 
-.GadgetConnectionBar .NumberListSelected{
-	background: url("/social-resources/skin/DefaultSkin/portal/background/ListSelected.png") no-repeat center;
+.GadgetConnectionBar .NumberListSelected {
+	background: url('/social-resources/skin/DefaultSkin/portal/background/ListSelected.png') no-repeat center;
 	padding: 0px 8px;
 	margin-right: 3px;
 }
-.GadgetConnection .CurentActivity{
+
+.GadgetConnection .CurentActivity {
  	margin: 12px;
 }
 
-.GadgetConnection .CurentActivity .Commnent{
+.GadgetConnection .CurentActivity .Commnent {
 	margin-right: 45px;
 }
 
-.GadgetConnection .CurentActivity .Commnent .Comm{
-
-}
-
-.GadgetConnection .CurentActivity .Commnent .TimeComm{
+.GadgetConnection .CurentActivity .Commnent .TimeComm {
  	width: 170px;
  	overflow: hidden;
   white-space: nowrap;
  	color: #808080;
 }
 
-.GadgetConnection .CurentActivity .Action{
+.GadgetConnection .CurentActivity .Action {
  	float: right;
  	width: 40px;
 }
 
-.GadgetConnection .CurentActivity .Action .CommIcon{
- 	background: url("/social-resources/skin/DefaultSkin/portal/background/CommIcon.png") no-repeat center;
+.GadgetConnection .CurentActivity .Action .CommIcon {
+ 	background: url('/social-resources/skin/DefaultSkin/portal/background/CommIcon.png') no-repeat center;
  	padding: 2px 6px;
  	margin-right: 7px;
 }
 
-.GadgetConnection .CurentActivity .Action .LikeIcon{
- 	background: url("/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png") no-repeat center;
+.GadgetConnection .CurentActivity .Action .LikeIcon {
+ 	background: url('/social-resources/skin/DefaultSkin/portal/background/LikeIcon.png') no-repeat center;
  	padding: 2px 6px;
 }
 
-.GadgetConnection .CurentActivity .NumberLike{
+.GadgetConnection .CurentActivity .NumberLike {
  	color: #0053A7;
 }
 
-.QuickCommentBox{
+.QuickCommentBox {
  	margin: 0px 35px;
 }
 
-.QuickCommentBox input{
+.QuickCommentBox input {
  	border: 1px solid #E1E1E1;
   color: #D2D2D2;
   font-size: 11px;
@@ -357,25 +346,25 @@
   width: 100%;
 }
 
-.QuickCommentBox .ShareBT{
+.QuickCommentBox .ShareBT {
  	text-align: right;
  	padding-top: 2px;
 }
 
-.QuickCommentBox .ShareBT a{
+.QuickCommentBox .ShareBT a {
  	color: #0053A7;
 }
 
-.GadgetConnection .ListContent .User{
+.GadgetConnection .ListContent .User {
  	font-weight: bold;
  	font-family: areal;
 }
 
-.GadgetMember ul{
+.GadgetMember ul {
  	padding-left: 35px;
 }
 
-.GadgetConnection .ListContent .ListListContent .Content{
+.GadgetConnection .ListContent .ListListContent .Content {
  	margin-left: 40px;
  	float: none;
 }

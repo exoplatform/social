@@ -1,0 +1,12 @@
+This chapter supplies you with the basic knowledge about the following topics:
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode/Tutorial]
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+* [Rest Service APIs (v1-alpha3)|#SOCref.DevelopersReferences.RestService_APIs_v1alpha3]
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+
+With this knowledge, you can extend more functions for eXo Social, or customize them as you want.

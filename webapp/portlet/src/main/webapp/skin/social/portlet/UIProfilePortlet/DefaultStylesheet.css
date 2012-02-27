@@ -8,13 +8,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */ /*
-  need to find a better way of doing than the import from another portlet
+	need to find a better way of doing than the import from another portlet
 */
 .UIProfile {
 	padding: 8px 14px 14px;
@@ -24,10 +24,8 @@
 	zoom: 100%;
 }
 
-.UIProfile .UIHeaderSection{
+.UIProfile .UIHeaderSection {
 	padding: 8px 8px 12px 12px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	border: 1px solid #e1e1e1;
 	background: #f8f8f8;
@@ -45,7 +43,7 @@
 	margin-left: 4px;
 }
 
-.UIProfile .UIHeaderSection .InviConnect{
+.UIProfile .UIHeaderSection .InviConnect {
 	float: right;
 	font-weight: normal;
 	color: #115eae;
@@ -53,12 +51,12 @@
 }
 
 .UIProfile .UIHeaderSection .ActionSparator {
-    float: right;
-    line-height: 12px;
-    margin: 0 4px;
+	float: right;
+	line-height: 12px;
+	margin: 0 4px;
 }
 
-.UIProfile .ColorLink{
+.UIProfile .ColorLink {
 	color: #115eae;
 }
 
@@ -77,19 +75,19 @@
 }
 
 .UIProfile .Container .PortletContent .CurrentExperience {
-	background:#efefef none; 
+	background: #efefef; 
 	padding-left: 8px;
 }
 
-.UIProfile .Container .PortletContent .CurrentExperience p{
+.UIProfile .Container .PortletContent .CurrentExperience p {
 	color: #406c80;
-	margin-top:8px;
-	padding-top:8px; 
-	margin-bottom:3px;
+	margin-top: 8px;
+	padding-top: 8px; 
+	margin-bottom: 3px;
 }
 
-.UIProfile .Container .PortletContent .CurrentExperience .Experience{
-	background:#efefef none; 
+.UIProfile .Container .PortletContent .CurrentExperience .Experience {
+	background: #efefef; 
 	padding: 8px;
 }
 
@@ -123,13 +121,13 @@
 }
 
 .UIProfile .Container .PortletContent .DeleteIcon {
-	background: url(DefaultSkin/background/DeleteIcon.gif) no-repeat center;
+	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat center;
 	padding: 5px 6px;
 	margin-left: 4px;
 }
 
 .UIProfile .Container .PortletContent .AddIcon {
-	background: url(DefaultSkin/background/AddIcon.gif) no-repeat center;
+	background: url('DefaultSkin/background/AddIcon.gif') no-repeat center;
 	width: 22px;
 	height: 22px;
 	padding: 5px 6px;
@@ -140,23 +138,23 @@
 }
 
 .UIProfile .Container .PortletContent .checkbox {
-  float: left;
+	float: left;
 	width: 16px;
 	margin: 6px 0px 0px;
 }
 
 .UIProfile .Container .PortletContent .BlockSeparator {
-  border-top: 1px solid  #e1e1e1; 
-  padding-top: 6px; 
-  margin-top: 6px;
+	border-top: 1px solid	#e1e1e1; 
+	padding-top: 6px; 
+	margin-top: 6px;
 }
 
 .UIProfile .Container .PortletContent .StillPositionLabel {
-  height: 25px;
-  line-height: 27px;
-  vertical-align: middle;
+	height: 25px;
+	line-height: 27px;
+	vertical-align: middle;
 }
-    
+		
 .UIProfile .Container .PortletContent textarea {
 	font-size: 12px;
 	width: 243px;
@@ -176,8 +174,8 @@
 }
 
 .UIProfile .UITitleBar .ActionSpace {
-  float: right;
-  margin: 0 4px;
+	float: right;
+	margin: 0 4px;
 }
 
 .UIProfile .TitleBar h5 {
@@ -210,18 +208,17 @@
 	display: none;
 }
 
-/**
-       FORM
- */
+/**  FORM  **/
+
 .UIProfile .UIFormGrid {
 	margin: 0px;
 }
 
 .UIProfile .Container .FieldLabel {
-    font-weight: bold;
-    padding: 4px;
-    text-align: right;
-    width: 130px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: right;
+	width: 130px;
 }
 
 .UIProfile .Container .FieldComponent {
@@ -258,19 +255,19 @@
 }
 
 .UIProfile .Container .ButtonLeft {
-	background: url("DefaultSkin/background/LeftButton.gif") no-repeat left;
+	background: url('DefaultSkin/background/LeftButton.gif') no-repeat left;
 	padding-left: 4px;
 	cursor: pointer;
 }
 
 .UIProfile .Container .ButtonRight {
-	background: url( "DefaultSkin/background/RightButton.gif" ) no-repeat right;
+	background: url('DefaultSkin/background/RightButton.gif') no-repeat right;
 	padding-right: 4px;
 	cursor: pointer;
 }
 
 .UIProfile .Container .ButtonMiddle {
-	background: url( "DefaultSkin/background/CenterButton.gif" ) repeat-x;
+	background: url('DefaultSkin/background/CenterButton.gif') repeat-x;
 	line-height: 29px;
 	padding: 0px 16px;
 	cursor: pointer;
@@ -293,7 +290,7 @@
 	margin-bottom: 5px;
 }
 
-input.hint,textarea.hint {
+input.hint, textarea.hint {
 	color: #999999 !important;
 }
 
@@ -308,9 +305,8 @@ input.hint,textarea.hint {
 
 .Container .NoneExperience {
 	margin-left: 10px;
-    text-align: left;
+	text-align: left;
 }
-
 
 .UIAvatarUploader .HorizontalLayout {
 	border: none;
@@ -374,8 +370,8 @@ input.hint,textarea.hint {
 }
 
 .UIAvatarUploadContent .ImageAvatar img {
-  width: 110px;
-  height: 110px;
+	width: 110px;
+	height: 110px;
 }
 
 .UIProfile .Experience {
@@ -384,19 +380,19 @@ input.hint,textarea.hint {
 
 .UIProfile .Experience input {
 	height: 16px;
-  width: 208px;
-  font-size: 13px;
+	width: 208px;
+	font-size: 13px;
 }
 
 .UIProfile .Experience textarea {
-  font-size: 13px;
+	font-size: 13px;
 }
 
 .UIProfile .Experience .checkbox {
-  height: 15px;
-  width: 15px;
-  margin: 0 0 0 4px;
-  vertical-align: top;
+	height: 15px;
+	width: 15px;
+	margin: 0 0 0 4px;
+	vertical-align: top;
 }
 
 .UIProfile .Experience .UIFormGrid td.FieldComponent {
@@ -406,9 +402,9 @@ input.hint,textarea.hint {
 
 .UIProfile .Experience .UIFormGrid td.FieldLabel {
 	padding: 2px;
-  text-align: right;
-  vertical-align: top;
-  font-size: 11px;
+	text-align: right;
+	vertical-align: top;
+	font-size: 11px;
 }
 
 .UIProfile .Experience .StillInPosition {
@@ -438,19 +434,19 @@ input.hint,textarea.hint {
 }
 
 .UIProfile .UIContactSection .UIForm td.FieldLabel {
-    line-height: 16px;
-    padding: 2px;
-    width: 85px;
+	line-height: 16px;
+	padding: 2px;
+	width: 85px;
 }
 
 .UIProfile .PortletContent .UIFormGrid .FieldLabel {
-  padding-top: 10px;
+	padding-top: 10px;
 	font-weight: bold;
 }
 
 .UIProfile .UIContactSection .NoContactInformation {
-  margin-left: 10px;
-  text-align: left;
+	margin-left: 10px;
+	text-align: left;
 }
 
 .UIProfile .UIBasicInfoSection .UIForm td.FieldComponent {
@@ -459,8 +455,8 @@ input.hint,textarea.hint {
 }
 
 .UIProfile .UIBasicInfoSection .UIForm td.FieldLabel {
-  padding: 2px;
-  line-height: 16px;
-  width: 85px;
-  font-size: 11px;
+	padding: 2px;
+	line-height: 16px;
+	width: 85px;
+	font-size: 11px;
 }

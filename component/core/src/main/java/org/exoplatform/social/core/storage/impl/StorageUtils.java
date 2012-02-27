@@ -41,7 +41,7 @@ public class StorageUtils {
     //
     if (firstChar != '\u0000') {
       whereExpression.and().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
           String.valueOf(firstChar).toLowerCase() + PERCENT_STR
       );
     }

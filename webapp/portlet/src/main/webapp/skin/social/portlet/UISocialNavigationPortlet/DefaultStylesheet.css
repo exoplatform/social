@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -22,8 +22,8 @@
  */
 
 .UINavigationPortlet {
-  background: #b6b6b6;
-  padding: 0px 8px;
+	background: #b6b6b6;
+	padding: 0px 8px;
 }
 	
 .UINavigationPortlet .UINavigationBar {
@@ -36,7 +36,10 @@
 
 .UINavigationPortlet .UINavigationBar .UIHorizontalTabs .TabsContainer {
 	float: none;
-	!position: relative;
+}
+
+*+html .UINavigationPortlet .UINavigationBar .UIHorizontalTabs .TabsContainer {	
+	position: relative;
 }
 
 .UINavigationPortlet .UINavigationBar .LeftNavigationBar {
@@ -44,7 +47,7 @@
 	background: url('DefaultSkin/background/LeftNavigation-rt.gif') no-repeat right top; /* orientation=rt */
 	padding-left: 3px; /* orientation=lt */
 	padding-right: 3px; /* orientation=rt */
-	height: 32px
+	height: 32px;
 }
 
 .UINavigationPortlet .UINavigationBar .RightNavigationBar {
@@ -52,7 +55,7 @@
 	background: url('DefaultSkin/background/RightNavigation-rt.gif') no-repeat left top; /* orientation=rt */
 	padding-right: 3px; /* orientation=lt */
 	padding-left: 3px; /* orientation=rt */
-	height: 32px
+	height: 32px;
 }
 
 .UINavigationPortlet .UINavigationBar .MiddleNavigationBar {
@@ -117,7 +120,7 @@
 /*###############-Hightlight Navigation Tab	-################*/
 
 .UINavigationPortlet .UITab .HighlightNavigationTab {
-	line-height: 26px;  
+	line-height: 26px;
 	margin: 6px 8px 0px 0px; 
 }
 
@@ -165,7 +168,6 @@
 	margin: 6px 8px 0px 0px; 
 }
 
-
 .UINavigationPortlet .UITab .SelectedNavigationTab .LeftTab {
 	line-height: 21px; 
 	background: url('DefaultSkin/background/NavigationTab.gif') no-repeat left -28px;
@@ -189,7 +191,7 @@
 	color: #f57a00;
 	line-height: 21px;
 	padding-bottom: 5px;
-	background: url('DefaultSkin/background/NavigationTab.gif') no-repeat center -82px;;
+	background: url('DefaultSkin/background/NavigationTab.gif') no-repeat center -82px;
 }
 
 .UINavigationPortlet .UITab .SelectedNavigationTab a {
@@ -216,14 +218,15 @@
 	background: white;
 	padding-bottom: 6px;
 	opacity: 0.8;
-  filter: alpha(opacity=80);
+	filter: alpha(opacity=80);
 }
 
 .UINavigationPortlet .MenuItemContainer .MenuItem {
 	border-bottom: 1px solid #fff;
 	cursor: pointer;
 	line-height: 24px;
-	height: 24px; width: auto;
+	height: 24px;
+	width: auto;
 	display: block;
 	white-space: nowrap;
 	font-weight: normal;
@@ -265,7 +268,8 @@
 }
 
 .UINavigationPortlet .MenuItemContainer .ItemIcon {
-	height: 24px; width: auto;
+	height: 24px;
+	width: auto;
 }
 
 .UINavigationPortlet .MenuItemContainer .MenuItem .ArrowIcon {

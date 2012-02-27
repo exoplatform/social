@@ -43,11 +43,11 @@ h1. Built-in XMLProcessor Plugins {anchor:id="SOCref_developreference_XMLProcess
 In eXo Social, there are the following built-in XMLProcessor plugins (also known as *filters*) that filter the input texts of users.
 || Filters || Description ||
 |*DOMContentEscapeFilter*|Process the *DOM tree* input and escape all *text nodes*.|
-|*DOMLineBreakerFilter*|Process the *DOM tree* input and add <br /> to all *text nodes* which contain {{{\n}}}.|
-|*DOMXMLTagFilter*|Process the *DOM tree* input and convert all *tag nodes* which do not exist in whitelist into *text Node*.|
-|*LineBreakerFilter*|Process the String input and replace {{{\n}}} to <br />.|
+|*DOMLineBreakerFilter*|Process the *DOM tree* input and add <br /> to all *text nodes* which contain {{{\\n}}}.|
+|*DOMXMLTagFilter*|Process the *DOM tree* input and convert all *tag nodes* which do not exist in the allowed tags list into *text Node*.|
+|*LineBreakerFilter*|Process the String input and replace {{{\\n}}} to <br />.|
 |*XMLBalancer*|Process the String input and add missing close tags to input.|
-|*XMLTagFilter*|Processes the String input and convert all tags which do not exist in whitelist into the escapsed String.|
+|*XMLTagFilter*|Process the String input and convert all tags which do not exist in the allowed tags list into the escapsed String.|
 
 The following is the general Class diagram of XMLProcesscor in eXo Social:
 
@@ -68,7 +68,7 @@ public interface Filter {
 {code}
 
 These filters will process the input texts in the _doFilter(Object input)_ method and return the result to XMLProcessor. 
-They are initialized via the .xml files found in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
+They are declared in the configuration files found in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
 
 {code:xml}
 <external-component-plugins>
@@ -79,6 +79,77 @@ They are initialized via the .xml files found in the _/demo/war/src/main/webapp/
         <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTagPlugin</type>
         <init-params>
           <object-param>
+            <name>b tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>b</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>i tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>i</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>a tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>a</string></field>
+              <field name="tagAttributes">
+                <collection type="java.util.HashSet" item-type="java.lang.String">
+                  <value><string>href</string></value>
+                </collection>
+              </field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>span tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>span</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>em tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>em</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>strong tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>strong</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>p tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>p</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>ol tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>ol</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>ul tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>ul</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>li tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>li</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>br tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>br</string></field>
+            </object>
+          </object-param>
+          <object-param>
             <name>img tag</name>
             <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
               <field name="tagName"><string>img</string></field>
@@ -87,6 +158,18 @@ They are initialized via the .xml files found in the _/demo/war/src/main/webapp/
                   <value><string>src</string></value>
                 </collection>
               </field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>blockquote tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>blockquote</string></field>
+            </object>
+          </object-param>
+          <object-param>
+            <name>q tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>q</string></field>
             </object>
           </object-param>
         </init-params>

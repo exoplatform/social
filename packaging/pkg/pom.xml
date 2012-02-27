@@ -534,6 +534,20 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
+      <version>${jboss-common-core.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jbossxb</artifactId>
+      <version>${jbossxb.version}</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>exo.social.component.common</artifactId>
       <version>${project.version}</version>

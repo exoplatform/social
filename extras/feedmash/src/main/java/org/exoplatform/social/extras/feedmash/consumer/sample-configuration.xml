@@ -26,12 +26,11 @@ This file is loaded in last by socialdemo portal.
 You can override any kernel component or define any additional external-component-plugin.
 -->
   <external-component-plugins>
-    <target-component>org.exoplatform.services.scheduler.JobSchedulerService
-    </target-component>
+    <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
     <component-plugin>
       <name>RepubSocialJiraActivityJob</name>
       <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
+      <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
       <description>will republish resolved and closed jiras events of exosocial project into a space</description>
       <init-params>
         <properties-param>
@@ -39,7 +38,7 @@ You can override any kernel component or define any additional external-componen
           <description>save the monitor data periodically</description>
           <property name="jobName" value="JIRAFeedConsumer" />
           <property name="groupName" value="Feedmash" />
-          <property name="job" value="org.exoplatform.social.extras.samples.feedmash.JiraFeedConsumer" />
+          <property name="job" value="org.exoplatform.social.extras.feedmash.consumer.JiraFeedConsumer" />
           <property name="repeatCount" value="0" />
           <property name="period" value="60000" /> <!-- 1 mins-->
           <property name="startTime" value="+45" />
@@ -47,7 +46,9 @@ You can override any kernel component or define any additional external-componen
         </properties-param>
         <properties-param>
           <name>mash.info</name>
-          <property name="baseURL" value="http://jira.exoplatform.org" />
+          <property name="baseURL" value="https://jira.exoplatform.org" />
+          <property name="username" value="test" />
+          <property name="password" value="test" />
           <property name="project" value="SOC" />
           <property name="categoryMatch" value="resolved|created|reopened" />
           <property name="targetActivityStream" value="space:exosocial" />
@@ -57,23 +58,26 @@ You can override any kernel component or define any additional external-componen
     <component-plugin>
       <name>WatchSocialBuildStatus</name>
       <set-method>addPeriodJob</set-method>
-      <type>org.exoplatform.social.feedmash.FeedmashJobPlugin</type>
-      <description>will republish build changes in exosocial space</description>
+      <type>org.exoplatform.social.extras.feedmash.FeedmashJobPlugin</type>
+      <description>will republish build changes in exosocial space
+      </description>
       <init-params>
         <properties-param>
           <name>mash.info</name>
-          <property name="baseURL" value="http://builder.exoplatform.org/hudson/view/social" />
+          <property name="baseURL" value="https://ci.exoplatform.org" />
           <property name="project" value="social-trunk-ci" />
           <property name="targetActivityStream" value="space:exosocial" />
-          <property name="successIcon" value="http://builder.exoplatform.org/hudson/plugin/greenballs/48x48/green.gif" />
-          <property name="failureIcon" value="http://builder.exoplatform.org/hudson/images/48x48/red.gif" />
+          <property name="successIcon" value="http://ci.exoplatform.org/hudson/plugin/greenballs/48x48/green.gif" />
+          <property name="failureIcon" value="http://ci.exoplatform.org/hudson/images/48x48/red.gif" />
+          <property name="username" value="test" />
+          <property name="password" value="test" />
         </properties-param>
         <properties-param>
           <name>job.info</name>
           <description>save the monitor data periodically</description>
           <property name="jobName" value="HudsonFeedConsumer" />
           <property name="groupName" value="Feedmash" />
-          <property name="job" value="org.exoplatform.social.extras.samples.feedmash.HudsonFeedConsumer" />
+          <property name="job" value="org.exoplatform.social.extras.feedmash.consumer.HudsonFeedConsumer" />
           <property name="repeatCount" value="0" />
           <property name="period" value="60000" /> <!-- 1 mins-->
           <property name="startTime" value="+10000" />
@@ -81,5 +85,5 @@ You can override any kernel component or define any additional external-componen
         </properties-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
+  </external-component-plugins>  
 </configuration>

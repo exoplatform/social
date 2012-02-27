@@ -32,6 +32,8 @@ import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.core.test.MaxQueryNumber;
+import org.exoplatform.social.core.test.QueryNumberTest;
 
 /**
  * Unit Tests for {@link RelationshipStorage}
@@ -40,6 +42,7 @@ import org.exoplatform.social.core.test.AbstractCoreTest;
  * @since     Oct 17, 2010
  * @copyright eXo SAS
  */
+@QueryNumberTest
 public class RelationshipStorageTest extends AbstractCoreTest {
 
   private final Log LOG = ExoLogger.getLogger(RelationshipStorageTest.class);
@@ -99,6 +102,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * 
    * @throws RelationshipStorageException 
    */
+  @MaxQueryNumber(20)
   public void testSaveRelationship() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -109,6 +113,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
   /**
    * Test for {@link org.exoplatform.social.core.storage.api.RelationshipStorage#removeRelationship(Relationship)}
    */
+  @MaxQueryNumber(100)
   public void testRemoveRelationship() {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     try {
@@ -127,6 +132,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getRelationship(String)}
    * @throws RelationshipStorageException
    */
+  @MaxQueryNumber(50)
   public void testGetRelationship() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -157,6 +163,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(100)
   public void testGetConnections() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -185,11 +192,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
     
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -208,6 +215,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(60)
   public void testGetConnectionsCount() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -239,6 +247,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(60)
   public void testGetRelationshipsWithListCheck() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.CONFIRMED);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -288,6 +297,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * 
    * @throws RelationshipStorageException 
    */
+  @MaxQueryNumber(50)
   public void testGetSenderRelationshipsByIdentityAndType() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     Relationship rootToDemoRelationship = new Relationship(rootIdentity, demoIdentity, Type.PENDING);
@@ -320,6 +330,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(100)
   public void testGetSenderRelationships() throws Exception {
     String rootId = rootIdentity.getId();
     
@@ -354,6 +365,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(100)
   public void testGetRelationships() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -382,6 +394,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(50)
   public void testGetRelationshipsCount() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -409,6 +422,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(100)
   public void testGetIncomingRelationships() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -437,11 +451,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check root hasn't avatar but empty profile
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary has avatar
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNotNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(1).getProfile().getAvatarUrl());
 
     for (Identity identity : listIdentities) {
       assertNotNull("identity.getProfile() must not be null", identity.getProfile());
@@ -461,6 +475,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(60)
   public void testGetIncomingRelationshipsCount() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -492,6 +507,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(100)
   public void testGetOutgoingRelationships() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -523,11 +539,11 @@ public class RelationshipStorageTest extends AbstractCoreTest {
 
     // Check john has avatar
     assertNotNull(listIdentities.get(0).getProfile());
-    assertNotNull(listIdentities.get(0).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNotNull(listIdentities.get(0).getProfile().getAvatarUrl());
 
     // Check mary hasn't avatar but empty profile
     assertNotNull(listIdentities.get(1).getProfile());
-    assertNull(listIdentities.get(1).getProfile().getProperty(Profile.AVATAR_URL));
+    assertNull(listIdentities.get(1).getProfile().getAvatarUrl());
     
     for (Identity identity : listIdentities) {
       Identity identityLoadProfile = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
@@ -549,6 +565,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  @MaxQueryNumber(60)
   public void testGetOutgoingRelationshipsCount() throws Exception {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);
@@ -579,6 +596,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * in case Identity had no connection yet
    * @throws Exception
    */
+  @MaxQueryNumber(550)
   public void testGetConnectionsByFilterEmpty() throws Exception {
     populateData();
     ProfileFilter pf = new ProfileFilter();
@@ -593,6 +611,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
+  @MaxQueryNumber(700)
   public void testGetConnectionsByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);
@@ -607,14 +626,13 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     assertEquals("Number of identities must be " + identities.size(), 1, identities.size());
   }
   
- 
-  
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingByFilter(providerId, Identity, ProfileFilter)}
    * 
    * @throws Exception
    * @since 1.2.3
    */
+  @MaxQueryNumber(700)
   public void testGetIncomingByFilter() throws Exception {
     populateData();
     populateRelationshipIncommingData();
@@ -635,6 +653,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.3
    */
+  @MaxQueryNumber(700)
   public void testGetOutgoingByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.PENDING);
@@ -648,12 +667,14 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     identities = relationshipStorage.getOutgoingByFilter(tearDownIdentityList.get(0), pf, 0, 20);
     assertEquals("Number of identities must be 1", 1, identities.size());
   }
+
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getIncomingCountByFilter(providerId, Identity, ProfileFilter)}
    * 
    * @throws Exception
    * @since 1.2.3
    */
+  @MaxQueryNumber(700)
   public void testGetIncomingCountByFilter() throws Exception {
     populateData();
     populateRelationshipIncommingData();
@@ -667,12 +688,14 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     countIdentities = relationshipStorage.getIncomingCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
   }
+
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getConnectionsCountByFilter(providerId, Identity, ProfileFilter)}
    * 
    * @throws Exception
    * @since 1.2.2
    */
+  @MaxQueryNumber(700)
   public void testGetConnectionsCountByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.CONFIRMED);
@@ -686,12 +709,14 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     countIdentities = relationshipStorage.getConnectionsCountByFilter(tearDownIdentityList.get(0), pf);
     assertEquals("Number of identities must be 1", 1, countIdentities);
   }
+
   /**
    * Test {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getOutgoingCountByFilter(providerId, Identity, ProfileFilter)}
    * 
    * @throws Exception
    * @since 1.2.3
    */
+  @MaxQueryNumber(700)
   public void testGetOutgoingCountByFilter() throws Exception {
     populateData();
     populateRelationshipData(Type.PENDING);
@@ -728,6 +753,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
     return result;
 
   }
+
   /**
    * Creates the relationship to connect from 0 to [2, 9].
    * @param type
@@ -760,6 +786,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
       }
     }
   }
+  
   /**
    * Creates the identity data index in range [0,9]  
    */

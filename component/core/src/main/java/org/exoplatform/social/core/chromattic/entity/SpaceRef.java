@@ -21,6 +21,7 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.Id;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 
@@ -31,6 +32,10 @@ import org.chromattic.api.annotations.PrimaryType;
 @PrimaryType(name = "soc:spaceref")
 public abstract class SpaceRef {
 
+  @Name
+  public abstract String getName();
+  public abstract void setName(String name);
+  
   @Id
   public abstract String getId();
 

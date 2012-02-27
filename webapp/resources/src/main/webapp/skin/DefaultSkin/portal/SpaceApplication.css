@@ -1,5 +1,3 @@
-
-
 .TRContainer .MenuTDContainer {
 	width: 220px;
 }
@@ -21,16 +19,16 @@
 }
 
 .TRContainer .ApplicationTDContainer .UITabPane .TabPaneContent {
-  padding: 4px 0px 0px 0px; 
+	padding: 4px 0px 0px 0px; 
 }
 
 .UITableColumnContainer {
-  border: 1px solid #91a8ae;
+	border: 1px solid #91a8ae;
 }
 
 .UIToolbarContainer .UITableColumnContainer {
-  background: none;
-  border: none;
+	background: none;
+	border: none;
 }
 
 #gwtGadget .UIColumns {
@@ -40,6 +38,7 @@
 #dashboard-gwtGadget .UIColumn {
 	width: 100%;
 }
+
 #gwtGadget .gadgets-gadget {
 	width: 99%;
 }
@@ -47,6 +46,7 @@
 .MiniAvatarSpaceBG {
 	background: url('background/UserlistAvatar.png') no-repeat left top;
 	padding: 8px 0px 0px 8px;
-	width: 82px; height: 84px;
+	width: 82px;
+	height: 84px;
 	float: left;
 }

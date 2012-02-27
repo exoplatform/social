@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -23,7 +23,7 @@
 	zoom: 100%;
 }
 
-.UIProfileSpace  img {
+.UIProfileSpace img {
 	width: 119px;
 	height: 119px;
 }
@@ -35,11 +35,11 @@
 
 .UIProfileSpace .LeftColumn {
 	float: left;
-	width:190px;
+	width: 190px;
 	text-align: center;
 }
 
-.CommonTitleBar{
+.CommonTitleBar {
 	background: #ebebeb;
 	height: 22px;
 	color: #7d7d7d;
@@ -50,22 +50,20 @@
 }
 
 .UIProfileSpace .ContainerSpace {
-	margin-left:190px;
+	margin-left: 190px;
 }
 
-.UIProfileSpace h2{
-	color:#3A3A3A;
-	font-size:14px;
-	font-weight:bold;
+.UIProfileSpace h2 {
+	color: #3A3A3A;
+	font-size: 14px;
+	font-weight: bold;
 	margin: 4px 0px;
 }
 
 .UIProfileSpace .ImgAvatarRoot {
-	background: none repeat scroll 0 0 #FFFFFF;
+	background: #FFFFFF;
 	border: 1px solid #EBEBEB;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	margin: 15px 15px 0px 15px;
 	padding: 5px;
 }
@@ -75,17 +73,17 @@
 	width: 47px;
 }
 
-.UIProfileSpace .TitleAvatarRoot{
+.UIProfileSpace .TitleAvatarRoot {
 	text-align: center;
 	color: #afafaf;
 }
 
-.UIProfileSpace .ShowMoreAction{
-  background: #f8f8f8;
-  border-top: 1px solid #e1e1e1;
-  border-bottom: 1px solid #e1e1e1;
-  color: #535656;
-  padding: 4px 0px;
-  text-align: center;
-  cursor: pointer;
+.UIProfileSpace .ShowMoreAction {
+	background: #f8f8f8;
+	border-top: 1px solid #e1e1e1;
+	border-bottom: 1px solid #e1e1e1;
+	color: #535656;
+	padding: 4px 0px;
+	text-align: center;
+	cursor: pointer;
 }

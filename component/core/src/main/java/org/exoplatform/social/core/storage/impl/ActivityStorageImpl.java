@@ -23,12 +23,14 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
+import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -56,7 +58,6 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
-import org.exoplatform.social.core.storage.query.Order;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 /**
@@ -198,7 +199,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     ActivityParameters params = activityEntity.getParams();
     if (params != null) {
-      activity.setTemplateParams(new HashMap<String, String>(params.getParams()));
+      activity.setTemplateParams(new LinkedHashMap<String, String>(params.getParams()));
     }
     else {
       activity.setTemplateParams(new HashMap<String, String>());
@@ -219,8 +220,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     stream.setId(identityEntity.getId());
     stream.setPrettyId(identityEntity.getRemoteId());
     stream.setType(identityEntity.getProviderId());
-    stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));
-
+    
+    //Identity identity = identityStorage.findIdentityById(identityEntity.getId());
+    if (identityEntity != null && SpaceIdentityProvider.NAME.equals(identityEntity.getProviderId())) {
+      Space space = spaceStorage.getSpaceByPrettyName(identityEntity.getRemoteId());
+      //work-around for SOC-2366 when rename space's display name.
+      if (space != null) {
+        String groupId = space.getGroupId().split("/")[2];
+        stream.setPermaLink(LinkProvider.getActivityUriForSpace(identityEntity.getRemoteId(), groupId));
+      }
+    } else {
+      stream.setPermaLink(LinkProvider.getActivityUri(identityEntity.getProviderId(), identityEntity.getRemoteId()));
+    }
     //
     activity.setActivityStream(stream);
     activity.setStreamId(stream.getId());
@@ -582,9 +593,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
 
-    whereExpression.orderBy(ActivityEntity.postedTime, Order.DESC);
+    builder.where(whereExpression.toString());
+    builder.orderBy(ActivityEntity.postedTime.getName(), Ordering.DESC);
 
-    return builder.where(whereExpression.toString()).get();
+    return builder.get();
 
 
   }
@@ -897,9 +909,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     whereExpression.and().equals(ActivityEntity.isComment, Boolean.FALSE);
-    whereExpression.orderBy(ActivityEntity.postedTime, Order.DESC);
 
-    QueryResult<ActivityEntity> results = builder.where(whereExpression.toString()).get().objects();
+    builder.where(whereExpression.toString());
+    builder.orderBy(ActivityEntity.postedTime.getName(), Ordering.DESC);
+
+    QueryResult<ActivityEntity> results = builder.get().objects();
 
     return results.size();
 
