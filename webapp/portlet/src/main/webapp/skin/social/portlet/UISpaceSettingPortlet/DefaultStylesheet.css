@@ -380,7 +380,7 @@
 .UISpaceSettingPortlet .UISpaceApplication .UIAction {
 	border-top: 0 none;
 	margin: 10px 15px 0;
-	float: left;
+	text-align: left;
 }
 
 .UISpaceSettingPortlet .UISpaceApplication .AddAplicationIcon {
