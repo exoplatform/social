@@ -83,8 +83,8 @@
 	  <table class="UIGrid TableSpace">
 		<thead>
 		  <tr>
-			<th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
-			<th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		  </tr>
 		</thead>
 		<tbody>
@@ -99,9 +99,9 @@
 		  <tr class="OddRow">
 		  <% } %>
 			<td><%= uicomponent.getFullName(pendingUser) %></td>
-			<td class="ActionContainer">
-			  <a href="#" class="ValidateButton" onclick="$validateAction" title="$labelValidateAction"></a>
-			  <a href="#" class="DeclineButton" onclick="$declineAction" title="$labelDeclineAction"></a>
+			<td>
+			  <a href="#" onclick="$validateAction" title="$labelValidateAction"><span class="ValidateButton">Validate Invitation</span></a>
+			  <a href="#" onclick="$declineAction" title="$labelDeclineAction"><span class="DeclineButton">Decline Invitation</span></a>
 			</td>
 		  </tr>
 		<% } /*end for*/ %>
@@ -122,8 +122,8 @@
 	  <table class="UIGrid TableSpace">
 		<thead>
 		  <tr>
-			<th class="TitleBar"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
-			<th class="TitleBar TitleAction"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		  </tr>
 		</thead>
 		<tbody>
@@ -138,7 +138,7 @@
 		  <% } %>
 			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
-			  <a href="#" class="DeleteButton IconDelete" onclick="$revokeAction" title="$labelRevokeInvitedAction"></a>
+			  <a href="#" onclick="$revokeAction" title="$labelRevokeInvitedAction"><span class="DeleteButton IconDelete">Delete User</span></a>
 			</td>
 		  </tr>
 		<% } /*end for*/%>
@@ -157,9 +157,8 @@
 		<table class="UIGrid TableSpace TitleContainer">
 		  <thead>
 			<tr>
-			  <th class="TitleBar MemberWidth"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
-			  <th class="TitleBar MemberWidth"><%= _ctx.appRes(uicomponent.getId() + ".title.leader")%></th>
-			  <th class="TitleBar MemberWidth"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			  <th><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+			  <th><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -183,24 +182,25 @@
 			<tr class="OddRow">
 			<% } %>
 			  <td><%= uicomponent.getFullName(user) %></td>
+			  
+			  <td>
 			  <% if(isLeader) { %>
-			  <td>
+			  
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" class="ManageMemButtonSub" onclick="$selfRemoveLeader" title="$labelRemoveLeader"></a>
+				<a href="#" onclick="$selfRemoveLeader" title="$labelRemoveLeader"><span class="ManageMemButtonSub">Revoke Manager</span></a>
 			  <% } else {%>
-				<a href="#" class="ManageMemButtonSub label" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader"></a>
+				<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader"><span class="ManageMemButtonSub label">Revoke Manager</span></a>
 			  <% } %>
-			  </td>
+
 			  <% } else { %>
-			  <td>
-				<a class="ManageMemButtonAdd label" onclick="$makeLeader" title="$labelMakeLeader"></a>
-			  </td>
+
+				<a onclick="$makeLeader" title="$labelMakeLeader"><span class="ManageMemButtonAdd label">Grant Manager</span></a>
+
 			  <% } %>
-			  <td>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
+				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"><span class="DeleteButton IconDelete">Delete User</span></a>
 			  <% } else { %>
-				<a href="#" onclick="$removeAction" title="$labelRemoveAction"  class="DeleteButton IconDelete"></a>
+				<a href="#" onclick="$removeAction" title="$labelRemoveAction"><span class="DeleteButton IconDelete">Delete User</span></a>
 			  <% } %> 
 			  </td>
 			</tr>
