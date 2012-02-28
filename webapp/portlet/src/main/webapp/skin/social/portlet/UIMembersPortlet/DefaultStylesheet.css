@@ -18,7 +18,6 @@
 @import url('/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin.css');
 
 .UIProfileSpace {
-	padding: 8px;
 	background: #fbfbfb;
 	zoom: 100%;
 }
@@ -51,6 +50,7 @@
 
 .UIProfileSpace .ContainerSpace {
 	margin-left: 190px;
+	border-left: 1px solid #e7e7e7;
 }
 
 .UIProfileSpace h2 {
