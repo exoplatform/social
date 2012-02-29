@@ -36,7 +36,6 @@
   <description>eXo Social Extras</description>
 
   <modules>
-    <module>benches</module>
     <module>injection</module>
     <module>feedmash</module>
     <module>samples</module>
