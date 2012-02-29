@@ -19,6 +19,7 @@ package org.exoplatform.social.core.space.spi;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
@@ -70,6 +71,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
   private Identity hearBreaker;
   private Identity newInvitedUser;
   private Identity newPendingUser;
+  private Identity user_new;
+  private Identity user_new1;
+  private Identity user_new_dot;
 
   @Override
   public void setUp() throws Exception {
@@ -79,7 +83,10 @@ public class SpaceServiceTest extends AbstractCoreTest {
     lifeCycleCompletionService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
-
+    
+    user_new = new Identity(OrganizationIdentityProvider.NAME, "user-new");
+    user_new1 = new Identity(OrganizationIdentityProvider.NAME, "user-new.1");
+    user_new_dot = new Identity(OrganizationIdentityProvider.NAME, "user.new");
     demo = new Identity(OrganizationIdentityProvider.NAME, "demo");
     tom = new Identity(OrganizationIdentityProvider.NAME, "tom");
     raul = new Identity(OrganizationIdentityProvider.NAME, "raul");
@@ -113,6 +120,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
     identityStorage.saveIdentity(hearBreaker);
     identityStorage.saveIdentity(newInvitedUser);
     identityStorage.saveIdentity(newPendingUser);
+    identityStorage.saveIdentity(user_new1);
+    identityStorage.saveIdentity(user_new);
+    identityStorage.saveIdentity(user_new_dot);
 
     tearDownUserList = new ArrayList<Identity>();
     tearDownUserList.add(demo);
@@ -131,6 +141,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
     tearDownUserList.add(hearBreaker);
     tearDownUserList.add(newInvitedUser);
     tearDownUserList.add(newPendingUser);
+    tearDownUserList.add(user_new1);
+    tearDownUserList.add(user_new);
+    tearDownUserList.add(user_new_dot);
   }
 
   @Override
@@ -1917,7 +1930,55 @@ public class SpaceServiceTest extends AbstractCoreTest {
       LOG.error(e.getMessage(), e);
     }
   }
+  
+  /**
+   * Test {@link SpaceService#addMember(Space, String)}
+   *
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  public void testAddMemberSpecialCharacter() throws Exception {
+    String reg = "^\\p{L}[\\p{L}\\d\\s._,-]+$";
+    Pattern pattern = Pattern.compile(reg);
+    assertTrue(pattern.matcher("user-new.1").matches());
+    assertTrue(pattern.matcher("user.new").matches());
+    assertTrue(pattern.matcher("user-new").matches());
+  
+    int number = 0;
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
+    String[] spaceManagers = new String[] {"demo"};
+    String[] members = new String[] {};
+    String[] invitedUsers = new String[] {"register1", "mary"};
+    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(spaceManagers);
+    space.setMembers(members);
 
+    space = this.createSpaceNonInitApps(space, "demo", null);
+    tearDownSpaceList.add(space);
+
+    Space savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
+    assertNotNull("savedSpace must not be null", savedSpace);
+
+    spaceService.addMember(savedSpace, "user-new.1");
+    spaceService.addMember(savedSpace, "user.new");
+    spaceService.addMember(savedSpace, "user-new");
+    savedSpace = spaceService.getSpaceByDisplayName(space.getDisplayName());
+    assertEquals(4, savedSpace.getMembers().length);
+  }
+
+  
   /**
    * Test {@link SpaceService#removeMember(Space, String)}
    *
