@@ -27,13 +27,14 @@
   
   def uicomponentId = uicomponent.id;
   def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
+  def labelInviteUsers = _ctx.appRes("${uicomponentId}.label.InviteUsers");
   def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction");
-  def labelValidateAction = _ctx.appRes("${uicomponentId}.label.ValidateAction");
-  def labelDeclineAction = _ctx.appRes("${uicomponentId}.label.DeclineAction");
-  def labelRevokeInvitedAction = _ctx.appRes("${uicomponentId}.label.RevokeInvitedAction");
-  def labelRemoveLeader = _ctx.appRes("${uicomponentId}.label.RemoveLeader");
-  def labelMakeLeader = _ctx.appRes("${uicomponentId}.label.MakeLeader");
-  def labelRemoveAction = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  def labelValidateInvitation = _ctx.appRes("${uicomponentId}.label.ValidateInvitation");
+  def labelDeclineInvitation = _ctx.appRes("${uicomponentId}.label.DeclineInvitation");
+  def labelCancelRequest = _ctx.appRes("${uicomponentId}.label.CancelRequest");
+  def labelRevokeManager = _ctx.appRes("${uicomponentId}.label.RevokeManager");
+  def labelGrantManager = _ctx.appRes("${uicomponentId}.label.GrantManager");
+  def labelRemoveMember = _ctx.appRes("${uicomponentId}.label.RemoveMember");
   def pendingUsers = uicomponent.getPendingUsers();
   def invitedUsers = uicomponent.getInvitedUsers();
   def existingUsers = uicomponent.getExistingUsers();
@@ -62,7 +63,7 @@
 <% uiform.begin() %>
   <% def searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
   <% def inviteAction = uicomponent.event("Invite") + "; return false;"%>
-		<span class="AddInvite"><label for="user"><%= _ctx.appRes(uicomponent.getId() + ".label.SelectUser")%></label> :<% uiform.renderField("user") %></span>
+		<span class="AddInvite"><label for="user">$labelInviteUsers</label> :<% uiform.renderField("user") %></span>
 		<a href="#" class="SearchAddMemberIcon SearchInviteButton" onclick="$inviteAction" title="$labelInviteAction">&nbsp;</a>
 		<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction" title="$labelSearchUserAction">&nbsp;</a>
   <%
@@ -100,8 +101,8 @@
 		  <% } %>
 			<td><%= uicomponent.getFullName(pendingUser) %></td>
 			<td>
-			  <a href="#" onclick="$validateAction" title="$labelValidateAction"><span class="ValidateButton">Validate Invitation</span></a>
-			  <a href="#" onclick="$declineAction" title="$labelDeclineAction"><span class="DeclineButton">Decline Invitation</span></a>
+			  <a href="#" onclick="$validateAction" title="$labelValidateInvitation"><span class="ValidateButton">$labelValidateInvitation</span></a>
+			  <a href="#" onclick="$declineAction" title="$labelDeclineInvitation"><span class="DeclineButton">$labelDeclineInvitation</span></a>
 			</td>
 		  </tr>
 		<% } /*end for*/ %>
@@ -138,7 +139,7 @@
 		  <% } %>
 			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
-			  <a href="#" onclick="$revokeAction" title="$labelRevokeInvitedAction"><span class="DeleteButton IconDelete">Delete User</span></a>
+			  <a href="#" onclick="$revokeAction" title="$labelCancelRequest"><span class="DeleteButton IconDelete">$labelCancelRequest</span></a>
 			</td>
 		  </tr>
 		<% } /*end for*/%>
@@ -187,20 +188,20 @@
 			  <% if(isLeader) { %>
 			  
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" onclick="$selfRemoveLeader" title="$labelRemoveLeader"><span class="ManageMemButtonSub">Revoke Manager</span></a>
+				<a href="#" onclick="$selfRemoveLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
 			  <% } else {%>
-				<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRemoveLeader"><span class="ManageMemButtonSub label">Revoke Manager</span></a>
+				<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub label">$labelRevokeManager</span></a>
 			  <% } %>
 
 			  <% } else { %>
 
-				<a onclick="$makeLeader" title="$labelMakeLeader"><span class="ManageMemButtonAdd label">Grant Manager</span></a>
+				<a onclick="$makeLeader" title="$labelGrantManager"><span class="ManageMemButtonAdd label">$labelGrantManager</span></a>
 
 			  <% } %>
 			  <% if(uicomponent.isCurrentUser(user)) { %>
-				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveAction"><span class="DeleteButton IconDelete">Delete User</span></a>
+				<a href="#" onclick="$removeOwnerAction" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
 			  <% } else { %>
-				<a href="#" onclick="$removeAction" title="$labelRemoveAction"><span class="DeleteButton IconDelete">Delete User</span></a>
+				<a href="#" onclick="$removeAction" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
 			  <% } %> 
 			  </td>
 			</tr>
