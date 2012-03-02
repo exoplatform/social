@@ -25,13 +25,13 @@
   <parent>
     <artifactId>exo.social.server.jboss</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.1.8</version>
+    <version>1.1.9-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.server.jboss.patch-ear</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.8</version>
+  <version>1.1.9-SNAPSHOT</version>
   <name>eXo Social Patch for JBoss (patch-ear)</name>
   <description>eXo Social Patch for JBoss (patch-ear)</description>
 
