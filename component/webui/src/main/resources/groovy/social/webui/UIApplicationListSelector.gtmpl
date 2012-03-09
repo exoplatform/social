@@ -45,7 +45,7 @@ def applicationList = uicomponent.getApplicationList();
           <img class="PortletIcon" onerror="src='$srcErrorBG'" title="$application.displayName" alt="$application.displayName" src="$srcBG">
           <div class="ApplicationContent">
             <div class="TitleBarApplication ClearFix">
-              $application.displayName
+              <div class="Title">$application.displayName</div>
               <div class="AddButton" title="$installApplicationLabel" onclick="$addApplicationAction"></div>
             </div>
             <div class="ApplicationContentLabel">

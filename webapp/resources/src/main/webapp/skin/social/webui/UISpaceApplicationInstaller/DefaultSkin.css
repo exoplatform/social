@@ -68,12 +68,22 @@
 .UISpaceApplicationInstaller .TitleBarApplication {
 	background: none repeat 0 0 transparent;
 	border-bottom: 1px solid #DFDFDF;
+	height: 20px;
+	margin: 0 auto 5px;
+	padding: 0 1px 3px;
+	width: 93%;
+	line-height: 28px;
+}
+
+.UISpaceApplicationInstaller .TitleBarApplication .Title{
+	background: none repeat 0 0 transparent;
+	border-bottom: 1px solid #DFDFDF;
 	color: #1553B9;
 	font-weight: bold;
 	height: 20px;
 	margin: 0 auto 5px;
 	padding: 0 1px 3px;
-	width: 93%;
+	width: 87%;
 	line-height: 28px;
 	font-family: arial;
 	font-size: 13px;
