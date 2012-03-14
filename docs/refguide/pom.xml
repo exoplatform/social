@@ -260,8 +260,9 @@
 
       <plugin>
         <groupId>org.wikbook</groupId>
-        <artifactId>${org.wikbook.version}</artifactId>
-        <executions>
+        <artifactId>wikbook.html2pdf</artifactId>
+        <version>${org.wikbook.version}</version>
+	<executions>
           <execution>
             <phase>package</phase>
             <goals>
