@@ -5,6 +5,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.relationship.model.Relationship;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -36,19 +37,13 @@ public class RelationshipInjector extends AbstractSocialInjector {
     }
 
     // Check if possible and adjust number if needed.
-    boolean possible = isPossible(from, to, number);
-    if (!possible) {
-      int found = findPossible(from, to, number);
-      if (found > 0) {
-        getLog().info("Unable to generate exactly " + number + " connections for each users. Injector we will use " + found + " instead.");
-        number = found;
-      }
-      else {
-        getLog().error("Unable to find better value. Aborting injection ...");
-        return;
-      }
+    Map<Integer, Integer> computed = compute(from, to, number);
+    getLog().info("About to inject relationships :");
+    for (Integer key : computed.keySet()) {
+      getLog().info("" + key + " user(s) with " + computed.get(key) + " connection(s)");
+
     }
-    
+
     for(int i = from; i <= to; ++i) {
 
       //
@@ -65,7 +60,11 @@ public class RelationshipInjector extends AbstractSocialInjector {
           continue;
         }
 
-        //
+        // Out of the range go to next user
+        if (j > to) {
+          break;
+        }
+        
         String toUser = USER_BASE + j;
         Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
 
@@ -111,22 +110,30 @@ public class RelationshipInjector extends AbstractSocialInjector {
 
   }
 
-  public int findPossible(int a, int b, int c) {
+  /**
+   * @param a begin range
+   * @param b end range
+   * @param c number
+   */
+  public Map<Integer, Integer> compute(int a, int b, int c) {
 
-    for (int i = c - 1; i > 0; --i) {
-      if (isPossible(a, b, i)) {
-        return i;
-      }
+    Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+
+    // exact is possible
+    if (isPossible(a, b, c)) {
+      result.put(b - a + 1, c);
+    }
+    // compute result
+    else {
+      int group = (int) ((b - a + 1F) / (c + 1F));
+      int exact = group * (c + 1);
+      int remaining = (b - a + 1) - exact;
+      result.put(exact, c);
+      result.put(remaining, remaining - 1);
     }
 
-    for (int i = c + 1; i < (b - a); ++i) {
-      if (isPossible(a, b, i)) {
-        return i;
-      }
-    }
-
-    return b - a;
-
+    return result;
+    
   }
 
 }

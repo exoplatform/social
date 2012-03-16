@@ -35,6 +35,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -309,7 +310,7 @@ public class InjectorTestCase extends AbstractKernelTest {
     Identity user9 = identityManager.getOrCreateIdentity("organization", "bench.user9", false);
 
     //
-    params.put("number", "6");
+    params.put("number", "3");
     params.put("fromUser", "2");
     params.put("toUser", "8");
     relationshipInjector.inject(params);
@@ -317,13 +318,13 @@ public class InjectorTestCase extends AbstractKernelTest {
     //
     assertEquals(0, relationshipManager.getConnections(user0).getSize());
     assertEquals(0, relationshipManager.getConnections(user1).getSize());
-    assertEquals(6, relationshipManager.getConnections(user2).getSize());
-    assertEquals(6, relationshipManager.getConnections(user3).getSize());
-    assertEquals(6, relationshipManager.getConnections(user4).getSize());
-    assertEquals(6, relationshipManager.getConnections(user5).getSize());
-    assertEquals(6, relationshipManager.getConnections(user6).getSize());
-    assertEquals(6, relationshipManager.getConnections(user7).getSize());
-    assertEquals(6, relationshipManager.getConnections(user8).getSize());
+    assertEquals(3, relationshipManager.getConnections(user2).getSize());
+    assertEquals(3, relationshipManager.getConnections(user3).getSize());
+    assertEquals(3, relationshipManager.getConnections(user4).getSize());
+    assertEquals(3, relationshipManager.getConnections(user5).getSize());
+    assertEquals(2, relationshipManager.getConnections(user6).getSize());
+    assertEquals(2, relationshipManager.getConnections(user7).getSize());
+    assertEquals(2, relationshipManager.getConnections(user8).getSize());
     assertEquals(0, relationshipManager.getConnections(user9).getSize());
 
   }
@@ -351,21 +352,81 @@ public class InjectorTestCase extends AbstractKernelTest {
 
   }
 
-  public void testFindPossibility() throws Exception {
+  public void testCompute() throws Exception {
 
-    assertEquals(1, relationshipInjector.findPossible(0, 3, 2));
+    Map<Integer, Integer> r = relationshipInjector.compute(0, 3, 1);
+    assertEquals(1, r.size());
+    assertEquals(1, r.get(4).intValue());
 
-    assertEquals(4, relationshipInjector.findPossible(0, 4, 1));
-    assertEquals(4, relationshipInjector.findPossible(0, 4, 2));
-    assertEquals(4, relationshipInjector.findPossible(0, 4, 3));
+    r = relationshipInjector.compute(0, 3, 2);
+    assertEquals(2, r.size());
+    assertEquals(0, r.get(1).intValue());
+    assertEquals(2, r.get(3).intValue());
 
-    assertEquals(1, relationshipInjector.findPossible(0, 9, 2));
-    assertEquals(1, relationshipInjector.findPossible(0, 9, 3));
+    r = relationshipInjector.compute(0, 3, 3);
+    assertEquals(1, r.size());
+    assertEquals(3, r.get(4).intValue());
 
-    assertEquals(4, relationshipInjector.findPossible(0, 9, 5));
-    assertEquals(4, relationshipInjector.findPossible(0, 9, 6));
-    assertEquals(4, relationshipInjector.findPossible(0, 9, 7));
-    assertEquals(4, relationshipInjector.findPossible(0, 9, 8));
+    r = relationshipInjector.compute(0, 4, 1);
+    assertEquals(2, r.size());
+    assertEquals(0, r.get(1).intValue());
+    assertEquals(1, r.get(4).intValue());
+
+    r = relationshipInjector.compute(0, 4, 2);
+    assertEquals(2, r.size());
+    assertEquals(1, r.get(2).intValue());
+    assertEquals(2, r.get(3).intValue());
+
+    r = relationshipInjector.compute(0, 4, 3);
+    assertEquals(2, r.size());
+    assertEquals(0, r.get(1).intValue());
+    assertEquals(3, r.get(4).intValue());
+
+    r = relationshipInjector.compute(0, 4, 4);
+    assertEquals(1, r.size());
+    assertEquals(4, r.get(5).intValue());
+
+    r = relationshipInjector.compute(0, 9, 1);
+    assertEquals(1, r.size());
+    assertEquals(1, r.get(10).intValue());
+
+    r = relationshipInjector.compute(0, 9, 2);
+    assertEquals(2, r.size());
+    assertEquals(0, r.get(1).intValue());
+    assertEquals(2, r.get(9).intValue());
+
+    r = relationshipInjector.compute(0, 9, 3);
+    assertEquals(2, r.size());
+    assertEquals(1, r.get(2).intValue());
+    assertEquals(3, r.get(8).intValue());
+
+    r = relationshipInjector.compute(0, 9, 4);
+    assertEquals(1, r.size());
+    assertEquals(4, r.get(10).intValue());
+
+    r = relationshipInjector.compute(0, 9, 5);
+    assertEquals(2, r.size());
+    assertEquals(3, r.get(4).intValue());
+    assertEquals(5, r.get(6).intValue());
+
+    r = relationshipInjector.compute(0, 9, 6);
+    assertEquals(2, r.size());
+    assertEquals(2, r.get(3).intValue());
+    assertEquals(6, r.get(7).intValue());
+
+    r = relationshipInjector.compute(0, 9, 7);
+    assertEquals(2, r.size());
+    assertEquals(1, r.get(2).intValue());
+    assertEquals(7, r.get(8).intValue());
+
+    r = relationshipInjector.compute(0, 9, 8);
+    assertEquals(2, r.size());
+    assertEquals(0, r.get(1).intValue());
+    assertEquals(8, r.get(9).intValue());
+
+    r = relationshipInjector.compute(0, 9, 9);
+    assertEquals(1, r.size());
+    assertEquals(9, r.get(10).intValue());
 
   }
 
