@@ -26,6 +26,7 @@ import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -57,6 +58,8 @@ public abstract class IdentityEntity {
   @Property(name = "soc:remoteId")
   public abstract String getRemoteId();
   public abstract void setRemoteId(String remoteId);
+  public static final PropertyLiteralExpression<String> remoteId =
+      new PropertyLiteralExpression<String>(String.class, "soc:remoteId");
 
   /**
    * Show that if the provider Id is deleted or not via the provider.

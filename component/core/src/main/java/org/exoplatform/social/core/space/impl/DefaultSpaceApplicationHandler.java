@@ -397,8 +397,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
       dataStorage.create(page);
       page = dataStorage.getPage(page.getPageId());
-      //clear page from ui
-      Util.getUIPortal().clearUIPage(page.getPageId());
       //setting some data to page.
       setPage(space, app, gadgetApplication, portletApplication, page);
       dataStorage.save(page);
