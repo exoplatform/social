@@ -21,6 +21,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -46,17 +47,36 @@ public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   
   /**
-   * Gets the identity and its associated profile by the identityId.
+   * Gets the identity and its associated profile by the activity Id.
    *
    * @param uriInfo the uri request uri
    * @param portalContainerName the associated portal container name
    * @param identityId the specified identityId
    * @param format the expected returned format
+   * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.Notes.Get
+   * @authentication
+   * @request
+   *{code}
+   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
+   *{code}
+   * @response
+   *{code:json}
+   * {
+   *   "id" : "123456789",
+   *   "providerId": "organization",
+   *   "remoteId": "demo",
+   *   "profile": {
+   *     "fullName": "Demo Gtn",
+   *     "avatarUrl": "http://cloud-workspaces.com/profile/avatar/demo.jpg"
+   *   }
+   * }
+   *{code}
    * @return a response object
    * 
    */
   @GET
   @Path("{identityId}.{format}")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getIdentityById( @Context UriInfo uriInfo,
                                    @PathParam("portalContainerName") String portalContainerName,
                                    @PathParam("identityId") String identityId,
@@ -89,18 +109,43 @@ public class IdentityResources implements ResourceContainer {
   }
 
   /**
-   * Gets an identity and its associated profile by specifying its providerId and remoteId.
-   * 
+   * Gets the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
+   * its providerId and remoteId. There could be as many identities as possible. Currently, there are 2 built-in types
+   * of identities (user identities and space identities) in eXo Social.
+   *
    * @param uriInfo the uri request uri
    * @param portalContainerName the associated portal container name
    * @param providerId the providerId of Identity
    * @param remoteId the remoteId of Identity
    * @param format the expected returned format
+   * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.identity.Get
+   * @authentication
+   * @request
+   *{code}
+   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/identity/organization/demo.json
+   *{code}
+   * *user identities*: _providerId_ = organization; _remoteId_ = portal user name.
+   *
+   * *space identities:* _providerId_ = space; _remoteId_ = space's pretty name.
+   *
+   * @response
+   *{code:json}
+   * {
+   *   "id" : "123456789",
+   *   "providerId": "organization",
+   *   "remoteId": "demo",
+   *   "profile": {
+   *     "fullName": "Demo Gtn",
+   *     "avatarUrl": "http://localhost:8080/socialdemo/demo/profile/avatar/demo.jpg"
+   *   }
+   * }
+   *{code}
    * @return a response object
    * @since 1.2.2
    */
   @GET
   @Path("{providerId}/{remoteId}.{format}")
+  @Produces(MediaType.APPLICATION_JSON)
   public Response getIdentityProviderIdAndRemoteId(@Context UriInfo uriInfo,
                                                    @PathParam("portalContainerName") String portalContainerName,
                                                    @PathParam("providerId") String providerId,

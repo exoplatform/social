@@ -47,11 +47,17 @@ public abstract class ActivityMonthEntity implements NamedEntity, IndexNumber {
   @Name
   public abstract String getName();
 
+  /**
+   * The number of activities in the month. The default value is set to 0.
+   */
   @Property(name = "soc:number")
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
-  
+
+  /**
+   * All the days containing activities in the month.
+   */
   @OneToMany
   public abstract Map<String, ActivityDayEntity> getDays();
 

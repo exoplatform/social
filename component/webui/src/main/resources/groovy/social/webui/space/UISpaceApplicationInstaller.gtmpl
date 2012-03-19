@@ -23,9 +23,8 @@
 
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UIItemSelector">
-    <div class="LeftColumnStyle">
+    <div class="LeftColumnStyle ClearFix">
       <% uicomponent.renderChildren(); %>
-      <div class="ClearLeft"></div>
     </div>
   </div>
 </div>

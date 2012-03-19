@@ -14,9 +14,9 @@ spaceName=NAME_OF_YOUR_SPACE&description=DESCRIPTION_OF_THE_SPACE"></iframe>
 {code}
 
 To install this version in your application, replace all the uppercase text below:
-* _{noformat}URL_OF_YOUR_EXO_INSTALLATION.COM{noformat}_: This is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _{noformat}localhost:8080{noformat}_.
-* _{noformat}NAME_OF_YOUR_SPACE{noformat}_: This is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and {noformat}"_"{noformat}, ".", "-" or ".".
-* _{noformat}DESCRIPTION_OF_THE_SPACE{noformat}_: This will be displayed in the list of spaces.
+* _{{{URL_OF_YOUR_EXO_INSTALLATION.COM}}}_: This is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _{{{localhost:8080}}}_.
+* _{{{NAME_OF_YOUR_SPACE}}}_: This is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and {{{"_"}}}, ".", "-" or ".".
+* _{{{DESCRIPTION_OF_THE_SPACE}}}_: This will be displayed in the list of spaces.
 
 h1. Advanced version {anchor:id=SOCref.DeveloperReference.widget_tutorial.advanced_version}
 

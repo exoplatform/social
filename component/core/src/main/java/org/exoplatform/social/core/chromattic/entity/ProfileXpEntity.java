@@ -31,26 +31,44 @@ public abstract class ProfileXpEntity {
   @Id
   public abstract String getId();
 
+  /**
+   * The work skills of an identity.
+   */
   @Property(name = "soc:skills")
   public abstract String getSkills();
   public abstract void setSkills(String skills);
 
+  /**
+   * The job position of an identity at an organization.
+   */
   @Property(name = "soc:position")
   public abstract String getPosition();
   public abstract void setPosition(String position);
 
+  /**
+   * The date when an identity starts working at an organization.
+   */
   @Property(name = "soc:startDate")
   public abstract String getStartDate();
   public abstract void setStartDate(String startDate);
 
+  /**
+   * The date when an identity stops working at an organization.
+   */
   @Property(name = "soc:endDate")
   public abstract String getEndDate();
   public abstract void setEndDate(String endDate);
 
+  /**
+   * The description of an identity's position at an organization.
+   */
   @Property(name = "soc:description")
   public abstract String getDescription();
   public abstract void setDescription(String description);
 
+  /**
+   * The company where an identity works.
+   */
   @Property(name = "soc:company")
   public abstract String getCompany();
   public abstract void setCompany(String company);

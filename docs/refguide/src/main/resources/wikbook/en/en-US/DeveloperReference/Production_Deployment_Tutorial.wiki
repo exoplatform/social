@@ -49,7 +49,7 @@ Here is what you need to define in apache configuration.
 
 * The virtualhost will answer on the port 80 of social.demo.exoplatform.org.
 * The redirect allows you to serve only the /socialdemo portal which contains the demo.
-* The JKMount instructions refer to the _{noformat}mod_jk{noformat}_ configuration.
+* The JKMount instructions refer to the _{{{mod_jk}}}_ configuration.
 
 {code:xml}
 # ----
@@ -101,7 +101,7 @@ You need to set the same ports in _workers.properties_ and in the _tomcat/conf/s
 
 h1. Configure MySQL {anchor:id=SOCref.DeveloperReference.Configure_MySQL}
 
-A dedicated schema is being used for the demo called _{noformat}demo_social{noformat}_.
+A dedicated schema is being used for the demo called _{{{demo_social}}}_.
 * First login to mysql shell :
 {code}mysql -u USER_NAME_WITH_PRIV_TO_CREATE_DB -p{code}
 * then create the schema

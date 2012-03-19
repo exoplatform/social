@@ -42,15 +42,15 @@ import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
-    template = "system:/groovy/webui/form/UIForm.gtmpl",
+    template = "classpath:groovy/social/webui/space/UISpacePermission.gtmpl",
     events = {
         @EventConfig(listeners = UISpacePermission.SaveActionListener.class)
       }
 )
 public class UISpacePermission extends UIForm {
 
-  final static private String SPACE_VISIBILITY = "Visibility";
-  final static private String SPACE_REGISTRATION = "Registration";
+  final static private String SPACE_VISIBILITY = "UIVisibility";
+  final static private String SPACE_REGISTRATION = "UIRegistration";
   private String spaceId;
   /**
    * constructor

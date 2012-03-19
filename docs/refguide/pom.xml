@@ -5,16 +5,14 @@
   <parent>
     <groupId>org.exoplatform.social</groupId>
     <artifactId>exo.social.docs</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.9-SNAPSHOT</version>
   </parent>
   <artifactId>exo.social.docs.refguide</artifactId>
   <packaging>jar</packaging>
 
-
   <name>eXo Social Reference Guide</name>
 
   <properties>
-    <wikbook.version>0.9.35</wikbook.version>
     <wikbook.sourceDirectory>${project.build.directory}/wikbook/tmp</wikbook.sourceDirectory>
     <wikbook.syntaxId>confluence/1.0</wikbook.syntaxId><!-- xwiki/2.0 -->
     <wikbook.validationMode>strict</wikbook.validationMode> <!-- lax/strick -->
@@ -25,9 +23,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.service</artifactId>
+      <classifier>doc-jaxrs</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+      <classifier>doc-chromattic</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.wikbook</groupId>
       <artifactId>wikbook.docbkxstyle</artifactId>
-      <version>${wikbook.version}</version>
     </dependency>
   </dependencies>
 
@@ -64,7 +71,6 @@
       <plugin>
         <groupId>org.wikbook</groupId>
         <artifactId>wikbook.maven</artifactId>
-        <version>${wikbook.version}</version>
         <executions>
           <execution>
             <phase>prepare-package</phase>
@@ -105,6 +111,34 @@
               <outputDirectory>${docbook.sourceDirectory}/resources</outputDirectory>
             </configuration>
           </execution>
+           <execution>
+             <id>unpack-jaxrs</id>
+             <phase>compile</phase>
+             <goals>
+               <goal>unpack-dependencies</goal>
+             </goals>
+             <configuration>
+               <includeGroupIds>org.exoplatform.social</includeGroupIds>
+               <includeArtifactIds>exo.social.component.service</includeArtifactIds>
+               <includeClassifiers>doc-jaxrs</includeClassifiers>
+               <excludes>META-INF/**</excludes>
+               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/jaxrs</outputDirectory>
+            </configuration>
+           </execution>
+           <execution>
+             <id>unpack-chromattic</id>
+             <phase>compile</phase>
+             <goals>
+               <goal>unpack-dependencies</goal>
+             </goals>
+             <configuration>
+               <includeGroupIds>org.exoplatform.social</includeGroupIds>
+               <includeArtifactIds>exo.social.component.core</includeArtifactIds>
+               <includeClassifiers>doc-chromattic</includeClassifiers>
+               <excludes>META-INF/**</excludes>
+               <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/chromattic</outputDirectory>
+            </configuration>
+           </execution>
         </executions>
       </plugin>
 
@@ -119,30 +153,71 @@
         -->
         <executions>
           <execution>
-            <id>Generate HTML</id>
+            <id>generate-html</id>
             <goals>
               <goal>generate-html</goal>
             </goals>
             <phase>package</phase>
             <configuration>
-              <htmlCustomization>${docbook.sourceDirectory}/resources/xsl/html.xsl</htmlCustomization>
-              <htmlStylesheet>css/html.css</htmlStylesheet>
-              <imgSrcPath>images/</imgSrcPath>
-              <admonGraphicsPath>images/admons/</admonGraphicsPath>
+
+              <!-- Output -->
+              <targetDirectory>${project.build.directory}/wikbook/output/html</targetDirectory>
+
+              <!-- Stylesheets -->
+              <htmlCustomization>${docbook.sourceDirectory}/resources/xsl/bootstrap/html.xsl</htmlCustomization>
+
+              <!-- Copy the image -->
+              <postProcess>
+                <copy todir="${project.build.directory}/wikbook/output/html/images">
+                  <fileset dir="${pom.basedir}/src/main/resources/wikbook/images">
+                    <include name="**" />
+                  </fileset>
+                </copy>
+                <copy todir="${project.build.directory}/wikbook/output/html">
+                  <fileset dir="${project.build.directory}/wikbook/src/resources">
+                    <include name="**/*.css" />
+                    <include name="**/*.js" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+              </postProcess>
             </configuration>
           </execution>
-          <!--execution>
-            <id>Generate PDF</id>
+          <execution>
+            <id>generate-xhtml</id>
             <goals>
-              <goal>generate-pdf</goal>
+              <goal>generate-xhtml</goal>
             </goals>
             <phase>package</phase>
             <configuration>
-              <foCustomization>${docbook.sourceDirectory}/resources/xsl/fopdf.xsl</foCustomization>
-              <imgSrcPath>${docbook.targetDirectory}/images/</imgSrcPath>
-              <admonGraphicsPath>${docbook.targetDirectory}/images/admons/</admonGraphicsPath>
+
+              <!-- Output -->
+              <targetDirectory>${project.build.directory}/wikbook/output/xhtml</targetDirectory>
+              <targetFileExtension>html</targetFileExtension>
+
+              <!-- Stylesheets -->
+              <xhtmlCustomization>${docbook.sourceDirectory}/resources/xsl/simple/pdf.xsl</xhtmlCustomization>
+
+              <!-- Copy the image -->
+              <postProcess>
+                <copy todir="${project.build.directory}/wikbook/output/xhtml/images">
+                  <fileset dir="${pom.basedir}/src/main/resources/wikbook/images">
+                    <include name="**" />
+                  </fileset>
+                </copy>
+                <copy todir="${project.build.directory}/wikbook/output/xhtml">
+                  <fileset dir="${project.build.directory}/wikbook/src/resources">
+                    <include name="**/*.css" />
+                    <include name="**/*.png" />
+                    <include name="**/*.gif" />
+                    <include name="**/*.jpg" />
+                  </fileset>
+                </copy>
+              </postProcess>
             </configuration>
-          </execution-->
+          </execution>
         </executions>
         <configuration>
           <sourceDirectory>${docbook.sourceDirectory}</sourceDirectory>
@@ -172,25 +247,6 @@
             </copy>
           </preProcess>
 
-          <!-- Copy the image for HTML-->
-          <postProcess>
-
-            <copy todir="${docbook.targetDirectory}/images">
-              <fileset dir="${wikbook.sourceDirectory}/images">
-                <include name="**" />
-              </fileset>
-            </copy>
-            <copy todir="${docbook.targetDirectory}/">
-              <fileset dir="${docbook.sourceDirectory}/resources/">
-                <include name="**/*.css" />
-                <include name="**/*.png" />
-                <include name="**/*.gif" />
-                <include name="**/*.jpg" />
-              </fileset>
-            </copy>
-
-          </postProcess>
-
         </configuration>
         <dependencies>
           <dependency>
@@ -200,6 +256,26 @@
             <scope>runtime</scope>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.wikbook</groupId>
+        <artifactId>wikbook.html2pdf</artifactId>
+        <version>${org.wikbook.version}</version>
+	<executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${project.build.directory}/wikbook/output/xhtml</sourceDirectory>
+          <sourceFileName>exo.social.docs.refguide.html</sourceFileName>
+          <destinationDirectory>${project.build.directory}/wikbook/output/pdf</destinationDirectory>
+          <destinationFileName>exo.social.docs.refguide.pdf</destinationFileName>
+        </configuration>
       </plugin>
 
       <!-- html-zip packaging -->
@@ -237,7 +313,7 @@
               </sources>
             </configuration>
           </execution>
-          <!--execution>
+          <execution>
             <id>attach-artifacts</id>
             <phase>package</phase>
             <goals>
@@ -246,12 +322,12 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${docbook.targetDirectory}/${project.artifactId}.pdf</file>
+                  <file>${docbook.targetDirectory}/pdf/${project.artifactId}.pdf</file>
                   <type>pdf</type>
                 </artifact>
               </artifacts>
             </configuration>
-          </execution-->
+          </execution>
         </executions>
       </plugin>
     </plugins>

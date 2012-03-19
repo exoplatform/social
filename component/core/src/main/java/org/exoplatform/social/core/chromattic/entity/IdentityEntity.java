@@ -45,78 +45,119 @@ public abstract class IdentityEntity {
   public abstract String getName();
   public abstract String setName(String name);
 
+  /**
+   * The provider Id is considered as a namespace for the remote Id.
+   */
   @Property(name = "soc:providerId")
   public abstract String getProviderId();
   public abstract void setProviderId(String providerId);
 
+  /**
+   * The local Id from a provider Id.
+   */
   @Property(name = "soc:remoteId")
   public abstract String getRemoteId();
   public abstract void setRemoteId(String remoteId);
   public static final PropertyLiteralExpression<String> remoteId =
       new PropertyLiteralExpression<String>(String.class, "soc:remoteId");
 
+  /**
+   * Show that if the provider Id is deleted or not via the provider.
+   */
   @Property(name = "soc:isDeleted")
   public abstract Boolean isDeleted();
   public abstract void setDeleted(Boolean deleted);
 
-
+  /**
+   * Store the detailed information of an identity.
+   */
   @MappedBy("soc:profile")
   @OneToOne
   @Owner
   public abstract ProfileEntity getProfile();
   public abstract void setProfile(ProfileEntity profile);
 
+  /**
+   * Store all activities in the activity stream of an identity.
+   */
   @MappedBy("soc:activities")
   @OneToOne
   @Owner
   public abstract ActivityListEntity getActivityList();
   public abstract void setActivityList(ActivityListEntity activityListEntity);
 
+  /**
+   * Store all the relationships which contain an identity inviting other identities to connect with himself.
+   */
   @MappedBy("soc:sender")
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getSender();
   public abstract void setSender(RelationshipListEntity sender);
 
+  /**
+   * Store all the relationships which contain an identity invited to connect by other identities.
+   */
   @MappedBy("soc:receiver")
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getReceiver();
   public abstract void setReceiver(RelationshipListEntity receiver);
 
+  /**
+   * Store all the relationships of an identity that is in connection with other identities.
+   */
   @MappedBy("soc:relationship")
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getRelationship();
 
+  /**
+   * Store all the relationships which contain an identity ignored by other identities.
+   */
   @MappedBy("soc:ignored")
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getIgnored();
 
+  /**
+   * Store all the relationships which contain an identity ignoring other identities.
+   */
   @MappedBy("soc:ignore")
   @OneToOne
   @Owner
   public abstract RelationshipListEntity getIgnore();
 
+  /**
+   * Store all spaces of which an identity is a member.
+   */
   @OneToOne
   @Owner
   @MappedBy("soc:spacemember")
   public abstract SpaceListEntity getSpaces();
   public abstract void setSpaces(SpaceListEntity spaces);
 
+  /**
+   * Store all spaces which an identity is pending for validation to join.
+   */
   @OneToOne
   @Owner
   @MappedBy("soc:spacependingmember")
   public abstract SpaceListEntity getPendingSpaces();
   public abstract void setPendingSpaces(SpaceListEntity spaces);
 
+  /**
+   * Store all spaces which an identity is invited to join.
+   */
   @OneToOne
   @Owner
   @MappedBy("soc:spaceinvitedmember")
   public abstract SpaceListEntity getInvitedSpaces();
   public abstract void setInvitedSpaces(SpaceListEntity spaces);
 
+  /**
+   * Store all spaces of which an identity is a manager.
+   */
   @OneToOne
   @Owner
   @MappedBy("soc:spacemanagermember")

@@ -123,29 +123,10 @@
 	display: block;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleBar {
-	background: #a0a0a0;
-	line-height: 21px;
-	font-weight: bold;
-	color: #000000;
-}
-
 .UISpaceSettingPortlet .UISpaceMember .TitleContainerMembers {
 	background: #f8f8f8;
 	border: solid 5px #eeeeee;
 	border-radius: 5px 5px 0 0;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .TableSpace {
-	margin-top: 5px;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .TableSpace .TitleAction {
-	width: 80px;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .TableSpace .MemberWidth {
-	width: 25%;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContent {
@@ -162,13 +143,23 @@
 	line-height: 24px;
 }
 
+.UISpaceSettingPortlet .UISpaceMember .UIGrid td {
+	padding: 12px 10px;
+}
+
 .UISpaceSettingPortlet .UISpaceMember .UIGrid a {
-	color: #058ee6;
-	text-decoration: underline;
+	color: #363636;
+	background: #E1E1E1;
+	border: 1px solid transparent;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 11px;
+    padding: 5px;
+	margin: 0 6px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .UIGrid a:hover {
-	text-decoration: none;
+	background:  url('DefaultSkin/background/SpaceMemBtnBg.png') repeat-x left top;
+	border: 1px solid #acacac;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .AddInviteButton {
@@ -176,52 +167,23 @@
 	float: right;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonSub {
-	background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat center top;
-	height: 14px;
-	width: 14px;
-	margin: auto;
-	display: block;
-	cursor: pointer;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .TitleContainer .ManageMemButtonAdd {
-	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat center top;
-	height: 14px;
-	width: 14px;
-	margin: auto;
-	display: block;
-	cursor: pointer;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .DeleteButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat center center;
-}
-
 .UISpaceSettingPortlet .UISpaceMember .IconDelete {
-	display: block;
-	height: 16px;
-	width: 16px;
-	margin: auto;
-	cursor: pointer;
+	display: inline-block;
+	padding: 2px 6px 2px 22px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ValidateButton {
-	background: url('DefaultSkin/background/ValidateButton.gif') no-repeat left top;
-	height: 15px;
-	margin-top: 2px;
-	width: 17px;
+	background: url('DefaultSkin/background/ValidateButton.png') no-repeat left center;
 	cursor: pointer;
 	display: inline-block;
+	padding: 2px 6px 2px 22px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .DeclineButton {
-	background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
+	background: url('DefaultSkin/background/DeclineButton.png') no-repeat left center;
 	display: inline-block;
-	width: 14px;
-	height: 15px;
 	cursor: pointer;
-	margin-top: 2px;
+	padding: 2px 6px 2px 22px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .TitleContainer .ButtonSelectUse {
@@ -380,7 +342,7 @@
 .UISpaceSettingPortlet .UISpaceApplication .UIAction {
 	border-top: 0 none;
 	margin: 10px 15px 0;
-	float: left;
+	text-align: left;
 }
 
 .UISpaceSettingPortlet .UISpaceApplication .AddAplicationIcon {
@@ -814,14 +776,15 @@
 
 .UISpaceSettingPortlet .UISpaceMember .SearchAddMemberIcon {
 	background: url('DefaultSkin/background/InviteUserButton.png') no-repeat right;
-	padding: 4px 12px;
+	padding: 4px 17px;
 	margin: 5px 7px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .InviteButton {
 	background: url('DefaultSkin/background/SearchAddMember.png') no-repeat right;
-	padding: 4px 9px;
+	padding: 4px 14px 4px 6px;
 	margin: 5px 7px;
+	border-left: none;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .AddInviteButton {
@@ -830,39 +793,17 @@
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ManageMemButtonSub {
-	background: url('DefaultSkin/background/ManageMemButtonSub.gif') no-repeat center top;
-	padding: 0px 6px;
+	background: url('DefaultSkin/background/ManageMemButtonSub.png') no-repeat left center;
+	padding: 2px 6px 2px 22px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ManageMemButtonAdd {
-	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat center top;
-	padding: 2px 6px;
+	background: url('DefaultSkin/background/ManageMemButtonAdd.png') no-repeat left center;
+	padding: 2px 6px 2px 22px;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .DeleteButton {
-	background: url('DefaultSkin/background/DeleteIcon.gif') no-repeat center center;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .IconDelete {
-	padding: 2px 6px;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .ValidateButton {
-	background: url('DefaultSkin/background/ValidateButton.gif') no-repeat left top;
-	height: 15px;
-	margin-top: 2px;
-	width: 17px;
-	cursor: pointer;
-	display: inline-block;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .DeclineButton {
-	background: url('DefaultSkin/background/DeclineButton.gif') no-repeat left top;
-	display: inline-block;
-	width: 14px;
-	height: 15px;
-	cursor: pointer;
-	margin-top: 2px;
+	background: url('DefaultSkin/background/DeclineButton.png') no-repeat left center;
 }
 
 .UISpaceSettingPortlet .UISpaceMember .ButtonSelectUse {
@@ -1009,7 +950,7 @@
 }
 
 .UISpaceSettingPortlet .InstallApplicationButton {
-	background: url('DefaultSkin/background/ManageMemButtonAdd.gif') no-repeat left top;
+	background: url('DefaultSkin/background/ManageMemButtonAdd.png') no-repeat left top;
 	width: 15px;
 	height: 16px;
 	line-height: 18px;
@@ -1281,11 +1222,6 @@
 
 .UISpaceSettingPortlet .UISpaceMember .UIGrid {
 	margin: 18px 0px;
-	border: 1px solid #e1e1e1;
-}
-
-.UISpaceSettingPortlet .UISpaceMember .UIGrid th {
-	color: #464646;
 }
 
 .UISpaceNavigationManagement .TopTitleBar {

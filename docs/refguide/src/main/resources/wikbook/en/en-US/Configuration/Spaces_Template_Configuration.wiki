@@ -56,6 +56,6 @@ If you want to put the menu on the right and the application on the left, you ca
 
 
 In eXo Social standalone, this configuration file is at:
-* _{noformat}$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml{noformat}_
+* _{{{$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml}}}_
 In eXo Platform, this configuration file is at:
-* _{noformat}$EXO_TOMCAT/webapps/{portal-name}/WEB-INF/conf/portal/template/pages/space/page.xml{noformat}_
+* _{{{$EXO_TOMCAT/webapps/{portal-name}/WEB-INF/conf/portal/template/pages/space/page.xml}}}_

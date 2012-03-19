@@ -25,7 +25,7 @@
   <parent>
     <artifactId>exo.social.demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.2.9-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>

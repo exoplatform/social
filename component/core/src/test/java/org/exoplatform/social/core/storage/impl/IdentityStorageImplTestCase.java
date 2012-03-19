@@ -856,7 +856,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     Identity newIdentity = new Identity(provider, name);
     storage._createIdentity(newIdentity);
     Profile p = new Profile(newIdentity);
-    p.setProperty(Profile.FIRST_NAME, name);
+    p.setProperty(Profile.LAST_NAME, name);
     p.setProperty(Profile.FULL_NAME, name);
     p.setProperty(Profile.GENDER, gender);
     p.setProperty(Profile.POSITION, position);

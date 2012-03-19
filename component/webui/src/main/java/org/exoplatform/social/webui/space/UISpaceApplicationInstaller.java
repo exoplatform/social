@@ -69,7 +69,7 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
   /**
    * The current space.
    */
-  private Space space;
+  private String spaceId;
 
   /**
    * The application category list.
@@ -122,7 +122,7 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
    * @throws Exception
    */
   public final void setSpace(Space newSpace) throws Exception {
-    this.space = newSpace;
+    this.spaceId = newSpace.getId();
     initAppStore();
     initUICategoryAndList();
   }
@@ -171,8 +171,8 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
     String appId = uiApplicationListSelector.getSelectedApplication().getApplicationName();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     try {
-      spaceService.installApplication(this.space, appId);
-      spaceService.activateApplication(this.space, appId);
+      spaceService.installApplication(this.spaceId, appId);
+      spaceService.activateApplication(this.spaceId, appId);
     } catch (SpaceException e) {
       LOG.warn("Failed to install application: " + appId, e);
     }
@@ -184,6 +184,8 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
    * @throws Exception
    */
   private void initAppStore() throws Exception {
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    Space space = spaceService.getSpaceById(this.spaceId);
     appStore = SpaceUtils.getAppStore(space);
     applicationCategoryList = new ArrayList<ApplicationCategory>(appStore.keySet());
   }

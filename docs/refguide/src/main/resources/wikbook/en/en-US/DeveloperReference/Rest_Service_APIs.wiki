@@ -30,14 +30,14 @@ The _rest\_context\_name_ and _portal\_container\_name_ parameters are used as f
 ** _rest\_context\_name_: _rest_;
 ** _portal\_container\_name_: _portal_;
 
-h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResources}
-{include:document="RestService_v1_alpha3/Activity_Resources_v1_alpha3.wiki"}
+h1. Activity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.ActivityResources.wiki"}
 
 h1. Activity Stream Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityStreamResources}
-{include:document="RestService_v1_alpha3/Activity_Stream_Resources_v1_alpha3.wiki"}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.ActivityStreamResources.wiki"}
 
-h1. Identity Resources {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.IdentityResources}
-{include:document="RestService_v1_alpha3/Identity_Resources_v1_alpha3.wiki"}
+h1. Identity Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.IdentityResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.IdentityResources.wiki"}
 
-h1. Version Resources   {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources}
-{include:document="RestService_v1_alpha3/Version_Resources_v1_alpha3.wiki"}
+h1. Version Resources  {anchor:id=SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources}
+{include:document="jaxrs/generated/org.exoplatform.social.service.rest.api.VersionResources.wiki"}

@@ -45,11 +45,17 @@ public abstract class ActivityDayEntity implements NamedEntity, IndexNumber {
   @Name
   public abstract String getName();
 
+  /**
+   * The number of activities in the day. The default value is set to 0.
+   */
   @Property(name = "soc:number")
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
 
+  /**
+   * All the activities in the day.
+   */
   @OneToMany
   public abstract List<ActivityEntity> getActivities();
 
