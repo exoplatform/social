@@ -31,8 +31,8 @@ public class RelationshipInjector extends AbstractSocialInjector {
     int from = param(params, FROM_USER);
     int to = param(params, TO_USER);
 
-    if (number <= 0 || number > to - from) {
-      getLog().error("Number have to be positive and lesser than the range. Value '" + number + "' incorrect. Aborting injection ...");
+    if (number <= 0) {
+      getLog().error("Number have to be positive. Value '" + number + "' incorrect. Aborting injection ...");
       return;
     }
 
@@ -119,8 +119,12 @@ public class RelationshipInjector extends AbstractSocialInjector {
 
     Map<Integer, Integer> result = new HashMap<Integer, Integer>();
 
+    // number too big, set maximum
+    if (c > b - a) {
+      result.put(b - a + 1, b - a);
+    }
     // exact is possible
-    if (isPossible(a, b, c)) {
+    else if (isPossible(a, b, c)) {
       result.put(b - a + 1, c);
     }
     // compute result

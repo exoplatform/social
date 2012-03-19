@@ -428,6 +428,23 @@ public class InjectorTestCase extends AbstractKernelTest {
     assertEquals(1, r.size());
     assertEquals(9, r.get(10).intValue());
 
+    r = relationshipInjector.compute(0, 1, 1);
+    assertEquals(1, r.size());
+    assertEquals(1, r.get(2).intValue());
+
+    r = relationshipInjector.compute(0, 1, 2);
+    assertEquals(1, r.size());
+    assertEquals(1, r.get(2).intValue());
+
+
+    r = relationshipInjector.compute(0, 20, 50);
+    assertEquals(1, r.size());
+    assertEquals(20, r.get(21).intValue());
+
+    r = relationshipInjector.compute(1, 20, 50);
+    assertEquals(1, r.size());
+    assertEquals(19, r.get(20).intValue());
+
   }
 
   private void assertClean() throws Exception {
