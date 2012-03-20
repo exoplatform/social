@@ -8,11 +8,11 @@ h2. List of Gadgets in Social {anchor:id=SOCref.List_Of_Gadget_in_Social}
 
 h1. Configuration {anchor:id=SOCref.Configurations}
 {include:document="Configuration/Configuration_introduction.wiki"}
+h2. Component {anchor:id=SOCref.Configuration.Component}
 {include:document="Configuration/Configuration.wiki"}
-h2. Spaces Template configuration {anchor:id=SOCref.Space_Template_Configuration}
-{include:document="Configuration/Spaces_Template_Configuration.wiki"}
-h2. Configure the oauth 2 legged scenario {anchor:id=SOCref.ConfigureOauth2_Legend_Scenario}
-{include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}
+h2. External Component Plugin {anchor:id=SOCref.Configuration.External_component_plugins}
+{include:document="Configuration/Plugin.wiki"}
+
 
 h1. Developers References {anchor:id=SOCref.Developers_References}
 {include:document="DeveloperReference/Developer_References.wiki"}
@@ -45,3 +45,7 @@ h2. Public Javascript APIs {anchor:id=SOCref.DevelopersReferences.PublicJavascri
 {include:document="DeveloperReference/Javascript_APIs.wiki"}
 h2. Social JCR Structure {anchor:id=SOCref.Social_JCR_Structure}
 {include:document="jcr_structure.wiki"}
+h2. Spaces Template configuration {anchor:id=SOCref.Space_Template_Configuration}
+{include:document="Configuration/Spaces_Template_Configuration.wiki"}
+h2. Configure the oauth 2 legged scenario {anchor:id=SOCref.ConfigureOauth2_Legend_Scenario}
+{include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}

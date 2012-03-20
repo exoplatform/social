@@ -1,0 +1,247 @@
+h1. SpaceApplicationConfigPlugin {anchor:id=SOCref.Configuration.External_component_plugins.SpaceApplicationConfigPlugin}
+|| Name || Type || Description ||
+| spaceHomeApplication | {{SpaceApplicationConfigPlugin$SpaceApplication}} | The space application for the space home node.|
+|spaceApplicationList| {{SpaceApplicationConfigPlugin}} |Space application list configuration.|
+
+h1. AddNodeTypePlugin {anchor:id=SOCref.Configuration.External_component_plugins.AddNodeTypePlugin}
+||Name || Type || Value || Description ||
+| autoCreatedInNewRepository | {{String}} | {{jar:/conf/portal/core-nodetypes.xml}} | Node types configuration file. |
+
+h1. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.PortletPreferenceRequiredPlugin}
+{code:xml}
+<external-component-plugins>
+  <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+  <component-plugin>
+    <name>portlets.prefs.required</name>
+    <set-method>setPortletsPrefsRequired</set-method>
+    <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+    <init-params>
+      <values-param>
+        <name>portletsPrefsRequired</name>
+        <value>SpaceActivityStreamPortlet</value>
+        <value>SpaceSettingPortlet</value>
+        <value>MembersPortlet</value>
+      </values-param>
+    </init-params>
+  </component-plugin>
+</external-component-plugins>
+{code}
+
+In which:
+
+|| Set-method || Type || Description  ||
+| setPortletsPrefsRequired | org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin | Configure the list of portlet names which will have portlet preference of space context. |
+
+* Init-params:
+
+|| Name || Possible value || Default value || Description ||
+| *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} |The list of portlets which need to be saved and get the space context name. |
+
+
+h1. SpaceApplicationConfigPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.SpaceApplicationConfigPlugin}
+
+{note}
+Since 1.2.0-GA
+{note}
+
+{code:xml}
+<external-component-plugins>
+  <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+  <!-- Default applications to be installed when creating a new space -->
+  <component-plugin>
+    <name>Space Application Configuration</name>
+    <set-method>setSpaceApplicationConfigPlugin</set-method>
+    <type>org.exoplatform.social.core.space.SpaceApplicationConfigPlugin</type>
+    <init-params>
+      <object-param>
+        <name>spaceHomeApplication</name>
+        <description>Space Home Application</description>
+        <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+          <field name="portletApp">
+            <string>social-portlet</string>
+          </field>
+          <field name="portletName">
+            <string>SpaceActivityStreamPortlet</string>
+          </field>
+          <field name="appTitle">
+            <string>Home</string>
+          </field>
+          <!--<field name="icon"><string>SpaceHomeIcon</string></field> -->
+        </object>
+      </object-param>
+      <object-param>
+        <name>spaceApplicationListConfig</name>
+        <description>space application list configuration</description>
+        <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin">
+          <field name="spaceApplicationList">
+            <collection type="java.util.ArrayList">
+              <value>
+                <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                  <field name="portletApp">
+                    <string>dashboard</string>
+                  </field>
+                  <field name="portletName">
+                    <string>DashboardPortlet</string>
+                  </field>
+                  <field name="appTitle">
+                    <string>Dashboard</string>
+                  </field>
+                  <field name="removable">
+                    <boolean>true</boolean>
+                  </field>
+                  <field name="order">
+                    <int>1</int>
+                  </field>
+                  <field name="uri">
+                    <string>dashboard</string>
+                  </field>
+                  <!--<field name="icon"><string>SpaceDashboardIcon</string></field> -->
+                </object>
+              </value>
+              <value>
+                <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                  <field name="portletApp">
+                    <string>social-portlet</string>
+                  </field>
+                  <field name="portletName">
+                    <string>SpaceSettingPortlet</string>
+                  </field>
+                  <field name="appTitle">
+                    <string>Space Settings</string>
+                  </field>
+                  <field name="removable">
+                    <boolean>false</boolean>
+                  </field>
+                  <field name="order">
+                    <int>2</int>
+                  </field>
+                  <field name="uri">
+                    <string>settings</string>
+                  </field>
+                  <!--<field name="icon"><string>SpaceSettingsIcon</string></field> -->
+                </object>
+              </value>
+              <value>
+                <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                  <field name="portletApp">
+                    <string>social-portlet</string>
+                  </field>
+                  <field name="portletName">
+                    <string>MembersPortlet</string>
+                  </field>
+                  <field name="appTitle">
+                    <string>Members</string>
+                  </field>
+                  <field name="removable">
+                    <boolean>true</boolean>
+                  </field>
+                  <field name="order">
+                    <int>3</int>
+                  </field>
+                  <field name="uri">
+                    <string>members</string>
+                  </field>
+                  <!--<field name="icon"><string>SpaceMembersIcon</string></field> -->
+                </object>
+              </value>
+            </collection>
+          </field>
+        </object>
+      </object-param>
+    </init-params>
+  </component-plugin>
+</external-component-plugins>
+{code}
+
+In which:
+
+|| Name || Set-method || Type || Description  ||
+| *Space Application Configuration* | setSpaceApplicationConfigPlugin | org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin | Configure the list of space applications to be installed when creating a new space. |
+
+
+h1. OSHtmlSanitizerProcessor {anchor:id=SOCref.Configuration.OSHtmlSanitizerProcessor}
+
+{code:xml}
+<component>
+    <key>org.exoplatform.social.core.manager.ActivityManager</key>
+    <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
+    <component-plugins>
+      <component-plugin>
+        <name>OSHtmlSanitizer</name>
+        <set-method>addProcessorPlugin</set-method>
+        <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
+      </component-plugin>
+    </component-plugins>
+</component>
+{code}
+
+
+
+In which,
+
+|| Name || Set-method || Type || Description ||
+| *OSHtmlSanitizer* | addProcessorPlugin | org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor | The plugin that renders valid HTML tags appearing in the Activity body (content). |
+
+
+h1. MentionsProcessor {anchor:id=SOCref.Configuration.ActivityManager.ExternalPluginConfiguration}
+
+{code:xml}
+<component-plugin>
+  <name>MentionsProcessor</name>
+  <set-method>addProcessorPlugin</set-method>
+  <type>org.exoplatform.social.core.processor.</type>
+  <init-params>
+    <value-param>
+      <name>priority</name>
+      <description>priority of this processor (lower number will be executed first)</description>
+      <value>2</value>
+    </value-param>
+  </init-params>
+</component-plugin>
+{code}
+
+In which:
+
+|| Set-method || Type || Description ||
+| addProcessorPlugin | org.exoplatform.social.core.processor.MentionsProcessor | A processor that will substitute @username expressions by a link on the user profile. |
+
+* Init-params:
+
+|| Name || Possible value || Default value || Description ||
+| *priority* | {{priority number}} | 2 | The priority of this processor (The lower level will be executed first). |
+
+h1. IdentityProviderPlugin {anchor:id=SOCref.Configuration.IdentityProviderPluginIdentityManager}
+
+The service is to manipulate the identity operations, such as creating, getting, deleting or finding a profile.
+
+{code:xml}
+<component>
+  <key>org.exoplatform.social.core.manager.IdentityManager</key>
+  <type>org.exoplatform.social.core.manager.IdentityManager</type>
+  <component-plugins>
+    <component-plugin>
+      <name>SpaceIdentityProvider plugin</name>
+      <set-method>registerIdentityProviders</set-method>
+      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+      <init-params>
+        <values-param>
+          <name>providers</name>
+          <description>Identity Providers</description>
+          <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </component-plugins>
+</component>
+{code}
+
+In which:
+
+|| Set-method || Type || Description ||
+| registerIdentityProviders | org.exoplatform.social.core.identity.IdentityProviderPlugin | The plugin that provides identity for a space. |
+
+* Init-params:
+
+|| Name || Possible value || Default value || Description ||
+| *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
+
