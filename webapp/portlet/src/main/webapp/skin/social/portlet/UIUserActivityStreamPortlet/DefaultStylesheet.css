@@ -39,11 +39,19 @@
 	background: #EBEBEB;
 }
 
+.UIUserActivityStreamPortlet .UIUserActivitiesDisplay .ActivityStreamTitle {
+    background: none repeat scroll 0 0 #F8F8F8;
+    border: 1px solid #E1E1E1;
+    border-radius: 3px 3px 3px 3px;
+    padding: 10px;
+    font-weight: normal;
+}
+
 .UIUserActivityStreamPortlet .UIAction {
 	border: none;
 	border-bottom: 1px solid #e1e1e1;
 	text-align: left;
-	padding: 20px 0px;
+	padding: 0px 0px 20px;
 }
 
 .UIUserActivityStreamPortlet .UIActivitiesLoadButton {

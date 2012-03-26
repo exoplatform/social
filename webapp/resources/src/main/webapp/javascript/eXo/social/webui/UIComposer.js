@@ -71,6 +71,7 @@
     this.minHeight = params.minHeight || '20px';
     this.focusHeight = params.focusHeight || '35px';
     this.maxHeight = params.maxHeight || '50px';
+    this.padding = params.padding || '11px 0 11px 8px';
     this.focusCallback = params.focusCallback;
     this.blurCallback = params.blurCallback;
     this.keypressCallback = params.keypressCallback;
@@ -89,6 +90,7 @@
     this.composer.value = this.defaultInput;
     this.composer.style.height = this.minHeight;
     this.composer.style.color = this.blurColor;
+    this.composer.style.padding = this.padding;
     this.shareButton.className = 'ShareButtonDisable';
     this.shareButton.disabled = true;
     this.currentValue = this.composer.value;
@@ -105,6 +107,7 @@
         uiComposer.focusCallback();
       }
       uiComposer.composer.style.height = uiComposer.maxHeight;
+      uiComposer.composer.style.padding = null;
       uiComposer.composer.style.color = uiComposer.focusColor;     
     }, false);
 
@@ -112,6 +115,7 @@
       if (uiComposer.composer.value === '') {
         uiComposer.composer.value = uiComposer.defaultInput;
         uiComposer.composer.style.height = uiComposer.minHeight;
+        uiComposer.composer.style.padding = uiComposer.padding;
         uiComposer.composer.style.color = uiComposer.blurColor;
 
         //if current composer is default composer then disable share button
@@ -122,6 +126,7 @@
 
       } else {
         	uiComposer.currentValue = uiComposer.composer.value;
+        	uiComposer.composer.style.padding = uiComposer.padding;
       }
       
       if (uiComposer.blurCallback) {

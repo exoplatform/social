@@ -24,6 +24,7 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
   import org.exoplatform.social.webui.composer.UIComposer;
+  import org.exoplatform.social.webui.composer.UIComposer.PostContext;
   import org.exoplatform.social.webui.composer.UIActivityComposerContainer;
   import org.exoplatform.social.webui.composer.UIDefaultActivityComposer;
   import org.exoplatform.social.core.service.LinkProvider;
@@ -38,6 +39,7 @@
   def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def blastInput = "BlastInputSpace";
+  def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
     defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
@@ -54,6 +56,7 @@
       blurColor: null,
       minHeight: null,
       maxHeight: null,
+      padding: null,
       focusHeight: null,
       focusCallback: null,
       blurCallback: null,
@@ -97,6 +100,9 @@
 </script>
   <% uiform.begin() %>
   <div class="BlastContainer">
+    <% if (uicomponent.getPostContext() == PostContext.USER) { %>
+         <h4>$shareStatusLabel</h4>
+    <% } %>
     <div class="$blastInput">
       <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
     </div>

@@ -9,6 +9,11 @@
 	border-radius: 3px;
 }
 
+.UIComposer .BlastContainer h4 {
+    margin: 0 2px 8px;
+    font-weight: normal;
+}
+
 .UIComposer .BlastContainer .BlastInputSpace {
 	margin-bottom: 4px;
 }
@@ -16,9 +21,11 @@
 .UIComposer .BlastContainer textarea {
 	width: 99% !important;
 	border: 1px solid #e1e1e1;
-	font-size: 11px;
+	font-size: 14px;
 	border-radius: 2px;
-	padding: 5px 5px 0px 5px;
+	margin: 0 0 7px;
+	line-height: 20px;
+	padding: 0 0 0 8px;
 }
 
 .UIComposer .BlastContainer .BlastShare {
@@ -57,8 +64,9 @@
 }
 
 .UIComposer .BlastContainer .BlastShare .AttachMents {
-	padding-top: 8px;
+	padding-top: 5px;
 	font-weight: bold;
+	float: left;
 }
 
 .UIComposer .BlastContainer .BlastShare .ShareButton {
