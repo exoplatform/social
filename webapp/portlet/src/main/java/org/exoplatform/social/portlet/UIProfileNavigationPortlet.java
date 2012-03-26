@@ -30,6 +30,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
+
+
 /**
  * Manages the navigation of connections.<br>
  *   - Decides which node is current selected.<br>
@@ -82,6 +84,15 @@ public class UIProfileNavigationPortlet extends UIPortletApplication {
    */
   public Relationship getRelationship() throws Exception {
     return Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
+  }
+  
+  /**
+   * Checks if the owner user is the viewer user.
+   * 
+   * @return true if the viewer user is the same as owner user.
+   */
+  public boolean isOwner() {
+    return Utils.isOwner();
   }
 
   /**

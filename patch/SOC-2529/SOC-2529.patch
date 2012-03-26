@@ -1,0 +1,99 @@
+Index: webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIProfileNavigationPortlet.java
+===================================================================
+--- webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIProfileNavigationPortlet.java	(revision 80371)
++++ webapp/portlet/src/main/java/org/exoplatform/social/portlet/UIProfileNavigationPortlet.java	(working copy)
+@@ -30,6 +30,8 @@
+ import org.exoplatform.webui.event.Event;
+ import org.exoplatform.webui.event.EventListener;
+ 
++
++
+ /**
+  * Manages the navigation of connections.<br>
+  *   - Decides which node is current selected.<br>
+@@ -83,6 +85,15 @@
+   public Relationship getRelationship() throws Exception {
+     return Utils.getRelationshipManager().get(Utils.getOwnerIdentity(), Utils.getViewerIdentity());
+   }
++  
++  /**
++   * Checks if the owner user is the viewer user.
++   * 
++   * @return true if the viewer user is the same as owner user.
++   */
++  public boolean isOwner() {
++    return Utils.isOwner();
++  }
+ 
+   /**
+    * Action trigger for editting picture. An UIAvatarUploader popup should be displayed.
+Index: webapp/portlet/src/main/webapp/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl
+===================================================================
+--- webapp/portlet/src/main/webapp/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl	(revision 80371)
++++ webapp/portlet/src/main/webapp/groovy/social/portlet/UIProfileNavigationPortlet.gtmpl	(working copy)
+@@ -83,14 +83,30 @@
+     <% } else  {%>
+     <div class="NormalTab Tab">
+     <%}%>
+-        <a href="${profileURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
++        <% if (uicomponent.isOwner())  {%>
++           <a href="${profileURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>" class="ArowIcon">
++             <%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>
++           </a>
++        <% } else  {%>
++           <a href="${profileURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfileTitle")%>" class="ArowIcon">
++             <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfile")%>
++           </a>
++        <%}%>
+     </div>
+     <% if (selectedNode == "connections")  {%>
+     <div class="SelectedTab ArowIcon Tab">
+     <% } else  {%>
+     <div class="NormalTab Tab">
+     <%}%>
+-        <a href="${relationURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
++        <% if (uicomponent.isOwner())  {%>
++           <a href="${relationURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>" class="ArowIcon">
++             <%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>
++           </a>
++        <% } else  {%>
++           <a href="${relationURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelationsTitle")%>" class="ArowIcon">
++             <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelations")%>
++           </a>
++        <%}%>
+     </div>
+   </div>
+ </div>
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_en.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_en.properties	(revision 80371)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_en.properties	(working copy)
+@@ -112,7 +112,11 @@
+ UIProfileNavigationPortlet.label.Me=Me
+ UIProfileNavigationPortlet.label.Activity=Activity Stream
+ UIProfileNavigationPortlet.label.Profile=My Profile
++UIProfileNavigationPortlet.label.ViewerProfile=Profile
++UIProfileNavigationPortlet.label.ViewerProfileTitle='s profile
+ UIProfileNavigationPortlet.label.Relations=My Connections
++UIProfileNavigationPortlet.label.ViewerRelations=Connections
++UIProfileNavigationPortlet.label.ViewerRelationsTitle='s connections
+ UIProfileNavigationPortlet.label.ChangePicture=Change Picture
+ UIProfileNavigationPortlet.label.Click_To_Change_Picture=Click to change picture
+ 
+Index: webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_fr.properties
+===================================================================
+--- webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_fr.properties	(revision 80371)
++++ webapp/portlet/src/main/webapp/WEB-INF/classes/locale/portlet/Portlets_fr.properties	(working copy)
+@@ -111,7 +111,11 @@
+ UIProfileNavigationPortlet.label.Me=Moi
+ UIProfileNavigationPortlet.label.Activity=Flux d'Activité
+ UIProfileNavigationPortlet.label.Profile=Mon Profil
+-UIProfileNavigationPortlet.label.Relations=Mon Réseau
++UIProfileNavigationPortlet.label.ViewerProfile=Profil
++UIProfileNavigationPortlet.label.ViewerProfileTitle= Profil
++UIProfileNavigationPortlet.label.Relations=Mon Connecxions
++UIProfileNavigationPortlet.label.ViewerRelations=Connecxions
++UIProfileNavigationPortlet.label.ViewerRelationsTitle= Connecxions
+ UIProfileNavigationPortlet.label.ChangePicture=Changer la photo
+ UIProfileNavigationPortlet.label.Click_To_Change_Picture=Cliquer ici pour changer la photo
+ 

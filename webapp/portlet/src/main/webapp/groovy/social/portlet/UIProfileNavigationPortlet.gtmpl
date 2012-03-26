@@ -83,14 +83,30 @@
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${profileURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%></a>
+        <% if (uicomponent.isOwner())  {%>
+           <a href="${profileURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>" class="ArowIcon">
+             <%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>
+           </a>
+        <% } else  {%>
+           <a href="${profileURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfileTitle")%>" class="ArowIcon">
+             <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfile")%>
+           </a>
+        <%}%>
     </div>
     <% if (selectedNode == "connections")  {%>
     <div class="SelectedTab ArowIcon Tab">
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
-        <a href="${relationURL}" class="ArowIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+        <% if (uicomponent.isOwner())  {%>
+           <a href="${relationURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>" class="ArowIcon">
+             <%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>
+           </a>
+        <% } else  {%>
+           <a href="${relationURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelationsTitle")%>" class="ArowIcon">
+             <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelations")%>
+           </a>
+        <%}%>
     </div>
   </div>
 </div>
