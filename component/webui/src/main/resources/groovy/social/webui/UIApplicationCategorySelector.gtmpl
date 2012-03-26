@@ -19,12 +19,36 @@
 
 -->
 */
+import org.exoplatform.social.core.service.LinkProvider;
 
 def uicomponentId = uicomponent.id;
 def categoriesLabel = _ctx.appRes("${uicomponentId}.label.categories");
 def categoryList = uicomponent.getApplicationCategoryList();
 
+def rcontext = _ctx.getRequestContext();
+def jsmanager = rcontext.getJavascriptManager();
+jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+jsmanager.importJavascript("eXo.social.PortalHttpRequest", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+jsmanager.importJavascript("eXo.social.webui.UIForm", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+jsmanager.importJavascript("eXo.social.webui.UIApplicationCategorySelector", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+
+def applicationCategoryIds = [];
+for (applicationCategory in categoryList) {
+  applicationCategoryIds.add(applicationCategory.displayName);
+}
+def params = """
+  {
+    applicationCategoryIds: '$applicationCategoryIds',
+    allApplicationCategorySize: ${applicationCategoryIds.size()},
+  }
+"""
+jsmanager.addOnLoadJavascript("initUIApplicationCategorySelector");
 %>
+<script type="text/javascript">
+  function initUIApplicationCategorySelector() {
+    new eXo.social.webui.UIApplicationCategorySelector($params);
+  }
+</script>
 
 <div id="$uicomponent.id" class="ItemListContainer">
   <div class="ItemListTitle ClearFix">
@@ -40,7 +64,7 @@ def categoryList = uicomponent.getApplicationCategoryList();
         itemClass = "SelectedItem Item";
       }
   %>
-    <div title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass" onmouseover="eXo.webui.UIItemSelector.onOver(this,true);" onmouseout="eXo.webui.UIItemSelector.onOver(this, false);">
+    <div id="$applicationCategory.displayName" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
 	  <div class="ItemTitle" id="$applicationCategory.name">
 		<div class="CenterItemTitle">
 		  $applicationCategory.displayName
