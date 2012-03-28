@@ -80,6 +80,7 @@
           </execution>
         </executions>
         <configuration>
+          <bookId>SocialReferenceGuide</bookId>
           <sourceDirectory>${wikbook.sourceDirectory}/en/en-US</sourceDirectory>
           <sourceFileName>book.wiki</sourceFileName>
           <destinationDirectory>${docbook.sourceDirectory}</destinationDirectory>
