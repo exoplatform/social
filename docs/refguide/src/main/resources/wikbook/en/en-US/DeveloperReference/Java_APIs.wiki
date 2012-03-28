@@ -15,7 +15,7 @@ h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
 |*saveActivity*(ExoSocialActivity activity) throws ActivityStorageException | {{ activity}} - the activity to save|ExoSocialActivity |Save an activity into the stream for the activity's userId. The userId must be set and this field is used to indicate the owner stream.|
 |*saveComment*(ExoSocialActivity activity, ExoSocialActivity comment) throws ActivityStorageException | {{activity, comment}} |void |Save a new comment or updates an existing comment that is an instance of activity with mandatory fields: userId, title.|
 |*saveLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{activity, identity }} |void|Save an identity who likes an activity.|
-|*removeLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{ activity}}, {{identity}} - a user who dislikes an activity |void|Remove an indentity who likes an activity, if this activity is liked, it will be removed.|
+|*removeLike*(ExoSocialActivity activity, Identity identity) throws ActivityStorageException | {{ activity}}, {{identity}} - a user who dislikes an activity |void|Remove an identity who likes an activity, if this activity is liked, it will be removed.|
 |*getComments*(ExoSocialActivity activity) throws ActivityStorageException | {{activity}} |List<ExoSocialActivity>| Get the comment list of an activity.|
 |*recordActivity*(Identity owner, String type, String title) throws ActivityStorageException | {{owner, type, title }} |ExoSocialActivity |Record an activity. (Since 1.2.0-GA).|
 |*recordActivity*(Identity owner, ExoSocialActivity activity) throws Exception | {{owner, activity }} |ExoSocialActivity |Save an activity. You should use ActivityManager#saveActivity(org.exoplatform.social.core.identity.model.Identity, org.exoplatform.social.core.activity.model.ExoSocialActivity) instead. It will be removed in eXo Social 1.3.x.|
@@ -43,18 +43,18 @@ h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
 | *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter, long offset,long limit) throws Exception| {{providerId, profileFilter, offset, limit}}|List<Identity>| Get the identities filter by alphabet with offset and limit.|
 | *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) throws Exception| {{profileFilter}} - the profile filter |   List<Identity>  | Get the identities filter by alphabet. |
 | *getIdentity*(String providerId, String remoteId, boolean loadProfile) | {{providerId}}, {{remoteId}}, {{loadProfile}} | Identity | Get the identity. |
-| *getIdentitiesCount*(String providerId)| {{providerId}} |long| Get the number of indentities.|
+| *getIdentitiesCount*(String providerId)| {{providerId}} |long| Get the number of identities.|
 | *identityExisted*(String providerId, String remoteId) | {{providerId}}, {{remoteId}} | boolean | Check if the identity is already existed or not. |
 | *saveIdentity*(Identity identity) | {{identity}} - the identity | void | Save the identity. |
 | *saveProfile*(Profile profile)| {{profile}} | void | Save a profile.|
 | *addOrModifyProfileProperties*(Profile profile) throws Exception| {{profile}}|void | Add or modify properties of profile. Profile parameter is a lightweight that contains only the property that you want to add or modify. NOTE: The method will not delete the properties of an old profile when the param profile does not have those keys.|
 | *updateAvatar*(Profile p) | {{profile}} | void | Update the avatar. |
-| *updateBasicInfo*(Profile p) throws Exception | {{profile}} | void | Update the basic infomation. |
+| *updateBasicInfo*(Profile p) throws Exception | {{profile}} | void | Update the basic information. |
 | *updateContactSection*(Profile p) throws Exception | {{profile}} | void | Update the contact section of the profile. |
 | *updateExperienceSection*(Profile p)throws Exception | {{profile}}  | void | Update the experience section of the profile. |
 | *updateHeaderSection*(Profile p) throws Exception | {{profile}} | void | Update the header section of the profile. |
 | *getIdentities*(String providerId) throws Exception | {{providerId}} - the id of provider | List<Identity>  | Get the identities by the provider id. |
-| *getIdentities*(String providerId, boolean loadProfile)| {{providerId}} - the id of provider, {{loadProfile}} - the loaded profile. |List<Identity>  | Get the identities by the provider id. If loadProvider is true, loading the profie will be perfomed.|
+| *getIdentities*(String providerId, boolean loadProfile)| {{providerId}} - the id of provider, {{loadProfile}} - the loaded profile. |List<Identity>  | Get the identities by the provider id. If loadProvider is true, loading the profile will be performed.|
 | *getConnections*(Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Get connections of an identity. (Since 1.1.1). |
 | *getIdentityStorage*() | {{N/A}} | IdentityStorage  | Get the identity storage. |
 | *getStorage*() | {{ N/A}} | IdentityStorage  |Get the storage. Deprecated: should use method getIdentityStorage(). |
