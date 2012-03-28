@@ -2,6 +2,7 @@ h1. SpaceService {anchor:id=SOCref.Configuration.Component.SpaceService}
 
 The service is used for spaces management, including creating spaces, and installing applications.
 
+*Sample configuration*:
 {code:xml}
 <component>
   <key>org.exoplatform.social.core.space.spi.SpaceService</key>
@@ -23,6 +24,7 @@ The service is used for spaces management, including creating spaces, and instal
 </component>
 {code}
 
+* *Init-params*:
 || Name || Type || Value || Description ||
 | space.homeNodeApp | {{String}} | {{SpaceActivityStreamPortlet}} | The home application for a space. |
 | space.apps | {{String list}} | {{DashboardPortlet:true}}, {{SpaceSettingPortlet:false}}, {{MembersPortlet:true}} | The applications that are used for initializing the application when the space is created. |
@@ -30,19 +32,44 @@ The service is used for spaces management, including creating spaces, and instal
 {note}
 Deprecated: Use external-component-plugins instead: org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.
 {note}
- 
+
+h1. LifeCycleCompletionService {anchor:id=SOCref.Configuration.Component.LifeCycleCompletionService}
+This component is used to process the callable request out of the HTTP request.
+
+*Sample configuration*:
+{code:xml}
+  <component>
+    <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
+    <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
+    <init-params>
+      <value-param>
+        <name>thread-number</name>
+        <value>10</value>
+      </value-param>
+      <value-param>
+        <name>async-execution</name>
+        <value>false</value>
+      </value-param>
+    </init-params>
+  </component>
+{code}
+* *Init-params*:
+|| Name || Type || Value || Description ||
+| thread-number | {{integer}} | {{10}} |The maximum number of threads parallel executed. |
+| async-execution | {{boolean}} | {{false}}| Specify the running mode of service is synchronous or asynchronous. |
+
 h1. IdentityManager {anchor:id=SOCref.Configuration.Component.IdentityManager}
 ||Name || Type || Value || Description ||
 | providers | {{String}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | The identity providers. |
 
 h1. ServiceProviderStore {anchor:id=SOCref.Configuration.Component.ServiceProviderStore}
-This server is used to store the Oauth providers data.
+This service is used to store the Oauth providers data.
 
 h1. RelationshipManager {anchor:id=SOCref.Configuration.RelationshipManager}
-The Service is used to manipulate user relationships.
+This service is used to manipulate user relationships.
 
 h1. SpaceIdentityProvider {anchor:id=SOCref.Configuration.SpaceIdentityProvider}
-The provider is to give identity space instances.
+This service is to give identity space instances.
 
 h1. SpaceApplicationHandler {anchor:id=SOCref.Configuration.SpaceApplicationHandler}
 The service is to handle all events related to creating and managing all the application spaces.
@@ -51,7 +78,9 @@ h1. ExoPeopleService {anchor:id=SOCref.Configuration.ExoPeopleService}
 The service is to manipulate all data related to people in the Portal.
 
 h1. RestPortalContainerNameConfig  {anchor:id=SOCref.Configuration.RestPortalContainerNameConfig}
+This plugin is used to set the portal container name used for REST service.
 
+*Sample configuration*:
 {code:xml}
 <component>
     <key>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</key>
@@ -65,7 +94,32 @@ h1. RestPortalContainerNameConfig  {anchor:id=SOCref.Configuration.RestPortalCon
 </component>
 {code}
 
-* Init-params:
+* *Init-params*:
 
 || Name || Type || Value || Description ||
 | *rest-container-name* | {{any valid container name}} | {{portal}} |The name of the container. |
+
+h1. LinkProvider {anchor:id=SOCref.Configuration.LinkProvider}
+This service is used to provide the utility to get the URLs of the activities, profiles, spaces, avatars and more.
+
+*Sample configuration*:
+{code:xml}
+  <component>
+    <key>org.exoplatform.social.core.service.LinkProvider</key>
+    <type>org.exoplatform.social.core.service.LinkProvider</type>
+    <init-params>
+        <value-param>
+          <name>predefinedOwner</name>
+          <description>this for generate profile link</description>
+          <value>classic</value>
+        </value-param>
+    </init-params>
+  </component>
+{code}
+
+* *Init-params*:
+
+|| Name || Type || Value || Description ||
+|*predefinedOwner*|{{String}}| {{classic}}|The default portal owner name. |
+
+
