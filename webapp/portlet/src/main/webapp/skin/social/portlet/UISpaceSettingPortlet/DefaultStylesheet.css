@@ -502,14 +502,6 @@
 	padding: 0 8px 0px 4px;
 }
 
-.UIHorizontalTabs .MessageTabDialog .DisabledTab .MiddleTab {
-	color: gray;
-	cursor: pointer;
-	font-weight: normal;
-	line-height: 25px;
-	padding: 0 8px 0px 4px;
-}
-
 /* =============left column - space setting===============*/
 .UISpaceInfo {
 	height: 100% !important;
@@ -1078,14 +1070,6 @@
 	font-weight: normal;
 	line-height: 31px;
 	padding: 0 8px 5px 4px;
-}
-
-.UIHorizontalTabs .MessageTabDialog .DisabledTab .MiddleTab {
-	color: gray;
-	cursor: pointer;
-	font-weight: normal;
-	line-height: 25px;
-	padding: 0 8px 0px 4px;
 }
 
 /* =============left column - space setting===============*/
