@@ -1,6 +1,8 @@
   var eXo = eXo || {};
   eXo.social = eXo.social || {};
   
+  var SocialUtil = eXo.social.SocialUtil;
+  
   //When run in socialdemo, need to change this config to /classsic/all-spaces
   ALL_SPACES_URL = "/private/intranet/spaces";
 
@@ -41,7 +43,7 @@
 	      this.moreSpaces = this.context + ALL_SPACES_URL;
 	      
 	      titleContent += '<div class="TitGad ClearFix">';
-	      titleContent += '<a href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
+	      titleContent += '<a id="MoreAllSpaces" href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
 	      titleContent += '<div class="ContTit">' + Locale.getMsg('my_spaces') + '</div>';
 	      titleContent += '</div>';
 	      moreSpaceEl.innerHTML = titleContent;
@@ -83,13 +85,16 @@
 	  if (!resp) {
 	    //alert('response is invalid');
 	  } else {
+	  	this.moreSpaces = this.context + resp.data.moreSpacesUrl;
+	  	document.getElementById("MoreAllSpaces").href = this.moreSpaces;
+	  	
 	    var spaceData = resp.data.spaces;
 	    if ((spaceData == null) || (spaceData.length == 0)) {
 	      var emptyItem = document.createElement('div');
 	      emptyItem.className = 'NoneSpace';
 	      emptyItem.innerHTML = eXo.social.Locale.getMsg('has_no_space');
 	      mySpacesEl.appendChild(emptyItem);
-	      gadgets.window.adjustHeight(mySpacesEl.offsetHeight);
+	      SocialUtil.adjustHeight(mySpacesEl);
 	      return;
 	    }
 	
@@ -101,7 +106,7 @@
 	      mySpacesEl.appendChild(spaceItem);
 	    }
 	    
-   	  gadgets.window.adjustHeight(mySpacesEl.offsetHeight);
+	    SocialUtil.adjustHeight(mySpacesEl);
 	  }
 	}
 	

@@ -1044,6 +1044,17 @@ public class SpaceUtils {
    * @throws Exception
    */
   public static UserPortal getUserPortalForRest() throws Exception {
+    return getUserPortalConfig().getUserPortal();
+  }
+
+  /**
+   * Get user portal config.
+   * 
+   * @return
+   * @throws Exception
+   * @since 1.2.9
+   */
+  public static UserPortalConfig getUserPortalConfig() throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     UserPortalConfigService userPortalConfigSer = (UserPortalConfigService)
                                                   container.getComponentInstanceOfType(UserPortalConfigService.class);
@@ -1061,9 +1072,9 @@ public class SpaceUtils {
     String remoteId = ConversationState.getCurrent().getIdentity().getUserId();
     UserPortalConfig userPortalCfg = userPortalConfigSer.
                                      getUserPortalConfig(userPortalConfigSer.getDefaultPortal(), remoteId, NULL_CONTEXT);
-    return userPortalCfg.getUserPortal();
+    return userPortalCfg;
   }
-
+  
   /**
    * Removes group navigations.
    *
