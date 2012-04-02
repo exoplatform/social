@@ -28,7 +28,14 @@ import java.util.List;
  */
 public class ResourceBundleUtil {
 
-  private static final MessageFormat messageFormat = new MessageFormat("");
+  private static final ThreadLocal<MessageFormat> messageFormatRef = new ThreadLocal<MessageFormat>() {
+    @Override
+    protected MessageFormat initialValue() {
+      return new MessageFormat("");
+    }
+  };
+
+  private static final String[] EMPTY_MESSAGE_ARGUMENTS = new String[]{};
 
   /**
    * Replace convention arguments of pattern {index} with messageArguments[index].
@@ -38,8 +45,9 @@ public class ResourceBundleUtil {
    */
   public static String replaceArguments(String message, String[] messageArguments) {
     if (messageArguments == null) {
-      messageArguments = new String[]{};
+      messageArguments = EMPTY_MESSAGE_ARGUMENTS;
     }
+    final MessageFormat messageFormat = messageFormatRef.get();
     messageFormat.applyPattern(message);
     return messageFormat.format(messageArguments);
   }
