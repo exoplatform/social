@@ -103,7 +103,8 @@
 }
 
 .UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer {
-	margin-bottom: 3px;
+  clear: left;
+  margin-bottom: 3px;
 }
 
 .UIComposer .BlastContainer .BlastShare .ComposerExtensionContainer .Button {
