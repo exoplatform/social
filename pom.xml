@@ -36,9 +36,9 @@
   <description>eXo Social - Enterprise Social Networking</description>
 
   <scm>
-    <connection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.2.x</connection>
-    <developerConnection>scm:svn:http://svn.exoplatform.org/projects/social/branches/1.2.x</developerConnection>
-    <url>https://fisheye.exoplatform.org/browse/social/branches/1.2.x</url>
+    <connection>scm:git:ssh://github.com/exoplatform/social.git</connection>
+    <developerConnection>scm:git:ssh://github.com/exoplatform/social.git</developerConnection>
+    <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
 
   <ciManagement>
