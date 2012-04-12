@@ -195,6 +195,8 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void deleteLike(ExoSocialActivity activity, Identity identity) {
+    activity.setTitle(null);
+    activity.setBody(null);
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());
