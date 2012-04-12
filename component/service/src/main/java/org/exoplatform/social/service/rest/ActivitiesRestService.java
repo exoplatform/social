@@ -18,7 +18,6 @@ package org.exoplatform.social.service.rest;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,8 +31,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -53,10 +52,10 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.service.rest.api.models.ActivityRestOut;
+import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
 import org.exoplatform.social.service.rest.api.models.ActivityStreamRestOut;
 import org.exoplatform.social.service.rest.api.models.CommentRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
-import org.exoplatform.social.service.rest.api.models.ActivityRestOut.Field;
 
 /**
  * ActivitiesRestService.java <br />
@@ -143,8 +142,6 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   private LikeList showLikes(String activityId) {
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
     _activityManager = getActivityManager();
     ExoSocialActivity activity = null;
     try {
@@ -155,12 +152,11 @@ public class ActivitiesRestService implements ResourceContainer {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    String[] identityIds = activity.getLikeIdentityIds();
-    if (identityIds == null) {
-      likeList.setLikes(new ArrayList<Like>());
-    } else {
-      likeList.setLikes(getLikes(identityIds));
-    }
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
 
@@ -171,39 +167,29 @@ public class ActivitiesRestService implements ResourceContainer {
    * @throws Exception
    */
   private LikeList updateLike(String activityId, Like like) throws Exception {
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
+
     _activityManager = getActivityManager();
+    _identityManager = getIdentityManager();
+
+    //
     ExoSocialActivity activity = _activityManager.getActivity(activityId);
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    String[] identityIds = activity.getLikeIdentityIds();
+
+    //
     String identityId = like.getIdentityId();
-    boolean alreadyLiked = false;
     if (identityId == null) {
       throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
     }
-    if (identityIds != null) {
-      for (String id : identityIds) {
-        if (id.equals(identityId)) {
-          alreadyLiked = true;
-        }
-      }
-    }
-    if (!alreadyLiked) {
-      identityIds = addItemToArray(identityIds, identityId);
-      activity.setLikeIdentityIds(identityIds);
-      try {
-        //Identity user = getIdentityManager().getIdentity(activity.getUserId(),true);
-        _activityManager.updateActivity(activity);
-        activity = _activityManager.getActivity(activityId);
-      } catch (Exception ex) {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    } else {
-      //TODO hoatle let it run smoothly or informs that user already liked the activity?
-    }
+    Identity identity = _identityManager.getIdentity(like.getIdentityId(), false);
+
+    //
+    _activityManager.saveLike(activity, identity);
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
     likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
@@ -214,10 +200,10 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param identityId
    */
   private LikeList destroyLike(String activityId, String identityId) {
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
+
     _activityManager = getActivityManager();
     ExoSocialActivity activity = null;
+    //
     try {
       activity = _activityManager.getActivity(activityId);
     } catch (ActivityStorageException e) {
@@ -226,36 +212,24 @@ public class ActivitiesRestService implements ResourceContainer {
     if (activity == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-    String[] identityIds = activity.getLikeIdentityIds();
-    if (identityIds.length == 0) {
+
+    //
+    if (identityId == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    boolean alreadyLiked = true;
-    for (String id : identityIds) {
-      if (id.equals(identityId)) {
-        identityIds = removeItemFromArray(identityIds, identityId);
-        if (identityIds == null) {
-          identityIds = new String [] {};
-        }
 
-        activity.setLikeIdentityIds(identityIds);
-        try {
-          Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
-          _activityManager.saveActivityNoReturn(user, activity);
-        } catch(Exception ex) {
-          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-        }
-        alreadyLiked = false;
-      }
-    }
-    if (alreadyLiked) {
+    try {
+      Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
+      _activityManager.deleteLike(activity, user);
+    } catch(Exception ex) {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    if (identityIds == null) {
-      likeList.setLikes(new ArrayList<Like>());
-    } else {
-      likeList.setLikes(getLikes(identityIds));
-    }
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
+
     return likeList;
   }
 
@@ -299,8 +273,7 @@ public class ActivitiesRestService implements ResourceContainer {
                              Like like) throws Exception {
     MediaType mediaType = Util.getMediaType(format);
     portalName_ = portalName;
-    LikeList likeList = null;
-    likeList = updateLike(activityId, like);
+    LikeList likeList = updateLike(activityId, like);
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -889,7 +862,6 @@ public class ActivitiesRestService implements ResourceContainer {
    * @return
    */
   private List<Like> getLikes(String[] identityIds) {
-    String username, fullName, thumbnail;
     Profile profile;
     Identity identity;
     Like like;
@@ -897,51 +869,19 @@ public class ActivitiesRestService implements ResourceContainer {
     _identityManager = getIdentityManager();
     try {
       for (String identityId : identityIds) {
-        identity = _identityManager.getIdentity(identityId);
+        identity = _identityManager.getIdentity(identityId, false);
         profile = identity.getProfile();
-        username = (String) profile.getProperty(Profile.USERNAME);
-        fullName = profile.getFullName();
-        thumbnail = profile.getAvatarUrl();
         like = new Like();
         like.setIdentityId(identityId);
-        like.setUsername(username);
-        like.setFullName(fullName);
-        like.setThumbnail(thumbnail);
+        like.setUsername((String) profile.getProperty(Profile.USERNAME));
+        like.setFullName(profile.getFullName());
+        like.setThumbnail(profile.getAvatarUrl());
         likes.add(like);
       }
     } catch (Exception ex) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
     return likes;
-  }
-
-  /**
-   * removes an item from an array
-   * @param array
-   * @param str
-   * @return new array
-   */
-  private String[] removeItemFromArray(String[] arrays, String str) {
-    List<String> list = new ArrayList<String>();
-    list.addAll(Arrays.asList(arrays));
-    list.remove(str);
-    if(list.size() > 0) return list.toArray(new String[list.size()]);
-    else return null;
-  }
-
-  /**
-   * adds an item to an array
-   * @param array
-   * @param str
-   * @return new array
-   */
-  private String[] addItemToArray(String[] array, String str) {
-    List<String> list = new ArrayList<String>();
-    if(array != null && array.length > 0) {
-      list.addAll(Arrays.asList(array));
-      list.add(str);
-      return list.toArray(new String[list.size()]);
-    } else return new String[] {str};
   }
   
   private boolean isPassed(String value) {
