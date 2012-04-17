@@ -414,6 +414,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
       Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
       Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
+      Validate.notEmpty(activity.getTitle(), "Activity.getTitle() must not be empty.");
     } catch (IllegalArgumentException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.ILLEGAL_ARGUMENTS, e.getMessage(), e);
     }
