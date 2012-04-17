@@ -55,7 +55,7 @@
       blurColor: null,
       minHeight: null,
       maxHeight: null,
-      padding: null,
+      padding: '11px 0 11px 8px',
       focusHeight: null,
       focusCallback: null,
       blurCallback: null,

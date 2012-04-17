@@ -105,7 +105,6 @@
         uiComposer.focusCallback();
       }
       uiComposer.composer.css({'height' : uiComposer.maxHeight,
-        'padding': 0,
         'color'  : uiComposer.focusColor});
     });
 
@@ -114,7 +113,6 @@
       if (uiComposer.composer.val() === '') {
         uiComposer.composer.val(uiComposer.defaultInput);
         uiComposer.composer.css({'height' : uiComposer.minHeight,
-                                 'padding': uiComposer.padding,
                                  'color'  : uiComposer.blurColor});
 
         //if current composer is default composer then disable share button
@@ -125,7 +123,6 @@
 
       } else {
         uiComposer.currentValue = uiComposer.composer.val();
-        uiComposer.composer.css('padding',uiComposer.padding);
       }
 
       if (uiComposer.blurCallback) {
