@@ -35,19 +35,25 @@ public abstract class AbstractSocialInjector extends DataInjector {
   private static Log LOG = ExoLogger.getLogger(IdentityInjector.class);
   
   /** . */
-  protected final static String USER_BASE = "bench.user";
+  private final static String DEFAULT_USER_BASE = "bench.user";
 
   /** . */
-  protected final static String SPACE_BASE = "bench.space";
-
-  /** . */
-  protected final static String SPACE_BASE_PRETTY_NAME = "benchspace";
+  private final static String DEFAULT_SPACE_BASE = "bench.space";
 
   /** . */
   protected final static String PASSWORD = "exo";
 
   /** . */
   protected final static String DOMAIN = "exoplatform.int";
+
+  /** . */
+  protected String userBase;
+
+  /** . */
+  protected String spaceBase;
+
+  /** . */
+  protected String spacePrettyBase ;
 
   /** . */
   protected int userNumber;
@@ -106,7 +112,12 @@ public abstract class AbstractSocialInjector extends DataInjector {
 
   }
 
-  public void init() {
+  public void init(String userPrefix, String spacePrefix) {
+
+    //
+    userBase = (userPrefix == null ? DEFAULT_USER_BASE : userPrefix);
+    spaceBase = (spacePrefix == null ? DEFAULT_SPACE_BASE : spacePrefix);
+    spacePrettyBase = spaceBase.replace(".", "");
 
     //
     userNumber = 0;
@@ -115,8 +126,8 @@ public abstract class AbstractSocialInjector extends DataInjector {
     boolean started = AbstractStorage.startSynchronization();
 
     try {
-      userNumber = userNumber(USER_BASE);
-      spaceNumber = spaceNumber(SPACE_BASE);
+      userNumber = userNumber(userBase);
+      spaceNumber = userNumber(spacePrettyBase);
     }
     catch (UndeclaredThrowableException e) {
       // If no user is existing, set keep 0 as value.
@@ -128,7 +139,7 @@ public abstract class AbstractSocialInjector extends DataInjector {
     //
     LOG.info("Initial user number : " + userNumber);
     LOG.info("Initial space number : " + spaceNumber);
-
+    
   }
   
   @Override
@@ -172,11 +183,11 @@ public abstract class AbstractSocialInjector extends DataInjector {
   }
 
   protected String userName() {
-    return USER_BASE + userNumber;
+    return userBase + userNumber;
   }
 
   protected String spaceName() {
-    return SPACE_BASE + spaceNumber;
+    return spaceBase + spaceNumber;
   }
   
   protected int param(HashMap<String, String> params, String name) {

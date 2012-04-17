@@ -21,21 +21,29 @@ public class SpaceInjector extends AbstractSocialInjector {
   /** . */
   private static final String TO_USER = "toUser";
 
+  /** . */
+  private static final String USER_PREFIX = "userPrefix";
+
+  /** . */
+  private static final String SPACE_PREFIX = "spacePrefix";
+
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
 
     //
-    init();
     int number = param(params, NUMBER);
     int from = param(params, FROM_USER);
     int to = param(params, TO_USER);
+    String userPrefix = params.get(USER_PREFIX);
+    String spacePrefix = params.get(SPACE_PREFIX);
+    init(userPrefix, spacePrefix);
 
     //
     for(int i = from; i <= to; ++i) {
       for (int j = 0; j < number; ++j) {
 
         //
-        String owner = USER_BASE + i;
+        String owner = userBase + i;
         String spaceName = spaceName();
 
         Space space = new Space();
