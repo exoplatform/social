@@ -20,9 +20,6 @@
 <webui-configuration>
   <application>
     <ui-component-root>org.exoplatform.social.portlet.UISpaceMenuPortlet</ui-component-root>
-      <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-    <application-lifecycle-listeners>
-      <listener>org.exoplatform.portal.application.PortletStatisticLifecycle</listener>
-    </application-lifecycle-listeners>
+    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
   </application>
 </webui-configuration>
