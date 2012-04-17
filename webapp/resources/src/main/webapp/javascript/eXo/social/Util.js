@@ -154,6 +154,96 @@ eXo.social.Util.addElement = function(parentId, tagName, elementId, html) {
 }
 
 /**
+ * Gets viewPort of current window, returns {'width': number, 'height': number};
+ */
+eXo.social.Util.getViewPort = function() {
+  var viewPort = {};
+  var viewPortWidth;
+  var viewPortHeight;
+
+  // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+
+  if (typeof window.innerWidth != 'undefined') {
+    viewPortWidth = window.innerWidth,
+    viewPortHeight = window.innerHeight
+  }
+
+  // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+  else if (typeof document.documentElement != 'undefined' &&
+           typeof document.documentElement.clientWidth != 'undefined' &&
+           document.documentElement.clientWidth != 0) {
+    viewPortWidth = document.documentElement.clientWidth,
+    viewPortHeight = document.documentElement.clientHeight
+  }
+
+  // older versions of IE
+  else {
+    viewPortWidth = document.getElementsByTagName('body')[0].clientWidth,
+    viewPortHeight = document.getElementsByTagName('body')[0].clientHeight
+  }
+  viewPort['width'] = viewPortWidth;
+  viewPort['height'] = viewPortHeight;
+
+  return viewPort;
+}
+
+/**
+ * Finds the absolute position of an element, returns {'x': number, 'y': number}.
+ *
+ * @param element the element
+ */
+eXo.social.Util.findPosition = function(element) {
+  if (typeof element === 'string') {
+    element = document.getElementById(element);
+  }
+  if (element) {
+    return {
+      'x': _findPosX(element),
+      'y': _findPosY(element)
+    };
+  } else {
+    return {
+      'x': null,
+      'y': null
+    };
+  }
+
+  function _findPosX(obj) {
+    var curLeft = 0;
+    if (obj.offsetParent) {
+      while (1) {
+        curLeft += obj.offsetLeft;
+        if (!obj.offsetParent) {
+          break;
+        }
+        obj = obj.offsetParent;
+      }
+    }
+    else if (obj.x) {
+      curLeft += obj.x;
+    }
+    return curLeft;
+  }
+
+  function _findPosY(obj) {
+    var curTop = 0;
+    if (obj.offsetParent) {
+      while (1) {
+        curTop += obj.offsetTop;
+        if (!obj.offsetParent) {
+          break;
+        }
+        obj = obj.offsetParent;
+      }
+    }
+    else if (obj.y) {
+      curTop += obj.y;
+    }
+    return curTop;
+  }
+}
+
+/**
  * removes element from DOM by its id
  * @param	elementId
  * @static

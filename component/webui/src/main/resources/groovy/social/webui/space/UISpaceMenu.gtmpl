@@ -26,7 +26,7 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id;
-	
+
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
@@ -73,13 +73,36 @@
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
+  jsManager.importJavascript("debug", "/social-resources/javascript");
+  jsManager.importJavascript("ie-patch", "/social-resources/javascript");
+  jsManager.importJavascript("eXo-patch", "/social-resources/javascript");
   jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
-  //Disable double-click inline feature to make sure tabs just work well first
-  //TODO make double-click inline feature to work well
+  jsManager.importJavascript("eXo.social.webui.UINavigationTabs", "/social-resources/javascript");
   jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/social-resources/javascript");
+
+  //params for UINavigationTabs
+  def containerId = "SpaceApplicationTabsContainer";
+  def displayElements = 7;
+  def pageScrolled = false; //navigate from item to item.
+  def previousLabel = _ctx.appRes("${uicomponentId}.label.previous");
+  def nextLabel = _ctx.appRes("${uicomponentId}.label.next");
+  def allLabel = _ctx.appRes("${uicomponentId}.label.all");
+
+  def params ="""
+  {
+    displayedElements:$displayElements,
+    pageScrolled:$pageScrolled,
+    messages: {previous: '$previousLabel', next: '$nextLabel'}
+  }""";
+  jsManager.addOnLoadJavascript("initUINavigationTabs");
 %>
 
 <div class="UISpaceMenu" id="UISpaceMenu">
+  <script type="text/javascript">
+    function initUINavigationTabs() {
+      eXo.social.webui.UINavigationTabs.tabContainerId('$containerId').configure($params);
+    }
+  </script>
   <div class="SpaceMenuPortlet ClearFix">
     <div class="UISpaceName FL ">
       <a class="Avartar" href="$homeUrl"><img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
@@ -93,7 +116,7 @@
       <div class="LeftHorizontalTabs">
         <div class="RightHorizontalTabs">
           <div class="CenterHorizontalTabs">
-            <div class="TabsContainer">
+            <div id="$containerId" class="TabsContainer">
               <%
                 def homeTabClass = "NormalTab";
                 if(spaceUrl.equals(appSelected)) {
@@ -113,7 +136,9 @@
                 </div>
               </div>
               <%
+              def limit = 0; //to avoid flashy display on ui when js stuff init things
               for(node in apps) {
+                limit +=1;
                 def appTabClass = "NormalTab";
                 def nodeTitle = node.getResolvedLabel();
                 def nodeLabel = getFitString(nodeTitle, 15);
@@ -125,10 +150,14 @@
                   appTabClass = "SelectedTab";
                 }
                 if (!nodeName.equals("settings")) {
-                
+
                 def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\"," + "\"" + titleEditable + "\")";
+                def uiTabClass = "UITab NormalTabStyle";
+                if (limit >= displayElements) {
+                  uiTabClass = "UIHiddenTab NormalTabStyle";
+                }
               %>
-              <div class="UITab NormalTabStyle">
+              <div class="$uiTabClass">
                 <div class="$appTabClass">
                   <div class="LeftTab">
                     <div class="RightTab">
@@ -147,6 +176,37 @@
                 }
               }
               %>
+              <div class="AllButton">
+                <a class="IconAll" title="all tab">$allLabel</a>
+                <ul id="UISubTabId" class="UISubTab">
+                <%
+                def appClass = "";
+                if (spaceUrl.equals(appSelected)) {
+                  appClass = "SelectedApp";
+                }
+                %>
+                  <li class="$appClass"><a href="$homeUrl" title="$homeLabel">$homeLabel</a></li>
+                <%
+                for(node in apps) {
+                  def nodeTitle = node.getResolvedLabel();
+                  def nodeLabel = getFitString(nodeTitle, 15);
+                  def nodeUri = node.getURI();
+                  def uriParts = nodeUri.split("/");
+                  def nodeName = uriParts[uriParts.length - 1];
+                  def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
+                  appClass = "";
+                  if (nodeName.equals(appSelected)) {
+                    appClass = "SelectedApp";
+                  }
+                  if (!nodeName.equals("settings")) {
+                %>
+                  <li class="$appClass"><a href="$pageURI" title="$nodeTitle">$nodeLabel</a></li>
+                <%
+                  }
+                }
+                %>
+                </ul><!--end dropbox-->
+              </div>
             </div>
           </div>
         </div>
