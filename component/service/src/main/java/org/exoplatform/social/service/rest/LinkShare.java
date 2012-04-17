@@ -40,6 +40,7 @@ import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
 import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.Util;
 
 /**
@@ -88,6 +89,8 @@ import org.exoplatform.social.common.Util;
  */
 @XmlRootElement
 public class LinkShare extends DefaultFilter {
+  
+  private static final Log LOG = ExoLogger.getLogger(LinkShare.class);
   
   private final String MEDIUM_TYPE_NEWS = "news";
   private final String MEDIUM_TYPE_AUDIO = "audio";
@@ -564,6 +567,7 @@ public class LinkShare extends DefaultFilter {
       url = new URL(this.link);
     } catch (MalformedURLException e) {
       //Do nothing, this exception will never occur here
+      LOG.warn("A malformed URL has occurred::" + link);
     }
     String protocol = url.getProtocol();
     String host = url.getHost();

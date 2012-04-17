@@ -37,8 +37,8 @@ public class RequestQueueingFilter  implements Filter {
   ServletException {
     try {
       interceptor.invoke(new ServletFilterInvocation(chain, request, response));
-    } catch (Throwable t) {
-      throw new ServletException(t.getCause());
+    } catch (Exception e) {
+      throw new ServletException(e.getCause());
     }
   }
 
@@ -75,8 +75,8 @@ public class RequestQueueingFilter  implements Filter {
 
       try {
         filterChain.doFilter(request, response);
-      } catch (Throwable t) {
-       throw new InvocationException(t.getCause());
+      } catch (Exception e) {
+       throw new InvocationException(e.getCause());
       }
 
       return null;

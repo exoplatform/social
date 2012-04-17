@@ -20,9 +20,12 @@ import javax.portlet.PortletRequest;
 
 import org.exoplatform.dashboard.webui.component.DashboardParent;
 import org.exoplatform.dashboard.webui.component.UIDashboard;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.space.UISpaceAddForm;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -41,6 +44,8 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 )
 public class UIHomeSpacePortlet extends UIPortletApplication implements DashboardParent {
 
+  private static final Log LOG = ExoLogger.getLogger(UIHomeSpacePortlet.class);
+  
   private String DEFAULT_TEMPLATE = "home-spaces";
   private String DEFAULT_RSSFETCH_ID = "rssFetch";
   /**
@@ -59,10 +64,12 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
 
   public boolean canEdit() {
     String spaceUrl = SpaceUtils.getSpaceUrl();
+    Space space = null;
     try {
-      Space space = Utils.getSpaceService().getSpaceByUrl(spaceUrl);
+      space = Utils.getSpaceService().getSpaceByUrl(spaceUrl);
       return Utils.getSpaceService().hasEditPermission(space, Utils.getViewerRemoteId());
     } catch (Exception e) {
+      LOG.warn("The current user can not allow to edit permission with space::" + space.getDisplayName());
     }
     return false;
   }
