@@ -22,14 +22,18 @@ public class RelationshipInjector extends AbstractSocialInjector {
   /** . */
   private static final String TO_USER = "toUser";
 
+  /** . */
+  private static final String PREFIX = "prefix";
+
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
     
     //
-    init();
     int number = param(params, NUMBER);
     int from = param(params, FROM_USER);
     int to = param(params, TO_USER);
+    String prefix = params.get(PREFIX);
+    init(prefix, null);
 
     if (number <= 0) {
       getLog().error("Number have to be positive. Value '" + number + "' incorrect. Aborting injection ...");
@@ -47,7 +51,7 @@ public class RelationshipInjector extends AbstractSocialInjector {
     for(int i = from; i <= to; ++i) {
 
       //
-      String fromUser = USER_BASE + i;
+      String fromUser = userBase + i;
       Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
  
       //
@@ -65,7 +69,7 @@ public class RelationshipInjector extends AbstractSocialInjector {
           break;
         }
         
-        String toUser = USER_BASE + j;
+        String toUser = userBase + j;
         Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
 
         boolean exists = relationshipManager.get(identity1, identity2) != null;

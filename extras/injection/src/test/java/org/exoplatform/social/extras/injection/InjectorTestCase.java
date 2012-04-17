@@ -114,219 +114,36 @@ public class InjectorTestCase extends AbstractKernelTest {
     
   }
 
-  public void testIdentity() throws Exception {
-
-    //
-    assertClean();
-
-    //
-    params.put("number", "2");
-    identityInjector.inject(params);
-
-    //
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user0"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user1"));
-    assertEquals(null, organizationService.getUserHandler().findUserByName("bench.user2"));
-
-    //
-    params.put("number", "2");
-    identityInjector.inject(params);
-
-    //
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user0"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user1"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user2"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user3"));
-    assertEquals(null, organizationService.getUserHandler().findUserByName("bench.user4"));
-
-    //
-    cleanIdentity(4);
-
+  public void testDefaultIdentity() throws Exception {
+    performIdentityTest(null);
   }
 
-  public void testSpace() throws Exception {
-
-    //
-    assertClean();
-
-    //
-    params.put("number", "5");
-    identityInjector.inject(params);
-
-    //
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user0"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user1"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user2"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user3"));
-    assertNotNull(organizationService.getUserHandler().findUserByName("bench.user4"));
-    assertEquals(null, organizationService.getUserHandler().findUserByName("bench.user5"));
-
-    //
-    params.put("number", "2");
-    params.put("fromUser", "1");
-    params.put("toUser", "3");
-    spaceInjector.inject(params);
-
-    //
-    Space space0 = spaceService.getSpaceByPrettyName("benchspace0");
-    Space space1 = spaceService.getSpaceByPrettyName("benchspace1");
-    Space space2 = spaceService.getSpaceByPrettyName("benchspace2");
-    Space space3 = spaceService.getSpaceByPrettyName("benchspace3");
-    Space space4 = spaceService.getSpaceByPrettyName("benchspace4");
-    Space space5 = spaceService.getSpaceByPrettyName("benchspace5");
-    Space space6 = spaceService.getSpaceByPrettyName("benchspace6");
-
-    //
-    assertNotNull(space0);
-    assertEquals("bench.user1", space0.getManagers()[0]);
-    assertNotNull(space1);
-    assertEquals("bench.user1", space1.getManagers()[0]);
-    assertNotNull(space2);
-    assertEquals("bench.user2", space2.getManagers()[0]);
-    assertNotNull(space3);
-    assertEquals("bench.user2", space3.getManagers()[0]);
-    assertNotNull(space4);
-    assertEquals("bench.user3", space4.getManagers()[0]);
-    assertNotNull(space5);
-    assertEquals("bench.user3", space5.getManagers()[0]);
-    assertEquals(null, space6);
-    
-    spaceInjector.inject(params);
-
-    //
-    space6 = spaceService.getSpaceByPrettyName("benchspace6");
-    Space space7 = spaceService.getSpaceByPrettyName("benchspace7");
-    Space space8 = spaceService.getSpaceByPrettyName("benchspace8");
-    Space space9 = spaceService.getSpaceByPrettyName("benchspace9");
-    Space space10 = spaceService.getSpaceByPrettyName("benchspace10");
-    Space space11 = spaceService.getSpaceByPrettyName("benchspace11");
-    Space space12 = spaceService.getSpaceByPrettyName("benchspace12");
-
-    //
-    assertNotNull(space6);
-    assertEquals("bench.user1", space6.getManagers()[0]);
-    assertNotNull(space7);
-    assertEquals("bench.user1", space7.getManagers()[0]);
-    assertNotNull(space8);
-    assertEquals("bench.user2", space8.getManagers()[0]);
-    assertNotNull(space9);
-    assertEquals("bench.user2", space9.getManagers()[0]);
-    assertNotNull(space10);
-    assertEquals("bench.user3", space10.getManagers()[0]);
-    assertNotNull(space11);
-    assertEquals("bench.user3", space11.getManagers()[0]);
-    assertEquals(null, space12);
-
-    //
-    cleanIdentity(5);
-    cleanSpace(12);
-
+  public void testPrefixIdentity() throws Exception {
+    performIdentityTest("foo");
   }
 
-  public void testActivity() throws Exception {
-
-    //
-    assertClean();
-
-    //
-    params.put("number", "5");
-    identityInjector.inject(params);
-
-    //
-    Identity user0 = identityManager.getOrCreateIdentity("organization", "bench.user0", false);
-    Identity user1 = identityManager.getOrCreateIdentity("organization", "bench.user1", false);
-    Identity user2 = identityManager.getOrCreateIdentity("organization", "bench.user2", false);
-    Identity user3 = identityManager.getOrCreateIdentity("organization", "bench.user3", false);
-    Identity user4 = identityManager.getOrCreateIdentity("organization", "bench.user4", false);
-
-    //
-    params.put("number", "5");
-    params.put("fromUser", "1");
-    params.put("toUser", "3");
-    params.put("type", "user");
-    activityInjector.inject(params);
-
-    //
-    assertEquals(0, activityManager.getActivitiesWithListAccess(user0).getSize());
-    assertEquals(5, activityManager.getActivitiesWithListAccess(user1).getSize());
-    assertEquals(5, activityManager.getActivitiesWithListAccess(user2).getSize());
-    assertEquals(5, activityManager.getActivitiesWithListAccess(user3).getSize());
-    assertEquals(0, activityManager.getActivitiesWithListAccess(user4).getSize());
-
-    //
-    params.put("number", "2");
-    params.put("fromUser", "1");
-    params.put("toUser", "3");
-    params.put("type", "user");
-    spaceInjector.inject(params);
-
-    //
-    Identity space_user0 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "benchspace0", false);
-    Identity space_user1 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "benchspace1", false);
-    Identity space_user2 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "benchspace2", false);
-    Identity space_user3 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "benchspace3", false);
-    Identity space_user4 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "benchspace4", false);
-
-    //
-    params.put("number", "5");
-    params.put("fromUser", "1");
-    params.put("toUser", "3");
-    params.put("type", "space");
-    activityInjector.inject(params);
-
-    //
-    assertEquals(1, activityManager.getActivitiesWithListAccess(space_user0).getSize());
-    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user1).getSize());
-    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user2).getSize());
-    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user3).getSize());
-    assertEquals(1, activityManager.getActivitiesWithListAccess(space_user4).getSize());
-
-
-    //
-    cleanIdentity(5);
-    cleanSpace(6);
-
+  public void testDefaultSpace() throws Exception {
+    performSpaceTest(null, null);
   }
 
-  public void testRelationship() throws Exception {
+  public void testPrefixSpace() throws Exception {
+    performSpaceTest("foo", "bar");
+  }
 
-    //
-    assertClean();
+  public void testDefaultActivity() throws Exception {
+    performActivityTest(null, null);
+  }
 
-    //
-    params.put("number", "10");
-    identityInjector.inject(params);
+  public void testPrefixActivity() throws Exception {
+    performActivityTest("foo", "bar");
+  }
 
-    //
-    Identity user0 = identityManager.getOrCreateIdentity("organization", "bench.user0", false);
-    Identity user1 = identityManager.getOrCreateIdentity("organization", "bench.user1", false);
-    Identity user2 = identityManager.getOrCreateIdentity("organization", "bench.user2", false);
-    Identity user3 = identityManager.getOrCreateIdentity("organization", "bench.user3", false);
-    Identity user4 = identityManager.getOrCreateIdentity("organization", "bench.user4", false);
-    Identity user5 = identityManager.getOrCreateIdentity("organization", "bench.user5", false);
-    Identity user6 = identityManager.getOrCreateIdentity("organization", "bench.user6", false);
-    Identity user7 = identityManager.getOrCreateIdentity("organization", "bench.user7", false);
-    Identity user8 = identityManager.getOrCreateIdentity("organization", "bench.user8", false);
-    Identity user9 = identityManager.getOrCreateIdentity("organization", "bench.user9", false);
+  public void testDefaultRelationship() throws Exception {
+    performRelationshipTest(null);
+  }
 
-    //
-    params.put("number", "3");
-    params.put("fromUser", "2");
-    params.put("toUser", "8");
-    relationshipInjector.inject(params);
-
-    //
-    assertEquals(0, relationshipManager.getConnections(user0).getSize());
-    assertEquals(0, relationshipManager.getConnections(user1).getSize());
-    assertEquals(3, relationshipManager.getConnections(user2).getSize());
-    assertEquals(3, relationshipManager.getConnections(user3).getSize());
-    assertEquals(3, relationshipManager.getConnections(user4).getSize());
-    assertEquals(3, relationshipManager.getConnections(user5).getSize());
-    assertEquals(2, relationshipManager.getConnections(user6).getSize());
-    assertEquals(2, relationshipManager.getConnections(user7).getSize());
-    assertEquals(2, relationshipManager.getConnections(user8).getSize());
-    assertEquals(0, relationshipManager.getConnections(user9).getSize());
-
+  public void testPrefixRelationship() throws Exception {
+    performRelationshipTest("foo");
   }
 
   public void testPossibility() throws Exception {
@@ -447,27 +264,300 @@ public class InjectorTestCase extends AbstractKernelTest {
 
   }
 
-  private void assertClean() throws Exception {
-   
-    assertEquals(null, organizationService.getUserHandler().findUserByName("bench.user0"));
-    assertEquals(null, identityStorage.findIdentity(OrganizationIdentityProvider.NAME, "bench.user0"));
-    assertEquals(null, spaceService.getSpaceByPrettyName("benchspace0"));
-    assertEquals(null, identityStorage.findIdentity(SpaceIdentityProvider.NAME, "benchspace0"));
+  private void performIdentityTest(String prefix) throws Exception {
+
+    //
+    String baseName = (prefix == null ? "bench.user" : prefix);
+    assertClean(baseName, null);
+
+    //
+    params.put("number", "2");
+    if (prefix != null) {
+      params.put("prefix", prefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "0"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "1"));
+    assertEquals(null, organizationService.getUserHandler().findUserByName(baseName + "2"));
+
+    //
+    params.put("number", "2");
+    if (prefix != null) {
+      params.put("prefix", prefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "0"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "1"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "2"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(baseName + "3"));
+    assertEquals(null, organizationService.getUserHandler().findUserByName(baseName + "4"));
+
+    //
+    cleanIdentity(baseName, 4);
 
   }
 
-  private void cleanIdentity(int number) {
+  private void performSpaceTest(String userPrefix, String spacePrefix) throws Exception {
 
-    for (int i = 0; i < number; ++i) {
-      users.add("bench.user" + i);
+    //
+    String userBaseName = (userPrefix == null ? "bench.user" : userPrefix);
+    String spaceBaseName = (spacePrefix == null ? "bench.space" : spacePrefix);
+    String spacePrettyBaseName = spaceBaseName.replace(".", "");
+    assertClean(userBaseName, spacePrettyBaseName);
+
+    //
+    params.put("number", "5");
+    if (userPrefix != null) {
+      params.put("prefix", userPrefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "0"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "1"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "2"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "3"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "4"));
+    assertEquals(null, organizationService.getUserHandler().findUserByName(userBaseName + "5"));
+
+    //
+    params.put("number", "2");
+    params.put("fromUser", "1");
+    params.put("toUser", "3");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    spaceInjector.inject(params);
+
+    //
+    Space space0 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "0");
+    Space space1 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "1");
+    Space space2 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "2");
+    Space space3 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "3");
+    Space space4 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "4");
+    Space space5 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "5");
+    Space space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+
+    //
+    assertNotNull(space0);
+    assertEquals(userBaseName + "1", space0.getManagers()[0]);
+    assertNotNull(space1);
+    assertEquals(userBaseName + "1", space1.getManagers()[0]);
+    assertNotNull(space2);
+    assertEquals(userBaseName + "2", space2.getManagers()[0]);
+    assertNotNull(space3);
+    assertEquals(userBaseName + "2", space3.getManagers()[0]);
+    assertNotNull(space4);
+    assertEquals(userBaseName + "3", space4.getManagers()[0]);
+    assertNotNull(space5);
+    assertEquals(userBaseName + "3", space5.getManagers()[0]);
+    assertEquals(null, space6);
+
+    spaceInjector.inject(params);
+
+    //
+    space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+    Space space7 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "7");
+    Space space8 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "8");
+    Space space9 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "9");
+    Space space10 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "10");
+    Space space11 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "11");
+    Space space12 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "12");
+
+    //
+    assertNotNull(space6);
+    assertEquals(userBaseName + "1", space6.getManagers()[0]);
+    assertNotNull(space7);
+    assertEquals(userBaseName + "1", space7.getManagers()[0]);
+    assertNotNull(space8);
+    assertEquals(userBaseName + "2", space8.getManagers()[0]);
+    assertNotNull(space9);
+    assertEquals(userBaseName + "2", space9.getManagers()[0]);
+    assertNotNull(space10);
+    assertEquals(userBaseName + "3", space10.getManagers()[0]);
+    assertNotNull(space11);
+    assertEquals(userBaseName + "3", space11.getManagers()[0]);
+    assertEquals(null, space12);
+
+    //
+    cleanIdentity(userBaseName, 5);
+    cleanSpace(spacePrettyBaseName, 12);
+
+  }
+  
+  private void performActivityTest(String userPrefix, String spacePrefix) throws Exception {
+
+    //
+    String userBaseName = (userPrefix == null ? "bench.user" : userPrefix);
+    String spaceBaseName = (spacePrefix == null ? "bench.space" : spacePrefix);
+    String spacePrettyBaseName = spaceBaseName.replace(".", "");
+    assertClean(userBaseName, spacePrettyBaseName);
+
+    //
+    params.put("number", "5");
+    if (userPrefix != null) {
+      params.put("prefix", userPrefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    Identity user0 = identityManager.getOrCreateIdentity("organization", userBaseName + "0", false);
+    Identity user1 = identityManager.getOrCreateIdentity("organization", userBaseName + "1", false);
+    Identity user2 = identityManager.getOrCreateIdentity("organization", userBaseName + "2", false);
+    Identity user3 = identityManager.getOrCreateIdentity("organization", userBaseName + "3", false);
+    Identity user4 = identityManager.getOrCreateIdentity("organization", userBaseName + "4", false);
+
+    //
+    params.put("number", "5");
+    params.put("fromUser", "1");
+    params.put("toUser", "3");
+    params.put("type", "user");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    activityInjector.inject(params);
+
+    //
+    assertEquals(0, activityManager.getActivitiesWithListAccess(user0).getSize());
+    assertEquals(5, activityManager.getActivitiesWithListAccess(user1).getSize());
+    assertEquals(5, activityManager.getActivitiesWithListAccess(user2).getSize());
+    assertEquals(5, activityManager.getActivitiesWithListAccess(user3).getSize());
+    assertEquals(0, activityManager.getActivitiesWithListAccess(user4).getSize());
+
+    //
+    params.put("number", "2");
+    params.put("fromUser", "1");
+    params.put("toUser", "3");
+    params.put("type", "user");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    spaceInjector.inject(params);
+
+    //
+    Identity space_user0 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "0", false);
+    Identity space_user1 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "1", false);
+    Identity space_user2 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "2", false);
+    Identity space_user3 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "3", false);
+    Identity space_user4 = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "4", false);
+
+    //
+    params.put("number", "5");
+    params.put("fromUser", "1");
+    params.put("toUser", "3");
+    params.put("type", "space");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    activityInjector.inject(params);
+
+    //
+    assertEquals(1, activityManager.getActivitiesWithListAccess(space_user0).getSize());
+    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user1).getSize());
+    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user2).getSize());
+    assertEquals(6, activityManager.getActivitiesWithListAccess(space_user3).getSize());
+    assertEquals(1, activityManager.getActivitiesWithListAccess(space_user4).getSize());
+
+
+    //
+    cleanIdentity(userBaseName, 5);
+    cleanSpace(spacePrettyBaseName, 6);
+
+  }
+
+  private void performRelationshipTest(String prefix) throws Exception {
+
+    //
+    String baseName = (prefix == null ? "bench.user" : prefix);
+    assertClean(baseName, null);
+
+    //
+    params.put("number", "10");
+    if (prefix != null) {
+      params.put("prefix", prefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    Identity user0 = identityManager.getOrCreateIdentity("organization", baseName + "0", false);
+    Identity user1 = identityManager.getOrCreateIdentity("organization", baseName + "1", false);
+    Identity user2 = identityManager.getOrCreateIdentity("organization", baseName + "2", false);
+    Identity user3 = identityManager.getOrCreateIdentity("organization", baseName + "3", false);
+    Identity user4 = identityManager.getOrCreateIdentity("organization", baseName + "4", false);
+    Identity user5 = identityManager.getOrCreateIdentity("organization", baseName + "5", false);
+    Identity user6 = identityManager.getOrCreateIdentity("organization", baseName + "6", false);
+    Identity user7 = identityManager.getOrCreateIdentity("organization", baseName + "7", false);
+    Identity user8 = identityManager.getOrCreateIdentity("organization", baseName + "8", false);
+    Identity user9 = identityManager.getOrCreateIdentity("organization", baseName + "9", false);
+
+    //
+    params.put("number", "3");
+    params.put("fromUser", "2");
+    params.put("toUser", "8");
+    if (prefix != null) {
+      params.put("prefix", prefix);
+    }
+    relationshipInjector.inject(params);
+
+    //
+    assertEquals(0, relationshipManager.getConnections(user0).getSize());
+    assertEquals(0, relationshipManager.getConnections(user1).getSize());
+    assertEquals(3, relationshipManager.getConnections(user2).getSize());
+    assertEquals(3, relationshipManager.getConnections(user3).getSize());
+    assertEquals(3, relationshipManager.getConnections(user4).getSize());
+    assertEquals(3, relationshipManager.getConnections(user5).getSize());
+    assertEquals(2, relationshipManager.getConnections(user6).getSize());
+    assertEquals(2, relationshipManager.getConnections(user7).getSize());
+    assertEquals(2, relationshipManager.getConnections(user8).getSize());
+    assertEquals(0, relationshipManager.getConnections(user9).getSize());
+
+    //
+    cleanIdentity(baseName, 10);
+
+  }
+
+  private void assertClean(String userBaseName, String spacePrettyBaseName) throws Exception {
+
+    if (userBaseName != null) {
+      assertEquals(null, organizationService.getUserHandler().findUserByName(userBaseName + "0"));
+      assertEquals(null, identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userBaseName + "0"));
+    }
+
+    if (spacePrettyBaseName != null) {
+      assertEquals(null, spaceService.getSpaceByPrettyName(spacePrettyBaseName + "0"));
+      assertEquals(null, identityStorage.findIdentity(SpaceIdentityProvider.NAME, spacePrettyBaseName + "0"));
     }
 
   }
 
-  private void cleanSpace(int number) {
+  private void cleanIdentity(String prefix, int number) {
 
     for (int i = 0; i < number; ++i) {
-      spaces.add("benchspace" + i);
+      users.add(prefix + i);
+    }
+
+  }
+
+  private void cleanSpace(String prefix, int number) {
+
+    for (int i = 0; i < number; ++i) {
+      spaces.add(prefix + i);
     }
 
   }
