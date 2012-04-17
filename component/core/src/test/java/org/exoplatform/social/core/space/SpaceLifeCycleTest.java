@@ -135,6 +135,9 @@ public class SpaceLifeCycleTest extends AbstractCoreTest {
       recordEvent(event);
     }
 
+    public void spaceRenamed(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
   }
 
   class MockFailingListener extends MockListener {
