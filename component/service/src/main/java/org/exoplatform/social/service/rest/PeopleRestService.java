@@ -210,7 +210,7 @@ public class PeopleRestService implements ResourceContainer {
     if (activities.size() > 0) {
       peopleInfo.setActivityTitle(activities.get(0).getTitle());
     } else { // Default title of activity
-      peopleInfo.setActivityTitle("Not any updates posted yet.");
+      peopleInfo.setActivityTitle("No updates have been posted yet.");
     }
     
     peopleInfo.setAvatarURL((String) identity.getProfile().getProperty(Profile.AVATAR_URL));
