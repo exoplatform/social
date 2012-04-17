@@ -16,6 +16,11 @@
  */
 package org.exoplatform.social.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -32,6 +37,8 @@ import org.exoplatform.social.core.activity.model.Activity;
  */
 public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin implements
     ActivityProcessor {
+  public static final String TEMPLATE_PARAM_TO_PROCESS = "registeredKeysForProcessor";
+  public static final String TEMPLATE_PARAM_LIST_DELIM = "\\|";
   protected int            priority;
 
   private static final Log LOG = ExoLogger.getLogger(BaseActivityProcessorPlugin.class);
@@ -53,7 +60,23 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
       LOG.warn("an <value-param> 'priority' of type int is recommanded for component " + getClass());
     }
   }
-
+  
+  /**
+   * Gets template parameters keys base on registered key. 
+   * @param activity
+   * @return
+   * @since 1.1.9
+   */
+  public List<String> getTemplateParamKeysToProcess(Activity activity){
+    Map<String, String> templateParams = activity.getTemplateParams();
+    List<String> keys = new ArrayList<String>();
+    
+    if(templateParams != null && templateParams.containsKey(TEMPLATE_PARAM_TO_PROCESS)){
+      return Arrays.asList(activity.getTemplateParams().get(TEMPLATE_PARAM_TO_PROCESS).split(TEMPLATE_PARAM_LIST_DELIM));
+    }
+    return keys;
+  }
+  
   public int getPriority() {
     return priority;
   }

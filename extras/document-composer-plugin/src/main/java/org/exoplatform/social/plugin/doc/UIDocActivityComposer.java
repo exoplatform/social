@@ -75,6 +75,8 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
   public static final String WORKSPACE = "collaboration";
   private final String POPUP_COMPOSER = "UIPopupComposer";
   private final String docActivityTitle = "Shared a document <a href=\"${"+ UIDocActivity.DOCLINK +"}\">${" +UIDocActivity.DOCNAME +"}</a>";
+  public static final String KEYS_TO_PROCESS = UIDocActivity.MESSAGE;
+  public static final String TEMPLATE_PARAM_TO_PROCESS = "registeredKeysForProcessor";
 
   private String documentRefLink;
   private String rootpath;
@@ -176,6 +178,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
       activityParams.put(UIDocActivity.REPOSITORY, REPOSITORY);
       activityParams.put(UIDocActivity.WORKSPACE, WORKSPACE);
       activityParams.put(UIDocActivity.MESSAGE, postedMessage);
+      activityParams.put(TEMPLATE_PARAM_TO_PROCESS, UIDocActivity.MESSAGE);
 
       UIApplication uiApplication = requestContext.getUIApplication();
       if (activityParams.size() == 0) {
@@ -204,6 +207,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     String remoteUser = requestContext.getRemoteUser();
 
     Activity activity = saveActivity(activityParams, activityManager, identityManager, ownerIdentity, remoteUser);
+    activity = activityManager.getActivity(activity.getId());
 
     if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
       UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
@@ -233,6 +237,7 @@ public class UIDocActivityComposer extends UIActivityComposer implements UISelec
     String remoteUser = requestContext.getRemoteUser();
 
     Activity activity = saveActivity(activityParams, activityManager, identityManager, spaceIdentity, remoteUser);
+    activity = activityManager.getActivity(activity.getId());
 
     UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();
     UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();

@@ -71,6 +71,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String TITLE_PARAM = "title";
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
+  public static final String KEYS_TO_PROCESS = TITLE_PARAM + "|" + DESCRIPTION_PARAM + "|" + COMMENT_PARAM;
 
   private static final String MSG_ERROR_INVALID_LINK = "UILinkComposerPlugin.msg.error.Attach_Link";
     
@@ -202,6 +203,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
     templateParams.put(COMMENT_PARAM, postedMessage);
+    templateParams.put(org.exoplatform.social.core.BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, KEYS_TO_PROCESS); 
+
     setTemplateParams(templateParams);
 
     if (templateParams.size() == 0) {
@@ -226,6 +229,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
                                                                    space.getId(),
                                                                    false);
       activityManager.saveActivity(spaceIdentity, activity);
+      activity = activityManager.getActivity(activity.getId());
 
       UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader().getActivitiesContainer();
       activitiesContainer.addActivity(activity);
@@ -238,6 +242,8 @@ public class UILinkActivityComposer extends UIActivityComposer {
                                                                    ownerName);
 
       activityManager.saveActivity(ownerIdentity, activity);
+      activity = activityManager.getActivity(activity.getId());
+
       
       if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode.MY_STATUS) {
         UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader().getActivitiesContainer();
