@@ -18,13 +18,15 @@ public class IdentityInjector extends AbstractSocialInjector {
 
   /** . */
   private static final String NUMBER = "number";
+  private static final String PREFIX = "prefix";
 
   @Override
   public void inject(HashMap<String, String> params) throws Exception {
 
     //
-    init();
     int number = param(params, NUMBER);
+    String prefix = params.get(PREFIX);
+    init(prefix, null);
 
     //
     for(int i = 0; i < number; ++i) {
