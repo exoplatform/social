@@ -13,6 +13,7 @@
     <Locale messages="locale/ALL_ALL.xml" />
     <Locale lang="en" messages="locale/en_ALL.xml" />
     <Locale lang="fr" messages="locale/fr_ALL.xml" />
+    <Locale lang="it" messages="locale/it_ALL.xml" />
     <Require feature="opensocial-0.8" />
     <Require feature="dynamic-height" />
     <Require feature="settitle" />
