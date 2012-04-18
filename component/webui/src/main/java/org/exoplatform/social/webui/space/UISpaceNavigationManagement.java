@@ -163,17 +163,6 @@ public class UISpaceNavigationManagement extends UIContainer {
     public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
       UISpaceNavigationManagement uiManagement = event.getSource();
       UISpaceNavigationNodeSelector uiNodeSelector = uiManagement.getChild(UISpaceNavigationNodeSelector.class);
-      
-      String spaceUrl = SpaceUtils.getSpaceUrl();
-      Space space = uiManagement.getSpace();
-      UserNavigation pageNav = null;
-      try {
-        pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
-      } catch (Exception e1) {
-      }
-
-      UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, spaceUrl);
-      uiNodeSelector.setRootNode(new TreeNode(pageNav, homeNode));
       UIRightClickPopupMenu menu = uiNodeSelector.getChild(UIRightClickPopupMenu.class);
       menu.createEvent("AddNode", Phase.PROCESS, event.getRequestContext()).broadcast();
     }
