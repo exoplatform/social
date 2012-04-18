@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default message bundle
+-->
+<messageBundle>
+  <msg name="my_spaces">Miei Spazi</msg>
+  <msg name="more_link_label">Mostra tutti</msg>
+  <msg name="has_no_space">Non è membro di nessun spazio.</msg>
+</messageBundle>
