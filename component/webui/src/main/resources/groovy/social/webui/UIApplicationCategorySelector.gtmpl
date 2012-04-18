@@ -39,7 +39,7 @@ for (applicationCategory in categoryList) {
 def params = """
   {
     applicationCategoryIds: '$applicationCategoryIds',
-    allApplicationCategorySize: ${applicationCategoryIds.size()},
+    allApplicationCategorySize: ${applicationCategoryIds.size()}
   }
 """
 jsmanager.addOnLoadJavascript("initUIApplicationCategorySelector");
