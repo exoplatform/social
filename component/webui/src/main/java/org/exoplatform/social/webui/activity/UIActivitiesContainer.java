@@ -108,8 +108,10 @@ public class UIActivitiesContainer extends UIContainer {
     if (activityList == null) {
       return;
     }
+    
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
+    
     for (ExoSocialActivity activity : activityList) {
       factory.addChild(activity, this);
     }
