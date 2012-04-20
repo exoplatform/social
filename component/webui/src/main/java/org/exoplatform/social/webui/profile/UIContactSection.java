@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -454,8 +455,8 @@ public class UIContactSection extends UIProfileSection {
     int index = 0;
     if (Profile.CONTACT_IMS.equals(uiType)) {
       for (Map<String, String> map : profiles) {
-        ((UIFormInput) getImsChilds().get(index++)).setValue(map.get(KEY));
-        ((UIFormInput) getImsChilds().get(index++)).setValue(map.get(VALUE));
+        ((UIFormInput) getImsChilds().get(index++)).setValue(StringEscapeUtils.unescapeHtml(map.get(KEY)));
+        ((UIFormInput) getImsChilds().get(index++)).setValue(StringEscapeUtils.unescapeHtml(map.get(VALUE)));
       }
     } else if (Profile.CONTACT_URLS.equals(uiType)) {
       for (Map<String, String> map : profiles) {

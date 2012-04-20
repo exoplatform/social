@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -356,10 +357,10 @@ public class UIExperienceSection extends UIProfileSection {
         }
       } else {
         for (HashMap<String, Object> map : experiences) {
-          listProfile.add(map.get(Profile.EXPERIENCES_COMPANY));
-          listProfile.add(map.get(Profile.EXPERIENCES_POSITION));
-          listProfile.add(map.get(Profile.EXPERIENCES_DESCRIPTION));
-          listProfile.add(map.get(Profile.EXPERIENCES_SKILLS));
+          listProfile.add(StringEscapeUtils.unescapeHtml((String)map.get(Profile.EXPERIENCES_COMPANY)));
+          listProfile.add(StringEscapeUtils.unescapeHtml((String)map.get(Profile.EXPERIENCES_POSITION)));
+          listProfile.add(StringEscapeUtils.unescapeHtml((String)map.get(Profile.EXPERIENCES_DESCRIPTION)));
+          listProfile.add(StringEscapeUtils.unescapeHtml((String)map.get(Profile.EXPERIENCES_SKILLS)));
           listProfile.add(map.get(Profile.EXPERIENCES_START_DATE));
           listProfile.add(map.get(Profile.EXPERIENCES_END_DATE));
           listProfile.add(map.get(Profile.EXPERIENCES_IS_CURRENT));
