@@ -18,6 +18,7 @@ package org.exoplatform.social.webui.profile;
 
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
@@ -224,7 +225,7 @@ public class UIHeaderSection extends UIProfileSection {
     if (isFirstLoad() == false) {
       UIFormStringInput uiPosition = getChildById(Profile.POSITION);
       Profile profile = getProfile();
-      String position = (String) profile.getProperty(Profile.POSITION);
+      String position = StringEscapeUtils.unescapeHtml((String) profile.getProperty(Profile.POSITION));
       position = (position == null ? "" : position);
       uiPosition.setValue(position);
       setFirstLoad(true);
