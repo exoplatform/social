@@ -13,8 +13,8 @@
   <name>eXo Social</name>
   
   <scm>
-    <connection>scm:git:ssh://github.com/exoplatform/social.git</connection>
-    <developerConnection>scm:git:ssh://github.com/exoplatform/social.git</developerConnection>
+    <connection>scm:git:git://github.com/exoplatform/social.git</connection>
+    <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
 
