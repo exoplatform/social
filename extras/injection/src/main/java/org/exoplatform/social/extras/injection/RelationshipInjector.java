@@ -5,6 +5,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.relationship.model.Relationship;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -43,60 +44,49 @@ public class RelationshipInjector extends AbstractSocialInjector {
     // Check if possible and adjust number if needed.
     Map<Integer, Integer> computed = compute(from, to, number);
     getLog().info("About to inject relationships :");
-    for (Integer key : computed.keySet()) {
-      getLog().info("" + key + " user(s) with " + computed.get(key) + " connection(s)");
+    for (Map.Entry<Integer, Integer> e : computed.entrySet()) {
+      getLog().info("" + e.getKey() + " user(s) with " + e.getValue() + " connection(s)");
 
     }
 
-    for(int i = from; i <= to; ++i) {
+    int floor = from;
+    for (Map.Entry<Integer, Integer> e : computed.entrySet()) {
+      generate(e, floor);
+      floor += e.getKey();
+    }
 
-      //
-      String fromUser = userBase + i;
-      Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
- 
-      //
-      int target = number + from;
-      for (int j = from; j < target; ++j) {
+  }
 
-        // Cannot create relationship with himself
-        if (i == j) {
-          ++target;
-          continue;
-        }
+  private void generate(Map.Entry<Integer, Integer> e, int floor) {
 
-        // Out of the range go to next user
-        if (j > to) {
-          break;
-        }
-        
+    for (int i = floor; i < floor + e.getKey(); ++i) {
+      for (int j = floor; j < floor + e.getKey(); ++j) {
+
+        //
+        String fromUser = userBase + i;
         String toUser = userBase + j;
-        Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
 
-        boolean exists = relationshipManager.get(identity1, identity2) != null;
-        if (!exists) {
-          
-          int size = relationshipManager.getConnections(identity2).getSize();
-          if (size >= number) {
-            ++target;
-            continue;
-          }
-
-          //
-          Relationship r = relationshipManager.inviteToConnect(identity1, identity2);
-          r.setStatus(Relationship.Type.CONFIRMED);
-          relationshipManager.update(r);
-
-          //
-          getLog().info("Relationship between " + fromUser + " and " + toUser + " generated");
-
+        //
+        if (i > j) {
+          getLog().info("Relationship between " + fromUser + " and " + toUser + " already exists");
+        }
+        else if(i == j) {
+          continue;
         }
         else {
 
           //
-          getLog().info("Relationship between " + fromUser + " and " + toUser + " already exists");
+          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, fromUser, false);
+          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, toUser, false);
 
+          //
+          Relationship r = new Relationship(identity1, identity2, Relationship.Type.CONFIRMED);
+          relationshipManager.saveRelationship(r);
+          
+          //
+          getLog().info("Relationship between " + fromUser + " and " + toUser + " generated");
+          
         }
-
 
       }
     }
@@ -121,7 +111,7 @@ public class RelationshipInjector extends AbstractSocialInjector {
    */
   public Map<Integer, Integer> compute(int a, int b, int c) {
 
-    Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+    Map<Integer, Integer> result = new LinkedHashMap<Integer, Integer>();
 
     // number too big, set maximum
     if (c > b - a) {
