@@ -116,9 +116,9 @@ public class SpaceUtils {
 
   public static final String SPACE_URL = "SPACE_URL";
 
-  static private final String PORTLET_STR = "portlet";
-  
-  static private final String GADGET_STR = "gadget";
+  private static final String PORTLET_STR = "portlet";
+
+  private static final String GADGET_STR = "gadget";
 
   /**
    * The id of the container in plf.
