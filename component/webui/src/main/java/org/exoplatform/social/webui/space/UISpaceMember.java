@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -455,7 +456,11 @@ public class UISpaceMember extends UIForm {
         if (invitedUsers != null) {
           for (int idx = 0; idx < invitedUsers.length; idx++) {
             name = invitedUsers[idx].trim();
-            if ((name.length() > 0) && !usersForInviting.contains(name)) usersForInviting.add(name);
+            if ((name.length() > 0) &&
+                !usersForInviting.contains(name) &&
+                !ArrayUtils.contains(space.getPendingUsers(), name)) {
+              usersForInviting.add(name);
+            }
           }
         }
         for (String userName : usersForInviting) {
