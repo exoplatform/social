@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.application;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -78,6 +77,13 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   private IdentityManager identityManager;
 
   /**
+   * The OLD_SPACE_DISPLAY_NAME_PARAM template param key
+   * 
+   * @since 1.2.8
+   */
+  public static final String OLD_SPACE_DISPLAY_NAME_PARAM = "OLD_SPACE_DISPLAY_NAME_PARAM";
+  
+  /**
    * Constructor.
    *
    * @param params the initial params
@@ -113,6 +119,20 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     LOG.debug("space " + event.getSpace().getDisplayName() + " was removed!");
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void spaceRenamed(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
+    final String activityMessage = "The space <strong>" + event.getTarget()
+                                   + "</strong> was renamed to <strong>" + space.getDisplayName() + "</strong>";
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put(OLD_SPACE_DISPLAY_NAME_PARAM, event.getTarget());
+    templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
+    recordActivity(event, createActivity(event, activityMessage, "space_renamed", templateParams));
+  }
+  
   /**
    * {@inheritDoc}
    */

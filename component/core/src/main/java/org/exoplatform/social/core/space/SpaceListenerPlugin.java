@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.core.space;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.jcr.ManagedPlugin;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
@@ -29,6 +32,11 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 public abstract class SpaceListenerPlugin extends ManagedPlugin implements
         SpaceLifeCycleListener {
 
+  /**
+   * The Logger.
+   */
+  private static final Log LOG = ExoLogger.getExoLogger(SpaceListenerPlugin.class);
+  
   /**
    * {@inheritDoc}
    */
@@ -78,5 +86,14 @@ public abstract class SpaceListenerPlugin extends ManagedPlugin implements
    * {@inheritDoc}
    */
   public abstract void revokedLead(SpaceLifeCycleEvent event);
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void spaceRenamed(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
+    String message = "The space" + event.getTarget() + " was renamed to " + space.getDisplayName();
+    LOG.debug(message);
+  }
 
 }

@@ -323,6 +323,10 @@
                     <key><string>member_left</string></key>
                     <value><string>SpaceActivityPublisher.member_left</string></value>
                   </entry>
+                  <entry>
+                    <key><string>space_renamed</string></key>
+                    <value><string>SpaceActivityPublisher.space_renamed</string></value>
+                  </entry>
                 </map>
               </field>
             </object>
