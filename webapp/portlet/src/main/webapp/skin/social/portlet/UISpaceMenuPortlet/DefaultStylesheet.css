@@ -21,6 +21,7 @@
 
 .UIPage .UIRowContainer {
 	padding: 0;
+	background:#fff;
 }
 
 .TRContainer .ApplicationTDContainer {
@@ -83,10 +84,17 @@
 .SpaceMenuPortlet .UIHorizontalTabs .UITab {
 	float: none;
 	display: inline-block;
+	text-align: center;
+	width: 130px;
 }
 
 *+html .SpaceMenuPortlet .UIHorizontalTabs .UITab {
 	display: inline;
+	line-height: 24px;
+}
+
+*+html .SpaceMenuPortlet .UIHorizontalTabs .HiddenUITab {
+	display: none;
 }
 
 *+html .SpaceMenuPortlet .UIHorizontalTabs .UITab	div {
@@ -96,6 +104,7 @@
 .SpaceMenuPortlet .UIHorizontalTabs .TabsContainer {
 	padding: 0 10px;
 	border: none;
+	position: relative;
 }
 
 .SpaceMenuPortlet .UISpaceName {
@@ -130,3 +139,109 @@
 .SpaceMenuPortlet .UISpaceName .SpaceSettingIcon span {
 	display: none;
 }
+
+/*More tabs in Space with many apps*/
+
+.IconTab {
+	cursor: pointer;
+	width: 15px;
+	height: 12px;
+	text-indent: 20px;
+	overflow: hidden;
+	display: inline-block;
+	position: absolute;
+	top: 5px;
+	z-index: 101;
+}
+*+html .IconTab {
+	line-height: 8px;/*hack IE7*/
+}
+
+.IconTab span {
+	display: none;
+}
+
+.NextButton {
+	background: url('DefaultSkin/background/icon-tab.png') no-repeat 5px -14px;
+}
+
+.PrevButton {
+	background: url('DefaultSkin/background/icon-tab.png') no-repeat 5px 2px;
+}
+
+.AllButton {
+	border: 1px solid transparent ;
+	line-height: 23px;
+	height: 23px;	
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+	margin-left: 20px;
+}
+
+
+*+html .AllButton{
+	display:inline;/*hack IE7*/
+	line-height: 22px;
+}
+.AllButton  .IconAll {
+	background: #fff url('DefaultSkin/background/icon-tab.png') no-repeat 32px -30px;
+	text-transform: capitalize;
+	padding: 0 25px 0px 10px;
+	position:relative;
+	z-index:100;	
+	border-radius: 6px 6px 0 0;
+	display:inline-block;
+}
+
+.AllButton:hover {
+	border: 1px solid #AEAEAE ;
+	border-bottom: none;
+	padding-bottom: 2px;
+	border-radius: 6px 6px 0 0;
+	box-shadow: 2px 2px 3px #e8e8e8;
+	background: #fff;
+}
+.AllButton:hover .IconAll { 
+	height: 25px;
+}
+
+.UISubTab {
+	position: absolute;
+	z-index: 99;
+	top: 24px;
+	right:-1px;
+	display:none;
+	border: 1px solid #AEAEAE;
+	padding: 4px 0;
+	width: 170px;
+	text-align: left;
+	background: #fff;
+	box-shadow: 2px 2px 3px #e8e8e8;
+}
+
+.UISubTabFixedHeight {
+	height: 350px;
+	overflow-y: auto;
+}
+
+
+.AllButton:hover .UISubTab {
+	display: block;
+}
+
+.UISubTab li a {
+	display: block;
+	text-transform: capitalize;
+	padding: 2px 20px;
+}
+
+.UISubTab li a:hover, .UISubTab li.SelectedApp a {
+	background: #eaeaea;
+}
+
+.SpaceMenuPortlet .UIHorizontalTabs .NormalTabStyle .SelectedTab,.SpaceMenuPortlet .UIHorizontalTabs .NormalTabStyle .NormalTab {
+	padding-left:0;
+	padding-right:0;
+}
+
