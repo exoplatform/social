@@ -167,6 +167,12 @@
               </field>
             </object>
           </object-param>
+          <object-param>
+            <name>strike tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>strike</string></field>
+            </object>
+          </object-param>          
         </init-params>
       </component-plugin>
   </external-component-plugins>
