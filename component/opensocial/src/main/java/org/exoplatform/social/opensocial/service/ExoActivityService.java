@@ -35,6 +35,8 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -49,6 +51,9 @@ import org.exoplatform.social.core.manager.IdentityManager;
  */
 public class ExoActivityService extends ExoService implements ActivityService {
 
+  /** Logger */
+  private static final Log   LOG                      = ExoLogger.getExoLogger(ExoActivityService.class);
+  
   /** The Constant OPENSOCIAL_PREFIX. */
   public final static String OPENSOCIAL_PREFIX        = "opensocial:";
 
@@ -78,6 +83,7 @@ public class ExoActivityService extends ExoService implements ActivityService {
     try {
       Set<Identity> idSet = getIdSet(userIds, groupId, token);
       for (Identity id : idSet) {
+        if (id == null) continue;
         // TODO filter by appID
         RealtimeListAccess<ExoSocialActivity> activityListAccess = am.getActivitiesWithListAccess(id);
         result.addAll(convertToOSActivities(activityListAccess.loadAsList(options.getFirst(), options.getMax()), fields));
@@ -224,18 +230,20 @@ public class ExoActivityService extends ExoService implements ActivityService {
 
       // Define activity user if not already set
       String activityUser = exoActivity.getUserId();
+      Identity activityUserIdentity = null;
       if (activityUser == null) {
         exoActivity.setUserId(userIdentity.getId());
 
         // making sure it resolves to a valid identity
       } else {
-        Identity activityUserIdentity = identityManager.getIdentity(activityUser);
+        activityUserIdentity = identityManager.getIdentity(activityUser, false);
         if (activityUserIdentity == null) {
-          throw new ProtocolException(HttpServletResponse.SC_FORBIDDEN, activityUser + " is an unknown identity");
+          LOG.info("Identity with id " + exoActivity.getUserId() +" does not exist.");
         }
       }
-
-      am.saveActivityNoReturn(targetStream, exoActivity);
+      
+      if (userIdentity != null)
+        am.saveActivityNoReturn(targetStream, exoActivity);
 
       return ImmediateFuture.newInstance(null);
     } catch (Throwable e) {

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
@@ -86,7 +87,12 @@ public class ActivityManagerImpl implements ActivityManager {
     if (newActivity.getId() == null) {
       newActivity.setPostedTime(currentTime);
     }
-    activityStorage.saveActivity(streamOwner, newActivity);
+    
+    try {
+      activityStorage.saveActivity(streamOwner, newActivity);
+    } catch (Exception e) {
+      LOG.warn("Can not save activity, maybe item is existing");
+    }
   }
 
   /**
@@ -94,7 +100,9 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void saveActivityNoReturn(ExoSocialActivity newActivity) {
     Identity owner = getStreamOwner(newActivity);
-    saveActivityNoReturn(owner, newActivity);
+    if (owner != null) {
+      saveActivityNoReturn(owner, newActivity);
+    }
   }
 
   /**

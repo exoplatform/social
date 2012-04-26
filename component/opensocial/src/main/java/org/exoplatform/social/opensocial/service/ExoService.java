@@ -29,6 +29,8 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -44,7 +46,10 @@ import org.exoplatform.social.opensocial.auth.ExoBlobCrypterSecurityToken;
  * Time: 7:58:29 PM
  */
 public class ExoService {
-
+  
+  /** Logger */
+  private static final Log   LOG                      = ExoLogger.getExoLogger(ExoService.class);
+  
   /**
    * Get the set of user id's from a user and group.
    *
@@ -125,6 +130,8 @@ public class ExoService {
   }
 
   protected Identity getIdentity(String id, boolean loadProfile, SecurityToken st) throws Exception {
+    if (id == null) return null;
+    
     if (id.contains(":")) {
       id = id.split(":")[1];
     }
@@ -138,7 +145,7 @@ public class ExoService {
     }
 
     if (identity == null) {
-      throw new Exception("can't find identity: " + id);
+      LOG.warn("Identity with id " + id +" does not exist.");
     }
 
     return identity;

@@ -186,6 +186,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
    */
   private Person convertToPerson(Identity identity, Set<String> fields, SecurityToken st) throws Exception {
     Person p = new ExoPersonImpl();
+    if (identity == null) return p;
     Profile pro = identity.getProfile();
     PortalContainer container = getPortalContainer(st);
     String host = getHost(st);
@@ -304,6 +305,7 @@ public class ExoPeopleService extends ExoService implements PersonService, AppDa
       String instanceId = "" + token.getModuleId();
       while (it.hasNext()) {
         Identity id = it.next();
+        if (id == null) continue;
         idToData.put(id.getId(), getPreferences(id.getRemoteId(), gadgetId, instanceId, fields));
       }
       return ImmediateFuture.newInstance(new DataCollection(idToData));
