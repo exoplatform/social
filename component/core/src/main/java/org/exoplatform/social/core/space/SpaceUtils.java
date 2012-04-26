@@ -733,18 +733,27 @@ public class SpaceUtils {
    */
   static public boolean isSpaceNameExisted(String spaceName) throws SpaceException {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    OrganizationService organizationService = getOrganizationService();
+    GroupHandler groupHandler = organizationService.getGroupHandler();
+      
     if (context == null) return false;
-    List<PageNavigation> allNavs = Util.getUIPortalApplication().getUserPortalConfig().getNavigations();
-    String space_Name = spaceName.replaceAll(" ", "_"); // Compares with Existing Pages
     String spacePrettyName = cleanString(spaceName); // Compares with Existing DashBoard Tabs's & Spaces's Names
+    String groupId = null;
+    try {
+      groupId = groupHandler.findGroupById(SPACE_GROUP).getId() + "/" + spacePrettyName;
+    } catch (Exception e) {
+      throw (SpaceException) e;
+    }
+    
+    if (getSpaceByGroupId(groupId) != null) return true;
+  
+    List<PageNavigation> allNavs = Util.getUIPortalApplication().getUserPortalConfig().getNavigations();
+    
     for (PageNavigation pn : allNavs) {
-      if (((pn.getNode(space_Name) != null) ||
-          (pn.getNode(spacePrettyName) != null)) && 
-          (getSpaceByGroupId(pn.getOwnerId()) != null)) return true;
+      if (groupId.equals(pn.getOwnerId())) return false;
       ArrayList<PageNode> nodes = pn.getNodes();
       for (PageNode node : nodes) {
-        if ((node.getChild(space_Name) != null) || 
-            (node.getChild(spacePrettyName) != null)) return true;
+        if (node.getName().equals(spacePrettyName)) return true;
       }
     }
     
