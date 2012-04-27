@@ -421,9 +421,19 @@ public class UIManageAllSpaces extends UIContainer {
         return;
       }
 
-      spaceService.addPendingUser(space, userId);
+      if (spaceService.isInvitedUser(space, userId)) {
+        spaceService.addMember(space, userId);
+      } else {
+        spaceService.addPendingUser(space, userId); 
+      }
       uiManageAllSpaces.setHasUpdatedSpace(true);
       ctx.addUIComponentToUpdateByAjax(uiManageAllSpaces);
+      
+      if(spaceService.isMember(space, userId)) {
+        JavascriptManager jsManager = ctx.getJavascriptManager();
+        jsManager.addJavascript("try { window.location.href='" + Utils.getSpaceHomeURL(space) + "' } catch(e) {" +
+            "window.location.href('" + Utils.getSpaceHomeURL(space) + "') }");
+      }
     }
   }
 
