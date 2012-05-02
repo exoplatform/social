@@ -519,10 +519,19 @@ public final class Util {
    */
   public static String getMimeTypeOfURL(String urlString){
     URLConnection urlConnection = null;
+    final int CONNECTION_TIMEOUT = 10000;
     try {
       String mimeType = null;
       URL url = new URL(urlString); 
       urlConnection = url.openConnection();
+      
+      urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:12.0) Gecko/20100101 Firefox/12.0");
+      urlConnection.setRequestProperty("Accept-Language", "en-us,en;q=0.5");
+      urlConnection.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+      urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+      urlConnection.setReadTimeout(CONNECTION_TIMEOUT);
+
+      
       mimeType = urlConnection.getContentType();
       if(mimeType != null){
         return mimeType;
