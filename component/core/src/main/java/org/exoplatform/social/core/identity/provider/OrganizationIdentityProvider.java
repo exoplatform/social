@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
@@ -34,6 +36,7 @@ import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.identity.IdentityProvider;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
 
 
 /**
@@ -147,9 +150,9 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     profile.setProperty(Profile.LAST_NAME, user.getLastName());
     profile.setProperty(Profile.USERNAME, user.getUserName());
 
-    // TODO reuse linkprovider
-    String url = "/"+ PortalContainer.getCurrentPortalContainerName() +"/private/classic/profile/" + user.getUserName();
-    profile.setProperty(Profile.URL,  url);
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
+    profile.setProperty(Profile.URL, lp.getProfileUri(user.getUserName()));
 
     if (user.getEmail() != null && !profile.contains("emails")) {
       List<Map<String,String>> emails = new ArrayList<Map<String,String>>();

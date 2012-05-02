@@ -18,6 +18,7 @@
 
 <%
 import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.social.webui.Utils;
 
 def uicomponentId = uicomponent.id;
 
@@ -44,7 +45,6 @@ def positionDefaultVal = _ctx.appRes("${uicomponentId}.label.Position");
 def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
 def allGenderLabel = _ctx.appRes("${uicomponentId}.label.AllGender");
 def relationDirectory = _ctx.appRes("${uicomponentId}.label.RelationDirectory");
-def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def filterId = "Filter";
 def searchId = "Search";
 def moreSearchId = "MoreSearch";
@@ -53,7 +53,7 @@ def positionId = "position";
 def skillsId = "skills";
 def genderId = "gender";
 def selectedStartChar = uicomponent.getSelectedChar();
-def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+def alphabets = Utils.getAlphabet();
 def childs = uicomponent.getChildren();
 %>
 <div class="UIProfileUserSearch">
@@ -77,7 +77,6 @@ def childs = uicomponent.getChildren();
             <input id="defaultPos" type="hidden" value="$positionDefaultVal">
             <input id="defaultSkills" type="hidden" value="$skillsDefaultVal">
             <input id="defaultGender" type="hidden" value="$allGenderLabel">
-            <input id="searchAll" type="hidden" value="$searchAll">
             <div id="$hideMoreSearchId" class="HideAdvanceSearchLable" onclick="eXo.social.webui.UIProfileUserSearch.toggleFilter('${moreLabel}', '${filterId}', '$moreSearchId', this);">${hideLabel}</div>
       </div>
     </div>
@@ -96,8 +95,7 @@ def childs = uicomponent.getChildren();
      
         <% for (ch in alphabets) { %>
     <li>
-        <% 
-                if ((selectedStartChar != null) && (selectedStartChar == ch)) {
+        <% if ((selectedStartChar != null) && (selectedStartChar == ch)) {
         %>
                     <a href="#$ch" class="selected" id="directoryId" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
         <%} else {%>
@@ -105,18 +103,7 @@ def childs = uicomponent.getChildren();
         <% } %>
      </li>
         <% } %>
-        <% if (uicomponentId == "UIPeopleSearch") {%>
-            <li>
-     <% } else {%>
-            <li>
-     <% } %>
-        <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
-                    <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-         <%} else {%>
-                    <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-         <% } %>
-     </li>
-    </ul>
+     </ul>
  </div>
  <% uiform.end() %>
 </div>

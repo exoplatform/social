@@ -61,6 +61,7 @@ import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.image.ImageUtils;
@@ -153,6 +154,8 @@ public class IdentityStorage {
   private Node getIdentityServiceHome(final Session session) {
     try {
       String path = dataLocation.getSocialIdentityHome();
+      Node rootNode = session.getRootNode();
+      Util.createNodes(rootNode, path);
       return session.getRootNode().getNode(path);
     } catch (PathNotFoundException e) {
       LOG.warn(e.getMessage(), e);
@@ -184,6 +187,8 @@ public class IdentityStorage {
    */
   private Node getProfileServiceHome(final Session session) throws Exception {
     String path = dataLocation.getSocialProfileHome();
+    Node rootNode = session.getRootNode();
+    Util.createNodes(rootNode, path);
     return session.getRootNode().getNode(path);
   }
 
@@ -509,8 +514,7 @@ public class IdentityStorage {
 
       String userName = profileFilter.getName();
       if (userName.length() != 0) {
-        userName += "*";
-        queryBuilder.and().contains(Profile.FIRST_NAME, userName);
+        queryBuilder.and().like(queryBuilder.lower(Profile.FIRST_NAME), userName.toLowerCase() + "%");
       }
 
       queryBuilder.orderBy(Profile.FIRST_NAME, QueryBuilder.ASC);

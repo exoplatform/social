@@ -54,21 +54,21 @@ public class SocialUserEventListenerImpl extends UserEventListener {
    * @throws Exception
    */
   public void postSave(User user, boolean isNew) throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
+    Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), true);
+
     if (!isNew) {
-      IdentityManager idm = getIdentityManager();
-      Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName());
-
       Profile profile = identity.getProfile();
-      String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
-      String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
-      String pEmail = (String) profile.getProperty(Profile.EMAIL);
-
       String uFirstName = user.getFirstName();
       String uLastName = user.getLastName();
       String uEmail = user.getEmail();
 
+      String pFirstName = (String) profile.getProperty(Profile.FIRST_NAME);
+      String pLastName = (String) profile.getProperty(Profile.LAST_NAME);
+      String pEmail = (String) profile.getProperty(Profile.EMAIL);
       boolean hasUpdated = false;
-      
+
       if ((pFirstName == null) || (!pFirstName.equals(uFirstName))) {
         profile.setProperty(Profile.FIRST_NAME, uFirstName);
         hasUpdated = true;

@@ -37,6 +37,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.webui.URLUtils;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -149,6 +150,9 @@ public class UIProfileUserSearch extends UIForm {
    * @return The selected character.
    */
   public String getSelectedChar() {
+    if (identityList == null) {
+      return Utils.getAlphabet()[0];
+    } 
     return selectedChar;
   }
 
@@ -326,19 +330,41 @@ public class UIProfileUserSearch extends UIForm {
           filter.setName(charSearch);
           filter.setPosition("");
           filter.setGender("");
-          if ("All".equals(charSearch)) {
-            filter.setName("");
-          }
+
           identitiesSearchResult = idm.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME,
                                                                      filter, 0, uiSearch.getIdentitiesCount());
           uiSearch.setIdentityList(identitiesSearchResult);
         } else {
+          String name = filter.getName();
+          String position = filter.getPosition();
+          String skill = filter.getSkills();
+          String gender = filter.getGender();
+          
+          boolean hasInputSearchParams = false;
+          
+          if ((name != null) & (name.trim().length() != 0) & !name.equals(defaultNameVal)) {
+            hasInputSearchParams = true;
+          }
+          
+          if ((position != null) & (position.trim().length() != 0) & !position.equals(defaultPosVal)) {
+            hasInputSearchParams = true;
+          }
+          
+          if ((skill != null) & (skill.trim().length() != 0) & !skill.equals(defaultSkillsVal)) {
+            hasInputSearchParams = true;
+          }
+          
+          if (!gender.equals(defaultGenderVal)) {
+            hasInputSearchParams = true;
+          }
+          
+          if (!hasInputSearchParams) {
+            return;   
+          }
+          
           if (!isValidInput(filter)) { // is invalid condition input
             uiSearch.setIdentityList(new ArrayList<Identity>());
           } else {
-            if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
-              filter.setName("");
-            }
             if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
               filter.setPosition("");
             }
@@ -371,7 +397,9 @@ public class UIProfileUserSearch extends UIForm {
             }
           }
         }
+        
         uiSearch.setNewSearch(true);
+        
       } catch (Exception e) {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }

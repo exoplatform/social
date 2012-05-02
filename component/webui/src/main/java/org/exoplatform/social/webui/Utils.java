@@ -145,6 +145,21 @@ public class Utils {
   }
 
   /**
+   * Gets all characters in Alphabet table.
+   *   
+   * @return
+   */
+  public static String[] getAlphabet() {
+    char letter;
+    List<String> alphabets = new ArrayList<String>();
+    for (letter='a'; letter <= 'z'; letter++) { 
+      alphabets.add(Character.toString(letter).toUpperCase());
+    }
+    
+    return alphabets.toArray(new String[] {});
+  }
+  
+  /**
    * Gets current identity of login user.<br>
    *
    * @return identity

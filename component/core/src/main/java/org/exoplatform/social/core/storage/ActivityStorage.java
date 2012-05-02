@@ -41,6 +41,7 @@ import org.exoplatform.social.common.jcr.JCRSessionManager;
 import org.exoplatform.social.common.jcr.LockManager;
 import org.exoplatform.social.common.jcr.QueryBuilder;
 import org.exoplatform.social.common.jcr.SocialDataLocation;
+import org.exoplatform.social.common.jcr.Util;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -114,6 +115,9 @@ public class ActivityStorage {
   private static final String PARAMS = "exo:params";
 
   private static final String ACTIVITY_PROPERTIES_NAME_PATTERN;
+  
+  private static final String SLASH_STR = "/";
+  
   static {
     StringBuilder buffer = new StringBuilder(256);
     char separator = '|';
@@ -539,6 +543,8 @@ public class ActivityStorage {
   private Node getActivityServiceHome(Session session) {
     String path = dataLocation.getSocialActivitiesHome();
     try {
+      Node rootNode = session.getRootNode();
+      Util.createNodes(rootNode, path);
       return session.getRootNode().getNode(path);
     } catch (PathNotFoundException e) {
       LOG.warn(e.getMessage(), e);

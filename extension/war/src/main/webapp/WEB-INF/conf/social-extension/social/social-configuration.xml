@@ -44,6 +44,29 @@
     <type>org.exoplatform.social.webui.activity.UIActivityFactory</type>
   </component>
 
+  <!-- 
+  following the name here 
+  platform/trunk/samples/acme-intranet/webapp/src/main/webapp/WEB-INF/conf/office-extension/portal/portal-configuration.xml
+  <field name="predefinedOwner">
+	 <collection type="java.util.HashSet">
+		<value>
+		  <string>intranet</string>
+		</value>
+	 </collection>
+   </field>
+   -->
+  <component>
+    <key>org.exoplatform.social.core.service.LinkProvider</key>
+    <type>org.exoplatform.social.core.service.LinkProvider</type>
+    <init-params>
+        <value-param>
+          <name>predefinedOwner</name>
+          <description>this for generate profile link</description>
+          <value>intranet</value>
+        </value-param>
+    </init-params>
+  </component>
+
   <component>
     <key>org.exoplatform.webui.ext.UIExtensionManager</key>
     <type>org.exoplatform.webui.ext.impl.UIExtensionManagerImpl</type>

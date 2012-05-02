@@ -112,6 +112,13 @@
   <component>
     <key>org.exoplatform.social.core.service.LinkProvider</key>
     <type>org.exoplatform.social.core.service.LinkProvider</type>
+    <init-params>
+     <value-param>
+       <name>predefinedOwner</name>
+       <description>this for generate profile link</description>
+       <value>classic</value>
+     </value-param>
+    </init-params>
   </component>
 
   <component>

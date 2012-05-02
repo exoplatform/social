@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.core.processor;
 
-import javax.portlet.PortalContext;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -60,8 +58,8 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     assertNull(activity.getTitle());
     assertNull(activity.getBody());
-    String rootLink = linkProvider.getProfileLink(rootIdentity.getRemoteId(), "classic");
-    String johnLink = linkProvider.getProfileLink(johnIdentity.getRemoteId(), "classic");
+    String rootLink = linkProvider.getProfileLink(rootIdentity.getRemoteId(), LinkProvider.DEFAULT_PORTAL_OWNER);
+    String johnLink = linkProvider.getProfileLink(johnIdentity.getRemoteId(), LinkProvider.DEFAULT_PORTAL_OWNER);
 
     activity.setTitle("single @root substitution");
     processor.processActivity(activity);

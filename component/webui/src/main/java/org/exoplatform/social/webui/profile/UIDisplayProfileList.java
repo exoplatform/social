@@ -23,16 +23,15 @@ import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.IdentityListAccess;
-import org.exoplatform.social.webui.URLUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -43,6 +42,8 @@ import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.social.webui.Utils;
+
 /**
  * Displays information about all existing users. Manages actions
  * such as request make connection, invoke request, accept or deny invitation
@@ -365,7 +366,7 @@ public class UIDisplayProfileList extends UIContainer {
     List<Identity> matchIdentities = getIdentityList();
 
     if (matchIdentities == null) {
-      return loadAllProfiles();
+      return loadProfiles();
     }
     String currentIdentityId = getCurrentIdentity(false).getId();
     
@@ -381,30 +382,17 @@ public class UIDisplayProfileList extends UIContainer {
   }
 
   /**
-   * Gets currents name of user that is viewed by another.<br>
-   *
-   * @return name of user who is viewed.
-   */
-  private String getCurrentViewerUserName() {
-    String username = URLUtils.getCurrentUser();
-    if(username != null)
-      return username;
-
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-
-    return portalRequest.getRemoteUser();
-  }
-
-  /**
    * Loads all existing user profiles.<br>
    *
    * @return all existing profiles.
    *
    * @throws Exception
    */
-  private List<Identity> loadAllProfiles() throws Exception {
+  private List<Identity> loadProfiles() throws Exception {
     IdentityManager im = getIdentityManager();
-    List<Identity> ids = im.getIdentities(OrganizationIdentityProvider.NAME);
+    ProfileFilter profileFilter = new ProfileFilter();
+    profileFilter.setName(Utils.getAlphabet()[0]);
+    List<Identity> ids = im.getIdentitiesFilterByAlphaBet(OrganizationIdentityProvider.NAME, profileFilter);
     Iterator<Identity> itr = ids.iterator();
     String currentIdentityId = getCurrentIdentity(false).getId();
     while(itr.hasNext()) {
@@ -413,7 +401,7 @@ public class UIDisplayProfileList extends UIContainer {
         itr.remove();
       }
     }
-
+    
     return ids;
   }
 

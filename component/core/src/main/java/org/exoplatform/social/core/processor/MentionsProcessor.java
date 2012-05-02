@@ -19,6 +19,8 @@ package org.exoplatform.social.core.processor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
@@ -65,16 +67,18 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       // Get the match result
       String replaceStr = matcher.group().substring(1);
 
-      String portalOwner;
+      String portalOwner = null;
       try{
         portalOwner = Util.getPortalRequestContext().getPortalOwner();
       } catch (Exception e){
         //default value for testing and social
-        portalOwner = "classic";
+        portalOwner = LinkProvider.DEFAULT_PORTAL_OWNER;
       }
 
       // Convert to uppercase
-      replaceStr = linkProvider.getProfileLink(replaceStr, portalOwner);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
+      replaceStr = lp.getProfileLink(replaceStr, portalOwner);
 
       // Insert replacement
       matcher.appendReplacement(buf, replaceStr);
