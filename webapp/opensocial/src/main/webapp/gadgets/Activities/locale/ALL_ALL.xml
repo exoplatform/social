@@ -17,8 +17,8 @@
   <msg name="activities_of_displayName">{0}'s updates</msg>
   <msg name="friends_activities">Network Updates</msg>
   <msg name="owner_friends">Your connections</msg>
-  <msg name="displayName_does_not_have_update">not any updates posted yet</msg>
-  <msg name="displayName_do_not_have_update">not any updates posted yet</msg>
+  <msg name="displayName_does_not_have_update">No updates have been posted yet.</msg>
+  <msg name="displayName_do_not_have_update">No updates have been posted yet.</msg>
   <msg name="collapse_all_activities">Collapse</msg>
   <msg name="expand_all_activities">Expand</msg>
   <msg name="comment">Comment</msg>

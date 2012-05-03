@@ -16,8 +16,8 @@
   <msg name="activities_of_displayName">Les activités de {0} </msg>
   <msg name="friends_activities">Activités du réseau</msg>
   <msg name="owner_friends">Vos contacts</msg>
-  <msg name="displayName_does_not_have_update">aucune activité envoyée</msg>
-  <msg name="displayName_do_not_have_update">aucune activité envoyée</msg>
+  <msg name="displayName_does_not_have_update">Aucune activité n'a encore été postée.</msg>
+  <msg name="displayName_do_not_have_update">Aucune activité n'a encore été postée.</msg>
   <msg name="comment">Commentaire</msg>
   <msg name="collapse_all_activities">Replier</msg>
   <msg name="expand_all_activities">Déplier</msg>

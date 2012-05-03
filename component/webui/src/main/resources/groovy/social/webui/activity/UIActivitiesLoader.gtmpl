@@ -21,7 +21,7 @@
 */
 %>
 <%
-  def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.No_Updates_Posted_Yet");
   def labelMore = _ctx.appRes("UIActivitiesLoader.label.More");
 
 %>
