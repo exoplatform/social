@@ -93,10 +93,14 @@ public class SpaceUtils {
 
   static public final String                SPACE_URL                            = "SPACE_URL";
 
+  static private final String               PORTLET_STR                          = "portlet";
+
+  static private final String               GADGET_STR                           = "gadget";
+
   static private final ConcurrentHashMap<String, Application> appListCache       = new ConcurrentHashMap<String, Application>();
 
   private static final String               REMOTE_CATEGORY_NAME                 = "remote";
-
+  
   // A {@link Transliterator} instance is stateless which has for consequences that it is Thread Safe and thus can be shared among several threads as mentioned in 
   // the javadoc
   private static final Transliterator       ACCENTS_CONVERTER                     = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
@@ -1055,13 +1059,16 @@ public class SpaceUtils {
    * @param appDisplayName
    * @return
    */
-  static public String getDisplayAppName (String appDisplayName) {
-    int len = appDisplayName.length() - 1;
-    if (appDisplayName.toLowerCase().endsWith("portlet")) return appDisplayName.substring(0, len - 7);
-    if (appDisplayName.toLowerCase().endsWith("gadget")) return appDisplayName.substring(0, len - 6);
-    return appDisplayName;
+  static public String getDisplayAppName(String appDisplayName) {
+    return getDisplayAppName(getDisplayAppName(appDisplayName, PORTLET_STR), GADGET_STR);
   }
   
+  static private String getDisplayAppName(String appDisplayName, String key) {
+    if (appDisplayName.toLowerCase().endsWith(key)) {
+      return appDisplayName.substring(0, appDisplayName.length() - key.length()).trim();
+    }
+    return appDisplayName;
+  }
   /**
    * Gets appStatusPattern: [appId:appNodeName:isRemovableString:status]
    *
