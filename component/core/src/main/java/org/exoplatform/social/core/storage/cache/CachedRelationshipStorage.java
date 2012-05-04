@@ -177,7 +177,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
     RelationshipIdentityKey identityKey1 = new RelationshipIdentityKey(r.getSender().getId(), r.getReceiver().getId());
     RelationshipIdentityKey identityKey2 = new RelationshipIdentityKey(r.getReceiver().getId(), r.getSender().getId());
-    RelationshipKey key = new RelationshipKey(relationship.getId());
+    RelationshipKey key = new RelationshipKey(r.getId());
 
     exoRelationshipCache.put(key, new RelationshipData(r));
     exoRelationshipByIdentityCache.put(identityKey1, key);
@@ -197,7 +197,12 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     storage.removeRelationship(relationship);
 
     exoRelationshipCache.remove(new RelationshipKey(relationship.getId()));
-    clearCacheFor(relationship);
+    if (relationship.getSender() != null && relationship.getReceiver() != null) {
+      clearCacheFor(relationship);
+    } else {
+      LOG.info("Unable to clear cache because relationship is not correctly filled");
+    }
+    
     getCachedActivityStorage().clearCache();
     
   }

@@ -405,9 +405,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   }
 
   protected void _removeRelationshipList(RelationshipListEntity listEntity) {
-
+    Identity sender = null;
+    Identity receiver = null;
+    
     for (RelationshipEntity relationshipEntity : listEntity.getRelationships().values()) {
-      getRelationshipStorage().removeRelationship(new Relationship(relationshipEntity.getId()));
+      sender = new Identity(relationshipEntity.getTo().getId());
+      receiver = new Identity(relationshipEntity.getFrom().getId());
+      getRelationshipStorage().removeRelationship(new Relationship(relationshipEntity.getId(), sender, receiver));
     }
 
   }
