@@ -337,13 +337,7 @@ public class LinkShare extends DefaultFilter {
       return null;
     
     if (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL))) {
-      URI uri = URI.create(link);
-      String uriScheme = uri.getScheme();
-      if (uriScheme != null) {
-        link = HTTP_PROTOCOL + uri.getSchemeSpecificPart();
-      } else {
         link = HTTP_PROTOCOL + link;
-      }
     }
     
     LinkShare linkShare = new LinkShare();
