@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -34,6 +35,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -320,6 +322,7 @@ public class BaseUIActivity extends UIForm {
     }
     activity = activityManager.getActivity(activity.getId());
     setIdenityLikes(activity.getLikeIdentityIds());
+    activity = getI18N(activity);
   }
 
   /**
@@ -338,8 +341,9 @@ public class BaseUIActivity extends UIForm {
   protected void refresh() {
     activityManager = getActivityManager();
     activity = activityManager.getActivity(activity.getId());
+    activity = getI18N(activity);
     if (activity == null) { //not found -> should render nothing
-      LOG.info("activity_ is null, not found. It can be deleted!");
+      LOG.info("activity is null, not found. It can be deleted!");
       return;
     }
     comments = activityManager.getComments(activity);
@@ -661,5 +665,15 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
     }
 
+  }
+  
+  private Activity getI18N(Activity activity) {
+    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+    I18NActivityProcessor i18NActivityProcessor = getApplicationComponent(I18NActivityProcessor.class);
+    if (activity.getTitleId() != null) {
+      Locale userLocale = requestContext.getLocale();
+      activity = i18NActivityProcessor.process(activity, userLocale);
+    }
+    return activity;
   }
 }

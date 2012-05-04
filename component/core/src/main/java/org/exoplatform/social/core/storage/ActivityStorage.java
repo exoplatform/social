@@ -17,7 +17,7 @@
 package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -774,7 +774,7 @@ public class ActivityStorage {
     if (values == null) {
       return null;
     }
-    Map<String, String> result = new HashMap<String, String>();
+    Map<String, String> result = new LinkedHashMap<String, String>();
     for (Value value : values) {
       try {
         String val = value.getString();

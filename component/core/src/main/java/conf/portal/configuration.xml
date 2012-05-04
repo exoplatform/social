@@ -280,6 +280,104 @@
     <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
   </component>
 
+  <component>
+    <key>org.exoplatform.social.core.processor.I18NActivityProcessor</key>
+    <type>org.exoplatform.social.core.processor.I18NActivityProcessor</type>
+    <component-plugins>
+      <component-plugin>
+        <name>exosocial:spaces</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for exosocial:spaces</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>space_created</string></key>
+                    <value><string>SpaceActivityPublisher.space_created</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>manager_role_granted</string></key>
+                    <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>user_joined</string></key>
+                    <value><string>SpaceActivityPublisher.user_joined</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>member_left</string></key>
+                    <value><string>SpaceActivityPublisher.member_left</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
+        <name>exosocial:people</name>
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name>
+            <description>activity key type resource bundle mapping for exosocial:people</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>avatar_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>basic_info_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>contact_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>experience_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>header_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.header_section_updated</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+    </component-plugins>
+  </component>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+    <component-plugin>
+      <name>Social Core Component Resource Bundle</name>
+      <set-method>addResourceBundle</set-method>
+      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+      <init-params>
+        <values-param>
+          <name>classpath.resources</name>
+          <description>The resources that start with the following package name should be load from file system</description>
+          <value>locale.social.Core</value>
+        </values-param>
+        <values-param>
+          <name>portal.resource.names</name>
+          <description>The resources that start with the following package name should be load from file system</description>
+          <value>locale.social.Core</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
     <component-plugin>

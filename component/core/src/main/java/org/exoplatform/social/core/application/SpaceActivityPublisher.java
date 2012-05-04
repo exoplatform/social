@@ -16,9 +16,13 @@
  */
 package org.exoplatform.social.core.application;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -26,7 +30,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
  * This listener is responsible for initializing and notifying activity stream
@@ -39,6 +42,24 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  */
 public class SpaceActivityPublisher  extends SpaceListenerPlugin {
 
+  /**
+   * The exosocial:spaces activity type
+   * @since 1.1.9
+   */
+  public static final String SPACES_ACTIVITY_TYPE = "exosocial:spaces";
+
+  /**
+   * The SPACE_DISPLAY_NAME_PARAM template param key
+   * @since 1.1.9
+   */
+  public static final String SPACE_DISPLAY_NAME_PARAM = "SPACE_DISPLAY_NAME_PARAM";
+
+  /**
+   * The USER_NAME_PARAM template param key
+   * @since 1.1.9
+   */
+  public static final String USER_NAME_PARAM = "USER_NAME_PARAM";
+  
   private static Log      LOG = ExoLogger.getExoLogger(SpaceActivityPublisher.class);
 
   private ActivityManager activityManager;
@@ -57,16 +78,11 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
   @Override
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
-    String spaceId = space.getId();
-    try {
-      // this should create the identity for the space
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, spaceId, false);
-       String creator = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, space.getName() + " was created by @" + creator + " .", null);
-      LOG.info("space " + space.getName() + " was added for group " + space.getGroupId());
-    } catch (Exception e) {
-      LOG.error("Failed to initialize space activity stream ", e);
-    }
+    final String activityMessage = space.getName() + " was created by @" + event.getTarget() + " .";
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getName());
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    recordActivity(event, createActivity(event, activityMessage, "space_created", templateParams));
   }
 
   @Override
@@ -100,44 +116,27 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
 
   public void grantedLead(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
-    try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
-      String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
-          + " was granted lead.", null);
-    } catch (Exception e) {
-      LOG.error("Failed to grant lead ", e);
-    }
-    LOG.info("user " + event.getTarget() + " was granted lead of space "
-        + space.getName());
+    final String activityMessage = "@" + event.getTarget() + " was granted manager role.";
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    recordActivity(event, createActivity(event, activityMessage, "manager_role_granted", templateParams));
+    LOG.debug("user " + event.getTarget() + " was granted manager role of space " + space.getName());
   }
 
   public void joined(SpaceLifeCycleEvent event) {
-    Space space = event.getSpace();
-    try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
-      String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
-          + " has joined.", null);
-    } catch (Exception e) {
-      LOG.error("Failed to log join activity ", e);
-    }
-
-    LOG.info("user " + event.getTarget() + " joined space " + event.getSpace().getName());
+    final String activityMessage = "@" + event.getTarget() + " has joined the space.";
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    recordActivity(event, createActivity(event, activityMessage, "user_joined", templateParams));
+    LOG.debug("user " + event.getTarget() + " joined space " + event.getSpace().getName());
   }
 
   public void left(SpaceLifeCycleEvent event) {
-    Space space = event.getSpace();
-    try {
-      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getId(), false);
-      String member = event.getTarget();
-      activityManager.recordActivity(spaceIdentity, SpaceService.SPACES_APP_ID, "@" + member
-          + " has left the space.", null);
-    } catch (Exception e) {
-      LOG.error("Failed to log leave activity ", e);
-    }
-
-    LOG.info("user " + event.getTarget() + " has left of space " + event.getSpace().getName());
+    final String activityMessage = "@" + event.getTarget() + " has left the space.";
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
+    recordActivity(event, createActivity(event, activityMessage, "member_left", templateParams));
+    LOG.debug("user " + event.getTarget() + " has left of space " + event.getSpace().getName());
   }
 
   public void revokedLead(SpaceLifeCycleEvent event) {
@@ -146,4 +145,35 @@ public class SpaceActivityPublisher  extends SpaceListenerPlugin {
         + event.getSpace().getName());
   }
 
+  /**
+   * Creates an activity.
+   *
+   * @param event the space lifeclycle event
+   * @param activityMessage the activity message
+   * @param titleId the titleId
+   * @param templateParams the template params
+   *
+   * @return the created activity object
+   */
+  private Activity createActivity(SpaceLifeCycleEvent event, String activityMessage, String titleId,
+                                           Map<String, String> templateParams) {
+    Activity activity = new Activity();
+    activity.setType(SPACES_ACTIVITY_TYPE);
+    activity.setTitle(activityMessage);
+    activity.setTitleId(titleId);
+    activity.setTemplateParams(templateParams);
+    return activity;
+  }
+
+  /**
+   * Records an activity based on space lifecyle event and the activity object.
+   *
+   * @param event the space lifecyle event
+   * @param activity the activity object
+   */
+  private void recordActivity(SpaceLifeCycleEvent event, Activity activity) {
+    Space space = event.getSpace();
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getName(), false);
+    activityManager.saveActivity(spaceIdentity, activity);
+  }
 }

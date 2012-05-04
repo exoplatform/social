@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.common;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -27,6 +28,15 @@ import java.util.List;
  */
 public class ResourceBundleUtil {
 
+  private static final ThreadLocal<MessageFormat> messageFormatRef = new ThreadLocal<MessageFormat>() {
+    @Override
+    protected MessageFormat initialValue() {
+      return new MessageFormat("");
+    }
+  };
+
+  private static final String[] EMPTY_MESSAGE_ARGUMENTS = new String[]{};
+  
   /**
    * Replace convention arguments of pattern {index} with messageArguments[index].
    * @param message
@@ -34,10 +44,24 @@ public class ResourceBundleUtil {
    * @return expected message with replaced arguments
    */
   public static String replaceArguments(String message, String[] messageArguments) {
-    for (int i = 0; i < messageArguments.length; i++) {
-      message = message.replace("{" + i + "}", messageArguments[i]);
+    if (messageArguments == null) {
+      messageArguments = EMPTY_MESSAGE_ARGUMENTS;
     }
-    return message;
+    
+    final MessageFormat messageFormat = messageFormatRef.get();
+    messageFormat.applyPattern(message);
+    return messageFormat.format(messageArguments);
+  }
+  
+  /**
+   * Replace convention arguments of pattern {index} with messageArguments[index].
+   * @param message
+   * @param messageArguments
+   * @return expected message with replaced arguments
+   */
+  public static String replaceArgs(String message, List<String> messageArguments) {
+    String[] messageArgs =  (String[])messageArguments.toArray(new String[0]);
+    return replaceArguments(message, messageArgs);
   }
   
   /**
