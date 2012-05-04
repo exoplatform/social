@@ -304,12 +304,14 @@ public class BaseUIActivity extends UIForm {
     Activity comment = new Activity(userIdentity.getId(), SpaceService.SPACES_APP_ID, message, null);
     activityManager.saveComment(getActivity(), comment);
     comments = activityManager.getComments(getActivity());
+    activity = activityManager.getActivity(getActivity().getId());
     setCommentListStatus(CommentStatus.ALL);
   }
 
   protected void setLike(boolean isLiked, String remoteUser) throws Exception {
     activityManager = getActivityManager();
     identityManager = getIdentityManager();
+    activity = activityManager.getActivity(activity.getId());
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteUser);
     if (isLiked) {
       activityManager.saveLike(activity, userIdentity);

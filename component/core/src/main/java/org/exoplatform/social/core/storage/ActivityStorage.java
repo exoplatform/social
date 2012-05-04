@@ -191,7 +191,6 @@ public class ActivityStorage {
     Validate.notNull(activity, "activity must not be null.");
     Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
     Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
-    Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
     if (activity.getUserId() == null) {
       activity.setUserId(owner.getId());
     }
@@ -210,7 +209,9 @@ public class ActivityStorage {
 
       setStreamInfo(activity, activityNode);
 
-      activityNode.setProperty(TITLE, activity.getTitle());
+      if (activity.getTitle() != null) {
+        activityNode.setProperty(TITLE, activity.getTitle());
+      }
       if (activity.getTitleId() != null) {
         activityNode.setProperty(TITLE_TEMPLATE, activity.getTitleId());
       }

@@ -377,6 +377,162 @@ public class ActivityManagerTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link ActivityManager#saveLike(Activity, Identity)}
+   * 
+   * @throws Exception
+   * @since 1.1.9
+   */
+  public void testSaveLike() throws Exception {
+    String encodeTitle = "espace testé à la plage";
+    Activity likeActivity = new Activity();
+    likeActivity.setTitle(encodeTitle);
+    likeActivity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, likeActivity);
+    
+    Activity savedActivity = activityManager.getActivity(likeActivity.getId());
+    
+    String expectedTitle = savedActivity.getTitle();
+    
+    //john like this activity
+    activityManager.saveLike(savedActivity, johnIdentity);
+    Activity savedLikeActivity = activityManager.getActivity(likeActivity.getId());
+    assertEquals(expectedTitle, savedLikeActivity.getTitle());
+    assertEquals(expectedTitle, savedLikeActivity.getBody());
+    
+    tearDownActivityList.add(likeActivity);
+    
+    encodeTitle = "\"#'^`~@!&*()|\\[]{},./?$%%$^";
+    Activity activity = new Activity();
+    activity.setTitle(encodeTitle);
+    activity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, activity);
+    
+    savedActivity = activityManager.getActivity(activity.getId());
+    
+    expectedTitle = savedActivity.getTitle();
+    
+    //john like this activity
+    activityManager.saveLike(savedActivity, johnIdentity);
+    savedActivity = activityManager.getActivity(activity.getId());
+    assertEquals(expectedTitle, savedActivity.getTitle());
+    assertEquals(expectedTitle, savedActivity.getBody());
+    
+    tearDownActivityList.add(activity);
+  }
+  
+  /**
+   * Test {@link ActivityManager#removeLike(Activity, Identity)}
+   * 
+   * @throws Exception
+   * @since 1.1.9
+   */
+  public void testRemoveLike() throws Exception {
+    String encodeTitle = "espace testé à la plage";
+    Activity likeActivity = new Activity();
+    likeActivity.setTitle(encodeTitle);
+    likeActivity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, likeActivity);
+    
+    Activity savedActivity = activityManager.getActivity(likeActivity.getId());
+    
+    String expectedTitle = savedActivity.getTitle();
+    
+    //john like this activity
+    activityManager.saveLike(savedActivity, johnIdentity);
+    Activity savedLikeActivity = activityManager.getActivity(likeActivity.getId());
+    assertEquals(expectedTitle, savedLikeActivity.getTitle());
+    assertEquals(expectedTitle, savedLikeActivity.getBody());
+    
+    //john dislike this activity
+    activityManager.removeLike(savedLikeActivity, johnIdentity);
+    Activity removedLikeActivity = activityManager.getActivity(likeActivity.getId());
+    assertEquals(expectedTitle, removedLikeActivity.getTitle());
+    assertEquals(expectedTitle, removedLikeActivity.getBody());
+    
+    tearDownActivityList.add(likeActivity);
+    
+    encodeTitle = "\"#'^`~@!&*()|\\[]{},./?$%%$^";
+    Activity activity = new Activity();
+    activity.setTitle(encodeTitle);
+    activity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, activity);
+    
+    savedActivity = activityManager.getActivity(activity.getId());
+    
+    expectedTitle = savedActivity.getTitle();
+    
+    //john like this activity
+    activityManager.saveLike(savedActivity, johnIdentity);
+    savedLikeActivity = activityManager.getActivity(activity.getId());
+    assertEquals(expectedTitle, savedLikeActivity.getTitle());
+    assertEquals(expectedTitle, savedLikeActivity.getBody());
+    
+    //john dislike this activity
+    activityManager.removeLike(savedLikeActivity, johnIdentity);
+    removedLikeActivity = activityManager.getActivity(activity.getId());
+    assertEquals(expectedTitle, removedLikeActivity.getTitle());
+    assertEquals(expectedTitle, removedLikeActivity.getBody());
+    
+    tearDownActivityList.add(activity);
+  }
+  
+  /**
+   * Test {@link ActivityManager#saveComment(Activity, Activity)}
+   * 
+   * @throws Exception
+   * @since 1.1.9
+   */
+  public void testSaveComment() throws Exception {
+    String encodeTitle = "espace testé à la plage";
+    Activity commentActivity = new Activity();
+    commentActivity.setTitle(encodeTitle);
+    commentActivity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, commentActivity);
+    
+    Activity savedActivity = activityManager.getActivity(commentActivity.getId());
+    
+    String expectedTitle = savedActivity.getTitle();
+    
+    //john comment on this activity
+    Activity comment = new Activity();
+    comment.setTitle("comment blah");
+    comment.setUserId(johnIdentity.getId());
+    activityManager.saveComment(commentActivity, comment);
+    Activity savedCommentActivity = activityManager.getActivity(commentActivity.getId());
+    assertEquals(expectedTitle, savedCommentActivity.getTitle());
+    assertEquals(expectedTitle, savedCommentActivity.getBody());
+    
+    tearDownActivityList.add(commentActivity);
+    
+    encodeTitle = "\"#'^`~@!&*()|\\[]{},./?$%%$^";
+    Activity activity = new Activity();
+    activity.setTitle(encodeTitle);
+    activity.setBody(encodeTitle);
+    
+    activityManager.saveActivity(johnIdentity, activity);
+    
+    savedActivity = activityManager.getActivity(activity.getId());
+    
+    expectedTitle = savedActivity.getTitle();
+    
+    //john comment on this activity
+    Activity comment2 = new Activity();
+    comment2.setTitle("comment blah");
+    comment2.setUserId(johnIdentity.getId());
+    activityManager.saveComment(activity, comment2);
+    savedCommentActivity = activityManager.getActivity(activity.getId());
+    assertEquals(expectedTitle, savedCommentActivity.getTitle());
+    assertEquals(expectedTitle, savedCommentActivity.getBody());
+    
+    tearDownActivityList.add(activity);
+  }
+  
+  /**
    *
    */
   public void testAddProviders() {

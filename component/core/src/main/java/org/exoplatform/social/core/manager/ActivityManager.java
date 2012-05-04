@@ -328,6 +328,10 @@ public class ActivityManager {
    * @param comment
    */
   public void saveComment(Activity activity, Activity comment) {
+    //Set null for title and body to avoid update them in JCR.
+    activity.setTitle(null);
+    activity.setBody(null);
+    
     storage.saveComment(activity, comment);
     activityCache.remove(activity.getId());
     commentsCache.remove(activity.getId());
@@ -340,6 +344,10 @@ public class ActivityManager {
    * @param identity
    */
   public void saveLike(Activity activity, Identity identity) {
+    //Set null for title and body to avoid update them in JCR.
+    activity.setTitle(null);
+    activity.setBody(null);
+    
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       LOG.warn("activity is already liked by identity: " + identity);
@@ -358,6 +366,10 @@ public class ActivityManager {
    * @param identity user that unlikes the activity
    */
   public void removeLike(Activity activity, Identity identity) {
+    //Set null for title and body to avoid update them in JCR.
+    activity.setTitle(null);
+    activity.setBody(null);
+    
     String[] identityIds = activity.getLikeIdentityIds();
     if (ArrayUtils.contains(identityIds, identity.getId())) {
       identityIds = (String[]) ArrayUtils.removeElement(identityIds, identity.getId());

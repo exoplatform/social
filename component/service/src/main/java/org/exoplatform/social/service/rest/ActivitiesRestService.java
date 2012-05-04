@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
@@ -154,26 +155,11 @@ public class ActivitiesRestService implements ResourceContainer {
     if (identityId == null) {
       throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
     }
-    if (identityIds != null) {
-      for (String id : identityIds) {
-        if (id.equals(identityId)) {
-          alreadyLiked = true;
-        }
-      }
-    }
-    if (!alreadyLiked) {
-      identityIds = addItemToArray(identityIds, identityId);
-      activity.setLikeIdentityIds(identityIds);
-      try {
-        Identity user = getIdentityManager().getIdentity(activity.getUserId());
-        _activityManager.saveActivity(user, activity);
-      } catch (Exception ex) {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    } else {
-      //TODO hoatle let it run smoothly or informs that user already liked the activity?
-    }
-    likeList.setLikes(getLikes(identityIds));
+    
+    Identity user = getIdentityManager().getIdentity(identityId);
+    _activityManager.saveLike(activity, user);
+    
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
 
@@ -194,28 +180,14 @@ public class ActivitiesRestService implements ResourceContainer {
     if (identityIds == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
-    boolean alreadyLiked = true;
-    for (String id : identityIds) {
-      if (id.equals(identityId)) {
-        identityIds = removeItemFromArray(identityIds, identityId);
-        activity.setLikeIdentityIds(identityIds);
-        try {
-          Identity user = getIdentityManager().getIdentity(activity.getUserId());
-          _activityManager.saveActivity(user, activity);
-        } catch(Exception ex) {
-          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-        }
-        alreadyLiked = false;
-      }
-    }
-    if (alreadyLiked) {
+    if (ArrayUtils.contains(identityIds, identityId)) {
+      Identity user = getIdentityManager().getIdentity(identityId);
+      _activityManager.removeLike(activity, user);
+    } else {
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
-    if (identityIds == null) {
-      likeList.setLikes(new ArrayList<Like>());
-    } else {
-      likeList.setLikes(getLikes(identityIds));
-    }
+    
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
 

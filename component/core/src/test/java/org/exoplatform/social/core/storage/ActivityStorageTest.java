@@ -144,6 +144,42 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
     }
 
+    //Test with encode when like an activity
+    String encodeTitle = "espace testé à la plage";
+    Activity likeActivity = new Activity();
+    likeActivity.setTitle(encodeTitle);
+    likeActivity.setBody(encodeTitle);
+    activityStorage.saveActivity(johnIdentity, likeActivity);
+    
+    Activity savedActivity = activityStorage.getActivity(likeActivity.getId());
+    assertEquals(encodeTitle, savedActivity.getTitle());
+    assertEquals(encodeTitle, savedActivity.getBody());
+    
+    //john like this activity
+    savedActivity.setLikeIdentityIds(new String [] {johnIdentity.getId()});
+    activityStorage.saveActivity(johnIdentity, savedActivity);
+    savedActivity = activityStorage.getActivity(likeActivity.getId());
+    assertEquals(encodeTitle, savedActivity.getTitle());
+    assertEquals(encodeTitle, savedActivity.getBody());
+    
+    //john dislike this activity
+    savedActivity.setLikeIdentityIds(new String [] {});
+    activityStorage.saveActivity(johnIdentity, savedActivity);
+    savedActivity = activityStorage.getActivity(likeActivity.getId());
+    assertEquals(encodeTitle, savedActivity.getTitle());
+    assertEquals(encodeTitle, savedActivity.getBody());
+    
+    //john comment on this activity
+    Activity comment = new Activity();
+    comment.setTitle("comment blah");
+    comment.setUserId(johnIdentity.getId());
+    activityStorage.saveComment(savedActivity, comment);
+    
+    savedActivity = activityStorage.getActivity(likeActivity.getId());
+    assertEquals(encodeTitle, savedActivity.getTitle());
+    assertEquals(encodeTitle, savedActivity.getBody());
+    
+    tearDownActivityList.add(likeActivity);
   }
 
   /**
