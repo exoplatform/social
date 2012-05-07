@@ -121,6 +121,7 @@ public class SocialUserEventListenerImpl extends UserEventListener {
     for (Activity activity : activities) {
       activityManager.deleteActivity(activity);
     }
+    activityManager.clearCache();
   }
 
   /**

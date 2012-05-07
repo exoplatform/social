@@ -175,6 +175,12 @@ public class ActivityManager {
     deleteActivity(activity.getId());
   }
 
+  public void clearCache() {
+    activityCache.clearCache();
+    activityListCache.clearCache();
+    commentsCache.clearCache();
+  }
+  
   /**
    * Delete comment by its id.
    *
