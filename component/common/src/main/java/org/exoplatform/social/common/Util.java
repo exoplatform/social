@@ -16,11 +16,6 @@
  */
 package org.exoplatform.social.common;
 
-import java.net.IDN;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -29,13 +24,20 @@ import java.util.regex.Pattern;
  * @since 1.2.0-GA 
  */
 public class Util {
-  private static final String SPACE_STRING = " ";
-  private static final String HTTP = "http";
-  private static final String HTTP_PRTOCOL = "http://";
-  private static final Pattern URL_PATTERN = Pattern.compile("^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)"
-    + "(\\?([^#]*))?(#(.*))?");
+  private static final Pattern URL_PATTERN = Pattern
+          .compile("^(?i)" +
+          "(" +
+            "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+            "(?:\\w+:\\w+@)?" +                                                                       // username password
+            "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
+            "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
+            "(?:(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+\\.)+" +
+            "(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+            "(?:(?:(?:ht)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+))" + // Protocol with hostname
+          ")" +
+          "(?::[\\d]{1,5})?" +                                                                        // port
+          "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
   
-  private static final int DOMAIN = 4;
   
   /**
    * Checks a url is in a valid form or not.
@@ -44,49 +46,7 @@ public class Util {
    * @return
    */
   public static boolean isValidURL(String link) {
-    try {
-      if ((link == null) || (link.length() == 0)) return false;
-      
-      // Check the case that url has the domain name in the right form. Exg: .com, .org... or not.
-      if (link.indexOf('.') == -1) return false;
-      
-      if (!URL_PATTERN.matcher(link).matches()) return false;
-      
-      if (hasValidDomain(link)) return true;
-      
-      URI uri = null;
-      uri = new URI(IDN.toUnicode(link));
-
-      String scheme = uri.getScheme();
-      if (scheme == null) {
-        link = HTTP_PRTOCOL + link;
-        uri = new URI(IDN.toUnicode(link));
-      }
-      
-      String host = uri.getHost();
-      if ((host != null) && (host.contains(SPACE_STRING))) return false;
-      
-      uri.toURL();
-    } catch (URISyntaxException e) {
-      return false;
-    } catch (MalformedURLException e) {
-      return false;
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
-    return true;
-  }
-  
-  private static boolean hasValidDomain(String link) {
-    
-    if (!link.startsWith(HTTP)) link = HTTP_PRTOCOL + link;
-    
-    Matcher m = URL_PATTERN.matcher(link);
-    
-    if (m.matches()) {
-        String domain = m.group(DOMAIN);
-        if ((domain != null) && (!domain.contains(SPACE_STRING))) return true;
-    }
-    return false;
+      if (link == null || link.length() == 0) return false;
+      return URL_PATTERN.matcher(link).matches();
   }
 }

@@ -519,10 +519,16 @@ public final class Util {
    */
   public static String getMimeTypeOfURL(String urlString){
     URLConnection urlConnection = null;
+    final int CONNECTION_TIMEOUT = 10000;
     try {
       String mimeType = null;
       URL url = new URL(urlString); 
       urlConnection = url.openConnection();
+      
+      urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+      urlConnection.setReadTimeout(CONNECTION_TIMEOUT);
+
+      
       mimeType = urlConnection.getContentType();
       if(mimeType != null){
         return mimeType;
