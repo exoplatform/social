@@ -92,7 +92,7 @@
 	  
 	  uicomponent.resetUIComponentValues();
 	  
-	  def myConnectionsLink = LinkProvider.getUserConnectionsUri(ownerIdentity.getRemoteId());
+	  def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
   
     if (!Utils.isOwner()) {
       myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());

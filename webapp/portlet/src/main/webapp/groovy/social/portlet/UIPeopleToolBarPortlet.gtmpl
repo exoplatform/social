@@ -1,6 +1,7 @@
 <%
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.core.service.LinkProvider;
 
 def labelPeople    = _ctx.appRes("UIPeopleToolBarPortlet.label.People");
 def labelDirectory = _ctx.appRes("UIPeopleToolBarPortlet.label.Directory");
@@ -15,7 +16,7 @@ def peopleLink = Utils.getURI("people");
 def remoteUser = Util.getPortalRequestContext().getRemoteUser();
 
 def directoryLink = Utils.getURI("people");
-def connectionsLink = Utils.getURI("connections") + "/all-people/" + remoteUser;
+def connectionsLink = LinkProvider.getUserConnectionsYoursUri(remoteUser);
 %>
 <ul class="UIPeopleToolBarPortlet UIHorizontalTabs" id="$uicomponent.id" style="position: relative;">
 	<li class="UITab NormalToolbarTab">
