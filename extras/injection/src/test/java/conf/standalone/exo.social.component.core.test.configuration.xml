@@ -35,6 +35,10 @@
   <component>
     <type>org.exoplatform.social.extras.injection.SpaceInjector</type>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.extras.injection.MembershipInjector</type>
+  </component>
 
   <component>
     <type>org.exoplatform.social.extras.injection.ActivityInjector</type>
