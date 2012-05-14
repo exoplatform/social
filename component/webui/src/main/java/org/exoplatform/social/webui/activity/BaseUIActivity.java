@@ -307,6 +307,7 @@ public class BaseUIActivity extends UIForm {
     activityManager.saveComment(getActivity(), comment);
     comments = activityManager.getComments(getActivity());
     activity = activityManager.getActivity(getActivity().getId());
+    activity = getI18N(activity);
     setCommentListStatus(CommentStatus.ALL);
   }
 
