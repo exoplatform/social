@@ -196,7 +196,7 @@
 
     <dependency>
       <groupId>org.gatein.wci</groupId>
-      <artifactId>wci-tomcat</artifactId>
+      <artifactId>wci-tomcat6</artifactId>
       <version>${org.gatein.wci.version}</version>
       <type>jar</type>
     </dependency>
