@@ -1,4 +1,3 @@
-h1. Objective   {anchor:id="SOCref.Developers_References.How_to_create_i18n_activities.Objective"}
 This section will show you how to internationalize activities in eXo Social.
 
 h1. Internationalize an activity {anchor:id="SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities"}
