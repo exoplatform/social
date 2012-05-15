@@ -60,7 +60,7 @@
               "description: '$description'";
 
     if(image != null){
-      linkData += ",image: '$image',";
+      linkData += ",image: '$image'";
     }
     linkData += "}";
   } else {
