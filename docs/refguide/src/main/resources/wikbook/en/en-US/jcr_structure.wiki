@@ -1,4 +1,3 @@
-h1. Overview {anchor:id=SOCref.Social_JCR_Structure.Overview}
 Like any other eXo's products, eXo Social fully complies the JCR standard to store data (identity, profile, activity, space and relationship).
 The eXo Social JCR structure is organized to conform to the data storage for the individual purpose of eXo Social. With this structure, it is easy for you to manage and access the data properly.
 
@@ -11,10 +10,19 @@ The root node of Social workspace is _/production/_ which consists of two child 
 
 h1. soc:providers  {anchor:id=SOCref.Social_JCR_Structure.socproviders}
 The _{{{soc:providers}}}_ node is used to store the provider entities. In eXo Social, there are two built-in provider entities, including _organization_, and _space_.
-Its type is _{{{soc:providers}}}_ that has child nodes of the _{{{soc:providerdefinition}}}_ type.
+Its type is _{{{soc:providers}}}_ that has the _soc\:<provider\_name>_ child node of the _{{{soc:providerdefinition}}}_ type.
 
-h2. soc:<provider_name>   {anchor:id=SOCref.Social_JCR_Structure.socproviders.provider_Name}
-The <provider_name> parameter in the _{{{soc:<provider_name>}}}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
+{docbook}
+<para xml:id="SOCref.Social_JCR_Structure.socproviders.provider_Name">
+<citetitle>
+<emphasis role="bold"><![CDATA[
+soc:<provider_name>]]>
+</emphasis>
+</citetitle>
+</para>
+{docbook}
+
+The <provider\_name> parameter in the _{{{soc\:<provider\_name>}}}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
 
 The _{{{soc:<provider_name>}}}_ node of the _{{{soc:providerdefinition}}}_ type has the _{{{soc:<identityRemoteId>}}}_ child nodes that have the _{{{soc:identitydefinition}}}_ type.
 
