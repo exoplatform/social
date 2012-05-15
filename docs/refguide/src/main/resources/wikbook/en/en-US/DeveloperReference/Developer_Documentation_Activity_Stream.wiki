@@ -4,6 +4,8 @@ To manipulate activities, you need to use the _AtivityManager_ service.
 h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
 
 There are two types of activities: activities for a user and activities for a space. The following examples will show you how to publish an activity for each type.
+
+The following examples will show you how to publish an activity for each type.
  
 h2. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
 
@@ -70,7 +72,7 @@ public class PublishActivityForUser {
 
 {code}
 
-h1. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
+h2. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
 
 {code:java}
 package org.exoplatform.publish.space;
@@ -153,7 +155,7 @@ public class PublishActivityForSpace {
 {code}
 
 
-h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
+h1. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
 An activity processor is used to modify the content of activities before they are returned from an activity manager. For example, to create an activity processor to replace all the texts representing the smile face ":-)" in the activity title by the smiley icons, do as follows:
 
@@ -205,7 +207,7 @@ Then, register this processor by editing the _configuration.xml_ file:
 
 The "init-params" contains all the key-value data which a processor will use to initialize. In the above configuration, the *priority* value indicates the order in which this processor is executed. If the value is 1, this processor will be used before all the remaining processors with the lower priority.
 
-h2. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
+h1. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
 It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides _FeedmashJobPlugin_ to publish the RSS feeds. As you can see in the project "_exo.social.extras.feedmash_", there are the _JiraFeedConsumer_ and _HudsonFeedConsumer_ samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named _exosocial_ in a specific portal container named _socialdemo_ as in the configuration file:
 

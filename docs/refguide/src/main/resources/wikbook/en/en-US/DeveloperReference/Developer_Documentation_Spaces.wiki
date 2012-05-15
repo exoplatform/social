@@ -42,6 +42,9 @@ public class SpaceCreationSample {
 {code}
 
 h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
+The management of space's applications includes 2 specific actions:
+* [Add an application to a space|#SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space]
+* [Remove an application from a space|#SOCref.Developer_Ref.Developer_document_Spaces.Remove_application_from_space]
 
 h2. Add an application to a space  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
 You can add portlet or gadget applications to spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:

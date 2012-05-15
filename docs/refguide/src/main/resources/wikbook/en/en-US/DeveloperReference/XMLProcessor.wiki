@@ -1,4 +1,3 @@
-h1. Objectives {anchor:id="SOCref_developreference_XMLProcessor_Objectives"}
 This section shows you the way to change the content of input texts by using and extending the XMLProcessor component and its plugins.
 
 h1. XMLProccessor Component {anchor:id="SOCref_developreference_XMLProcessor_Components"}
