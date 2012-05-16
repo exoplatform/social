@@ -85,6 +85,9 @@ public class UILinkActivity extends BaseUIActivity {
   
   private boolean isImageLink(String link){
     Pattern pattern = Pattern.compile("(?-i)(\\.jpg|\\.gif|\\.jpeg|\\.bmp|\\.png|\\.tif)$");
-    return pattern.matcher(link).find();
+    if (link != null) {
+      return pattern.matcher(link).find();
+    }
+    return false;
   }
 }

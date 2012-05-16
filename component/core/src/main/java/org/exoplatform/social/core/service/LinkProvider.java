@@ -79,6 +79,9 @@ public class LinkProvider {
 
     try {
       Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+      if (identity == null) {
+        return null;
+      }
       Validate.notNull(identity, "Identity must not be null.");
       String url = getBaseUri(portalOwner) + "/profile/" + identity.getRemoteId();
       link = "<a href=\"" + url + "\" target=\"_parent\">" + identity.getProfile().getFullName() + "</a>";

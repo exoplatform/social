@@ -228,7 +228,15 @@ public class UIRelationshipActivity extends BaseUIActivity {
 
   private String getProfileLink(String username) {
     LinkProvider linkProvider = getApplicationComponent(LinkProvider.class);
-    return linkProvider.getProfileLink(username);
+    String profileLink = linkProvider.getProfileLink(username);
+    if (profileLink == null) {
+      String deletedUser = WebuiRequestContext.getCurrentInstance()
+          .getApplicationResourceBundle().getString("UIActivitiesLoader.label.Deleted_User");
+          
+          return "<strike>" + deletedUser + "</strike>";
+    }
+    
+    return profileLink;
   }
 
   private IdentityManager getIdentityManager() {
