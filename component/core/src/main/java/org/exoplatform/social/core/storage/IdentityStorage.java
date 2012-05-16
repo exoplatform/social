@@ -423,11 +423,12 @@ public class IdentityStorage {
               .like("jcr:path", profileHomeNode.getPath() + "[%]/%");
 
       for (String namePart : nameParts) {
-        if (namePart != "") {
+        if (!"".equals(namePart)) {
           queryBuilder.or().like(queryBuilder.lower(Profile.FIRST_NAME), namePart.toLowerCase() + "%");
           queryBuilder.or().like(queryBuilder.lower(Profile.LAST_NAME),  namePart.toLowerCase() + "%");
         }
       }
+      
 
       if (position.length() != 0) {
         queryBuilder.and().contains(Profile.POSITION, position);

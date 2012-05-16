@@ -365,13 +365,16 @@ public class UIProfileUserSearch extends UIForm {
           if (!isValidInput(filter)) { // is invalid condition input
             uiSearch.setIdentityList(new ArrayList<Identity>());
           } else {
+            if ((filter.getName() == null) || defaultNameVal.equals(filter.getName())) {
+              filter.setName("");
+            }
             if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
               filter.setPosition("");
             }
             if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
               filter.setSkills("");
             }
-            if (filter.getGender().equals(defaultGenderVal)) {
+            if ((filter.getGender() == null) || filter.getGender().equals(defaultGenderVal)) {
               filter.setGender("");
             }
 

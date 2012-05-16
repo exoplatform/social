@@ -320,6 +320,76 @@ public class IdentityStorageTest extends AbstractCoreTest {
     final List<Identity> result = identityStorage.getIdentitiesFilterByAlphaBet(providerId, filter, 0, 1);
     assertEquals(1, result.size());
   }
+  
+  /**
+   * Unit Test for SOC-2658 fix: find profile by gender, position, skill
+   * @throws Exception
+   */
+  
+  public void testGetIdentityByProfileFilterWithoutName() throws Exception {
+    String providerId = "organization";
+    String remoteId = "username";
+
+    Identity identity = new Identity(providerId, remoteId);
+    identityStorage.saveIdentity(identity);
+
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
+    profile.setProperty("position", "developer");
+    profile.setProperty("skills", "java");
+    profile.setProperty("gender", "male");
+    
+    identityStorage.saveProfile(profile);
+    
+    
+    ProfileFilter filter1 = new ProfileFilter();
+    //find by position and gender
+    filter1.setName("");
+    filter1.setPosition("developer");
+    filter1.setGender("male");
+    filter1.setSkills("");
+    List<Identity> result1 = identityStorage.getIdentitiesByProfileFilter(providerId, filter1, 0, 1);
+    assertEquals(1, result1.size());
+    
+    ProfileFilter filter2 = new ProfileFilter();
+    //find by position
+    filter2.setName("");
+    filter2.setPosition("developer");
+    filter2.setSkills("");
+    filter2.setGender("");
+
+    List<Identity> result2 = identityStorage.getIdentitiesByProfileFilter(providerId, filter2, 0, 1);
+    assertEquals(1, result2.size());
+  }
+  
+  /**
+   * Unit Test for getIdentitiesByProfileFilter with only name field in ProfileFilter
+   * @throws Exception
+   */
+  public void testGetIdentitiesFilterByName() throws Exception {
+    String providerId = "organization";
+    String remoteId = "username";
+
+    Identity identity = new Identity(providerId, remoteId);
+    identityStorage.saveIdentity(identity);
+
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, "FirstName");
+    profile.setProperty("position", "developer");
+    profile.setProperty("skills", "java");
+    profile.setProperty("gender", "male");
+    
+    identityStorage.saveProfile(profile);
+    
+    ProfileFilter filter1 = new ProfileFilter();
+    //find by name
+    filter1.setName("First");
+    filter1.setPosition("");
+    filter1.setGender("");
+    filter1.setSkills("");
+    List<Identity> result1 = identityStorage.getIdentitiesByProfileFilter(providerId, filter1, 0, 1);
+    assertEquals(1, result1.size());
+  }
 
   public void testFindManyIdentitiesByProfileFilter() throws Exception {
     String providerId = "organization";
