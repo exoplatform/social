@@ -50,6 +50,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
+  private Object locker = new Object();
 
 
   public enum DisplayMode {
@@ -140,8 +141,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
     Validate.notNull(ownerName, "ownerName must not be null.");
     Validate.notNull(viewerName, "viewerName must not be null.");
 
-    removeChild(UIActivitiesLoader.class);
-    activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
+    synchronized (locker) {
+      removeChild(UIActivitiesLoader.class);
+      activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");      
+    }
+
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
