@@ -197,37 +197,6 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * Fill url for more spaces.
-   * 
-   * @param spaceList
-   * @param portalOwner
-   * @since 1.2.9
-   */
-  private void fillUrlAllSpaces(SpaceList spaceList, String portalOwner) {
-    try {
-      Router router = this.getRouter(this.getConfigurationPath());
-      
-      Map<QualifiedName, String> qualifiedName = new HashedMap();
-      qualifiedName.put(REQUEST_HANDLER, "portal");
-      qualifiedName.put(REQUEST_SITE_TYPE, "portal");
-      qualifiedName.put(LANG, "");
-      
-      StringBuilder urlBuilder = new StringBuilder();
-      UserPortalConfig userPortalConfig = SpaceUtils.getUserPortalConfig();
-      qualifiedName.put(REQUEST_SITE_NAME, userPortalConfig.getPortalName());
-      if (portalOwner.equals("socialdemo")) {
-        qualifiedName.put(PATH, "all-spaces");
-      } else {
-        qualifiedName.put(PATH, "spaces");
-      }
-      router.render(qualifiedName, new URIWriter(urlBuilder));
-      spaceList.setMoreSpacesUrl(urlBuilder.toString());
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-  
-  /**
    * shows mySpaceList by json/xml format
    *
    * @param uriInfo provided as {@link Context}
@@ -257,7 +226,6 @@ public class SpacesRestService implements ResourceContainer {
     
     SpaceList mySpaceList = showMySpaceList(userId);
     
-    this.fillUrlAllSpaces(mySpaceList, portalName);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -340,8 +308,6 @@ public class SpacesRestService implements ResourceContainer {
    */
   @XmlRootElement
   static public class SpaceList {
-    private String moreSpacesUrl;
-    
     private List<SpaceRest> _spaces;
 
     /**
@@ -373,26 +339,6 @@ public class SpacesRestService implements ResourceContainer {
         _spaces = new ArrayList<SpaceRest>();
       }
       _spaces.add(space);
-    }
-    
-    /**
-     * Get the url of all spaces.
-     * 
-     * @return
-     * @since 1.2.9
-     */
-    public String getMoreSpacesUrl() {
-      return moreSpacesUrl;
-    }
-    
-    /**
-     * Set the url of all spaces.
-     * 
-     * @param allSpacesUrl
-     * @since 1.2.9
-     */
-    public void setMoreSpacesUrl(String allSpacesUrl) {
-      moreSpacesUrl = allSpacesUrl;
     }
   }
 
