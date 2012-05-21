@@ -23,6 +23,18 @@
   import org.exoplatform.social.core.identity.model.Profile;
   import org.exoplatform.social.core.relationship.model.Relationship;
   import org.exoplatform.social.core.relationship.model.Relationship.Type;
+  import org.exoplatform.web.application.JavascriptManager;
+  
+  def rcontext = _ctx.getRequestContext() ;
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsmanager.importJavascript("eXo.social.webui.UIProfile",LinkProvider.JAVASCRIPT_RESOURCE_URL);
+  
+  def params = """ {
+    positionId: 'position',
+    saveButtonId: 'savePosition'
+  } """
+  jsmanager.addOnLoadJavascript("initUIProfile");
   
   def ownerIdentity = Utils.getOwnerIdentity(true);
   def viewerIdentity = Utils.getViewerIdentity();
@@ -56,6 +68,11 @@
   def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
   def relationship = uicomponent.getRelationship();
 %>
+<script type="text/javascript">
+  function initUIProfile() {
+      new eXo.social.webui.UIProfile($params);
+  }
+</script>
 <div class="UIHeaderSection">
 <% uiform.begin() %>
   
@@ -85,9 +102,9 @@
             if (isEditable) { %>
               <%uicomponent.setValue();%>
               <% uiform.renderChild(UIFormStringInput.class) %>
-              <a class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></a>              
+              <a id="savePosition" class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></a>              
               <span> | </span>
-              <a class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></a>
+              <a id="cancelPosition" class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></a>
           <%} else {%>
             <%=position%>
           <%}%>
