@@ -243,12 +243,14 @@ public class UILinkActivityComposer extends UIActivityComposer {
       return;
     }
     
-    String title = "Shared a link: <a href=\"${" + LINK_PARAM + "}\">${" + TITLE_PARAM + "} </a>"; 
+    String title = "${" + TITLE_PARAM + "}"; 
     ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                                            UILinkActivity.ACTIVITY_TYPE,
                                                            title,
                                                            null);
     activity.setTemplateParams(templateParams);
+    activity.setExternalId(UILinkActivity.ACTIVITY_TYPE);
+    activity.setUrl(templateParams.get(LINK_PARAM).toString());
     
     if (postContext == UIComposer.PostContext.SPACE) {
       UISpaceActivitiesDisplay uiDisplaySpaceActivities = (UISpaceActivitiesDisplay) getActivityDisplay();

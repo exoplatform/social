@@ -58,7 +58,15 @@ public class UIActivityFactory extends BaseComponentPlugin {
    * @throws Exception
    */
   public BaseUIActivity addChild(ExoSocialActivity activity, UIContainer parent) throws Exception {
-    return buildActivity(activity, parent, activity.getType() != null ? activity.getType() : UIDefaultActivity.ACTIVITY_TYPE);
+    final String type = activity.getType();
+    final String externalId = activity.getExternalId();
+    if (type != null) {
+      return buildActivity(activity, parent, type);
+    } else if (externalId != null) {
+      // TODO Need to check if match the provided activity type or not
+      return buildActivity(activity, parent, externalId);
+    }
+    return buildActivity(activity, parent, UIDefaultActivity.ACTIVITY_TYPE);
   }
 
   private BaseUIActivity buildActivity(ExoSocialActivity activity, UIContainer parent, String type) throws Exception {
