@@ -688,14 +688,14 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
      * Gets html block of link share activity.
      *
      * @param  activity
-     * @param  data json title object from activity.title
+     * @param  jsonObject
      * @param  isOwnerActivity to decide some actions displayed
      */
-    var getLinkShareActivityBlock = function(activity, jsonTitle, isOwnerActivity) {
-      if (!activity || !jsonTitle) {
+    var getLinkShareActivityBlock = function(activity, jsonObject, isOwnerActivity) {
+      if (!activity || !jsonObject) {
         debug.error('getLinkShareActivityBlock: activity or data is null.');
         debug.info(activity);
-        debug.info(jsonTitle);
+        debug.info(jsonObject);
         miniMessage.createDismissibleMessage(Locale.getMsg('internal_error'));
         return '';
       }
@@ -722,35 +722,35 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
         html.push('<div class="ContentArea">');
-        if (jsonTitle.comment) {
-          var comment = Util.stripHtml(StatusUpdate.allowedTags, jsonTitle.comment);
-          if (comment !== '') {
-            jsonTitle.comment = comment;
+        if (jsonObject.comment) {
+          var comment = Util.stripHtml(StatusUpdate.allowedTags, jsonObject.comment);
+          if (comment) {
+            jsonObject.comment = comment;
           }
-          html.push(jsonTitle.comment);
+          html.push(jsonObject.comment);
         } 
-        if (jsonTitle.title.length === 0) {
-          jsonTitle.title = jsonTitle.link;
+        if (!jsonObject.title) {
+          jsonObject.title = jsonObject.link;
         }
         var description;
-        if (jsonTitle.description) {
-        	description = jsonTitle.description;
+        if (jsonObject.description) {
+          description = jsonObject.description;
         } 
         html.push('</div>');
         html.push('<div class="LinkShare">')
           html.push('<div class="Thumbnail">');
-          if (jsonTitle.image !== '') {
-            html.push('<img width="100px" src="' + jsonTitle.image + '" title="' + jsonTitle.title + '" alt="' + jsonTitle.title + '" />');
+          if (jsonObject.image) {
+            html.push('<img width="100px" src="' + jsonObject.image + '" title="' + jsonObject.title + '" alt="' + jsonObject.title + '" />');
           }
           html.push('</div>');
-        if (jsonTitle.image !== '') {
+        if (jsonObject.image) {
           html.push('<div class="Content">'); //margin-left is set
         } else {
           html.push('<div>'); //no margin-left is set
         }
-            html.push('<div class="Title"><a class="ColorLinkShared" href="'+ jsonTitle.link +'" target="_blank">' + jsonTitle.title + '</a></div>');
+            html.push('<div class="Title"><a class="ColorLinkShared" href="'+ jsonObject.link +'" target="_blank">' + jsonObject.title + '</a></div>');
               html.push('<div class="Description">' + description + '</div>');
-              html.push('<div class="Source">' + Locale.getMsg('source') + ' : <a href="' + jsonTitle.link + '" target="_blank">' + jsonTitle.link + '</a></div>');
+              html.push('<div class="Source">' + Locale.getMsg('source') + ' : <a href="' + jsonObject.link + '" target="_blank">' + jsonObject.link + '</a></div>');
             html.push('</div>');
             html.push('<div style="clear: both; height: 0px;"><span></span></div>');
           html.push('</div>');
@@ -962,16 +962,19 @@ eXo.social.StatusUpdate.prototype.handleActivities = function(dataResponse, data
 
       function setDisplay() {
         var title = activity.getField(opensocial.Activity.Field.TITLE);
-        if (title === null) title = '';
-        var jsonTitle = title.replace(/&#34;/g, '"');
-        sonTitle = jsonTitle.replace(/&#92;/g, "\\");
-        try {
-          jsonTitle = gadgets.json.parse(jsonTitle);
-        } catch(e) {
-          //ignores
-        }
-        if (jsonTitle.title) { //process with json Title, link display
-          html = getLinkShareActivityBlock(activity, jsonTitle, isOwnerActivity);
+        var url = activity.getField(opensocial.Activity.Field.URL);
+        var externalId = activity.getField(opensocial.Activity.Field.EXTERNAL_ID);
+        var templateParams = activity.getField(opensocial.Activity.Field.TEMPLATE_PARAMS);
+        var jsonObject = {
+          "comment": templateParams.comment,
+          "title": title,
+          "link": url,
+          "description": templateParams.description,
+          "image": templateParams.image
+        };
+        if (!title) title = '';
+        if (externalId && (externalId == 'LINK_ACTIVITY')) {
+          html = getLinkShareActivityBlock(activity, jsonObject, isOwnerActivity);
         } else {//normal display
           html = getNormalActivityBlock(activity, isOwnerActivity);
         }

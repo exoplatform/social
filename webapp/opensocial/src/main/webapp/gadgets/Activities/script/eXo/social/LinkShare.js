@@ -40,7 +40,7 @@ eXo.social.LinkShare = function(link, lang) {
   this.callbackHandler = function(res) {
     //when can not get any info
     function fallback(data) {
-      LinkShare.data.title = data.link; //TODO gets domain name only
+      LinkShare.data.title = data.title;
       LinkShare.data.link = data.link;
       LinkShare.data.description = "";
       LinkShare.data.images = [];
@@ -658,7 +658,7 @@ eXo.social.LinkShare.prototype.save = function(comment, callback) {
   body.comment = comment;
   //body.comment = status;
   //params[opensocial.Activity.Field.TITLE] = Locale.getMsg('user_shared_a_link', [viewerName]);
-  params[opensocial.Activity.Field.TITLE] = gadgets.json.stringify(body);
+  //params[opensocial.Activity.Field.TITLE] = gadgets.json.stringify(body);
   //params[opensocial.Activity.Field.BODY] = gadgets.json.stringify(body);
   //debug.info(params[opensocial.Activity.Field.BODY]);
   //thumbnail
@@ -675,14 +675,12 @@ eXo.social.LinkShare.prototype.save = function(comment, callback) {
 //  var activity = opensocial.newActivity(params);
     var link = LinkShare.data.link;
     var title = LinkShare.data.title;
-    var titleData = "Shared a link: <a href=\"" + link + "\" target=\"_blank\">" + title + " </a>";
     var description = LinkShare.data.description;
-    var activity = opensocial.newActivity({ 'title' : titleData, 
+    var image = LinkShare.data.images[LinkShare.data.selectedImageIndex];
+    var activity = opensocial.newActivity({ 'title' : title, 
                                             'url': link, 
                                             'externalId' : "LINK_ACTIVITY",
-                                            
-                                            'templateParams': 
-                                            	  {"comment":comment,"description":description, "title":title, "link":link}
+                                            'templateParams': {"comment":comment,"description":description, "title":title, "link":link, "image":image}
                                           });
   opensocial.requestCreateActivity(activity, opensocial.CreateActivityPriority.HIGH, callback);
   //resets
