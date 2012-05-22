@@ -1,4 +1,4 @@
-eXo Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.
+Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.
 
 To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current _PortalContainer_ instance.
 

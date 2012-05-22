@@ -14,11 +14,11 @@ The Project Code is available [here.|http://wiki.exoplatform.org/xwiki/bin/downl
 
 When an activity is displayed, UIActivityFactory will look for its registered custom actvity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
-For example, in eXo Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher, but now, you want to display it without own UI component instead of the default one. To do that, follow these steps.
+For example, in Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher, but now, you want to display it without own UI component instead of the default one. To do that, follow these steps.
 
 *1.* Create a sample project:
 
-{screen}
+{code}
 mvn archetype:generate
 [INFO] Scanning for projects...
 [INFO] Searching repository for plugin with prefix: 'archetype'.
@@ -65,7 +65,7 @@ artifactId: exo.social.samples.activity-plugin
 version: 1.0.0-SNAPSHOT
 package: org.exoplatform.social.samples.activityPlugin
 Y: y
-{screen}
+{code}
 
 *2.* Edit the _pom.xml_ file as below.
 
@@ -569,7 +569,7 @@ Currently, you have to copy and paste in the template file. By this way, you hav
 {note}
 
 h3. What is ActivityBuilder? {anchor:id=Developer_document.What_is_activity_builder}
-ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ to set to UIActivity for displaying. eXo Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
+ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ to set to UIActivity for displaying. Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
 
 For example, to write your own UILinkActivityBuilder, you just need to extend BaseUIActivityBuilder and then customize attributes and behaviors of the activity builder as below.
 
@@ -594,7 +594,7 @@ To learn more about ActivityBuilder, refer to the [BaseUIActivity class.|http://
 {note}
 
 h2. Create a composer extension for composing activity on the UI composer and display it on the activity stream {anchor:id=Developer_document.Create_composer_extension}
-The UIActivityComposer is an extended class of UIContainer that is used to display inputs for users to create their own activities. To write your own activity composer, it is recommended that you use the UIActivityComposer available in eXo Social.
+The UIActivityComposer is an extended class of UIContainer that is used to display inputs for users to create their own activities. To write your own activity composer, it is recommended that you use the UIActivityComposer available in Social.
 
 For example, to create an input component for inserting video links into your activity, do the following steps:
 
