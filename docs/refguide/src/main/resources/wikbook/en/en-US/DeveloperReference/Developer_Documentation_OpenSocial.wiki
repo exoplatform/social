@@ -1,5 +1,5 @@
-eXo Social supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.
-With the support for the OpenSocial standard, eXo Social provides a framework for developers to build gadgets that can display and mash up activity information for contacts, social networks, applications and services.
+Social supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.
+With the support for the OpenSocial standard, Social provides a framework for developers to build gadgets that can display and mash up activity information for contacts, social networks, applications and services.
 
 h1. Gadget {anchor:id=Developer_document.Open_social.Gadget}
 
@@ -14,11 +14,11 @@ To know how to create an OpenSocial gadget, see [here|http://wiki.opensocial.org
 
 {note}
 Gadgets will work out of the box on Dashboard. In eXo, gadgets are wrapped by GadgetWrapperPortlet so they can work as any other portlet applications. 
-At present, eXo Social supports [OpenSocial Specification v1.1| http://opensocial-resources.googlecode.com/svn/spec/1.1/OpenSocial-Specification.xml].
+At present, Social supports [OpenSocial Specification v1.1| http://opensocial-resources.googlecode.com/svn/spec/1.1/OpenSocial-Specification.xml].
 {note}
 
 h2. Supported APIs {anchor:id=Developer_document.Open_social.Supported_APIs}
-eXo Social leverages [Apache Shindig|http://shindig.apache.org/overview.html] - an OpenSocial reference implementation to provide and extend OpenSocial APIs which is compatible with the common OpenSocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com] and more.
+Social leverages [Apache Shindig|http://shindig.apache.org/overview.html] - an OpenSocial reference implementation to provide and extend OpenSocial APIs which is compatible with the common OpenSocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com] and more.
 
 To get more details about Supported APIs, refer to [OpenSocial Specification|http://docs.opensocial.org/display/OSD/Specs].
 
@@ -82,5 +82,5 @@ After using the OpenSocial Java library and Groovy, your code will look like thi
 In the example above, the groupId is set to "space:bookflow" and bookflow is the name of the space. 
 
 h1. Tutorial  {anchor:id=Developer_document.Open_social.Tutorial}
-* See [Grails + eXo Social tutorial.|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social]
+* See [Grails + Social tutorial.|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social]
 

@@ -1,7 +1,7 @@
-This section will show you how to internationalize activities in eXo Social.
+This section will show you how to internationalize activities in Social.
 
 h1. Internationalize an activity {anchor:id="SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities"}
-In the previous versions, eXo Social had hard-coded messages for activities, such as
+In the previous versions, Social had hard-coded messages for activities, such as
 creating spaces, granting the "manager" role to a member, sending connection request to another user, updating a user's profile/avatar, and more.
 And now, to internationalize these types of messages, you can use resource bundles and _I18NActivityProcessor_.
 

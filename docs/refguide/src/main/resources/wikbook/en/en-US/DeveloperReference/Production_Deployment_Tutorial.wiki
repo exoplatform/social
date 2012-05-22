@@ -1,18 +1,18 @@
 
-h1. How to deploy eXo Social in Production {anchor:id=SOCref.DeveloperReference.how_to_deploy_eXo_Social_in_Production}
+h1. How to deploy Social in Production {anchor:id=SOCref.DeveloperReference.how_to_deploy_eXo_Social_in_Production}
 
 h1. Objective {anchor:id=SOCref.DeveloperReference.Objective}
 
-In this article, you will learn how to install eXo Social on a production server in a typical 3-tier architecture (web server / app server / database server).
+In this article, you will learn how to install Social on a production server in a typical 3-tier architecture (web server / app server / database server).
 The case of the demo server at http://social.demo.exoplatform.org is used here.
 
-This tutorial is intended for sysadmins. If you are a casual evaluator and just want to run eXo Social on your own computer, the [Quick Install Guide|InstallGuide] should be enough for you.
+This tutorial is intended for sysadmins. If you are a casual evaluator and just want to run Social on your own computer, the [Quick Install Guide|InstallGuide] should be enough for you.
 
 h1. Requirements {anchor:id=SOCref.DeveloperReference.Requirements}
 
 This guide assumes that you have up and running apache and mysql instances and that you have basic knowledge on how to configure it.
 * [apache web server|http://www.apache.org] + mod_jk
-* [eXo Social package|https//sourceforge:net-projects-exo-social-files-] properly [installed|InstallGuide] on a server with Java6.
+* [Social package|https//sourceforge:net-projects-exo-social-files-] properly [installed|InstallGuide] on a server with Java6.
 * [mysql database server|http://www.mysql.org] and the corresponding [JDBC Driver|http://www.mysql.com/downloads/connector/j/]
 
 We assume that you have apache and mysql up and running and that you followed the steps of the [Quick Install Guide|InstallGuide] successfully.
@@ -107,7 +107,7 @@ A dedicated schema is being used for the demo called _{{{demo_social}}}_.
 * then create the schema
 {code}create database demo_social default charset latin1 collate latin1_general_cs;{code}
 
-h1. Configure eXo Social {anchor:id=SOCref.DeveloperReference.Configure_eXo_Social}
+h1. Configure Social {anchor:id=SOCref.DeveloperReference.Configure_eXo_Social}
 * Drop your mysql jdbc jar driver in $SOCIAL_HOME/lib
 * Edit the database configuration in this file : $SOCIAL_HOME/gatein/conf/portal/socialdemo/socialdemo.properties
 {code:xml}
