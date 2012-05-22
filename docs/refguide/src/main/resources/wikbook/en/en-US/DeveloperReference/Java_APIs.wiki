@@ -199,5 +199,34 @@ h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 |*getPortletsPrefsRequired*()|{{N/A}}|String|Get the portlet preferences required to use in creating the portlet application. Deprecated: it will be removed in eXo Social 1.3.x.|
 
 
+h1. I18NActivityProcessor {anchor:id=Developer_document.JavaAPIs.Java_APIs.I18NActivityProcessor}
+
+|| Method || Param || Return || Description ||
+|*addActivityResourceBundlePlugin*(ActivityResourceBundlePlugin activityResourceBundlePlugin)|{{activityResourceBundlePlugin}}|void|Register an activity resource bundle plugin.|
+|*removeActivityResourceBundlePlugin*(ActivityResourceBundlePlugin activityResourceBundlePlugin)|{{activityResourceBundlePlugin}}|void|Unregister an existing registered resource bundle plugin.|
+|*process*(ExoSocialActivity i18nActivity, Locale selectedLocale)|{{i18nActivity, selectedLocale}}|ExoSocialActivity|Process the internationalized activity which means that {{activity.getTitleId() \!= null}}.|
+|*setResourceBundleService*(ResourceBundleService resourceBundleService)|{{resourceBundleService}}|void|Set the external resource bundle service.|
 
 
+h1. LinkProvider {anchor:id=Developer_document.JavaAPIs.Java_APIs.LinkProvider}
+
+|| Method || Param || Return || Description ||
+|*getSpaceUri*(final String prettyName)|{{prettyName}} |String |Return the URI link to the space profile. (Since 1.2.0-GA). |
+|*getProfileUri*(final String username)|{{username}} |String |Return the URI link to the user profile. |
+|*getProfileUri*(final String username, final String portalOwner)|{{username, portalOwner}} |String |Return the URI link to the user profile in a _portalOwner_. |
+|*getProfileLink*(final String username)|{{username}} |String |Return the _<a>_ tag with a link to the profile of _userName_. |
+|*getProfileLink*(final String username, final String portalOwner)|{{username, portalOwner}}| String|Return the _<a>_ tag with a link to the profile of _userName_ on a _portalName_. |
+|*getAbsoluteProfileUrl*(final String userName, final String portalName, final String portalOwner, final String host)|{{userName, portalName, portalOwner, host}} |String |Get the absolute profile URI of the _userName_. |
+|*getUserActivityUri*(final String remoteId)|{{remoteId}} |String |Get an activity link of a user. The _remoteId_ parameter should be the Id name. For example: _root_. |
+|*getUserConnectionsUri*(final String remoteId)| {{remoteId}}|String |Get a connection link of a user. The _remoteId_ parameter should be the Id name. For example: _root_. |
+|*getUserConnectionsYoursUri*(final String remoteId)|{{remoteId}}|String  |Get a connection link of a user. The _remoteId_ parameter should be the Id name. For example: _root_.|
+|*getUserProfileUri*(final String remoteId)|{{remoteId}}|String  |Get a profile link of a user. The _remoteId_ parameter should be the Id name.For example: _root_. |
+|*getActivityUri*(final String providerId, final String remoteId)|{{providerId, remoteId}} | String|Get an activity link of a space or a user. The _remoteId_ parameter should be the Id name. For example: _organization\:root_ or _space\:abc\_def_. |
+|*getActivityUriForSpace*(final String remoteId, final String groupId)|{{ remoteId, groupId}} |String |Get an activity link of the space. (Since 1.2.8). |
+|*buildAvatarImageUri*(final AvatarAttachment avatarAttachment)|{{avatarAttachment}} | String| Build an avatar image URI from _avatarAttachment_.|
+|*buildAvatarImageUri*(final Space space)|{{space}} |String |Get the URI link of the avatar. (Since 1.2.0-GA). |
+|*buildAvatarImageUri*(final String identityName)|{{identityName}} |String |Get the URI link of the avatar from the identity name. (Since 1.2.0-GA). |
+|*buildAvatarImageUri*(final PortalContainer container, final AvatarAttachment avatarAttachment)|{{container, avatarAttachment}} |String |Build an avatar image URI from _avatarAttachment_. (Sine 1.2.0-GA).|
+|*getAvatarImageSource*(final PortalContainer portalContainer, final Profile profile)|{{portalContainer, profile}} |String|Get an avatar image URI of a profile in a _portalContainer_. Deprecated: You should use _Profile#getAvatarUrl()_ instead. It will be removed in eXo Social 1.3.x. |
+|*getAvatarImageSource*(final Profile profile)|{{profile}} |String |Get an avatar image URI of the profile. Deprecated: You should use _Profile#getAvatarUrl()_ instead. It will be removed in eXo Social 1.3.x. |
+|*escapeJCRSpecialCharacters*(String string)|{{string}} |String |Escape the JCR special characters. |
