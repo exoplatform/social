@@ -1,4 +1,4 @@
-This chapter provides you a comprehensive view about applications in eXo Social, including:
+This chapter provides you a comprehensive view about applications in Social, including:
 * [Portlets|#SOCref.Portlets]
 * [Gadgets|#SOCref.List_Of_Gadget_in_Social]
 

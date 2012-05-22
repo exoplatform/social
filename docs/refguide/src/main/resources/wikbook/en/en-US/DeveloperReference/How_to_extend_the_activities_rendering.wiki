@@ -18,7 +18,7 @@ But you may want to support a special syntax, for example:
 You can have more sophisticated cases to process, such as parsing the link that include in the activity's content. Because a process actually has the full access to the Activity, you can very well process based on the owner, app, and media item.
 
 h1. Write an ActivityProcessor {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering._write_ActivityProcessor}
-eXo Social lets you pre-process an activity before it is returned by the ActivityManager. To do this, you simply need to implement the interface ActivityProcessor:
+Social lets you pre-process an activity before it is returned by the ActivityManager. To do this, you simply need to implement the interface ActivityProcessor:
 
 {code:java}
 /**

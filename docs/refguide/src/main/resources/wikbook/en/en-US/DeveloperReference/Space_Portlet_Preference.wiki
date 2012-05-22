@@ -1,6 +1,6 @@
 h1. Save and get space context from a portlet {anchor:id=SOCref.DeveloperReference.Save_and_get_space_context_from_a_portlet}
 {info}
-Since eXo Social 1.0.1
+Since Social 1.0.1
 {info}
 
 

@@ -1,4 +1,4 @@
-All eXo Social gadgets are in _opensocial.war_.
+All Social gadgets are in _opensocial.war_.
 
 h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
 * *Description*: Manage activities of users: update status, like/unlike activities, comment activities, delete activities and delete comments. 

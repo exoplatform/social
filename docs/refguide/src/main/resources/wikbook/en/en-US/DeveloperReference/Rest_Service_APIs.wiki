@@ -1,6 +1,6 @@
 *Objectives*:
 
- The third parties want to integrate and extend the eXo Social capability and features and eXo Social REST Services APIs are dedicated for them to complete that. By using these REST APIs, the third parties can write any applications (desktop apps, mobile apps, web apps) to integrate with eXo Social services and business.
+ The third parties want to integrate and extend the Social capability and features and Social REST Services APIs are dedicated for them to complete that. By using these REST APIs, the third parties can write any applications (desktop apps, mobile apps, web apps) to integrate with Social services and business.
 
 *Conventions*:
 
@@ -22,11 +22,11 @@ The JSON support is mandatory. The other format SHOULD be supported too (XML, RS
 
 The _rest\_context\_name_ and _portal\_container\_name_ parameters are used as follows:
 
-* On eXo Social standalone:
+* In Social standalone:
 ** _rest\_context\_name_: _rest-socialdemo_;
 ** _portal\_container\_name_: _socialdemo_;
 
-* On eXo Platform:
+* In eXo Platform:
 ** _rest\_context\_name_: _rest_;
 ** _portal\_container\_name_: _portal_;
 
