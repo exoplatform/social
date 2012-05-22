@@ -51,6 +51,7 @@ public class UILinkActivity extends BaseUIActivity {
   private String linkImage = "";
   private String linkDescription = "";
   private String linkComment = "";
+  private String embedHtml = "";
   
   public String getLinkComment() {
     return linkComment;
@@ -81,5 +82,11 @@ public class UILinkActivity extends BaseUIActivity {
   }
   public void setLinkTitle(String linkTitle) {                
     this.linkTitle = linkTitle;
+  }
+  public String getEmbedHtml() {
+    return embedHtml;
+  }
+  public void setEmbedHtml(String embedHtml) {                
+    this.embedHtml = embedHtml;
   }
 }

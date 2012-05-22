@@ -188,6 +188,7 @@ public class UIActivitiesLoader extends UIContainer {
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
   }
 
+
   public static class LoadMoreActionListener extends EventListener<UIActivitiesLoader> {
     @Override
     public void execute(Event<UIActivitiesLoader> event) throws Exception {

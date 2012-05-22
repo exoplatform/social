@@ -17,7 +17,9 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.Hashtable;
-import java.util.List;
+import java.util.Map;
+
+import javax.inject.Provider;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.BaseComponentPlugin;
@@ -36,32 +38,31 @@ import org.exoplatform.webui.ext.UIExtensionManager;
  * @copyright eXo Platform SAS
  */
 public class UIActivityFactory extends BaseComponentPlugin {
+  
   private static final Log LOG = ExoLogger.getLogger(UIActivityFactory.class);
-  private Hashtable<String, BaseUIActivityBuilder> builders = new Hashtable<String, BaseUIActivityBuilder>();
-  UIExtensionManager extensionManager;
+  
+  private Map<String, Provider<BaseUIActivityBuilder>> builders = new Hashtable<String, Provider<BaseUIActivityBuilder>>();
+  
+  private UIExtensionManager extensionManager;
+  
   public UIActivityFactory() {
     extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
-    final List<UIExtension> extensions = extensionManager.getUIExtensions(BaseUIActivity.class.getName());
-    for (UIExtension extension : extensions) {
-      try {
-        registerBuilder((UIActivityExtension)extension);
-      } catch (Exception e) {
-        LOG.error(e);
-      }
-    }
   }
 
+  /**
+   * Find BaseUIActivity which compatible with Activity's type, and then add UIComponent the parent UI.
+   * 
+   * @param activity
+   * @param parent
+   * @return
+   * @throws Exception
+   */
   public BaseUIActivity addChild(ExoSocialActivity activity, UIContainer parent) throws Exception {
-    final String type = activity.getType();
-    if(type!=null){
-      return buildActivity(activity, parent, type);
-    } else {
-      return buildActivity(activity, parent, UIDefaultActivity.ACTIVITY_TYPE);
-    }
+    return buildActivity(activity, parent, activity.getType() != null ? activity.getType() : UIDefaultActivity.ACTIVITY_TYPE);
   }
 
   private BaseUIActivity buildActivity(ExoSocialActivity activity, UIContainer parent, String type) throws Exception {
-    extensionManager = (UIExtensionManager) PortalContainer.getInstance().getComponentInstanceOfType(UIExtensionManager.class);
+    
     UIExtension activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), type);
     if (activityExtension == null) {
       activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), UIDefaultActivity.ACTIVITY_TYPE);
@@ -70,28 +71,56 @@ public class UIActivityFactory extends BaseComponentPlugin {
     uiActivity.setId(uiActivity.getId() + "_" + uiActivity.hashCode());
 
     //populate data for this uiActivity
+    registerBuilder((UIActivityExtension) activityExtension);
     BaseUIActivityBuilder builder = getBuilder(type);
     return builder.populateData(uiActivity, activity);
   }
 
   private BaseUIActivityBuilder getBuilder(String activityType) {
-    BaseUIActivityBuilder builder = builders.get(activityType);
-    if(builder == null){
-      builder = builders.get(UIDefaultActivity.ACTIVITY_TYPE);
-      //throw new IllegalArgumentException("No builder is registered for type :" +activityType);
+    Provider<BaseUIActivityBuilder> providerBuilder = builders.get(activityType);
+    if(providerBuilder == null) {
+      providerBuilder = builders.get(UIDefaultActivity.ACTIVITY_TYPE);
     }
-    return builder;
+    return providerBuilder.get();
   }
 
-  private void registerBuilder(UIActivityExtension activityExtension) throws Exception {
+  private void registerBuilder(final UIActivityExtension activityExtension) throws Exception {
     String activityType = activityExtension.getName();
+    if (builders.containsKey(activityType) == false) {
+      builders.put(activityType, new BuilderProvider<BaseUIActivityBuilder>(activityExtension));
+    }
+    
+  }
+  
+  /**
+   * Lazy creating the BaseUIActivityBuilder
+   * @author thanh_vucong
+   *
+   * @param <T>
+   */
+  static class BuilderProvider<T extends BaseUIActivityBuilder> implements Provider<T> {
 
-    if(builders.contains(activityType)){
-      builders.remove(activityType);
+    final UIActivityExtension activityExtension;
+    T instance = null;
+    public BuilderProvider(UIActivityExtension activityExtension) {
+      this.activityExtension = activityExtension;
     }
 
-    final Class<BaseUIActivityBuilder> builderClass = (Class<BaseUIActivityBuilder>) Thread.currentThread().
-            getContextClassLoader().loadClass(activityExtension.getActivityBuiderClass());
-    builders.put(activityType, builderClass.newInstance());
+    public T get() {
+      if (instance != null) {
+        return instance;
+      }
+      
+      try {
+        Class<T> builderClass = (Class<T>) Thread.currentThread().getContextClassLoader()
+                                            .loadClass(this.activityExtension.getActivityBuiderClass());
+        instance = (T) builderClass.newInstance();
+      } catch (Exception e) {
+        LOG.error(e);
+      }
+
+      return instance;
+    }
+    
   }
 }

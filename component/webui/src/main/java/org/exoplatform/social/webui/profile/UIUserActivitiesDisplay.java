@@ -118,6 +118,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
       String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
+
       if (selectedDisplayMode.equals(DisplayMode.ALL_UPDATES.toString())) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
       } else if (selectedDisplayMode.equals(DisplayMode.MY_STATUS.toString())) {
@@ -139,27 +140,36 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public void init() throws Exception {
     Validate.notNull(ownerName, "ownerName must not be null.");
     Validate.notNull(viewerName, "viewerName must not be null.");
-
+    //
     removeChild(UIActivitiesLoader.class);
     activitiesLoader = addChild(UIActivitiesLoader.class, null, "UIActivitiesLoader");
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
-    
+
+    //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
-        
     ActivityManager activityManager = Utils.getActivityManager();
 
-    if (DisplayMode.MY_STATUS.equals(getSelectedDisplayMode()) || 
-        DisplayMode.OWNER_STATUS.equals(getSelectedDisplayMode())) {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
-    } else if (DisplayMode.NETWORK_UPDATES.equals(getSelectedDisplayMode())) {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
-    } else if (DisplayMode.SPACE_UPDATES.equals(getSelectedDisplayMode())) {
-      activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
-    } else {
-      activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
+    switch (this.selectedDisplayMode) {
+      case MY_STATUS :
+       activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+       break;
+      case OWNER_STATUS :
+        activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
+        break;
+      case NETWORK_UPDATES :
+        activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
+        break;
+      case SPACE_UPDATES :
+        activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
+        break;
+      default :
+        activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
+        break;
     }
+   
+    //
     activitiesLoader.init();
   }
 }

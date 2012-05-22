@@ -41,6 +41,7 @@ import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.social.common.Util;
+import org.json.JSONObject;
 
 /**
  * LinkShare - gets preview information of a link including: 
@@ -125,6 +126,7 @@ public class LinkShare extends DefaultFilter {
   private String   description;
   private String imageSrc;
   private List<String> images;
+  private JSONObject videoJson;
   //Collections of description with key as lang
   private HashMap<String, String> descriptions;
   //holds temporary string values from characters() method
@@ -181,7 +183,15 @@ public class LinkShare extends DefaultFilter {
     return images;
   }
   
- 
+  /**
+   * gets videoJson
+   * @return JSONObject
+   * @since 4.0.0
+   */
+  public JSONObject getVideoJson() {
+    return videoJson;
+  }
+  
   /**
    * gets mediumType
    * @return mediumType
@@ -392,6 +402,10 @@ public class LinkShare extends DefaultFilter {
     if (linkShare.description == null) linkShare.description = "";
     if (linkShare.images == null) {
       linkShare.images = new ArrayList<String>();
+    }
+    
+    if (Util.isYoutubeLink(link)) {
+      linkShare.videoJson = Util.getOembedData(link);
     }
     return linkShare;
   }

@@ -74,6 +74,7 @@ public class UIHeaderSection extends UIProfileSection {
     addUIFormInput(position.
                    addValidator(MandatoryValidator.class).addValidator(SpecialCharacterValidator.class).
                    addValidator(StringLengthValidator.class, 3, 30));
+    setSubmitAction("return false;");
   }
 
   /**
