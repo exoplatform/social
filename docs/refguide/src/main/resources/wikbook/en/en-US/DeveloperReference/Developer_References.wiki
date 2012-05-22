@@ -9,4 +9,4 @@ This chapter supplies you with the basic knowledge about the following topics:
 * [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
 * [Social JCR Structure|#SOCref.Social_JCR_Structure]
 
-With this knowledge, you can extend more functions for eXo Social, or customize them as you want.
+With this knowledge, you can extend more functions for Social, or customize them as you want.
