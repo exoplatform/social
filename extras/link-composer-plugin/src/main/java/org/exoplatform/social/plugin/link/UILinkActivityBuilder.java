@@ -54,6 +54,8 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
         uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
 
         uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
+        
+        uiLinkActivity.setEmbedHtml(templateParams.get(UILinkActivityComposer.HTML_PARAM));
     } else {
       try {
         JSONObject jsonObj = new JSONObject(activity.getTitle());

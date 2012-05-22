@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.common;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+
 import junit.framework.TestCase;
 
 
@@ -25,6 +28,9 @@ import junit.framework.TestCase;
  * @since 1.2.0-GA
  */
 public class UtilTest extends TestCase {
+  
+  /** Logger */
+  private static final Log LOG = ExoLogger.getLogger(UtilTest.class);
   
   /**
    * Performs testing for {@link Util#isValidURL(String)}
@@ -49,5 +55,28 @@ public class UtilTest extends TestCase {
     assertFalse(Util.isValidURL("abc.c om"));
     assertFalse(Util.isValidURL("abc : fsdfs"));
     assertFalse(Util.isValidURL("abc #$ vn"));
+  }
+  
+  public void testIsYoutubeLink() throws Exception {
+    try {
+      Util.isYoutubeLink(null);
+      fail("Expecting IllegalArgumentException");
+    } catch (IllegalArgumentException iae) {
+      assertEquals("Link must be not null", iae.getMessage());
+    }
+    
+    final String validYoutubeLink = "http://www.youtube.com/watch?v=fLexgOxsZu0";
+    final String invalidYoutubeLink = "http://www.youtube.com/watch?v=";
+    
+    assertTrue(Util.isYoutubeLink(validYoutubeLink));
+    assertFalse(Util.isYoutubeLink(invalidYoutubeLink));
+  }
+  
+  public void testGetOembedData() throws Exception {
+    try {
+      assertNotNull(Util.getOembedData("http://www.youtube.com/watch?v=fLexgOxsZu0"));
+    } catch (Exception e) {
+      LOG.warn(e.getMessage());
+    }
   }
 }

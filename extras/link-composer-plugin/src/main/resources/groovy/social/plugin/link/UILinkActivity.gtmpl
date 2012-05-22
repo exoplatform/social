@@ -177,16 +177,22 @@
           } else {
             link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
           }
+          def embedHtml = uicomponent.getEmbedHtml();
         %>
       <div class="TitleBlock">$linkComment</div>
           <div class="LinkShare ClearFix">
-              <a href="#" class="Thumbnail">
-                  $link
-              </a>
+              <% if (embedHtml == null) { %>
+                   <a href="#" class="Thumbnail">$link</a>
+              <% } %>
               <div class="$linkClass">
                 <a class="ColorLink" target="_blank" href="$linkSource">$linkTitle</a>
-                <div class="Description">$linkDescription</div>
+                <% if (embedHtml == null) { %>
+                     <div class="Description">$linkDescription</div>
+                <% } %>     
                 <div class="Source">$labelSource : $linkSource</div>
+                <% if (embedHtml != null) { %>
+                     <div class="EmbedHtml">$embedHtml</div>
+                <% } %>
               </div>
           </div>
       <div class="LinkShareActivityIcon">

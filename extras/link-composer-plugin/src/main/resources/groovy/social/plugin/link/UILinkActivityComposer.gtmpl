@@ -88,6 +88,7 @@
 </script>
 <% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
+     def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);
                            %>
   <div class="UILinkShareDisplay ClearFix">
     <%
@@ -99,6 +100,7 @@
         <%
       }
       else {
+        if (embedHtml == null) {
         %>
           <div class="ThumbnailLeft">
           <% if (images.size() > 0) { %>
@@ -129,18 +131,22 @@
               <input title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
               <label for="ThumbnailCheckbox" class="Label FL">$noThumbnail</label>
             </div>
-          <% } %>
+            <% } %>
           </div>
+          <% } %>
           <div class="ContentRight">
             <div id="LinkTitle" class="Title Editable">
               $title
             </div>
-            <div id="LinkDescription" class="Content Editable">
-              $description
-            </div>
+            <% if (embedHtml == null) { %>
+                 <div id="LinkDescription" class="Content Editable">$description</div>
+            <% } %>
             <div id="LinkUrl" class="Source">
               $link
             </div>
+            <% if (embedHtml != null) { %>
+                 <div id="embedHtml">$embedHtml</div>
+            <% } %>
           </div>
         <%
       }

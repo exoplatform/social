@@ -45,6 +45,7 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.json.JSONObject;
 
 /**
  * UIComposerLinkExtension.java
@@ -73,6 +74,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String TITLE_PARAM = "title";
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
+  public static final String HTML_PARAM = "html";
 
   private static final String MSG_ERROR_INVALID_LINK = "UILinkComposerPlugin.msg.error.Attach_Link";
   
@@ -125,27 +127,43 @@ public class UILinkActivityComposer extends UIActivityComposer {
    * @throws Exception
    */
   private void setLink(String url, WebuiRequestContext requestContext) throws Exception {
-    linkShare_ = LinkShare.getInstance(url);
+    try {
+      linkShare_ = LinkShare.getInstance(url);
+    } catch (Exception e) {
+      displayErrorMessage(requestContext, MSG_ERROR_INVALID_LINK);
+      return;
+    }
     
     if (linkShare_ == null) {
-      UIApplication uiApp = requestContext.getUIApplication();
-      uiApp.addMessage(new ApplicationMessage(MSG_ERROR_INVALID_LINK, null, ApplicationMessage.WARNING));
-      ((PortalRequestContext) requestContext.getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
-      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
+      displayErrorMessage(requestContext, MSG_ERROR_INVALID_LINK);
       return;
     }
     
     templateParams = new LinkedHashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
+    JSONObject videoJson = linkShare_.getVideoJson();
     String image = "";
     List<String> images = linkShare_.getImages();
     if (images != null && images.size() > 0) {
       image = images.get(0);
     }
     templateParams.put(IMAGE_PARAM, image);
-    templateParams.put(TITLE_PARAM, linkShare_.getTitle());
+    templateParams.put(TITLE_PARAM, videoJson != null ? videoJson.getString(TITLE_PARAM) : linkShare_.getTitle());
     templateParams.put(DESCRIPTION_PARAM, linkShare_.getDescription());
+    templateParams.put(HTML_PARAM, videoJson != null ? videoJson.getString(HTML_PARAM) : null);
     setLinkInfoDisplayed(true);
+  }
+  
+  /**
+   * Add error message to UIApplication.
+   * 
+   * @param requestContext
+   * @param errorMessage
+   */
+  private void displayErrorMessage(WebuiRequestContext requestContext, String errorMessage) {
+    UIApplication uiApp = requestContext.getUIApplication();
+    uiApp.addMessage(new ApplicationMessage(errorMessage, null, ApplicationMessage.WARNING));
+    ((PortalRequestContext) requestContext.getParentAppRequestContext()).ignoreAJAXUpdateOnPortlets(true);
   }
 
   static public class AttachActionListener extends EventListener<UILinkActivityComposer> {

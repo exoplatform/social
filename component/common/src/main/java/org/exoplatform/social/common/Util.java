@@ -16,12 +16,20 @@
  */
 package org.exoplatform.social.common;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.IDN;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.Validate;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Author : hanhvq@exolpatform.com
@@ -29,6 +37,13 @@ import java.util.regex.Pattern;
  * @since 1.2.0-GA 
  */
 public class Util {
+  public static final String YOUTUBE_URL_OEMBED = "http://www.youtube.com/oembed?url=%s&format=json";
+  public static final String YOUTUBE_REGEX = "^http://\\w{0,3}.?youtube+\\.\\w{2,3}/watch\\?v=[\\w-]{11}";
+  public static final String JSON_URL = "url";
+  
+  private static final String MSG_LINK_MUST_BE_NOT_NULL = "Link must be not null";
+  private static final String MSG_INVALID_VIDEO_LINK = "Invalid video link";
+  
   private static final String SPACE_STRING = " ";
   private static final String HTTP = "http";
   private static final String HTTP_PRTOCOL = "http://";
@@ -75,6 +90,77 @@ public class Util {
       return false;
     }
     return true;
+  }
+  
+  /**
+   * Checks if a provided link is an youtube video link.
+   * 
+   * @param link the provided link
+   * @return true if the provided link is an youtube video link, otherwise return false.
+   * @since 4.0.0
+   */
+  public static boolean isYoutubeLink(String link) throws Exception {
+    Validate.notNull(link, MSG_LINK_MUST_BE_NOT_NULL);
+    Pattern pattern = Pattern.compile(YOUTUBE_REGEX);
+    return pattern.matcher(link).find();
+  }
+  
+  /**
+   * Get Oembed data in JSON format from URL.
+   * 
+   * @param url
+   * @return Oembed data in JSON format.
+   * @throws Exception
+   * @since 4.0.0.
+   */
+  public static JSONObject getOembedData(String url) throws Exception {
+    url = url.replaceAll(":", "%3A").replaceAll("=", "%3D");
+    JSONObject jsonOEmbed = null;
+    try {
+      String oembedURL = getOembedURL(url);
+      jsonOEmbed = jsonRequest(new URL(oembedURL));
+      jsonOEmbed.put(JSON_URL, url);
+    } catch (IOException e) {
+      throw new Exception(MSG_INVALID_VIDEO_LINK);
+    } catch (JSONException e) {
+      throw new Exception(MSG_INVALID_VIDEO_LINK);
+    }
+    return jsonOEmbed;
+  }
+  
+  /**
+   * Request URL to get return JSONObject.
+   * 
+   * @param url
+   * @return Response data in JSON format from requested URL.
+   * @throws IOException
+   * @throws JSONException
+   */
+  private static JSONObject jsonRequest(URL url) throws IOException, JSONException {
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+    StringBuffer stringBuffer = new StringBuffer();
+    String temp = null;
+    
+    while ((temp = bufferedReader.readLine()) != null) {
+      stringBuffer.append(temp);
+    }
+    
+    bufferedReader.close();
+    return new JSONObject(stringBuffer.toString());
+  }
+  
+  /**
+   * Get OembedURL from input URL.
+   * 
+   * @param url
+   * @return OembedURL
+   * @throws Exception
+   */
+  private static String getOembedURL(String url) throws Exception {
+    if(isYoutubeLink(url.replaceAll("%3A", ":").replaceAll("%3D", "="))) {
+      return String.format(YOUTUBE_URL_OEMBED,url);
+    }
+    return null;
   }
   
   private static boolean hasValidDomain(String link) {
