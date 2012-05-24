@@ -1,4 +1,4 @@
-There are 2 components in eXo Social that can be overridden: Space Application Handler & Space Service.
+There are 2 components in the Social function that can be overridden: Space Application Handler & Space Service.
 * *Space Application Handler*
 {code:xml}
 <component>

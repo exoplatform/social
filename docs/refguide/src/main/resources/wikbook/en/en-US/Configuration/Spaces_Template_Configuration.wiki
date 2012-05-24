@@ -1,4 +1,4 @@
-In the eXo Social, you may have two space types (classic and webos spaces). This is for the classic mode (it is the only one implemented now).
+In the Social function, you may have two space types (classic and webos spaces). This is for the classic mode (it is the only one implemented now).
 
 For the classic space, you can pre-configure the template. You can configure the layout to select where to display the applications (for example, the application's menu on the left, the selected application is displayed on the right, and more).
 

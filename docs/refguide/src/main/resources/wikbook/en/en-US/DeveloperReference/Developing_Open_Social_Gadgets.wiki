@@ -1,7 +1,7 @@
 h1. Developing OpenSocial Gadgets {anchor:id=SOCref.DevelopingOpenSocialGadget}
 
 h1. Introduction {anchor:id=SOCref.Developer_references.Introduction}
-eXo Social with OpenSocial container based on apache shindig supports OpenSocial capability. So you can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
+The Social function with OpenSocial container based on apache shindig supports OpenSocial capability. So you can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
 
 To develop your gadgets, you can use the tool that supported by portal.
 
@@ -29,7 +29,7 @@ TODO, but you can look at this [demonstration|http://www.vimeo.com/2069512]
 h1. Developing OpenSocial Gadgets
 
 h1. Introduction
-eXo Social with OpenSocial container based on apache shindig supports OpenSocial capability. So you can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
+The Social function with OpenSocial container based on apache shindig supports OpenSocial capability. So you can develop gadgets that use OpenSocial API to request OpenSocial data or deploy opensocial gadget using tool supported by portal.
 
 To develop your gadgets, you can use the tool that supported by portal.
 

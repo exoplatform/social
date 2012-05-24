@@ -1,5 +1,5 @@
-eXo Social supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.
-With the support for the OpenSocial standard, eXo Social provides a framework for developers to build gadgets that can display and mash up activity information for contacts, social networks, applications and services.
+The Social function supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.
+With the support for the OpenSocial standard, the Social provides a framework for developers to build gadgets that can display and mash up activity information for contacts, social networks, applications and services.
 h1. Gadget {anchor:id=SOCref.Developers_References.OpenSocial.Gadget}
 
 Gadgets are web-based software components based on HTML, CSS, JavaScript; defined by using an XML declaration syntax. They allow developers to easily write social applications that work on the social networks supporting OpenSocial APIs without modification. See the following links for detailed information:
@@ -11,18 +11,18 @@ Gadgets are web-based software components based on HTML, CSS, JavaScript; define
 You are going to the detail on how to create an opensocial gadget. However, the tutorials are done greatly in Opensocial official site so you should read these tutorials at [this website|http://wiki.opensocial.org/index.php?title=Gadget_Developer's_Guide]
 
 {note}
-In Opensocial, gadgets only work in the dashboard in eXo Social.
+In Opensocial, gadgets only work in the dashboard in the Social.
 {note}
 
 h2. Supported APIs {anchor:id=SOCref.Developers_References.OpenSocial.Supported_APIs}
 
-As said above, eXo Social is implementing the OpenSocial standard. So, every eXo Social implementations apply the Opensocial Specification generally or [Apache Shindig|http://shindig.apache.org/overview.html] specifically. Therefore, eXo Social uses and extends Apache Shindig APIs to compatible with the common Opensocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com], etc.
+As said above, the Social is implementing the OpenSocial standard. So, every Social implementations apply the Opensocial Specification generally or [Apache Shindig|http://shindig.apache.org/overview.html] specifically. Therefore, Social uses and extends Apache Shindig APIs to compatible with the common Opensocial APIs which is supported by other big social networks like [Ning|http://www.ning.com], [Hi5|http://www.hi5.com], [Orkut|http://www.orkut.com], etc.
 
 To get more details about Supported APIs, you should also read [Opensocial Specs|http://www.opensocial.org/page/specs-1].
 
 h1. REST/RPC API {anchor:id=SOCref.Developers_References.OpenSocial.REST_RPC_API}
 
-If your eXo social server is running on http://localhost:8080/m the address of the API will be:
+If your Social server is running on http://localhost:8080/m the address of the API will be:
 
 REST API:
 http://localhost:8080/social/social/rest
@@ -60,7 +60,7 @@ The consumerKey and sharedSecret are the key that need to be shared with the app
 
 h2. Publish an activity into a space {anchor:id=SOCref.Developers_References.OpenSocial.Publish_Activity_Into_Space}
 
-eXo Social added this functionality that is not available in the standard opensocial API. You can publish activities into a space using the opensocial API.
+The Social function added this functionality that is not available in the standard opensocial API. You can publish activities into a space using the opensocial API.
 
 To do this, instead of publishing your activity to the group @self as usual, publish it to the group "space:spaceID" or "space:spaceName".
 
@@ -83,4 +83,4 @@ Using the opensocial java library and groovy, your code will look like this:
 As you can see in this example, the groupId is set to "space:bookflow", BookFlow is the name of your space.
 
 h3. Tutorial {anchor:id=SOCref.Developers_References.OpenSocial.Tutorial}
-* See [Grails + eXo Social tutorial|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social].
+* See [Grails + Social tutorial|http://www.exoplatform.com/company/public/website/resource-viewer?path=/website/Content%20types/Tutorial/grails-exo-social].

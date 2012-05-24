@@ -1,4 +1,4 @@
-eXo Social provides users a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
+The Social function provides users a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
 To manipulate activities, you need to use the _AtivityManager_ service.
 
 h1. Create an activity {anchor:id=SOCref.Developer_references.CreateActivity} 
@@ -160,7 +160,7 @@ Then, register this processor by adding some XML configuration into the project 
 
 h1. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
-It is really easy to publish an RSS feed to a space's activity stream. eXo Social already provides {{FeedmashJobPlugin}} for publishing RSS feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (Jira and Hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
+It is really easy to publish an RSS feed to a space's activity stream. The Social function already provides {{FeedmashJobPlugin}} for publishing RSS feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (Jira and Hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
 
 {code:xml}
 <external-component-plugins>
