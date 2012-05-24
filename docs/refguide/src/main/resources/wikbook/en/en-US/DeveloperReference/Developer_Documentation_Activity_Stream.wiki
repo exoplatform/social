@@ -1,13 +1,12 @@
-eXo Social provides a way to share status updates and activity information for users as well as spaces (aka Activity Streams). With the API, you can customize the activities or publish new ones.
-
-To manipulate activities, you will use the [ActivityManager|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]. To get an instance of this class, you will need to use the {{PortalContainer}}.
+eXo Social provides users a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
+To manipulate activities, you need to use the _AtivityManager_ service.
 
 h1. Create an activity {anchor:id=SOCref.Developer_references.CreateActivity} 
 
-There are two types of activities : activities for a user and activities for a space. The following examples will show you how to create an activity for each type.
+There are two types of activities: activities for a user and activities for a space. The following examples will show you how to create an activity for each type.
 
 h1. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
-Users have activity streams. The code below shows you how to publish a nex activity into the public activity stream of a user.
+Users have activity streams. The code below shows you how to publish a next activity into the public activity stream of a user.
 
 {code:java}
 import org.exoplatform.container.PortalContainer;
@@ -47,7 +46,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 {code}
 
 h1. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
-Spaces are also social objects and thus, they own an activity stream. The code below shows you how to publish activity into a space's stream
+Spaces are also social objects and thus, they own activity stream. The code below shows you how to publish activity into a space's stream
 
 {code:java}
 import org.exoplatform.container.PortalContainer;
@@ -103,19 +102,19 @@ import org.exoplatform.social.space.impl.SpaceIdentityProvider;
 
 h1. Useful functions {anchor:id=SOCref.Developer_references.Useful_functions}
 
-* [ActivityManager#getActivity|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#getActivities|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#saveActivity|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#saveComment|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#saveLike|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#removeLike|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
-* [ActivityManager#getComments|http//repository:exoplatform.org-service-local-repositories-public-archive-org-exoplatform-social-social-1.0.0-GA-social-1.0.0-GA-javadoc.jar-!-org-exoplatform-social-core-activitystream-ActivityManager.html]
+* ActivityManager#getActivity
+* ActivityManager#getActivities
+* ActivityManager#saveActivity
+* ActivityManager#saveComment
+* ActivityManager#saveLike
+* ActivityManager#removeLike
+* ActivityManager#getComments
 
 h2. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
 
-An Activity processor is used for modifying the content of activities before they are responsed and rendered at client's browser. For example, we will create an activity processor for replacing all the texts representing the smile face ":-)" in the activity title by the smiley icons.
+An Activity processor is used for modifying the content of activities before they are responsed and rendered at client's browser. For example, you will create an activity processor for replacing all the texts representing the smile face ":-)" in the activity title by the smiley icons.
 
-Firstly, we will create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}
+Firstly, you will create the {{SmileyProcessor}} class by extending the {{BaseActivityProcessorPlugin}}
 
 {code:java}
 package org.exoplatform.social.core.activitystream;
@@ -135,7 +134,7 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
 }
 {code}
 
-And then, we have to register this processor by adding some XML configuration into the project configuration file (configuration.xml)
+Then, register this processor by adding some XML configuration into the project configuration file (configuration.xml).
 
 {code:xml}
 <component>
@@ -157,11 +156,11 @@ And then, we have to register this processor by adding some XML configuration in
 </component>
 {code}
 
-"init-params" contains all the key-value data which a processor will use to initialize. At the above config, priority value indicates the order that this processor will be used. So with '1' value, this processor will be used before all remaining processors with lower priority.
+"init-params" contains all the key-value data which a processor will use to initialize. At the above configuration, priority value indicates the order that this processor will be used. So with '1' value, this processor will be used before all remaining processors with lower priority.
 
-h1. Publish an rss feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
+h1. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
-It's really easy to publish an rss feed to a space's activity stream. eXo Social already provides {{FeedmashJobPlugin}} for publishing rss feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
+It is really easy to publish an RSS feed to a space's activity stream. eXo Social already provides {{FeedmashJobPlugin}} for publishing RSS feeds. As you can see in project {{exo.social.extras.feedmash}}, there are {{JiraFeedConsumer}} and {{HudsonFeedConsumer}} samples to post eXo Social project's feeds (Jira and Hudson) to a pre-defined space: {{exosocial}} in a specifiportal container: {{socialdemo}} as in the configuration file:
 
 {code:xml}
 <external-component-plugins>
@@ -220,4 +219,4 @@ It's really easy to publish an rss feed to a space's activity stream. eXo Social
  </external-component-plugins>
 {code}
 
-When running eXo Social, login with http://localhost:8080/socialdemo and create a space named "exosocial". Done, all the feeds from jira and hudson for Social project will be automatically published to {{exosocial}} space.
+When running eXo Social, login with http://localhost:8080/socialdemo and create a space named "exosocial". All feeds from Jira and Hudson for eXo Social project will be automatically published to {{exosocial}} space.

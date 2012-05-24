@@ -4,20 +4,20 @@ Since the Social 1.1.0, the activity plug-in feature was introduced that enables
 
 h1. Create the activity plug-in {anchor:id=Developer_document.Create the activity plug-in}
 
-At first, you should have an idea about the UI Extension Framework. If you have already worked with the UI Extension Framework, it's really easy to create the activity plug-in. If no, you have chance to work with it visiting [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
+At first, you should have an idea about the UI Extension Framework. If you have already worked with the UI Extension Framework, it is really easy to create the activity plug-in. If no, you have chance to work with it by reading [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
 
 h2. Create a custom UI component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_component}
 
 {note}
-("Project Code can be downloadable [here|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]")
+Project Code can be downloaded [here|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]
 {note}
 
 When an activity is displayed, UIActivityFactory will look for its registered custom activity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
-For example, in Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher. If you want to display it with our own UI component instead of default ones.
+For example, in Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher. If you want to display it with your own UI component instead of the default ones. You can do as follows:
 
 
-First, create a sample project:
+*1.* Create a sample project.
 
 {code}
 mvn archetype:generate
@@ -28,7 +28,7 @@ Choose version: 1
 Define value for property 'groupId': : org.exoplatform.social.samples
 Define value for property 'artifactId': : exo.social.samples.activity-plugin
 Define value for property 'version': 1.0-SNAPSHOT: 1.0.0-SNAPSHOT
-Define value for property 'package': org.exoplatform.social.samples: org.exoplatform.social.samples.activityPlugin
+Define value for property 'package': org.exoplatform.social.samples: org.exoplatform.social.samples. activityPlugin
 Confirm properties configuration:
 groupId: org.exoplatform.social.samples
 artifactId: exo.social.samples.activity-plugin
@@ -38,7 +38,7 @@ Y: y
 {code}
 
 
-Edit the pom.xml file as follows.
+*2.* Edit the pom.xml file as follows.
 
 {code:xml}
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -114,7 +114,7 @@ Edit the pom.xml file as follows.
 </project>
 {code}
 
-To use the custom UI component for displaying its activity, we need a subclass of {{BaseUIActivity}}. We call this {{UISpaceSimpleActivity}}:
+To use the custom UI component for displaying its activity, you need a subclass of {{BaseUIActivity}}. Let's call this {{UISpaceSimpleActivity}}:
 
 {code:java}
 package org.exoplatform.social.samples.activityplugin;
@@ -158,7 +158,7 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 }
 {code}
 
-Next, create {{configuration.xml}} under conf/portal:
+*3.* Create the _configuration.xml_ file under _conf/portal_:
 
 {code:xml}
 <configuration
@@ -189,21 +189,19 @@ Next, create {{configuration.xml}} under conf/portal:
 
 Note that {{exosocial:spaces}} is defined in {code}<field name="name"><string>exosocial:spaces</string></field>{code} , its value must match the activity's type you want to display with your UI component.
 
-Build sample project and copy the jar to tomcat/lib. Run Social, create a space and access it. You can see:
-
+*4.* Build the sample project and copy the .jar to {{tomcat/lib}}. Then, run Social, create a space and access it. You can see
 space's activity of type "exosocial:spaces" is displayed by default in Social:
 
-!SimpleSpaceActivity-default.png!
+!images/SimpleSpaceActivity-default.png!
 
 
-With our custom UI component for displaying activity of type: "exosocial:spaces":
+With your custom UI component for displaying activity of type: "exosocial:spaces":
 
-!SimpleSpaceActivity-custom.png!
+!images/SimpleSpaceActivity-custom.png!
 
+*5.* Make the custom UI activity display have the look, feel and function like the default one.
 
-Make the custom UI activity display have the look and feel and function like default one.
-
-When displaying an activity, we should make sure the look and feel of the custom UI component is consistent and match other activities and have the functions of like, comments. So, to create the another UI component to display, we call {{UISpaceLookAndFeelActivity}}:
+When displaying an activity, you should make sure the look and feel of the custom UI component is consistent and match other activities and have the functions of like, comments. So, to create the another UI component to display, call {{UISpaceLookAndFeelActivity}}:
 
 {code:java}
 package org.exoplatform.social.samples.activityplugin;
@@ -222,8 +220,8 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
     @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
     @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
-    @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"),
-    @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class, confirm = "UIActivity.msg.Are_You_Sure_To_Delete_This_Comment")
+    @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class, confirm = "UIActivity. msg.Are_You_Sure_To_Delete_This_Activity"),
+    @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class, confirm = "UIActivity. msg.Are_You_Sure_To_Delete_This_Comment")
   }
 )
 public class UISpaceLookAndFeelActivity extends BaseUIActivity {
@@ -231,9 +229,10 @@ public class UISpaceLookAndFeelActivity extends BaseUIActivity {
 }
 {code}
 
-Now, create the {{UISpaceLookAndFeelActivity}} template by copying the content of [UIDefaultActivity.gtmpl|http://fisheye.exoplatform.org/browse/social/tags/1.1.0-GA/component/webui/src/main/resources/groovy/social/webui/activity/UIDefaultActivity.gtmpl?r=HEAD] to this template file.
 
-You should make needed modifications for this template. We make a small modification here:
+*6.* Create the {{UISpaceLookAndFeelActivity}} template by copying the content of [UIDefaultActivity.gtmpl|http://fisheye.exoplatform.org/browse/social/tags/1.1.0-GA/component/webui/src/main/resources/groovy/social/webui/activity/UIDefaultActivity.gtmpl?r=HEAD] to this template file.
+
+You should make needed modifications for this template.
 
 {code}
 <div class="Content">
@@ -241,12 +240,12 @@ You should make needed modifications for this template. We make a small modifica
 </div>	
 {code}
 
-We need to reconfigure {{configuration.xml}}:
+*7.* Reconfigure the {{configuration.xml}} file:
 
 {code:xml}
 <configuration
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd"
+   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/ xml/ns/kernel_1_1.xsd"
    xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
@@ -260,8 +259,8 @@ We need to reconfigure {{configuration.xml}}:
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>exosocial:spaces</string></field>
-            <field name="component"><string>org.exoplatform.social.samples.activityplugin.UISpaceLookAndFeelActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.samples.activityplugin.SimpleSpaceUIActivityBuilder</string></field>
+            <field name="component"><string>org.exoplatform.social.samples.activityplugin. UISpaceLookAndFeelActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.samples.activityplugin. SimpleSpaceUIActivityBuilder</string></field>
           </object>
         </object-param>
       </init-params>
@@ -270,16 +269,358 @@ We need to reconfigure {{configuration.xml}}:
 </configuration>
 {code}
 
-Rebuild the sample project, copy jar to tomcat/lib. Rerun the server and see the result:
+*8.* Rebuild the sample project, copy the *.jar* file to tomcat/lib. Run the server again and see the result:
 
-!LookAndFeelSpaceActivity.png!
+!images/LookAndFeelSpaceActivity.png!
 
 {note}
-Currently, we have to copy and paste in the template file. We will have the full control of the UI, but it is not good when there is any change in UIDefaultActivity.
+Currently, you have to copy and paste in the template file. By this way, you have full control of the UI but it is not a good way when there are changes in UIDefaultActivity. This will be improved soon so that no copy/paste is needed.
 {note}
 
 h3. What is activity builder? {anchor:id=Developer_document.What_is_activity_builder}
-{note}to do{note}
+
+ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ to set to UIActivity for displaying. eXo Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
+
+For example, to write your own UILinkActivityBuilder, you just need to extend BaseUIActivityBuilder and then customize attributes and behaviors of the activity builder as below.
+
+{code:java}
+public class UILinkActivityBuilder extends BaseUIActivityBuilder {
+  private static final Log LOG = ExoLogger.getLogger(UILinkActivityBuilder.class);
+  @Override
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
+    UILinkActivity uiLinkActivity = (UILinkActivity) uiActivity;
+    Map<String, String> templateParams = activity.getTemplateParams();   
+    uiLinkActivity.setLinkSource(templateParams.get(UILinkActivityComposer.LINK_PARAM));
+    uiLinkActivity.setLinkTitle(templateParams.get(UILinkActivityComposer.TITLE_PARAM));
+    uiLinkActivity.setLinkImage(templateParams.get(UILinkActivityComposer.IMAGE_PARAM));
+    uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
+    uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
+  }
+}
+{code}
+
+{note}
+To learn more about ActivityBuilder, refer to the [BaseUIActivity class.|http://svn.exoplatform.org/projects/social/trunk/component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java]
+{note}
+
 h2. Create a composer extension for composing activity on the UI composer and display it on activity stream {anchor:id=Developer_document.Create_composer_extension}
-{note}to do{note}
+The UIActivityComposer is an extended class of UIContainer that is used to display inputs for users to create their own activities. To write your own activity composer, it is recommended that you use the UIActivityComposer available in eXo Social.
+
+For example, to create an input component for inserting video links into your activity, do the following steps:
+
+*1.* Write UIVideoActivityComposer which extends UIActivityComposer. The UIActivityComposer allows you to input extended activities (for example, adding videos, links or documents) on the UI composer.
+
+{code:java}
+package org.exoplatform.social.plugin.videolink;
+
+import org.exoplatform.social.plugin.videolink.util.VideoEmbedTool;
+@ComponentConfig(
+        template = "classpath:groovy/social/plugin/videolink/UIVideoActivityComposer.gtmpl",
+        events = {
+                @EventConfig(listeners = UIVideoActivityComposer.SearchVideo.class),
+                @EventConfig(listeners = UIVideoActivityComposer.SelectVideoFromResultList.class),
+                @EventConfig(listeners = UIVideoActivityComposer.AttachActionListener.class),
+                @EventConfig(listeners = UIVideoActivityComposer.ChangeLinkContentActionListener.class),
+                @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
+                @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
+                @EventConfig(listeners = UIActivityComposer.ActivateActionListener.class)
+        }
+)
+
+public class UIVideoActivityComposer extends UIActivityComposer {
+
+  public static final String LINK_PARAM = "link";
+  public static final String IMAGE_PARAM = "image";
+  public static final String TITLE_PARAM = "title";
+  public static final String HTML_PARAM = "htmlembed";
+  public static final String COMMENT_PARAM = "comment";
+
+  private static final String HTTP = "http://";
+  private static final String HTTPS = "https://";
+  private JSONObject videoJson;
+  private boolean linkInfoDisplayed_ = false;
+  private Map<String, String> templateParams;
+
+  /**
+   * The constructor.
+   */
+  public UIVideoActivityComposer() {
+    setReadyForPostingActivity(false);
+    addChild(new UIFormStringInput("InputLink", "InputLink", null));
+  }
+  /**
+   * Set the link info to be displayed.
+   *
+   * @param displayed
+   */
+  public void setLinkInfoDisplayed(boolean displayed) {
+    linkInfoDisplayed_ = displayed;
+  }
+  
+  /**
+   * Set the template params.
+   *
+   * @param templateParams
+   */
+  public void setTemplateParams(Map<String, String> templateParams) {
+    this.templateParams = templateParams;
+  }
+
+  /**
+   * Get the template params.
+   */
+  public Map<String, String> getTemplateParams() {
+    return templateParams;
+  }
+  
+  /**
+   * Clear the video json.
+   */
+  public void clearVideoJson() {
+    videoJson = null;
+  }
+
+  /**
+   * Get the video json.
+   */
+  public JSONObject getVideoJson() {
+    return videoJson;
+  }
+
+  /**
+   * Set the link.
+   
+   * @param url
+   * @throws Exception
+   */
+  private void setLink(String url) throws Exception {
+    if (!(url.contains(HTTP) || url.contains(HTTPS))) {
+      url = HTTP + url;
+    }
+
+    videoJson = VideoEmbedTool.getoembedData(url);
+    templateParams = new HashMap<String, String>();
+    templateParams.put(LINK_PARAM, url);
+    templateParams.put(TITLE_PARAM, videoJson.getString(VideoEmbedTool.OEMBED_TITLE));
+    templateParams.put(HTML_PARAM, videoJson.getString(VideoEmbedTool.OEMBED_HTML));
+    setLinkInfoDisplayed(true);
+  }
+
+  static public class AttachActionListener extends EventListener<UIVideoActivityComposer> {
+
+    @Override
+    public void execute(Event<UIVideoActivityComposer> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIVideoActivityComposer uiComposerLinkExtension = event.getSource();
+      String url = requestContext.getRequestParameter(OBJECTID);
+      try {
+        uiComposerLinkExtension.setLink(url.trim());
+      } catch (Exception e) {
+        uiComposerLinkExtension.setReadyForPostingActivity(false);
+        return;
+      }
+      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+      event.getSource().setReadyForPostingActivity(true);
+    }
+  }
+
+  static public class ChangeLinkContentActionListener extends EventListener<UIVideoActivityComposer> {
+    @Override
+    public void execute(Event<UIVideoActivityComposer> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIVideoActivityComposer uiComposerLinkExtension = event.getSource();
+      
+      Map<String, String> tempParams = new HashMap<String, String>();
+      
+      uiComposerLinkExtension.setTemplateParams(tempParams);
+      requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+      UIComponent uiParent = uiComposerLinkExtension.getParent();
+      if (uiParent != null) {
+        uiParent.broadcast(event, event.getExecutionPhase());
+      }
+    }
+  }
+
+  public static class SelectVideoFromResultList extends EventListener<UIVideoActivityComposer>{
+    @Override
+    public void execute(Event<UIVideoActivityComposer> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIVideoActivityComposer uiComposerLinkExtension = event.getSource();
+
+    }
+  }
+
+  public static class SearchVideo extends EventListener<UIVideoActivityComposer>{
+
+    @Override
+    public void execute(Event<UIVideoActivityComposer> event) throws Exception {
+      WebuiRequestContext requestContext = event.getRequestContext();
+      UIVideoActivityComposer uiComposerLinkExtension = event.getSource();
+
+
+    }
+  }
+
+  @Override
+  public void onPostActivity(PostContext postContext, UIComponent source,
+                             WebuiRequestContext requestContext, String postedMessage) throws Exception {
+                             
+    templateParams.put(COMMENT_PARAM, postedMessage);
+    setTemplateParams(templateParams);
+    if (templateParams.size() == 0) {
+      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+              null,
+              ApplicationMessage.WARNING));
+      return;
+    }
+    String title = "Shared a video: <a href=\"${" + LINK_PARAM + "}\">${" + TITLE_PARAM + "} </a>";
+    ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+            UIVideoActivity.ACTIVITY_TYPE,
+            title,
+            null);
+    activity.setTemplateParams(templateParams);
+
+    if (postContext == UIComposer.PostContext.SPACE) {
+    
+      UIActivitiesContainer activitiesContainer = uiDisplaySpaceActivities.getActivitiesLoader(). getActivitiesContainer();
+      activitiesContainer.addActivity(activity);
+      requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+      requestContext.addUIComponentToUpdateByAjax(uiComposer);
+    } else if (postContext == PostContext.USER) {
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
+      String ownerName = uiUserActivitiesDisplay.getOwnerName();
+      Identity ownerIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+              ownerName, false);
+
+      activityManager.saveActivity(ownerIdentity, activity);
+
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == UIUserActivitiesDisplay.DisplayMode. MY_STATUS) {
+        UIActivitiesContainer activitiesContainer = uiUserActivitiesDisplay.getActivitiesLoader(). getActivitiesContainer();
+        if (activitiesContainer.getChildren().size() == 1) {
+          uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+        } else {
+          activitiesContainer.addActivity(activity);
+          requestContext.addUIComponentToUpdateByAjax(activitiesContainer);
+          requestContext.addUIComponentToUpdateByAjax(uiComposer);
+        }
+      } else{
+        uiUserActivitiesDisplay.setSelectedDisplayMode(UIUserActivitiesDisplay.DisplayMode.MY_STATUS);
+      }
+    }
+  }
+}
+{code}
+
+*2.* Use the BaseUIActivity class to write and customize the UIActivity display as below:
+
+{code:java}
+package org.exoplatform.social.plugin.videolink;
+import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.config.annotation.EventConfig;
+@ComponentConfig(lifecycle = UIFormLifecycle.class, template = "classpath:groovy/social/plugin/ videolink/UIVideoActivity.gtmpl", events = {
+  @EventConfig(listeners = BaseUIActivity.ToggleDisplayLikesActionListener.class),
+  @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
+  @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
+  @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
+  @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
+  @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class, confirm = "UIActivity. msg.Are_You_Sure_To_Delete_This_Activity"),
+  @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class, confirm = "UIActivity. msg.Are_You_Sure_To_Delete_This_Comment")
+ }
+)
+public class UIVideoActivity extends BaseUIActivity {
+  public static final String ACTIVITY_TYPE = "VIDEO_ACTIVITY";
+  private String linkSource = "";
+  private String linkTitle = "";
+  private String linkHTML = "";
+  private String linkComment = "";
+  
+  /**
+   * Get the link comment.
+   */
+  public String getLinkComment() {
+    return linkComment;
+  }
+  
+  /**
+   * Set the link comment.
+   *
+   * @param linkComment
+   */
+  public void setLinkComment(String linkComment) {
+    this.linkComment = linkComment;
+  }
+  
+  /**
+   * Get the link html.
+   */
+  public String getLinkHTML() {
+    return linkHTML;
+  }
+  
+  /**
+   * Set the link html.
+   *
+   * @param linkHTML
+   */
+  public void setLinkHTML(String linkHTML) {
+    this.linkHTML = linkHTML;
+  }
+  
+  /**
+   * Get the link source.
+   */
+  public String getLinkSource() {
+    return linkSource;
+  }
+  
+  /**
+   * Set the link source.
+   *
+   * @param linkSource
+   */
+  public void setLinkSource(String linkSource) {
+    this.linkSource = linkSource;
+  }
+  
+  /**
+   * Get the link title.
+   */
+  public String getLinkTitle() {
+    return linkTitle;
+  }
+  
+  /**
+   * Set the link title.
+   *
+   * @param linkTitle
+   */
+  public void setLinkTitle(String linkTitle) {
+    this.linkTitle = linkTitle;
+  }
+}
+{code}
+
+*3.* Use the _UIVideoActivityBuilder_ class to get values of _ExoSocialActivity_ that are set to UIVideoActivity for displaying.
+
+{code:java}
+package org.exoplatform.social.plugin.videolink;
+import java.util.Map;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+
+public class UIVideoActivityBuilder extends BaseUIActivityBuilder {
+  private static final Log LOG = ExoLogger.getLogger(UIVideoActivityBuilder.class);
+  @Override
+  protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
+  UIVideoActivity uiVideoActivity = (UIVideoActivity) uiActivity;
+  Map<String, String> templateParams = activity.getTemplateParams();
+    uiVideoActivity.setLinkSource(templateParams.get(UIVideoActivityComposer.LINK_PARAM));
+    uiVideoActivity.setLinkTitle(templateParams.get(UIVideoActivityComposer.TITLE_PARAM));
+    uiVideoActivity.setLinkImage(templateParams.get(UIVideoActivityComposer.IMAGE_PARAM));
+    uiVideoActivity.setLinkHTML(templateParams.get(UIVideoActivityComposer.HTML_PARAM));
+    uiVideoActivity.setLinkComment(templateParams.get(UIVideoActivityComposer.COMMENT_PARAM));
+  }
+}
+{code}
 

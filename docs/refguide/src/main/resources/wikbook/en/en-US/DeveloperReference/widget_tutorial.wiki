@@ -13,9 +13,9 @@ To insert the basic version, you need to have an iFrame to insert on your site.
 {code}
 
 To install this version in your application, replace all the uppercase text below:
-* URL_OF_YOUR_EXO_INSTALLATION.COM - this is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _localhost:8080_
-* NAME_OF_YOUR_SPACE - this is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and "_", ".", "-" or ". "
-* DESCRIPTION_OF_THE_SPACE - this will be displayed in the list of spaces.
+* URL_OF_YOUR_EXO_INSTALLATION.COM: This is the URL of your eXo Social installation. If you are testing on your local computer, the URL may be _localhost:8080_.
+* NAME_OF_YOUR_SPACE: This is the title of your space in eXo Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and "_", ".", "-" or ". ".
+* DESCRIPTION_OF_THE_SPACE: This will be displayed in the list of spaces.
 
 h1. Advanced version {anchor:id=SOCref.DeveloperReference.widget_tutorial.advanced_version}
 
@@ -29,10 +29,12 @@ Next, insert the following code at the position you want the button to be displa
 <script>spaces.createPopup("exoSpacesLink", "MyAppName - my social object", "my cool description");</script>
 {code}
 
-The important function here is:
+The important function is:
 {code}
 spaces.createPopup(link, spaceName, description)
 {code}
+
+In which:
 * link: link is the ID or the HTMLElement where the pop-up will be placed. If you copy and paste the code snippet provided above, you donot need to change this value.
 * spaceName: This is the name of space. It is also used to identify the space. We recommend you use the following format: "MyAppName - my social object"
 * description: This is the description of your space that will be displayed within eXo Spaces. It is used when a new space is created.

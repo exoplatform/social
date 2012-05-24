@@ -1,21 +1,21 @@
-All Social Gadgets are in _opensocial.war_.
+All eXo Social gadgets are in _opensocial.war_.
 
 h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
-* *Description*: Manages activities of users. Some kinds of activities such as: update status, like/unlike activities, comment activities, delete activities and delete comments. 
-* *Used REST services*: ActivitiesRestServices
+* *Description*: Manage activities of users: update status, like/unlike activities, comment activities, delete activities and delete comments. 
+* *Used REST services*: ActivitiesRestServices.
 
 h1. Social RSS Reader {anchor:id=SOCref.List_Of_Gadget_in_Social.SocialRSSReader}
-* *Description*: Fetches and parses RSS information from a specific url. 
-* *Description of user preferences*: The number of RSS per page is 10 by default. Get RSS from input URL (Default URL is http://blog.exoplatform.org/feed/).
-* *Used REST services*: N/A 
 
+* *Description*: Fetch, parse and display RSS from a specific URL. 
+* *Description of user preferences*: There are 2 preference fields: URL input box (default value is [http://blog.exoplatform.org/feed/]) and Number of RSS per page selector (default value is 10).
+* *Used REST services*: N/A.
 
 h1. My Connections {anchor:id=SOCref.List_Of_Gadget_in_Social.MyConnections}
-* *Description*: Displays a viewer's information and his connections' information.
-* *Description of user preferences*: Connections displayed per page. The number of connections displayed is 5 by default.
-* *Used REST services*: N/A
 
+* *Description*: Get and display information of the current viewer and his connections.
+* *Description of user preferences*: The number of connections displayed per page. It is set to '5' by default.
+* *Used REST services*: N/A.
 
 h1. My Spaces {anchor:id=SOCref.List_Of_Gadget_in_Social.MySpaces}
-* *Description*: Displays all the spaces that a user has the "member" role.
-* *Used REST services*: SpacesRestService
+* *Description*: Display all spaces that a user has the "member" role.
+* *Used REST services*: SpacesRestService.

@@ -1,168 +1,168 @@
 h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
 
 || Method || Param || Return || Description ||
-| *saveActivity*(Identity owner, Activity activity) | {{owner}} - the owner of activity stream, {{activity}} - the activity which needs to be saved |Activity| Saves an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
-| *getActivity*(java.lang.String activityId) | {{activityId}} - the id of activity | Activity | Gets an activity by activity id. |
-| *deleteActivity*(java.lang.String activityId) | {{activityId}} - the id of activity | void  | Deletes an activity by id. |
-| *deleteComment*(java.lang.String activityId, java.lang.String commentId) | {{activityId}} - the id of activity, {{commentId}} - the id of comment | void | Deletes comment by id. |
-| *getActivities*(Identity identity) | {{identity}} | List<Activity> | Gets the latest activities by identity with the default limit of 20 latest activities. |
-| *getActivities*(Identity identity, long start, long limit) | {{identity}}, {{start}} - the offset index , {{limit}} | List<Activity> |  Gets the latest activities by identity, specifying the start offset index and limit. |
-| *getActivitiesOfConnections*(Identity ownerIdentity)| {{ownerIdentity}}| List<Activity>| Gets activities of connections from an identity. The activities are sorted by time. The result list is maximum 30 activities by default. (Since 1.1.1). |
-| *getActivitiesOfConnections*(Identity ownerIdentity, int offset, int limit)|{{ownerIdentity, limit, offset}}| List<Activity> |Gets activities of connections from an identity by specifying offset and limit. The acivities are returned as a list that is sorted starting from the most recent activity. (Since 1.1.3).|
-| *getActivitiesOfUserSpaces*(Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Gets the activities from all user's spaces.|
-| *getActivityFeed*(Identity identity)|{{identity}}|List<Activity>|Gets the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which are sorted by time. The latest activity is the first item in the activity list.|
-| *saveActivity*(Activity activity) | {{activity}} - the activity which needs to be saved | activity | Saves the activity into the stream for the activity's userId. |
-| *saveComment*(Activity activity, Activity comment) | {{activity}}, {{comment}} | void | Saves new or update comments to an activity comment which is an instance of Activity with mandatory properties: userId, title. |
-| *saveLike*(Activity activity, Identity identity) | {{activity}}, {{identity}} | void | Saves an identity of user who likes the activity. |
-| *removeLike*(Activity activity, Identity identity) | {{activity}}, {{identity}} - the identity of user who unlikes the activity |void  | Removes the like activity, if this activity liked, remove, else does nothing. |
-| *getComments*(Activity activity) | {{activity}} | comments | Gets an activity's commentList. |
-| *recordActivity*(Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity, {{type}} is the type of activity (freeform), {{title}}, {{body}}| stored activity | Records an activity. |
-| *recordActivity*(Identity owner, Activity activity) | {{owner}}, {{activity}} | stored activity | Saves an activity. |
-| *addProcessor*(ActivityProcessor processor, Adds a new processor}} | {{processor}}, {{addProcessorPlugin}} | void | Adds a new activity processor. |
-| *addProcessorPlugin*(BaseActivityProcessorPlugin plugin) | {{plugin}} | void | Adds a new processor plug-in. |
-| *getActivitiesCount*(Identity owner) |{{owner}}  | int | Gets the number of activity from a stream owner. |
+| *saveActivity* (Identity owner, Activity activity) | {{owner}} - the owner of activity stream, {{activity}} - the activity which needs to be saved |Activity| Save an activity to the stream of a owner. Note that the Activity.userId will be set to the owner identity if not already set. |
+| *getActivity* (java.lang.String activityId) | {{activityId}} - the id of activity | Activity | Get an activity by activity Id. |
+| *deleteActivity* (java.lang.String activityId) | {{activityId}} - the id of activity | void  | Delete an activity by Id. |
+| *deleteComment* (java.lang.String activityId, java.lang.String commentId) | {{activityId}} - the id of activity, {{commentId}} - the id of comment | void | Delete comment by Id. |
+| *getActivities* (Identity identity) | {{identity}} | List<Activity> | Get the latest activities by identity with the default limit of 20 latest activities. |
+| *getActivities* (Identity identity, long start, long limit) | {{identity}}, {{start}} - the offset index , {{limit}} | List<Activity> |  Get the latest activities by identity, specifying the start offset index and limit. |
+| *getActivitiesOfConnections* (Identity ownerIdentity)| {{ownerIdentity}}| List<Activity>| Get activities of connections from an identity. The activities are sorted by time. The result list is maximum 30 activities by default. (Since 1.1.1). |
+| *getActivitiesOfConnections* (Identity ownerIdentity, int offset, int limit)|{{ownerIdentity, limit, offset}}| List<Activity> |Get activities of connections from an identity by specifying offset and limit. The acivities are returned as a list that is sorted starting from the most recent activity. (Since 1.1.3).|
+| *getActivitiesOfUserSpaces* (Identity ownerIdentity)| {{ownerIdentity}} | List<Activity> | Get the activities from all user's spaces.|
+| *getActivityFeed* (Identity identity)|{{identity}}|List<Activity>|Get the activity feed of an identity. This feed is the combination of all the activities of his own activities, his connections' activities and his spaces' activities which are sorted by time. The latest activity is the first item in the activity list.|
+| *saveActivity* (Activity activity) | {{activity}} - the activity which needs to be saved | activity | Save the activity into the stream for the activity's userId. |
+| *saveComment* (Activity activity, Activity comment) | {{activity}}, {{comment}} | void | Save new or update comments to an activity comment which is an instance of Activity with mandatory properties: userId, title. |
+| *saveLike* (Activity activity, Identity identity) | {{activity}}, {{identity}} | void | Save an identity of user who likes the activity. |
+| *removeLike* (Activity activity, Identity identity) | {{activity}}, {{identity}} - the identity of user who unlikes the activity |void  | Remove the like activity. Liked activity will be moved. |
+| *getComments* (Activity activity) | {{activity}} | comments | Get an activity's commentList. |
+| *recordActivity* (Identity owner, java.lang.String type, java.lang.String title, java.lang.String body) | {{owner}} - the owner of the target stream for this activity, {{type}} is the type of activity (freeform), {{title}}, {{body}}| stored activity | Record an activity. |
+| *recordActivity* (Identity owner, Activity activity) | {{owner}}, {{activity}} | stored activity | Save an activity. |
+| *addProcessor* (ActivityProcessor processor, Add a new processor}} | {{processor}}, {{addProcessorPlugin}} | void | Add a new activity processor. |
+| *addProcessorPlugin* (BaseActivityProcessorPlugin plugin) | {{plugin}} | void | Add a new processor plug-in. |
+| *getActivitiesCount* (Identity owner) |{{owner}}  | int | Get the number of activity from a stream owner. |
 
 h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
 
 || Method || Param || Return || Description ||
-| *registerIdentityProviders(IdentityProviderPlugin plugin)* | {{plugin}}| |Registers one or more IdentityProvider through an IdentityProviderPlugin |
-| *getIdentity*(String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | Gets the identity by id and to load his profile. |
-| *getIdentity*(String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(), {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | Gets the identity by loading id of the profile optionally. |
-| *deleteIdentity*(Identity identity)| {{identity}}| void |Deletes an identity. |
-| *addIdentityProvider*(IdentityProvider<?> idProvider)| {{idProvider}} is the id of provider | void  | Adds the id of provider. |
-| *getIdentitiesCount*(String providerId) | {{providerId}}|long |Gets the number of identities. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the id of provider, {{remoteId}} is the remote id | identity | Gets the identity by a remote id. |
-| *getOrCreateIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider, {{remoteId}} - the identifier that identify the identity in the specific identity provider, {{loadProfile}} is true when the profile is loaded | null if nothing is found, or the Identity object TODO improves the performance by specifying what needs to be loaded | Returns an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager contact, it will be the UID of the contact. A new identity is created if it doesnot exist. |
-| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter)  throws Exception  | {{providerId}} is the id of provider, {{profileFilter}} is the filter of provider | the identities by the profile filter | Gets the identities by profile filter.|
-| *getIdentitiesByProfileFilter*(java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit,}} | List<Identity>  | Gets the identities by profile filter.|
-| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities by profile filter | Gets the identities by profile filter. |
-| *getIdentitiesByProfileFilter*(ProfileFilter profileFilter, long offset, long limit) throws Exception|{{profileFilter, offset, limit}}  |List<Identity> |Gets the identities by profile filter.  |
-| *getIdentitiesFilterByAlphaBet*(java.lang.String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} is the id of provider, {{profileFilter}} is the profile filter | the identities filter by alphabet | Gets the identities filter by alpha bet. |
-| *getIdentitiesFilterByAlphaBet*(String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception |{{providerId, profileFilter, offset, limit}} |List<Identity>| Gets the identities filter by alpha bet by specifying offset and limit.|
-| *getIdentitiesFilterByAlphaBet*(ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities filter by alphabet | Gets the identities filter by alphabet. |
-| *getIdentity*(java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}}, {{remoteId}}, {{loadProfile}} | Identity | Gets the identity. |
-| *identityExisted*(java.lang.String providerId, java.lang.String remoteId) | {{providerId}}, {{remoteId}} | boolean | Checks if the identity is already existed or not. |
-| *saveIdentity*(Identity identity) | {{identity}} is the identity | void | Saves the identity. |
-| *saveProfile*(Profile profile)|{{profile}}|void|Saves a profile.|
-| *updateAvatar*(Profile p) throws Exception | {{p - profile}} | void | Updates avatar. |
-| *updateBasicInfo*(Profile p) throws Exception  | {{p - profile}} | Profile | Updates basic info of a profile. |
-| *updateContactSection*(Profile p)throws Exception | {{p - profile}} | void | Updates the contact section of a profile.  |
-| *updateExperienceSection*(Profile p) throws Exception| {{p - profile}} | void  | Updates the experience section of a profile.  |
-| *updateHeaderSection*(Profile p)throws Exception | {{p - profile}}  | void  | Updates the header section of profile.   |
-| *getIdentities*(java.lang.String providerId) throws Exception  | {{providerId}} is the id of provider | List<Identity>| Gets the identity. |
-| *getIdentities*(java.lang.String providerId, boolean loadProfile) | {{providerId}} is the id of provider, {{loadProfile}} is the loaded profile. |List<Identity> | Gets the identities. |
-| *getConnections*(Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Gets connections of an identity |
-| *getStorage*() | {{N/A}} | IdentityStorage| Gets the storage. |
-| *setIdentityStorage*(IdentityStorage identityStorage) | {{identityStorage}}  | void  | Sets identityStorage. |
-| *registerProfileListener*(ProfileListener listener)unregisterProfileListener |{{listener}}  |void  | Registers a profile listener. |
-| *unregisterProfileListener*(ProfileListener listener) | {{listener}} | void  | Unregisters a profile listener. |
-| *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} | void  | Registers a profile listener component plug-in. |
-| *getIdentityStorage*() | {{N/A}} | IdentityStorage | Gets identity storage.  |
+| *registerIdentityProviders (IdentityProviderPlugin plugin)* | {{plugin}}| |Register one or more IdentityProvider through an IdentityProviderPlugin |
+| *getIdentity*(String id) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId() | null if nothing is found, or the Identity object | Get the identity by Id and to load his profile. |
+| *getIdentity*(String id, boolean loadProfile) | {{id}} can be a social GlobalId or a raw identity such as in Identity.getId(), {{loadProfile}} - the value is true if the profile is loaded and false if not loaded | null if nothing is found, or the Identity object | Get the identity by loading Id of the profile optionally. |
+| *deleteIdentity*(Identity identity)| {{identity}}| void |Delete an identity. |
+| *addIdentityProvider* (IdentityProvider<?> idProvider)| {{idProvider}} is the Id of provider | void  | Add the Id of provider. |
+| *getIdentitiesCount* (String providerId) | {{providerId}}|long |Get the number of identities. |
+| *getOrCreateIdentity* (java.lang.String providerId, java.lang.String remoteId) | {{providerId}} is the Id of provider, {{remoteId}} is the remote Id | identity | Get the identity by a remote Id. |
+| *getOrCreateIdentity* (java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}} - referring to the name of the Identity provider, {{remoteId}} - the identifier that identify the identity in the specific identity provider, {{loadProfile}} is true when the profile is loaded | null if nothing is found, or the Identity object TODO improves the performance by specifying what needs to be loaded | Return an Identity object that is specific to a special type. For example, if the type is Linked'In, the identifier will be the URL of profile or if it is a CS contact manager contact, it will be the UID of the contact. A new identity is created if it doesnot exist. |
+| *getIdentitiesByProfileFilter* (java.lang.String providerId, ProfileFilter profileFilter)  throws Exception  | {{providerId}} is the id of provider, {{profileFilter}} is the filter of provider | the identities by the profile filter | Get the identities by profile filter.|
+| *getIdentitiesByProfileFilter* (java.lang.String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception | {{providerId, profileFilter, offset, limit,}} | List<Identity>  | Get the identities by profile filter.|
+| *getIdentitiesByProfileFilter* (ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities by profile filter | Get the identities by profile filter. |
+| *getIdentitiesByProfileFilter* (ProfileFilter profileFilter, long offset, long limit) throws Exception|{{profileFilter, offset, limit}}  |List<Identity> |Get the identities by profile filter.  |
+| *getIdentitiesFilterByAlphaBet* (java.lang.String providerId, ProfileFilter profileFilter) throws Exception | {{providerId}} is the id of provider, {{profileFilter}} is the profile filter | the identities filter by alphabet | Get the identities filter by alpha bet. |
+| *getIdentitiesFilterByAlphaBet* (String providerId, ProfileFilter profileFilter, long offset, long limit) throws Exception |{{providerId, profileFilter, offset, limit}} |List<Identity>| Get the identities filter by alpha bet by specifying offset and limit.|
+| *getIdentitiesFilterByAlphaBet* (ProfileFilter profileFilter) throws Exception | {{profileFilter}} - the profile filter | the identities filter by alphabet | Get the identities filter by alphabet. |
+| *getIdentity* (java.lang.String providerId, java.lang.String remoteId, boolean loadProfile) | {{providerId}}, {{remoteId}}, {{loadProfile}} | Identity | Get the identity. |
+| *identityExisted* (java.lang.String providerId, java.lang.String remoteId) | {{providerId}}, {{remoteId}} | boolean | Check if the identity is already existed or not. |
+| *saveIdentity* (Identity identity) | {{identity}} is the identity | void | Save the identity. |
+| *saveProfile* (Profile profile)|{{profile}}|void|Save a profile.|
+| *updateAvatar* (Profile p) throws Exception | {{p - profile}} | void | Update avatar. |
+| *updateBasicInfo* (Profile p) throws Exception  | {{p - profile}} | Profile | Update basic info of a profile. |
+| *updateContactSection* (Profile p)throws Exception | {{p - profile}} | void | Update the contact section of a profile.  |
+| *updateExperienceSection* (Profile p) throws Exception| {{p - profile}} | void  | Update the experience section of a profile.  |
+| *updateHeaderSection* (Profile p)throws Exception | {{p - profile}}  | void  | Update the header section of profile.   |
+| *getIdentities* (java.lang.String providerId) throws Exception  | {{providerId}} is the id of provider | List<Identity>| Get the identity. |
+| *getIdentities* (java.lang.String providerId, boolean loadProfile) | {{providerId}} is the id of provider, {{loadProfile}} is the loaded profile. |List<Identity> | Get the identities. |
+| *getConnections* (Identity ownerIdentity) throws Exception| {{ownerIdentity}} | List<Identity> | Get connections of an identity |
+| *getStorage*() | {{N/A}} | IdentityStorage| Get the storage. |
+| *setIdentityStorage* (IdentityStorage identityStorage) | {{identityStorage}}  | void  | Set identityStorage. |
+| *registerProfileListener* (ProfileListener listener)unregisterProfileListener |{{listener}}  |void  | Register a profile listener. |
+| *unregisterProfileListener* (ProfileListener listener) | {{listener}} | void  | Unregister a profile listener. |
+| *addProfileListener* (ProfileListenerPlugin plugin) | {{plugin}} | void  | Register a profile listener component plug-in. |
+| *getIdentityStorage*() | {{N/A}} | IdentityStorage | Get identity storage.  |
 
 
 h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_manager}
 
 || Method || Param || Return || Description ||
-|*getRelationshipById*(String id) throws Exception|{{id}}|Relationship |Gets relationship the by id.|
-|*invite*(Identity currIdentity, Identity requestedIdentity) throws Exception|{{currIdentity}} - The current identity, {{requestedIdentity}} - The requested identity}}|Relationship|Creates a connection invitation between two identities.|
-|*confirm*(Relationship relationship) throws Exception|{{relationship}}|void|Marks a relationship as confirmed.|
-|*deny*(Relationship relationship) throws Exception|{{relationship}}|void|Denies a relationship.|
-|*remove*(Relationship relationship) throws Exception|{{relationship}}|void|Removes a relationship.|
-|*ignore*(Relationship relationship) throws Exception|{{relationship}}|void |Marks a relationship as ignored.|
-|*getPendingRelationships*(Identity identity) throws Exception |{{identity}}|List<Relationship>|Returns all the pending relationships of the identity, including sent and received relationships of the pending type.|
-|*getPendingRelationships*(Identity identity, boolean toConfirm) throws Exception|{{identity, toConfirm}}|List<Relationship>|If toConfirm is true, it returns a list of the pending relationship received, but not confirmed, if toConfirm is false, it returns a list of the relationship sent, but not confirmed yet.|
-|*getPendingRelationships*(Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, {{toConfirm}} - |List<Relationship> |Gets the pending relations in two cases:{example}{example} - If toConfirm is true, it returns a list of the pending relationships received, but not confirmed.{example}{example} - If toConfirm is false, it returns a list of the relationships sent, but not confirmed yet.|
-|*getContacts*(Identity currIdentity, List<Identity> identities) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, |List<Relationship> |Gets contacts that matches the search result.|
-|*getContacts*(Identity identity) throws Exception|{{identity}}|List<Relationship>|Gets the contacts of the identity.|
-|*getAllRelationships*(Identity identity) throws Exception|{{identity }}|List<Relationship> |Returns all the relationships associated with a given identity.|
-|*getRelationshipsByIdentityId*(String id) throws Exception|{{id}}|List<Relationship>|Returns all the relationships associated with a given identityId.|
-|*getIdentities*(Identity id) throws Exception|{{id}}|List<Identity> |Returns all the identities associated with a given identity and checks whether the relation has been validated or not.|
-|*create*(Identity sender, Identity receiver)|{{sender, receiver}}|Relationship |Creates the relationship.|
-|*saveRelationship*(Relationship relationship) throws Exception|{{relationship}}|void|Saves the relationship.|
-|*updateRelationshipCached*(Relationship relationship)|{{relationship}}|void|Updates the relationship cached.|
-|*findRoute*(Identity sender, Identity receiver) throws NotSupportedException|{{sender,receiver}}|Relationship|Finds a route.|
-|*findRelationships*(Identity ownerIdentity, Relationship.Type relationshipType) throws Exception|{{ownerIdentity, relationshipType}}|List<Identity> | Finds all identities having relationshipType with the ownerIdentity.(Since 1.1.2).|
-|*getRelationshipStatus*(Relationship rel, Identity id)|{{rel, id }}|Relationship.Type |Gets the relationship type of the relationship with the identity.|
-|*getConnectionStatus*(Identity fromIdentity, Identity toIdentity) throws Exception|{{fromIdentity, toIdentity}}|Relationship.Type |Gets the connection type between two identities. (Since 1.1.1).|
-|*registerListener*(RelationshipListener listener)|{{listener}}|void|Registers the RelationshipListener.|
-|*unregisterListener*(RelationshipListener listener)|{{listener}}|void|Removes the RelationshipListener.|
-|*addListenerPlugin*(RelationshipListenerPlugin plugin)|{{plugin}}|void| Adds the plugin.|
+|*getRelationshipById* (String id) throws Exception|{{id}}|Relationship |Get relationship the by Id.|
+|*invite* (Identity currIdentity, Identity requestedIdentity) throws Exception|{{currIdentity}} - The current identity, {{requestedIdentity}} - The requested identity}}|Relationship|Create a connection invitation between two identities.|
+|*confirm* (Relationship relationship) throws Exception|{{relationship}}|void|Mark a relationship as confirmed.|
+|*deny* (Relationship relationship) throws Exception|{{relationship}}|void|Deny a relationship.|
+|*remove* (Relationship relationship) throws Exception|{{relationship}}|void|Remove a relationship.|
+|*ignore* (Relationship relationship) throws Exception|{{relationship}}|void |Mark a relationship as ignored.|
+|*getPendingRelationships* (Identity identity) throws Exception |{{identity}}|List<Relationship>|Return all the pending relationships of the identity, including sent and received relationships of the pending type.|
+|*getPendingRelationships* (Identity identity, boolean toConfirm) throws Exception|{{identity, toConfirm}}|List<Relationship>|If toConfirm is true, it returns a list of the pending relationship received, but not confirmed, if toConfirm is false, it returns a list of the relationship sent, but not confirmed yet.|
+|*getPendingRelationships* (Identity currIdentity, List<Identity> identities, boolean toConfirm) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, {{toConfirm}} - |List<Relationship> |Get the pending relations in two cases:{example}{example} - If toConfirm is true, it returns a list of the pending relationships received, but not confirmed.{example}{example} - If toConfirm is false, it returns a list of the relationships sent, but not confirmed yet.|
+|*getContacts* (Identity currIdentity, List<Identity> identities) throws Exception|{{currIdentity}} - the current identity, {{identities}} - the identities, |List<Relationship> |Get contacts that matches the search result.|
+|*getContacts* (Identity identity) throws Exception|{{identity}}|List<Relationship>|Get the contacts of the identity.|
+|*getAllRelationships* (Identity identity) throws Exception|{{identity }}|List<Relationship> |Return all the relationships associated with a given identity.|
+|*getRelationshipsByIdentityId* (String id) throws Exception|{{id}}|List<Relationship>|Return all the relationships associated with a given identityId.|
+|*getIdentities* (Identity id) throws Exception|{{id}}|List<Identity> |Return all the identities associated with a given identity and checks whether the relation has been validated or not.|
+|*create* (Identity sender, Identity receiver)|{{sender, receiver}}|Relationship |Create the relationship.|
+|*saveRelationship* (Relationship relationship) throws Exception|{{relationship}}|void|Save the relationship.|
+|*updateRelationshipCached* (Relationship relationship)|{{relationship}}|void|Update the relationship cached.|
+|*findRoute* (Identity sender, Identity receiver) throws NotSupportedException|{{sender,receiver}}|Relationship|Find a route.|
+|*findRelationships* (Identity ownerIdentity, Relationship.Type relationshipType) throws Exception|{{ownerIdentity, relationshipType}}|List<Identity> | Find all identities having relationshipType with the ownerIdentity.(Since 1.1.2).|
+|*getRelationshipStatus* (Relationship rel, Identity id)|{{rel, id }}|Relationship.Type |Get the relationship type of the relationship with the identity.|
+|*getConnectionStatus* (Identity fromIdentity, Identity toIdentity) throws Exception|{{fromIdentity, toIdentity}}|Relationship.Type |Get the connection type between two identities. (Since 1.1.1).|
+|*registerListener* (RelationshipListener listener)|{{listener}}|void|Register the RelationshipListener.|
+|*unregisterListener* (RelationshipListener listener)|{{listener}}|void|Remove the RelationshipListener.|
+|*addListenerPlugin* (RelationshipListenerPlugin plugin)|{{plugin}}|void| Add the plugin.|
 
 
 
 h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 
 || Method || Param || Return || Description ||
-|*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Gets all spaces in Social.|
-|*getSpaceByName*(String spaceName) throws SpaceException|{{spaceName}}|Space|Gets a space by its space name.|
-|*getSpacesByFirstCharacterOfName*(String firstCharacterOfName) throws SpaceException|{{firstCharacterOfName}}|  List<Space> - all spaces which have first character of name matched the input string.|Gets all spaces has the name starting with the input character.|
-|*getSpacesBySearchCondition*(String condition) throws Exception|{{condition}} - the input condition| List<Space> - a list of spaces|Gets all spaces which has the name or the description that matches the input condition.|
-|*getSpaceByGroupId*(String groupId) throws SpaceException,|{{groupId}} - the group id of the space| Space|Gets a space by its group id. |
-|*getSpaceById*(String spaceId) throws SpaceException|{{spaceId}} - Id of that space|Space - space with the id specified|Gets a space by its id.|
-|*getSpaceByUrl*(String spaceUrl) throws SpaceException|{{spaceUrl}} - url of space|Space - the space with string url specified|Gets a space by its url.|
-|*getSpaces*(String userId) throws SpaceException|{{userId}} - Id of the user| List<Space> - all spaces of a user in which the user is a member|Gets spaces of a user in which that user is a member.|
-|*getAccessibleSpaces*(String userId) throws SpaceException|{{userId}}| List<Space> - list of spaces|Gets spaces of a user which that user has the access permission|
-|*getEditableSpaces*(String userId) throws SpaceException|{{userId}}| List<Space> - list of spaces|Gets spaces of a user which that user has the edit permission.|
-|*getInvitedSpaces*(String userId) throws SpaceException|{{userId}}|  List<Space> - spaces list of all user's invited spaces|Gets a user's invited spaces and that user can accept or deny the request.|
-|*getPublicSpaces*(String userId) throws SpaceException|{{userId - Id of user}}|List<Space> - spaces list in which the user can request to join|Gets a user's public spaces and that user can request to join.|
-|*getPendingSpaces*(String userId) throws SpaceException|{{userId}}|  List<Space> -  spaces list in which the user can revoke that request|Gets a user's pending spaces and that the user can revoke that request.|
-|*createSpace*(Space space, String creator) throws SpaceException|{{space, creator}}|Space - the created space|Creates a new space by creating a new group.This new group will be under */Spaces* node.This is shorthand for calling createSpace(space, creator, null).|
-|*createSpace*(Space space, String creator, String groupId) throws SpaceException|{{space, creator,  groupId}} - if groupId == null: create a new space by creating a new group|Space|Creates a new space from an existing group.|
-|*saveSpace*(Space space, boolean isNew) throws SpaceException|{{space - space is saved,  isNew}} - true if creating a new space, otherwise, update an existing space.|void|Saves a new space or updates a space.|
-|*deleteSpace*(Space space) throws SpaceException|{{space - the space is deleted}}|void|Deletes a space. When deleting a space, all of its page navigations and its group will be deleted.|
-|*deleteSpace*(String spaceId) throws SpaceException|{{ spaceId}}|void|Deletes a space by its id.|
-|*initApp*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Deprecated, use *initApps*(Space) instead.|
-|*initApps*(Space space) throws SpaceException|{{space}}|void|Initializes default applications in a space. Set *space.homeNodeApp* from the configuration file to be the root page of that space node. When removing a space, make sure to call *deInitApps*(Space) and then deleteSpace(Space) or *deleteSpace*(String)|
-|*deInitApps*(Space space) throws SpaceException|{{space }}| void |De-initializes the applications of a space.Make sure to call this method before *deleteSpace*(Space) or *deleteSpace*(String). Otherwise, the space is deleted but its pages and navigation still exists.|
-|*addMember*(Space space, String userId) throws SpaceException|{{}}|void|Adds a user to a space, the user will get the "member" role in a space.|
-|*addMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Adds a user to a space, the user will get the "member" role in a space.|
-|*removeMember*(Space space, String userId) throws SpaceException|{{space, userId}}|void|Removes a member from a space. If the member is the only leader of that space, the member removed is not allowed and throws *SpaceException* with Code = USER_ONLY_LEADER.|
-|*removeMember*?(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Removes a member from a space.|
-|*getMembers*(Space space) throws SpaceException|{{space}}| List<String> - a list of the space members|Gets a list of the space members from a space.|
-|*getMembers*(String spaceId) throws SpaceException|{{spaceId}}| List<String> - a list of the space members| Gets a list of the space members from a space.|
-|*setLeader*(Space space, String userId, boolean isLeader) throws SpaceException|{{space, userId, isLeader }}|void|Sets a member of a space as a manager.|
-|*setLeader*(String spaceId, String userId, boolean isLeader) throws SpaceException|{{spaceId, userId, isLeader}}|void|Sets a member of a space as a manager.|
-|*isLeader*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that the user is a leader, otherwise, false|Checks whether a user is a space's leader or not.|
-|*isLeader*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true if that user is a leader, otherwise, false|Checks whether a user is a space's leader or not.|
-|*isOnlyLeader*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that user is the only leader of the space, otherwise, false|Checks whether a user is the only leader of a space or not.|
-|*isOnlyLeader*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean|Checks whether a user is the only leader of a space or not.|
-|*isMember*(Space space, String userId) throws SpaceException|{{space, userId}}| boolean - true if that user is a member, otherwise, false|Checks whether a user is a space's member or not.|
-|*isMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userId, }}| boolean - true if that user is a member, otherwise,false|Checks whether a user is a space's member or not.|
-|*hasAccessPermission*(Space space, String userId) throws SpaceException|{{space, userId}}|boolean -  true If the user is root or the space's member.|Checks if a user can access a space or not.|
-|*hasAccessPermission*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true If the user is root or the space's member|Checks if a user can access a space or not.|
-|*hasEditPermission*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true If the user is root or the space's manager|Checks if a user can have the edit permission of a space or not.|
-|*hasEditPermission*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true If user is root or the space's manager|Checks if a user can have the edit permission of a space or not.|
-|*isInvited*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the invited list, otherwise, false|Checks if a user is in the invited list of a space or not.|
-|*isInvited*(String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true if the user is in the invited list, otherwise, false|Checks if a user is in the invited list of a space or not.|
-|*isPending*(Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the pending list, otherwise, false|Checks if a user is in the pending list of a space or not.|
-|*installApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Installs an application to a space.|
-|*installApplication*(Space space, String appId) throws SpaceException|{{space, appId}}|void | Installs an application to a space|
-|*activateApplication*(Space space, String appId) throws SpaceException|{{space, appId}}| void| Activates an installed application in a space.|
-|*activateApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Activates an installed application in a space.|
-|*deactivateApplication*(Space space, String appId) throws SpaceException|{{space, appId}}|void |Deactivates an installed application in a space.|
-|*deactivateApplication*(String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Deactivates an installed application in a space.|
-|*removeApplication*(Space space, String appId, String appName) throws SpaceException|{{space, appId, appName}}| void|Removes an installed application from a space.|
-|*removeApplication*(String spaceId, String appId, String appName) throws SpaceException|{{space, appId, appName}}|void|Removes an installed application from a space.|
-|*requestJoin*(Space space, String userId) throws SpaceException|{{space, userid}}|  void |Requests a user to join a space, adds that user to the pending list of the space.|
-|*requestJoin*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Requests a user to join a space, adds that user to the pending list of the space.|
-|*revokeRequestJoin*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Revokes a join request after users request to join a group and is in the pending status.|
-|*revokeRequestJoin*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revokes a request to join a space.|
-|*inviteMember*(Space space, String userId) throws SpaceException|{{space, userid}}| void |Invites a userId to become a member of a space.|
-|*inviteMember*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Invites a userId to a be member of a space.|
-|*revokeInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Revokes an invitation. Removes a user from the invited  member list of the space.|
-|*revokeInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revokes an invitation. Removes a user from the invited  member list of the space.|
-|*acceptInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Accepts an invitation and moves a user from the invited list to the member list.|
-|*acceptInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Accepts an invitation and moves a user from the invited list to the member list.|
-|*denyInvitation*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Denies an invitation and removes a user from the invited list.|
-|*denyInvitation*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Denies an invitation and removes a user from the invited list.|
-|*validateRequest*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Validates a request and moves a user from the pending list to the member list.|
-|*validateRequest*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Validates a request and moves a user from the pending list to the member list.|
-|*declineRequest*(Space space, String userId) throws SpaceException|{{space, userid}}|void|Declines a request and removes a user from  the pending list.|
-|*declineRequest*(String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Declines a request and removes a user from  the pending list.|
-|*registerSpaceLifeCycleListener*(SpaceLifeCycleListener listener|{{listener}}|void|Registers a space lifecycle listener.|
-|*unregisterSpaceLifeCycleListener*(SpaceLifeCycleListener listener)|{{listener}}|void|Unregisters a space lifecycle listener.|
-|*setPortletsPrefsRequired*(PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin)|{{portletPrefsRequiredPlugin}}|void| Sets the portlet preferences got from the plug-in configuration.|
-|*getPortletsPrefsRequired*()|{{N/A}}|{{{String[]}}}|Gets the portlet preferences required to use in creating the portlet application.|
-|*setSpaceApplicationConfigPlugin*(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin)|{{SpaceApplicationConfigPlugin}}|void|Sets configuration plugin for initializing applications when creating a new space. (Since 1.1.3).|
-|*getSpaceApplicationConfigPlugin*()|{{N/A}}|SpaceApplicationConfigPlugin|Gets the configuration of applications to be initialized when creating a new space. (Since 1.1.3).|
+|*getAllSpaces*() throws SpaceException|{{N/A}}|List<Space> - list of spaces in Social|Get all spaces in Social.|
+|*getSpaceByName* (String spaceName) throws SpaceException|{{spaceName}}|Space|Get a space by its space name.|
+|*getSpacesByFirstCharacterOfName* (String firstCharacterOfName) throws SpaceException|{{firstCharacterOfName}}|  List<Space> - all spaces which have first character of name matched the input string.|Get all spaces has the name starting with the input character.|
+|*getSpacesBySearchCondition* (String condition) throws Exception|{{condition}} - the input condition| List<Space> - a list of spaces|Get all spaces which has the name or the description that matches the input condition.|
+|*getSpaceByGroupId* (String groupId) throws SpaceException,|{{groupId}} - the group Id of the space| Space|Get a space by its group Id. |
+|*getSpaceById* (String spaceId) throws SpaceException|{{spaceId}} - Id of that space|Space - space with the id specified|Get a space by its Id.|
+|*getSpaceByUrl* (String spaceUrl) throws SpaceException|{{spaceUrl}} - url of space|Space - the space with string url specified|Get a space by its URL.|
+|*getSpaces* (String userId) throws SpaceException|{{userId}} - Id of the user| List<Space> - all spaces of a user in which the user is a member|Get spaces of a user in which that user is a member.|
+|*getAccessibleSpaces* (String userId) throws SpaceException|{{userId}}| List<Space> - list of spaces|Get spaces of a user which that user has the access permission|
+|*getEditableSpaces* (String userId) throws SpaceException|{{userId}}| List<Space> - list of spaces|Get spaces of a user which that user has the edit permission.|
+|*getInvitedSpaces* (String userId) throws SpaceException|{{userId}}|  List<Space> - spaces list of all user's invited spaces|Get a user's invited spaces and that user can accept or deny the request.|
+|*getPublicSpaces* (String userId) throws SpaceException|{{userId - Id of user}}|List<Space> - spaces list in which the user can request to join|Get a user's public spaces and that user can request to join.|
+|*getPendingSpaces* (String userId) throws SpaceException|{{userId}}|  List<Space> -  spaces list in which the user can revoke that request|Get a user's pending spaces and that the user can revoke that request.|
+|*createSpace* (Space space, String creator) throws SpaceException|{{space, creator}}|Space - the created space|Create a new space by creating a new group.This new group will be under */Spaces* node.This is shorthand for calling createSpace(space, creator, null).|
+|*createSpace* (Space space, String creator, String groupId) throws SpaceException|{{space, creator,  groupId}} - if groupId == null: create a new space by creating a new group|Space|Create a new space from an existing group.|
+|*saveSpace* (Space space, boolean isNew) throws SpaceException|{{space - space is saved,  isNew}} - true if creating a new space, otherwise, update an existing space.|void|Save a new space or updates a space.|
+|*deleteSpace* (Space space) throws SpaceException|{{space - the space is deleted}}|void|Delete a space. When deleting a space, all of its page navigations and its group will be deleted.|
+|*deleteSpace* (String spaceId) throws SpaceException|{{ spaceId}}|void|Delete a space by its Id.|
+|*initApp* (Space space) throws SpaceException|{{space}}|void|Initialize default applications in a space. Deprecated, use *initApps*(Space) instead.|
+|*initApps* (Space space) throws SpaceException|{{space}}|void|Initialize default applications in a space. Set *space.homeNodeApp* from the configuration file to be the root page of that space node. When removing a space, make sure to call *deInitApps*(Space) and then deleteSpace(Space) or *deleteSpace*(String)|
+|*deInitApps* (Space space) throws SpaceException|{{space }}| void |De-initialize the applications of a space. Make sure to call this method before *deleteSpace*(Space) or *deleteSpace*(String). Otherwise, the space is deleted but its pages and navigation still exists.|
+|*addMember* (Space space, String userId) throws SpaceException|{{}}|void|Add a user to a space, the user will get the "member" role in a space.|
+|*addMember* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Add a user to a space, the user will get the "member" role in a space.|
+|*removeMember* (Space space, String userId) throws SpaceException|{{space, userId}}|void|Remove a member from a space. If the member is the only leader of that space, the member removed is not allowed and throws *SpaceException* with Code = USER_ONLY_LEADER.|
+|*removeMember*? (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|void|Remove a member from a space.|
+|*getMembers* (Space space) throws SpaceException|{{space}}| List<String> - a list of the space members|Get a list of the space members from a space.|
+|*getMembers* (String spaceId) throws SpaceException|{{spaceId}}| List<String> - a list of the space members| Get a list of the space members from a space.|
+|*setLeader* (Space space, String userId, boolean isLeader) throws SpaceException|{{space, userId, isLeader }}|void|Set a member of a space as a manager.|
+|*setLeader* (String spaceId, String userId, boolean isLeader) throws SpaceException|{{spaceId, userId, isLeader}}|void|Set a member of a space as a manager.|
+|*isLeader* (Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that the user is a leader, otherwise, false|Check whether a user is a space's leader or not.|
+|*isLeader* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true if that user is a leader, otherwise, false|Check whether a user is a space's leader or not.|
+|*isOnlyLeader* (Space space, String userId) throws SpaceException|{{space, userId}}|boolean - true if that user is the only leader of the space, otherwise, false|Check whether a user is the only leader of a space or not.|
+|*isOnlyLeader* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean|Check whether a user is the only leader of a space or not.|
+|*isMember* (Space space, String userId) throws SpaceException|{{space, userId}}| boolean - true if that user is a member, otherwise, false|Check whether a user is a space's member or not.|
+|*isMember* (String spaceId, String userId) throws SpaceException|{{spaceId, userId, }}| boolean - true if that user is a member, otherwise,false|Check whether a user is a space's member or not.|
+|*hasAccessPermission* (Space space, String userId) throws SpaceException|{{space, userId}}|boolean -  true If the user is root or the space's member.|Check if a user can access a space or not.|
+|*hasAccessPermission* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolean - true If the user is root or the space's member|Check if a user can access a space or not.|
+|*hasEditPermission* (Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true If the user is root or the space's manager|Check if a user can have the edit permission of a space or not.|
+|*hasEditPermission* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true If user is root or the space's manager|Check if a user can have the edit permission of a space or not.|
+|*isInvited* (Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the invited list, otherwise, false|Check if a user is in the invited list of a space or not.|
+|*isInvited* (String spaceId, String userId) throws SpaceException|{{spaceId, userId}}|boolen - true if the user is in the invited list, otherwise, false|Check if a user is in the invited list of a space or not.|
+|*isPending* (Space space, String userId) throws SpaceException|{{space, userId}}|boolen - true if that user is in the pending list, otherwise, false|Check if a user is in the pending list of a space or not.|
+|*installApplication* (String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Install an application to a space.|
+|*installApplication* (Space space, String appId) throws SpaceException|{{space, appId}}|void | Install an application to a space|
+|*activateApplication* (Space space, String appId) throws SpaceException|{{space, appId}}| void| Activate an installed application in a space.|
+|*activateApplication* (String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Activate an installed application in a space.|
+|*deactivateApplication* (Space space, String appId) throws SpaceException|{{space, appId}}|void |Deactivate an installed application in a space.|
+|*deactivateApplication* (String spaceId, String appId) throws SpaceException|{{spaceId, appId}}|void|Deactivate an installed application in a space.|
+|*removeApplication* (Space space, String appId, String appName) throws SpaceException|{{space, appId, appName}}| void|Remove an installed application from a space.|
+|*removeApplication* (String spaceId, String appId, String appName) throws SpaceException|{{space, appId, appName}}|void|Remove an installed application from a space.|
+|*requestJoin* (Space space, String userId) throws SpaceException|{{space, userid}}|  void |Request a user to join a space, add that user to the pending list of the space.|
+|*requestJoin* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Request a user to join a space, add that user to the pending list of the space.|
+|*revokeRequestJoin* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Revoke a join request after users request to join a group and is in the pending status.|
+|*revokeRequestJoin* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revoke a request to join a space.|
+|*inviteMember* (Space space, String userId) throws SpaceException|{{space, userid}}| void |Invite a userId to become a member of a space.|
+|*inviteMember* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Invite a userId to a be member of a space.|
+|*revokeInvitation* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Revoke an invitation. Remove a user from the invited  member list of the space.|
+|*revokeInvitation* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Revoke an invitation. Remove a user from the invited  member list of the space.|
+|*acceptInvitation* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Accept an invitation and moves a user from the invited list to the member list.|
+|*acceptInvitation* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Accept an invitation and moves a user from the invited list to the member list.|
+|*denyInvitation* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Deny an invitation and removes a user from the invited list.|
+|*denyInvitation* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Deny an invitation and removes a user from the invited list.|
+|*validateRequest* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Validate a request and moves a user from the pending list to the member list.|
+|*validateRequest* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Validate a request and moves a user from the pending list to the member list.|
+|*declineRequest* (Space space, String userId) throws SpaceException|{{space, userid}}|void|Decline a request and removes a user from  the pending list.|
+|*declineRequest* (String spaceId, String userId) throws SpaceException|{{spaceId, userid}}|void|Decline a request and removes a user from  the pending list.|
+|*registerSpaceLifeCycleListener* (SpaceLifeCycleListener listener|{{listener}}|void|Register a space lifecycle listener.|
+|*unregisterSpaceLifeCycleListener* (SpaceLifeCycleListener listener)|{{listener}}|void|Unregister a space lifecycle listener.|
+|*setPortletsPrefsRequired* (PortletPreferenceRequiredPlugin portletPrefsRequiredPlugin)|{{portletPrefsRequiredPlugin}}|void| Set the portlet preferences got from the plug-in configuration.|
+|*getPortletsPrefsRequired* ()|{{N/A}}|{{{String[]}}}|Get the portlet preferences required to use in creating the portlet application.|
+|*setSpaceApplicationConfigPlugin* (SpaceApplicationConfigPlugin spaceApplicationConfigPlugin)|{{SpaceApplicationConfigPlugin}}|void|Set configuration plugin for initializing applications when creating a new space. (Since 1.1.3).|
+|*getSpaceApplicationConfigPlugin* ()|{{N/A}}|SpaceApplicationConfigPlugin|Get the configuration of applications to be initialized when creating a new space. (Since 1.1.3).|
 

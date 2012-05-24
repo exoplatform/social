@@ -1,8 +1,10 @@
-eXo Social provides a way to create groups and to share data and applications: the space. A space has it's own activity stream in which applications or members can publish information. In each space, members share applications and an openSocial dashboard.
+eXo Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.
 
-To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you will need to get current PortalContainer instance.
+To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current _PortalContainer_ instance.
+
 h1. Spaces Management {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_Management}
 h2. Create a space {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_Management.Create_Space}
+
 The following example shows how to create a space:
 {code:java}
 package org.exoplatform.social.sample;
@@ -41,7 +43,7 @@ public class SpaceCreationSample {
 
 h1. Space's applications management {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
 h2. Add an application to a space {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
-We can add a portlet or gadget applications into spaces. Once added, all members of the space can use that application. The following code shows how to add an application into a space :
+You can add portlet or gadget applications to spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
 
 {code: java}
 public void addApplicationToSpace() throws SpaceException {
@@ -62,12 +64,13 @@ public void addApplicationToSpace() throws SpaceException {
   spaceService.activateApplication(spaceId, appId);
 }
 {code}
+
 {note}
-appId is the portlet or gadget name as defined in portlet.xml or gadget.xml in the web-app. With eXo Social, we can find it in social-portlet.war and social.war. 
+_appId_ is the portlet or gadget name as defined in _portlet.xml_ or _gadget.xml_ in the web-app. You can find it in _social-portlet.war_ and _social.war_.
 {note}
 
 h1. Members Management  {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Members_Management}
-The SpaceService allows you to manage the spaces' members.Here is how you would add a now member to a space:
+SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:
 {code:java}
 String spaceName = "mySpace";
 
@@ -79,21 +82,22 @@ if (space != null) {
     spaceService.addMember(space, "mary");
 }
 {code}
+
 h1. Listener to a space lifecycle {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Listener_to_a_space_lifecycle}
-To receive notifications of what is happening in spaces, you need to extend SpaceListenerPlugin and register it. Every method takes a SpaceLifeCycleEvent object as parameter that contain the information about the event and it's context.
+To receive notifications of what are happening in spaces, you need to extend _SpaceListenerPlugin_ and register it. Every method takes a _SpaceLifeCycleEvent_ object as a parameter that contains the information about the event and its context.
 
-The events available are:
+The available events are:
 
-- spaceCreated: this event is called right after space is created successfully with its applications.
-- spaceRemoved: this event is called right after a space is removed: application's removed, its group and group navigation is removed
-- applicationAdded: this event is called right after an application is added (installed) to a space
-- applicationActivated: this event is called right after an application is activated.
-- applicationDeactivated: this event is called right after an application is deactivated.
-- applicationRemoved: this event is called right after an application is removed from a space.
-- joined: this event is called right after a user joins a space.
-- left: this event is called right after a space member leaves its space.
-- grantedLead: this event is called right after a user is grated space's manager role.
-- revokedLead: this event is called right after a space's manager is revoked his role to be a space member.
+* _spaceCreated_: This event is called right after a space is created successfully with its applications.
+* _spaceRemoved_: This event is called right after the space is removed. It means all the applications of the space are removed, its group and group navigation are removed.
+* _applicationAdded_: This event is called right after an application is added (installed) to the space.
+* _applicationActivated_: This event is called right after an application is activated in the space.
+* _applicationDeactivated_: This event is called right after an application is deactivated.
+* _applicationRemoved_: This event is called right after an application is removed from the space.
+* _joined_: This event is called right after a user joins the space.
+* _left_: This event is called right after a space member leaves its space.
+* _grantedLead_: This event is called right after a user is granted the space's manager role.
+* _revokedLead_: This event is called right after the space's manager is revoked his role to be a space member.
 
 {code:java}
 import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
@@ -103,9 +107,9 @@ public class MySpaceListenerPlugin extends SpaceListenerPlugin {
 }
 {code}
 
-As an example, see the [SpaceActivityPublisher|http://fisheye.exoplatform.org/browse/social/trunk/component/exosocial/src/main/java/org/exoplatform/social/space/SpaceActivityPublisher.java?r=HEAD] that publishes an activity based on an event that happened in a space.
+As an example, see the SpaceActivityPublisher that publishes an activity based on an event that happened in a space.
 
-To register your listener, hook it to the SpaceService like this :
+To register your listener, hook it to the SpaceService like this:
 {code:xml}
 <external-component-plugins>
   <target-component>org.exoplatform.social.space.SpaceService</target-component>
