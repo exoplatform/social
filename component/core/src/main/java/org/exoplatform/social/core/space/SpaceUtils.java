@@ -116,6 +116,10 @@ public class SpaceUtils {
 
   public static final String SPACE_URL = "SPACE_URL";
 
+  private static final String PORTLET_STR = "portlet";
+
+  private static final String GADGET_STR = "gadget";
+
   /**
    * The id of the container in plf.
    * 
@@ -1338,12 +1342,12 @@ public class SpaceUtils {
    * @return
    */
   public static String getDisplayAppName(String appDisplayName) {
-    int length = appDisplayName.length();
-    if (appDisplayName.toLowerCase().endsWith("portlet")) {
-      return appDisplayName.substring(0, length - 7).trim();
-    }
-    if (appDisplayName.toLowerCase().endsWith("gadget")) {
-      return appDisplayName.substring(0, length - 6).trim();
+    return getDisplayAppName(getDisplayAppName(appDisplayName, PORTLET_STR), GADGET_STR);
+  }
+
+  private static String getDisplayAppName(String appDisplayName, String key) {
+    if (appDisplayName.toLowerCase().endsWith(key)) {
+      return appDisplayName.substring(0, appDisplayName.length() - key.length()).trim();
     }
     return appDisplayName;
   }
