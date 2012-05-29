@@ -90,11 +90,11 @@
     <jbossxb.version>2.0.1.GA</jbossxb.version>
     <jboss-common-core.version>2.2.9.GA</jboss-common-core.version>
 
-    <org.exoplatform.kernel.version>2.3.7-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.7-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.7-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.7-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.4-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.kernel.version>2.3.8-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.8-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.8-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
     <org.exoplatform.ecms.version>2.3.7-SNAPSHOT</org.exoplatform.ecms.version>  
 
    
