@@ -66,7 +66,7 @@ public class VersionResources implements ResourceContainer {
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Versionlastest.Get
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get
    * @request
    *{code}
    * GET: http://cloud-workspaces.com/rest/api/social/version/latest.json
@@ -104,7 +104,7 @@ public class VersionResources implements ResourceContainer {
    *
    * @param uriInfo the uri info
    * @param format  the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.VersionResources.Get
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get
    * @request
    *{code}
    * GET: http://cloud-workspaces.com/rest/api/social/version/supported.json
