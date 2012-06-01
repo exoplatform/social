@@ -87,7 +87,7 @@ public class ActivityResources implements ResourceContainer {
    * use _activity/\:activityId/likes.format_ instead.
    * @param showActivityStream When this parameter is set to true, t or 1, the returned activity will provide more
    * information for the activity stream that this activity belongs to.
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Get
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Get
    * @authentication
    * @request
    *{code}
@@ -196,7 +196,7 @@ public class ActivityResources implements ResourceContainer {
    * @param format the expected returned format
    * @param identityIdStream the optional identity stream to post this new activity to
    * @param newActivity a new activity instance
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Post
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Post
    * @authentication
    * @request
    *{code}
@@ -280,7 +280,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.Delete
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Delete
    * @authentication
    * @request
    *{code}
@@ -361,7 +361,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activity.PostDelete
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.PostDelete
    * @authentication
    * @request
    *{code}
@@ -413,7 +413,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Get
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Get
    * @authentication
    * @request
    *{code}
@@ -500,7 +500,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Post
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Post
    * @authentication
    * @request
    *{code}
@@ -575,7 +575,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.Delete
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Delete
    * @authenticated
    * @request
    *{code}
@@ -646,7 +646,7 @@ public class ActivityResources implements ResourceContainer {
    * @param activityId the specified activity id
    * @param commentId the specified comment id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.Activitycomments.PostDelete
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.PostDelete
    * @authenticated
    * @request
    *{code}
@@ -779,7 +779,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Post
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Post
    * @authentication
    * @request
    *{code}
@@ -835,7 +835,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Delete
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Delete
    * @authentication
    * @request
    *{code}
@@ -894,7 +894,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName the associated portal container name
    * @param activityId the specified activity id
    * @param format the expected returned format
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha1.ActivityResource.ActivityLike.Postdestroy
+   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Postdestroy
    * @authentication
    * @request
    *{code}
