@@ -55,7 +55,7 @@ public class OembedEmbedder {
   // <urlscheme,endpoint> mapping
   private Map<Pattern,String> schemeEndpointMap;
   
-  private static final Log log = ExoLogger.getLogger(OembedEmbedder.class); 
+  private static final Log LOG = ExoLogger.getLogger(OembedEmbedder.class); 
   
   /**
    * constructor
@@ -98,7 +98,7 @@ public class OembedEmbedder {
       }
       return null;
     } catch(MalformedURLException e) {
-      log.warn("Can't get oembed url for oembed request",e);
+      LOG.warn("Can't get oembed url for oembed request",e);
       return null;
     }
   }
@@ -117,10 +117,13 @@ public class OembedEmbedder {
       bufferedReader.close();
       return new JSONObject(stringBuffer.toString());
       } catch (JSONException e) {
-        log.warn("Can't get oembed response", e);
+        LOG.warn("Can't get oembed response", e);
         return null;
       } catch (IOException e) {
-        log.warn("Can't get oembed response", e);
+        LOG.warn("Can't get oembed response", e);
+        return null;
+      } catch (Exception e) {
+        LOG.warn("Can't get oembed response",e);
         return null;
       }
   }
@@ -138,7 +141,7 @@ public class OembedEmbedder {
       mediaObject.setUrl(jsonObject.has(EMBED_URL) ? jsonObject.getString(EMBED_URL) : "") ;
       return mediaObject;    
     } catch (JSONException e) {
-      log.warn("Can't convert JSONObject to ExoSocialMedia object", e);
+      LOG.warn("Can't convert JSONObject to ExoSocialMedia object", e);
       return null;
     }
   }

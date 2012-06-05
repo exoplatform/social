@@ -62,7 +62,7 @@ public class LinkShareRestService implements ResourceContainer {
         ls = LinkShare.getInstance(link);
       }
     } catch(Exception ex) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
     }
     return ls;
   }
