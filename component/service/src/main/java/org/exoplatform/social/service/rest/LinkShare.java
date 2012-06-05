@@ -18,7 +18,6 @@ package org.exoplatform.social.service.rest;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,9 +38,11 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.social.common.Util;
-import org.json.JSONObject;
+import org.exoplatform.social.common.embedder.ExoSocialMedia;
+import org.exoplatform.social.common.embedder.OembedEmbedder;
 
 /**
  * LinkShare - gets preview information of a link including: 
@@ -126,7 +127,7 @@ public class LinkShare extends DefaultFilter {
   private String   description;
   private String imageSrc;
   private List<String> images;
-  private JSONObject videoJson;
+  private ExoSocialMedia mediaObject;
   //Collections of description with key as lang
   private HashMap<String, String> descriptions;
   //holds temporary string values from characters() method
@@ -181,15 +182,6 @@ public class LinkShare extends DefaultFilter {
    */
   public List<String> getImages() {
     return images;
-  }
-  
-  /**
-   * gets videoJson
-   * @return JSONObject
-   * @since 4.0.0
-   */
-  public JSONObject getVideoJson() {
-    return videoJson;
   }
   
   /**
@@ -279,6 +271,13 @@ public class LinkShare extends DefaultFilter {
   public String getMediaWidth() {
     return mediaWidth;
   }
+  /**
+   * get mediaObject
+   * @return
+   */
+  public ExoSocialMedia getMediaObject() {
+    return mediaObject;
+  }
   
   /**
    * Gets information of the provided link by using remover filter,
@@ -347,65 +346,61 @@ public class LinkShare extends DefaultFilter {
       return null;
     
     if (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL))) {
-      URI uri = URI.create(link);
-      String uriScheme = uri.getScheme();
-      if (uriScheme != null) {
-        link = HTTP_PROTOCOL + uri.getSchemeSpecificPart();
-      } else {
         link = HTTP_PROTOCOL + link;
-      }
     }
     
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;
     LinkShare.lang = lang;
-    
-    String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
-    mimeType = mimeType.toLowerCase();
-    
-    if(mimeType.startsWith(IMAGE_MIME_TYPE)){
-      linkShare.images = new ArrayList<String>(0);
-      linkShare.images.add(link);
-      linkShare.description = "";
-    } else if(mimeType.startsWith(HTML_MIME_TYPE)){
-      linkShare.get();
-    } else {
-      linkShare.images = new ArrayList<String>(0);
-      linkShare.description = "";
-    }
-    
-    if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
-    
-    //If image_src detected from meta tag, sets this image_src to images
-    if (linkShare.imageSrc != null) {
-      List<String> images = new ArrayList<String>();
-      images.add(linkShare.imageSrc);
-      linkShare.images = images;
-    }
-    //gets desired description by lang when there are many description meta name with different lang
-    HashMap<String, String> descriptions = linkShare.descriptions;
-    if (descriptions != null) {
-      String description = descriptions.get(LinkShare.lang);
-      if (description == null) {
-       Collection<String> values = descriptions.values();
-       //get the first value in the collection
-       description = values.iterator().next();
+    // get media object from link
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    OembedEmbedder embedder = (OembedEmbedder) container.getComponentInstanceOfType(OembedEmbedder.class);
+    linkShare.mediaObject = embedder.getExoSocialMedia(link);
+    // if there is no media object, processes link to get page metadata
+    if(linkShare.mediaObject == null) {
+      String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
+      mimeType = mimeType.toLowerCase();
+      
+      if(mimeType.startsWith(IMAGE_MIME_TYPE)){
+        linkShare.images = new ArrayList<String>(0);
+        linkShare.images.add(link);
+        linkShare.description = "";
+      } else if(mimeType.startsWith(HTML_MIME_TYPE)){
+        linkShare.get();
+      } else {
+        linkShare.images = new ArrayList<String>(0);
+        linkShare.description = "";
       }
-      linkShare.description = description;
-      //gets with maximum characters only
-      String tail = "";
-      if (description.length() > MAX_DESCRIPTION) {
-        tail = "...";
-        linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
+      
+      if ((linkShare.title == null) || (linkShare.title.trim().length() == 0)) linkShare.title = link;
+      
+      //If image_src detected from meta tag, sets this image_src to images
+      if (linkShare.imageSrc != null) {
+        List<String> images = new ArrayList<String>();
+        images.add(linkShare.imageSrc);
+        linkShare.images = images;
       }
-    }
-    if (linkShare.description == null) linkShare.description = "";
-    if (linkShare.images == null) {
-      linkShare.images = new ArrayList<String>();
-    }
-    
-    if (Util.isYoutubeLink(link)) {
-      linkShare.videoJson = Util.getOembedData(link);
+      //gets desired description by lang when there are many description meta name with different lang
+      HashMap<String, String> descriptions = linkShare.descriptions;
+      if (descriptions != null) {
+        String description = descriptions.get(LinkShare.lang);
+        if (description == null) {
+         Collection<String> values = descriptions.values();
+         //get the first value in the collection
+         description = values.iterator().next();
+        }
+        linkShare.description = description;
+        //gets with maximum characters only
+        String tail = "";
+        if (description.length() > MAX_DESCRIPTION) {
+          tail = "...";
+          linkShare.description = description.substring(0, MAX_DESCRIPTION - 1) + tail;
+        }
+      }
+      if (linkShare.description == null) linkShare.description = "";
+      if (linkShare.images == null) {
+        linkShare.images = new ArrayList<String>();
+      }
     }
     return linkShare;
   }

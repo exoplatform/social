@@ -24,6 +24,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
@@ -57,12 +58,39 @@ import org.exoplatform.social.service.rest.api.models.ProfileRestOut;
  * @since  Jan 5, 2009
  */
 public final class Util {
+  
+  private static final Pattern URL_PATTERN = Pattern
+      .compile("^(?i)" +
+      "(" +
+        "((?:(?:ht)tp(?:s?)\\:\\/\\/)?" +                                                       // protolcol
+        "(?:\\w+:\\w+@)?" +                                                                       // username password
+        "(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +  // IPAddress
+        "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))|" +     // IPAddress
+        "(?:(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+\\.)+" +
+        "(?:com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|asia|cat|coop|int|pro|tel|xxx|[a-z]{2}))))|" + //Domain
+        "(?:(?:(?:ht)tp(?:s?)\\:\\/\\/)(?:\\w+:\\w+@)?(?:[-\\p{L}\\p{Digit}\\+\\$\\-\\*\\=]+))" + // Protocol with hostname
+      ")" +
+      "(?::[\\d]{1,5})?" +                                                                        // port
+      "(?:[\\/|\\?|\\#].*)?$");                                                               // path and query
+
+
   /**
    * Prevents constructing a new instance.
    */
   private Util() {
   }
 
+  /**
+   * Checks a url is in a valid form or not.
+   * 
+   * @param link
+   * @return
+   */
+  public static boolean isValidURL(String link) {
+    if (link == null || link.length() == 0) return false;
+    return URL_PATTERN.matcher(link).matches();
+  }
+  
   /**
    * Gets the response object constructed from the provided params.
    *

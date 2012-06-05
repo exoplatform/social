@@ -49,7 +49,7 @@
     link = linkShare.getLink().replaceAll("'", "&#039;");
     images = linkShare.getImages();
     def image;
-    if (images.size() > 0) {
+    if (images != null && images.size() > 0) {
       image = images.get(0);
     }
     title = linkShare.getTitle().replaceAll("'", "&#039;");

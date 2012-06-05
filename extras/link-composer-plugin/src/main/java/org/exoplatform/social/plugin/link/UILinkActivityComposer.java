@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.exoplatform.social.common.embedder.ExoSocialMedia;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -45,7 +46,6 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.json.JSONObject;
 
 /**
  * UIComposerLinkExtension.java
@@ -141,16 +141,17 @@ public class UILinkActivityComposer extends UIActivityComposer {
     
     templateParams = new LinkedHashMap<String, String>();
     templateParams.put(LINK_PARAM, linkShare_.getLink());
-    JSONObject videoJson = linkShare_.getVideoJson();
+    ExoSocialMedia mediaObject = linkShare_.getMediaObject();
     String image = "";
     List<String> images = linkShare_.getImages();
     if (images != null && images.size() > 0) {
       image = images.get(0);
     }
     templateParams.put(IMAGE_PARAM, image);
-    templateParams.put(TITLE_PARAM, videoJson != null ? videoJson.getString(TITLE_PARAM) : linkShare_.getTitle());
-    templateParams.put(DESCRIPTION_PARAM, linkShare_.getDescription());
-    templateParams.put(HTML_PARAM, videoJson != null ? videoJson.getString(HTML_PARAM) : null);
+    templateParams.put(TITLE_PARAM, mediaObject != null ? mediaObject.getTitle() : linkShare_.getTitle());
+    templateParams.put(DESCRIPTION_PARAM, (mediaObject != null)
+                                           ? mediaObject.getDescription(): linkShare_.getDescription());
+    templateParams.put(HTML_PARAM, mediaObject != null ? mediaObject.getHtml() : null);
     setLinkInfoDisplayed(true);
   }
   
