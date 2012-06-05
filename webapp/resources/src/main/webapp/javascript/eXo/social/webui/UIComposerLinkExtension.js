@@ -182,13 +182,18 @@
       this.linkDescription = Util.getElementById('LinkDescription');
       
       var titleParam = this.titleEditable;
-      Util.addEventListener(this.linkTitle, 'click', function(evt) {
-        addEditableText(this, 'input', titleParam);
-      }, false);
       
-      Util.addEventListener(this.linkDescription, 'click', function(evt) {
-        addEditableText(this, 'textarea', titleParam);
-      }, false);
+      if(this.linkTitle) {
+        Util.addEventListener(this.linkTitle, 'click', function(evt) {
+          addEditableText(this, 'input', titleParam);
+        }, false);
+      }
+      
+      if(this.linkDescription) {
+        Util.addEventListener(this.linkDescription, 'click', function(evt) {
+          addEditableText(this, 'textarea', titleParam);
+        }, false);  
+      }
       
       if (this.thumbnails) {
         this.thumbnailCheckbox = Util.getElementById(this.thumbnailCheckboxId);
