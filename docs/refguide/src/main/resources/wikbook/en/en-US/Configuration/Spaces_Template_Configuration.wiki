@@ -1,4 +1,4 @@
-In eXo Social, you may have two space types (classic and webos spaces).
+In Social, you may have two space types (classic and webos spaces).
 
 For the classic space, you can pre-configure the template. You can configure the layout to select where to display the applications (for example, the application's menu on the left, the selected application is displayed on the right, and more).
 
@@ -55,7 +55,7 @@ If you want to put the menu on the right and the application on the left, you ca
 {code}
 
 
-In eXo Social standalone, this configuration file is at:
+In Social standalone, this configuration file is at:
 * _{{{$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml}}}_
 In eXo Platform, this configuration file is at:
 * _{{{$EXO_TOMCAT/webapps/{portal-name}/WEB-INF/conf/portal/template/pages/space/page.xml}}}_

@@ -1,4 +1,4 @@
-eXo Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
+Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
 To manipulate activities, you need to use the _AtivityManager_ service.
 
 h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
@@ -209,7 +209,7 @@ The "init-params" contains all the key-value data which a processor will use to 
 
 h1. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Publish_an_rss_feed_with_feedmash}
 
-It is really easy to publish an RSS feed to a space's activity stream. eXo Social provides _FeedmashJobPlugin_ to publish the RSS feeds. As you can see in the project "_exo.social.extras.feedmash_", there are the _JiraFeedConsumer_ and _HudsonFeedConsumer_ samples to post eXo Social project's feeds (jira and hudson) to a pre-defined space named _exosocial_ in a specific portal container named _socialdemo_ as in the configuration file:
+It is really easy to publish an RSS feed to a space's activity stream. Social provides _FeedmashJobPlugin_ to publish the RSS feeds. As you can see in the project "_exo.social.extras.feedmash_", there are the _JiraFeedConsumer_ and _HudsonFeedConsumer_ samples to post Social project's feeds (jira and hudson) to a pre-defined space named _exosocial_ in a specific portal container named _socialdemo_ as in the configuration file:
 
 {code:xml}
 <external-component-plugins>
@@ -268,7 +268,7 @@ It is really easy to publish an RSS feed to a space's activity stream. eXo Socia
 </external-component-plugins>
 {code}
 
-Run eXo Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the eXo Social project on Jira and Hudson will be automatically published to the _exosocial_ space.
+Run Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the Social project on Jira and Hudson will be automatically published to the _exosocial_ space.
 
 h1. Sample Code {anchor:id=SOCref.Developer_references.Sample_code}
 See the following code snippet to know more details about how to publish an activity and add comments to an activity:

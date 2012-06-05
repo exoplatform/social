@@ -1,7 +1,7 @@
-Like any other eXo's products, eXo Social fully complies the JCR standard to store data (identity, profile, activity, space and relationship).
-The eXo Social JCR structure is organized to conform to the data storage for the individual purpose of eXo Social. With this structure, it is easy for you to manage and access the data properly.
+Like any other eXo's products, Social fully complies the JCR standard to store data (identity, profile, activity, space and relationship).
+The Social JCR structure is organized to conform to the data storage for the individual purpose of Social. With this structure, it is easy for you to manage and access the data properly.
 
-See the eXo Social JCR structure in the chart below:
+See the Social JCR structure in the chart below:
 
 !images/Social-Workspace.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 
@@ -9,8 +9,8 @@ See the eXo Social JCR structure in the chart below:
 The root node of Social workspace is _/production/_ which consists of two child nodes named _{{{soc:providers}}}_, and _{{{soc:spaces}}}_.
 
 h1. soc:providers  {anchor:id=SOCref.Social_JCR_Structure.socproviders}
-The _{{{soc:providers}}}_ node is used to store the provider entities. In eXo Social, there are two built-in provider entities, including _organization_, and _space_.
-Its type is _{{{soc:providers}}}_ that has the _soc\:<provider\_name>_ child node of the _{{{soc:providerdefinition}}}_ type.
+The _soc\:providers_ node is used to store the provider entities. In Social, there are two built-in provider entities, including _organization_, and _space_.
+Its type is _soc\:providers_ that has the _soc\:<provider\_name>_ child node of the _soc\:providerdefinition_ type.
 
 {docbook}
 <para xml:id="SOCref.Social_JCR_Structure.socproviders.provider_Name">
@@ -22,9 +22,9 @@ soc:<provider_name>]]>
 </para>
 {docbook}
 
-The <provider\_name> parameter in the _{{{soc\:<provider\_name>}}}_ node depends on the identity providers. eXo Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
+The _<provider\_name>_ parameter in the _soc\:<provider\_name>_ node depends on the identity providers. Social has two identity providers, including _OrgarnizationIdentityProvider_, and _SpaceIdentityProvider_ that contain organization identities (users) and space identities respectively.
 
-The _{{{soc:<provider_name>}}}_ node of the _{{{soc:providerdefinition}}}_ type has the _{{{soc:<identityRemoteId>}}}_ child nodes that have the _{{{soc:identitydefinition}}}_ type.
+The _soc\:<provider\_name>_ node of the _soc\:providerdefinition_ type has the _soc\:<identityRemoteId>_ child nodes that have the _soc\:identitydefinition_ type.
 
 h1. Identity  {anchor:id=SOCref.Social_JCR_Structure.IdentityEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.IdentityEntity.wiki"}
@@ -35,7 +35,7 @@ h1. Relationship  {anchor:id=SOCref.Social_JCR_Structure.RelationshipEntity}
 h1. Profile  {anchor:id=SOCref.Social_JCR_Structure.ProfileEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.ProfileEntity.wiki"}
 
-Some residual properties can be set and will be used by eXo Social :
+Some residual properties can be set and will be used by Social:
 || Property Name || Required Type || Multiple|| Description ||
 |void-Url|undefined | true| The URL to access the profile of an identity.|
 |void-email|undefined | true| The email of an identity in the profile. |
@@ -66,7 +66,7 @@ h1. Activity parameters {anchor:id=SOCref.Social_JCR_Structure.ActivityParameter
 
 The _{{{soc:activityparam}}}_ node type has the following property:
 || Property Name || Required Type || Multiple|| Description ||
-|*|String|false|A map of key-values. |
+|\*|String|false|A map of key-values. |
 
 h1. Space list  {anchor:id=SOCref.Social_JCR_Structure.SpaceListEntity}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.SpaceListEntity.wiki"}
