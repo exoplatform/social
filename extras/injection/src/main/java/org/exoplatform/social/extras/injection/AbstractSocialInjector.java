@@ -156,7 +156,8 @@ public abstract class AbstractSocialInjector extends DataInjector {
     
     QueryBuilder<IdentityEntity> builder = lifeCycle.getSession().createQueryBuilder(IdentityEntity.class);
     WhereExpression where = new WhereExpression();
-    where.like(IdentityEntity.remoteId, base + "%");
+    where.like(IdentityEntity.remoteId, base + "%")
+    .or().like(IdentityEntity.remoteId, base.toLowerCase() + "%");
     return builder.where(where.toString()).get().objects().size();
 
   }
