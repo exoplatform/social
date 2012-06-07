@@ -160,6 +160,11 @@ public class UISpacesToolBarPortlet extends UIPortletApplication {
 
     Space space = spaceSrv.getSpaceByUrl(spaceUrl);
 
+    // Have no page.
+    if (applicationNode.getPageRef() == null) {
+      return false;
+    }
+    
     // space is deleted
     if (space == null) {
       return false;

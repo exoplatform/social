@@ -120,6 +120,9 @@ public class UISpaceMenu extends UIContainer {
     }
     
     List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(homeNode.getChildren());
+    
+    removeNonePageNodes(userNodeArraySorted);
+    
     //SOC-2290 Need to comment the bellow line, sort by in configuration XML file.
     //Collections.sort(userNodeArraySorted, new ApplicationComparator());
     return userNodeArraySorted;
@@ -353,5 +356,23 @@ public class UISpaceMenu extends UIContainer {
    */
   protected Space getSpace(String spaceUrl) {
     return spaceService.getSpaceByUrl(spaceUrl);
+  }
+  
+  /**
+   * Removes nodes that have no page.
+   * 
+   * @param nodes
+   */
+  private void removeNonePageNodes(List<UserNode> nodes) {
+    
+    List<UserNode> nonePageNodes = new ArrayList<UserNode>();
+    
+    for (UserNode node : nodes) {
+      if (node.getPageRef() == null) {
+        nonePageNodes.add(node);
+      }
+    }
+    
+    nodes.removeAll(nonePageNodes);
   }
 }
