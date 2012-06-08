@@ -255,11 +255,19 @@
 	background-position: left -468px;
 }
 
-.UIActivity .ContentBox .AnswerActivityIcon {
-	background-position: left -449px;
+.UIActivity .ContentBox .AnswerAddActivityIcon {
+	background-position: left -527px;
 }
 
-.UIActivity .ContentBox .AskedActivityIcon {
+.UIActivity .ContentBox .AnswerUpdateActivityIcon {
+	background-position: left -527px;
+}
+
+.UIActivity .ContentBox .QuestionAddActivityIcon {
+	background-position: left -527px;
+}
+
+.UIActivity .ContentBox .QuestionUpdateActivityIcon {
 	background-position: left -527px;
 }
 
