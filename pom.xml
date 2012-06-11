@@ -79,7 +79,7 @@
     <hsqldb.version>2.0.0</hsqldb.version>
     <javassist.version>3.14.0-GA</javassist.version>
     <junit.version>4.10</junit.version>
-    <byteman.version>2.0.0</byteman.version>
+    <byteman.version>2.0.4</byteman.version>
     <mysql-connector-java.version>5.1.6</mysql-connector-java.version>
     <rome.version>1.0</rome.version>
     <stax.version>1.0</stax.version>
