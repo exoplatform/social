@@ -210,22 +210,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     List<Identity> relations = new ArrayList<Identity>();
 
     try {
-      SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
-
-
-      String[] members = null;
-      switch (type) {
-        case MEMBER:
-          if(spaceEntity != null && spaceEntity.getMembersId() != null){
-            members = spaceEntity.getMembersId();
-          }
-          break;
-        case MANAGER:
-          if(spaceEntity != null && spaceEntity.getManagerMembersId() != null){
-            members = spaceEntity.getManagerMembersId();
-          }
-          break;
-      }
+      Space gotSpace = getSpaceStorage().getSpaceById(space.getId());
+      String[] members = gotSpace.getMembers();
 
       for (int i = 0; i <  members.length; i++){
         relations.add(_findIdentity(OrganizationIdentityProvider.NAME, members[i]));
@@ -234,6 +220,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     } catch (NodeNotFoundException e){
       throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_FIND_IDENTITY);
     }
+    
     whereExpression.endGroup();
     whereExpression.and();
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
