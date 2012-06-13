@@ -16,16 +16,11 @@
  */
 package org.exoplatform.social.core.processor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
@@ -39,7 +34,7 @@ import org.exoplatform.social.core.service.LinkProvider;
  */
 public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
-
+  private static final String USERNAME_PATTERN = "(^|\\s)(@([\\p{L}\\p{Digit}\\_\\.\\-]+)([\\p{L}\\p{Digit}]+))";
 
   public MentionsProcessor(InitParams params) {
     super(params);
@@ -67,38 +62,33 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       return null;
     }
 
-    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+    Pattern pattern = Pattern.compile(USERNAME_PATTERN);
     Matcher matcher = pattern.matcher(message);
 
     // Replace all occurrences of pattern in input
     StringBuffer buf = new StringBuffer();
+    String mention, replaceStr, portalOwner;
     while (matcher.find()) {
       // Get the match result
-      String replaceStr = matcher.group().substring(1);
-
-      String portalOwner = null;
-      try{
+      mention = matcher.group();
+      replaceStr = mention.substring(mention.indexOf("@") + 1);
+      try {
         portalOwner = Util.getPortalRequestContext().getPortalOwner();
-      } catch (Exception e){
+      } catch (Exception e) {
         //default value for testing and social
         portalOwner = LinkProvider.DEFAULT_PORTAL_OWNER;
       }
-
-      // Convert to uppercase
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
-      replaceStr = lp.getProfileLink(replaceStr, portalOwner);
-
-      // Insert replacement
-      if(replaceStr != null){
-        matcher.appendReplacement(buf, replaceStr);
+      replaceStr = LinkProvider.getProfileLink(replaceStr, portalOwner);
+      if (mention.indexOf("@") > 0) {
+        replaceStr = " " + replaceStr;
       }
 
+      // Insert replacement
+      if (replaceStr != null) {
+        matcher.appendReplacement(buf, replaceStr);
+      }
     }
     matcher.appendTail(buf);
     return buf.toString();
-
   }
-
-
 }
