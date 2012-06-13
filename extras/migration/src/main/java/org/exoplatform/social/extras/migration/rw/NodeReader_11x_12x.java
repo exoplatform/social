@@ -114,6 +114,11 @@ public class NodeReader_11x_12x implements NodeReader {
 
     public void run() {
       try {
+        if (!rootNode.hasNode("exo:applications/Social_Identity")) {
+          os.close();
+          return;
+        }
+        
         Node rootIdentity = rootNode.getNode("exo:applications/Social_Identity");
         NodeIterator it = rootIdentity.getNodes();
         it.skip(ctx.getDone(WriterContext.DataType.IDENTITIES));
@@ -139,6 +144,11 @@ public class NodeReader_11x_12x implements NodeReader {
 
     public void run() {
       try {
+        if (!rootNode.hasNode("exo:applications/Social_Relationship")) {
+          os.close();
+          return;
+        }
+        
         Node rootRelationship = rootNode.getNode("exo:applications/Social_Relationship");
         NodeIterator it = rootRelationship.getNodes();
         it.skip(ctx.getDone(WriterContext.DataType.RELATIONSHIPS));
@@ -164,6 +174,11 @@ public class NodeReader_11x_12x implements NodeReader {
 
     public void run() {
       try {
+        if (!rootNode.hasNode("exo:applications/Social_Space/Space")) {
+          os.close();
+          return;
+        }
+        
         Node rootSpace = rootNode.getNode("exo:applications/Social_Space/Space");
         NodeIterator it = rootSpace.getNodes();
         it.skip(ctx.getDone(WriterContext.DataType.SPACES));
@@ -191,30 +206,37 @@ public class NodeReader_11x_12x implements NodeReader {
       long remaining = ctx.getDone(WriterContext.DataType.ACTIVITIES);
 
       try {
-        Node rootOrganizationActivity = rootNode.getNode("exo:applications/Social_Activity/organization");
-        NodeIterator userItOrganization = rootOrganizationActivity.getNodes();
-        while (userItOrganization.hasNext()) {
-
-          Node currentUser = userItOrganization.nextNode();
-          Node publishedNode = currentUser.getNode("published");
-          NodeIterator it = publishedNode.getNodes();
-
-          long size = it.getSize();
-          if (remaining >= size) {
-            remaining -= size;
-            continue;
+        if (rootNode.hasNode("exo:applications/Social_Activity/organization")) {
+          Node rootOrganizationActivity = rootNode.getNode("exo:applications/Social_Activity/organization");
+          NodeIterator userItOrganization = rootOrganizationActivity.getNodes();
+          while (userItOrganization.hasNext()) {
+  
+            Node currentUser = userItOrganization.nextNode();
+            Node publishedNode = currentUser.getNode("published");
+            NodeIterator it = publishedNode.getNodes();
+  
+            long size = it.getSize();
+            if (remaining >= size) {
+              remaining -= size;
+              continue;
+            }
+            else if (remaining > 0) {
+              it.skip(remaining);
+              readFrom(it, os);
+              remaining = 0;
+            }
+            else {
+              readFrom(it, os);
+            }
+  
           }
-          else if (remaining > 0) {
-            it.skip(remaining);
-            readFrom(it, os);
-            remaining = 0;
-          }
-          else {
-            readFrom(it, os);
-          }
-
         }
 
+        if (!rootNode.hasNode("exo:applications/Social_Activity/space")) {
+          os.close();
+          return;
+        }
+        
         Node rootSpaceActivity = rootNode.getNode("exo:applications/Social_Activity/space");
         NodeIterator userItSpace = rootSpaceActivity.getNodes();
         while(userItSpace.hasNext()) {
@@ -260,6 +282,11 @@ public class NodeReader_11x_12x implements NodeReader {
 
       try {
 
+        if (!rootNode.hasNode("exo:applications/Social_Profile")) {
+          os.close();
+          return;
+        }
+        
         //
         Node rootProfile = rootNode.getNode("exo:applications/Social_Profile");
         NodeIterator it = rootProfile.getNodes();
