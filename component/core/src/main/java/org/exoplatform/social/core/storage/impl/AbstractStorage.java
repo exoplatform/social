@@ -35,8 +35,6 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 public abstract class AbstractStorage {
 
   //
-  protected final PortalContainer container;
-  protected final ChromatticManager manager;
   protected final SocialChromatticLifeCycle lifeCycle;
 
   //
@@ -54,9 +52,7 @@ public abstract class AbstractStorage {
 
   protected AbstractStorage() {
 
-    this.container = PortalContainer.getInstance();
-    this.manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
-    this.lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+    this.lifeCycle = lifecycleLookup();
 
   }
 
@@ -142,18 +138,31 @@ public abstract class AbstractStorage {
     }
   }
 
-  protected boolean startSynchronization() {
-    if (lifeCycle.getManager().getSynchronization() == null) {
-      lifeCycle.getManager().beginRequest();
+  public static boolean startSynchronization() {
+
+    SocialChromatticLifeCycle lc = lifecycleLookup();
+
+    if (lc.getManager().getSynchronization() == null) {
+      lc.getManager().beginRequest();
       return true;
     }
     return false;
   }
 
-  protected void stopSynchronization(boolean requestClose) {
+  public static void stopSynchronization(boolean requestClose) {
+
+    SocialChromatticLifeCycle lc = lifecycleLookup();
     if (requestClose) {
-      lifeCycle.getManager().endRequest(true);
+      lc.getManager().endRequest(true);
     }
+  }
+
+  private static SocialChromatticLifeCycle lifecycleLookup() {
+
+    PortalContainer container = PortalContainer.getInstance();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
+
   }
 
 }
