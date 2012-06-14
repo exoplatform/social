@@ -45,14 +45,14 @@
   
   def componentId = uicomponent.id;
   def inviteToConnectLabel = _ctx.appRes(componentId + ".label.InviteToConnect");
-  def connectLabel = _ctx.appRes(componentId + ".label.Connect");
-  def denyLabel = _ctx.appRes(componentId + ".label.Deny");
-  def revokeLabel = _ctx.appRes(componentId + ".label.Revoke");
+  def confirmLabel = _ctx.appRes(componentId + ".label.Confirm");
+  def ignoreLabel = _ctx.appRes(componentId + ".label.Ignore");
+  def cancelLabel = _ctx.appRes(componentId + ".label.CancelRequest");
   def disconnectLabel = _ctx.appRes(componentId + ".label.Disconnect");
   def inviteToConnectTitle = (_ctx.appRes(componentId + ".label.InviteToConnectTitle")).replace("{0}", currentUser + "");
-  def connectTitle = (_ctx.appRes(componentId + ".label.ConnectTitle")).replace("{0}", currentUser + "");
-  def denyTitle = (_ctx.appRes(componentId + ".label.DenyTitle")).replace("{0}", currentUser + "");
-  def revokeTitle = (_ctx.appRes(componentId + ".label.RevokeTitle")).replace("{0}", currentUser + "");
+  def confirmTitle = (_ctx.appRes(componentId + ".label.ConfirmTitle")).replace("{0}", currentUser + "");
+  def denyTitle = (_ctx.appRes(componentId + ".label.IgnoreTitle")).replace("{0}", currentUser + "");
+  def cancelTitle = (_ctx.appRes(componentId + ".label.CancelRequestTitle")).replace("{0}", currentUser + "");
   def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
   def relationship = uicomponent.getRelationship();
 %>
@@ -66,12 +66,12 @@
 	  <% } %>
 	<% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
 	     <a href="javascript:void(0);" class="WaittingConfirmIcon">&nbsp;</a>
-	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
+	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$ignoreLabel</a>
 	     <span class="ActionSparator"> | </span>
-         <a class="InviConnect ColorLink" href="javascript:void(0);" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>	     
+         <a class="InviConnect ColorLink" href="javascript:void(0);" title="$confirmTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$confirmLabel</a>
 	<% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
 	     <a href="javascript:void(0);" class="WaittingConfirmIcon">&nbsp;</a>
-	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
+	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$cancelTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$cancelLabel</a>
 	<% } else if (contactStatus == Type.CONFIRMED) { %>
 	     <a href="javascript:void(0);" class="HasConnectionIcon">&nbsp;</a>
 	     <a class="InviConnect ColorLink"href="javascript:void(0);" title="$disconnectTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</a>
