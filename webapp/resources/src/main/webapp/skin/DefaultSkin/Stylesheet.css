@@ -153,9 +153,9 @@ blockquote {
 	padding: 5px;
 }
 
-.UISocApplication .UITabPane img {
-	height: 47px;
-	width: 47px;
+.UISocApplication .UITabPane .UIActivity img {
+	max-width: 300px;
+	max-height: 300px;
 }
 	
 .UISocApplication .ContainerSpace .ContentSpace {
