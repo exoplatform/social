@@ -273,9 +273,9 @@
         </executions>
         <configuration>
           <sourceDirectory>${project.build.directory}/wikbook/output/xhtml</sourceDirectory>
-          <sourceFileName>social.docs.refguide.html</sourceFileName>
+          <sourceFileName>social-docs-refguide.html</sourceFileName>
           <destinationDirectory>${project.build.directory}/wikbook/output/pdf</destinationDirectory>
-          <destinationFileName>social.docs.refguide.pdf</destinationFileName>
+          <destinationFileName>social-docs-refguide.pdf</destinationFileName>
         </configuration>
       </plugin>
 
