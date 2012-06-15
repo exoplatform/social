@@ -23,13 +23,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.webapp</artifactId>
+    <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.webapp.resources</artifactId>
+  <artifactId>social-webapp-resources</artifactId>
   <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Resources Web App</name>

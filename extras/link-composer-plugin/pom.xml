@@ -23,13 +23,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.extras</artifactId>
+    <artifactId>social-extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+  <artifactId>social-extras-link-composer-plugin</artifactId>
   <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Extras - Link Composer Plugin</name>
@@ -119,25 +119,25 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.common</artifactId>
+      <artifactId>social-component-common</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.core</artifactId>
+      <artifactId>social-component-core</artifactId>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.service</artifactId>
+      <artifactId>social-component-service</artifactId>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.webui</artifactId>
+      <artifactId>social-component-webui</artifactId>
       <scope>provided</scope>
     </dependency>
 

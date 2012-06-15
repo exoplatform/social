@@ -23,13 +23,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.component</artifactId>
+    <artifactId>social-component</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.component.common</artifactId>
+  <artifactId>social-component-common</artifactId>
   <version>4.0.0.Alpha1-SNAPSHOT</version>
   <name>eXo Social Common Component</name>
   <description>eXo Social Common Component</description>

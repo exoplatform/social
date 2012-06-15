@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>exo.social.extras</artifactId>
+    <artifactId>social-extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>exo.social.extras.migration</artifactId>
+  <artifactId>social-extras-migration</artifactId>
   <name>eXo Social Migration Tool</name>
   <description>eXo Social Migration Tool</description>
 
@@ -135,13 +135,13 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.common</artifactId>
+      <artifactId>social-component-common</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.core</artifactId>
+      <artifactId>social-component-core</artifactId>
       <scope>provided</scope>
     </dependency>
 

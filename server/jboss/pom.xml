@@ -23,14 +23,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.server</artifactId>
+    <artifactId>social-server</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <version>4.0.0.Alpha1-SNAPSHOT</version>
-  <artifactId>exo.social.server.jboss</artifactId>
+  <artifactId>social-server-jboss</artifactId>
   <packaging>pom</packaging>
   <name>eXo Social Sever Patch for JBoss</name>
   <description>eXo Social Sever Patch for JBoss</description>

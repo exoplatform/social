@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.social</groupId>
-    <artifactId>exo.social.docs</artifactId>
+    <artifactId>social-docs</artifactId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-  <artifactId>exo.social.docs.refguide</artifactId>
+  <artifactId>social-docs-refguide</artifactId>
   <packaging>jar</packaging>
 
   <name>eXo Social Reference Guide</name>
@@ -24,12 +24,12 @@
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.service</artifactId>
+      <artifactId>social-component-service</artifactId>
       <classifier>doc-jaxrs</classifier>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.core</artifactId>
+      <artifactId>social-component-core</artifactId>
       <classifier>doc-chromattic</classifier>
     </dependency>
     <dependency>
@@ -120,7 +120,7 @@
              </goals>
              <configuration>
                <includeGroupIds>org.exoplatform.social</includeGroupIds>
-               <includeArtifactIds>exo.social.component.service</includeArtifactIds>
+               <includeArtifactIds>social-component-service</includeArtifactIds>
                <includeClassifiers>doc-jaxrs</includeClassifiers>
                <excludes>META-INF/**</excludes>
                <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/jaxrs</outputDirectory>
@@ -134,7 +134,7 @@
              </goals>
              <configuration>
                <includeGroupIds>org.exoplatform.social</includeGroupIds>
-               <includeArtifactIds>exo.social.component.core</includeArtifactIds>
+               <includeArtifactIds>social-component-core</includeArtifactIds>
                <includeClassifiers>doc-chromattic</includeClassifiers>
                <excludes>META-INF/**</excludes>
                <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/chromattic</outputDirectory>
@@ -273,9 +273,9 @@
         </executions>
         <configuration>
           <sourceDirectory>${project.build.directory}/wikbook/output/xhtml</sourceDirectory>
-          <sourceFileName>exo.social.docs.refguide.html</sourceFileName>
+          <sourceFileName>social.docs.refguide.html</sourceFileName>
           <destinationDirectory>${project.build.directory}/wikbook/output/pdf</destinationDirectory>
-          <destinationFileName>exo.social.docs.refguide.pdf</destinationFileName>
+          <destinationFileName>social.docs.refguide.pdf</destinationFileName>
         </configuration>
       </plugin>
 

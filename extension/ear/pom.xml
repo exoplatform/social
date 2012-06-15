@@ -24,13 +24,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.social.extension</artifactId>
+    <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
-  <artifactId>exo.social.extension.ear</artifactId>
+  <artifactId>social-extension-ear</artifactId>
   <packaging>ear</packaging>
   <name>eXo Social Extension EAR</name>
   <description>eXo Social Extension EAR</description>
@@ -39,81 +39,81 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.common</artifactId>
+      <artifactId>social-component-common</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.core</artifactId>
+      <artifactId>social-component-core</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.opensocial</artifactId>
+      <artifactId>social-component-opensocial</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.service</artifactId>
+      <artifactId>social-component-service</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.component.webui</artifactId>
+      <artifactId>social-component-webui</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extras.feedmash</artifactId>
+      <artifactId>social-extras-feedmash</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+      <artifactId>social-extras-link-composer-plugin</artifactId>
     </dependency>    
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extras.widget.rest</artifactId>
+      <artifactId>social-extras-widget-rest</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extras.widget.resources</artifactId>
+      <artifactId>social-extras-widget-resources</artifactId>
       <type>war</type>
     </dependency>
 
 <!--
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extension.config</artifactId>
+      <artifactId>social-extension-config</artifactId>
     </dependency>
 -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extension.jar</artifactId>
+      <artifactId>social-extension-jar</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.extension.war</artifactId>
+      <artifactId>social-extension-war</artifactId>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.webapp.portlet</artifactId>
+      <artifactId>social-webapp-portlet</artifactId>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.webapp.opensocial</artifactId>
+      <artifactId>social-webapp-opensocial</artifactId>
       <type>war</type>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>exo.social.webapp.resources</artifactId>
+      <artifactId>social-webapp-resources</artifactId>
       <type>war</type>
     </dependency>
 
@@ -131,82 +131,82 @@
 <!--
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extension.config</artifactId>
+              <artifactId>social-extension-config</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
 -->
             <webModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extension.war</artifactId>
+              <artifactId>social-extension-war</artifactId>
               <contextRoot>social-extension</contextRoot>
-              <bundleFileName>social-extension.war</bundleFileName>
+              <bundleFileName>social-extension-war</bundleFileName>
             </webModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extension.jar</artifactId>
+              <artifactId>social-extension-jar</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.component.common</artifactId>
+              <artifactId>social-component-common</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.component.core</artifactId>
+              <artifactId>social-component-core</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.component.opensocial</artifactId>
+              <artifactId>social-component-opensocial</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.component.service</artifactId>
+              <artifactId>social-component-service</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.component.webui</artifactId>
+              <artifactId>social-component-webui</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extras.feedmash</artifactId>
+              <artifactId>social-extras-feedmash</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extras.link-composer-plugin</artifactId>
+              <artifactId>social-extras-link-composer-plugin</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <jarModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extras.widget.rest</artifactId>
+              <artifactId>social-extras-widget-rest</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
             </jarModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.extras.widget.resources</artifactId>
+              <artifactId>social-extras-widget-resources</artifactId>
               <contextRoot>socialWidgetResources</contextRoot>
               <bundleFileName>socialWidgetResources.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.webapp.portlet</artifactId>
+              <artifactId>social-webapp-portlet</artifactId>
               <contextRoot>social-portlet</contextRoot>
               <bundleFileName>social-portlet.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.webapp.opensocial</artifactId>
+              <artifactId>social-webapp-opensocial</artifactId>
               <contextRoot>social</contextRoot>
               <bundleFileName>social.war</bundleFileName>
             </webModule>
             <webModule>
               <groupId>org.exoplatform.social</groupId>
-              <artifactId>exo.social.webapp.resources</artifactId>
+              <artifactId>social-webapp-resources</artifactId>
               <contextRoot>social-resources</contextRoot>
               <bundleFileName>social-resources.war</bundleFileName>
             </webModule>
