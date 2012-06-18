@@ -159,6 +159,7 @@
 
         function handleShareButton(){
           var shareButton = document.getElementById("ShareButton");
+          var composerInput = document.getElementById("composerInput");
           <%
             if(currentActivityComposer.isReadyForPostingActivity()){
             
@@ -169,7 +170,10 @@
             } else {
           %>
             shareButton.disabled = true;
-            shareButton.className = 'ShareButtonDisable'; 
+            if (composerInput.value == '<%=defaultInput%>')
+              shareButton.className = 'ShareButtonDisable';
+            else
+              shareButton.className = 'ShareButton';
           <%
             }
           %>
