@@ -29,7 +29,7 @@ function getModule(params) {
   module.component.service =
   new Project("org.exoplatform.social", "social-component-service","jar", module.version).
     addDependency(ws.frameworks.json).
-    addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui", "jar", platformCommonsVersion));
+    addDependency(new Project("org.exoplatform.commons", "commons-webui-component", "jar", platformCommonsVersion));
 
 
   module.component.opensocial =
@@ -37,7 +37,7 @@ function getModule(params) {
 
   module.component.webui =
   new Project("org.exoplatform.social", "social-component-webui","jar", module.version).
-      addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui.ext", "jar", platformCommonsVersion));
+      addDependency(new Project("org.exoplatform.commons", "commons-webui-ext", "jar", platformCommonsVersion));
 
   module.webapp = {};
 
