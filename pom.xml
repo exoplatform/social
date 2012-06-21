@@ -786,23 +786,23 @@
 <!--
       <dependency>
         <groupId>org.exoplatform.platform</groupId>
-        <artifactId>exo.platform.commons.testing</artifactId>
+        <artifactId>commons-testing</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
 -->
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
-        <artifactId>exo.platform.commons.webui.ext</artifactId>
+        <artifactId>commons-webui-ext</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
-        <artifactId>exo.platform.commons.component.upgrade</artifactId>
+        <artifactId>commons-component-upgrade</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
-        <artifactId>exo.platform.commons.component</artifactId>
+        <artifactId>commons-component-common</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
 
