@@ -16,20 +16,18 @@
  */
 package org.exoplatform.social.core.manager;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.processor.TemplateParamsProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -211,7 +209,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
       assertEquals("activity.getTitle() must return: " + title, title, activity.getTitle());
     }
   }
-  
+
   /**
    * Test {@link ActivityManager#saveActivity(Identity, ExoSocialActivity)}
    * 
@@ -342,10 +340,45 @@ public class ActivityManagerTest extends AbstractCoreTest {
     
     String newTitle = "new activity title";
     activity.setTitle(newTitle);
-    activityManager.updateActivity(activity);
+    activityManager.saveActivityNoReturn(activity);
     
     activity = activityManager.getActivity(activity.getId());
     assertNotNull("activity must not be null", activity);
+    assertEquals("activity.getTitle() must return: " + newTitle, newTitle, activity.getTitle());
+    assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
+
+    Map<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put("linkTitle","ế ê à é !@#$ &%#(n(&");
+    templateParams.put("linkUrl","http://google.com");
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS,"linkTitle|linkUrl");
+    activity.setTemplateParams(templateParams);
+
+    activityManager.saveActivityNoReturn(activity);
+
+    activity = activityManager.getActivity(activity.getId());
+    templateParams = activity.getTemplateParams();
+
+    assertNotNull("activity must not be null", activity);
+    assertNotNull("activity's template Params must not be null", activity.getTemplateParams());
+    assertEquals("activity's linkTitle must equal ế ê à é !@#$ &%#(n(& (in HTML)", "&#7871; &ecirc; &agrave; &eacute; !@#$ &amp;%#(n(&amp;", templateParams.get("linkTitle"));
+    assertEquals("activity's linkUrl must equal <a href=\"http://google.com\" target=\"_blank\">http://google.com</a>",
+                 "<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>", templateParams.get("linkUrl"));
+    assertEquals("activity.getTitle() must return: " + newTitle, newTitle, activity.getTitle());
+    assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
+
+    activity.setTemplateParams(null);
+    activity.setTitle(null);
+    activity.setBody(null);
+
+    activityManager.saveActivityNoReturn(activity);
+    activity = activityManager.getActivity(activity.getId());
+    templateParams = activity.getTemplateParams();
+
+    assertNotNull("activity must not be null", activity);
+    assertNotNull("activity's template Params must not be null", activity.getTemplateParams());
+    assertEquals("activity's linkTitle must equal ế ê à é !@#$ &%#(n(& (in HTML)", "&#7871; &ecirc; &agrave; &eacute; !@#$ &amp;%#(n(&amp;", templateParams.get("linkTitle"));
+    assertEquals("activity's linkUrl must equal <a href=\"http://google.com\" target=\"_blank\">http://google.com</a>",
+                 "<a href=\"http://google.com\" target=\"_blank\">http://google.com</a>", templateParams.get("linkUrl"));
     assertEquals("activity.getTitle() must return: " + newTitle, newTitle, activity.getTitle());
     assertEquals("activity.getUserId() must return: " + userId, userId, activity.getUserId());
   }
@@ -506,16 +539,22 @@ public class ActivityManagerTest extends AbstractCoreTest {
     ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
     demoActivity.setTitle("&\"demo activity");
     demoActivity.setUserId(demoActivity.getId());
+    HashMap<String, String> templateParams = new HashMap<String, String>();
+    templateParams.put(TemplateParamsProcessor.TEMPLATE_PARAM_TO_PROCESS, "username");
+    templateParams.put("username", "@demo");
+    demoActivity.setTemplateParams(templateParams);
     activityManager.saveActivityNoReturn(demoIdentity, demoActivity);
     tearDownActivityList.add(demoActivity);
-    
+
     demoActivity = activityManager.getActivity(demoActivity.getId());
+    String usernameParam = demoActivity.getTemplateParams().get("username");
     assertEquals("demoActivity.getLikeIdentityIds() must return: 0",
                  0, demoActivity.getLikeIdentityIds().length);
     
     activityManager.saveLike(demoActivity, johnIdentity);
     
     demoActivity = activityManager.getActivity(demoActivity.getId());
+    assertEquals("templateParame after processs must be unchange", usernameParam, demoActivity.getTemplateParams().get("username"));
     assertEquals("demoActivity.getLikeIdentityIds().length must return: 1", 1, demoActivity.getLikeIdentityIds().length);
     assertEquals("&amp;&quot;demo activity", demoActivity.getTitle());
   }

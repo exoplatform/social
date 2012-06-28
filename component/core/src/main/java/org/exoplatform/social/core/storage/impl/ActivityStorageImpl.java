@@ -94,6 +94,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
 
   protected void _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
+    Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
@@ -413,7 +414,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       Validate.notNull(activity, "activity must not be null.");
       Validate.notNull(activity.getUpdated(), "Activity.getUpdated() must not be null.");
       Validate.notNull(activity.getPostedTime(), "Activity.getPostedTime() must not be null.");
-      Validate.notNull(activity.getTitle(), "Activity.getTitle() must not be null.");
     } catch (IllegalArgumentException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.ILLEGAL_ARGUMENTS, e.getMessage(), e);
     }
@@ -427,7 +427,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
       else {
 
-        _saveActivity(activity);
+        updateActivity(activity);
 
       }
 
@@ -1205,6 +1205,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
+      if (changedActivity.getTemplateParams() == null){
+        if(activityEntity.getParams() != null && activityEntity.getParams().getParams() != null){
+          changedActivity.setTemplateParams(activityEntity.getParams().getParams());
+        } else {
+          changedActivity.setTemplateParams(new HashMap<String, String>());
+        }
+      };
 
       _saveActivity(changedActivity);
       
