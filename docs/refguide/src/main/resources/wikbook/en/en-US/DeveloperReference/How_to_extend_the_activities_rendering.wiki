@@ -109,6 +109,5 @@ Then your processor can be configured as a component plugin like this:
 </external-component-plugins>
 {code}
 
-Restart, then place the smiley images on the server and you should see something like that:
+Restart, then place the smiley images on the server.
 
-!images/activity-smiley.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
