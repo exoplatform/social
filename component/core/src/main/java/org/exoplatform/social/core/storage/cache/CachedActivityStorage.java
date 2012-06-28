@@ -226,18 +226,22 @@ public class CachedActivityStorage implements ActivityStorage {
    * {@inheritDoc}
    */
   public ExoSocialActivity saveActivity(final Identity owner, final ExoSocialActivity activity) throws ActivityStorageException {
-
+    boolean needClearCache = false;
+    if(activity != null && activity.getId() == null){
+      needClearCache = true;
+    }
     //
     ExoSocialActivity a = storage.saveActivity(owner, activity);
 
-    //
-    ActivityKey key = new ActivityKey(a.getId());
-    exoActivityCache.put(key, new ActivityData(getActivity(a.getId())));
-    clearCache();
-
-    //
+    if(needClearCache){
+      clearCache();
+      ActivityKey key = new ActivityKey(a.getId());
+      exoActivityCache.put(key, new ActivityData(getActivity(a.getId())));
+    } else {
+      ActivityKey key = new ActivityKey(a.getId());
+      exoActivityCache.remove(key);
+    }
     return a;
-
   }
 
   /**
@@ -910,7 +914,7 @@ public class CachedActivityStorage implements ActivityStorage {
     //
     ActivityKey key = new ActivityKey(existingActivity.getId());
     exoActivityCache.remove(key);
-
+    exoActivityCache.put(key, new ActivityData(getActivity(existingActivity.getId())));
   }
   
 }

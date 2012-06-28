@@ -45,6 +45,7 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
+import static org.exoplatform.social.core.BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS;
 
 /**
  * UIComposerLinkExtension.java
@@ -73,6 +74,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   public static final String TITLE_PARAM = "title";
   public static final String DESCRIPTION_PARAM = "description";
   public static final String COMMENT_PARAM = "comment";
+  public static final String TEMPLATE_PARAM_LIST = COMMENT_PARAM + "|" + TITLE_PARAM;
 
   private static final String MSG_ERROR_INVALID_LINK = "UILinkComposerPlugin.msg.error.Attach_Link";
   
@@ -208,7 +210,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
     UIApplication uiApplication = requestContext.getUIApplication();
     Map<String, String> templateParams = getTemplateParams();
     templateParams.put(COMMENT_PARAM, postedMessage);
-    templateParams.put(org.exoplatform.social.core.BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, COMMENT_PARAM ); 
+    templateParams.put(TEMPLATE_PARAM_TO_PROCESS, TEMPLATE_PARAM_LIST);
     
     if(templateParams.get(IMAGE_PARAM) == null){
       templateParams.put(IMAGE_PARAM, "");
