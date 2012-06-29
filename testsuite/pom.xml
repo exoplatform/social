@@ -6,9 +6,9 @@
     <artifactId>social</artifactId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-  <artifactId>exo.platform.testsuite</artifactId>
+  <artifactId>social-testsuite</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Platform - Tests</name>
+  <name>Social - Tests</name>
   <modules>
     <module>selenium</module>
   </modules>
