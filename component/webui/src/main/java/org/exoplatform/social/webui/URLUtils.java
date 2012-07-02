@@ -24,6 +24,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.web.controller.QualifiedName;
 
@@ -48,8 +49,13 @@ public class URLUtils {
     String []splitCurrentUser = currentPath.split("/");
     String currentUserName = currentPath.split("/")[splitCurrentUser.length - 1];
     try {
-      if (currentUserName != null) {
-        Identity id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+      if (currentUserName != null && currentUserName.trim().length() > 0) {
+        //FIX SOC-2621
+        Identity id = idm.getOrCreateIdentity(SpaceIdentityProvider.NAME, currentUserName, false);
+        boolean isSpaceIdentity = (id != null);
+        if (isSpaceIdentity) return null;
+        
+        id = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
         if (id != null) return currentUserName;
       }
     } catch (Exception e) {
