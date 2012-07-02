@@ -297,7 +297,7 @@ public class UIManageAllSpaces extends UIContainer {
    * @return
    */
   protected static String getTypeOfSpace(Space space) {
-    String currentUserId = Utils.getOwnerIdentity().getRemoteId();
+    String currentUserId = Utils.getViewerIdentity().getRemoteId();
     SpaceService spaceService = Utils.getSpaceService();
     
     if (spaceService.isInvitedUser(space, currentUserId)) { // Received
