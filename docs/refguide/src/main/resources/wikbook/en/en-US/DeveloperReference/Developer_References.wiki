@@ -3,7 +3,7 @@ This chapter supplies you with the basic knowledge about the following topics:
 * [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
 * [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
 * [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
-* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode/Tutorial]
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
 * [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
 * [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
 * [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
