@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Default message bundle
--->
-<messageBundle>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<messagebundle>
   <msg name="my_spaces">Mes Espaces</msg>
-  <msg name="more_link_label">Montrer Tout</msg>
+  <msg name="more_link_label">Tout montrer</msg>
   <msg name="has_no_space">Vous n'êtes membre d'aucun espace.</msg>
-</messageBundle>
+</messagebundle>

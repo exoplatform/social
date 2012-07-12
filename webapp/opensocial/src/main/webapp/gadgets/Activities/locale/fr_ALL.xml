@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Message bundle for fr_ALL
--->
-<messageBundle>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<messagebundle>
   <msg name="loading">Chargement en cours...</msg>
   <msg name="title">Activités de l'espace</msg>
   <msg name="description">Flux d'activités de l'espace</msg>
@@ -14,20 +11,20 @@
   <msg name="not_valid_link">Assurez-vous que le lien est bien valide.</msg>
   <msg name="user_shared_a_link">{0} a partagé un lien</msg>
   <msg name="problem_happens_to_fix_soon">Désolé pour ce problème. Nous y travaillons.</msg>
-  <msg name="activities_of_displayName">Les activités de {0} </msg>
+  <msg name="activities_of_displayName">Les activités de {0}</msg>
   <msg name="friends_activities">Activités du réseau</msg>
   <msg name="owner_friends">Vos contacts</msg>
   <msg name="displayName_does_not_have_update">Aucune activité envoyée</msg>
   <msg name="displayName_do_not_have_update">Aucune activité envoyée</msg>
-  <msg name="comment">Commentaire</msg>
   <msg name="collapse_all_activities">Replier</msg>
   <msg name="expand_all_activities">Déplier</msg>
+  <msg name="comment">Commentaire</msg>
   <msg name="write_a_comment">Laissez un commentaire...</msg>
   <msg name="you_can_edit_the_title_of_shared_link">Vous pouvez changer le titre du lien partagé</msg>
   <msg name="you_can_edit_the_description_of_shared_link">Vous pouvez changer la description du lien partagé</msg>
+  <msg name="user_commented_on_an_activity">{0} a commenté sur une activié.</msg>
   <msg name="show_all_num_comments">Afficher tous les {0} commentaires.</msg>
   <msg name="hide_all_comments">Masquer tous les commentaires.</msg>
-  <msg name="user_commented_on_an_activity">{0} a commenté sur une activié.</msg>
   <msg name="like">J'aime</msg>
   <msg name="unlike">Je n'aime plus</msg>
   <msg name="delete">Supprimer</msg>
@@ -50,9 +47,9 @@
   <msg name="persons_like_this">{0} aiment.</msg>
   <msg name="an_undetermined_amount_of_time_ago">Il y a un certain temps.</msg>
   <msg name="less_than_a_minute_ago">Il y a moins d'une minute.</msg>
-  <msg name="about_a_minute_ago">Environ il y a une minute.</msg>
-  <msg name="about_0_minutes_ago">Environ il y a {0} minutes.</msg>
-  <msg name="about_an_hour_ago">Environ il y a une heure.</msg>
+  <msg name="about_a_minute_ago">il y a environ une minute.</msg>
+  <msg name="about_0_minutes_ago">il y a environ {0} minutes.</msg>
+  <msg name="about_an_hour_ago">il y a environ une heure.</msg>
   <msg name="about_0_hours_ago">Il y a {0} heures.</msg>
   <msg name="sunday">Dimanche</msg>
   <msg name="monday">Lundi</msg>
@@ -72,11 +69,11 @@
   <msg name="september">Septembre</msg>
   <msg name="october">Octobre</msg>
   <msg name="november">Novembre</msg>
-  <msg name="december">Decembre</msg>
+  <msg name="december">Décembre</msg>
   <msg name="am">AM</msg>
   <msg name="pm">PM</msg>
-  <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
+  <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} à {4}: {5}: {6}.</msg>
   <msg name="error_activity_not_found">Erreur: cette activité a été supprimée.</msg>
   <msg name="internal_error">Erreur interne. Veuillez rafraîchir.</msg>
   <msg name="RELATION_CONFIRMED">${Requester} est maintenant connecté à ${Accepter}</msg>
-</messageBundle>
+</messagebundle>
