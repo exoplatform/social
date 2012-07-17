@@ -35,6 +35,10 @@
   </component>
 
   <component>
+    <type>org.exoplatform.social.extras.injection.MembershipInjector</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.social.extras.injection.ActivityInjector</type>
   </component>
 
@@ -57,6 +61,11 @@
       <name>space</name>
       <set-method>addInjector</set-method>
       <type>org.exoplatform.social.extras.injection.SpaceInjector</type>
+    </component-plugin>
+    <component-plugin>
+      <name>membership</name>
+      <set-method>addInjector</set-method>
+      <type>org.exoplatform.social.extras.injection.MembershipInjector</type>
     </component-plugin>
     <component-plugin>
       <name>activity</name>

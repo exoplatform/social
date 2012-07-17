@@ -36,7 +36,7 @@ public class SocialChromatticLifeCycle extends ChromatticLifeCycle {
   public static final String SOCIAL_LIFECYCLE_NAME = "soc";
 
   public ChromatticSession getSession() {
-    if (session.get() != null) {
+    if (session.get() != null && session.get().getJCRSession().isLive() && !session.get().isClosed()) {
       return session.get();
     }
     else {
