@@ -1,15 +1,8 @@
 package org.exoplatform.social.extras.injection;
 
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.space.SpaceException;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
 
 import java.util.HashMap;
 
@@ -52,12 +45,16 @@ public class SpaceInjector extends AbstractSocialInjector {
         space.setRegistration(Space.OPEN);
         space.setDescription(lorem.getWords(10));
         space.setType(DefaultSpaceApplicationHandler.NAME);
-        space.setVisibility(Space.PUBLIC);
+        space.setVisibility(Space.PRIVATE);
+        space.setRegistration(Space.OPEN);
         space.setPriority(Space.INTERMEDIATE_PRIORITY);
 
         //
         spaceService.createSpace(space, owner);
         ++spaceNumber;
+
+        //
+        SpaceUtils.endRequest();
 
         //
         getLog().info("Space " + spaceName + " created by " + owner);
