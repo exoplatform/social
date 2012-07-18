@@ -297,8 +297,8 @@ UIAutoSuggestMultiValueControl.prototype.requestDataForAutoSuggest = function() 
  * Gets return data and resets the name list to suggest control.
  */
 UIAutoSuggestMultiValueControl.prototype.resetList = function(resp) {
-	var JSON = eXo.core.JSON;
-  var names = JSON.parse(resp.responseText).names;
+  var names = gj.parseJSON(resp.responseText).names;
+  
   var namesLen = (names ? names.length : 0);
   var oThis = eXo.social.webui.UIAutoSuggestMultiValueControl;
   if (namesLen == 0) {
@@ -312,18 +312,17 @@ UIAutoSuggestMultiValueControl.prototype.resetList = function(resp) {
  * Posts rest request to server.
  */
 UIAutoSuggestMultiValueControl.prototype.makeRequest = function(url, async, callback) {
-  if (async !== false) async = true;
-  var request = eXo.core.Browser.createHttpRequest();
-  request.open('GET', url, async);
-  request.setRequestHeader("Cache-Control", "max-age=86400") ;
-  request.onreadystatechange = function() {
-    if((request.readyState === 4) && (request.status === 200)) {
+  gj.ajax({
+    type: "get",
+    url: url,
+    async: async,
+    cache: false,
+    success: function(data, status, jqXHR) {
       if (callback) {
-        callback(request);
+        callback(jqXHR);
       }
     }
-  }
-  request.send(null);
+  });
 }
 
 ////////////////////////////End of request data for autosuggest/////////////////////////////

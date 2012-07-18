@@ -32,7 +32,6 @@ function UISpaceMemberSuggest() {
  * When form load at the first time, init controls.
  */
 UISpaceMemberSuggest.prototype.onLoad = function() {
-	var DOMUtil = eXo.core.DOMUtil;
 	var suggestEl = document.getElementById('user');
 
 	this.userNameTextObj = suggestEl;
@@ -46,7 +45,6 @@ UISpaceMemberSuggest.prototype.onLoad = function() {
  */
 UISpaceMemberSuggest.prototype.initTextBox = function() {
 	var nameEl = this.userNameTextObj;
-	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
 	var suggestElId = 'user';
 	var UISpaceMemberSuggestObj = eXo.social.webui.UISpaceMemberSuggest;
@@ -94,9 +92,8 @@ UISpaceMemberSuggest.prototype.setValueIntoTextBox = function(suggestEl /*input 
  * @scope private.
  */
 UISpaceMemberSuggest.prototype.submitSearchForm = function(suggestEl /*input text box*/) {
-	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
-	var searchForm = DOMUtil.findAncestorByClass(suggestEl, 'UIForm');
+	var searchForm = gj(suggestEl).closest('.UIForm'); 
 	if (searchForm != null ) UIForm.submitForm(searchForm.id, 'Search', true);
 }
 /*===================================================================*/

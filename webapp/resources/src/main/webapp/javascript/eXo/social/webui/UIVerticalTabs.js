@@ -27,25 +27,22 @@ UIVerticalTabs.prototype.displayTabContent = function(clickedEle) {
  * if tabId are provided, can get the tab content by Ajax
  */
 UIVerticalTabs.prototype.changeTabForUITabPane = function(clickedEle, tabId, url) {
-  var DOMUtil = eXo.core.DOMUtil;
-  var uiSelectTab = DOMUtil.findAncestorByClass(clickedEle, "UIVerticalTab") ;
-  
-
-  var uiVerticalTabs = DOMUtil.findAncestorByClass(clickedEle, "UIVerticalTabs") ;
-  var uiTabs = eXo.core.DOMUtil.findDescendantsByClass(uiVerticalTabs, "div", "UIVerticalTab") ;
+  var uiSelectTab = gj(clickedEle).closest('.UIVerticalTab');
+  var uiVerticalTabs = gj(clickedEle).closest('.UIVerticalTabs');
+  var uiTabs = gj(uiVerticalTabs).find('div.UIVerticalTab');
   var parentdVerticalTab = uiVerticalTabs.parentNode ;
-  var contentTabContainer = DOMUtil.findFirstDescendantByClass(parentdVerticalTab, "div", "UIVerticalTabContentContainer") ;
-  var uiTabContents = DOMUtil.findChildrenByClass(contentTabContainer, "div", "UIVerticalTabContent") ;
-  var form = DOMUtil.getChildrenByTagName(contentTabContainer, "form") ;
+  var contentTabContainer = (gj(parentdVerticalTab).find('div.UIVerticalTabContentContainer:first-child'))[0]; 
+  var uiTabContents = gj(contentTabContainer).find('div.UIVerticalTabContent');
+  var form = gj(contentTabContainer).children("form");
  	if(form.length > 0) {
- 	  var tmp = DOMUtil.findChildrenByClass(form[0], "div", "UIVerticalTabContent") ;
+ 	  var tmp = gj(form[0]).find('div.UIVerticalTabContent');
   	  for(var i = 0; i < tmp.length; i++) {
   		uiTabContents.push(tmp[i]) ;
   	  }
  	}
   var index = 0 ;
   for(var i = 0; i < uiTabs.length; i++) {
-    var styleTabDiv = DOMUtil.getChildrenByTagName(uiTabs[i], "div")[0] ;
+    var styleTabDiv = (gj(uiTabs[i]).children("div"))[0] ;
     if(styleTabDiv.className == "DisabledTab") continue ;
     if(uiSelectTab == uiTabs[i]) {
       styleTabDiv.className = "SelectedTab" ;

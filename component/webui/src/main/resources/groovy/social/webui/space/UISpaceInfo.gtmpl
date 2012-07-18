@@ -24,6 +24,9 @@
   import org.exoplatform.webui.core.UIPopupWindow;
   import org.exoplatform.social.core.service.LinkProvider;
 
+  def rcontext = _ctx.getRequestContext();
+  rcontext.getJavascriptManager().loadScriptResource("base"); //Portal's problem, workaround for uicomponent.event()
+
 	def uicomponentId = uicomponent.id;
   def imageSource = uicomponent.getImageSource();
   if (imageSource == null) {

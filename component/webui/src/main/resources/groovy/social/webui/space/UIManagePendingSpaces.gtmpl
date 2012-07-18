@@ -30,6 +30,11 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
+
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.loadScriptResource("base"); //for uicomponent.event()
+
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
   def cancelInvitationActionLabel= _ctx.appRes("${uicomponentId}.label.cancel_invitation")
   def iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending")

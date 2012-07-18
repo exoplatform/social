@@ -17,8 +17,6 @@
 
 (function() {
     var window_ = this;
-    var DOMUtil = eXo.core.DOMUtil;
-    var Util = eXo.social.Util;    
     var FOCUS_COLOR = "#000000",
         BLUR_COLOR = "#C7C7C7";
         
@@ -28,11 +26,7 @@
 		 * @scope public
 		 */
 		function UISpaceSearch(params) {
-			this.inputTextBoxObj = null;
-			this.searchButton = null;
-			this.allSpaceName = params.allSpacesName || null;
 			this.uicomponentId = params.uicomponentId || null;
-			this.defaultSpaceNameAndDesc = params.defaultSpaceNameAndDesc || null;
 			this.onLoad();
 		};
 		
@@ -41,62 +35,35 @@
 		 */
 		UISpaceSearch.prototype.onLoad = function() {
 			var spaceSearch = document.getElementById(this.uicomponentId);
-			var spaceSearchEl = DOMUtil.findDescendantById(spaceSearch, 'SpaceSearch');
-			this.searchButton = DOMUtil.findDescendantById(spaceSearch, 'SearchButton');
-			var defaultSpaceNameAndDesc = this.defaultSpaceNameAndDesc;
-			var defaultUIVal = "name or description";
+			var searchEl  = gj(spaceSearch).find('#SpaceSearch');
+			var searchBtn = gj(spaceSearch).find('#SearchButton');
 			
-			if ((spaceSearchEl.value == defaultUIVal) || (spaceSearchEl.value.trim().length == 0)) spaceSearchEl.value = defaultSpaceNameAndDesc;
-			(spaceSearchEl.value != defaultSpaceNameAndDesc) ? (spaceSearchEl.style.color = '#000000') : (spaceSearchEl.style.color = '#C7C7C7');
-			
-			this.inputTextBoxObj = spaceSearchEl;
-			// Initialize the input textbox
-			this.initTextBox();
-		};
-		
-		/**
-		 * Initialize the text-box control. 
-		 * @scope private.
-		 */
-		UISpaceSearch.prototype.initTextBox = function() {
-			var searchEl = this.inputTextBoxObj;
-			var defaultValue = this.defaultSpaceNameAndDesc;
 			var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
 			var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
 			// Turn off auto-complete attribute of text-box control
-			searchEl.setAttribute('autocomplete','off');
+			searchEl.attr('autocomplete','off');
 			
-			Util.addEventListener(searchEl, 'focus', function() {
-				this.style.color="#000000";
-				if (this.value == defaultValue) {
-					this.value='';
-				}
-			}, false);
+      searchEl.placeholder();
+      
+			searchEl.blur(function() {
+			  suggestControlObj.hideSuggestions();
+			});
 			
-			Util.addEventListener(searchEl, 'blur', function() {
-				if ((this.value.trim() == '') || (this.value.trim() == defaultValue)) {
-					this.style.color="#C7C7C7";
-					this.value = defaultValue;
-				}
-				suggestControlObj.hideSuggestions();
-		  }, false);
-		  
-			var searchBtn = this.searchButton;
-			
-			Util.addEventListener(searchEl, 'keydown', function(event) {
+			searchEl.on('keydown', function(event) {
 				var e = event || window.event;
 				var keynum = e.keyCode || e.which;  
 				
 				if(keynum == 13) { //Enter key
 					suggestControlObj.hideSuggestions();
-					searchBtn.onclick();
+					searchBtn.click();
 					return false;
 				} else { // Other keys (up and down key)
 					suggestControlObj.handleKeyDown(e);
 				}
-			}, false);
-				
-			suggestControlObj.load(searchEl, uiSpaceSearchObj);
+			});
+			
+			// Note: change this input when migrate to jQuery
+			suggestControlObj.load(searchEl.get(0), uiSpaceSearchObj);
 	 }
 
 	 window_.eXo = window_.eXo || {};

@@ -28,7 +28,7 @@
   
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  jsManager.addOnLoadJavascript("fillUpFreeSpace('${uicomponent.id}')");
+  jsManager.addOnLoadJavascript("eXo.core.Browser.fillUpFreeSpace('${uicomponent.id}')");
 
   uicomponent.refresh();
   def labelUserActivities = _ctx.appRes("${uicomponent.id}.label.UserActivities");
@@ -40,16 +40,5 @@
       <% uicomponent.renderChild(UIComposer.class); %>
       <% uicomponent.renderChild(UIUserActivitiesDisplay.class); %>
     </div>
-  </div>  
-  
-  <script type="text/javascript">
-	  function fillUpFreeSpace(componentId) {
-	    try{
-	      var filledElement = document.getElementById(componentId);
-	      if (filledElement) {
-	        eXo.core.Browser.fillUpFreeSpace(filledElement);
-	      }      
-	    }catch(e){};
-	  }    
-  </script> 
+  </div>
 </div>

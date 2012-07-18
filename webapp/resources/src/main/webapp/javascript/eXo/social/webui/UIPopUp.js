@@ -87,9 +87,9 @@
 			},
 			reRenderPopUp: function(resp) {
 				var UIPopUp = window.eXo.social.webui.UIPopUp;
-				var avatarURL = (JSON.parse(resp.responseText)).avatarURL;
-				var activityTitle = (JSON.parse(resp.responseText)).activityTitle;
-				var relationStatus = (JSON.parse(resp.responseText)).relationshipType;
+				var avatarURL = (gj.parseJSON(resp.responseText)).avatarURL;
+				var activityTitle = (gj.parseJSON(resp.responseText)).activityTitle;
+				var relationStatus = (gj.parseJSON(resp.responseText)).relationshipType;
 				var connectionAvatar = document.getElementById("UserAvatar");
 				var imgTag = connectionAvatar.getElementsByTagName("img")[0];
 				var connectionTitle = document.getElementById("UserTitle");

@@ -6,8 +6,9 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
-JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript('eXo.social.webui.UICustomizeControl', '/social-resources/javascript');
+def jsmanager = rcontext.getJavascriptManager();
+jsmanager.loadScriptResource("social-ui-customize-control");
+//jsManager.loadScriptSource("social-ui-visibility-form-input-set");
 jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UICustomizeControl.onLoad("' + uicomponentId + '");');
 %>
 <div class="$uicomponentId" id="$uicomponentId">

@@ -309,7 +309,7 @@ eXo.social.Util.addEventListener = function(obj, evts, fnc, useCapture) {
       myAttachEvent(obj, evt, fnc);
       obj['on'+evt] = function() { myFireEvent(obj,evt) };
     }
-
+    
     //The following are for browsers like NS4 or IE5Mac which don't support either
     //attachEvent or addEventListener
     var myAttachEvent = function(obj, evt, fnc) {
@@ -318,7 +318,7 @@ eXo.social.Util.addEventListener = function(obj, evts, fnc, useCapture) {
       var evts = obj.myEvents[evt];
       evts[evts.length] = fnc;
     }
-
+    
     var myFireEvent = function(obj, evt) {
       if (!obj || !obj.myEvents || !obj.myEvents[evt]) return;
       var evts = obj.myEvents[evt];

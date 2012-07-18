@@ -29,6 +29,9 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.identity.model.Profile;
 
+  def rcontext = _ctx.getRequestContext();
+  rcontext.getJavascriptManager().loadScriptResource("base"); //Portal's problem, workaround for uicomponent.event()
+
   def isEditable = uicomponent.isEditable();
   def currIdentity = Utils.getOwnerIdentity();
   def pendingRelationIdx = 0;

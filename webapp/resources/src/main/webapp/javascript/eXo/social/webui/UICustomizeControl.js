@@ -2,7 +2,6 @@ function UICustomizeControl() {
 }
 
 UICustomizeControl.prototype.onLoad = function(uicomponentId) {
-	var DOMUtil = eXo.core.DOMUtil;
 	var UIForm = eXo.webui.UIForm;
 	var element = document.getElementById(uicomponentId);
 	
@@ -13,8 +12,8 @@ UICustomizeControl.prototype.onLoad = function(uicomponentId) {
   	el.onclick = function(event) {
   		var e = event || window.event;
 		  var radio = e.srcElement || e.target;
-		  var form = DOMUtil.findAncestorByClass(radio, 'UIForm');
-			if (form != null ) UIForm.submitForm(form.id, 'ChangeOption', true);
+		  var form = gj(radio).closest('.UIForm');
+			if (form != null ) UIForm.submitForm(form.attr("id"), 'ChangeOption', true);
   	}
   }
 }

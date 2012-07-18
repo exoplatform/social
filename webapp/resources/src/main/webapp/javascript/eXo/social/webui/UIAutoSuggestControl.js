@@ -96,7 +96,8 @@ UIAutoSuggestControl.prototype.createDropDown = function () {
         if (oEvent.type == "mousedown" || oEvent.type == "keydown") {
             oThis.textbox.value = oTarget.firstChild.nodeValue;
             oThis.hideSuggestions();
-            oThis.provider.submitSearchForm(oThis.textbox);
+            
+            gj('#SearchButton').click();
         } else if (oEvent.type == "mouseover" || oEvent.type == "focus") {
             oThis.highlightSuggestion(oTarget);
         } else {
@@ -253,38 +254,28 @@ UIAutoSuggestControl.prototype.requestDataForAutoSuggest = function() {
 		restURL += "/" + portalName + CONFIG.SPACE_REST_PATH + inputString;
 	}
 
-	if (!isNull(currentUser)) {
+	if (currentUser) {
 		restURL += "&currentUser=" + currentUser;
 	}
 	
-	if (!isNull(typeOfRelation)) {
+	if (typeOfRelation) {
 		restURL += "&typeOfRelation=" + typeOfRelation;
 	}
 	
-	if ((!isNull(spaceURL)) && (typeOfSuggest == 'people')) {
-		restURL += "&spaceURL=" + spaceURL;
+	if (spaceURL) {
+	  if(typeOfSuggest == 'people') {
+		  restURL += "&spaceURL=" + spaceURL;
+		}
 	}
 	
 	this.makeRequest(restURL, true, this.resetList);
-	
-	function isNull(str) {
-		var obj = null;
-		try {
-			obj = new Function( "return " + str )();
-			return (obj == null);
-		} catch(e) {
-			return false;
-		}
-    return false;
-	}
 }
 
 /**
  * Gets return data and resets the name list to suggest control.
  */
 UIAutoSuggestControl.prototype.resetList = function(resp) {
-	var JSON = eXo.core.JSON;
-  var names = JSON.parse(resp.responseText).names;
+  var names = gj.parseJSON(resp.responseText).names;
   var namesLen = (names ? names.length : 0);
   var oThis = eXo.social.webui.UIAutoSuggestControl;
   if (namesLen == 0) {
@@ -298,18 +289,17 @@ UIAutoSuggestControl.prototype.resetList = function(resp) {
  * Posts rest request to server.
  */
 UIAutoSuggestControl.prototype.makeRequest = function(url, async, callback) {
-  if (async !== false) async = true;
-  var request = eXo.core.Browser.createHttpRequest();
-  request.open('GET', url, async);
-  request.setRequestHeader("Cache-Control", "max-age=86400") ;
-  request.onreadystatechange = function() {
-    if((request.readyState === 4) && (request.status === 200)) {
+  gj.ajax({
+    type: "get",
+    url: url,
+    async: async,
+    cache: false,
+    success: function(data, status, jqXHR) {
       if (callback) {
-        callback(request);
+        callback(jqXHR);
       }
     }
-  }
-  request.send(null);
+  });
 }
 
 ////////////////////////////End of request data for autosuggest/////////////////////////////

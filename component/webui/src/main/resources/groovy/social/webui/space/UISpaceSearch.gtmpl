@@ -26,12 +26,10 @@ import org.exoplatform.social.core.space.SpaceUtils;
 
 def uicomponentId = uicomponent.id;
 def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
-def allSpacesName = uicomponent.getSpaceNameForAutoSuggest().toString();
 def rcontext = _ctx.getRequestContext() ;
-JavascriptManager jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestControl','/social-resources/javascript');
-jsmanager.importJavascript('eXo.social.webui.UISpaceSearch','/social-resources/javascript');
+def jsmanager = rcontext.getJavascriptManager();
+jsmanager.loadScriptResource("webui"); //Portal's problem, workaround for uicomponent.event(), eXo.webui.UIForm
+jsmanager.loadScriptResource("social-ui-space-search");
 jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
 jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
 jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
@@ -39,7 +37,6 @@ jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL
 jsmanager.addJavascript('eXo.social.webui.portalName = "'+ uicomponent.getPortalName() +'" ;');
 jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "space";');
 
-def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
@@ -70,9 +67,7 @@ def receivedInvitationDisplayModeStyle = "NotSelectedTab";
 def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
 def params = """ {
-  uicomponentId: '${uicomponentId}',
-  allSpacesName: '${allSpacesName}',
-  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}'
+  uicomponentId: '${uicomponentId}'
 } """
 
 jsmanager.addOnLoadJavascript("initSpaceSearch");

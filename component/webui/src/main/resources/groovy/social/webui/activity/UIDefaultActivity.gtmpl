@@ -39,10 +39,7 @@
 <% if (activity) { //process if not null
 
   def jsManager = pcontext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-  jsManager.importJavascript("eXo.social.PortalHttpRequest", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-  jsManager.importJavascript("eXo.social.webui.UIForm", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-  jsManager.importJavascript("eXo.social.webui.UIActivity", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.loadScriptResource("social-ui-activity");
 
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");

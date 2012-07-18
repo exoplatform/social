@@ -90,6 +90,9 @@ public class UISpaceSearch extends UIForm {
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
   
+  /** Html attribute placeholder. */
+  private static final String HTML_ATTRIBUTE_PLACEHOLDER   = "placeholder";
+  
   /**
    * The spaceService is used for SpaceService instance storage.
    */
@@ -232,24 +235,6 @@ public class UISpaceSearch extends UIForm {
   }
 
   /**
-   * Gets space name for auto suggesting.
-   *
-   * @return List of space name.
-   */
-  public List<String> getSpaceNameForAutoSuggest() {
-    return spaceNameForAutoSuggest;
-  }
-
-  /**
-   * Sets space name for auto suggesting.
-   *
-   * @param spaceNameForAutoSuggest The list of space name. A {@code List}
-   */
-  public void setSpaceNameForAutoSuggest(List<String> spaceNameForAutoSuggest) {
-    this.spaceNameForAutoSuggest = spaceNameForAutoSuggest;
-  }
-
-  /**
    * Sets result of searching to list.
    *
    * @param spaceList The list of space. A {@code List}
@@ -294,8 +279,9 @@ public class UISpaceSearch extends UIForm {
   public UISpaceSearch() throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    UIFormStringInput findSpace = new UIFormStringInput(SPACE_SEARCH, null, DEFAULT_SPACE_NAME_SEARCH);
+    UIFormStringInput findSpace = new UIFormStringInput(SPACE_SEARCH, null, null);
     findSpace.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceSearch.label.FindSpace"));
+    findSpace.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, resourceBundle.getString("UISpaceSearch.label.DefaultSpaceNameAndDesc"));
     addUIFormInput(findSpace);
     UIPopupWindow uiPopup = createUIComponent(UIPopupWindow.class, null, POPUP_ADD_SPACE);
     uiPopup.setShow(false);

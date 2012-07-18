@@ -17,7 +17,6 @@
 
 (function() {
     var window_ = this;
-    var DOMUtil = eXo.core.DOMUtil;
     var Util = eXo.social.Util;    
     var FOCUS_COLOR = "#000000",
         BLUR_COLOR = "#C7C7C7";
@@ -32,10 +31,10 @@
 	    this.defaultSkills = params.defaultSkills || null;
 	    
 	    var profileSearch = document.getElementById(params.uicomponentId);
-	    this.nameTextObj = DOMUtil.findDescendantById(profileSearch, 'Search');
-	    this.searchButton = DOMUtil.findDescendantById(profileSearch, 'SearchButton');
-	    this.posTextObj = DOMUtil.findDescendantById(profileSearch, 'position');
-	    this.skillTextObj = DOMUtil.findDescendantById(profileSearch, 'skills');
+	    this.nameTextObj = (gj(profileSearch).find('#Search'))[0];
+	    this.searchButton = (gj(profileSearch).find('#SearchButton'))[0];
+	    this.posTextObj = (gj(profileSearch).find('#position'))[0];
+	    this.skillTextObj = (gj(profileSearch).find('#skills'))[0];
 	    this.onLoad();
    }
     
@@ -43,7 +42,7 @@
 	 * When form load at the first time, init controls.
 	 * TODO : remove. autosuggest must be implemenented by an ajax call! not by pushing all names in the client!!
 	 */
-   UIProfileUserSearch.prototype.onLoad = function(uicomponentId) {
+   UIProfileUserSearch.prototype.onLoad = function() {
         var searchEl = this.nameTextObj;
         var posEl = this.posTextObj;
         var skillEl = this.skillTextObj;
@@ -78,10 +77,10 @@
         var searchBtn = this.searchButton;
         var uiProfileUserSearch = this;
         
-	    // Turn off auto-complete attribute of text-box control
-	    nameEl.setAttribute('autocomplete','off');
-	    posEl.setAttribute('autocomplete','off');
-	    skillEl.setAttribute('autocomplete','off');
+		    // Turn off auto-complete attribute of text-box control
+		    gj(nameEl).attr('autocomplete','off');
+		    gj(posEl).attr('autocomplete','off');
+		    gj(skillEl).attr('autocomplete','off');
     
         Util.addEventListener(this.nameTextObj, 'focus', function() {
           if (this.value == defaultUserContact) {

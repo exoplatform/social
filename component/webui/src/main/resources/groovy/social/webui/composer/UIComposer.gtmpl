@@ -46,8 +46,7 @@
     blastInput = "BlastInputPeople";
   }
 
-  jsManager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-  jsManager.importJavascript("eXo.social.webui.UIComposer", LinkProvider.JAVASCRIPT_RESOURCE_URL);
+  jsManager.loadScriptResource("social-ui-activity-composer");
   def params = """
     {
       composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',

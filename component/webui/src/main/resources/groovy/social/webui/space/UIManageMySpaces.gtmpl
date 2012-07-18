@@ -28,6 +28,11 @@
   import org.exoplatform.social.core.service.LinkProvider;
 
   def uicomponentId = uicomponent.id
+
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.loadScriptResource("base"); //Portal's problem, workaround for uicomponent.event()
+
   def labelActionEditSpace = _ctx.appRes("${uicomponentId}.label.action_edit_space")
   def labelActionDeleteSpace = _ctx.appRes("${uicomponentId}.label.action_delete_space")
   def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")

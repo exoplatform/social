@@ -33,7 +33,10 @@
      if (uicomponent.isExtendLoader()) {
        %>
         <script type="text/javascript">
-          try{document.getElementById("uiActivitiesLoadButton").style.display = "none";}catch(e){};
+          try{
+            var uiActivitiesLoadButton = document.getElementById("uiActivitiesLoadButton");
+            if (uiActivitiesLoadButton) uiActivitiesLoadButton.style.display = "none";
+          }catch(e){};
         </script>
        <%
      } else {
@@ -56,7 +59,10 @@
     if(uicomponent.isUnableLoadNext() || uicomponent.getActivitiesContainer().getChildren().size()<=1){
       %>
         <script type="text/javascript">
-          try{document.getElementById("UIActivitiesLoadButton").style.display = "none";}catch(e){};
+          try{
+            var uiActivitiesLoadButton = document.getElementById("uiActivitiesLoadButton");
+            if (uiActivitiesLoadButton) uiActivitiesLoadButton.style.display = "none";
+          }catch(e){};
         </script>
       <%
     }

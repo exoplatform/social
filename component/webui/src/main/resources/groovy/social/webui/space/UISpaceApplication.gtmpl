@@ -25,6 +25,9 @@
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
 
+  def rcontext = _ctx.getRequestContext();
+  rcontext.getJavascriptManager().loadScriptResource("base"); //Portal's problem, workaround for uicomponent.event()
+
   def uicomponentId = uicomponent.id;
   def addApplicationLabel = _ctx.appRes("${uicomponentId}.label.AddApplication");
   

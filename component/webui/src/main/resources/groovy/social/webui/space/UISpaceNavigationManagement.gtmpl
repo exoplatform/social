@@ -2,6 +2,9 @@
   import org.exoplatform.portal.webui.page.UIPageBrowser;
   import org.exoplatform.social.webui.space.UISpaceNavigationNodeSelector;
   import org.exoplatform.webui.core.UIPopupWindow;
+
+  def rcontext = _ctx.getRequestContext();
+  rcontext.getJavascriptManager().loadScriptResource("base"); //Portal's problem, workaround for uicomponent.event()
   
   def uicomponentId = uicomponent.id;
   def addNodeActionLabel = _ctx.appRes("${uicomponentId}.action.addNode")

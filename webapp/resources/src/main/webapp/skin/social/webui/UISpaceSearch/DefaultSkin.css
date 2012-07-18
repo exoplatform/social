@@ -52,11 +52,14 @@
 }
 
 .UISpaceSearch .SpaceSearchContainer input {
-	color: #808080;
 	font-size: 11px;
 	height: 14px;
 	width: 170px;
 	border: 1px solid white;
+}
+
+.UISpaceSearch .SpaceSearchContainer .placeholder {
+  color: #C7C7C7;
 }
 
 .UIMySpacesPortlet .UISpaceSearch .BoxSpaceList .SpaceListTitle {

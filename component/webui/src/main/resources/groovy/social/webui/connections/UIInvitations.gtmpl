@@ -43,7 +43,11 @@
   
   def ignoreLabel = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
   def confirmLabel = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
-      
+
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.loadScriptResource("base");   
+   
   def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
    
   if (uicomponent.isLoadAtEnd()) {

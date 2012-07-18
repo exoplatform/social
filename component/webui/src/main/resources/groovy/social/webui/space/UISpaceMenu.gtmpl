@@ -73,10 +73,7 @@
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
-  //Disable double-click inline feature to make sure tabs just work well first
-  //TODO make double-click inline feature to work well
-  jsManager.importJavascript("eXo.social.webui.UISpaceAppNameEdition","/social-resources/javascript");
+  jsManager.loadScriptResource("social-ui-space-app-name-edition");
 %>
 
 <div class="UISpaceMenu" id="UISpaceMenu">

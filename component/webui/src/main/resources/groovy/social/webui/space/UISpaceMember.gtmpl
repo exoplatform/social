@@ -43,8 +43,7 @@
   def iteratorExistingUsers = uicomponent.getUIPageIteratorExistingUsers();
   def rcontext = _ctx.getRequestContext();
   def jsmanager = rcontext.getJavascriptManager();
-  jsmanager.importJavascript('eXo.social.webui.UISpaceMemberSuggestion', '/social-resources/javascript');
-  jsmanager.importJavascript('eXo.social.webui.UIAutoSuggestMultiValueControl','/social-resources/javascript');
+  jsmanager.loadScriptResource("social-ui-space-member-suggestion");
   jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UISpaceMemberSuggest.onLoad();');
   jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
 	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');

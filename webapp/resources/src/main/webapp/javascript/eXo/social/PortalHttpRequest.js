@@ -31,19 +31,16 @@
    */
   PortalHttpRequest.ajaxPostRequest = function(url, queryString, async, callback) {
     if (async !== false) async = true;
-    var request = eXo.core.Browser.createHttpRequest();
-    request.open('POST', url, async);
-    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.setRequestHeader("Content-length", queryString.length);
-    request.setRequestHeader("Connection", "close");
-    request.onreadystatechange = function() {
-      if(request.readyState === 4) {
-        if (callback) {
-          callback(request);
-        }
-      }
-    }
-    request.send(queryString);
+    
+    request = new AjaxRequest('POST', url, queryString);
+	  handler = new HttpResponseHandler();
+	  request.isAsynchronize = async;
+	  request.onSuccess = handler.ajaxResponse;
+	  request.onLoading = handler.ajaxLoading;
+	  request.onTimeout = handler.ajaxTimeout;
+	  request.callBack = callback;
+	  eXo.portal.CurrentRequest = request;
+	  request.process();
   }
   
   //expose

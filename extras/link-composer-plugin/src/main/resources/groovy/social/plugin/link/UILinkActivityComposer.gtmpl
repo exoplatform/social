@@ -34,9 +34,7 @@
   uicomponent.setLinkInfoDisplayed(false);
   def requestContext = _ctx.getRequestContext();
   def jsManager = requestContext.getJavascriptManager();
-  jsManager.importJavascript("eXo.social.Util", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.PortalHttpRequest", "/social-resources/javascript");
-  jsManager.importJavascript("eXo.social.webui.UIComposerLinkExtension", "/social-resources/javascript");
+  jsManager.loadScriptResource("social-ui-link-activity-composer");
 
   def noThumbnail = _ctx.appRes("UILinkComposerPlugin.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("UILinkComposerPlugin.msg.Previous_Image"),

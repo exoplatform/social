@@ -31,11 +31,10 @@ UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
 		
 		//If user presses on ENTER button, then rename the space application name label
 		if(keyNum == 13){
-			var inputElement = eXo.core.Browser.getEventSource(e);
+			var inputElement = e.srcElement || e.target;
 			var newSpaceAppName = inputElement.value;
 						
-			var DOMUtil = eXo.core.DOMUtil;
-			var portletFrag = DOMUtil.findAncestorByClass(inputElement, "PORTLET-FRAGMENT");
+			var portletFrag = (gj(inputElement).closest('.PORTLET-FRAGMENT'))[0]; 
 			var compId = portletFrag.parentNode.id;
 			
 			//Change the space application name label
@@ -54,7 +53,7 @@ UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
 		}
 		//If user presses on the ESCAPE key reset the original space application name.
 		else if(keyNum == 27){
-			var inputElement = eXo.core.Browser.getEventSource(e);
+			var inputElement = e.srcElement || e.target;
 			if(eXo.social.webui.UISpaceAppNameEdition.backupElement) {
  				inputElement.parentNode.replaceChild(eXo.social.webui.UISpaceAppNameEdition.backupElement, inputElement);
  				eXo.social.webui.UISpaceAppNameEdition.backupElement = null;

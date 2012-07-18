@@ -185,8 +185,6 @@ public class UIManagePendingSpaces extends UIContainer {
       setPendingSpacesList(loadPendingSpaces(0, this.pendingSpacesList.size()));
     }
     
-    uiSpaceSearch.setSpaceNameForAutoSuggest(getPendingSpaceNames());
-
     setEnableLoadNext((this.pendingSpacesList.size() >= SPACES_PER_PAGE)
             && (this.pendingSpacesList.size() < getPendingSpacesNum()));
     
