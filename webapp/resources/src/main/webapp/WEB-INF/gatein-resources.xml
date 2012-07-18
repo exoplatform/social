@@ -46,10 +46,6 @@
       <path>/javascript/htmlparser.js</path>
     </script>
     <script>
-      <name>eXo.social.PortalHttpRequest</name> <!-- function not available from PortalHttpRequest -->
-      <path>/javascript/eXo/social/PortalHttpRequest.js</path>
-    </script>
-    <script>
       <name>eXo.social.Util</name>
       <path>/javascript/eXo/social/Util.js</path>
     </script>
@@ -67,6 +63,10 @@
       <name>eXo.social.webui.UIForm</name><!-- function not available from Portal UIForm -->
       <path>/javascript/eXo/social/webui/UIForm.js</path>
     </script>
+    <script>
+      <name>eXo.social.webui.UIPopUp</name>
+      <path>/javascript/eXo/social/webui/UIPopUp.js</path>
+    </script>
     <depends>
       <module>webui</module>
     </depends>
@@ -76,11 +76,18 @@
   </module>
 
   <module>
-    <name>social-ui-user-search</name>
+    <name>social-ui-profile</name>
     <script>
-       <name>eXo.social.webui.UIAutoSuggestControl</name>
-       <path>/javascript/eXo/social/webui/UIAutoSuggestControl.js</path>
+       <name>eXo.social.webui.UIProfile</name>
+       <path>/javascript/eXo/social/webui/UIProfile.js</path>
     </script>
+    <depends>
+       <module>social-webui</module>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-ui-user-search</name>
     <script>
        <name>eXo.social.webui.UIProfileUserSearch</name>
        <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>
@@ -93,10 +100,6 @@
   <module>
     <name>social-ui-space-search</name>
     <script>
-       <name>eXo.social.webui.UIAutoSuggestControl</name>
-       <path>/javascript/eXo/social/webui/UIAutoSuggestControl.js</path>
-    </script>
-    <script>
        <name>eXo.social.webui.UISpaceSearch</name>
        <path>/javascript/eXo/social/webui/UISpaceSearch.js</path>
     </script>
@@ -108,15 +111,14 @@
   <module>
     <name>social-ui-space-member-suggestion</name>
     <script>
-       <name>eXo.social.webui.UIAutoSuggestControl</name>
-       <path>/javascript/eXo/social/webui/UIAutoSuggestMultiValueControl.js</path>
-    </script>
-    <script>
        <name>eXo.social.webui.UISpaceMemberSuggestion</name>
        <path>/javascript/eXo/social/webui/UISpaceMemberSuggestion.js</path>
     </script>
     <depends>
       <module>base</module>
+    </depends>
+    <depends>
+       <module>social-webui</module>
     </depends>
   </module>
   
@@ -129,18 +131,10 @@
     <depends>
        <module>base</module>
     </depends>
+    <depends>
+       <module>social-common</module>
+    </depends>
   </module>
-
-   <module>
-     <name>social-ui-contact-section</name>
-     <script>
-      <name>eXo.social.webui.UIContactSection</name>
-      <path>/javascript/eXo/social/webui/UIContactSection.js</path>
-     </script>
-     <depends>
-      <module>social-core</module>
-     </depends>
-   </module>
 
   <module>
     <name>social-ui-activity-composer</name>
@@ -185,5 +179,4 @@
       <module>base</module>
     </depends>
   </module>
-
 </gatein-resources>

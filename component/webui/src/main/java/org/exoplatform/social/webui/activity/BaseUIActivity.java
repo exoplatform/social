@@ -234,10 +234,10 @@ public class BaseUIActivity extends UIForm {
       return super.url(actionName);
     }
     StringBuilder b = new StringBuilder();
-    b.append("javascript:eXo.social.webui.UIForm.submitForm('").append(getFormId()).append("','");
+    b.append("javascript:eXo.webui.UIForm.submitForm('").append(getFormId()).append("','");
     b.append(actionName).append("',");
-    b.append(callback).append(",");
-    b.append("true").append(")");
+    b.append("true").append(",");
+    b.append(callback).append(")");
     return b.toString();
   }
 

@@ -27,8 +27,6 @@ def categoryList = uicomponent.getApplicationCategoryList();
 
 def rcontext = _ctx.getRequestContext();
 def jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-jsmanager.importJavascript("eXo.social.PortalHttpRequest", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 jsmanager.importJavascript("eXo.social.webui.UIForm", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 jsmanager.importJavascript("eXo.social.webui.UIApplicationCategorySelector", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 

@@ -17,9 +17,16 @@
 
 (function() {
     var window_ = this;
-    var FOCUS_COLOR = "#000000",
-        BLUR_COLOR = "#C7C7C7";
-        
+    var COLOR = {
+          FOCUS : "#000000",
+          BLUR : "#C7C7C7"
+        };
+
+    var DEFAULT_REST_INFO = {
+      CONTEXT_NAME : 'rest-socialdemo',
+      PATH : '/social/spaces/suggest.json'
+    };
+
 		/**
 		 * Space search.
 		 * @class
@@ -27,6 +34,7 @@
 		 */
 		function UISpaceSearch(params) {
 			this.uicomponentId = params.uicomponentId || null;
+			this.defaultSpaceNameAndDesc = params.defaultSpaceNameAndDesc || null;
 			this.onLoad();
 		};
 		
@@ -37,37 +45,54 @@
 			var spaceSearch = document.getElementById(this.uicomponentId);
 			var searchEl  = gj(spaceSearch).find('#SpaceSearch');
 			var searchBtn = gj(spaceSearch).find('#SearchButton');
-			
 			var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
-			var suggestControlObj = eXo.social.webui.UIAutoSuggestControl;
+			var portalName = eXo.social.webui.portalName;
+			var defaultUserContact = gj(searchEl).attr('placeholder');
+
 			// Turn off auto-complete attribute of text-box control
 			searchEl.attr('autocomplete','off');
 			
+			if (searchEl.val().trim() ==  this.defaultSpaceNameAndDesc) {
+			  searchEl.css('color', COLOR.BLUR);
+			}
       searchEl.placeholder();
-      
-			searchEl.blur(function() {
-			  suggestControlObj.hideSuggestions();
-			});
 			
-			searchEl.on('keydown', function(event) {
-				var e = event || window.event;
-				var keynum = e.keyCode || e.which;  
-				
-				if(keynum == 13) { //Enter key
-					suggestControlObj.hideSuggestions();
-					searchBtn.click();
-					return false;
-				} else { // Other keys (up and down key)
-					suggestControlObj.handleKeyDown(e);
-				}
-			});
-			
-			// Note: change this input when migrate to jQuery
-			suggestControlObj.load(searchEl.get(0), uiSpaceSearchObj);
+		  gj(searchEl).autosuggest(buildURL(), {onSelect:callback, defaultVal:defaultUserContact});
+
+		  function callback() {
+		    searchBtn.click();
+		  };
+
+      function buildURL() {
+        var restContext = eXo.social.webui.restContextName;
+        var currentUser = eXo.social.webui.currentUserName;
+        var typeOfRelation = eXo.social.webui.typeOfRelation;
+        var spaceURL = eXo.social.webui.spaceURL;
+        var typeOfSuggest = eXo.social.webui.typeOfSuggest;
+
+	      restContext = (restContext) ? restContext : DEFAULT_REST_INFO.CONTEXT_NAME;
+	      var restURL = "/" + restContext + "/" + portalName + DEFAULT_REST_INFO.PATH;
+
+	      restURL = restURL + '?conditionToSearch=input_value';
+
+        if (currentUser) {
+          restURL += "&currentUser=" + currentUser;
+        }
+
+	      if (typeOfRelation) {
+	        restURL += "&typeOfRelation=" + typeOfRelation;
+	      }
+
+        if (spaceURL) {
+          if(typeOfSuggest == 'people') {
+            restURL += "&spaceURL=" + spaceURL;
+          }
+        }
+
+        return restURL;
+      };
+
 	 }
 
-	 window_.eXo = window_.eXo || {};
-	 window_.eXo.social = window_.eXo.social || {};
-	 window_.eXo.social.webui = window_.eXo.social.webui || {};
 	 window_.eXo.social.webui.UISpaceSearch = UISpaceSearch;
 })();

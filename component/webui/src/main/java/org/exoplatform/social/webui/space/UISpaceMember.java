@@ -152,6 +152,7 @@ public class UISpaceMember extends UIForm {
     addChild(iteratorExistingUsers);
     setTypeOfRelation(USER_TO_INVITE);
     invitedUserNames = null;
+    setSubmitAction("return false;");
   }
 
   /**

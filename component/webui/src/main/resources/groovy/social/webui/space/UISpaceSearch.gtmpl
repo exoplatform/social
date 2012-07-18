@@ -37,6 +37,7 @@ jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL
 jsmanager.addJavascript('eXo.social.webui.portalName = "'+ uicomponent.getPortalName() +'" ;');
 jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "space";');
 
+def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
@@ -67,7 +68,8 @@ def receivedInvitationDisplayModeStyle = "NotSelectedTab";
 def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
 def params = """ {
-  uicomponentId: '${uicomponentId}'
+  uicomponentId: '${uicomponentId}',
+  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}'
 } """
 
 jsmanager.addOnLoadJavascript("initSpaceSearch");

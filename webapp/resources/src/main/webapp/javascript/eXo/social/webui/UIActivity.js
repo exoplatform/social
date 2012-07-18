@@ -21,7 +21,6 @@
 
 (function() {
   var window_ = this,
-  Util = eXo.social.Util,
   COMMENT_BLOCK_BOUND_CLASS_NAME = "CommentBlockBound",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME = "CommentBlockBoundNone",
   DEFAULT_COMMENT_TEXT_AREA_HEIGHT = "30px",
@@ -67,21 +66,20 @@
   }
 
   UIActivity.prototype.init = function() {
-    this.commentLinkEl = Util.getElementById(this.commentLinkId);
-    //this.likeLinkEl = Util.getElementById(this.likeLinkId);
-    this.commentFormBlockEl = Util.getElementById(this.commentFormBlockId);
-    this.commentTextareaEl = Util.getElementById(this.commentTextareId);
-    this.commentButtonEl = Util.getElementById(this.commentButtonId);
+    this.commentLinkEl = gj("#"+this.commentLinkId);
+    this.commentFormBlockEl = gj("#" + this.commentFormBlockId);
+    this.commentTextareaEl = gj("#" + this.commentTextareId);
+    this.commentButtonEl = gj("#" + this.commentButtonId);
     this.deleteCommentButtonEls = [];
-    this.contentBoxEl = Util.getElementById(this.contentBoxId);
-    this.deleteActivityButtonEl = Util.getElementById(this.deleteActivityButtonId);
-    this.commentBlockBoundEl = Util.getElementById(this.commentBlockBoundId);
+    this.contentBoxEl = gj(this.contentBoxId);
+    this.deleteActivityButtonEl = gj("#" + this.deleteActivityButtonId);
+    this.commentBlockBoundEl = gj("#" + this.commentBlockBoundId);
     this.commentBlockEls = [];
-    this.activityContextBoxEl = Util.getElementById(this.activityContextBoxId);
+    this.activityContextBoxEl = gj("#" + this.activityContextBoxId);
     if(this.allCommentSize > 0) {
-      for(var i=0; i<this.allCommentSize; i++) {
-        this.deleteCommentButtonEls[i] = Util.getElementById(this.deleteCommentButtonIds[i]);
-        this.commentBlockEls[i] = Util.getElementById(this.commentBlockIds[i]);
+      for(var i=0; i < this.allCommentSize; i++) {
+        this.deleteCommentButtonEls[i] = gj("#" + this.deleteCommentButtonIds[i]);
+        this.commentBlockEls[i] = gj("#" + this.commentBlockIds[i]);
       }
     }
     
@@ -89,104 +87,103 @@
       alert('err: init uiActivity!');
     }
     
-    this.commentBlockBoundEl.className=COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+    this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
     
     if (this.commentFormDisplayed) {
-      this.commentTextareaEl.style.height = DEFAULT_COMMENT_TEXT_AREA_HEIGHT;
-      this.commentTextareaEl.style.color = DEFAULT_COMMENT_TEXT_AREA_COLOR;
-      if (this.commentTextareaEl.value === this.inputWriteAComment) {
-        this.commentTextareaEl.value = '';
+      this.commentTextareaEl.css('height',DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
+      this.commentTextareaEl.css('color', DEFAULT_COMMENT_TEXT_AREA_COLOR);
+      if (this.commentTextareaEl.val() === this.inputWriteAComment) {
+        this.commentTextareaEl.val('');
       }
-      this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+      this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_CLASS_NAME);
     } else {
       if (this.allCommentSize == 0) {
-        this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+        this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
       } else {
-        this.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+        this.commentBlockBoundEl.attr('class', COMMENT_BLOCK_BOUND_CLASS_NAME);
       }
     }
 
     var uiActivity = this;
     if (this.commentLinkEl) {
       //event handlers
-      Util.addEventListener(this.commentLinkEl, 'click', function(evt) {
-        if (uiActivity.commentFormBlockEl.style.display != 'block') {
+      this.commentLinkEl.on( 'click', function(evt) {
+        if (uiActivity.commentFormBlockEl.css('display') != 'block') {
           if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_CLASS_NAME;
+            uiActivity.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_CLASS_NAME);
           }
-          Util.showElement(uiActivity.commentFormBlockId);
+          gj("#" + uiActivity.commentFormBlockId).show();
           uiActivity.commentTextareaEl.focus();
         } else {
           if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.className = COMMENT_BLOCK_BOUND_NONE_CLASS_NAME;
+            uiActivity.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
           }
-          Util.hideElement(uiActivity.commentFormBlockId);
+          gj("#" + uiActivity.commentFormBlockId).hide();
         }
-      }, false);
+      });
 
-      Util.addEventListener(this.commentTextareaEl, 'focus', function(evt) {
-        this.style.height = FOCUS_COMMENT_TEXT_AREA_HEIGHT;
-        this.style.color = FOCUS_COMMENT_TEXT_AREA_COLOR;
-        if (this.value === uiActivity.inputWriteAComment) {
-          this.value = '';
+      this.commentTextareaEl.on('focus', function(evt) {
+        gj(this).css('height', FOCUS_COMMENT_TEXT_AREA_HEIGHT);
+        gj(this).css('color',FOCUS_COMMENT_TEXT_AREA_COLOR);
+          if (gj(this).val() === uiActivity.inputWriteAComment) {
+          gj(this).val('');
         }
-        Util.showElement(uiActivity.commentButtonId);
-      }, false);
+        gj("#" + uiActivity.commentButtonId).show();
+      });
 
-      Util.addEventListener(this.commentTextareaEl, 'blur', function(evt) {
-        if (this.value === '') {
-          Util.hideElement(uiActivity.commentButtonId);
-          this.value = uiActivity.inputWriteAComment;
-          this.style.height = DEFAULT_COMMENT_TEXT_AREA_HEIGHT;
-          this.style.color = DEFAULT_COMMENT_TEXT_AREA_COLOR;
+      this.commentTextareaEl.on('blur', function(evt) {
+        if (gj(this).val() === '') {
+          gj("#" + uiActivity.commentButtonId).hide();
+          gj(this).val(uiActivity.inputWriteAComment);
+
+          gj(this).css('height', DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
+          gj(this).css('color',DEFAULT_COMMENT_TEXT_AREA_COLOR);
         }
-      }, false);
+      });
 
       if (this.commentFormDisplayed) {
-        Util.showElement(this.commentFormBlockId);
-        this.commentTextareaEl.value = this.inputWriteAComment;
+        gj("#" + this.commentFormBlockId).show();
+        this.commentTextareaEl.val(this.inputWriteAComment);
         if (this.commentFormFocused) {
           this.commentTextareaEl.focus();
         }
       } else {
-        Util.hideElement(this.commentFormBlockId);
-        this.commentTextareaEl.value = this.inputWriteAComment;
+        gj("#" + this.commentFormBlockId).hide();
+        this.commentTextareaEl.val(this.inputWriteAComment);
       }
     } else {
-      Util.hideElement(this.commentFormBlockId);
+      gj("#" + this.commentFormBlockId).hide();
     }
 
     if (this.deleteActivityButtonEl !== null) {
-      Util.addEventListener(this.activityContextBoxEl, ['mouseover', 'focus'], function(evt) {
-        uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxHilight';
-      }, false);
+      this.activityContextBoxEl.on('mouseover focus', function(evt) {
+        uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxHilight');
+      });
 
-      Util.addEventListener(this.activityContextBoxEl, ['mouseout', 'blur'], function(evt) {
-        uiActivity.deleteActivityButtonEl.className = 'CloseContentBoxNormal';
-      }, false);
+      this.activityContextBoxEl.on('mouseout blur', function(evt) {
+        uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxNormal');
+      });
 
     }
 
     if (this.allCommentSize > 0) {
+
       for (var i = 0; i < this.allCommentSize; i++) {
         (function(i) {
           //when this element is displayed
           if (uiActivity.commentBlockEls[i]) {
-            Util.addEventListener(uiActivity.commentBlockEls[i], ['mouseover', 'focus'], function(evt) {
-              uiActivity.deleteCommentButtonEls[i].className = 'CloseContentBoxHilight';
-            }, false);
+            uiActivity.commentBlockEls[i].on('mouseover focus', function(evt) {
+              uiActivity.deleteCommentButtonEls[i].attr('class','CloseContentBoxHilight');
+            });
 
-            Util.addEventListener(uiActivity.commentBlockEls[i], ['mouseout', 'blur'], function(evt) {
-              uiActivity.deleteCommentButtonEls[i].className = 'CloseContentBoxNormal';
-            }, false);
+            uiActivity.commentBlockEls[i].on('mouseout blur', function(evt) {
+              uiActivity.deleteCommentButtonEls[i].attr('class','CloseContentBoxNormal');
+            });
           }
         })(i);
       }
     }
   }
-  //expose
-  window_.eXo = window_.eXo || {};
-  window_.eXo.social = window_.eXo.social || {};
-  window_.eXo.social.webui = window_.eXo.social.webui || {};
+
   window_.eXo.social.webui.UIActivity = UIActivity;
 })();

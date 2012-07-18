@@ -194,6 +194,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       tempParams.put(TITLE_PARAM, requestContext.getRequestParameter(TITLE_PARAM));
       tempParams.put(DESCRIPTION_PARAM, requestContext.getRequestParameter(DESCRIPTION_PARAM));
       uiComposerLinkExtension.setTemplateParams(tempParams);
+      uiComposerLinkExtension.setLinkInfoDisplayed(true);
       requestContext.addUIComponentToUpdateByAjax(uiComposerLinkExtension);
       UIComponent uiParent = uiComposerLinkExtension.getParent();
       if (uiParent != null) {

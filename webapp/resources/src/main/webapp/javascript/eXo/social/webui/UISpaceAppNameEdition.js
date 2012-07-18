@@ -16,82 +16,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-function UISpaceAppNameEdition() {};
 
-/**
- * Rename space application label.
- */
-UISpaceAppNameEdition.prototype.renameAppLabel = function(e) {
-		var backupElement = eXo.social.webui.UISpaceAppNameEdition.backupElement;
-		var isValidInput = true;
-		if(!e){
-			e = window.event;
-		}
-		var keyNum = e.keyCode;
-		
-		//If user presses on ENTER button, then rename the space application name label
-		if(keyNum == 13){
-			var inputElement = e.srcElement || e.target;
-			var newSpaceAppName = inputElement.value;
-						
-			var portletFrag = (gj(inputElement).closest('.PORTLET-FRAGMENT'))[0]; 
-			var compId = portletFrag.parentNode.id;
-			
-			//Change the space application name label
-			var spanElement = document.createElement("span");
-			spanElement.innerHTML = newSpaceAppName;
-			inputElement.parentNode.replaceChild(spanElement, inputElement);
-			
-			//Send request to server to update space application name.
-			var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + compId;
-			href += "&portal:type=action";
-			href += "&portal:isSecure=false";
-			href += "&uicomponent=UISpaceMenu";
-			href += "&op=RenameSpaceAppName";
-			href += "&newSpaceAppName=" + encodeURIComponent(newSpaceAppName);
-			window.location = href;
-		}
-		//If user presses on the ESCAPE key reset the original space application name.
-		else if(keyNum == 27){
-			var inputElement = e.srcElement || e.target;
-			if(eXo.social.webui.UISpaceAppNameEdition.backupElement) {
- 				inputElement.parentNode.replaceChild(eXo.social.webui.UISpaceAppNameEdition.backupElement, inputElement);
- 				eXo.social.webui.UISpaceAppNameEdition.backupElement = null;
-			}
-		}
+eXo.social.webui.UISpaceAppNameEdition = {
+
+  renameAppLabel : function(input) {
+    var newLabel = input.val();
+    if (newLabel && newLabel.length > 0) {
+      var portletID = input.closest(".PORTLET-FRAGMENT").parent().attr("id");
+
+      var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + portletID;
+      href += "&portal:type=action";
+      href += "&portal:isSecure=false";
+      href += "&uicomponent=UISpaceMenu";
+      href += "&op=RenameSpaceAppName";
+      href += "&newSpaceAppName=" + encodeURIComponent(newLabel);
+      window.location = href;
+    }
+  },
+
+  showEditLabelInput : function(target, nodeName, currentLabel) {
+    var jqObj = gj(target);
+
+    var input = gj("<input>").attr({type : "text", id : nodeName, name : currentLabel, value : currentLabel, maxLength : 50});
+    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px");
+
+    jqObj = jqObj.replaceWith(input);
+    input.blur(function() {
+      gj(this).replaceWith(jqObj);
+    });
+
+    input.keypress(function(e) {
+      var keyNum = e.keyCode ? e.keyCode : e.which;
+      if (keyNum == 13) {
+        eXo.social.webui.UISpaceAppNameEdition.renameAppLabel(gj(this));
+      } else if (keyNum == 27) {
+        gj(this).replaceWith(jqObj);
+      }
+    });
+
+    input.closest(".UITab").addClass("EditTab");
+    input.focus();
+  }
 };
-
-/**
- * Change label into editable status for input new space application label. 
- * @param selectedElement Label is edited.
- * @param currentContent
- * @param titleEditable
- */
-UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, currentContent, titleEditable){
-		eXo.social.webui.UISpaceAppNameEdition.backupElement = selectedElement;
-		var prNode = selectedElement.parentNode;
-		var selectedElementId = selectedElement.id;
-		
-		var inputElement = document.createElement("input");
-		inputElement.title = titleEditable;
-		inputElement.type = "text";
-		inputElement.id = selectedElementId;
-		inputElement.name = selectedElementId; // To store old value
-		inputElement.value = currentContent;
-		inputElement.style.border = "1px solid #b7b7b7";
-		inputElement.style.height = "14px";
-		inputElement.style.minWidth = "50px";
-		inputElement.style.width = (selectedElement.offsetWidth - 2 ) + "px";
-		inputElement.onkeypress = eXo.social.webui.UISpaceAppNameEdition.renameAppLabel;
-		inputElement.setAttribute('maxLength', 50);
-		inputElement.onblur = function() {
-			prNode.replaceChild(eXo.social.webui.UISpaceAppNameEdition.backupElement, inputElement);
-		};
-		
-		prNode.replaceChild(inputElement, selectedElement);
-		inputElement.focus();
-};
-
-if(!eXo.social) eXo.social = {};
-if(!eXo.social.webui) eXo.social.webui = {};
-eXo.social.webui.UISpaceAppNameEdition = new UISpaceAppNameEdition();

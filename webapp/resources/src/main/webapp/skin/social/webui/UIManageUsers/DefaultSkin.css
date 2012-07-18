@@ -69,14 +69,6 @@
 	bottom: 0px;
 }
 
-.UISocApplication .ContainerSpace .AvatarUser span {
-	display: block;
-	height: 3px;
-	left: 0;
-	position: absolute;
-	width: 56px;
-}
-
 .UISocApplication .ContainerSpace .AvatarUser img {
 	border-radius: 3px 3px 3px 3px;
 	height: 56px;

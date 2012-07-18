@@ -16,7 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see<http://www.gnu.org/licenses/>.
-
+link
 -->
 */
 %>
@@ -56,6 +56,26 @@
               "link: '$link',"+
               "title: '$title',"+
               "description: '$description'";
+
+    if(image != null){
+      linkData += ",image: '$image',";
+    }
+    linkData += "}";
+  } else if(linkInfoDisplayed){
+    link = uicomponent.templateParams.get("link");
+    title = uicomponent.templateParams.get("title");
+    description = uicomponent.templateParams.get("description");
+    def image;
+    if(uicomponent.templateParams.get("image") == null){
+      images = [];
+    } else {
+      images = [uicomponent.templateParams.get("image")];
+      image = images.get(0);
+    }
+    linkData = "{"+
+      "link: '$link',"+
+      "title: '$title',"+
+      "description: '$description'";
 
     if(image != null){
       linkData += ",image: '$image',";

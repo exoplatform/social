@@ -87,7 +87,7 @@
      commentFormFocused: ${uicomponent.isCommentFormFocused()}
     }
   """
-  jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
+  jsManager.addCustomizedOnLoadScript('initUIActivity('+params+')');
   //make sure commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime, activityPostedTimeInSpace;
@@ -137,11 +137,11 @@
 %>
 
 <div class="UIActivity">
-    <script type="text/javascript">
-        function initUIActivity${activity.id}() {
-            new eXo.social.webui.UIActivity($params);
-        }
-    </script>
+  <script type="text/javascript">
+    function initUIActivity(params) {
+      new eXo.social.webui.UIActivity(params);
+    }
+  </script>
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
     <a class="Avatar" title="$ownerName" href="$ownerUri">
@@ -249,7 +249,7 @@
       </div>
     <%}%>
     
-  <div id="CommentBlockBound${activity.id}">
+    <div id="CommentBlockBound${activity.id}">
       <% if (uicomponent.commentListToggleable()) {
       def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");

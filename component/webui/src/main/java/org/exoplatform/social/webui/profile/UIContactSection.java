@@ -119,6 +119,9 @@ public class UIContactSection extends UIProfileSection {
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
 
+  /** Html attribute placeholder. */
+  private static final String HTML_ATTRIBUTE_PLACEHOLDER   = "placeholder";
+  
   /** Number of phone. */
   private int phoneCount = 0;
 
@@ -555,8 +558,9 @@ public class UIContactSection extends UIProfileSection {
       websiteTitle.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.websiteTitle"));
       addUIFormInput(websiteTitle);
       UIFormStringInput sampleUrlForm = new UIFormStringInput(URL + StringUtils.leftPad(String.valueOf(urlIdx++), 3, '0'),
-                                                              null, getSampleURL());
+                                                              null, null);
       sampleUrlForm.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIContactSection.label.urls"));
+      sampleUrlForm.setHTMLAttribute(HTML_ATTRIBUTE_PLACEHOLDER, getSampleURL());
       addUIFormInput(sampleUrlForm.addValidator(ExpressionValidator.class, URL_REGEX_EXPRESSION, INVALID_URL));
       urlCount += 2;
     }

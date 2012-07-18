@@ -27,13 +27,15 @@
   
   def rcontext = _ctx.getRequestContext() ;
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
-  jsmanager.importJavascript("eXo.social.Util", LinkProvider.JAVASCRIPT_RESOURCE_URL);
   jsmanager.importJavascript("eXo.social.webui.UIProfile",LinkProvider.JAVASCRIPT_RESOURCE_URL);
   
   def params = """ {
     positionId: 'position',
     saveButtonId: 'savePosition'
   } """
+  
+  jsmanager.loadScriptResource("social-ui-profile");
+  
   jsmanager.addOnLoadJavascript("initUIProfile");
   
   def ownerIdentity = Utils.getOwnerIdentity(true);

@@ -21,7 +21,6 @@
  
  (function() {
   var window_ = this,
-      Util = eXo.social.Util,
       HTTP = "http://",
       GRAY_COLOR = "gray",
       BLACK_COLOR = "black",
@@ -33,17 +32,15 @@
     image = this.linkData.image;
     description = this.linkData.description;
     var queryString = 'link='+encodeURIComponent(link)
-	    + '&title='+encodeURIComponent(title)
-	    + '&description='+encodeURIComponent(description);
+        + '&title='+encodeURIComponent(title)
+        + '&description='+encodeURIComponent(description);
     
     if(image != null){
-    	queryString += '&image='+encodeURIComponent(image)
+        queryString += '&image='+encodeURIComponent(image)
     }
 
     var url = this.changeLinkContentUrl.replace(/&amp;/g, "&") + "&ajaxRequest=true";
-    eXo.social.PortalHttpRequest.ajaxPostRequest(url, queryString, true, function(req) {
-     //callbacked
-    });
+    ajaxRequest('POST', url, true, queryString);
   }
   
   /**
@@ -54,63 +51,53 @@
    * <textarea cols="10" rows="3">value</textarea>
    */
   function addEditableText(oldEl, tagName, title) {
-    var textContent = oldEl.innerText; //IE
-    if (textContent === undefined) {
-        textContent = oldEl.textContent;
-    }
-    textContent = textContent.trim();
-    var editableEl = document.createElement(tagName);
-    editableEl.title = title;
-    if ('input' === tagName) {
-      editableEl.setAttribute('type', 'text');
-      editableEl.setAttribute('size', 50);
-      editableEl.setAttribute('class', 'InputTitle');
-      editableEl.setAttribute('className', 'InputTitle');
-      
+    var dataElement = gj(oldEl);
+    var content = dataElement.html().trim();
+    var editableEl = gj("<" + tagName + " />").attr("title", title).val(content);
+    if('input' === tagName){
+      editableEl.attr('type', 'text');
+      editableEl.attr('size', 50);
+      editableEl.attr('class', 'InputTitle');
+      editableEl.attr('className', 'InputTitle');
     } else if ('textarea' === tagName) {
-      editableEl.setAttribute('cols', 50);
-      editableEl.setAttribute('rows', 5);
-      editableEl.setAttribute('class', 'InputDescription');
-      editableEl.setAttribute('className', 'InputDescription');
+      editableEl.attr('cols', 50);
+      editableEl.attr('rows', 5);
+      editableEl.attr('class', 'InputDescription');
+      editableEl.attr('className', 'InputDescription');
     }
-    //editableEl.setAttribute('id', "UIEditableText");
-    editableEl.value = textContent;
-    //insertafter and hide oldEl
-    Util.insertAfter(editableEl, oldEl);
-    oldEl.style.display='none';
+
+    editableEl.insertAfter(dataElement);
+    dataElement.hide();
     editableEl.focus();
-    //ENTER -> done
-    Util.addEventListener(editableEl, 'keypress', function(e) {
-        if (Util.isEnterKey(e)) {
-            updateElement(this);
-            return false;
-        }
-    }, false);
-    
-    Util.addEventListener(editableEl, 'blur', function() {
+    editableEl.keypress(function(e){
+      if (13 == (e.which ? e.which : e.keyCode)) {
         updateElement(this);
-    }, false);
-    
+      }
+    });
+    editableEl.blur(function(e){
+      updateElement(this);
+    });
+
     var updateElement = function(editableEl) {
         //hide this, set new value and display
-        var oldEl = editableEl.previousSibling;
-        if (oldEl.innerText != null) { //IE
-            oldEl.innerText = editableEl.value;
+        var oldEl = gj(editableEl).prev();
+        if (oldEl.html() != null) { //IE
+            oldEl.html(gj(editableEl).val());
         } else {
-            oldEl.textContent = editableEl.value;
+            oldEl.text(gj(editableEl).val()) ;
         }
         //updates data
         //detects element by class, if class contains ContentTitle -> update title,
         // if class contains ContentDescription -> update description
-        oldEl.style.display="block";
-        if (Util.hasClass(oldEl, 'Title')) {
-          uiComposerLinkExtension.linkData.title = editableEl.value;
+        oldEl.css('display',"block")
+        if (oldEl.hasClass('Title')) {
+          uiComposerLinkExtension.linkData.title = gj(editableEl).val();
           changeLinkContent.apply(uiComposerLinkExtension);
-        } else if (Util.hasClass(oldEl, 'Content')) {
-          uiComposerLinkExtension.linkData.description = editableEl.value;
+        } else if (oldEl.hasClass('Content')) {
+          uiComposerLinkExtension.linkData.description = gj(editableEl).val();
           changeLinkContent.apply(uiComposerLinkExtension);
         }
-        editableEl.parentNode.removeChild(editableEl);
+        gj(editableEl).remove();
     }
 }
   
@@ -163,72 +150,72 @@
       this.stats.innerHTML = (this.shownThumbnailIndex + 1) + ' / ' + this.images.length;
     }
     
-    var shareButton = Util.getElementById('ShareButton');
-    shareButton.className = 'ShareButton';
+    var shareButton = gj('#ShareButton');
+    shareButton.attr('class','ShareButton');
     uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       //trick: enable share button
       if (shareButton) {
-        shareButton.disabled = false;
-        shareButton.className = 'ShareButton';
+        shareButton.removeAttr('disabled');
+        shareButton.attr('class', 'ShareButton');
       }
       
-      this.uiThumbnailDisplay = Util.getElementById(this.uiThumbnailDisplayId);
-      this.thumbnails = Util.getElementById(this.thumbnailsId);
-      this.backThumbnail = Util.getElementById(this.backThumbnailId);
-      this.nextThumbnail = Util.getElementById(this.nextThumbnailId);
-      this.stats = Util.getElementById(this.statsId);
-      this.linkTitle = Util.getElementById('LinkTitle');
-      this.linkDescription = Util.getElementById('LinkDescription');
+      this.uiThumbnailDisplay = gj('#' + this.uiThumbnailDisplayId);
+      this.thumbnails = gj('#' + this.thumbnailsId);
+      this.backThumbnail = gj('#' + this.backThumbnailId);
+      this.nextThumbnail = gj('#' + this.nextThumbnailId);
+      this.stats = gj('#' + this.statsId);
+      this.linkTitle = gj('#' + 'LinkTitle');
+      this.linkDescription = gj('#' + 'LinkDescription');
       
       var titleParam = this.titleEditable;
       if (this.linkTitle) {
-        Util.addEventListener(this.linkTitle, 'click', function(evt) {
+        this.linkTitle.on('click', function(evt) {
           addEditableText(this, 'input', titleParam);
-        }, false); 
+        });
       }
       
       if (this.linkDescription) {
-        Util.addEventListener(this.linkDescription, 'click', function(evt) {
+        this.linkDescription.on('click', function(evt) {
           addEditableText(this, 'textarea', titleParam);
-        }, false);
+        });
       }
       
       if (this.thumbnails) {
-        this.thumbnailCheckbox = Util.getElementById(this.thumbnailCheckboxId);
-        this.images = this.thumbnails.getElementsByTagName('img');
+        this.thumbnailCheckbox = gj('#' + this.thumbnailCheckboxId);
+        this.images = gj('img',this.thumbnails);
         doStats.apply(this);
 
-        Util.addEventListener(this.backThumbnail, 'click', function(evt) {
+        this.backThumbnail.on('click', function(evt) {
           if (uiComposerLinkExtension.shownThumbnailIndex > 0) {
             uiComposerLinkExtension.shownThumbnailIndex--;
             showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = Util.getAttributeValue(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex], 'src');
+            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
             changeLinkContent.apply(uiComposerLinkExtension);
           }
-        }, false);
+        });
         
-        Util.addEventListener(this.nextThumbnail, 'click', function(evt) {
+        this.nextThumbnail.on('click', function(evt) {
           if (uiComposerLinkExtension.shownThumbnailIndex < uiComposerLinkExtension.images.length - 1) {
             uiComposerLinkExtension.shownThumbnailIndex++;
             showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = Util.getAttributeValue(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex], 'src');
+            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
             changeLinkContent.apply(uiComposerLinkExtension);
           }
-        }, false);
+        });
         
-        Util.addEventListener(this.thumbnailCheckbox, 'click', function(evt) {
-          if (uiComposerLinkExtension.thumbnailCheckbox.checked == true) {
-            uiComposerLinkExtension.uiThumbnailDisplay.parentNode.style.height = '50px';
-            uiComposerLinkExtension.uiThumbnailDisplay.style.display = 'none';
+        this.thumbnailCheckbox.on('click', function(evt) {
+          if (uiComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
+            uiComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '50px',
+                                                                     'display':'none'});
             uiComposerLinkExtension.linkData.image = '';
           } else {
-            uiComposerLinkExtension.uiThumbnailDisplay.parentNode.style.height = '';
-            uiComposerLinkExtension.uiThumbnailDisplay.style.display = 'block';
-            uiComposerLinkExtension.linkData.image = Util.getAttributeValue(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex], 'src');
+            uiComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
+                                                                     'display':'block'});
+            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
           }
           changeLinkContent.apply(uiComposerLinkExtension);
-        }, false);
+        });
       } else {
         this.images = [];
       }
@@ -236,47 +223,43 @@
     } else {
 
       if (shareButton) {
-        shareButton.disabled = true;
-        shareButton.className = 'ShareButtonDisable';
+        shareButton.attr('disabled',"disabled");
+        shareButton.attr('class','ShareButtonDisable');
       }
-      this.inputLink = Util.getElementById(this.inputLinkId);
-      this.attachButton = Util.getElementById(this.attachButtonId);
-      this.inputLink.value = HTTP;
-      this.inputLink.style.color = GRAY_COLOR;
+      this.inputLink = gj('#' + this.inputLinkId);
+      this.attachButton = gj('#' + this.attachButtonId);
+      this.inputLink.val(HTTP);
+      this.inputLink.css('color',GRAY_COLOR);
       var uiComposerLinkExtension = this;
       var inputLink = this.inputLink;
-      Util.addEventListener(inputLink, 'focus', function(evt) {
-        if (inputLink.value === HTTP) {
-          inputLink.value = '';
-          inputLink.style.color = BLACK_COLOR;
+      inputLink.on('focus', function(evt) {
+        if (inputLink.val() === HTTP) {
+          inputLink.val('');
+          inputLink.css('color',BLACK_COLOR);
         }
-      }, false);
+      });
       
-      Util.addEventListener(this.inputLink, 'blur', function(evt) {
-        if (inputLink.value === '') {
-          inputLink.value = HTTP;
-          inputLink.style.color = GRAY_COLOR;
+      this.inputLink.on('blur', function(evt) {
+        if (inputLink.val() === '') {
+          inputLink.val(HTTP);
+          inputLink.css('color',GRAY_COLOR);
         }
-      }, false);
+      });
       
-      Util.addEventListener(this.inputLink, 'keypress', function(evt) {
+      this.inputLink.on('keypress', function(evt) {
         //if enter submit link
-      }, false);
-      this.attachButton.disabled = false;
-      Util.addEventListener(this.attachButton, 'click', function(evt) {
-        if (inputLink.value === '' || inputLink.value === HTTP) {
+      });
+      this.attachButton.removeAttr('disabled');
+      this.attachButton.on( 'click', function(evt) {
+        if (inputLink.val() === '' || inputLink.val() === HTTP) {
           return;
         }
-        var url = uiComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.value) + '&ajaxRequest=true';
+        var url = uiComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
         ajaxGet(url);
-      }, false);
+      });
       
     }
   }
-  
-  //expose
-  window_.eXo = window_.eXo || {};
-  window_.eXo.social = window_.eXo.social || {};
-  window_.eXo.social.webui = window_.eXo.social.webui || {};
+
   window_.eXo.social.webui.UIComposerLinkExtension = UIComposerLinkExtension;
  })();

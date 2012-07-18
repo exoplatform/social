@@ -95,7 +95,7 @@
      commentFormFocused: ${uicomponent.isCommentFormFocused()}
     }
   """
-  jsManager.addOnLoadJavascript("initUIActivity${activity.id}");
+  jsManager.addCustomizedOnLoadScript('initUIActivity('+params+')');
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime, activityPostedTimeInSpace;
@@ -152,8 +152,8 @@
 
 <div class="UIActivity">
   <script type="text/javascript">
-    function initUIActivity${activity.id}() {
-      new eXo.social.webui.UIActivity($params);
+    function initUIActivity(params) {
+      new eXo.social.webui.UIActivity(params);
     }
   </script>
 

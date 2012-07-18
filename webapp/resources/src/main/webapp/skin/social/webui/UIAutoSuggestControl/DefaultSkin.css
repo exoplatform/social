@@ -17,8 +17,7 @@
 div.suggestions {
 	border: 1px solid #cdcdc1;
 	border-top: 1px solid #b7b7b7;
-	position: absolute;	 
-	min-width: 276px;
+	position: absolute;
 	background: white; 
 	color: #3A3A3A;
 	max-height: 150px;
@@ -26,68 +25,19 @@ div.suggestions {
 	overflow-y: hidden;
 }
 
-*+html div.suggestions {
-	width: 278px;
+div.suggestions div.resultItem.hover {
+  background-color: #E1E1E1;
 }
 
-div.suggestions div {
-	cursor: default;
-	padding: 0px 3px;
+div.suggestions div.resultItem {
+	margin:0px;
+	padding:5px;
+	position:relative;
+	height:auto;
+	cursor:pointer;
 }
 
-div.suggestions div.current {
-	background-color: #4169e1;
-	color: white;
-}
-
-div.peoplesuggestions {
-	border: 1px solid #cdcdc1;
-	border-top: 1px solid #b7b7b7;
-	position: absolute;	 
-	min-width: 258px;
-	background: white; 
-	color: #3A3A3A;
-	max-height: 150px;
-	overflow-y: auto;
-	overflow-y: hidden;
-}
-
-*+html div.peoplesuggestions {
-	width: 258px;
-}
-
-div.peoplesuggestions div {
-	cursor: default;
-	padding: 0px 3px;
-}
-
-div.peoplesuggestions div.current {
-	background-color: #4169e1;
-	color: white;
-}
-
-div.spacesuggestions {
-	border: 1px solid #cdcdc1;
-	border-top: 1px solid #b7b7b7;
-	position: absolute;	 
-	min-width: 177px;
-	background: white; 
-	color: #3A3A3A;
-	max-height: 150px;
-	overflow-y: auto;
-	overflow-y: hidden;
-}
-
-*+html div.spacesuggestions {
-	width: 179px;
-}
-
-div.spacesuggestions div {
-	cursor: default;
-	padding: 0px 3px;
-}
-
-div.spacesuggestions div.current {
-	background-color: #4169e1;
-	color: white;
+div.suggestions div.resultItem p {
+	margin:0px;
+	padding:0px;
 }
