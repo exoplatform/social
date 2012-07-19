@@ -68,7 +68,7 @@ public class UIActivityFactory extends BaseComponentPlugin {
       activityExtension = extensionManager.getUIExtension(BaseUIActivity.class.getName(), UIDefaultActivity.ACTIVITY_TYPE);
     }
     BaseUIActivity uiActivity = (BaseUIActivity) extensionManager.addUIExtension(activityExtension, null, parent);
-    uiActivity.setId(uiActivity.getId() + "_" + uiActivity.hashCode());
+    uiActivity.setId(uiActivity.getId().replace(":","_") + "_" + uiActivity.hashCode());
 
     //populate data for this uiActivity
     registerBuilder((UIActivityExtension) activityExtension);
