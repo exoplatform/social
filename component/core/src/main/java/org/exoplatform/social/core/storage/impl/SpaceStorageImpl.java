@@ -29,6 +29,7 @@ import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -113,13 +114,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     if (entity.getAvatarLastUpdated() != null) {
       try {
+        PortalContainer container = PortalContainer.getInstance();
         ChromatticSession chromatticSession = getSession();
         String url = String.format("/%s/jcr/%s/%s/production/soc:providers/soc:space/soc:%s/soc:profile/soc:avatar/?upd=%d",
-                      container.getRestContextName(),
-                      lifeCycle.getRepositoryName(),
-                      chromatticSession.getJCRSession().getWorkspace().getName(),
-                      entity.getPrettyName(),
-                      entity.getAvatarLastUpdated());
+            container.getRestContextName(),
+            lifeCycle.getRepositoryName(),
+            chromatticSession.getJCRSession().getWorkspace().getName(),
+            entity.getPrettyName(),
+            entity.getAvatarLastUpdated());
         space.setAvatarUrl(LinkProvider.escapeJCRSpecialCharacters(url));
       } catch (Exception e) {
         LOG.warn("Failed to build avatar url: " + e.getMessage());
