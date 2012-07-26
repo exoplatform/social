@@ -409,6 +409,9 @@ public class SpaceServiceImpl implements SpaceService {
     space.setMembers(members);
     space.setGroupId(groupId);
     space.setUrl(space.getPrettyName());
+
+    saveSpace(space, true);
+    spaceLifeCycle.spaceCreated(space, creator);
     
     try {
       SpaceApplicationHandler spaceApplicationHandler = getSpaceApplicationHandler(space);
@@ -420,8 +423,9 @@ public class SpaceServiceImpl implements SpaceService {
     } catch (Exception e) {
       LOG.warn("Failed to init apps", e);
     }
-    saveSpace(space, true);
-    spaceLifeCycle.spaceCreated(space, creator);
+
+    saveSpace(space, false);
+    
     return space;
   }
 
