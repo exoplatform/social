@@ -77,17 +77,17 @@
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isLikesDisplayed();
   //params for init UIActivity javascript object
-  def params = """
-    {activityId: '${activity.id}',
-     inputWriteAComment: '$inputWriteAComment',
-     commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
-     commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
-     commentFormDisplayed: $commentFormDisplayed,
-     allCommentSize: ${allComments.size()},
-     commentFormFocused: ${uicomponent.isCommentFormFocused()}
-    }
-  """
-  jsManager.addCustomizedOnLoadScript('initUIActivity('+params+')');
+
+  jsManager.addCustomizedOnLoadScript('new eXo.social.webui.UIActivity(' +
+                                                                       """{activityId: '${activity.id}',
+                                                                            inputWriteAComment: '$inputWriteAComment',
+                                                                            commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
+                                                                            commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
+                                                                            commentFormDisplayed: $commentFormDisplayed,
+                                                                            allCommentSize: ${allComments.size()},
+                                                                            commentFormFocused: ${uicomponent.isCommentFormFocused()}
+                                                                           }"""
+                                                                      +')');
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace;
@@ -141,12 +141,6 @@
 %>
 
 <div class="UIActivity">
-  <script type="text/javascript">
-    function initUIActivity(params) {
-      new eXo.social.webui.UIActivity(params);
-    }
-  </script>
-
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
     <a class="Avatar" title="$ownerName" href="$ownerUri">

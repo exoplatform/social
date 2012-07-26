@@ -29,7 +29,6 @@
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
 	width: 56px;
-	position: relative;
 }
 
 .UIActivity .Avatar img {
@@ -62,7 +61,6 @@
 	float: right; /* orientation=rt */
 	margin: 0px 10px 0px 0px;
 	width: 38px;
-	position: relative;
 }
 
 .UIActivity .AvatarCM img {
