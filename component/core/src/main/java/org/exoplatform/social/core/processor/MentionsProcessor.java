@@ -39,6 +39,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
 
   private LinkProvider linkProvider;
+  private static final Pattern USERNAME_MENTION_PATTERN = Pattern.compile("(^|\\s)(@([\\p{L}\\p{Digit}\\_\\.\\-]+))");
 
   public MentionsProcessor(InitParams params, LinkProvider linkProvider) {
     super(params);
@@ -69,16 +70,13 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       return null;
     }
 
-    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-    Matcher matcher = pattern.matcher(message);
+    Matcher matcher = USERNAME_MENTION_PATTERN.matcher(message);
 
     // Replace all occurrences of pattern in input
     StringBuffer buf = new StringBuffer();
     while (matcher.find()) {
       // Get the match result
-      String replaceStr = matcher.group().substring(1);
-
-      String portalOwner = null;
+      String portalOwner;
       try{
         portalOwner = Util.getPortalRequestContext().getPortalOwner();
       } catch (Exception e){
@@ -86,18 +84,17 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
         portalOwner = LinkProvider.DEFAULT_PORTAL_OWNER;
       }
 
-      // Convert to uppercase
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
-      replaceStr = lp.getProfileLink(replaceStr, portalOwner);
+      //create replace String.
+      String profileURL = linkProvider.getProfileLink(matcher.group(3), portalOwner);
+      if(profileURL != null){
+        String replaceStr = matcher.group().replace(matcher.group(2), profileURL);
+        // Insert replacement
+        matcher.appendReplacement(buf, replaceStr);
+      }
 
-      // Insert replacement
-      matcher.appendReplacement(buf, replaceStr);
     }
     matcher.appendTail(buf);
     return buf.toString();
 
   }
-
-
 }
