@@ -71,5 +71,17 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     assertEquals("Multiple substitution : ",activity.getTitle(), rootLink + " and " + johnLink + " title");
     assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
+
+    activity.setTitle("@root root@localhost and @john title");
+    activity.setBody("body with @root and @john");
+    processor.processActivity(activity);
+    assertEquals("Multiple substitution : ",activity.getTitle(), rootLink + " root@localhost and " + johnLink + " title");
+    assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
+
+    activity.setTitle("@unknowuser root@localhost_-. and @john title");
+    activity.setBody("body with @root and @john");
+    processor.processActivity(activity);
+    assertEquals("Multiple substitution : ",activity.getTitle(),"@unknowuser root@localhost_-. and " + johnLink + " title");
+    assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
   }
 }
