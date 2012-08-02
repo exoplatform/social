@@ -27,7 +27,6 @@
   def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
   def labelSpaceUpdates = _ctx.appRes("${uicomponent.id}.label.Space_Updates");
   def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
-  def labelMyActivityStream = _ctx.appRes("${uicomponent.id}.label.My_Activity_Stream");
 
   def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
   def allUpdatesDisplayModeStyle = "LightBlueStyle";
@@ -46,7 +45,6 @@
 
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
-  <h4 class="ActivityStreamTitle">$labelMyActivityStream</h4>
 <% if (uicomponent.isActivityStreamOwner()) { %>
   <div class="UIAction">
     <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "ALL_UPDATES");%>" class="ActionButton $allUpdatesDisplayModeStyle">$labelAllUpdates</a>
