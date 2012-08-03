@@ -1,4 +1,19 @@
-This chapter describes about configurations used in Social. It consists of the following main sections:
-
-* [Components|#SOCref.Configuration.Component]
-* [External component plugins|#SOCref.Configuration.External_component_plugins]
+{docbook}
+<abstract>
+ <para>This chapter describes about configurations used in Social. It consists of the following main sections:</para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <emphasis role="bold">
+            <link linkend="SOCref.Configuration.Component">Components</link>
+          </emphasis> </para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">
+            <link linkend="SOCref.Configuration.External_component_plugins">External component plugins</link>
+          </emphasis> </para>
+      </listitem>
+    </itemizedlist>
+</abstract>
+{docbook}
