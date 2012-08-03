@@ -87,6 +87,7 @@
           <destinationFileName>${project.artifactId}.xml</destinationFileName>
           <beforeBookBodyXML><![CDATA[
                  <xi:include href="bookinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+                 <xi:include href="Preface.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
                  <!--xi:include href="acknowledgements.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /-->
            ]]></beforeBookBodyXML>
           <validationMode>${wikbook.validationMode}</validationMode>
