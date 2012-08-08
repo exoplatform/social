@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default message bundle
+-->
+<messageBundle>
+  <msg name="my_spaces">فضاءاتي</msg>
+  <msg name="more_link_label">عرض الجميع</msg>
+  <msg name="has_no_space">أنت لست عُضوًا في أيّ فضاء.</msg>
+</messageBundle>
