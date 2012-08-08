@@ -5,8 +5,8 @@ eXo.social = eXo.social || {};
 /**
  * Default Construction
  */
-function SocialUtil() {
-}
+
+var SocialUtil = {};
 
 /**
  * Constants
@@ -85,8 +85,8 @@ SocialUtil.dataBrowser = [
 /**
  * Adjust height belong to browser
  */
-SocialUtil.prototype.adjustHeight = function(contentContainer) {
-  var browser = this.getCurrentBrowser();
+SocialUtil.adjustHeight = function(contentContainer) {
+  var browser = SocialUtil.getCurrentBrowser();
   
   if (browser != null) {
     if ((browser == "Safari")	|| (browser == "Chrome")) {
@@ -102,7 +102,7 @@ SocialUtil.prototype.adjustHeight = function(contentContainer) {
 /**
  * Get current Browser
  */
-SocialUtil.prototype.getCurrentBrowser = function() {
+SocialUtil.getCurrentBrowser = function() {
 	function searchString(data) {
 		for (var i=0;i<data.length;i++)	{
 			var dataString = data[i].string;
@@ -123,4 +123,4 @@ SocialUtil.prototype.getCurrentBrowser = function() {
 }
 
 /*************************************************************************/
-eXo.social.SocialUtil = new SocialUtil() ;
+eXo.social.SocialUtil = SocialUtil ;
