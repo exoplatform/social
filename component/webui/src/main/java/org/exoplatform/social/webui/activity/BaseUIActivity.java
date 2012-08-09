@@ -21,8 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -675,6 +679,52 @@ public class BaseUIActivity extends UIForm {
       Locale userLocale = requestContext.getLocale();
       activity = i18NActivityProcessor.process(activity, userLocale);
     }
+    
+    processActivityTitle(activity);
+    
     return activity;
+  }
+  
+  /*
+   * Process mention case after i18nlizing.
+   */
+  private void processActivityTitle(Activity activity) {
+    String title = activity.getTitle();
+    if (title != null) {
+      Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+      Matcher matcher = pattern.matcher(title);
+  
+      // Replace all occurrences of pattern in input
+      StringBuffer buf = new StringBuffer();
+      while (matcher.find()) {
+        // Get the match result
+        String replaceStr = matcher.group().substring(1);
+  
+        String portalOwner = null;
+        try{
+          portalOwner = Util.getPortalRequestContext().getPortalOwner();
+        } catch (Exception e){
+          //default value for testing and social
+          portalOwner = LinkProvider.DEFAULT_PORTAL_OWNER;
+        }
+  
+        // Convert to uppercase
+        ExoContainer container = ExoContainerContext.getCurrentContainer();
+        LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
+        replaceStr = lp.getProfileLink(replaceStr, portalOwner);
+  
+        if (replaceStr == null) {
+          String deletedUser = WebuiRequestContext.getCurrentInstance()
+              .getApplicationResourceBundle().getString("UIActivitiesLoader.label.Deleted_User");
+          
+          replaceStr = "<strike>" + deletedUser + "</strike>";
+        }
+        
+        // Insert replacement
+        matcher.appendReplacement(buf, replaceStr);
+      }
+      matcher.appendTail(buf);
+      activity.setTitle(buf.toString());
+    }
   }
 }

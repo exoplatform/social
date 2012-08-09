@@ -91,8 +91,10 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
       replaceStr = lp.getProfileLink(replaceStr, portalOwner);
 
-      // Insert replacement
-      matcher.appendReplacement(buf, replaceStr);
+      if (replaceStr != null) {
+        // Insert replacement
+        matcher.appendReplacement(buf, replaceStr);
+      }
     }
     matcher.appendTail(buf);
     return buf.toString();
