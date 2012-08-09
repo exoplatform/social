@@ -1,5 +1,25 @@
-This chapter provides you a comprehensive view about applications in Social, including:
-* [Portlets|#SOCref.Portlets]
-* [Gadgets|#SOCref.List_Of_Gadget_in_Social]
-
-These applications are packaged as Web application archives (WARs).
+{docbook}
+<abstract>
+ <para>This chapter provides you with a comprehensive view about applications in Knowledge, including:</para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          <emphasis role="bold">
+            <link linkend="#SOCref.Portlets">Portlets</link>
+          </emphasis> </para>
+          <para>Provides a list of all porlets used in Social.</para>
+      </listitem>
+      <listitem>
+        <para>
+          <emphasis role="bold">
+            <link linkend="SOCref.List_Of_Gadget_in_Social">Gadgets</link>
+          </emphasis> </para>
+          <para>Provides a list of all gadgets used in Social.</para>
+      </listitem>
+    </itemizedlist>
+  <para>These applications are packaged as Web application archives (WARs).
+  </para>
+  <para>Also, you can specify the package of each portlet and gadget and its available preferences that allow you to extend the configuration choices for standard preferences.
+  </para>
+</abstract>
+{docbook}
