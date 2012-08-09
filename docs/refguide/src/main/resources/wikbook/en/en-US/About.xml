@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<abstract>
+<para>The intended readers of this document are developers who want to develop and build social networking features in the Social function of eXo Platform.
+</para>
+<para>The document consists of the following main contents:</para>
+<itemizedlist>
+<listitem>
+<para>
+<emphasis role="bold"><link linkend="SOCref.Applications">Applications</link></emphasis>: describes applications (portlets and gadgets) included in Social.
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold"><link linkend="SOCref.Configurations">Configuration</link></emphasis>: provides you the comprehensive knowledge about the configuration with a large range of configuration parameters declared in Social.
+</para>
+</listitem>
+<listitem>
+<para>
+<emphasis role="bold"><link linkend="SOCref.Developers_References">Developer References</link></emphasis>: describes about extension, public APIs, Java APIs, tutorials, Social JCR structure, and related others in Social.
+</para>
+</listitem>
+</itemizedlist>
+</abstract>
