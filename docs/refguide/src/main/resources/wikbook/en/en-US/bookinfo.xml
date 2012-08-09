@@ -1,3 +1,4 @@
 <bookinfo>
   <title>Reference Guide / Social Functions</title>
+  <xi:include href="About.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 </bookinfo>
