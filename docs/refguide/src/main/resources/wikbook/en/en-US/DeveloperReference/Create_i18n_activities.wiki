@@ -1,6 +1,17 @@
-This section will show you how to internationalize activities in Social.
+This section will show you how to internationalize activities in Social via the following topics:
+* [Internationalize an activity|#SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities]
+* [Get an internationalized message |#SOCref.Developers_References.How_to_create_i18n_activities.Get_i18n_message]
 
-h1. Internationalize an activity {anchor:id="SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities"}
+
+{docbook}
+<para xml:id="SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities">
+<citetitle>
+<emphasis role="bold">
+Internationalize an activity
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 In the previous versions, Social had hard-coded messages for activities, such as
 creating spaces, granting the "manager" role to a member, sending connection request to another user, updating a user's profile/avatar, and more.
 And now, to internationalize these types of messages, you can use resource bundles and _I18NActivityProcessor_.
@@ -112,7 +123,16 @@ To reserve this order, _LinkedHashMap_ must be used to create _templateParams_ i
 </external-component-plugins>
 {code}
 
-h1. Get an internationalized message {anchor:id="SOCref.Developers_References.How_to_create_i18n_activities.Get_i18n_message"}
+
+{docbook}
+<para xml:id="SOCref.Developers_References.How_to_create_i18n_activities.Get_i18n_message">
+<citetitle>
+<emphasis role="bold">
+Get an internationalized message
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 * If you do not have registered UI activity plugins, your activity messages will be internationalized and displayed by the default UI activity.
 

@@ -1,4 +1,65 @@
-h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.Java_APIs.Activity_Manager">ActivityManager</link>
+            </para>
+            <para>Provision of methods to manage activities.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.Java_APIs.Identity_Manager"> IdentityManager</link>
+            </para>
+            <para>Provision of methods to manage identities.</para>
+          </listitem>
+		      <listitem>
+            <para>
+              <link linkend="Developer_document.Java_APIs.Relationship_manager">RelationshipManager</link>
+            </para>
+            <para>Provision of methods to manage relationships in Social.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.JavaAPIs.Java_APIs.SpaceService">SpaceService</link>
+            </para>
+            <para>Provision of methods to work with spaces in Social.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.JavaAPIs.Java_APIs.I18NActivityProcessor">I18NActivityProcessor</link>
+            </para>
+            <para>Provision of methods to process any internationalized activities to new dynamic ones with the internationalized title.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.JavaAPIs.Java_APIs.LinkProvider">LinkProvider</link>
+            </para>
+            <para>Provision of methods to get the URLs of the activities, profiles, spaces, avatars and more.</para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+
+h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_ManagerRoleNotInToc}
 
 || Method|| Param || Return || Description ||
 |*saveActivity*(Identity owner, ExoSocialActivity activity) throws ActivityStorageException |{{owner }} - the owner of activity stream, {{activity}} -  the activity which needs to be saved |ExoSocialActivity  | Save an activity to the stream of an owner. Note that the Activity.userId will be set to the owner's identity if it has not been already set.|
@@ -25,7 +86,8 @@ h1. ActivityManager {anchor:id=Developer_document.Java_APIs.Activity_Manager}
 |*getActivitiesCount*(Identity owner) throws ActivityStorageException | {{owner }} | int|Get the number of activities from a stream owner.|
 |*processActivitiy*(ExoSocialActivity activity) | {{activity}} |void|Pass an activity through the chain of processors.|
 
-h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
+
+h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_ManagerRoleNotInToc}
 
 || Method || Param || Return || Description ||
 | *registerIdentityProviders*(IdentityProviderPlugin plugin)| {{plugin}}| void| Register one or more IdentityProvider through an IdentityProviderPlugin.|
@@ -63,9 +125,7 @@ h1. IdentityManager {anchor:id=Developer_document.Java_APIs.Identity_Manager}
 | *addProfileListener*(ProfileListenerPlugin plugin) | {{plugin}} | void | Register a profile listener component plug-in. |
 
 
-
-
-h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_manager}
+h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_managerRoleNotInToc}
 
 || Method || Param || Return || Description ||
 | *getRelationshipById*(String id) throws Exception | {{id}}|Relationship| Get the relationship by id. You should use get(String) instead. It will be removed at 1.2.x.|
@@ -87,7 +147,8 @@ h1. RelationshipManager {anchor:id=Developer_document.Java_APIs.Relationship_man
 | *getAllRelationships*(Identity identity, Relationship.Type type, List<Identity> identities)| {{identity}} - an identity, {{type}} - a Relationship.Type, {{identities}} - a list of identity <Relationship> | | Return all the  relationship of a given identity with other identity in identities in type. |
 | *getRelationship*(Identity identity1, Identity identity2)| {{identity1}} and {{identity2}} - identities| Relationship | Get the relationship of two identities. |
 
-h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
+
+h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceServiceRoleNotInToc}
 
 || Method || Param || Return || Description ||
 |*getSpaceByDisplayName*(String spaceDisplayName)|{{spaceDisplayName}}|Space |Get a space whose display name matches the string input. (Since 1.2.0-GA).|
@@ -199,7 +260,7 @@ h1. SpaceService {anchor:id=Developer_document.JavaAPIs.Java_APIs.SpaceService}
 |*getPortletsPrefsRequired*()|{{N/A}}|String|Get the portlet preferences required to use in creating the portlet application. Deprecated: it will be removed in Social 1.3.x.|
 
 
-h1. I18NActivityProcessor {anchor:id=Developer_document.JavaAPIs.Java_APIs.I18NActivityProcessor}
+h1. I18NActivityProcessor {anchor:id=Developer_document.JavaAPIs.Java_APIs.I18NActivityProcessorRoleNotInToc}
 
 || Method || Param || Return || Description ||
 |*addActivityResourceBundlePlugin*(ActivityResourceBundlePlugin activityResourceBundlePlugin)|{{activityResourceBundlePlugin}}|void|Register an activity resource bundle plugin.|
@@ -208,7 +269,8 @@ h1. I18NActivityProcessor {anchor:id=Developer_document.JavaAPIs.Java_APIs.I18NA
 |*setResourceBundleService*(ResourceBundleService resourceBundleService)|{{resourceBundleService}}|void|Set the external resource bundle service.|
 
 
-h1. LinkProvider {anchor:id=Developer_document.JavaAPIs.Java_APIs.LinkProvider}
+
+h1. LinkProvider {anchor:id=Developer_document.JavaAPIs.Java_APIs.LinkProviderRoleNotInToc}
 
 || Method || Param || Return || Description ||
 |*getSpaceUri*(final String prettyName)|{{prettyName}} |String |Return the URI link to the space profile. (Since 1.2.0-GA). |
@@ -230,3 +292,4 @@ h1. LinkProvider {anchor:id=Developer_document.JavaAPIs.Java_APIs.LinkProvider}
 |*getAvatarImageSource*(final PortalContainer portalContainer, final Profile profile)|{{portalContainer, profile}} |String|Get an avatar image URI of a profile in a _portalContainer_. Deprecated: You should use _Profile#getAvatarUrl()_ instead. It will be removed in eXo Social 1.3.x. |
 |*getAvatarImageSource*(final Profile profile)|{{profile}} |String |Get an avatar image URI of the profile. Deprecated: You should use _Profile#getAvatarUrl()_ instead. It will be removed in eXo Social 1.3.x. |
 |*escapeJCRSpecialCharacters*(String string)|{{string}} |String |Escape the JCR special characters. |
+

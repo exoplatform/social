@@ -1,10 +1,34 @@
-h1. Objective {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Objective}
+{docbook}
+<para xml:id="SOCref.DeveloperReferences.how_extend_the_activities_rendering.Objective">
+<citetitle>
+<emphasis role="bold">
+Objectives
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 In this section, you will learn how to implement a preprocessor for activities rendering.
 
-h1. Requirements {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.Requirements}
+{docbook}
+<para xml:id="SOCref.DeveloperReferences.how_extend_the_activities_rendering.Requirements">
+<citetitle>
+<emphasis role="bold">
+Requirements
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 To understand this section, the knowledge of Java and eXo Kernel (component model and its XML configuration) is prerequisite.
 
-h1. Why would you need to do this? {anchor:id=SOCref.DeveloperReferences.how_extend_the_activities_rendering.what_you_need_to_do_this}
+{docbook}
+<para xml:id="SOCref.DeveloperReferences.how_extend_the_activities_rendering.what_you_need_to_do_this">
+<citetitle>
+<emphasis role="bold">
+Why would you need to do this?
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 A simple activity is made of simple text. An extension point has been created at the level of activities rendering for two cases:
 * support more HTML tags.

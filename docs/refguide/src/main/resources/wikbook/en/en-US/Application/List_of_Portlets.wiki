@@ -14,3 +14,12 @@ All the portlets are in the _social-portlet.war_ file.
 | *Connections Portlet* | Display the *Connections* page. |
 | *User Profile Portlet* | Display the *User profile* page. |
 
+{docbook}
+<para>
+<prompt>
+    <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [List of Gadgets in Social|#SOCref.List_Of_Gadget_in_Social]

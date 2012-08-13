@@ -2,7 +2,15 @@ Social provides a way to create groups and to share data and applications by spa
 
 To manipulate the spaces, you will use the SpaceService. To get an instance of this class, you need to get the current _PortalContainer_ instance.
 
-h1. Spaces Management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_Management}
+{docbook}
+<para xml:id="SOCref.Developer_Ref.Developer_document_Spaces.Space_Management">
+<citetitle>
+<emphasis role="bold">
+Create a space
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 The following example will show how to create a space:
 

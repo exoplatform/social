@@ -1,6 +1,14 @@
-This section shows you the way to change the content of input texts by using and extending the XMLProcessor component and its plugins.
+This section shows you the way to change the content of input texts by using and extending the [XMLProcessor component|#SOCref_developreference_XMLProcessor_Components] and its [plugins|#SOCref_developreference_XMLProcessor_Plugins].
 
-h1. XMLProccessor Component {anchor:id="SOCref_developreference_XMLProcessor_Components"}
+{docbook}
+<para xml:id="SOCref_developreference_XMLProcessor_Components">
+<citetitle>
+<emphasis role="bold">
+XMLProccessor Component
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 This service processes the input texts in the system by pushing it through a filter (plugin) chain and returns a result as the diagram below:
 
 !images/ProcessorAndFilterSquenceDia.png|align="center" width="150mm" fo:scalefit="1" html:scalefit="0" !
@@ -38,7 +46,16 @@ XMLProcessor is initialized by IOC (Invesion of Control) via the configuration f
   </external-component-plugins>
 {code}
 
-h1. Built-in XMLProcessor Plugins {anchor:id="SOCref_developreference_XMLProcessor_Plugins"}
+{docbook}
+<para xml:id="SOCref_developreference_XMLProcessor_Plugins">
+<citetitle>
+<emphasis role="bold">
+Built-in XMLProcessor Plugins
+</emphasis>
+</citetitle>
+</para>
+{docbook}
+
 In Social, there are the following built-in XMLProcessor plugins (also known as *filters*) that filter the input texts of users.
 || Filters || Description ||
 |*DOMContentEscapeFilter*|Process the *DOM tree* input and escape all *text nodes*.|
