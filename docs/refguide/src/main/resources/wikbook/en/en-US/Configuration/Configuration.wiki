@@ -1,5 +1,47 @@
-h1. SpaceService {anchor:id=SOCref.Configuration.Component.SpaceService}
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.Component.SpaceService">SpaceService</link>
+            </para>
+            <para>This service is used for spaces management, including creating spaces, and installing applications.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.Component.LifeCycleCompletionService"> LifeCycleCompletionService</link>
+            </para>
+            <para>This component is used to process the callable request out of the HTTP request.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.RestPortalContainerNameConfig">RestPortalContainerNameConfig</link>
+            </para>
+            <para>This plugin is used to set the portal container name used for REST service.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.LinkProvider">LinkProvider</link>
+            </para>
+            <para>This service is used to provide the utility to get the URLs of the activities, profiles, spaces, avatars and more.</para>
+          </listitem>
+        </itemizedlist>
+        <para>This section describes services which provide low-level functionality for UI components.</para>
+</highlights>
+{docbook}
 
+
+{docbook}
+<para>
+<prompt>
+    <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [External Component Plugin|#SOCref.Configuration.External_component_plugins]
+
+h1. SpaceService {anchor:id=SOCref.Configuration.Component.SpaceServiceRoleNotInToc}
 The service is used for spaces management, including creating spaces, and installing applications.
 
 *Sample configuration*:
@@ -33,7 +75,7 @@ The service is used for spaces management, including creating spaces, and instal
 Deprecated: Use external-component-plugins instead: org.exoplatform.social.core.space.SpaceApplicationConfigPlugin.
 {note}
 
-h1. LifeCycleCompletionService {anchor:id=SOCref.Configuration.Component.LifeCycleCompletionService}
+h1. LifeCycleCompletionService {anchor:id=SOCref.Configuration.Component.LifeCycleCompletionServiceRoleNotInToc}
 This component is used to process the callable request out of the HTTP request.
 
 *Sample configuration*:
@@ -58,26 +100,7 @@ This component is used to process the callable request out of the HTTP request.
 | thread-number | {{integer}} | {{10}} |The maximum number of threads parallel executed. |
 | async-execution | {{boolean}} | {{false}}| Specify the running mode of service is synchronous or asynchronous. |
 
-h1. IdentityManager {anchor:id=SOCref.Configuration.Component.IdentityManager}
-||Name || Type || Value || Description ||
-| providers | {{String}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | The identity providers. |
-
-h1. ServiceProviderStore {anchor:id=SOCref.Configuration.Component.ServiceProviderStore}
-This service is used to store the Oauth providers data.
-
-h1. RelationshipManager {anchor:id=SOCref.Configuration.RelationshipManager}
-This service is used to manipulate user relationships.
-
-h1. SpaceIdentityProvider {anchor:id=SOCref.Configuration.SpaceIdentityProvider}
-This service is to give identity space instances.
-
-h1. SpaceApplicationHandler {anchor:id=SOCref.Configuration.SpaceApplicationHandler}
-The service is to handle all events related to creating and managing all the application spaces.
-
-h1. ExoPeopleService {anchor:id=SOCref.Configuration.ExoPeopleService}
-The service is to manipulate all data related to people in the Portal.
-
-h1. RestPortalContainerNameConfig  {anchor:id=SOCref.Configuration.RestPortalContainerNameConfig}
+h1. RestPortalContainerNameConfig  {anchor:id=SOCref.Configuration.RestPortalContainerNameConfigRoleNotInToc}
 This plugin is used to set the portal container name used for REST service.
 
 *Sample configuration*:
@@ -99,7 +122,7 @@ This plugin is used to set the portal container name used for REST service.
 || Name || Type || Value || Description ||
 | *rest-container-name* | {{any valid container name}} | {{portal}} |The name of the container. |
 
-h1. LinkProvider {anchor:id=SOCref.Configuration.LinkProvider}
+h1. LinkProvider {anchor:id=SOCref.Configuration.LinkProviderRoleNotInToc}
 This service is used to provide the utility to get the URLs of the activities, profiles, spaces, avatars and more.
 
 *Sample configuration*:

@@ -59,3 +59,30 @@ In Social standalone, this configuration file is at:
 * _{{{$EXO_TOMCAT/webapps/socialdemo/WEB-INF/conf/portal/template/pages/space/page.xml}}}_
 In eXo Platform, this configuration file is at:
 * _{{{$EXO_TOMCAT/webapps/{portal-name}/WEB-INF/conf/portal/template/pages/space/page.xml}}}_
+
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
