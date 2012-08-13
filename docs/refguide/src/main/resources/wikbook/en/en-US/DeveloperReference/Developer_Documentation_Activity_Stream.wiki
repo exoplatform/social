@@ -1,13 +1,19 @@
 Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.
 To manipulate activities, you need to use the _AtivityManager_ service.
 
-h1. Publish an activity {anchor:id=SOCref.Developer_references.PublishActivity} 
+{docbook}
+<para xml:id="SOCref.Developer_references.PublishActivity">
+<citetitle>
+<emphasis role="bold">
+Publish an activity
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 There are two types of activities: activities for a user and activities for a space. The following examples will show you how to publish an activity for each type.
 
-The following examples will show you how to publish an activity for each type.
- 
-h2. Publish an activity for a user {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
+*Publish an activity for a user*   {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_user}
 
 {code:java}
 package org.exoplatform.publish.user;
@@ -72,7 +78,7 @@ public class PublishActivityForUser {
 
 {code}
 
-h2. Publish an activity for a space {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
+*Publish an activity for a space*   {anchor:id=SOCref.Developer_references.Publish_an_activity_for_a_space}
 
 {code:java}
 package org.exoplatform.publish.space;

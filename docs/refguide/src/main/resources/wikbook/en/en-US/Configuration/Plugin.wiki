@@ -1,4 +1,88 @@
-h1. ActivityResourceBundlePlugin  {anchor:id=SOCref.Configuration.External_component_plugins.ActivityResourceBundlePlugin}
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.ActivityResourceBundlePlugin">ActivityResourceBundlePlugin</link>
+            </para>
+            <para>
+            This plugin is used to register the external resource bundle for the internationalized activity type.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.IdentityProviderPluginIdentityManager">IdentityProviderPlugin</link>
+            </para>
+            <para>This plugin provides the identity for a space.</para>
+          </listitem>
+		      <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.MentionsProcessor">MentionsProcessor</link>
+            </para>
+            <para>This plugin allows creating a link to a user profile when the user is mentioned in the activity content.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.OSHtmlSanitizerProcessor">OSHtmlSanitizerProcessor</link>
+            </para>
+            <para>This plugin renders valid HTML tags appearing in the Activity body (content).
+          </para>
+           </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.SpaceService.ExternalPluginConfiguration.PortletPreferenceRequiredPlugin">PortletPreferenceRequiredPlugin</link>
+            </para>
+            <para>This plugin is used to configure the list of portlet names which will have portlet preference of space context.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.SpaceApplicationConfigPlugin">SpaceApplicationConfigPlugin</link>
+            </para>
+            <para>This plugin is used to configure the default applications when creating a new space.
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.SocialChromatticLifeCycle">SocialChromatticLifeCycle</link>
+            </para>
+            <para>This plugin is used to manage <emphasis>ChromatticSession</emphasis> in the Social project.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.TemplateParamsProcessor">TemplateParamsProcessor</link>
+            </para>
+            <para>
+            This plugin uses the value in the <emphasis>template</emphasis> parameter of the activity and replaces the title and body of the activity with
+            the <emphasis>template</emphasis> parameter of this activity.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.XMLTagFilterPolicy">URLConverterFilterPlugin</link>
+            </para>
+            <para>This plugin converts all the URLs in the activity into the hyperlinks.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Configuration.External_component_plugins.RestPortalContainerNameConfig">RestPortalContainerNameConfig</link>
+            </para>
+            <para>This plugin is used to set the portal container name used for REST service.</para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
+
+This section describes the main component plugins used in Social. Each part supplies an sample configuration with the explanation about init-params so you can know how to use these plugins.
+
+{docbook}
+<para>
+<prompt>
+    <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [Component|#SOCref.Configuration.Component]
+
+h1. ActivityResourceBundlePlugin  {anchor:id=SOCref.Configuration.External_component_plugins.ActivityResourceBundlePluginRoleNotInToc}
 This plugin is used to register the external resource bundle for the internationalized activity type.
 
 *Sample configuration*:
@@ -50,7 +134,7 @@ In which:
 || Object-param || Description ||
 | *locale.social.Core* |The resource bundle key file.|
 
-h1. IdentityProviderPlugin {anchor:id=SOCref.Configuration.IdentityProviderPluginIdentityManager}
+h1. IdentityProviderPlugin {anchor:id=SOCref.Configuration.IdentityProviderPluginIdentityManagerRoleNotInToc}
 The plugin provides the identity for a space.
 
 *Sample configuration*:
@@ -83,7 +167,7 @@ In which:
 || Name || Possible value || Default value || Description ||
 | *providers* | {{Every other identity providers}} | {{org.exoplatform.social.core.identity.provider.SpaceIdentityProvider}} | Identity Provider instances for managing identities. |
 
-h1. MentionsProcessor {anchor:id=SOCref.Configuration.External_component_plugins.MentionsProcessor}
+h1. MentionsProcessor {anchor:id=SOCref.Configuration.External_component_plugins.MentionsProcessorRoleNotInToc}
 This plugin allows creating a link to a user profile when the user is mentioned in the activity content.
 
 To use the plugin in the component configuration, you must use the following target-component:
@@ -119,7 +203,7 @@ In which:
 || Name || Possible value || Default value || Description ||
 |*priority* |{{integer}} |2 |The priority of this processor. The lower priority level is executed first. |
 
-h1. OSHtmlSanitizerProcessor {anchor:id=SOCref.Configuration.OSHtmlSanitizerProcessor}
+h1. OSHtmlSanitizerProcessor {anchor:id=SOCref.Configuration.OSHtmlSanitizerProcessorRoleNotInToc}
 The plugin renders valid HTML tags appearing in the Activity body (content).
 
 *Sample configuration*:
@@ -145,7 +229,7 @@ In which:
 
 * *Type*: _org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor_
 
-h1. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.PortletPreferenceRequiredPlugin}
+h1. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.SpaceService.ExternalPluginConfiguration.PortletPreferenceRequiredPluginRoleNotInToc}
 This plugin is used to configure the list of portlet names which will have portlet preference of space context.
 
 To use the plugin in the component configuration, you must use the following target-component:
@@ -182,7 +266,7 @@ In which:
 || Name || Possible value || Default value || Description ||
 | *portletsPrefsRequired* | {{Portlet names}} | {{SpaceActivityStreamPortlet; SpaceSettingPortlet; MembersPortlet}} |The list of portlets which need to be saved and get the space context name. |
 
-h1. SpaceApplicationConfigPlugin  {anchor:id=SOCref.Configuration.External_component_plugins.SpaceApplicationConfigPlugin}
+h1. SpaceApplicationConfigPlugin  {anchor:id=SOCref.Configuration.External_component_plugins.SpaceApplicationConfigPluginRoleNotInToc}
 This plugin is used to configure the default applications when creating a new space.
 
 *Sample configuration*:
@@ -272,7 +356,7 @@ In which:
 |*uri* | {{string}} |The URI of the application in the page node. |
 |*icon* | {{string}} |The icon of the application. |
 
-h1. SocialChromatticLifeCycle  {anchor:id=SOCref.Configuration.External_component_plugins.SocialChromatticLifeCycle}
+h1. SocialChromatticLifeCycle  {anchor:id=SOCref.Configuration.External_component_plugins.SocialChromatticLifeCycleRoleNotInToc}
 This plugin is used to manage _ChromatticSession_ in the Social project.
 
 To use the plugin in the component configuration, you must use the following target-component:
@@ -352,7 +436,7 @@ In which:
 |*org.chromattic.api.Option.root_node.path*|{{String}} |{{/production}}|The path of the root node. |
 |*org.chromattic.api.Option.root_node.create*|{{Boolean}} |{{true}}|Specify whether or not the root node is created by the _ROOT\_NODE\_PATH_ option when it does not exist. |
 
-h1. TemplateParamsProcessor {anchor:id=SOCref.Configuration.External_component_plugins.TemplateParamsProcessor}
+h1. TemplateParamsProcessor {anchor:id=SOCref.Configuration.External_component_plugins.TemplateParamsProcessorRoleNotInToc}
 This plugin uses the value in the _template_ parameter of the activity and replaces the title and body of the activity with
 the _template_ parameter of this activity.
 
@@ -388,7 +472,7 @@ In which:
 |*priority* |{{integer}} |1|The priority of this processor. The lower priority level is executed first. |
 
 
-h1. URLConverterFilterPlugin {anchor:id=SOCref.Configuration.External_component_plugins.XMLTagFilterPolicy}
+h1. URLConverterFilterPlugin {anchor:id=SOCref.Configuration.External_component_plugins.XMLTagFilterPolicyRoleNotInToc}
 This plugin converts all the URLs in the activity into the hyperlinks.
 
 To use the plugin in the component configuration, you must use the following target-component:
@@ -425,7 +509,7 @@ In which:
 || Value-param ||Possible value|| Default value|| Description ||
 |*urlMaxLength*| {{integer}}|\-1| The maximum length of the URL. If the URL is exceeding the maximum length, the URL will be shorten. If the value is \-1, it means the URL is not be shortened.|
 
-h1. RestPortalContainerNameConfig {anchor:id=SOCref.Configuration.External_component_plugins.RestPortalContainerNameConfig}
+h1. RestPortalContainerNameConfig {anchor:id=SOCref.Configuration.External_component_plugins.RestPortalContainerNameConfigRoleNotInToc}
 This plugin is used to set the portal container name used for REST service.
 
 To use the plugin in the component configuration, you must use the following target-component:

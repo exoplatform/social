@@ -1,18 +1,56 @@
-h1. About Activity Plugin {anchor:id=Developer_document.Activity_plug-in}
-  
-The activity plugin feature was introduced to allow using the activity composer extension and the custom UI component for displaying activity by its type.
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.Create_custom_UI_component">Create a custom UI component for displaying the activity based on its type</link>
+            </para>
+            <para>This shows you how to display an activity based on its type with its own UI component instead of the default one.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="Developer_document.Create_composer_extension"> Create a composer extension for composing activity on the UI composer and display it on the activity stream</link>
+            </para>
+            <para>This shows you how to write your own activity composer by the available <emphasis>UIActivityComposer</emphasis> extended class of UIContainer in Social. This class is used to display inputs for users to
+             create their own activities.</para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
 
-h1. How to create activity plugin {anchor:id=Developer_document.Create_activity_plugin}
+This section helps you further understand about Activity Plugin {anchor:id=Developer_document.Activity_plug-in} which is used to allow using the activity composer extension and the custom UI component for displaying activity by its type.
 
-You should have an idea about the UI Extension Framework. If you have already worked with the UI Extension Framework, it is really easy to create an activity plugin. If not, you have chance to work with it now. You should have a look at [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework].
+Also, you also know how to create an activity plugin {anchor:id=Developer_document.Create_activity_plugin} via the ways described later.
 
-h2. Create a custom UI component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_component}
+{note}
+You should have an idea about the [UI Extension Framework|http://wiki.exoplatform.org/xwiki/bin/view/ECM/UI+Extension+Framework] first. If you have already worked with the UI Extension Framework, it is really easy to create an activity plugin. If not, you have chance to work with it now.
+{note}
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]]
+
+h1. Create a custom UI component for displaying the activity based on its type {anchor:id=Developer_document.Create_custom_UI_componentRoleNotInToc}
 
 {note}
 The Project Code is available [here.|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]
 {note}
 
-When an activity is displayed, UIActivityFactory will look for its registered custom actvity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
+When an activity is displayed, UIActivityFactory will look for its registered custom activity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
 For example, in Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher, but now, you want to display it without own UI component instead of the default one. To do that, follow these steps.
 
@@ -568,7 +606,15 @@ And you should make needed modifications for this template:
 Currently, you have to copy and paste in the template file. By this way, you have full control of the UI but it is not a good way when there are changes in UIDefaultActivity. This will be improved soon so that no copy/paste is needed.
 {note}
 
-h3. What is ActivityBuilder? {anchor:id=Developer_document.What_is_activity_builder}
+{docbook}
+<para xml:id="Developer_document.What_is_activity_builder">
+<citetitle>
+<emphasis role="bold">
+What is ActivityBuilder?
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ to set to UIActivity for displaying. Social provides the BaseUIActivityBuilder class for developers to extend and customize their own activity builder easily and properly.
 
 For example, to write your own UILinkActivityBuilder, you just need to extend BaseUIActivityBuilder and then customize attributes and behaviors of the activity builder as below.
@@ -593,7 +639,7 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
 To learn more about ActivityBuilder, refer to the [BaseUIActivity class.|http://svn.exoplatform.org/projects/social/trunk/component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java]
 {note}
 
-h2. Create a composer extension for composing activity on the UI composer and display it on the activity stream {anchor:id=Developer_document.Create_composer_extension}
+h1. Create a composer extension for composing activity on the UI composer and display it on the activity stream {anchor:id=Developer_document.Create_composer_extensionRoleNotInToc}
 The UIActivityComposer is an extended class of UIContainer that is used to display inputs for users to create their own activities. To write your own activity composer, it is recommended that you use the UIActivityComposer available in Social.
 
 For example, to create an input component for inserting video links into your activity, do the following steps:

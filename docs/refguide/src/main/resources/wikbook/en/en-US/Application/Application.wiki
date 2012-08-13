@@ -1,20 +1,20 @@
 {docbook}
 <abstract>
- <para>This chapter provides you with a comprehensive view about applications in Knowledge, including:</para>
+ <para>This chapter provides you with a comprehensive view about applications in Social, including:</para>
     <itemizedlist>
       <listitem>
         <para>
           <emphasis role="bold">
-            <link linkend="#SOCref.Portlets">Portlets</link>
+            <link linkend="SOCref.Portlets">Portlets</link>
           </emphasis> </para>
-          <para>Provides a list of all porlets used in Social.</para>
+          <para>Provision of a list of all porlets used in Social.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.List_Of_Gadget_in_Social">Gadgets</link>
           </emphasis> </para>
-          <para>Provides a list of all gadgets used in Social.</para>
+          <para>Provision of a list of all gadgets used in Social.</para>
       </listitem>
     </itemizedlist>
   <para>These applications are packaged as Web application archives (WARs).

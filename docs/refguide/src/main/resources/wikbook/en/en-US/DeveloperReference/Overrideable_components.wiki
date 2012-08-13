@@ -28,3 +28,27 @@ There are 2 components in Social that can be overridden: Space Application Handl
   </init-params>
 </component>
 {code}
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]

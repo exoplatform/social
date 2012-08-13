@@ -2,9 +2,18 @@ The Social widget enables developers to add capabilities of Social to external a
 
 There are two options of the Social widget that provide different levels of integration and information. 
 
-The basic version of this widget is an iFrame. The more advanced version is a button you can insert in a page; this will display a small pop-up with information about the space.
+* The [basic version|#SOCref.DeveloperReference.widget_tutorial.basic_version] of this widget is an iFrame.
+* The more [advanced version|#SOCref.DeveloperReference.widget_tutorial.advanced_version] is a button you can insert in a page; this will display a small pop-up with information about the space.
 
-h1. Basic version {anchor:id=SOCref.DeveloperReference.widget_tutorial.basic_version}
+{docbook}
+<para xml:id="SOCref.DeveloperReference.widget_tutorial.basic_version">
+<citetitle>
+<emphasis role="bold">
+Basic version
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 To insert the basic version, you need to have an iFrame to insert on your site.
 
@@ -18,7 +27,16 @@ To install this version in your application, replace all the uppercase text belo
 * _{{{NAME_OF_YOUR_SPACE}}}_: This is the title of your space in Social. In the URL, it is necessary to avoid special characters. For the space name, you can only use alphanumeric characters and {{{"_"}}}, ".", "-" or ".".
 * _{{{DESCRIPTION_OF_THE_SPACE}}}_: This will be displayed in the list of spaces.
 
-h1. Advanced version {anchor:id=SOCref.DeveloperReference.widget_tutorial.advanced_version}
+
+{docbook}
+<para xml:id="SOCref.DeveloperReference.widget_tutorial.advanced_version">
+<citetitle>
+<emphasis role="bold">
+Advanced version
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 To install an advanced version of the widget, you need to insert a code snippet in your page. This includes some HTMLs plus some JavaScript. The necessary CSS will be added dynamically.
 
@@ -41,7 +59,15 @@ In which:
 * _spaceName_ is the name of space. It is also used to identify the space. You should use the following format: "MyAppName - my social object".
 * _description_ is a brief introduction about your space.
 
-h1. Configure {anchor:id=SOCref.DeveloperReference.widget_tutorial.configure}
+{docbook}
+<para xml:id="SOCref.DeveloperReference.widget_tutorial.configure">
+<citetitle>
+<emphasis role="bold">
+Configure
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 * serverURL (Default: _"http://127.0.0.1:8080"_): The address of your eXo installation. To change it, use _spaces.setServerURL(...)_.
 * spaceServicePath (Default: _"/rest/private/spaces/"_): The path to the spaces service. It is rare you have to change it; but if needed, use _spaces.setSpaceServicePath(...).

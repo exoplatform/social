@@ -1,7 +1,17 @@
 This section is about configuring the oAuth 2 legs scenario in OpenSocial. (Reference: [OpenSocial.org|http://docs.opensocial.org/display/OS/Home])
 
 For more information, visit [2-legged OAuth for the OpenSocial REST API.|http://sites.google.com/site/oauthgoog/2leggedoauth/2opensocialrestapi]
-h1. Generate the certificates {anchor:id=SOCref.Configuration.Generate_certificate}
+
+{docbook}
+<para xml:id="SOCref.Configuration.Generate_certificate">
+<citetitle>
+<emphasis role="bold">
+Generate the certificates
+</emphasis>
+</citetitle>
+</para>
+{docbook}
+
 To generate the key:
 
 {code}
@@ -10,7 +20,15 @@ $ openssl req -newkey rsa:1024 -days 365 -nodes -x509 -keyout testkey.pem \
 $ openssl pkcs8 -in testkey.pem -out oauthkey.pem -topk8 -nocrypt -outform PEM
 {code}
 
-h1. Configure the property file {anchor:id=SOCref.Configuration.Configure_the_property_life}
+{docbook}
+<para xml:id="SOCref.Configuration.Configure_the_property_life">
+<citetitle>
+<emphasis role="bold">
+Configure the property file
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 Edit _container.js_ and change the following parameter to point to your private key and key name.
 
@@ -18,3 +36,28 @@ Edit _container.js_ and change the following parameter to point to your private 
 "gadgets.signingKeyFile" : "oauth.pem",
 "gadgets.signingKeyName" : "oauthKey",
 {code}
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
