@@ -25,6 +25,7 @@
   import org.exoplatform.application.registry.Application;
   import org.exoplatform.webui.core.UIPopupContainer;
 
+  uicomponent.checkUpdate()
   def uicomponentId = uicomponent.id;
   def addApplicationLabel = _ctx.appRes("${uicomponentId}.label.AddApplication");
   

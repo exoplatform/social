@@ -77,6 +77,7 @@ public class UISpaceApplication extends UIForm {
   private Space space;
   private UIPageIterator iterator;
   private final String iteratorID = "UIIteratorSpaceApplication";
+  private SpaceService spaceService = getApplicationComponent(SpaceService.class);;
 
 
   /**
@@ -122,7 +123,6 @@ public class UISpaceApplication extends UIForm {
    * @throws Exception
    */
   public void setValue(Space space) throws Exception {
-    SpaceService spaceService = getApplicationComponent(SpaceService.class);
     // Get space to update space's information.
     space = spaceService.getSpaceById(space.getId());
     this.space = space;
@@ -202,7 +202,19 @@ public class UISpaceApplication extends UIForm {
     }
 
   }
-  
+
+  /**
+   * Reload the Space's application from storage an check if application list need to be reload.
+   * @throws Exception
+   */
+  public void checkUpdate() throws Exception {
+    if(space != null && space.getApp() != null){
+      Space updatedSpace = spaceService.getSpaceById(space.getId());
+      if(updatedSpace != null && !space.getApp().equals(updatedSpace.getApp())){
+        setValue(updatedSpace);
+      }
+    }
+  }
   /**
    * Application comparator.
    *
