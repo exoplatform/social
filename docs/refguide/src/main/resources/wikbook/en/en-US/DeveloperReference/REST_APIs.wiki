@@ -1,5 +1,77 @@
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.ActivitiesRESTService">Activities REST service</link>
+            </para>
+            <para>Provision of REST services for activity applications: like/unlike; comment; delete activity.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.AppsRESTService"> Apps REST service</link>
+            </para>
+            <para>Provision of REST services for the application registry gadget: shows application list.</para>
+          </listitem>
+		      <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.IdentityRESTService">Identity REST service</link>
+            </para>
+            <para>Getting identityId by the username.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.LinkshareRESTService">Linkshare REST service</link>
+            </para>
+            <para> Getting information from a provided link.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.PeopleRestService">People Rest Service</link>
+            </para>
+            <para>Provision of REST services for manipulating jobs related to people.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.SpacesRESTService">Spaces REST service</link>
+            </para>
+            <para>Provision of REST services for space gadget to display users' spaces and pending spaces.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developer_references.WidgetRESTService">Widget Rest Service</link>
+            </para>
+            <para>Provision of REST services for creating spaces or getting spaces' information.</para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
 
-h1. Activities REST service {anchor:id=SOCref.Developer_references.ActivitiesRESTService}
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+
+* [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
+
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+
+h1. Activities REST service {anchor:id=SOCref.Developer_references.ActivitiesRESTServiceRoleNotInToc}
 
 || Name || Service URL || Location|| Description ||
 | *ActivitiesRestService* | {{{{restContextName}/{portalName}/social/activities}}} |  *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service|Provide REST services for activity applications: like/unlike; comment; delete activity. |
@@ -19,7 +91,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/socialdemo/social/activities/s08d397dg6/likes/destroy/abc.json
 
-h1. Apps REST service {anchor:id=SOCref.Developer_references.AppsRESTService}
+h1. Apps REST service {anchor:id=SOCref.Developer_references.AppsRESTServiceRoleNotInToc}
 || Name || Service URL || Location || Description ||
 | *AppsRestService* | {{{{restContextName}/social/apps/}}} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Provide REST services for the application registry gadget: shows application list. |
 
@@ -32,7 +104,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/apps/show.json
 
-h1. Identity REST service {anchor:id=SOCref.Developer_references.IdentityRESTService}
+h1. Identity REST service {anchor:id=SOCref.Developer_references.IdentityRESTServiceRoleNotInToc}
 
 || Name|| Serive URL || Location || Description ||
 | *IdentityRestService* |{{{ restContextName}/{portalName}/social/identity/{username}/id }}}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Get identityId by the username.|
@@ -46,7 +118,7 @@ Example:
 http://localhost:8080/rest-socialdemo/socialdemo/social/identity/john/id/show.json
 
 
-h1. Linkshare REST service {anchor:id=SOCref.Developer_references.LinkshareRESTService}
+h1. Linkshare REST service {anchor:id=SOCref.Developer_references.LinkshareRESTServiceRoleNotInToc}
 
 
 || Name || Service URL || Location || Description ||
@@ -62,7 +134,7 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/linkshare/show.json
 
-h1. People Rest Service {anchor:id=SOCref.Developer_references.PeopleRestService}
+h1. People Rest Service {anchor:id=SOCref.Developer_references.PeopleRestServiceRoleNotInToc}
 
 
 || Name || Service URL || Location|| Description ||
@@ -78,7 +150,7 @@ Example:
 http://localhost:8080/rest-socialdemo/social/people/suggest.json
 
 
-h1. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTService}
+h1. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTServiceRoleNotInToc}
 
 
 || Name || Service URL || Location || Description ||
@@ -97,10 +169,10 @@ Example:
 
 http://localhost:8080/rest-socialdemo/social/spaces/mySpaces/show.xml
 
-h1. Widget Rest Service {anchor:id=SOCref.Developer_references.WidgetRESTService}
+h1. Widget Rest Service {anchor:id=SOCref.Developer_references.WidgetRESTServiceRoleNotInToc}
 
 || Name || Service URL || Location|| Description ||
-| *WidgetRestService* |{{{{restContextName}/spaces/{containerName}}}} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provide REST services for creating spaces or getting spaces'information.|
+| *WidgetRestService* |{{{{restContextName}/spaces/{containerName}}}} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provide REST services for creating spaces or getting spaces' information.|
 
 
 * *API*:
@@ -110,7 +182,3 @@ h1. Widget Rest Service {anchor:id=SOCref.Developer_references.WidgetRESTService
 Example:
 
 http://localhost:8080/rest-socialdemo/spaces/socialdemo/space_info?name=Social&description=Social
-
-h1. Location {anchor:id=SOCref.Developer_references.Location}
-* *Maven groupId*: org.exoplatform.social
-* *ArtifactId*: exo.social.component.service

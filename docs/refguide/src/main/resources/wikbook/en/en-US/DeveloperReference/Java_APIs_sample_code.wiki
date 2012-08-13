@@ -1,0 +1,83 @@
+{docbook}
+<highlights>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="SOCref.DevelopersReferences.ActivityStream">Activity Stream</link>
+            </para>
+            <para>Social provides users with a way to share their activity information (also known as Activity Stream) and collaborate in spaces (also known as group work). With the API, you can customize the way to display activities or publish new ones.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.OpenSocial">OpenSocial</link>
+            </para>
+            <para>Social supports the OpenSocial standard. So you can integrate OpenSocial gadgets in your dashboard and use the RPC or REST service to view or publish the social data.</para>
+          </listitem>
+		      <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.People">People</link>
+            </para>
+            <para>Social provides a way to manage profile information, and connections between users. With the APIs provided, you can easily add, manage and customize information and relationships of users.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.Spaces">Spaces</link>
+            </para>
+            <para>Social provides a way to create groups and to share data and applications by spaces. A space has its own activity stream in which applications or members can publish information. In each space, members use applications together with shared data.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.Space_widget_tutorial">Space widget tutorial</link>
+            </para>
+            <para>The Social widget enables developers to add capabilities of Social to external applications. Since the widget is hosted on your Social server, it can display personalized information. An activity stream of the most recent user actions will display to the group's members.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.Extend_activities_rendering">How to extend the activities rendering</link>
+            </para>
+            <para>Social allows you to implement a preprocessor for activities rendering.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.XMLProcessor">XMLProcessor component</link>
+            </para>
+            <para>Social provides you with a way to change the content of input texts by using and extending the XMLProcessor component and its plugins.</para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.Developers_References.How_to_create_i18n_activities">How to create internationalized activities</link>
+            </para>
+            <para>Social allows you to internationalize types of messages for activities, such as
+          creating spaces, granting the "manager" role to a member, sending connection request to another user, updating a user's profile/avatar, and more, by using
+          resource bundles and <emphasis>I18NActivityProcessor</emphasis>.
+          </para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
+
+{docbook}
+<para>
+<prompt>
+   <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
+
+* [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
+
+* [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
+
+* [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
+
+* [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
+
+* [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
+
+* [Social JCR Structure|#SOCref.Social_JCR_Structure]
+
+* [Spaces Template configuration|#SOCref.Space_Template_Configuration]
+
+* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]

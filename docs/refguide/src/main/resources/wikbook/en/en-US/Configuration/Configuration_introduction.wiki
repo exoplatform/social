@@ -7,12 +7,14 @@
           <emphasis role="bold">
             <link linkend="SOCref.Configuration.Component">Components</link>
           </emphasis> </para>
+          <para>Description of the services which provide low-level functionality for UI components.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.Configuration.External_component_plugins">External component plugins</link>
           </emphasis> </para>
+          <para>Description of the main component plugins used in the Social function. Each part supplies an example configuration with the explanation about ini-params so you can know how to use these plugins. </para>
       </listitem>
     </itemizedlist>
 </abstract>

@@ -1,22 +1,94 @@
-All Social gadgets are in _opensocial.war_.
+{docbook}
+<highlights>
+        <para> The following is a list of available gadgets in Social.</para>
+        <itemizedlist>
+          <listitem>
+            <para>
+              <link linkend="SOCref.List_Of_Gadget_in_Social.ActivityStream">Activity Stream</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.List_Of_Gadget_in_Social.SocialRSSReader">Social RSS Reader</link>
+            </para>
+          </listitem>
+		      <listitem>
+            <para>
+              <link linkend="SOCref.List_Of_Gadget_in_Social.MyConnections">My Connections</link>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              <link linkend="SOCref.List_Of_Gadget_in_Social.MySpaces">My Spaces</link>
+            </para>
+          </listitem>
+        </itemizedlist>
+</highlights>
+{docbook}
 
-h1. Activity Stream {anchor:id=SOCref.List_Of_Gadget_in_Social.ActivityStream}
+All Social gadgets are packaged in the _opensocial.war_ file.
+
+{docbook}
+<para xml:id="SOCref.List_Of_Gadget_in_Social.ActivityStream">
+<citetitle>
+<emphasis role="bold">
+ Activity Stream
+</emphasis>
+</citetitle>
+</para>
+{docbook}
+
 * *Description*: Manage activities of users: update status, like/unlike activities, comment activities, delete activities and delete comments. 
 * *Used REST services*: ActivitiesRestServices.
 
-h1. Social RSS Reader {anchor:id=SOCref.List_Of_Gadget_in_Social.SocialRSSReader}
+{docbook}
+<para xml:id="SOCref.List_Of_Gadget_in_Social.SocialRSSReader">
+<citetitle>
+<emphasis role="bold">
+Social RSS Reader
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 * *Description*: Fetch, parse and display RSS from a specific URL. 
 * *Description of user preferences*: There are 2 preference fields: URL input box (default value is [http://blog.exoplatform.org/feed/]) and Number of RSS per page selector (default value is 10).
 * *Used REST services*: N/A.
 
 
-h1. My Connections {anchor:id=SOCref.List_Of_Gadget_in_Social.MyConnections}
+{docbook}
+<para xml:id="SOCref.List_Of_Gadget_in_Social.MyConnections">
+<citetitle>
+<emphasis role="bold">
+My Connections
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 * *Description*: Get and display information of the current viewer and his connections.
 * *Description of user preferences*: The number of connections displayed per page. It is set to '5' by default.
 * *Used REST services*: N/A.
 
-h1. My Spaces {anchor:id=SOCref.List_Of_Gadget_in_Social.MySpaces}
+{docbook}
+<para xml:id="SOCref.List_Of_Gadget_in_Social.MySpaces">
+<citetitle>
+<emphasis role="bold">
+My Spaces
+</emphasis>
+</citetitle>
+</para>
+{docbook}
+
 * *Description*: Display all spaces that a user has the "member" role.
 * *Used REST services*: SpacesRestService.
+
+{docbook}
+<para>
+<prompt>
+    <emphasis role="bold">See also</emphasis>
+</prompt>
+</para>
+{docbook}
+
+* [List of Portlets in Social|#SOCref.Portlets]
