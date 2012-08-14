@@ -78,12 +78,16 @@ public abstract class BaseActivityProcessorPlugin extends BaseComponentPlugin im
     Map<String, String> templateParams = activity.getTemplateParams();
     ArrayList<String> keys = new ArrayList<String>();
     
-    if(templateParams != null && templateParams.containsKey(TEMPLATE_PARAM_TO_PROCESS)){
-      String[] templateParamKeys = activity.getTemplateParams().get(TEMPLATE_PARAM_TO_PROCESS).split(TEMPLATE_PARAM_LIST_DELIM);
-      for(String key : templateParamKeys){
-        if(templateParams.containsKey(key)){
-          keys.add(key);
+    if(templateParams != null){
+      if(templateParams.containsKey(TEMPLATE_PARAM_TO_PROCESS)){
+        String[] templateParamKeys = activity.getTemplateParams().get(TEMPLATE_PARAM_TO_PROCESS).split(TEMPLATE_PARAM_LIST_DELIM);
+        for(String key : templateParamKeys){
+          if(templateParams.containsKey(key)){
+            keys.add(key);
+          }
         }
+      } else {
+        return new ArrayList(templateParams.keySet());
       }
     }
     return keys;

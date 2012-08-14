@@ -111,5 +111,23 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     assertEquals("<a href=\"http://exoplatform.com\" target=\"_blank\">exoplatform.com</a>", templateParams.get("b"));
     assertEquals("exoplatform.com", templateParams.get("d"));
   }
+
+  public void testProcessOldActivityWithTemplateParam(){
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    String sample = "this is a <strong> tag to keep</strong>";
+    activity.setTitle(sample);
+    activity.setBody(sample);
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    templateParams.put("a", "a\nb");
+    templateParams.put("b", "exoplatform.com");
+    templateParams.put("d", "exoplatform.org");
+    activity.setTemplateParams(templateParams);
+    processor.processActivity(activity);
+
+    templateParams = activity.getTemplateParams();
+    assertEquals("a<br />b", templateParams.get("a"));
+    assertEquals("<a href=\"http://exoplatform.com\" target=\"_blank\">exoplatform.com</a>", templateParams.get("b"));
+    assertEquals("<a href=\"http://exoplatform.org\" target=\"_blank\">exoplatform.org</a>", templateParams.get("d"));
+  }
   
 }

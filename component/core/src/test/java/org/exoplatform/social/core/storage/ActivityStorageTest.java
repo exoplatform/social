@@ -1698,7 +1698,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     activity = activityStorage.getUserActivities(rootIdentity, 0, 100).get(0);
     assertNotNull("activity must not be null", activity);
     assertNotNull("activity.getTemplateParams() must not be null", activity.getTemplateParams());
-    assertEquals("http://xxxxxxxxxxxxxxxx/xxxx=xxxxx", activity.getTemplateParams().get(URL_PARAMS));
+    assertEquals("<a href=\"http://xxxxxxxxxxxxxxxx/xxxx=xxxxx\" target=\"_blank\">http://xxxxxxxxxxxxxxxx/xxxx=xxxxx</a>", activity.getTemplateParams().get(URL_PARAMS));
   }
 
   /**
