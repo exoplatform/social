@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package org.exoplatform.social.webui.space;
 
+import org.exoplatform.commons.utils.HTMLEntityEncoder;
 import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.mop.navigation.NodeChangeListener;
@@ -199,14 +199,18 @@ public class TreeNode implements NodeChangeListener<UserNode> {
         Locale locale = Util.getPortalRequestContext().getLocale();
         for (Locale key : i18nizedLabels.keySet()) {
           if (key.equals(locale)) {
-            String encodedLabel = i18nizedLabels.get(key).getName();
-            return encodedLabel == null ? getName() : encodedLabel;
+            String label = i18nizedLabels.get(key).getName();
+            if (label == null || label.trim().length() == 0) {
+              return node.getName();
+            }
+
+            return HTMLEntityEncoder.getInstance().encode(label);
           }
         }
       }
     }
     String encodedLabel = node.getEncodedResolvedLabel();
-    return encodedLabel == null ? getName() : encodedLabel;
+    return encodedLabel == null ? "" : encodedLabel;
   }
 
   public String getName() {
