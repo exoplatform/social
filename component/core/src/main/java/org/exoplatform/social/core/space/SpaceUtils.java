@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.space;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +61,7 @@ import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.mop.user.UserPortalContext;
+import org.exoplatform.portal.mop.user.UserPortalImpl;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -95,6 +97,7 @@ import com.ibm.icu.text.Transliterator;
  * SpaceUtils Utility for working with space
  */
 public class SpaceUtils {
+  
   private static final Log LOG = ExoLogger.getLogger(SpaceUtils.class);
 
   public static final String SPACE_GROUP = "/spaces";
@@ -115,6 +118,20 @@ public class SpaceUtils {
   public static final String APPLICATION_CONTAINER = "Application";
 
   public static final String SPACE_URL = "SPACE_URL";
+  
+  private static Constructor<UserNavigation> userNavigationCtor = null;
+  
+  static {
+    try {
+      //reflection here to get UserNavigation to avoid for using such as: 
+      //spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
+      userNavigationCtor = UserNavigation.class.getDeclaredConstructor(new Class[] {UserPortalImpl.class, NavigationContext.class, boolean.class});
+      userNavigationCtor.setAccessible(true);
+    } catch (Exception e) {
+      LOG.error(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
+
+    }
+  }
 
   /**
    * The id of the container in plf.
@@ -962,21 +979,17 @@ public class SpaceUtils {
     UserNavigation spaceNav = null;
     UserPortal userPortal = getUserPortal();
     try {
-      //spaceNav = dataStorage.getPageNavigation(PortalConfig.GROUP_TYPE, groupId);
-      spaceNav = getUserPortal().getNavigation(SiteKey.group(groupId));
-      if (spaceNav == null) {
+      if(navService.loadNavigation(SiteKey.group(groupId)) == null) {
         // creates new space navigation
         NavigationContext navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
         navService.saveNavigation(navContext);
-        spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
+
+        if (userNavigationCtor != null) {
+          spaceNav = (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
+        }
+        
       }
       
-      //SOC-2016 this fragment code makes sure SpaceNavigation can not be NULL when it returns.
-      if (spaceNav == null) {
-        SpaceUtils.endRequest();
-        userPortal.refresh();
-        spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
-      }
       return spaceNav;
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
@@ -1106,9 +1119,18 @@ public class SpaceUtils {
    */
   public static UserNavigation getGroupNavigation(String groupId) throws Exception {
     UserPortal userPortal = getUserPortal();
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+
     if (userPortal != null) {
-      return getUserPortal().getNavigation(SiteKey.group(groupId));
+      
+      NavigationContext navContext = navService.loadNavigation(SiteKey.group(groupId));
+      
+      if (userNavigationCtor != null || navContext != null) {
+        return (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
+      }
     }
+
     return null;
   }
 
