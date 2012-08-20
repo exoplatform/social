@@ -20,6 +20,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -74,7 +75,6 @@ public class UISpaceAddForm extends UIFormTabPane {
 
   private static final Log LOG = ExoLogger.getLogger(UISpaceAddForm.class);
   
-  static private final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   static private final String MSG_ERROR_SPACE_CREATION = "UISpaceAddForm.msg.error_space_creation";
   static private final String MSG_ERROR_DATASTORE = "UISpaceAddForm.msg.error_space_not_saved";
   static private final String MSG_ERROR_UNABLE_TO_INIT_APP = "UISpaceAddForm.msg.error_unable_to_init_app";
@@ -128,17 +128,12 @@ public class UISpaceAddForm extends UIFormTabPane {
       UISpaceGroupBound uiGroupBound = uiAddForm.getChild(UISpaceGroupBound.class);
       String selectedGroup = uiGroupBound.getSelectedGroup();
       String creator = ctx.getRemoteUser();
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setDisplayName(space.getDisplayName().trim());
       space.setPrettyName(space.getDisplayName());
-      String spaceDescription = space.getDescription();
-      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
-        space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
-      } else {
-        space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
-      }
+      String description = space.getDescription();
+      space.setDescription(StringUtils.isEmpty(description) ? " " : StringEscapeUtils.escapeHtml(description));  
       String msg = MSG_SPACE_CREATION_SUCCESS;
       try {
         // Checks user is still existing or not.

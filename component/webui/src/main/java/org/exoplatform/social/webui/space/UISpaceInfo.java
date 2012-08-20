@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -87,7 +88,6 @@ public class UISpaceInfo extends UIForm {
   private static final String SPACE_DESCRIPTION = "description";
   private SpaceService spaceService = null;
   private final String POPUP_AVATAR_UPLOADER = "UIPopupAvatarUploader";
-  private static final String MSG_DEFAULT_SPACE_DESCRIPTION = "UISpaceAddForm.msg.default_space_description";
   
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
@@ -164,8 +164,8 @@ public class UISpaceInfo extends UIForm {
    */
   public void setValue(Space space) throws Exception {
     invokeGetBindingBean(space);
-    String descValue = ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).getValue();
-    ((UIFormTextAreaInput) this.getChildById(SPACE_DESCRIPTION)).setValue(StringEscapeUtils.unescapeHtml(descValue));
+    UIFormTextAreaInput descriptionInput = getUIFormTextAreaInput(SPACE_DESCRIPTION);
+    descriptionInput.setValue(StringEscapeUtils.unescapeHtml(descriptionInput.getValue().trim()));
     //TODO: have to find the way to don't need the line code below.
     getUIStringInput("tag").setValue(space.getTag());
   }
@@ -235,15 +235,8 @@ public class UISpaceInfo extends UIForm {
         }
       }
       uiSpaceInfo.invokeSetBindingBean(space);
-      
-      String spaceDescription = space.getDescription();
-      if (spaceDescription == null || spaceDescription.trim().length() == 0) {
-        ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-        space.setDescription(resourceBundle.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
-        uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
-      } else {
-        space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
-      }
+      String description = space.getDescription();
+      space.setDescription(StringUtils.isEmpty(description) ? " " : StringEscapeUtils.escapeHtml(description)); 
 
       if (nameChanged) {
         space.setDisplayName(oldDisplayName);
