@@ -50,6 +50,7 @@ import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.services.resources.LocaleConfig;
 import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.services.resources.ResourceBundleService;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -435,6 +436,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     public void execute(Event<UIPageNodeForm> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIPageNodeForm uiPageNodeForm = event.getSource();
+      UserNavigation contextNavigation = uiPageNodeForm.getContextPageNavigation();
       UIApplication uiPortalApp = ctx.getUIApplication();
       TreeNode pageNode = uiPageNodeForm.getPageNode();
 
@@ -525,8 +527,12 @@ public class UIPageNodeForm extends UIFormTabPane {
       UISpaceNavigationManagement uiSpaceNav = uiPopup.getParent();
       UISpaceNavigationNodeSelector uiNodeSelector = uiSpaceNav.getChild(UISpaceNavigationNodeSelector.class);
       uiNodeSelector.save();
-
-      uiPageNodeForm.createEvent("Back", Phase.DECODE, ctx).broadcast();
+      uiSpaceNav.setOwner(contextNavigation.getKey().getName());
+      uiSpaceNav.setOwnerType(contextNavigation.getKey().getTypeName());
+      uiNodeSelector.setEdittedNavigation(contextNavigation);
+      uiNodeSelector.initTreeData();
+      uiPopup.setShow(false);
+      SpaceUtils.updateWorkingWorkSpace();
     }
   }
 
