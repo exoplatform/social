@@ -16,15 +16,7 @@
  */
 package org.exoplatform.social.core.space;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -49,6 +41,8 @@ import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PageNavigation;
 import org.exoplatform.portal.config.model.PageNode;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.pom.config.Utils;
+import org.exoplatform.portal.webui.application.UIPortlet;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -658,6 +652,48 @@ public class SpaceUtils {
     // }
   }
 
+  /**
+   * Update UIComponents by name in current WorkingWorkSpace
+   * @param uiComponentsName List of UIComponent name which need to update
+   * @throws Exception
+   */
+  static public void updateUIWorkspace(List<String> uiComponentsName) throws Exception {
+    WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+    if (context == null) return;
+    UIPortalApplication uiPortalApplication = Util.getUIPortalApplication();
+    UIWorkingWorkspace uiWorkingWS = uiPortalApplication.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+    updatePortletsByNames(uiWorkingWS, uiComponentsName);
+  }
+
+  private static void updatePortletsByNames(UIWorkingWorkspace uiWorkingWS, List<String> componentNames){
+     List<UIPortlet> portletInstancesInPage = new ArrayList<UIPortlet>();
+    uiWorkingWS.findComponentOfType(portletInstancesInPage, UIPortlet.class);
+
+     for (UIPortlet portlet : portletInstancesInPage)
+     {
+        String applicationId = portlet.getApplicationId();
+        ApplicationType<?> type = portlet.getState().getApplicationType();
+        if (type == ApplicationType.PORTLET)
+        {
+           String[] chunks = Utils.split("/", applicationId);
+           if (componentNames.contains(chunks[1]))
+           {
+              Util.getPortalRequestContext().addUIComponentToUpdateByAjax(portlet);
+           }
+        }
+        else if (type == ApplicationType.GADGET)
+        {
+           if (componentNames.contains(applicationId))
+           {
+              Util.getPortalRequestContext().addUIComponentToUpdateByAjax(portlet);
+           }
+        }
+        else
+        {
+           throw new AssertionError("Need to handle wsrp case later");
+        }
+     }
+  }
   /**
    * Creates new group in /Spaces node and return groupId
    *
