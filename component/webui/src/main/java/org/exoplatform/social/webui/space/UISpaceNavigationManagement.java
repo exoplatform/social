@@ -232,12 +232,6 @@ public class UISpaceNavigationManagement extends UIContainer {
       UISpaceNavigationManagement uiSpaceNavManagement = uiPageNode.getAncestorOfType(UISpaceNavigationManagement.class);
       UIPopupWindow uiPopup = uiSpaceNavManagement.getChild(UIPopupWindow.class);
       uiPopup.setShow(false);
-      uiSpaceNavManagement.setOwner(contextNavigation.getKey().getName());
-      uiSpaceNavManagement.setOwnerType(contextNavigation.getKey().getTypeName());
-      UISpaceNavigationNodeSelector selector = uiSpaceNavManagement.getChild(UISpaceNavigationNodeSelector.class);
-      selector.setEdittedNavigation(contextNavigation);
-      selector.initTreeData();
-      SpaceUtils.updateWorkingWorkSpace();
     }
   }
   
