@@ -30,7 +30,7 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-project</artifactId>
-  <version>1.1.10-SNAPSHOT</version>
+  <version>1.1.10</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
