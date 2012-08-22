@@ -16,8 +16,13 @@
  */
 package org.exoplatform.social.core.space;
 
+import java.lang.reflect.Constructor;
+
 import junit.framework.TestCase;
 
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.user.UserNavigation;
+import org.exoplatform.portal.mop.user.UserPortalImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
@@ -72,5 +77,13 @@ public class SpaceUtilsTest extends TestCase {
     */
   }
   
- 
+  public void testGetUserNavigationConstructor() throws Exception {
+    //reflection here to get UserNavigation to avoid for using such as: 
+    //spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
+    Constructor<UserNavigation> userNavigationCtor = UserNavigation.class.getDeclaredConstructor(new Class[] {UserPortalImpl.class, NavigationContext.class, boolean.class});
+    userNavigationCtor.setAccessible(true);
+    
+    assertNotNull(userNavigationCtor);
+    assertTrue(userNavigationCtor.isAccessible());
+  }
 }
