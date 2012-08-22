@@ -50,6 +50,12 @@ public class SpaceRest {
   private String url;
 
   /**
+   * Default Constructor
+   */
+  public SpaceRest(){
+
+  }
+  /**
    * The constructor.
    * 
    * @param space
