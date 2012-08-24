@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.core.space;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,16 +51,17 @@ import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.management.operations.navigation.NavigationUtils;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.NavigationState;
+import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.mop.user.UserPortalContext;
-import org.exoplatform.portal.mop.user.UserPortalImpl;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
@@ -119,20 +119,6 @@ public class SpaceUtils {
 
   public static final String SPACE_URL = "SPACE_URL";
   
-  private static Constructor<UserNavigation> userNavigationCtor = null;
-  
-  static {
-    try {
-      //reflection here to get UserNavigation to avoid for using such as: 
-      //spaceNav = userPortal.getNavigation(SiteKey.group(groupId));
-      userNavigationCtor = UserNavigation.class.getDeclaredConstructor(new Class[] {UserPortalImpl.class, NavigationContext.class, boolean.class});
-      userNavigationCtor.setAccessible(true);
-    } catch (Exception e) {
-      LOG.error(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
-
-    }
-  }
-
   /**
    * The id of the container in plf.
    * 
@@ -449,19 +435,21 @@ public class SpaceUtils {
     // remove pages
     DataStorage dataStorage = getDataStorage();
     String groupId = space.getGroupId();
-    UserNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+    NavigationContext spaceNavCtx = SpaceUtils.getGroupNavigationContext(groupId);
     // return in case group navigation was removed by portal SOC-548
-    if (spaceNav == null) {
+    if (spaceNavCtx == null) {
       return;
     }
-    UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, groupId);
+    NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(spaceNavCtx, groupId);
 
-    Collection<UserNode> spaceNodes = userNode.getChildren();
-    for (UserNode spaceNode : spaceNodes) {
-      String pageId = spaceNode.getPageRef();
-      Page page = dataStorage.getPage(pageId);
-      dataStorage.remove(page);
+    for (NodeContext<?> child : homeNodeCtx.getNodes()) {
+       @SuppressWarnings("unchecked")
+       NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
+       Page page = dataStorage.getPage(childNode.getState().getPageRef());
+       dataStorage.remove(page);
     }
+    
+    
     
     // remove group navigation
     SpaceUtils.removeGroupNavigation(groupId);
@@ -650,71 +638,6 @@ public class SpaceUtils {
     } catch (Exception e) {
       LOG.warn("Failed to remove navigations", e);
     } 
-  }
-
-  /**
-   * Reload all portal navigations synchronizing navigations and stores in currentAccessibleSpaces BUG: SOC-406,
-   * SOC-134
-   *
-   * @throws Exception
-   */
-  public static void reloadNavigation() throws Exception {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
-    String userId = Util.getPortalRequestContext().getRemoteUser();
-    List<Space> spaces = spaceService.getAccessibleSpaces(userId);
-    UserPortalConfig userPortalConfig = Util.getUIPortalApplication().getUserPortalConfig();
-    UserPortal userPortal = userPortalConfig.getUserPortal();
-    List<UserNavigation> navs = userPortal.getNavigations();
-    List<UserNavigation> spaceNavs = new ArrayList<UserNavigation>();
-    String ownerId;
-    for (UserNavigation nav : navs) {
-      ownerId = nav.getKey().getName();
-      try {
-        Space space = spaceService.getSpaceByGroupId(ownerId);
-        if (space != null) {
-          spaceNavs.add(nav);
-        }
-      } catch (Exception e) {
-        LOG.warn("Fail with getSpaceByGroupId by ownerId: " + ownerId + " in reloadNavigation", e);
-      }
-    }
-    String groupId;
-    // add new space navigation
-    boolean spaceContained = false;
-    for (Space space : spaces) {
-      groupId = space.getGroupId();
-      for (UserNavigation nav : spaceNavs) {
-        if (groupId.equals(nav.getKey().getName())) {
-          spaceContained = true;
-          break;
-        }
-      }
-      if (spaceContained == false) {
-        setNavigation(getGroupNavigation(groupId));
-      }
-    }
-    // remove deleted space navigation
-    if (spaces.size() == 0) {
-      // remove all navs
-      for (UserNavigation nav : spaceNavs) {
-        removeNavigation(nav);
-      }
-    } else {
-      boolean navContained = false;
-      for (UserNavigation nav : spaceNavs) {
-        for (Space space : spaces) {
-          groupId = space.getGroupId();
-          if (groupId.equals(nav.getKey().getName())) {
-            navContained = true;
-            break;
-          }
-        }
-        if (navContained == false) {
-          removeNavigation(nav);
-        }
-      }
-    }
   }
 
   /**
@@ -971,26 +894,20 @@ public class SpaceUtils {
    * @return spaceNav PageNavigation
    * @throws SpaceException
    */
-  public static UserNavigation createGroupNavigation(String groupId) throws SpaceException {
+  public static NavigationContext createGroupNavigation(String groupId) throws SpaceException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
     //14-june-2011 Apply UserNavigation
     //PageNavigation spaceNav;
-    UserNavigation spaceNav = null;
-    UserPortal userPortal = getUserPortal();
+    NavigationContext navContext = null;
     try {
       if(navService.loadNavigation(SiteKey.group(groupId)) == null) {
         // creates new space navigation
-        NavigationContext navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
+        navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
         navService.saveNavigation(navContext);
-
-        if (userNavigationCtor != null) {
-          spaceNav = (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
-        }
-        
       }
       
-      return spaceNav;
+      return navContext;
     } catch (Exception e) {
       // TODO:should rollback what has to be rollback here
       throw new SpaceException(SpaceException.Code.UNABLE_TO_CREAT_NAV, e);
@@ -1111,28 +1028,30 @@ public class SpaceUtils {
   }
 
   /**
-   * Gets userNavigation by a space's groupId
+   * Gets NavigationContext by a space's groupId
    *
    * @param groupId
    * @throws Exception
-   * @throws Exception
    */
-  public static UserNavigation getGroupNavigation(String groupId) throws Exception {
-    UserPortal userPortal = getUserPortal();
+  public static NavigationContext getGroupNavigationContext(String groupId) throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
-
-    if (userPortal != null) {
-      
-      NavigationContext navContext = navService.loadNavigation(SiteKey.group(groupId));
-      
-      if (userNavigationCtor != null || navContext != null) {
-        return (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
-      }
-    }
-
-    return null;
+    return navService.loadNavigation(SiteKey.group(groupId));
   }
+  
+  /**
+  * Gets userNavigation by a space's groupId
+  *
+  * @param groupId
+  * @throws Exception
+  */
+    public static UserNavigation getGroupNavigation(String groupId) throws Exception {
+      UserPortal userPortal = getUserPortal();
+      if (userPortal != null) {
+        return getUserPortal().getNavigation(SiteKey.group(groupId));
+      }
+      return null;
+    }
 
   /**
    * This related to a bug from portal. When this bug is resolved, use userNavigation.getNode(space.getUrl());
@@ -1156,6 +1075,20 @@ public class SpaceUtils {
     return getUserPortal().getNode(userNavigation, Scope.SINGLE, null, null);
   }
   
+ 
+  /**
+   * 
+   * @param spaceNavCtx
+   * @param spaceUrl
+   * @return
+   */
+  public static NodeContext<NodeContext<?>> getHomeNodeWithChildren(NavigationContext spaceNavCtx, String spaceUrl) {
+    //Need to get usernode base on resolvePath
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+    return NavigationUtils.loadNode(navService, spaceNavCtx, spaceUrl);  
+  }
+  
   /**
    * Retrieving the UserNode with Children base on the spaceUrl and UserNavigation.
    * When user can use this method to get homeNode, you can not call the update node
@@ -1170,6 +1103,26 @@ public class SpaceUtils {
     UserNode homeNode = getUserPortal().resolvePath(userNavigation, null, spaceUrl);
     getUserPortal().updateNode(homeNode, Scope.CHILDREN, null);
     return homeNode;
+    
+  }
+  
+  /**
+   * Retrieving the UserNodes with Children base on the parentNodeCtx.
+   *  
+   * @param parentNodeCtx parent NodeContext
+   * @return
+   */
+  public static List<UserNode> getUserNodeChildren(NodeContext<NodeContext<?>> parentNodeCtx) {
+    List<UserNode> result = new ArrayList<UserNode>(parentNodeCtx.getNodes().size());
+    
+    for (NodeContext<?> child : parentNodeCtx.getNodes()) {
+      @SuppressWarnings("unchecked")
+      NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;     
+      UserNavigation userNav = getUserPortal().getNavigation(SiteKey.group(childNode.getState().getPageRef()));
+      result.add(getUserPortal().getNode(userNav, Scope.SINGLE, null, null));
+      
+   }
+    return result;
     
   }
 

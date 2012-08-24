@@ -17,7 +17,6 @@
 package org.exoplatform.social.core.space.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +38,12 @@ import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.config.model.TransientApplicationState;
-import org.exoplatform.portal.mop.navigation.NavigationServiceException;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NodeContext;
+import org.exoplatform.portal.mop.navigation.NodeModel;
+import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
-import org.exoplatform.portal.mop.user.UserNavigation;
-import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
@@ -140,24 +141,25 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    */
   public void initApps(Space space, SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) throws SpaceException {
     try {
-      UserNavigation spaceNav = SpaceUtils.createGroupNavigation(space.getGroupId());
-      UserPortal userPortal = SpaceUtils.getUserPortal();
-      UserNode parentNode = userPortal.getNode(spaceNav, Scope.CHILDREN, null, null);
-        
-      UserNode homeNode = createPageNodeFromApplication(parentNode, space, spaceApplicationConfigPlugin.getHomeApplication(),
-                                                        null, true);
-      SpaceService spaceService = getSpaceService();
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+      NavigationContext navContext = SpaceUtils.createGroupNavigation(space.getGroupId());
+      
+      NodeContext<NodeContext<?>> parentNodeCtx = navService.loadNode(NodeModel.SELF_MODEL, navContext, Scope.CHILDREN, null);
 
-      userPortal.updateNode(parentNode, Scope.CHILDREN, null);
+      //
+      NodeContext<NodeContext<?>> homeNodeCtx = createPageNodeFromApplication(parentNodeCtx, space, spaceApplicationConfigPlugin.getHomeApplication(), null, true);
+      SpaceService spaceService = getSpaceService();
+      
 
       spaceApplications = spaceApplicationConfigPlugin.getSpaceApplicationList();
       for (SpaceApplication spaceApplication : spaceApplications) {
-        UserNode appNode = createPageNodeFromApplication(homeNode, space, spaceApplication, null, false);
+        createPageNodeFromApplication(homeNodeCtx, space, spaceApplication, null, false);
         spaceService.installApplication(space, spaceApplication.getPortletName());
       }
       
       //commit the parentNode to JCR 
-      userPortal.saveNode(parentNode, null);
+      navService.saveNode(parentNodeCtx, null);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
@@ -173,19 +175,21 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   public void deInitApp(Space space) throws SpaceException {
     try {
       String groupId = space.getGroupId();
-      UserNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+      NavigationContext spaceNavCtx = SpaceUtils.getGroupNavigationContext(groupId);
       // return in case group navigation was removed by portal SOC-548
-      if (spaceNav == null) {
+      if (spaceNavCtx == null) {
         return;
       }
-      UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, groupId);
+      NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(spaceNavCtx, groupId);
 
-      Collection<UserNode> spaceNodes = userNode.getChildren();
-      for (UserNode spaceNode : spaceNodes) {
-        String pageId = spaceNode.getPageRef();
-        Page page = dataStorage.getPage(pageId);
+      for (NodeContext<?> child : homeNodeCtx.getNodes()) {
+        @SuppressWarnings("unchecked")
+        NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
+        Page page = dataStorage.getPage(childNode.getState().getPageRef());
         dataStorage.remove(page);
-      }
+     }
+      
+     
       SpaceUtils.removeGroupNavigation(groupId);
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_DEINIT_APP, e);
@@ -251,12 +255,23 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * @throws SpaceException
    */
   private void activateApplicationClassic(Space space, String appId, String appName) throws SpaceException {
-    UserNavigation nav = SpaceUtils.createGroupNavigation(space.getGroupId());
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+    NavigationContext navContext;
+    NodeContext<NodeContext<?>> homeNodeCtx = null;
+    try {
+      navContext = SpaceUtils.getGroupNavigationContext(space.getGroupId());
+      homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navContext, space.getUrl());
+      
+    } catch (Exception e) {
+      LOG.warn("space navigation not found.", e);
+      return;
+    }   
+    
     SpaceApplication spaceApplication = new SpaceApplication();
     spaceApplication.setPortletName(appId);
-    UserNode parentNode = SpaceUtils.getHomeNode(nav, space.getUrl());
-    UserNode pageNode = createPageNodeFromApplication(parentNode, space, spaceApplication, appName, false);
-    SpaceUtils.getUserPortal().saveNode(parentNode, null);
+    createPageNodeFromApplication(homeNodeCtx, space, spaceApplication, appName, false);
+    navService.saveNode(homeNodeCtx, null);
   }
 
   /**
@@ -279,37 +294,36 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
   private void removeApplicationClassic(Space space, String appId, String appName) throws SpaceException {
     try {
       String groupId = space.getGroupId();
-      UserNavigation nav = SpaceUtils.getGroupNavigation(groupId);
+      NavigationContext navCtx = SpaceUtils.getGroupNavigationContext(groupId);
       
-      UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(nav, space.getUrl());
+      NodeContext<NodeContext<?>> homeNodeCtx = SpaceUtils.getHomeNodeWithChildren(navCtx, space.getUrl());
       String nodeName = appName;
            
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserPortalConfigService configService = (UserPortalConfigService)
                                               container.getComponentInstanceOfType(UserPortalConfigService.class);
 
-      UserNode removedNode = null;
-      removedNode = homeNode.getChild(nodeName);
+      NodeContext<?> removedNode = homeNodeCtx.getNode(nodeName);
       if (removedNode == null) {
-        removedNode = homeNode.getChild(nodeName.toLowerCase());
+        removedNode = homeNodeCtx.getNode(nodeName.toLowerCase());
       }
       
       // In case of cannot find the removed node, try one more time
       if (removedNode == null) {
         for (SpaceApplication spaceApplication : spaceApplications) {
           if (appId.equals(spaceApplication.getPortletName())) {
-            removedNode = homeNode.getChild(spaceApplication.getUri());
+            removedNode = homeNodeCtx.getNode(spaceApplication.getUri());
           }
         }
       }
       
       if (removedNode != null) {
-        homeNode.removeChild(removedNode.getName());
+        homeNodeCtx.removeNode(removedNode.getName());
       }
       
       //remove page
       if (removedNode != null) {
-        String pageRef = removedNode.getPageRef();
+        String pageRef = removedNode.getState().getPageRef();
         if (pageRef != null && pageRef.length() > 0) {
           Page page = configService.getPage(pageRef);
           if (page != null)
@@ -319,7 +333,10 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
           uiPortal.setUIPage(pageRef, null);
         }
       }
-      getUserPortal().saveNode(homeNode, null);
+
+      NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
+      navService.saveNode(homeNodeCtx, null);
+
     } catch (Exception e) {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_REMOVE_APPLICATION, e);
     }
@@ -353,7 +370,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
    * @return
    * @since 1.2.0-GA
    */
-  private UserNode createPageNodeFromApplication(UserNode parentNode, Space space,
+  private NodeContext<NodeContext<?>> createPageNodeFromApplication(NodeContext<NodeContext<?>> nodeCtx, Space space,
                                                  SpaceApplication spaceApplication,
                                                  String appName,
                                                  boolean isRoot) throws SpaceException {
@@ -419,28 +436,9 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       }
       
     }
-    UserPortal userPortal = SpaceUtils.getUserPortal();
-    userPortal.updateNode(parentNode, Scope.CHILDREN, null);
-    UserNode childNode = parentNode.addChild(pageName);
-    //when apply Navigation, can not need to setName for childNode. It's automatically.
-    //childNode.setName(pageName);
-    if (spaceApplication.getIcon() != null && !spaceApplication.getIcon().isEmpty()) {
-      childNode.setIcon(spaceApplication.getIcon());
-    }
-    childNode.setLabel(label);
-    childNode.setPageRef(page.getPageId());
-    
-    try {
-      //only save with type is transient status
-      userPortal.saveNode(parentNode, null);
-    } catch (NavigationServiceException nex) {
-      LOG.info("Could not create page node from Application " + nex.toString());
-      return null;
-    } catch (Exception ex) {
-       LOG.info("Could not create page node from Application ", ex);
-       return null;
-    }
-    return childNode;
+    NodeContext<NodeContext<?>> childNodeCtx = nodeCtx.add(null, pageName);
+    childNodeCtx.setState(new NodeState.Builder().label(label).icon(spaceApplication.getIcon()).pageRef(page.getPageId()).build());
+    return childNodeCtx;
   }
   
   
