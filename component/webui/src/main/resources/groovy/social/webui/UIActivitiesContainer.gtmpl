@@ -19,13 +19,19 @@
 
 -->
 */
+import org.exoplatform.social.webui.Utils;
+
 def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
+<% if(Utils.isUserExisting()) {%>
 <% if (uicomponent.getChildren().size() > 1) {
      uicomponent.renderChildren();
    } else {
 %>
 <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
 <% } %>
+<%} else { %>
+<div class="DeactivatedUser"><%=_ctx.appRes("UIActivitiesLoader.label.Cannot_view_activities_of_inactive_user")%></div>
+<% } %> 
 </div>
