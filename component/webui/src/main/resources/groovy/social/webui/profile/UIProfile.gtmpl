@@ -19,6 +19,7 @@
 
 <% 
   import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
   
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
@@ -28,7 +29,11 @@
 
 <div class="UIProfile" id="$uicomponent.id">
   <div class="Container" >
+    <% if(Utils.isUserExisting()) {%>
     <% uicomponent.renderChildren(); %>
+    <%} else { %>
+    <div class="DeactivatedUser"><%=_ctx.appRes("UIProfile.label.Cannot_view_profile_of_inactive_user")%></div>
+    <% } %> 
   </div>
   
   <script type="text/javascript">

@@ -230,7 +230,7 @@
             displayedIdentityLikes.each({
               def id = Utils.getIdentityManager().getIdentity(it);
               personLikeFullName = id.profile.fullName;
-              personLikeProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
+              personLikeProfileUri = uicomponent.getUserProfileUri(id.remoteId);
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               %>
@@ -279,7 +279,7 @@
       }
       def id = Utils.getIdentityManager().getIdentity(it.userId);
       commenterFullName = id.profile.fullName;
-      commenterProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
+      commenterProfileUri = uicomponent.getUserProfileUri(id.remoteId);
       commentMessage = it.title;
       commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
       commenterAvatarImgSrc = id.profile.avatarUrl;
@@ -296,7 +296,11 @@
           <span class="BorderBottomCM"></span>
         </a>
         <div class="ContentBox">
-            <h5><a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a></h5>
+        <% if(commenterProfileUri != "#") { %>
+          <h5><a href="$commenterProfileUri"><span class="Commenter">$commenterFullName<span></a></h5>
+        <% } else { %>
+          <h5><span class="DeletedUser">$commenterFullName<span></h5>
+        <% } %>
             <p class="ContentBlock">
 			  $commentMessage
 			</p>

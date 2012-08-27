@@ -58,6 +58,19 @@ public class LinkProviderTest extends AbstractCoreTest {
                         rootIdentity.getRemoteId()+"\" target=\"_parent\">"+rootFullName+"</a>";
     assertEquals(expected, actualLink);
 
+    {
+      identityManger.hardDeleteIdentity(rootIdentity);
+      
+      Identity hardDeleteIdentity = identityManger.getOrCreateIdentity(OrganizationIdentityProvider.NAME, rootIdentity.getRemoteId(), false);
+      
+      assertNotNull(hardDeleteIdentity);
+      
+      actualLink = LinkProvider.getProfileLink(hardDeleteIdentity.getRemoteId(), portalOwner);
+      expected =  "<span class=\"DeletedUser\" >" + hardDeleteIdentity.getProfile().getFullName() + "</span>";
+      
+      assertEquals(expected, actualLink);
+    }
+    
     identityManager.deleteIdentity(rootIdentity);
   }
   
