@@ -237,7 +237,6 @@ public class UISpaceNavigationManagement extends UIContainer {
       UISpaceNavigationNodeSelector selector = uiSpaceNavManagement.getChild(UISpaceNavigationNodeSelector.class);
       selector.setEdittedNavigation(contextNavigation);
       selector.initTreeData();
-      SpaceUtils.updateWorkingWorkSpace();
     }
   }
   
