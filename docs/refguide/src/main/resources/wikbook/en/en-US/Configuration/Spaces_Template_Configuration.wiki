@@ -85,4 +85,4 @@ In eXo Platform, this configuration file is at:
 
 * [Social JCR Structure|#SOCref.Social_JCR_Structure]
 
-* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+* [Configure the 2-legged OAuth scenario|#SOCref.ConfigureOauth2_Legend_Scenario]

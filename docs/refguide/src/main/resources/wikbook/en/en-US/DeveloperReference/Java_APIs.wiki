@@ -5,37 +5,37 @@
             <para>
               <link linkend="Developer_document.Java_APIs.Activity_Manager">ActivityManager</link>
             </para>
-            <para>Provision of methods to manage activities.</para>
+            <para>Details of methods which manage activities (for example, saveActivity, getActivity, deleteActivity, and more).</para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="Developer_document.Java_APIs.Identity_Manager"> IdentityManager</link>
+              <link linkend="Developer_document.Java_APIs.Identity_Manager">IdentityManager</link>
             </para>
-            <para>Provision of methods to manage identities.</para>
+            <para>Details of methods which manage identities (for example, registerIdentityProviders, getIdentity, getOrCreateIdentity, and more).</para>
           </listitem>
-		      <listitem>
+		    <listitem>
             <para>
               <link linkend="Developer_document.Java_APIs.Relationship_manager">RelationshipManager</link>
             </para>
-            <para>Provision of methods to manage relationships in Social.</para>
+            <para>Details of methods which manage relationships in Social (for example, getRelationshipById, saveRelationship, getRequireValidationRelationships, and more).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="Developer_document.JavaAPIs.Java_APIs.SpaceService">SpaceService</link>
             </para>
-            <para>Provision of methods to work with spaces in Social.</para>
+            <para>Details of methods which work with spaces in Social (for example, getSpaceByDisplayName, getSpaceByPrettyName, getSpaceByGroupId, and more).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="Developer_document.JavaAPIs.Java_APIs.I18NActivityProcessor">I18NActivityProcessor</link>
             </para>
-            <para>Provision of methods to process any internationalized activities to new dynamic ones with the internationalized title.</para>
+            <para>Details of methods which process any internationalized activities to new dynamic ones with the internationalized title (including: addActivityResourceBundlePlugin, removeActivityResourceBundlePlugin, process and setResourceBundleService.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="Developer_document.JavaAPIs.Java_APIs.LinkProvider">LinkProvider</link>
             </para>
-            <para>Provision of methods to get the URLs of the activities, profiles, spaces, avatars and more.</para>
+            <para>Details of methods which get the URLs of the activities, profiles, spaces, avatars (for example, getSpaceUri, getProfileUri, getUserActivityUri, and more).</para>
           </listitem>
         </itemizedlist>
 </highlights>

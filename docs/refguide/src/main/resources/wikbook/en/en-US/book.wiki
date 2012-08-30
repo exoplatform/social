@@ -1,9 +1,8 @@
-
 h1. Applications {anchor:id=SOCref.Applications}
 {include:document="Application/Application.wiki"}
-h2. List of Portlets in Social {anchor:id=SOCref.Portlets}
+h2. Portlets {anchor:id=SOCref.Portlets}
 {include:document="Application/List_of_Portlets.wiki"}
-h2. List of Gadgets in Social {anchor:id=SOCref.List_Of_Gadget_in_Social}
+h2. Gadgets {anchor:id=SOCref.List_Of_Gadget_in_Social}
 {include:document="Application/List_of_Gadgets.wiki"}
 
 h1. Configuration {anchor:id=SOCref.Configurations}
@@ -34,11 +33,11 @@ h3. Spaces {anchor:id=SOCref.Developers_References.SpacesRoleNotInToc}
 {include:document="DeveloperReference/Developer_Documentation_Spaces.wiki"}
 h3. Space widget tutorial {anchor:id=SOCref.Developers_References.Space_widget_tutorialRoleNotInToc}
 {include:document="DeveloperReference/widget_tutorial.wiki"}
-h3. How to extend the activities rendering {anchor:id=SOCref.Developers_References.Extend_activities_renderingRoleNotInToc}
+h3. Activities rendering {anchor:id=SOCref.Developers_References.Extend_activities_renderingRoleNotInToc}
 {include:document="DeveloperReference/How_to_extend_the_activities_rendering.wiki"}
 h3. XMLProcessor component {anchor:id=SOCref.Developers_References.XMLProcessorRoleNotInToc}
 {include:document="DeveloperReference/XMLProcessor.wiki"}
-h3. How to create internationalized activities {anchor:id=SOCref.Developers_References.How_to_create_i18n_activitiesRoleNotInToc}
+h3. Internationalized activities {anchor:id=SOCref.Developers_References.How_to_create_i18n_activitiesRoleNotInToc}
 {include:document="DeveloperReference/Create_i18n_activities.wiki"}
 h2. Public REST APIs {anchor:id=SOCref.DevelopersReferences.PublicREST_APIs}
 {include:document="DeveloperReference/REST_APIs.wiki"}
@@ -50,5 +49,5 @@ h2. Social JCR Structure {anchor:id=SOCref.Social_JCR_Structure}
 {include:document="jcr_structure.wiki"}
 h2. Spaces Template configuration {anchor:id=SOCref.Space_Template_Configuration}
 {include:document="Configuration/Spaces_Template_Configuration.wiki"}
-h2. Configure the oauth 2 legged scenario {anchor:id=SOCref.ConfigureOauth2_Legend_Scenario}
+h2. Configure the 2-legged OAuth scenario {anchor:id=SOCref.ConfigureOauth2_Legend_Scenario}
 {include:document="Configuration/Configuring_the_oauth_2_legged_scenario.wiki"}
