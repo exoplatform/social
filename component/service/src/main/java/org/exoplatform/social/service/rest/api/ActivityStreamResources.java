@@ -94,7 +94,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -308,7 +308,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -439,7 +439,7 @@ public class ActivityStreamResources implements ResourceContainer {
     Identity sourceIdentity = Util.getAuthenticatedUserIdentity(portalContainerName);
 
     int maxLimit = limit <= 0 ? MAX_LIMIT : Math.min(limit, MAX_LIMIT);
-    
+
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
 
     ExoSocialActivity newerActivity = null;
@@ -458,10 +458,10 @@ public class ActivityStreamResources implements ResourceContainer {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     }
-    
+
     RealtimeListAccess<ExoSocialActivity> listAccess = null;
     List<ExoSocialActivity> activities = null;
-    
+
     try {
       listAccess = activityManager.getActivityFeedWithListAccess(sourceIdentity);
       if (newerActivity != null) {
@@ -510,7 +510,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}
@@ -669,7 +669,7 @@ public class ActivityStreamResources implements ResourceContainer {
     } else {
       activityList = rala.loadAsList(0, maxLimit);
     }
-   
+
    ActivityRestListOut arlo = new ActivityRestListOut(activityList, numberOfComments, numberOfLikes, portalContainerName);
 
    return Util.getResponse(arlo, uriInfo, mediaType, Response.Status.OK);
@@ -706,7 +706,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/socialdemo/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
    * @response
    *{code:json}
