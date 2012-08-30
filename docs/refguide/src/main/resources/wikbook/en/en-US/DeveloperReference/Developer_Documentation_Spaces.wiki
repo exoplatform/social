@@ -50,11 +50,15 @@ public class SpaceCreationSample {
 {code}
 
 h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
-The management of space's applications includes 2 specific actions:
-* [Add an application to a space|#SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space]
-* [Remove an application from a space|#SOCref.Developer_Ref.Developer_document_Spaces.Remove_application_from_space]
 
-h2. Add an application to a space  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space}
+{docbook}
+<para xml:id="SOCref.Developer_Ref.Developer_document_Spaces.Add_application_to_a_space">
+	<citetitle>
+		<emphasis role="bold">Add an application to a space</emphasis>
+	</citetitle>
+</para>
+{docbook}
+
 You can add portlet or gadget applications to spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
 
 {code:java}
@@ -81,8 +85,13 @@ public void addApplicationToSpace() throws SpaceException {
 _appId_ is the portlet or gadget name as defined in _portlet.xml_ or _gadget.xml_ in the web-app. You can find it in _social-portlet.war_ and _social.war_.
 {note}
 
-
-h2. Remove an application from a space {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Remove_application_from_space}
+{docbook}
+<para xml:id="SOCref.Developer_Ref.Developer_document_Spaces.Remove_application_from_space">
+	<citetitle>
+		<emphasis role="bold">Remove an application from a space</emphasis>
+	</citetitle>
+</para>
+{docbook}
 
 You can remove portlet or gadget applications from a space and the members of this space will not see them anymore. The following code shows you how to remove an application from a space:
 {code:java}
@@ -102,7 +111,6 @@ public void removeApplicationFromSpace() throws SpaceException {
   spaceService.removeApplication(spaceId, appId, appName);
 }
 {code}
-
 
 h1. Space's members management	 {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Members_Management}
 SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:

@@ -5,43 +5,43 @@
             <para>
               <link linkend="SOCref.Developer_references.ActivitiesRESTService">Activities REST service</link>
             </para>
-            <para>Provision of REST services for activity applications: like/unlike; comment; delete activity.</para>
+            <para>Details of REST service for activity applications (like/unlike, comment, delete activity) and its APIs (destroyActivity, showLikes, updateLike, destroyLike, showComments, updateComment and destroyComment).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Developer_references.AppsRESTService"> Apps REST service</link>
             </para>
-            <para>Provision of REST services for the application registry gadget: shows application list.</para>
+            <para>Details of REST service for the application registry gadget and its API (showApps).</para>
           </listitem>
 		      <listitem>
             <para>
               <link linkend="SOCref.Developer_references.IdentityRESTService">Identity REST service</link>
             </para>
-            <para>Getting identityId by the username.</para>
+            <para>Details of REST service that gets identityId by the username and its API (UserId getId).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Developer_references.LinkshareRESTService">Linkshare REST service</link>
             </para>
-            <para> Getting information from a provided link.</para>
+            <para>Details of REST service that gets information from a provided link and its API (getLink).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Developer_references.PeopleRestService">People Rest Service</link>
             </para>
-            <para>Provision of REST services for manipulating jobs related to people.</para>
+            <para>Details of REST service that manipulates jobs related to people and its API (suggestUsernames).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Developer_references.SpacesRESTService">Spaces REST service</link>
             </para>
-            <para>Provision of REST services for space gadget to display users' spaces and pending spaces.</para>
+            <para>Details of REST service for space gadget that displays users' spaces and pending spaces and its APIs (showMySpaceList, showPendingSpaceList and suggestSpacenames).</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Developer_references.WidgetRESTService">Widget Rest Service</link>
             </para>
-            <para>Provision of REST services for creating spaces or getting spaces' information.</para>
+            <para>Details of REST service that creates spaces or gets spaces' information and its API (spaceInfo).</para>
           </listitem>
         </itemizedlist>
 </highlights>
@@ -69,7 +69,7 @@
 
 * [Social JCR Structure|#SOCref.Social_JCR_Structure]
 * [Spaces Template configuration|#SOCref.Space_Template_Configuration]
-* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+* [Configure the 2-legged OAuth scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
 
 h1. Activities REST service {anchor:id=SOCref.Developer_references.ActivitiesRESTServiceRoleNotInToc}
 

@@ -1,31 +1,3 @@
-{docbook}
-<highlights>
-        <para> The following is a list of available gadgets in Social.</para>
-        <itemizedlist>
-          <listitem>
-            <para>
-              <link linkend="SOCref.List_Of_Gadget_in_Social.ActivityStream">Activity Stream</link>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              <link linkend="SOCref.List_Of_Gadget_in_Social.SocialRSSReader">Social RSS Reader</link>
-            </para>
-          </listitem>
-		      <listitem>
-            <para>
-              <link linkend="SOCref.List_Of_Gadget_in_Social.MyConnections">My Connections</link>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              <link linkend="SOCref.List_Of_Gadget_in_Social.MySpaces">My Spaces</link>
-            </para>
-          </listitem>
-        </itemizedlist>
-</highlights>
-{docbook}
-
 All Social gadgets are packaged in the _opensocial.war_ file.
 
 {docbook}

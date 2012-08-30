@@ -24,4 +24,4 @@ All references for Opensocial Javascript APIs can be viewed [here.|http://wiki.o
 
 * [Spaces Template configuration|#SOCref.Space_Template_Configuration]
 
-* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+* [Configure the 2-legged OAuth scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
