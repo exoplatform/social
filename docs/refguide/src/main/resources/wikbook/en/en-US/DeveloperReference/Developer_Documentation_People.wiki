@@ -1,9 +1,4 @@
-Social provides a way to manage profile information, and connections between users. With the APIs provided, you can easily add, manage and customize information and relationships of users via the following topics:
-* [Identity|#SOCref.Developers_References.People.Identity]
-** [IdentityProvider|#SOCref.Developers_References.People.IdentityProvider]
-** [IdentityManager|#SOCref.Developers_References.People.IdentityManager]
-* [ProfileListener|#SOCref.Developers_References.People.ProfileListener]
-* [Connections|#SOCref.Developers_References.People.Relationships]
+Social provides a way to manage profile information, and connections between users. With the APIs provided, you can easily add, manage and customize information and relationships of users.
 
 {docbook}
 <para xml:id="SOCref.Developers_References.People.Identity">
@@ -17,8 +12,7 @@ Identity
 
 The identity allows identifying a unique social object. The Social objects can be person, group, application, or whatever related to social interactions, such as connecting, publishing an activity stream or holding a user profile.
 
-*IdentityProvider*   {anchor:id=SOCref.Developers_References.People.IdentityProvider}
-
+* *IdentityProvider*   {anchor:id=SOCref.Developers_References.People.IdentityProvider}
 
 Social provides IdentityProvider as an identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
 
@@ -41,7 +35,7 @@ class SampleIdentityProvider extends OrganizationIdentityProvider{
 In this example, the _SampleIdentityProvider_ class extends _OrganizationIdentityProvider_ which is the IdentityProvider used to connect to the portal user's base. In this class, the _populateProfile_ method is overridden and some dummy data are added to the profile fields.
 
 
-*IdentityManager*  {anchor:id=SOCref.Developers_References.People.IdentityManager}
+* *IdentityManager*  {anchor:id=SOCref.Developers_References.People.IdentityManager}
 
 IdentityManager is the service used to manipulate the identity operations, such as creating, getting, deleting or finding a profile. You can get the IdentityManager via the ExoContainer. The following code will show how to get an IdentityManager instance and create a basic identity instance:
 

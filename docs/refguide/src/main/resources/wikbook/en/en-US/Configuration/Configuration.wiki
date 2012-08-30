@@ -26,9 +26,12 @@
             <para>This service is used to provide the utility to get the URLs of the activities, profiles, spaces, avatars and more.</para>
           </listitem>
         </itemizedlist>
-        <para>This section describes services which provide low-level functionality for UI components.</para>
 </highlights>
 {docbook}
+
+{note}
+This section describes services which provide low-level functionality for UI components.
+{note}
 
 
 {docbook}

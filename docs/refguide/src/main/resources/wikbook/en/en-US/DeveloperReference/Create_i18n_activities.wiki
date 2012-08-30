@@ -2,7 +2,6 @@ This section will show you how to internationalize activities in Social via the 
 * [Internationalize an activity|#SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities]
 * [Get an internationalized message |#SOCref.Developers_References.How_to_create_i18n_activities.Get_i18n_message]
 
-
 {docbook}
 <para xml:id="SOCref.Developers_References.How_to_create_i18n_activities.I18n_activities">
 <citetitle>

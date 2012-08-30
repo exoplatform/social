@@ -63,7 +63,7 @@ In which:
 <para xml:id="SOCref.DeveloperReference.widget_tutorial.configure">
 <citetitle>
 <emphasis role="bold">
-Configure
+Configurations
 </emphasis>
 </citetitle>
 </para>

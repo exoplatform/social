@@ -5,79 +5,79 @@
             <para>
               <link linkend="SOCref.Social_JCR_Structure.socproviders">soc:providers</link>
             </para>
-            <para>Usage for storing the provider entities.</para>
+            <para>Information of the <emphasis>soc:providers</emphasis> node that stores the provider entities.</para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="SOCref.Social_JCR_Structure.IdentityEntity"> Identity</link>
+              <link linkend="SOCref.Social_JCR_Structure.IdentityEntity">Identity</link>
             </para>
-            <para>Information about properties and child nodes of the <emphasis>soc:identitydefinition</emphasis> node type.</para>
+            <para>Details of properties and child nodes of the <emphasis>soc:identitydefinition</emphasis> node type.</para>
           </listitem>
 		      <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.RelationshipEntity">Relationship</link>
             </para>
-            <para>Information about properties of the <emphasis>soc:relationshipdefinition</emphasis> node type.</para>
+            <para>Details of properties of the <emphasis>soc:relationshipdefinition</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ProfileEntity">Profile</link>
             </para>
-            <para>Information about properties, child nodes, and more of the <emphasis>soc:profiledefinition</emphasis> node type.</para>
+            <para>Details of properties and child nodes of the <emphasis>soc:profiledefinition</emphasis> node type and a list of residual properties which can be set by Social.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ProfileXpEntity">Profile experience</link>
             </para>
-            <para>Information about properties of the <emphasis> soc:profilexp</emphasis> node type.</para>
+            <para>Details of properties of the <emphasis>soc:profilexp</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ActivityListEntity">Activity list</link>
             </para>
-            <para>Information about properties, and child nodes of the <emphasis>soc:activitylist</emphasis> node type.</para>
+            <para>Details of properties, and child node of the <emphasis>soc:activitylist</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="SOCref.Social_JCR_Structure.ActivityYearEntity"> Activity year</link>
+              <link linkend="SOCref.Social_JCR_Structure.ActivityYearEntity">Activity year</link>
             </para>
-            <para>Information about properties, and child nodes of the <emphasis>soc:activityyear</emphasis> node type.</para>
+            <para>Details of properties, and child node of the <emphasis>soc:activityyear</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
-              <link linkend="SOCref.Social_JCR_Structure.ActivityMonthEntity"> Activity month</link>
+              <link linkend="SOCref.Social_JCR_Structure.ActivityMonthEntity">Activity month</link>
             </para>
-            <para>Information about properties, and child nodes of the <emphasis>soc:activitymonth</emphasis> node type.</para>
+            <para>Details of properties, and child node of the <emphasis>soc:activitymonth</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ActivityDayEntity">Activity day</link>
             </para>
-            <para>Information about properties, and child nodes the <emphasis>soc:activityday</emphasis> node type.</para>
+            <para>Details of properties, and child node of the <emphasis>soc:activityday</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ActivityEntity"> Activity</link>
             </para>
-            <para>Information about properties, and child nodes of the <emphasis>soc:activity</emphasis> node type.</para>
+            <para>Details of properties, and child nodes of the <emphasis>soc:activity</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.ActivityParametersEntity"> Activity parameters</link>
             </para>
-            <para>Information about properties of the <emphasis>soc:activityparam</emphasis> node type.</para>
+            <para>Details of properties of the <emphasis>soc:activityparam</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.SpaceListEntity">Space list</link>
             </para>
-            <para>Information about child nodes of the <emphasis>soc:spaceslist</emphasis> node type.</para>
+            <para>Details of child node of the <emphasis>soc:spaceslist</emphasis> node type.</para>
           </listitem>
           <listitem>
             <para>
               <link linkend="SOCref.Social_JCR_Structure.SpaceEntity">Space</link>
             </para>
-            <para>Information about properties of the <emphasis>soc:spacedefinition</emphasis> node type.</para>
+            <para>Details of properties of the <emphasis>soc:spacedefinition</emphasis> node type.</para>
           </listitem>
         </itemizedlist>
 </highlights>
@@ -115,7 +115,7 @@ The root node of Social workspace is _/production/_ which consists of two child 
 * [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
 
 * [Spaces Template configuration|#SOCref.Space_Template_Configuration]
-* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+* [Configure the 2-legged OAuth scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
 
 h1. soc:providers  {anchor:id=SOCref.Social_JCR_Structure.socprovidersRoleNotInToc}
 The _soc\:providers_ node is used to store the provider entities. In Social, there are two built-in provider entities, including _organization_, and _space_.

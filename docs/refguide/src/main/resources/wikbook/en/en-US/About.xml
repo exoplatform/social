@@ -6,17 +6,20 @@
 <itemizedlist>
 <listitem>
 <para>
-<emphasis role="bold"><link linkend="SOCref.Applications">Applications</link></emphasis>: describes applications (portlets and gadgets) included in Social.
+<emphasis role="bold"><link linkend="SOCref.Applications">Applications</link></emphasis></para>
+<para>Details of 2 main applications (including Portlets and Gadgets) included in Social.
 </para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="bold"><link linkend="SOCref.Configurations">Configuration</link></emphasis>: provides you the comprehensive knowledge about the configuration with a large range of configuration parameters declared in Social.
+<emphasis role="bold"><link linkend="SOCref.Configurations">Configuration</link></emphasis></para>
+<para>A comprehensive knowledge of the configuration with a large range of configuration parameters declared in Social.
 </para>
 </listitem>
 <listitem>
 <para>
-<emphasis role="bold"><link linkend="SOCref.Developers_References">Developer References</link></emphasis>: describes about extension, public APIs, Java APIs, tutorials, Social JCR structure, and related others in Social.
+<emphasis role="bold"><link linkend="SOCref.Developers_References">Developer References</link></emphasis></para>
+<para>Many useful information for developers to refer, including: UI extensions, overridable components, public Java APIs,  Java APIs sample code/tutorial, Public REST APIs, Rest Service APIs, Public Javascript APIs, Social JCR Structure, Spaces Template configuration, and steps to configure the 2-legged OAuth scenario.
 </para>
 </listitem>
 </itemizedlist>
