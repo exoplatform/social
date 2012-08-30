@@ -7,72 +7,73 @@
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.UIExtensions">UI Extensions</link>
           </emphasis> </para>
-          <para>Knowledge about Activity Plugin which is used to allow using the activity composer extension and the custom UI component for displaying activity by its type.</para>
+          <para>Knowledge of Activity Plugin which allows using the activity composer extension and the custom UI component for displaying activity by its type.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.OverridableComponents">Overridable Components</link>
           </emphasis> </para>
-        <para>Description on two overridable components in Social: Space Application Handler and Space Service.</para>
+        <para>Description of 2 overridable components in Social: Space Application Handler and Space Service.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.PublicJavaAPIs">Public Java APIs</link>
           </emphasis> </para>
-        <para>Information on public Java APIs used in Social.</para>
+        <para>Details of public Java APIs used in Social, including: ActivityManager, IdentityManager, RelationshipManager, SpaceService, I18NActivityProcessor, and LinkProvider.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.SampleCode_Tutorial">Java APIs sample code/ tutorial</link>
           </emphasis> </para>
-        <para>Provision of sample code/tutorial about using Java APIs in Social.</para>
+        <para>The sample code and tutorial of using Java APIs in Social, including: Activity Stream, OpenSocial, People, Spaces, Space widget, Activities rendering, XMLProcessor component, and Internationalized activities.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.PublicREST_APIs">Public REST APIs</link>
           </emphasis> </para>
-        <para>Information (such as name, service URL, service URL endpoint, location, parameter, and description) on Public REST APIs used in Social.</para>
+        <para>Information (such as name, service URL, service URL endpoint, location, parameter, and description) of Public REST APIs used in Social, including: Activities, Apps, Identity, Linkshare, People, Spaces, and Widgets.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.RestService_APIs">Rest Service APIs</link>
-          </emphasis> </para>
-        <para>Provision of knowledge about using Rest Service APIs which allows the third parties to write any applications (desktop apps, mobile apps, web apps) to integrate with Social services and business.</para>
+          </emphasis>
+		</para>
+        <para>Knowledge of Rest Service APIs which allow the third parties to write any applications (desktop apps, mobile apps, web apps) to integrate with Social services and business, including: Activity Resources, Activity Stream Resources, Identity Resources, and Version Resources.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.DevelopersReferences.PublicJavascriptAPIs">Public Javascript APIs</link>
           </emphasis> </para>
-        <para>Provision of a link containing all references for Opensocial Javascript APIs.</para>
+        <para>Introduction to a link which contains all references for Opensocial Javascript APIs.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.Social_JCR_Structure">Social JCR Structure</link>
           </emphasis> </para>
-        <para>Provision of comprehensive knowledge about Social JCR Structure that is organized to conform to the data storage for the individual purpose of Social.</para>
+        <para>A comprehensive knowledge of the Social JCR Structure that is organized to conform to the data storage for the individual purpose of Social.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
             <link linkend="SOCref.Space_Template_Configuration">Spaces Template configuration</link>
           </emphasis> </para>
-        <para>Provision of simple and explicit examples about spaces template configuration in Social.</para>
+        <para>Simple and explicit examples of the spaces template configuration in Social.</para>
       </listitem>
       <listitem>
         <para>
           <emphasis role="bold">
-            <link linkend="SOCref.ConfigureOauth2_Legend_Scenario">Configure the oauth 2 legged scenario</link>
-          </emphasis> </para>
-        <para>Provision of configuring the oAuth 2 legs scenario in OpenSocial.  </para>
+            <link linkend="SOCref.ConfigureOauth2_Legend_Scenario">Configure the 2-legged OAuth scenario</link>
+          </emphasis> 
+		</para>
+         <para>Instructions on how to configure the 2-legged OAuth scenario in OpenSocial that allows you to extend more functions for Social, or customize them as you want.</para>
       </listitem>
     </itemizedlist>
-    <para>With this knowledge, you can extend more functions for Social, or customize them as you want.</para>
 	</abstract>
 {docbook}

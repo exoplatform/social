@@ -1,4 +1,4 @@
-This section is about configuring the oAuth 2 legs scenario in OpenSocial. (Reference: [OpenSocial.org|http://docs.opensocial.org/display/OS/Home])
+This section is about configuring the 2-legged OAuth scenario in OpenSocial. (Reference: [OpenSocial.org|http://docs.opensocial.org/display/OS/Home])
 
 For more information, visit [2-legged OAuth for the OpenSocial REST API.|http://sites.google.com/site/oauthgoog/2leggedoauth/2opensocialrestapi]
 
@@ -6,13 +6,11 @@ For more information, visit [2-legged OAuth for the OpenSocial REST API.|http://
 <para xml:id="SOCref.Configuration.Generate_certificate">
 <citetitle>
 <emphasis role="bold">
-Generate the certificates
+Generate the key
 </emphasis>
 </citetitle>
 </para>
 {docbook}
-
-To generate the key:
 
 {code}
 $ openssl req -newkey rsa:1024 -days 365 -nodes -x509 -keyout testkey.pem \
@@ -46,18 +44,11 @@ Edit _container.js_ and change the following parameter to point to your private 
 {docbook}
 
 * [UI Extensions|#SOCref.DevelopersReferences.UIExtensions]
-
 * [Overridable Components|#SOCref.DevelopersReferences.OverridableComponents]
-
 * [Public Java APIs|#SOCref.DevelopersReferences.PublicJavaAPIs]
-
 * [Java APIs sample code/ tutorial|#SOCref.DevelopersReferences.SampleCode_Tutorial]
-
 * [Public REST APIs|#SOCref.DevelopersReferences.PublicREST_APIs]
-
 * [Rest Service APIs|#SOCref.DevelopersReferences.RestService_APIs]
-
 * [Public Javascript APIs|#SOCref.DevelopersReferences.PublicJavascriptAPIs]
-
 * [Social JCR Structure|#SOCref.Social_JCR_Structure]
 * [Spaces Template configuration|#SOCref.Space_Template_Configuration]

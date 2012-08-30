@@ -51,4 +51,4 @@ There are 2 components in Social that can be overridden: Space Application Handl
 
 * [Social JCR Structure|#SOCref.Social_JCR_Structure]
 * [Spaces Template configuration|#SOCref.Space_Template_Configuration]
-* [Configure the oauth 2 legged scenario|#SOCref.ConfigureOauth2_Legend_Scenario]
+* [Configure the 2-legged OAuth scenario|#SOCref.ConfigureOauth2_Legend_Scenario]

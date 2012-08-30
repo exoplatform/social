@@ -70,7 +70,9 @@
 </highlights>
 {docbook}
 
-This section describes the main component plugins used in Social. Each part supplies an sample configuration with the explanation about init-params so you can know how to use these plugins.
+{note}
+This section only describes the main component plugins used in Social. Each part supplies an sample configuration with the explanation about init-params so you can know how to use these plugins.
+{note}
 
 {docbook}
 <para>
