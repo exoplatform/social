@@ -52,16 +52,10 @@ public class UIActivitiesContainer extends UIContainer {
    * constructor
    */
   public UIActivitiesContainer() {
-    try {
-      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
-      popupWindow.setShow(false);
-    } catch (Exception e) {
-      LOG.error(e);
-    }
   }
 
   public UIPopupWindow getPopupWindow() {
-    return popupWindow;
+    return ((UIActivitiesLoader)this.getParent()).getPopupWindow();
   }
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
