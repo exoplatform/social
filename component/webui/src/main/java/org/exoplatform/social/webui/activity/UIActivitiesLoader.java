@@ -30,6 +30,7 @@ import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -54,7 +55,7 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesLoader lastActivitiesLoader;
   private ListAccess<ExoSocialActivity> activityListAccess;
   private String ownerName;
-
+  private UIPopupWindow popupWindow;
   public static String genereateId() {
     Random random = new Random();
     return "UIActivitiesLoader_"+ random.nextDouble();
@@ -71,9 +72,15 @@ public class UIActivitiesLoader extends UIContainer {
     try {
       activitiesContainer = addChild(UIActivitiesContainer.class, null, "UIActivitiesContainer_" + hashCode());
       extendContainer = addChild(UIContainer.class, null, "ExtendContainer_"+ hashCode());
+      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
+      popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
     }
+  }
+
+  public UIPopupWindow getPopupWindow(){
+    return this.popupWindow;
   }
 
   public void setActivityListAccess(ListAccess<ExoSocialActivity> activityListAccess) {

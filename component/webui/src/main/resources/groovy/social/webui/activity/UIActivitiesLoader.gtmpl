@@ -29,6 +29,7 @@
 <% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
+     uicomponent.renderChild(uicomponent.getPopupWindow());
    } else {
      if (uicomponent.isExtendLoader()) {
        %>
