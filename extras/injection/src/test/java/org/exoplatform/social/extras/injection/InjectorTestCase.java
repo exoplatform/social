@@ -54,6 +54,7 @@ public class InjectorTestCase extends AbstractKernelTest {
 
   private IdentityInjector identityInjector;
   private SpaceInjector spaceInjector;
+  private MembershipInjector membershipInjector;
   private ActivityInjector activityInjector;
   private RelationshipInjector relationshipInjector;
 
@@ -77,6 +78,7 @@ public class InjectorTestCase extends AbstractKernelTest {
     //
     identityInjector = (IdentityInjector) getContainer().getComponentInstanceOfType(IdentityInjector.class);
     spaceInjector = (SpaceInjector) getContainer().getComponentInstanceOfType(SpaceInjector.class);
+    membershipInjector = (MembershipInjector) getContainer().getComponentInstanceOfType(MembershipInjector.class);
     activityInjector = (ActivityInjector) getContainer().getComponentInstanceOfType(ActivityInjector.class);
     relationshipInjector = (RelationshipInjector) getContainer().getComponentInstanceOfType(RelationshipInjector.class);
 
@@ -135,10 +137,14 @@ public class InjectorTestCase extends AbstractKernelTest {
     performSpaceTest("foo", "bar");
   }
   
-  public void testCaseSensitivePrefixSpace() throws Exception {
-    performSpaceTest("foo", "Bar");
+  public void testDefaultSpaceMember() throws Exception {
+    performMembershipTest(null, null);
   }
-
+  
+  public void testPrefixSpaceMember() throws Exception {
+    performMembershipTest("foo", "bar");
+  }
+  
   public void testDefaultActivity() throws Exception {
     performActivityTest(null, null);
   }
@@ -279,6 +285,194 @@ public class InjectorTestCase extends AbstractKernelTest {
 
     //
     cleanIdentity(userBaseName, 5);
+    cleanSpace(spacePrettyBaseName, 12);
+
+  }
+  
+  private void performMembershipTest(String userPrefix, String spacePrefix) throws Exception {
+
+    //
+    String userBaseName = (userPrefix == null ? "bench.user" : userPrefix);
+    String spaceBaseName = (spacePrefix == null ? "bench.space" : spacePrefix);
+    String spacePrettyBaseName = spaceBaseName.replace(".", "");
+    assertClean(userBaseName, spacePrettyBaseName);
+
+    //
+    params.put("number", "10");
+    if (userPrefix != null) {
+      params.put("prefix", userPrefix);
+    }
+    identityInjector.inject(params);
+
+    //
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "0"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "1"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "2"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "3"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "4"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "5"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "6"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "7"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "8"));
+    assertNotNull(organizationService.getUserHandler().findUserByName(userBaseName + "9"));
+    assertEquals(null, organizationService.getUserHandler().findUserByName(userBaseName + "10"));
+
+    //
+    params.put("number", "2");
+    params.put("fromUser", "1");
+    params.put("toUser", "3");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    spaceInjector.inject(params);
+
+    //
+    Space space0 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "0");
+    Space space1 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "1");
+    Space space2 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "2");
+    Space space3 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "3");
+    Space space4 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "4");
+    Space space5 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "5");
+    Space space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+
+    //
+    assertNotNull(space0);
+    assertEquals(userBaseName + "1", space0.getManagers()[0]);
+    assertEquals(1, space0.getManagers().length);
+    assertEquals(1, space0.getMembers().length);
+    
+    assertNotNull(space1);
+    assertEquals(userBaseName + "1", space1.getManagers()[0]);
+    assertEquals(1, space1.getManagers().length);
+    assertEquals(1, space1.getMembers().length);
+    
+    assertNotNull(space2);
+    assertEquals(userBaseName + "2", space2.getManagers()[0]);
+    assertEquals(1, space2.getManagers().length);
+    assertEquals(1, space2.getMembers().length);
+    
+    assertNotNull(space3);
+    assertEquals(userBaseName + "2", space3.getManagers()[0]);
+    assertEquals(1, space3.getManagers().length);
+    assertEquals(1, space3.getMembers().length);
+    
+    assertNotNull(space4);
+    assertEquals(userBaseName + "3", space4.getManagers()[0]);
+    assertEquals(1, space4.getManagers().length);
+    assertEquals(1, space4.getMembers().length);
+    
+    assertNotNull(space5);
+    assertEquals(userBaseName + "3", space5.getManagers()[0]);
+    assertEquals(1, space5.getManagers().length);
+    assertEquals(1, space5.getMembers().length);
+    
+    assertEquals(null, space6);
+
+    spaceInjector.inject(params);
+
+    //
+    space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+    Space space7 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "7");
+    Space space8 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "8");
+    Space space9 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "9");
+    Space space10 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "10");
+    Space space11 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "11");
+    Space space12 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "12");
+
+    //
+    assertNotNull(space6);
+    assertEquals(userBaseName + "1", space6.getManagers()[0]);
+    assertEquals(1, space6.getManagers().length);
+    assertEquals(1, space6.getMembers().length);
+    
+    assertNotNull(space7);
+    assertEquals(userBaseName + "1", space7.getManagers()[0]);
+    assertEquals(1, space7.getManagers().length);
+    assertEquals(1, space7.getMembers().length);
+    
+    assertNotNull(space8);
+    assertEquals(userBaseName + "2", space8.getManagers()[0]);
+    assertEquals(1, space8.getManagers().length);
+    assertEquals(1, space8.getMembers().length);
+    
+    assertNotNull(space9);
+    assertEquals(userBaseName + "2", space9.getManagers()[0]);
+    assertEquals(1, space9.getManagers().length);
+    assertEquals(1, space9.getMembers().length);
+    
+    assertNotNull(space10);
+    assertEquals(userBaseName + "3", space10.getManagers()[0]);
+    assertEquals(1, space10.getManagers().length);
+    assertEquals(1, space10.getMembers().length);
+    
+    assertNotNull(space11);
+    assertEquals(userBaseName + "3", space11.getManagers()[0]);
+    assertEquals(1, space11.getManagers().length);
+    assertEquals(1, space11.getMembers().length);
+    
+    assertEquals(null, space12);
+
+    //inject member
+    params.clear();
+    
+    params.put("type", "member");
+    params.put("fromUser", "7");
+    params.put("toUser", "9");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    
+    params.put("fromSpace", "5");
+    params.put("toSpace", "9");
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    
+    membershipInjector.inject(params);
+
+    space5 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "5");
+    space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+    space7 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "7");
+    space8 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "8");
+    
+    assertEquals(4, space5.getMembers().length);
+    assertEquals(4, space6.getMembers().length);
+    assertEquals(4, space7.getMembers().length);
+    assertEquals(4, space8.getMembers().length);
+    
+    //inject manager
+    params.clear();
+    
+    params.put("type", "manager");
+    params.put("fromUser", "7");
+    params.put("toUser", "9");
+    if (userPrefix != null) {
+      params.put("userPrefix", userPrefix);
+    }
+    
+    params.put("fromSpace", "5");
+    params.put("toSpace", "9");
+    if (spacePrefix != null) {
+      params.put("spacePrefix", spacePrefix);
+    }
+    
+    membershipInjector.inject(params);
+
+    space5 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "5");
+    space6 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "6");
+    space7 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "7");
+    space8 = spaceService.getSpaceByPrettyName(spacePrettyBaseName + "8");
+    
+    assertEquals(4, space5.getManagers().length);
+    assertEquals(4, space6.getManagers().length);
+    assertEquals(4, space7.getManagers().length);
+    assertEquals(4, space8.getManagers().length);
+    
+    //
+    cleanIdentity(userBaseName, 10);
     cleanSpace(spacePrettyBaseName, 12);
 
   }
