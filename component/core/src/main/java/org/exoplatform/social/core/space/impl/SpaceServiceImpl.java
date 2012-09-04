@@ -775,7 +775,8 @@ public class SpaceServiceImpl implements SpaceService {
       appName = appId;
     }
     SpaceApplicationHandler appHandler = getSpaceApplicationHandler(space);
-    setApp(space, appId, appName, SpaceUtils.isRemovableApp(space, appId), Space.ACTIVE_STATUS);
+    // Default is removable, or must be added by configuration or support setting for applications.
+    setApp(space, appId, appName, true, Space.ACTIVE_STATUS);
     appHandler.activateApplication(space, appId, appName);
     // Use portletId instead of appId for fixing SOC-1633.
     spaceLifeCycle.activateApplication(space, getPortletId(appId));

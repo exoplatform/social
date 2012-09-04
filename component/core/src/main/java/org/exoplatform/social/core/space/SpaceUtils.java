@@ -1205,7 +1205,7 @@ public class SpaceUtils {
     }
     if (installedApps.contains(appId)) {
       String appStatusPatern = getAppStatusPattern(installedApps, appId);
-      return appStatusPatern.split(":")[0];
+      return appStatusPatern.split(":")[1];
     }
     return null;
   }
@@ -1335,17 +1335,19 @@ public class SpaceUtils {
       return null;
     }
     if (installedApps.contains(appId)) {
-      String appStatus = installedApps.substring(installedApps.indexOf(appId));
-      if (appStatus.contains(",")) {
-        appStatus = appStatus.substring(0, appStatus.indexOf(","));
+      String[] apps = installedApps.split(",");
+      for (String app : apps) {
+        if (app.contains(appId)) {
+          String[] splited = app.split(":");
+          if (splited.length != 4) {
+            LOG.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : "
+                    + app);
+            return null;
+          }
+
+          return app;
+        }
       }
-      String[] splited = appStatus.split(":");
-      if (splited.length != 4) {
-        LOG.warn("appStatus is not in correct form of [appId:appNodeName:isRemovableString:status] : "
-                + appStatus);
-        return null;
-      }
-      return appStatus;
     }
     return null;
   }
