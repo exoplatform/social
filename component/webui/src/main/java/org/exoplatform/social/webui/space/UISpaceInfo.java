@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -30,7 +31,10 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -251,7 +255,15 @@ public class UISpaceInfo extends UIForm {
       } else {
         spaceService.updateSpace(space);
       }
-      
+
+      if (nameChanged) {
+        OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer().
+                                                                             getComponentInstanceOfType(OrganizationService.class);
+        GroupHandler groupHandler = organizationService.getGroupHandler();
+        Group group = groupHandler.findGroupById(space.getGroupId());
+        group.setLabel(space.getDisplayName());
+        groupHandler.saveGroup(group, true);
+      }
       //uiSpaceInfo.setCurrentSpace(space);
       
       if (nameChanged) {
