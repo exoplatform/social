@@ -355,7 +355,15 @@ public class UISpaceMenu extends UIContainer {
    * @since 1.2.1
    */
   protected Space getSpace(String spaceUrl) {
-    return spaceService.getSpaceByUrl(spaceUrl);
+    if ( spaceUrl == null || spaceUrl.trim().length() == 0) {
+      return null;
+    }
+
+    try {
+      return spaceService.getSpaceByUrl(spaceUrl);
+    } catch (Exception e) {
+      return null;
+    }
   }
   
   /**
