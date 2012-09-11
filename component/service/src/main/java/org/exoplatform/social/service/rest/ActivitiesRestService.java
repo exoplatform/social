@@ -60,7 +60,7 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 /**
  * ActivitiesRestService.java <br />
  *
- * Provides rest services for activity gadget: like/unlike; comment; delete activity. <br />
+ * Provide rest services for activity gadget: like/unlike; comment; delete activity. <br />
  * apis: <br />
  * GET:  /restContextName/social/activities/{activityId}/likes/show.{format} <br />
  * POST: /restContextName/social/activities/{activityId}/likes/update.{format} <br />
@@ -91,7 +91,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * destroys activity by activityId
+   * Destroy activity by activityId
    * if detects any comments of that activity, destroys these comments, too.
    * @param activityId
    * @return activity
@@ -116,7 +116,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * destroys activity and gets json/xml return format
+   * Destroy activity and gets json/xml return format
    * @param uriInfo
    * @param activityId
    * @param format
@@ -195,7 +195,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * destroys like from an activity
+   * Destroy like from an activity
    * @param activityId
    * @param identityId
    */
@@ -234,7 +234,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * shows list of like by activityId and returns json/xml format
+   * Show list of like by activityId and returns json/xml format
    * @param uriInfo
    * @param activityId
    * @param format
@@ -278,7 +278,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * destroys like by identityId and gets json/xml return format
+   * Destroy like by identityId and gets json/xml return format
    * @param uriInfo
    * @param activityId
    * @param identityId
@@ -302,7 +302,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * Shows comment list of an activity from its activityId.
+   * Show comment list of an activity from its activityId.
    *
    * @param activityId
    * @return commentList
@@ -336,7 +336,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Creates or updates comment to an activity by its activityId
+   * Create or updates comment to an activity by its activityId
    * @param activityId
    * @param comment
    * @return commentList
@@ -399,7 +399,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-     * gets identityManager
+     * Get identityManager.
      * @return
      */
     private IdentityManager getIdentityManager(String portalName) {
@@ -412,7 +412,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * Destroys a comment (by its commentId) from an activity (by its activityId).
+   * Destroy a comment (by its commentId) from an activity (by its activityId).
    *
    * @param activityId
    * @param commentId
@@ -443,7 +443,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * shows comment list by json/xml format
+   * Show comment list by json/xml format.
    * @param uriInfo
    * @param activityId
    * @param format
@@ -464,7 +464,7 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Shows comment list by json/xml format with limit and offset.
+   * Show comment list by json/xml format with limit and offset.
    * 
    * @param uriInfo
    * @param activityId
@@ -538,12 +538,12 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * Gets an activity by its id.
+   * Get an activity by its ID.
    *
-   * @param uriInfo the uri request info
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity Id
-   * @param format the expected returned format
+   * @param uriInfo The uri request info
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @return a response object
    */
   @GET
@@ -652,13 +652,13 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Comment an existing activity from a specified activity id. Just returns the created comment.
+   * Comment an existing activity from a specified activity ID. Just returns the created comment.
    *
-   * @param uriInfo the uri request uri
-   * @param portalName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
-   * @param text the content of comment
+   * @param uriInfo The uri request uri
+   * @param portalName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
+   * @param text The content of comment.
    * @return a response object
    */
   @GET

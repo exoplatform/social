@@ -47,12 +47,12 @@ public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   
   /**
-   * Gets the identity and its associated profile by the activity Id.
+   * Get the identity and its associated profile by the activity ID.
    *
    * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param identityId the specified identityId
-   * @param format the expected returned format
+   * @param portalContainerName The associated portal container name.
+   * @param identityId The specified  ID of identity.
+   * @param format The expected returned format.
    * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.Notes.Get
    * @authentication
    * @request
@@ -109,15 +109,15 @@ public class IdentityResources implements ResourceContainer {
   }
 
   /**
-   * Gets the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
+   * Get the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
    * its providerId and remoteId. There could be as many identities as possible. Currently, there are 2 built-in types
-   * of identities (user identities and space identities) in eXo Social.
+   * of identities (user identities and space identities) in Social.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param providerId the providerId of Identity
-   * @param remoteId the remoteId of Identity
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri.
+   * @param portalContainerName The associated portal container name.
+   * @param providerId The providerId of Identity.
+   * @param remoteId The remoteId of Identity.
+   * @param format The expected returned format.
    * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.identity.Get
    * @authentication
    * @request
