@@ -70,7 +70,7 @@ public abstract class RelationshipEntity {
   public abstract void setTo(IdentityEntity toEntity);
 
   /**
-   * Denotes if the relationship is one way or two ways. It refers to the soc:relationshipdefinition node type.
+   * Denote if the relationship is one way or two ways. It refers to the soc:relationshipdefinition node type.
    */
   @MappedBy("soc:reciprocal")
   @ManyToOne(type = RelationshipType.REFERENCE)

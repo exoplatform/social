@@ -67,20 +67,20 @@ public class ActivityResources implements ResourceContainer {
   private static final int MAX_NUMBER_OF_LIKE = 100;
 
   /**
-   * Gets an activity object from a specified activity Id.
+   * Get an activity object from a specified activity ID.
    *
-   * @param uriInfo the uri request info
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity Id
-   * @param format the expected returned format
+   * @param uriInfo The uri request info.
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @param showPosterIdentity When this parameter is set to true, t or 1, the returned activity will provide more
    * information for the user who posted this activity.
-   * @param numberOfComments Specifies the number of comments to be displayed along with this activity. By default,
+   * @param numberOfComments Specify the number of comments to be displayed along with this activity. By default,
    * number_of_comments=0. If number_of_comments is a positive number, this number is considered as a limit number that
    * must be equal or less than 100. If the actual number of comments is less than the provided positive number, the
    * number of actual comments must be returned. If the total number of comments is more than 100, it is recommended to
    * use activity/:id/comments.format instead.
-   * @param numberOfLikes Specifies the number of latest detailed likes to be returned along with this activity. By
+   * @param numberOfLikes Specify the number of latest detailed likes to be returned along with this activity. By
    * default, *number\_of\_likes=0*. If *number\_of\_likes* is a positive number, this number is considered as a limit
    * number that must be equal or less than 100. If the total number of likes is less than the provided positive number,
    * the number of actual likes must be returned. If the total number of likes is more than 100, it is recommended to
@@ -188,14 +188,14 @@ public class ActivityResources implements ResourceContainer {
 
 
   /**
-   * Creates an activity to an identity's activity stream. If no identity_id is specified, the activity will be created
+   * Create an activity to an identity's activity stream. If no identity_id is specified, the activity will be created
    * to the authenticated identity's activity stream.
    *
    * @param uriInfo the uri request info
-   * @param portalContainerName the associated portal container name
-   * @param format the expected returned format
-   * @param identityIdStream the optional identity stream to post this new activity to
-   * @param newActivity a new activity instance
+   * @param portalContainerName The associated portal container name.
+   * @param format The expected returned format.
+   * @param identityIdStream The optional identity stream to post this new activity to.
+   * @param newActivity A new activity instance.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Post
    * @authentication
    * @request
@@ -273,13 +273,13 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Deletes an existing activity by its Id using the DELETE method. The deleted activity information will be returned
+   * Delete an existing activity by its Id using the DELETE method. The deleted activity information will be returned
    * in the JSON format.
    *
    * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.Delete
    * @authentication
    * @request
@@ -353,14 +353,14 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Deletes an existing activity by its Id using the POST method. The deleted activity information will be returned in
+   * Delete an existing activity by its Id using the POST method. The deleted activity information will be returned in
    * the JSON format. It is recommended to use the DELETE method, except the case that clients cannot make request via
    * this method.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activity.PostDelete
    * @authentication
    * @request
@@ -407,12 +407,12 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Gets the comments on an activity.
+   * Get the comments on an activity.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Get
    * @authentication
    * @request
@@ -494,12 +494,12 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Posts a new comment on an existing activity. The poster of this comment is an authenticated identity.
+   * Post a new comment on an existing activity. The poster of this comment is an authenticated identity.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Post
    * @authentication
    * @request
@@ -569,12 +569,12 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Deletes an existing comment by its Id.
+   * Delete an existing comment by its ID.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Delete
    * @authenticated
    * @request
@@ -639,13 +639,13 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Deletes an existing comment by its Id using the POST method. The deleted activity information will be returned in the JSON format. It is recommended to use the POST method, except the case that clients cannot make request via this method.
+   * Delete an existing comment by its ID using the POST method. The deleted activity information will be returned in the JSON format. It is recommended to use the POST method, except the case that clients cannot make request via this method.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param commentId the specified comment id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param commentId The specified comment ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.PostDelete
    * @authenticated
    * @request
@@ -677,12 +677,12 @@ public class ActivityResources implements ResourceContainer {
   
   
   /**
-   * Gets all the identities who like an existing activity.
+   * Get all the identities who like an existing activity.
    * 
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLikes.GET
    * @authenticated
    * @request
@@ -773,12 +773,12 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Allows an authenticated identity to do the "like" action on an existing activity.
+   * Allow an authenticated identity to do the "like" action on an existing activity.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Post
    * @authentication
    * @request
@@ -829,12 +829,12 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Allows an identity to remove his "like" action on an activity.
+   * Allow an identity to remove his "like" action on an activity.
    *
-   * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param uriInfo The uri request uri
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Delete
    * @authentication
    * @request
@@ -888,12 +888,12 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Allows an identity to remove his "like" action on an activity. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
+   * Allow an identity to remove his "like" action on an activity. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
    *
    * @param uriInfo the uri request uri
-   * @param portalContainerName the associated portal container name
-   * @param activityId the specified activity id
-   * @param format the expected returned format
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The specified activity ID.
+   * @param format The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.ActivityLike.Postdestroy
    * @authentication
    * @request
