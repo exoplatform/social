@@ -9,7 +9,6 @@
 	function MySpaces() {
 	  this.viewer = null;
 	  this.context = null;
-	  this.moreSpaces = null;
 	}
 	
 	MySpaces.prototype.init = function() {
@@ -39,11 +38,7 @@
 	      
 	      this.context = hostName + "/" + portalName;
 	      
-	      //TODO hardcode
-	      this.moreSpaces = this.context + ALL_SPACES_URL;
-	      
 	      titleContent += '<div class="TitGad ClearFix">';
-	      titleContent += '<a id="MoreAllSpaces" href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
 	      titleContent += '<div class="ContTit">' + Locale.getMsg('my_spaces') + '</div>';
 	      titleContent += '</div>';
 	      moreSpaceEl.innerHTML = titleContent;
@@ -85,9 +80,6 @@
 	  if (!resp) {
 	    //alert('response is invalid');
 	  } else {
-	  	this.moreSpaces = this.context + resp.data.moreSpacesUrl;
-	  	document.getElementById("MoreAllSpaces").href = this.moreSpaces;
-	  	
 	    var spaceData = resp.data.spaces;
 	    if ((spaceData == null) || (spaceData.length == 0)) {
 	      var emptyItem = document.createElement('div');
