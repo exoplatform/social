@@ -10,16 +10,8 @@
   <artifactId>exo.social.docs</artifactId>
   <packaging>pom</packaging>
 
-  <name>eXo Social Documentation</name>
-
-  <profiles>
-    <profile>
-      <id>distrib</id>
+  <name>Social Documentation</name>
       <modules>
         <module>refguide</module>
       </modules>
-    </profile>
-  </profiles>
-
 </project>
-
