@@ -16,10 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.exoplatform.application.registry.Application;
@@ -161,7 +158,7 @@ public class UISpaceApplicationList extends UIContainer implements UIPopupCompon
       spaceService.activateApplication(uiSpaceAppList.space, appId);
       UISpaceApplication uiSpaceApp = (UISpaceApplication) uiSpaceAppList.getAncestorOfType(UISpaceApplication.class);
       uiSpaceApp.setValue(uiSpaceAppList.space);
-      SpaceUtils.updateWorkingWorkSpace();
+      SpaceUtils.updateUIWorkspace(Arrays.asList("UIMySpacePlatformToolBarPortlet", "SpacesToolbarPortlet", "SpaceMenuPortlet", "SpaceSettingPortlet"));
     }
 
   }

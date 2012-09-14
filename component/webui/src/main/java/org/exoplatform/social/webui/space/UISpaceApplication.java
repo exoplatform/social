@@ -16,10 +16,7 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.exoplatform.application.registry.Application;
@@ -273,14 +270,14 @@ public class UISpaceApplication extends UIForm {
         uiSpaceAppList.setSpace(uiSpaceApp.space);
         context.addUIComponentToUpdateByAjax(uiPopup);
       }
-      SpaceUtils.updateWorkingWorkSpace();
+      SpaceUtils.updateUIWorkspace(Arrays.asList("UIMySpacePlatformToolBarPortlet", "SpacesToolbarPortlet", "SpaceMenuPortlet", "SpaceSettingPortlet"));
     }
   }
 
   /**
    * Checks if an application exists in list or not.
    *
-   * @param appLst List of application
+   * @param appList List of application
    * @param app Application for checking
    * @return true or false
    */
