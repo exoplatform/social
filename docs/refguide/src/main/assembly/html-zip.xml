@@ -1,4 +1,6 @@
-<assembly>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
   <id>html-zip</id>
   <formats>
     <format>zip</format>
@@ -6,24 +8,8 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
    <fileSet>
-    <directory>target/wikbook/src</directory>
+      <directory>target/docbook-src/</directory>
     <outputDirectory>org.exoplatform.social</outputDirectory>
-    <includes>
-      <include>**/*.xml</include>
-     </includes>
-    <!--excludes>
-      <exclude>**/*.fo</exclude>
-      <exclude>**/*.pdf</exclude>
-    </excludes-->
-   </fileSet>
-   <fileSet>
-    <directory>target/wikbook/tmp/images</directory>
-    <outputDirectory>org.exoplatform.social/images</outputDirectory>
-    <includes>
-      <include>**/*.png</include>
-      <include>**/*.gif</include>
-      <include>**/*.jpg</include>
-     </includes>
    </fileSet>
   </fileSets>
 </assembly>
