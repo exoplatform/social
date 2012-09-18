@@ -222,17 +222,18 @@ public class UISpaceInfo extends UIForm {
       
       boolean nameChanged = (!space.getDisplayName().equals(name));
       if (nameChanged) {
+
+        renamedNode = uiSpaceInfo.renamePageNode(name, space);
+        if (renamedNode == null) {
+          return;
+        }
+        
         String cleanedString = SpaceUtils.cleanString(name);
-        space.setUrl(cleanedString);
         if (spaceService.getSpaceByUrl(cleanedString) != null) {
           uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
           return;
         }
         
-        renamedNode = uiSpaceInfo.renamePageNode(name, space);
-        if (renamedNode == null) {
-          return;
-        }
       }
       uiSpaceInfo.invokeSetBindingBean(space);
       
@@ -251,8 +252,6 @@ public class UISpaceInfo extends UIForm {
       } else {
         spaceService.updateSpace(space);
       }
-      
-      //uiSpaceInfo.setCurrentSpace(space);
       
       if (nameChanged) {
         if (renamedNode != null) {
@@ -331,22 +330,18 @@ public class UISpaceInfo extends UIForm {
     DataStorage dataService = getApplicationComponent(DataStorage.class);
 
     try {
-      UserNode parentNode = SpaceUtils.getParentNode().getParent().getParent();
-      if (parentNode == null) {
-        parentNode = SpaceUtils.getParentNode().getParent();
-      }
-      if (parentNode == null || parentNode.getChild(SpaceUtils.cleanString(space.getPrettyName())) == null) {
-        return null;
-      }
-      
-      UserNode renamedNode = parentNode.getChild(SpaceUtils.cleanString(space.getPrettyName()));
-      
-      renamedNode.setLabel(newNodeLabel);
 
+      UserNode renamedNode = SpaceUtils.getSpaceUserNode(space);
+      UserNode parentNode = renamedNode.getParent();
       String newNodeName = SpaceUtils.cleanString(newNodeLabel);
+      
+      
       if (parentNode.getChild(newNodeName) != null) {
         newNodeName = newNodeName + "_" + System.currentTimeMillis();
       }
+      
+      //
+      renamedNode.setLabel(newNodeLabel);
       renamedNode.setName(newNodeName);
 
       Page page = configService.getPage(renamedNode.getPageRef());
@@ -354,12 +349,14 @@ public class UISpaceInfo extends UIForm {
         page.setTitle(newNodeLabel);
         dataService.save(page);
       }
-
-      SpaceUtils.getUserPortal().saveNode(parentNode, null);
       
+      SpaceUtils.getUserPortal().saveNode(parentNode, null);
+
+      space.setUrl(newNodeName);
       SpaceUtils.changeSpaceUrlPreference(renamedNode, space, newNodeLabel);
       
-      for (UserNode childNode : renamedNode.getChildren()) {
+      List<UserNode> userNodes =  new ArrayList<UserNode>(renamedNode.getChildren());
+      for (UserNode childNode : userNodes) {
         SpaceUtils.changeSpaceUrlPreference(childNode, space, newNodeLabel);
       }
       return renamedNode;

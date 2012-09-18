@@ -31,47 +31,13 @@
   </portal-skin>
 
   <module>
-    <name>social-common</name> <!-- always being loaded when there is Social JS stuff -->
-    <script>
-      <name>eXo.social</name>
-      <!-- eXo.social namespace -->
-      <path>/javascript/eXo/social.js</path>
-    </script>
-  </module>
-
-  <module>
     <name>social-core</name> <!-- provides core utility for reuse (browser, dom level) -->
     <script>
       <name>HTMLParser</name> <!-- this is ugly, must be removed -->
       <path>/javascript/htmlparser.js</path>
     </script>
-    <script>
-      <name>eXo.social.Util</name>
-      <path>/javascript/eXo/social/Util.js</path>
-    </script>
     <depends>
       <module>base</module>
-    </depends>
-    <depends>
-      <module>social-common</module>
-    </depends>
-  </module>
-
-  <module>
-    <name>social-webui</name> <!-- webui level -->
-    <script>
-      <name>eXo.social.webui.UIForm</name><!-- function not available from Portal UIForm -->
-      <path>/javascript/eXo/social/webui/UIForm.js</path>
-    </script>
-    <script>
-      <name>eXo.social.webui.UIPopUp</name>
-      <path>/javascript/eXo/social/webui/UIPopUp.js</path>
-    </script>
-    <depends>
-      <module>webui</module>
-    </depends>
-    <depends>
-      <module>social-core</module>
     </depends>
   </module>
 
@@ -82,7 +48,11 @@
        <path>/javascript/eXo/social/webui/UIProfile.js</path>
     </script>
     <depends>
-       <module>social-webui</module>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>webui</module>
     </depends>
   </module>
   
@@ -93,7 +63,14 @@
        <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>
     </script>
     <depends>
-       <module>social-webui</module>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
     </depends>
   </module>
   
@@ -104,7 +81,14 @@
        <path>/javascript/eXo/social/webui/UISpaceSearch.js</path>
     </script>
     <depends>
-       <module>social-core</module>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
     </depends>
   </module>
   
@@ -115,10 +99,14 @@
        <path>/javascript/eXo/social/webui/UISpaceMemberSuggestion.js</path>
     </script>
     <depends>
-      <module>base</module>
+      <module>jquery</module>
+      <as>$</as>
     </depends>
     <depends>
-       <module>social-webui</module>
+       <module>socialPlugin</module>
+    </depends>
+    <depends>
+       <module>webui</module>
     </depends>
   </module>
   
@@ -132,7 +120,8 @@
        <module>base</module>
     </depends>
     <depends>
-       <module>social-common</module>
+      <module>jquery</module>
+      <as>$</as>
     </depends>
   </module>
 
@@ -143,7 +132,11 @@
        <path>/javascript/eXo/social/webui/UIComposer.js</path>
     </script>
     <depends>
-       <module>social-core</module>
+       <module>base</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
     </depends>
   </module>
 
@@ -154,7 +147,11 @@
       <path>/javascript/eXo/social/webui/UIActivity.js</path>
     </script>
     <depends>
-      <module>social-webui</module>
+      <module>webui</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
     </depends>
   </module>
 
@@ -165,18 +162,59 @@
       <path>/javascript/eXo/social/webui/UIComposerLinkExtension.js</path>
     </script>
     <depends>
-      <module>social-core</module>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
     </depends>
   </module>
 
   <module>
-    <name>social-ui-customize-control</name> <!-- TODO Bad name, rename this -->
+    <name>social-ui-customize-control</name>
     <script>
       <name>eXo.social.webui.UICustomizeControl</name>
       <path>/javascript/eXo/social/webui/UICustomizeControl.js</path>
     </script>
     <depends>
-      <module>base</module>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
+    </depends>
+  </module>
+  
+  <module>
+    <name>social-category-selector</name>
+    <script>
+      <name>social-ui-category-selector</name>
+      <path>/javascript/eXo/social/webui/UIApplicationCategorySelector.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+       <module>base</module>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
+    </depends>
+  </module>
+  
+  <module>
+    <name>socialPlugin</name>
+    <script>
+      <name>social-plugin</name>
+      <path>/javascript/eXo/social/Util.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
     </depends>
   </module>
 </gatein-resources>

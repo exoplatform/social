@@ -21,20 +21,17 @@
  */
 
 
-(function () {
-  var window_ = this;
-
-  function UIComposer(params) {
-    this.configure(params);
-    this.init();
-  }
-
-  function handleShareButtonState(uiComposer) {
+var UIComposer = {
+  onLoad: function(params) {
+		UIComposer.configure(params);
+		UIComposer.init();
+  },
+  handleShareButtonState: function(uiComposer) {
     if (uiComposer.minCharactersRequired !== 0) {
       //TODO hoatle handle backspace problem
       if (uiComposer.composer.val().length >= uiComposer.minCharactersRequired) {
         uiComposer.shareButton.className = 'ShareButtonDisable';
-        if(gj("#ComposerContainer") == null){
+        if($("#ComposerContainer").length == 0){
           uiComposer.shareButton.removeAttr("disabled");
           uiComposer.shareButton.attr("class",'ShareButton');
         }
@@ -43,7 +40,7 @@
         uiComposer.shareButton.attr('class','ShareButton');
       }
     } else {
-      if(document.getElementById("ComposerContainer") == null){
+      if($("ComposerContainer").length == 0){
         uiComposer.shareButton.removeAttr("disabled");
         uiComposer.shareButton.attr("class",'ShareButton');
       }
@@ -56,95 +53,116 @@
         uiComposer.composer.val( uiComposer.composer.val().substring(0, uiComposer.maxCharactersAllowed));
       }
     }
-  }
-
-  UIComposer.prototype.configure = function(params) {
-    this.composerId = params.composerId || 'composerInput';
-    this.defaultInput = params.defaultInput || "";
-    this.minCharactersRequired = params.minCharactersRequired || 0;
-    this.maxCharactersAllowed = params.maxCharactersAllowed || 0;
-    this.focusColor = params.focusColor || '#000000';
-    this.blurColor = params.blurColor || '#777777';
-    this.minHeight = params.minHeight || '20px';
-    this.focusHeight = params.focusHeight || '35px';
-    this.maxHeight = params.maxHeight || '50px';
-    this.padding = params.padding || '11px 0 11px 8px';
-    this.focusCallback = params.focusCallback;
-    this.blurCallback = params.blurCallback;
-    this.keypressCallback = params.keypressCallback;
-    this.postMessageCallback = params.postMessageCallback;
-    this.userTyped = false;
-  }
-
-
-  UIComposer.prototype.init = function() {
-    this.composer = gj('#' + this.composerId);
-    this.shareButton = gj('#ShareButton');
-    if (!(this.composer && this.shareButton)) {
+  },
+  configure: function(params) {
+    UIComposer.composerId = params.composerId || 'composerInput';
+    UIComposer.defaultInput = params.defaultInput || "";
+    UIComposer.minCharactersRequired = params.minCharactersRequired || 0;
+    UIComposer.maxCharactersAllowed = params.maxCharactersAllowed || 0;
+    UIComposer.focusColor = params.focusColor || '#000000';
+    UIComposer.blurColor = params.blurColor || '#777777';
+    UIComposer.minHeight = params.minHeight || '20px';
+    UIComposer.focusHeight = params.focusHeight || '35px';
+    UIComposer.maxHeight = params.maxHeight || '50px';
+    UIComposer.padding = params.padding || '11px 0 11px 8px';
+    UIComposer.focusCallback = params.focusCallback;
+    UIComposer.blurCallback = params.blurCallback;
+    UIComposer.keypressCallback = params.keypressCallback;
+    UIComposer.postMessageCallback = params.postMessageCallback;
+    UIComposer.userTyped = false;
+  },
+  init: function() {
+    UIComposer.composer = $('#' + UIComposer.composerId);
+    UIComposer.shareButton = $('#ShareButton');
+    if (!(UIComposer.composer && UIComposer.shareButton)) {
       alert('error: can not find composer or shareButton!');
     }
-
-    this.composer.val(this.defaultInput);
-    this.composer.css({'height':this.minHeight,
-      'color':this.blurColor,
-      'padding':this.padding
+    
+    UIComposer.composer.val(UIComposer.getValue());
+    UIComposer.composer.css({'height':UIComposer.minHeight,
+      'color':UIComposer.blurColor,
+      'padding':UIComposer.padding
     });
-    this.shareButton.attr('class','ShareButtonDisable');
-    this.shareButton.attr('disabled',"disabled");
-    this.currentValue = this.composer.val();
-    var uiComposer = this;
-    var isReadyEl = gj("#isReadyId");
-    var composerContainerEl = gj("#ComposerContainer");
+    UIComposer.shareButton.attr('class','ShareButtonDisable');
+    UIComposer.shareButton.attr('disabled',"disabled");
+    
+    if ( UIComposer.getValue() !== UIComposer.defaultInput ) {
+      UIComposer.composer.css({'height' : UIComposer.maxHeight,
+        'color'  : UIComposer.focusColor});
+      UIComposer.shareButton.removeAttr("disabled");
+      UIComposer.shareButton.attr("class",'ShareButton');
+    }
+    
+    var isReadyEl = $("#isReadyId");
+    var composerContainerEl = $("#ComposerContainer");
     var isReadyVal;
-    this.composer.on('focus', function() {
-      handleShareButtonState(uiComposer);
-      if (uiComposer.composer.val() === uiComposer.defaultInput) {
-        uiComposer.composer.val('') ;
+    UIComposer.composer.on('focus', function() {
+      UIComposer.handleShareButtonState(UIComposer);
+      if (UIComposer.composer.val() === UIComposer.defaultInput) {
+        UIComposer.composer.val('') ;
       }
-      if (uiComposer.focusCallback) {
-        uiComposer.focusCallback();
+      if (UIComposer.focusCallback) {
+        UIComposer.focusCallback();
       }
-      uiComposer.composer.css({'height' : uiComposer.maxHeight,
-        'color'  : uiComposer.focusColor});
+      UIComposer.composer.css({'height' : UIComposer.maxHeight,
+        'color'  : UIComposer.focusColor});
     });
 
-
-    this.composer.on('blur', function() {
-      if (uiComposer.composer.val() === '') {
-        uiComposer.composer.val(uiComposer.defaultInput);
-        uiComposer.composer.css({'height' : uiComposer.minHeight,
-                                 'color'  : uiComposer.blurColor});
+    UIComposer.composer.on('blur', function() {
+      if (UIComposer.composer.val() === '') {
+        UIComposer.composer.val(UIComposer.defaultInput);
+        UIComposer.composer.css({'height' : UIComposer.minHeight,
+                                 'color'  : UIComposer.blurColor});
 
         //if current composer is default composer then disable share button
-        if(gj("#ComposerContainer") == null){
-          uiComposer.shareButton.attr('disabled',"disabled");
-          uiComposer.shareButton.attr('class','ShareButtonDisable');
+        if(!UIComposer.isReady){
+          UIComposer.shareButton.attr('disabled',"disabled");
+          UIComposer.shareButton.attr('class','ShareButtonDisable');
         }
-
+        
       } else {
-        uiComposer.currentValue = uiComposer.composer.val();
+        UIComposer.currentValue = UIComposer.composer.val();
       }
 
-      if (uiComposer.blurCallback) {
-        uiComposer.blurCallback();
+      if (UIComposer.blurCallback) {
+        UIComposer.blurCallback();
       }
     });
 
-    this.composer.on('keypress', handleShareButtonState(uiComposer));
+  },
+  post: function() {
+    UIComposer.composer.val(UIComposer.defaultInput);
+    UIComposer.isReady = false;
+    UIComposer.currentValue = UIComposer.defaultInput;
+    UIComposer.init();
+  },
+  getValue: function() {
+	  if (!UIComposer.currentValue) {
+	    return UIComposer.defaultInput;
+	  }
+	  return UIComposer.currentValue;
+	},
+	setCurrentValue: function() {
+	  var uiInputText = $("#" + UIComposer.composerId);
+	  UIComposer.currentValue = uiInputText.val();
+	},
+	handleShareButton: function(isReadyForPostingActivity) {
+	  UIComposer.isReady = isReadyForPostingActivity;
+	  var shareButton = $("#ShareButton");
+	  if ( isReadyForPostingActivity ) {
+	    shareButton.removeAttr("disabled");
+	    shareButton.attr("class",'ShareButton');
+	  } else {
+	    shareButton.attr("disabled","disabled");
+	    shareButton.attr("class",'ShareButtonDisable');
+	  }
+	  
+	  if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
+	    UIComposer.shareButton.removeAttr("disabled");
+	    UIComposer.shareButton.attr("class",'ShareButton');
+	  }
   }
+}
 
-    UIComposer.prototype.getValue = function() {
-      if (!this.currentValue) {
-        return this.defaultInput;
-      }
-      return this.currentValue;
-    }
-
-    UIComposer.prototype.setCurrentValue = function() {
-      var uiInputText = gj("#" + this.composerId);
-      this.currentValue = uiInputText.val();
-    }
-
-    //expose
-    window_.eXo.social.webui.UIComposer = UIComposer;
-  })();
+window.UIComposer = UIComposer;
+_module.UIComposer = UIComposer;

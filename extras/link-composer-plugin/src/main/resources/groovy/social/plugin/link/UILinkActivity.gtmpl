@@ -39,8 +39,6 @@
 
 <% if (activity) { //process if not null
 
-  jsManager.loadScriptResource("social-ui-activity");
-
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
   def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
@@ -78,16 +76,18 @@
   def likesDisplayed = uicomponent.isLikesDisplayed();
   //params for init UIActivity javascript object
 
-  jsManager.addCustomizedOnLoadScript('new eXo.social.webui.UIActivity ('+
-                                                                          """{activityId: '${activity.id}',
-                                                                              inputWriteAComment: '$inputWriteAComment',
-                                                                              commentMinCharactersAllowed: ${uicomponent.getCommentMinCharactersAllowed()},
-                                                                              commentMaxCharactersAllowed: ${uicomponent.getCommentMaxCharactersAllowed()},
-                                                                              commentFormDisplayed: $commentFormDisplayed,
-                                                                              allCommentSize: ${allComments.size()},
-                                                                              commentFormFocused: ${uicomponent.isCommentFormFocused()}
-                                                                             }""" +
-                                                                         ')');
+  def params = """ {
+	  activityId: '${activity.id}',
+	  inputWriteAComment: '$inputWriteAComment',
+	  commentMinCharactersAllowed: '${uicomponent.getCommentMinCharactersAllowed()}',
+	  commentMaxCharactersAllowed: '${uicomponent.getCommentMaxCharactersAllowed()}',
+	  commentFormDisplayed: '$commentFormDisplayed',
+	  allCommentSize: '${allComments.size()}',
+	  commentFormFocused: '${uicomponent.isCommentFormFocused()}'
+  }"""
+
+  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.UIActivity.onLoad($params);");
+  
   //make sure commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
   def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime, activityPostedTimeInSpace;

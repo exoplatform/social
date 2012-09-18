@@ -189,7 +189,11 @@ public class UIComposer extends UIForm {
 
       //get current activity composer
       UIActivityComposer activityComposer = activityComposerManager.getCurrentActivityComposer();
-
+      
+      if ( activityComposer.isDisplayed() && !activityComposer.isReadyForPostingActivity() ) {
+        activityComposerManager.setDefaultActivityComposer();
+      }
+      
       //get posted message
       String message = (uiComposer.getMessage() == null)?"":uiComposer.getMessage();
 
@@ -210,7 +214,7 @@ public class UIComposer extends UIForm {
       messageInput.setValue("");
       //post activity via the current activity composer
       WebuiRequestContext requestContext = event.getRequestContext();
-      activityComposer.postActivity(postContext, uiComposer, requestContext, message);
+      activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, requestContext, message);
     }
   }
 }

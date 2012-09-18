@@ -230,7 +230,14 @@
       <title>Space Menu</title>
       <short-title>Space Menu</short-title>
       <keywords>social</keywords>
-    </portlet-info>
+    </portlet-info>    
+    <portlet-preferences>
+      <preference>
+        <name>SPACE_URL</name>
+        <value> </value>
+        <read-only>false</read-only>
+      </preference>
+    </portlet-preferences>
   </portlet>
 
   <portlet>

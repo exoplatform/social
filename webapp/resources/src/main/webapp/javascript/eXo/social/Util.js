@@ -76,7 +76,7 @@
         });
     });
 	}
-})(gj);
+})(jQuery);
 
 // Autosuggestion plugin.
 ;(function($) {
@@ -313,7 +313,7 @@
           });
 	    });
     }
-})(gj);
+})(jQuery);
 
 
 // Tooltip plugin
@@ -428,4 +428,4 @@
 	        this.shown = false;
 	    }
     };
-})(gj);
+})(jQuery);

@@ -20,11 +20,6 @@
 -->
 */
 %>
-<%  
-    def rcontext = _ctx.getRequestContext();
-    rcontext.getJavascriptManager().loadScriptResource("base");
-    
-%>
 
 <div class="UITabPane NewTabPane ClearFix" id="$uicomponent.id">
     <div class="UIHorizontalTabs NewTabs">

@@ -424,6 +424,7 @@
     <module>
       <depends>
         <module>webui-ext</module>
+        <as>webuiExt</as>
       </depends>
     </module>
   </portlet>
@@ -433,6 +434,9 @@
     <module>
       <depends>
         <module>webui</module>
+      </depends>
+      <depends>
+        <module>social-ui-space-app-name-edition</module>
       </depends>
     </module>
   </portlet>

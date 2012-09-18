@@ -15,68 +15,49 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-(function() {
-    var window_ = this;
-    var COLOR = {
-          FOCUS : "#000000",
-          BLUR : "#C7C7C7"
-        };
-
-    var DEFAULT_REST_INFO = {
+var UISpaceSearch = {
+    COLOR : {
+      FOCUS : "#000000",
+      BLUR : "#C7C7C7"
+    },
+    DEFAULT_REST_INFO : {
       CONTEXT_NAME : 'rest-socialdemo',
       PATH : '/social/spaces/suggest.json'
-    };
+    },
+    init: function(params) {
+			var uicomponentId = params.uicomponentId || null;
+			var defaultSpaceNameAndDesc = params.defaultSpaceNameAndDesc || null;
+			var restContextName = params.restContextName || null;
+      var currentUserName = params.currentUserName || null;
+      var typeOfRelation = params.typeOfRelation || null;
+      var spaceURL = params.spaceURL || null;
+      var typeOfSuggest = params.typeOfSuggest || null;
+      var portalName = params.portalName || null;
+      
+			var spaceSearch = document.getElementById(uicomponentId);
+			var searchEl  = $(spaceSearch).find('#SpaceSearch');
+			var searchBtn = $(spaceSearch).find('#SearchButton');
 
-		/**
-		 * Space search.
-		 * @class
-		 * @scope public
-		 */
-		function UISpaceSearch(params) {
-			this.uicomponentId = params.uicomponentId || null;
-			this.defaultSpaceNameAndDesc = params.defaultSpaceNameAndDesc || null;
-			this.onLoad();
-		};
-		
-		/**
-		 * Initialize ui controls when the form is loaded.
-		 */
-		UISpaceSearch.prototype.onLoad = function() {
-			var spaceSearch = document.getElementById(this.uicomponentId);
-			var searchEl  = gj(spaceSearch).find('#SpaceSearch');
-			var searchBtn = gj(spaceSearch).find('#SearchButton');
-			var uiSpaceSearchObj = eXo.social.webui.UISpaceSearch;
-			var portalName = eXo.social.webui.portalName;
-			var defaultUserContact = gj(searchEl).attr('placeholder');
-
+      
 			// Turn off auto-complete attribute of text-box control
 			searchEl.attr('autocomplete','off');
 			
-			if (searchEl.val().trim() ==  this.defaultSpaceNameAndDesc) {
-			  searchEl.css('color', COLOR.BLUR);
+			if (searchEl.val().trim() ==  defaultSpaceNameAndDesc) {
+			  searchEl.css('color', UISpaceSearch.COLOR.BLUR);
 			}
+			
       searchEl.placeholder();
 			
-		  gj(searchEl).autosuggest(buildURL(), {onSelect:callback, defaultVal:defaultUserContact});
-
-		  function callback() {
-		    searchBtn.click();
-		  };
+		  $(searchEl).autosuggest(buildURL(), {onSelect:function(){searchBtn.click();}, defaultVal:defaultSpaceNameAndDesc});
 
       function buildURL() {
-        var restContext = eXo.social.webui.restContextName;
-        var currentUser = eXo.social.webui.currentUserName;
-        var typeOfRelation = eXo.social.webui.typeOfRelation;
-        var spaceURL = eXo.social.webui.spaceURL;
-        var typeOfSuggest = eXo.social.webui.typeOfSuggest;
-
-	      restContext = (restContext) ? restContext : DEFAULT_REST_INFO.CONTEXT_NAME;
-	      var restURL = "/" + restContext + "/" + portalName + DEFAULT_REST_INFO.PATH;
+	      restContextName = (restContextName) ? restContextName : UISpaceSearch.DEFAULT_REST_INFO.CONTEXT_NAME;
+	      var restURL = "/" + restContextName + "/" + portalName + UISpaceSearch.DEFAULT_REST_INFO.PATH;
 
 	      restURL = restURL + '?conditionToSearch=input_value';
 
-        if (currentUser) {
-          restURL += "&currentUser=" + currentUser;
+        if (currentUserName) {
+          restURL += "&currentUser=" + currentUserName;
         }
 
 	      if (typeOfRelation) {
@@ -90,9 +71,8 @@
         }
 
         return restURL;
-      };
-
+      }
 	 }
+};
 
-	 window_.eXo.social.webui.UISpaceSearch = UISpaceSearch;
-})();
+_module.UISpaceSearch = UISpaceSearch;

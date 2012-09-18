@@ -652,8 +652,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
             + persistenceChunks[1],
             pb.build(),
             ownerType,
-            ownerId,
-            persistenceChunks[2]);
+            ownerId);
     org.exoplatform.portal.config.model.Application<Portlet> portletApp =
             org.exoplatform.portal.config.model.Application.createPortletApplication();
     portletApp.setState(portletState);

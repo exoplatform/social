@@ -34,7 +34,6 @@ link
   uicomponent.setLinkInfoDisplayed(false);
   def requestContext = _ctx.getRequestContext();
   def jsManager = requestContext.getJavascriptManager();
-  jsManager.loadScriptResource("social-ui-link-activity-composer");
 
   def noThumbnail = _ctx.appRes("UILinkComposerPlugin.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("UILinkComposerPlugin.msg.Previous_Image"),
@@ -95,15 +94,9 @@ link
                   "titleEditable: '$titleEditable'"+
                 "}";
 
-  jsManager.addOnLoadJavascript("initComposerLinkExtension");
-
+  jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.UIComposerLinkExtension.onLoad($params);");
 %>
 <div id="$uicomponentId">
-<script type="text/javascript">
-  function initComposerLinkExtension() {
-    new eXo.social.webui.UIComposerLinkExtension($params);
-  }
-</script>
 <% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();
      def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);

@@ -15,106 +15,84 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
-		var window_ = this;
-
-		var COLOR = {
+var UIProfileUserSearch = { 
+		COLOR : {
 		  FOCUS : "#000000",
 		  BLUR : "#C7C7C7"
-		};
-		
-		var INPUT_ID = {
+		},
+		INPUT_ID : {
 		  NAME : '#Search',
 		  POSITION : '#position',
 		  SKILLS : '#skills',
 		  SEARCH : '#SearchButton'
-		};
-		
-		var KEY = {
+		},
+		KEY : {
 		  ENTER : 13
-		};
-		
-		var DEFAULT_REST_INFO = {
+		},
+		DEFAULT_REST_INFO : {
       CONTEXT_NAME : 'rest-socialdemo',
       PATH : '/social/people/suggest.json'
-    };
-		
-		function UIProfileUserSearch(params) {
-		  this.defaultUserContact = params.defaultUserContact || null;
-      this.defaultPos = params.defaultPos || null;
-      this.defaultSkills = params.defaultSkills || null;
+    },
+		init: function(params) {
+		  var defaultUserContact = params.defaultUserContact || null;
+      var defaultPos = params.defaultPos || null;
+      var defaultSkills = params.defaultSkills || null;
+      var restContextName = params.restContextName || null;
+      var currentUserName = params.currentUserName || null;
+      var typeOfRelation = params.typeOfRelation || null;
     
-      var profileSearch = gj("#" + params.uicomponentId);
-      this.nameTextObj = gj(INPUT_ID.NAME, profileSearch);
-      this.posTextObj = gj(INPUT_ID.POSITION, profileSearch);
-      this.skillTextObj = gj(INPUT_ID.SKILLS, profileSearch);
-      this.searchButton = gj(INPUT_ID.SEARCH, profileSearch);
-
-      this.initTextBox();
-		};
-    
-   
-		/**
-		 * Set init value and event for control.
-		 * @scope private.
-		 */
-		UIProfileUserSearch.prototype.initTextBox = function() {
-	    var nameEl = this.nameTextObj;
-	    var posEl = this.posTextObj;
-	    var skillEl = this.skillTextObj;
-	    var defaultUserContact = this.defaultUserContact;
-			var defaultPos = this.defaultPos;
-			var defaultSkills = this.defaultSkills;
-
-	    var searchBtn = this.searchButton;
-	    var uiProfileUserSearch = this;
-	    
+      var profileSearch = $("#" + params.uicomponentId);
+      var nameEl = $(UIProfileUserSearch.INPUT_ID.NAME, profileSearch);
+      var posEl = $(UIProfileUserSearch.INPUT_ID.POSITION, profileSearch);
+      var skillEl = $(UIProfileUserSearch.INPUT_ID.SKILLS, profileSearch);
+      var searchBtn = $(UIProfileUserSearch.INPUT_ID.SEARCH, profileSearch);
+      
 	    // Turn off auto-complete attribute of text-box control
-	    gj(nameEl).attr('autocomplete','off');
-	    gj(posEl).attr('autocomplete','off');
-	    gj(skillEl).attr('autocomplete','off');
+	    $(nameEl).attr('autocomplete','off');
+	    $(posEl).attr('autocomplete','off');
+	    $(skillEl).attr('autocomplete','off');
 	
-	    if(nameEl.val().trim() === this.defaultUserContact){
-	      nameEl.css('color', COLOR.BLUR);
+	    if(nameEl.val().trim() === defaultUserContact){
+	      nameEl.css('color', UIProfileUserSearch.COLOR.BLUR);
 	    }
 	    
-	    if(posEl.val().trim() === this.defaultPos){
-	      posEl.css('color', COLOR.BLUR);
+	    if(posEl.val().trim() === defaultPos){
+	      posEl.css('color', UIProfileUserSearch.COLOR.BLUR);
 	    }
 	    
-	    if(skillEl.val().trim() === this.defaultSkills){
-	      skillEl.css('color', COLOR.BLUR);
+	    if(skillEl.val().trim() === defaultSkills){
+	      skillEl.css('color', UIProfileUserSearch.COLOR.BLUR);
 	    }
 	    
 			posEl.focus(function() {
-			  if (gj(this).val().trim() == defaultPos) {
-			    gj(this).val('');              
+			  if ($(this).val().trim() == defaultPos) {
+			    $(this).val('');              
 			  }
-			  gj(this).css('color', COLOR.FOCUS);
+			  $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);
 			});
 			 
 			skillEl.focus(function() {
-			  if (gj(this).val() == defaultSkills) {
-			    gj(this).val('');              
+			  if ($(this).val() == defaultSkills) {
+			    $(this).val('');              
 			  }
-			  gj(this).css('color', COLOR.FOCUS);
+			  $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);
 			});
 				        
 		  posEl.blur(function() {
-			  if (gj(this).val() && gj(this).val() != '') {
-			    gj(this).css('color', COLOR.FOCUS);                               
+			  if ($(this).val() && $(this).val() != '') {
+			    $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);                               
 			  } else {
-			    gj(this).css('color', COLOR.BLUR);  
-			    gj(this).val(defaultPos);
+			    $(this).css('color', UIProfileUserSearch.COLOR.BLUR);  
+			    $(this).val(defaultPos);
 			  }
 			});
 			
 	    skillEl.blur(function() {
-			  if (gj(this).val() && gj(this).val() != '') {
-			    gj(this).css('color', COLOR.FOCUS);                               
+			  if ($(this).val() && $(this).val() != '') {
+			    $(this).css('color', UIProfileUserSearch.COLOR.FOCUS);                               
 			  } else {
-			    gj(this).css('color', COLOR.BLUR);  
-			    gj(this).val(defaultSkills);
+			    $(this).css('color', UIProfileUserSearch.COLOR.BLUR);  
+			    $(this).val(defaultSkills);
 			  }
 			});
 			
@@ -126,23 +104,16 @@
 		    keyDownAction(event);
 		  });
 
-			gj(nameEl).autosuggest(buildURL(), {onSelect:callback, defaultVal:defaultUserContact});
+			$(nameEl).autosuggest(buildURL(), {onSelect:function(){searchBtn.click();}, defaultVal:defaultUserContact});
 			
-			function callback() {
-			  searchBtn.click();
-			};
-
 			function buildURL() {
-        var restContext = eXo.social.webui.restContextName;
-        var currentUser = eXo.social.webui.currentUserName;
-        var typeOfRelation = eXo.social.webui.typeOfRelation;
-			  restContext = (restContext) ? restContext : DEFAULT_REST_INFO.CONTEXT_NAME;
-			  var restURL = "/" + restContext + DEFAULT_REST_INFO.PATH;
+			  restContextName = (restContextName) ? restContextName : UIProfileUserSearch.DEFAULT_REST_INFO.CONTEXT_NAME;
+			  var restURL = "/" + restContextName + UIProfileUserSearch.DEFAULT_REST_INFO.PATH;
 			  
 			  restURL = restURL + '?nameToSearch=input_value';
 
-				if (currentUser) {
-				  restURL += "&currentUser=" + currentUser;
+				if (currentUserName) {
+				  restURL += "&currentUser=" + currentUserName;
 				}
 			  
 			  if (typeOfRelation) {
@@ -153,16 +124,15 @@
       };
 
 			function keyDownAction(event) {
-				  //var searchBtn = this.searchButton;
 	        var e = event || window.event;
 	        var textBox = e.srcElement || e.target;
 	        var keynum = e.keyCode || e.which;  
-	        if(keynum == KEY.ENTER) {
+	        if(keynum == UIProfileUserSearch.KEY.ENTER) {
 	          searchBtn.click();
 	        } else {
 	        }
-        }
-		 };
-		        
-		 window_.eXo.social.webui.UIProfileUserSearch = UIProfileUserSearch;
-})();
+      }
+		}
+};
+
+_module.UIProfileUserSearch = UIProfileUserSearch;

@@ -110,16 +110,16 @@ public class UISpaceMenu extends UIContainer {
     if (space == null) {
       return new ArrayList<UserNode>(0);
     }
-    UserNavigation pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
-    UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, space.getUrl());
 
-    UserNode hiddenNode = homeNode.getChild(SPACE_SETTINGS);
+    UserNode spaceUserNode = SpaceUtils.getSpaceUserNode(space);
+    
+    UserNode hiddenNode = spaceUserNode.getChild(SPACE_SETTINGS);
     
     if (!hasSettingPermission() && (hiddenNode != null)) {
-      homeNode.removeChild(hiddenNode.getName());
+      spaceUserNode.removeChild(hiddenNode.getName());
     }
     
-    List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(homeNode.getChildren());
+    List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(spaceUserNode.getChildren());
     //SOC-2290 Need to comment the bellow line, sort by in configuration XML file.
     //Collections.sort(userNodeArraySorted, new ApplicationComparator());
     return userNodeArraySorted;
@@ -144,9 +144,9 @@ public class UISpaceMenu extends UIContainer {
 
       UserNode selectedNode = uiPortal.getSelectedUserNode();
       UserNode homeNode = null;
-      UserNavigation spaceNavigation = SpaceUtils.getGroupNavigation(space.getGroupId());
+
+      homeNode = SpaceUtils.getSpaceUserNode(space);
       
-      homeNode = SpaceUtils.getHomeNodeWithChildren(spaceNavigation, spaceUrl);
       if (homeNode == null) {
         throw new Exception("homeNode is null!");
       }
@@ -352,6 +352,6 @@ public class UISpaceMenu extends UIContainer {
    * @since 1.2.1
    */
   protected Space getSpace(String spaceUrl) {
-    return spaceService.getSpaceByUrl(spaceUrl);
+    return getSpaceService().getSpaceByUrl(spaceUrl);
   }
 }

@@ -17,44 +17,54 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-eXo.social.webui.UISpaceAppNameEdition = {
+var UISpaceAppNameEdition = {
+	addEditability: function(id) {
+    var editedTab = $("#" + id);
 
-  renameAppLabel : function(input) {
-    var newLabel = input.val();
-    if (newLabel && newLabel.length > 0) {
-      var portletID = input.closest(".PORTLET-FRAGMENT").parent().attr("id");
-
-      var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + portletID;
-      href += "&portal:type=action";
-      href += "&portal:isSecure=false";
-      href += "&uicomponent=UISpaceMenu";
-      href += "&op=RenameSpaceAppName";
-      href += "&newSpaceAppName=" + encodeURIComponent(newLabel);
-      window.location = href;
-    }
-  },
-
-  showEditLabelInput : function(target, nodeName, currentLabel) {
-    var jqObj = gj(target);
-
-    var input = gj("<input>").attr({type : "text", id : nodeName, name : currentLabel, value : currentLabel, maxLength : 50});
-    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px");
-
-    jqObj = jqObj.replaceWith(input);
-    input.blur(function() {
-      gj(this).replaceWith(jqObj);
+    editedTab.on("dblclick", ".SelectedTab span", function() {
+      var span = $(this);
+      showEditLabelInput(this, span.attr("id"), span.text()); 
     });
-
-    input.keypress(function(e) {
-      var keyNum = e.keyCode ? e.keyCode : e.which;
-      if (keyNum == 13) {
-        eXo.social.webui.UISpaceAppNameEdition.renameAppLabel(gj(this));
-      } else if (keyNum == 27) {
-        gj(this).replaceWith(jqObj);
-      }
-    });
-
-    input.closest(".UITab").addClass("EditTab");
-    input.focus();
-  }
+    
+	  function showEditLabelInput(target, nodeName, currentLabel) {
+	    var jqObj = $(target);
+	
+	    var input = $("<input>").attr({type : "text", id : nodeName, name : currentLabel, value : currentLabel, maxLength : 50});
+	    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px");
+	
+	    jqObj = jqObj.replaceWith(input);
+	    input.blur(function() {
+	      $(this).replaceWith(jqObj);
+	    });
+	
+	    input.keypress(function(e) {
+	      var keyNum = e.keyCode ? e.keyCode : e.which;
+	      if (keyNum == 13) {
+	        renameAppLabel($(this));
+	      } else if (keyNum == 27) {
+	        $(this).replaceWith(jqObj);
+	      }
+	    });
+	
+	    input.closest(".UITab").addClass("EditTab");
+	    input.focus();
+	  };
+	  
+	  function renameAppLabel(input) {
+	    var newLabel = input.val();
+	    if (newLabel && newLabel.length > 0) {
+	      var portletID = input.closest(".PORTLET-FRAGMENT").parent().attr("id");
+	
+	      var href = eXo.env.server.portalBaseURL + "?portal:componentId=" + portletID;
+	      href += "&portal:type=action";
+	      href += "&portal:isSecure=false";
+	      href += "&uicomponent=UISpaceMenu";
+	      href += "&op=RenameSpaceAppName";
+	      href += "&newSpaceAppName=" + encodeURIComponent(newLabel);
+	      window.location = href;
+	    }
+	  };
+	}
 };
+
+_module.UISpaceAppNameEdition = UISpaceAppNameEdition;

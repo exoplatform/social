@@ -28,14 +28,6 @@ def uicomponentId = uicomponent.id;
 def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
-jsmanager.loadScriptResource("webui"); //Portal's problem, workaround for uicomponent.event(), eXo.webui.UIForm
-jsmanager.loadScriptResource("social-ui-space-search");
-jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'" ;') ;
-jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'" ;');
-jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'" ;');
-jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'" ;');
-jsmanager.addJavascript('eXo.social.webui.portalName = "'+ uicomponent.getPortalName() +'" ;');
-jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "space";');
 
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
@@ -67,12 +59,24 @@ def mySpaceDisplayModeStyle = "NotSelectedTab";
 def receivedInvitationDisplayModeStyle = "NotSelectedTab";
 def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
+def restContextName = uicomponent.getRestContextName();
+def currentUserName = uicomponent.getCurrentUserName();
+def typeOfRelation = uicomponent.getTypeOfRelation();
+def spaceURL = uicomponent.getSpaceURL();
+def portalName = uicomponent.getPortalName();
+    
 def params = """ {
   uicomponentId: '${uicomponentId}',
-  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}'
+  defaultSpaceNameAndDesc: '${defaultSpaceNameAndDesc}',
+  restContextName: '$restContextName',
+	currentUserName: '$currentUserName',
+	typeOfRelation: '$typeOfRelation',
+	spaceURL: '$spaceURL',
+	portalName: '$portalName',
+	typeOfSuggest: 'space'
 } """
 
-jsmanager.addOnLoadJavascript("initSpaceSearch");
+jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.UISpaceSearch.init($params);");
 
 if (selectedNode.equals("all-spaces")) {
   allSpacesDisplayModeStyle = "SelectedTab";
@@ -85,11 +89,6 @@ if (selectedNode.equals("all-spaces")) {
 }
 %>
 <div class="UISpaceSearch">
-<script type="text/javascript">
-  function initSpaceSearch() {
-      new eXo.social.webui.UISpaceSearch($params);
-  }
-</script>
 <% uiform.begin() %>
     <!--search by name-->   
     <div class="SpaceSearchContainer ClearFix">

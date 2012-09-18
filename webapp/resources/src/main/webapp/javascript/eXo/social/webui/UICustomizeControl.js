@@ -1,14 +1,12 @@
-function UICustomizeControl() {
-}
+var UICustomizeControl = {
+  onLoad : function(uicomponentId) {
+		$('#' + uicomponentId).click(function() {
+		  $('input').each(function() {
+	      var form = $(this).closest('.UIForm');
+	      if (form != null ) webui.UIForm.submitForm(form.attr("id"), 'ChangeOption', true);
+	    });
+	  });
+  }
+};
 
-UICustomizeControl.prototype.onLoad = function(uicomponentId) {
-	gj('#' + uicomponentId).click(function() {
-	  gj('input').each(function() {
-      var form = gj(this).closest('.UIForm');
-      if (form != null ) eXo.webui.UIForm.submitForm(form.attr("id"), 'ChangeOption', true);
-    });
-  });
-}
-
-/*===================================================================*/
-eXo.social.webui.UICustomizeControl = new UICustomizeControl();
+_module.UICustomizeControl = UICustomizeControl;

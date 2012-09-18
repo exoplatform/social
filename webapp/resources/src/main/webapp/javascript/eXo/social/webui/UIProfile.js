@@ -1,36 +1,24 @@
-/**
- * UIProfile.js
- */
-(function() {
-  // private class
-  function UIProfile(params) {
-    // use this to mark are local variables
-    this.positionId = params.positionId || null;
-    this.saveButtonId = params.saveButtonId || null;
-    
-    // initialize
-    this.init();
-  }
-  
-  var KEYS = {
+var UIProfile = {
+  KEYS : {
     ENTER : 13
-  }
-  
-  UIProfile.prototype.init = function() {
-    var positionEl = gj("#" + this.positionId);
-    var saveButtonEl = gj("#" + this.saveButtonId);
-    
+  },
+  init: function(params) {
+    var positionId = params.positionId || null;
+    var saveButtonId = params.saveButtonId || null;
+
+    var positionEl = $("#" + positionId);
+    var saveButtonEl = $("#" + saveButtonId);
+
     if (positionEl.length > 0 && saveButtonEl.length > 0) {
-      positionEl.keydown(function(event) {
-        if ((event.keyCode || event.which) == KEYS.ENTER) {
+      positionEl.on('keydown', function(event) {
+        if ((event.keyCode || event.which) == UIProfile.KEYS.ENTER) {
           saveButtonEl.click();
-          eXo.core.EventManager.cancelEvent(event);
+          event.stopPropagation()
           return;
         }
       });
     }
   }
+};
 
-  //exposion
-  eXo.social.webui.UIProfile = UIProfile;
-})();
+_module.UIProfile = UIProfile;

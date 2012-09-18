@@ -46,11 +46,12 @@
     blastInput = "BlastInputPeople";
   }
 
-  jsManager.loadScriptResource("social-ui-activity-composer");
+  def composerId = uicomponent.getChild(UIFormTextAreaInput.class).getId();
+
   def params = """
     {
-      composerId: '${uicomponent.getChild(UIFormTextAreaInput.class).getId()}',
-      defaultInput: '$defaultInput',
+      composerId: '${composerId}',
+      defaultInput: '${defaultInput}',
       focusColor: null,
       blurColor: null,
       minHeight: null,
@@ -64,39 +65,9 @@
     }
   """
 
-  jsManager.addOnLoadJavascript("initUIComposer");
-  jsManager.addOnLoadJavascript("handleShareButton");
+  jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.onLoad($params);");
 %>
 <div class="$uicomponent.id">
-<script type="text/javascript">
-  var uicomposer = uicomposer || null;
-  function initUIComposer() {
-    if(uicomposer){
-    	//get current value before re-init uicomposer instance
-    	var value = uicomposer.getValue();
-
-    	//re-init uicomposer
-    	uicomposer.init();
-
-    	//re-assign value for appropriate objects
-    	uicomposer.composer.val(value);
-    	gj("#composerInput").val(value);
-      uicomposer.composer.css('color',uicomposer.focusColor);
-
-    	//this if clause used for enable Share button when there was text on composer input and the composer returns back to DefaultComposer
-    	if(value != "" && value != uicomposer.defaultInput){
-          if(gj("#ComposerContainer") == null){
-            //must this timeout 'cause it will override the value set by server side
-            window.setTimeout( function(){uicomposer.shareButton.removeAttr("disabled")}, 200);
-          }
-    	} else {
-    	  uicomposer.composer.css('color',uicomposer.blurColor);
-    	}
-    } else {
-	    uicomposer = new eXo.social.webui.UIComposer($params);
-    }
-  }
-</script>
   <% uiform.begin() %>
   <div class="BlastContainer">
     <% if (uicomponent.getPostContext() == PostContext.USER) { %>
@@ -122,9 +93,9 @@
           }
           if (counter > 1) {
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; uicomposer.setCurrentValue();" >$labelSimpleName</a>
+        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" >$labelSimpleName</a>
       <% } else { %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; uicomposer.setCurrentValue();" >$labelSimpleName</a>
+        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " >$labelSimpleName</a>
       <%
          }
         }
@@ -147,37 +118,12 @@
     <%
       }
     %>
-      <script type="text/javascript">
-        function setShareButtonDisable(state){
-          var shareButton = gj("#ShareButton");
-          if (state){
-            shareButton.attr("disabled","disabled");
-            shareButton.attr("class",'ShareButtonDisable');
-          } else {
-            shareButton.removeAttr("disabled");
-            shareButton.attr("class",'ShareButton');
-          }
-        }
-
-        function handleShareButton(){
-          var shareButton = gj("#ShareButton");
-          <%
-            if(currentActivityComposer.isReadyForPostingActivity()){
-            
-          %>
-            shareButton.removeAttr("disabled");
-            shareButton.attr("class",'ShareButton');
-          <%
-            } else {
-          %>
-            shareButton.attr("disabled","disabled");
-            shareButton.attr("class",'ShareButtonDisable');
-          <%
-            }
-          %>
-        }
-      </script>
-      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; uicomposer.init();" value="$shareLabel"></input>
+      <%
+        def isReadyForPostingActivity = currentActivityComposer.isReadyForPostingActivity();
+        jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
+      %>
+          
+      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()" value="$shareLabel"></input>
     </div>
   </div>
   <% uiform.end()%>

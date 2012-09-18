@@ -27,12 +27,7 @@
 	
 	def rcontext = _ctx.getRequestContext() ;
 	def jsmanager = rcontext.getJavascriptManager();
-  jsmanager.loadScriptResource("social-ui-user-search");
-	jsmanager.addJavascript('eXo.social.webui.restContextName = "'+ uicomponent.getRestContextName() +'"') ;
-	jsmanager.addJavascript('eXo.social.webui.currentUserName = "'+ uicomponent.getCurrentUserName() +'"');
-	jsmanager.addJavascript('eXo.social.webui.typeOfRelation = "'+ uicomponent.getTypeOfRelation() +'"');
-	jsmanager.addJavascript('eXo.social.webui.spaceURL = "'+ uicomponent.getSpaceURL() +'"');
-	jsmanager.addJavascript('eXo.social.webui.typeOfSuggest = "people";');
+  
 
   def searchActionLabel = _ctx.appRes("${uicomponentId}.label.Search");
 	def searchByNameLabel = _ctx.appRes("${uicomponentId}.label.SearchByName");
@@ -50,15 +45,24 @@
 	def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 	def childs = uicomponent.getChildren();
 	
+	
+	def restContextName = uicomponent.getRestContextName();
+  def currentUserName = uicomponent.getCurrentUserName();
+  def typeOfRelation = uicomponent.getTypeOfRelation();
+  def spaceURL = uicomponent.getSpaceURL();
+	
 	def params = """ {
 	  uicomponentId: '${uicomponentId}',
 	  defaultUserContact: '${nameDefaultVal}',
 	  defaultPos: '${positionDefaultVal}',
-	  defaultSkills: '${skillsDefaultVal}'
+	  defaultSkills: '${skillsDefaultVal}',
+	  restContextName: '$restContextName',
+    currentUserName: '$currentUserName',
+    typeOfRelation: '$typeOfRelation',
+    spaceURL: '$spaceURL'
 	} """
-  
-  jsmanager.addOnLoadJavascript("initUIProfileUserSearch");
-	
+
+  jsmanager.require("SHARED/social-ui-user-search", "search").addScripts("search.UIProfileUserSearch.init($params);");
 	
 	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
     def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
@@ -100,11 +104,6 @@
     def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
 %>
 <div class="UIProfileUserSearch">
-<script type="text/javascript">
-  function initUIProfileUserSearch() {
-      new eXo.social.webui.UIProfileUserSearch($params);
-  }
-</script>
 
 <% uiform.begin() %>
    <div class="SearchSpacesBG ClearFix">	

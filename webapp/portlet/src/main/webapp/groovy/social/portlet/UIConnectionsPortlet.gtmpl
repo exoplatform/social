@@ -24,7 +24,7 @@
   
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
-  jsManager.addOnLoadJavascript("eXo.core.Browser.fillUpFreeSpace('${uicomponent.id}')");
+  jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
   
 %>
 <div class="UIRelationPortlet UISocApplication" id="$uicomponent.id">

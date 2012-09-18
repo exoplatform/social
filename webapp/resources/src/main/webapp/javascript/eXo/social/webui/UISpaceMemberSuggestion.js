@@ -14,41 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-(function() {
-  var window_ = this;
-	var DEFAULT_REST_INFO = {
-	      CONTEXT_NAME : 'rest-socialdemo',
-	      PATH : '/social/people/suggest.json'
-	};
-	    
-	/**
-	 * Space member suggestion.
-	 * @class
-	 * @scope public
-	 */
-	function UISpaceMemberSuggest() {};
-	
-	/**
-	 * When form load at the first time, init controls.
-	 */
-	UISpaceMemberSuggest.prototype.onLoad = function() {
-		var suggestEl = gj('#user');
+
+var UISpaceMemberSuggest = {
+	DEFAULT_REST_INFO : {
+	  CONTEXT_NAME : 'rest-socialdemo',
+	  PATH : '/social/people/suggest.json'
+	},
+	onLoad : function(params) {
+	  var restContextName = params.restContextName || null;
+    var currentUserName = params.currentUserName || null;
+    var typeOfRelation = params.typeOfRelation || null;
+      
+		var suggestEl = $('#user');
 		
-		gj(suggestEl).autosuggest(buildURL(), {multisuggestion:true, defaultVal:""});
+		$(suggestEl).autosuggest(buildURL(), {multisuggestion:true, defaultVal:""});
 		
 	  function buildURL() {
-	    var restContext = eXo.social.webui.restContextName;
-	    var currentUser = eXo.social.webui.currentUserName;
-	    var typeOfRelation = eXo.social.webui.typeOfRelation;
-	          
-	    restContext = (restContext) ? restContext : DEFAULT_REST_INFO.CONTEXT_NAME;
+	    restContextName = (restContextName) ? restContextName : UISpaceMemberSuggest.DEFAULT_REST_INFO.CONTEXT_NAME;
 	    
-	    var restURL = "/" + restContext + DEFAULT_REST_INFO.PATH;
+	    var restURL = "/" + restContextName + UISpaceMemberSuggest.DEFAULT_REST_INFO.PATH;
 	          
 	    restURL = restURL + '?nameToSearch=input_value';
 	
-      if (currentUser) {
-        restURL += "&currentUser=" + currentUser;
+      if (currentUserName) {
+        restURL += "&currentUser=" + currentUserName;
       }
       
       if (typeOfRelation) {
@@ -56,9 +45,8 @@
 	    }
 	
 	    return restURL;
-	  };
+	  }
 	}
-	
-	/*===================================================================*/
-	window_.eXo.social.webui.UISpaceMemberSuggest = new UISpaceMemberSuggest();
-})();
+};	
+
+_module.UISpaceMemberSuggest = UISpaceMemberSuggest;

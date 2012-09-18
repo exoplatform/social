@@ -29,11 +29,9 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -240,24 +238,17 @@ public class UISpaceApplication extends UIForm {
    *
    * @param application
    * @return application name depend on the display name is changed or not.
-   * @throws SpaceException
+   * @throws Exception 
    */
-  public String getAppName(Application application) throws SpaceException {
+  public String getAppName(Application application) throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     Space space = spaceService.getSpaceByUrl(spaceUrl);
     if (space == null) {
       return null;
     }
-    UserNavigation pageNav = null;
-    try {
-      pageNav = SpaceUtils.getGroupNavigation(space.getGroupId());
-    } catch (Exception e1) {
-      LOG.warn(e1.getMessage(), e1);
-    }
 
-    UserNode homeNode = SpaceUtils.getHomeNodeWithChildren(pageNav, spaceUrl);
-    
+    UserNode homeNode = SpaceUtils.getSpaceUserNode(space);
     
     Collection<UserNode> nodes = homeNode.getChildren();
     String applicationName = application.getApplicationName();

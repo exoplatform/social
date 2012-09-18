@@ -18,15 +18,14 @@
 /**
  * UIComposerLinkExtension.js
  */
- 
- (function() {
-  var window_ = this,
-      HTTP = "http://",
-      GRAY_COLOR = "gray",
-      BLACK_COLOR = "black",
-      uiComposerLinkExtension;
-  
-  function changeLinkContent() {
+
+var uiComposerLinkExtension;
+
+var UIComposerLinkExtension = {
+  HTTP: "http://",
+  GRAY_COLOR: "gray",
+  BLACK_COLOR: "black",
+  changeLinkContent: function () {
     var link = this.linkData.link,
     title = this.linkData.title,
     image = this.linkData.image;
@@ -41,19 +40,11 @@
 
     var url = this.changeLinkContentUrl.replace(/&amp;/g, "&") + "&ajaxRequest=true";
     ajaxRequest('POST', url, true, queryString);
-  }
-  
-  /**
-   * creates input/ textarea element for edit inline
-   * if tagName = input 
-   * <input type="text" id="editableText" value="" />
-   * if tagName = textarea
-   * <textarea cols="10" rows="3">value</textarea>
-   */
-  function addEditableText(oldEl, tagName, title) {
-    var dataElement = gj(oldEl);
+  },
+  addEditableText: function (oldEl, tagName, title) {
+    var dataElement = $(oldEl);
     var content = dataElement.html().trim();
-    var editableEl = gj("<" + tagName + " />").attr("title", title).val(content);
+    var editableEl = $("<" + tagName + " />").attr("title", title).val(content);
     if('input' === tagName){
       editableEl.attr('type', 'text');
       editableEl.attr('size', 50);
@@ -80,34 +71,32 @@
 
     var updateElement = function(editableEl) {
         //hide this, set new value and display
-        var oldEl = gj(editableEl).prev();
+        var oldEl = $(editableEl).prev();
         if (oldEl.html() != null) { //IE
-            oldEl.html(gj(editableEl).val());
+            oldEl.html($(editableEl).val());
         } else {
-            oldEl.text(gj(editableEl).val()) ;
+            oldEl.text($(editableEl).val()) ;
         }
         //updates data
         //detects element by class, if class contains ContentTitle -> update title,
         // if class contains ContentDescription -> update description
         oldEl.css('display',"block")
         if (oldEl.hasClass('Title')) {
-          uiComposerLinkExtension.linkData.title = gj(editableEl).val();
-          changeLinkContent.apply(uiComposerLinkExtension);
+          uiComposerLinkExtension.linkData.title = $(editableEl).val();
+          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
         } else if (oldEl.hasClass('Content')) {
-          uiComposerLinkExtension.linkData.description = gj(editableEl).val();
-          changeLinkContent.apply(uiComposerLinkExtension);
+          uiComposerLinkExtension.linkData.description = $(editableEl).val();
+          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
         }
-        gj(editableEl).remove();
+        $(editableEl).remove();
     }
-}
-  
-  function UIComposerLinkExtension(params) {
+  },
+  onLoad: function(params) {
     uiComposerLinkExtension = this;
-    this.configure(params);
-    this.init();
-  }
-  
-  UIComposerLinkExtension.prototype.configure = function(params) {
+    UIComposerLinkExtension.configure(params);
+    UIComposerLinkExtension.init();
+  },
+  configure: function(params) {
     this.titleEditable = params.titleEditable || "";
     this.linkInfoDisplayed = params.linkInfoDisplayed || false;
     this.inputLinkId = params.inputLinkId || 'inputLink';
@@ -125,18 +114,16 @@
     if (!this.attachUrl) {
       alert('error: attachUrl is null!');
     }
-  }
-  
-  UIComposerLinkExtension.prototype.resetIsReady = function() {
+  },
+  resetIsReady: function() {
     
     if (this.linkInfoDisplayed) {
       
     } else {
 
     }
-  }
-  
-  UIComposerLinkExtension.prototype.init = function() {
+  },
+  init: function() {
   
     function showThumbnail() {
       for (var i = 0, l = this.images.length; i < l; i++) {
@@ -150,7 +137,7 @@
       this.stats.innerHTML = (this.shownThumbnailIndex + 1) + ' / ' + this.images.length;
     }
     
-    var shareButton = gj('#ShareButton');
+    var shareButton = $('#ShareButton');
     shareButton.attr('class','ShareButton');
     uiComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
@@ -160,38 +147,38 @@
         shareButton.attr('class', 'ShareButton');
       }
       
-      this.uiThumbnailDisplay = gj('#' + this.uiThumbnailDisplayId);
-      this.thumbnails = gj('#' + this.thumbnailsId);
-      this.backThumbnail = gj('#' + this.backThumbnailId);
-      this.nextThumbnail = gj('#' + this.nextThumbnailId);
-      this.stats = gj('#' + this.statsId);
-      this.linkTitle = gj('#' + 'LinkTitle');
-      this.linkDescription = gj('#' + 'LinkDescription');
+      this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
+      this.thumbnails = $('#' + this.thumbnailsId);
+      this.backThumbnail = $('#' + this.backThumbnailId);
+      this.nextThumbnail = $('#' + this.nextThumbnailId);
+      this.stats = $('#' + this.statsId);
+      this.linkTitle = $('#' + 'LinkTitle');
+      this.linkDescription = $('#' + 'LinkDescription');
       
       var titleParam = this.titleEditable;
       if (this.linkTitle) {
         this.linkTitle.on('click', function(evt) {
-          addEditableText(this, 'input', titleParam);
+          UIComposerLinkExtension.addEditableText(this, 'input', titleParam);
         });
       }
       
       if (this.linkDescription) {
         this.linkDescription.on('click', function(evt) {
-          addEditableText(this, 'textarea', titleParam);
+          UIComposerLinkExtension.addEditableText(this, 'textarea', titleParam);
         });
       }
       
       if (this.thumbnails) {
-        this.thumbnailCheckbox = gj('#' + this.thumbnailCheckboxId);
-        this.images = gj('img',this.thumbnails);
+        this.thumbnailCheckbox = $('#' + this.thumbnailCheckboxId);
+        this.images = $('img',this.thumbnails);
         doStats.apply(this);
 
         this.backThumbnail.on('click', function(evt) {
           if (uiComposerLinkExtension.shownThumbnailIndex > 0) {
             uiComposerLinkExtension.shownThumbnailIndex--;
             showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
-            changeLinkContent.apply(uiComposerLinkExtension);
+            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
           }
         });
         
@@ -199,8 +186,8 @@
           if (uiComposerLinkExtension.shownThumbnailIndex < uiComposerLinkExtension.images.length - 1) {
             uiComposerLinkExtension.shownThumbnailIndex++;
             showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
-            changeLinkContent.apply(uiComposerLinkExtension);
+            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
           }
         });
         
@@ -212,9 +199,9 @@
           } else {
             uiComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
                                                                      'display':'block'});
-            uiComposerLinkExtension.linkData.image = gj(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
           }
-          changeLinkContent.apply(uiComposerLinkExtension);
+          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
         });
       } else {
         this.images = [];
@@ -226,23 +213,23 @@
         shareButton.attr('disabled',"disabled");
         shareButton.attr('class','ShareButtonDisable');
       }
-      this.inputLink = gj('#' + this.inputLinkId);
-      this.attachButton = gj('#' + this.attachButtonId);
-      this.inputLink.val(HTTP);
-      this.inputLink.css('color',GRAY_COLOR);
+      this.inputLink = $('#' + this.inputLinkId);
+      this.attachButton = $('#' + this.attachButtonId);
+      this.inputLink.val(UIComposerLinkExtension.HTTP);
+      this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
       var uiComposerLinkExtension = this;
       var inputLink = this.inputLink;
       inputLink.on('focus', function(evt) {
-        if (inputLink.val() === HTTP) {
+        if (inputLink.val() === UIComposerLinkExtension.HTTP) {
           inputLink.val('');
-          inputLink.css('color',BLACK_COLOR);
+          inputLink.css('color', UIComposerLinkExtension.BLACK_COLOR);
         }
       });
       
       this.inputLink.on('blur', function(evt) {
         if (inputLink.val() === '') {
-          inputLink.val(HTTP);
-          inputLink.css('color',GRAY_COLOR);
+          inputLink.val(UIComposerLinkExtension.HTTP);
+          inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
         }
       });
       
@@ -251,7 +238,7 @@
       });
       this.attachButton.removeAttr('disabled');
       this.attachButton.on( 'click', function(evt) {
-        if (inputLink.val() === '' || inputLink.val() === HTTP) {
+        if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
           return;
         }
         var url = uiComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
@@ -260,6 +247,6 @@
       
     }
   }
-
-  window_.eXo.social.webui.UIComposerLinkExtension = UIComposerLinkExtension;
- })();
+};
+ 
+_module.UIComposerLinkExtension = UIComposerLinkExtension;

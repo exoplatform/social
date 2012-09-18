@@ -7,9 +7,7 @@ def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
-jsmanager.loadScriptResource("social-ui-customize-control");
-//jsManager.loadScriptSource("social-ui-visibility-form-input-set");
-jsmanager.addCustomizedOnLoadScript('eXo.social.webui.UICustomizeControl.onLoad("' + uicomponentId + '");');
+jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addScripts('customizeControl.UICustomizeControl.onLoad("' + uicomponentId + '");');
 %>
 <div class="$uicomponentId" id="$uicomponentId">
 	 <div class="UIFormInputSet">

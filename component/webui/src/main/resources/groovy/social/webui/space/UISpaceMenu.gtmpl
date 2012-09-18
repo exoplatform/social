@@ -71,9 +71,8 @@
   def homeUrl = Utils.getSpaceHomeURL(space);
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
-  jsManager.loadScriptResource("social-ui-space-app-name-edition");
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+  jsManager.require("SHARED/social-ui-space-app-name-edition", "editor").addScripts("editor.UISpaceAppNameEdition.addEditability('" + uicomponent.id + "');");
 %>
 
 <div class="UISpaceMenu" id="UISpaceMenu">
@@ -122,8 +121,6 @@
                   appTabClass = "SelectedTab";
                 }
                 if (!nodeName.equals("settings")) {
-                
-                def ondblclick = "eXo.social.webui.UISpaceAppNameEdition.showEditLabelInput(this," + "\"" + nodeTitle + "\"," + "\"" + titleEditable + "\")";
               %>
               <div class="UITab NormalTabStyle">
                 <div class="$appTabClass">
@@ -131,7 +128,7 @@
                     <div class="RightTab">
                       <div class="MiddleTab">
                       <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
-                        <span id='$nodeName' class="ApplicationAdd" ondblclick='$ondblclick'>$nodeLabel</span>
+                        <span id='$nodeName' class="ApplicationAdd">$nodeLabel</span>
                       <% } else {%>
                         <a class="ApplicationAdd" title="$nodeTitle" href="$pageURI">$nodeLabel</a>
                       <% }%>

@@ -19,156 +19,152 @@
  * UIActivity.js
  */
 
-(function() {
-  var window_ = this,
-  COMMENT_BLOCK_BOUND_CLASS_NAME = "CommentBlockBound",
-  COMMENT_BLOCK_BOUND_NONE_CLASS_NAME = "CommentBlockBoundNone",
-  DEFAULT_COMMENT_TEXT_AREA_HEIGHT = "30px",
-  FOCUS_COMMENT_TEXT_AREA_HEIGHT = "30px",
-  FOCUS_COMMENT_TEXT_AREA_COLOR = "#000000",
-  DEFAULT_COMMENT_TEXT_AREA_COLOR = "#808080";
-
-  function UIActivity(params) {
-    this.configure(params);
-    this.init();
-  }
-
-  UIActivity.prototype.configure = function(params) {
-    this.activityId = params.activityId || null;
-    this.inputWriteAComment = params.inputWriteAComment || "";
-    this.commentMinCharactersAllowed = params.commentMinCharactersAllowed || 0;
-    this.commentMaxCharactersAllowed = params.commentMaxCharactersAllowed || 0;
-    this.commentFormDisplayed = params.commentFormDisplayed || false;
-    this.allCommentsDisplayed = params.allCommentsDisplayed || false;
-    this.commentFormFocused = params.commentFormFocused || false;
-    if (this.activityId == null) {
+var UIActivity = {
+  COMMENT_BLOCK_BOUND_CLASS_NAME : "CommentBlockBound",
+  COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "CommentBlockBoundNone",
+  DEFAULT_COMMENT_TEXT_AREA_HEIGHT : "30px",
+  FOCUS_COMMENT_TEXT_AREA_HEIGHT : "30px",
+  FOCUS_COMMENT_TEXT_AREA_COLOR : "#000000",
+  DEFAULT_COMMENT_TEXT_AREA_COLOR : "#808080",
+  onLoad: function (params) {
+    UIActivity.configure(params);
+    UIActivity.init();
+  },
+  configure: function(params) {
+    UIActivity.activityId = params.activityId || null;
+    UIActivity.inputWriteAComment = params.inputWriteAComment || "";
+    UIActivity.commentMinCharactersAllowed = params.commentMinCharactersAllowed || 0;
+    UIActivity.commentMaxCharactersAllowed = params.commentMaxCharactersAllowed || 0;
+    UIActivity.commentFormDisplayed = params.commentFormDisplayed == "true" ? true : false || false;
+    UIActivity.allCommentsDisplayed = params.allCommentsDisplayed = "true" ? true : false || false;
+    UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
+    if (UIActivity.activityId == null) {
       alert('err: activityId is null!');
       return;
     }
-    this.commentLinkId = 'CommentLink' + this.activityId;
-    //this.likeLinkId = 'LikeLink'  + this.activityId;
-    this.commentFormBlockId = 'CommentFormBlock' + this.activityId;
-    this.commentTextareId = 'CommentTextarea' + this.activityId;
-    this.commentButtonId = 'CommentButton' + this.activityId;
-    this.deleteCommentButtonIds = [];
-    this.contentBoxId = 'ContextBox' + this.activityId;
-    this.deleteActivityButtonId = 'DeleteActivityButton' + this.activityId;
-    this.allCommentSize = parseInt(params.allCommentSize);
-    this.commentBlockBoundId = "CommentBlockBound" + this.activityId;
-    this.commentBlockIds = [];
-    this.activityContextBoxId = "ActivityContextBox" + this.activityId;
-    if (this.allCommentSize > 0) {
-      for (var i = 1; i <= this.allCommentSize; i++) {
-        this.deleteCommentButtonIds[i - 1] = 'DeleteCommentButton' + this.activityId + i;
-        this.commentBlockIds[i - 1] = "CommentBlock" + this.activityId + i;
+    UIActivity.commentLinkId = 'CommentLink' + UIActivity.activityId;
+    //UIActivity.likeLinkId = 'LikeLink'  + UIActivity.activityId;
+    UIActivity.commentFormBlockId = 'CommentFormBlock' + UIActivity.activityId;
+    UIActivity.commentTextareId = 'CommentTextarea' + UIActivity.activityId;
+    UIActivity.commentButtonId = 'CommentButton' + UIActivity.activityId;
+    UIActivity.deleteCommentButtonIds = [];
+    UIActivity.contentBoxId = 'ContextBox' + UIActivity.activityId;
+    UIActivity.deleteActivityButtonId = 'DeleteActivityButton' + UIActivity.activityId;
+    UIActivity.allCommentSize = parseInt(params.allCommentSize);
+    UIActivity.commentBlockBoundId = "CommentBlockBound" + UIActivity.activityId;
+    UIActivity.commentBlockIds = [];
+    UIActivity.activityContextBoxId = "ActivityContextBox" + UIActivity.activityId;
+    if (UIActivity.allCommentSize > 0) {
+      for (var i = 1; i <= UIActivity.allCommentSize; i++) {
+        UIActivity.deleteCommentButtonIds[i - 1] = 'DeleteCommentButton' + UIActivity.activityId + i;
+        UIActivity.commentBlockIds[i - 1] = "CommentBlock" + UIActivity.activityId + i;
       }
     }
-  }
-
-  UIActivity.prototype.init = function() {
-    this.commentLinkEl = gj("#"+this.commentLinkId);
-    this.commentFormBlockEl = gj("#" + this.commentFormBlockId);
-    this.commentTextareaEl = gj("#" + this.commentTextareId);
-    this.commentButtonEl = gj("#" + this.commentButtonId);
-    this.deleteCommentButtonEls = [];
-    this.contentBoxEl = gj(this.contentBoxId);
-    this.deleteActivityButtonEl = gj("#" + this.deleteActivityButtonId);
-    this.commentBlockBoundEl = gj("#" + this.commentBlockBoundId);
-    this.commentBlockEls = [];
-    this.activityContextBoxEl = gj("#" + this.activityContextBoxId);
-    if(this.allCommentSize > 0) {
-      for(var i=0; i < this.allCommentSize; i++) {
-        this.deleteCommentButtonEls[i] = gj("#" + this.deleteCommentButtonIds[i]);
-        this.commentBlockEls[i] = gj("#" + this.commentBlockIds[i]);
+  },
+  init: function() {
+    UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
+    UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
+    UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
+    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId);
+    UIActivity.deleteCommentButtonEls = [];
+    UIActivity.contentBoxEl = $(UIActivity.contentBoxId);
+    UIActivity.deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
+    UIActivity.commentBlockBoundEl = $("#" + UIActivity.commentBlockBoundId);
+    UIActivity.commentBlockEls = [];
+    UIActivity.activityContextBoxEl = $("#" + UIActivity.activityContextBoxId);
+    if(UIActivity.allCommentSize > 0) {
+      for(var i=0; i < UIActivity.allCommentSize; i++) {
+        UIActivity.deleteCommentButtonEls[i] = $("#" + UIActivity.deleteCommentButtonIds[i]);
+        UIActivity.commentBlockEls[i] = $("#" + UIActivity.commentBlockIds[i]);
       }
     }
     
-    if (!(this.commentFormBlockEl && this.commentTextareaEl && this.commentButtonEl)) {
+    if (!(UIActivity.commentFormBlockEl && UIActivity.commentTextareaEl && UIActivity.commentButtonEl)) {
       alert('err: init uiActivity!');
     }
     
-    this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+    UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
     
-    if (this.commentFormDisplayed) {
-      this.commentTextareaEl.css('height',DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-      this.commentTextareaEl.css('color', DEFAULT_COMMENT_TEXT_AREA_COLOR);
-      if (this.commentTextareaEl.val() === this.inputWriteAComment) {
-        this.commentTextareaEl.val('');
+    if (UIActivity.commentFormDisplayed) {
+      UIActivity.commentTextareaEl.css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
+      UIActivity.commentTextareaEl.css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
+      if (UIActivity.commentTextareaEl.val() === UIActivity.inputWriteAComment) {
+        UIActivity.commentTextareaEl.val('');
       }
-      this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_CLASS_NAME);
+      UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
     } else {
-      if (this.allCommentSize == 0) {
-        this.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+      if (UIActivity.allCommentSize == 0) {
+        UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
       } else {
-        this.commentBlockBoundEl.attr('class', COMMENT_BLOCK_BOUND_CLASS_NAME);
+        UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
       }
     }
 
     var uiActivity = this;
-    if (this.commentLinkEl) {
+    if (UIActivity.commentLinkEl) {
       //event handlers
-      this.commentLinkEl.on( 'click', function(evt) {
+      UIActivity.commentLinkEl.on( 'click', function(evt) {
         if (uiActivity.commentFormBlockEl.css('display') != 'block') {
           if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_CLASS_NAME);
+            uiActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
           }
-          gj("#" + uiActivity.commentFormBlockId).show();
+          $("#" + uiActivity.commentFormBlockId).show();
           uiActivity.commentTextareaEl.focus();
         } else {
           if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.attr('class',COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+            uiActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
           }
-          gj("#" + uiActivity.commentFormBlockId).hide();
+          $("#" + uiActivity.commentFormBlockId).hide();
         }
       });
 
-      this.commentTextareaEl.on('focus', function(evt) {
-        gj(this).css('height', FOCUS_COMMENT_TEXT_AREA_HEIGHT);
-        gj(this).css('color',FOCUS_COMMENT_TEXT_AREA_COLOR);
-          if (gj(this).val() === uiActivity.inputWriteAComment) {
-          gj(this).val('');
+      UIActivity.commentTextareaEl.on('focus', function(evt) {
+        $(this).css('height', UIActivity.FOCUS_COMMENT_TEXT_AREA_HEIGHT);
+        $(this).css('color', UIActivity.FOCUS_COMMENT_TEXT_AREA_COLOR);
+          if ($(this).val() === uiActivity.inputWriteAComment) {
+          $(this).val('');
         }
-        gj("#" + uiActivity.commentButtonId).show();
+        $("#" + uiActivity.commentButtonId).show();
       });
 
-      this.commentTextareaEl.on('blur', function(evt) {
-        if (gj(this).val() === '') {
-          gj("#" + uiActivity.commentButtonId).hide();
-          gj(this).val(uiActivity.inputWriteAComment);
+      UIActivity.commentTextareaEl.on('blur', function(evt) {
+        if ($(this).val() === '') {
+          $("#" + uiActivity.commentButtonId).hide();
+          $(this).val(uiActivity.inputWriteAComment);
 
-          gj(this).css('height', DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-          gj(this).css('color',DEFAULT_COMMENT_TEXT_AREA_COLOR);
+          $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
+          $(this).css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
         }
       });
 
-      if (this.commentFormDisplayed) {
-        gj("#" + this.commentFormBlockId).show();
-        this.commentTextareaEl.val(this.inputWriteAComment);
-        if (this.commentFormFocused) {
-          this.commentTextareaEl.focus();
+      if (UIActivity.commentFormDisplayed) {
+        $("#" + UIActivity.commentFormBlockId).show();
+        UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
+        if (UIActivity.commentFormFocused) {
+          UIActivity.commentTextareaEl.focus();
         }
       } else {
-        gj("#" + this.commentFormBlockId).hide();
-        this.commentTextareaEl.val(this.inputWriteAComment);
+        $("#" + UIActivity.commentFormBlockId).hide();
+        UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
       }
     } else {
-      gj("#" + this.commentFormBlockId).hide();
+      $("#" + UIActivity.commentFormBlockId).hide();
     }
 
-    if (this.deleteActivityButtonEl !== null) {
-      this.activityContextBoxEl.on('mouseover focus', function(evt) {
+    if (UIActivity.deleteActivityButtonEl.length !== 0) {
+      UIActivity.activityContextBoxEl.on('mouseover focus', function(evt) {
         uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxHilight');
       });
 
-      this.activityContextBoxEl.on('mouseout blur', function(evt) {
+      UIActivity.activityContextBoxEl.on('mouseout blur', function(evt) {
         uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxNormal');
       });
 
     }
 
-    if (this.allCommentSize > 0) {
+    if (UIActivity.allCommentSize > 0) {
 
-      for (var i = 0; i < this.allCommentSize; i++) {
+      for (var i = 0; i < UIActivity.allCommentSize; i++) {
         (function(i) {
           //when this element is displayed
           if (uiActivity.commentBlockEls[i]) {
@@ -184,6 +180,6 @@
       }
     }
   }
+}
 
-  window_.eXo.social.webui.UIActivity = UIActivity;
-})();
+ _module.UIActivity = UIActivity;

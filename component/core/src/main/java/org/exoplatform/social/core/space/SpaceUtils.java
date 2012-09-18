@@ -1107,24 +1107,26 @@ public class SpaceUtils {
   }
   
   /**
-   * Retrieving the UserNodes with Children base on the parentNodeCtx.
+   * Retrieving the UserNode of Space when is given Space instance
    *  
    * @param parentNodeCtx parent NodeContext
    * @return
    */
-  public static List<UserNode> getUserNodeChildren(NodeContext<NodeContext<?>> parentNodeCtx) {
-    List<UserNode> result = new ArrayList<UserNode>(parentNodeCtx.getNodes().size());
-    
-    for (NodeContext<?> child : parentNodeCtx.getNodes()) {
-      @SuppressWarnings("unchecked")
-      NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;     
-      UserNavigation userNav = getUserPortal().getNavigation(SiteKey.group(childNode.getState().getPageRef()));
-      result.add(getUserPortal().getNode(userNav, Scope.SINGLE, null, null));
-      
-   }
-    return result;
-    
+  public static UserNode getSpaceUserNode(Space space) throws Exception {
+    NavigationContext spaceNavCtx = getGroupNavigationContext(space.getGroupId());
+
+    UserNavigation userNav = SpaceUtils.getUserPortal().getNavigation(spaceNavCtx.getKey());
+    UserNode parentUserNode = SpaceUtils.getUserPortal().getNode(userNav, Scope.CHILDREN, null, null);
+    UserNode spaceUserNode = parentUserNode.getChild(space.getUrl());
+    SpaceUtils.getUserPortal().updateNode(spaceUserNode, Scope.CHILDREN, null);
+    return spaceUserNode;
   }
+  
+  public static List<UserNode> getSpaceUserNodeChildren(Space space) throws Exception {
+    return new ArrayList<UserNode>(getSpaceUserNode(space).getChildren());
+  }
+
+
 
   /**
    * Sorts spaces list by priority and alphabet order

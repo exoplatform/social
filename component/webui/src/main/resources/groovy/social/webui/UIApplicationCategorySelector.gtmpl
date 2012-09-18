@@ -27,27 +27,19 @@ def categoryList = uicomponent.getApplicationCategoryList();
 
 def rcontext = _ctx.getRequestContext();
 def jsmanager = rcontext.getJavascriptManager();
-jsmanager.importJavascript("eXo.social.webui.UIForm", LinkProvider.JAVASCRIPT_RESOURCE_URL);
-jsmanager.importJavascript("eXo.social.webui.UIApplicationCategorySelector", LinkProvider.JAVASCRIPT_RESOURCE_URL);
 
 def applicationCategoryIds = [];
 for (applicationCategory in categoryList) {
   applicationCategoryIds.add(applicationCategory.displayName);
 }
-def params = """
-  {
-    applicationCategoryIds: '$applicationCategoryIds',
-    allApplicationCategorySize: ${applicationCategoryIds.size()}
-  }
-"""
-jsmanager.addOnLoadJavascript("initUIApplicationCategorySelector");
-%>
-<script type="text/javascript">
-  function initUIApplicationCategorySelector() {
-    new eXo.social.webui.UIApplicationCategorySelector($params);
-  }
-</script>
 
+def params = """ {
+    applicationCategoryIds: '$applicationCategoryIds',
+    allApplicationCategorySize: '$applicationCategoryIds.size'
+} """
+
+jsmanager.require("SHARED/social-category-selector", "categorySelector").addScripts("categorySelector.UIApplicationCategorySelector.init($params);");
+%>
 <div id="$uicomponent.id" class="ItemListContainer">
   <div class="ItemListTitle ClearFix">
     <div class="TitleIcon ItemListIcon"></div>
