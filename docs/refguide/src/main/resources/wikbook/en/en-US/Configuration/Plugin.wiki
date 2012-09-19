@@ -509,7 +509,7 @@ In which:
 * *Init-params*:
 
 || Value-param ||Possible value|| Default value|| Description ||
-|*urlMaxLength*| {{integer}}|\-1| The maximum length of the URL. If the URL is exceeding the maximum length, the URL will be shorten. If the value is \-1, it means the URL is not be shortened.|
+|*urlMaxLength*| {{integer}} | \-1 | The maximum length of the URL. If the URL is exceeding the maximum length, the URL will be shorten. If the value is \-1, it means the URL is not be shortened.|
 
 h1. RestPortalContainerNameConfig {anchor:id=SOCref.Configuration.External_component_plugins.RestPortalContainerNameConfigRoleNotInToc}
 This plugin is used to set the portal container name used for REST service.

@@ -107,7 +107,8 @@ http://localhost:8080/rest-socialdemo/social/apps/show.json
 h1. Identity REST service {anchor:id=SOCref.Developer_references.IdentityRESTServiceRoleNotInToc}
 
 || Name|| Serive URL || Location || Description ||
-| *IdentityRestService* |{{{ restContextName}/{portalName}/social/identity/{username}/id }}}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Get identityId by the username.|
+| *IdentityRestService* | {{{restContextName}/{portalName}/social/identity/{username}/id}}} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Get identityId by the username.|
+
 
 * *API*:
 || Name || Service URL Endpoint || Parameters || Expected Values || Description ||
@@ -136,14 +137,14 @@ http://localhost:8080/rest-socialdemo/social/linkshare/show.json
 
 h1. People Rest Service {anchor:id=SOCref.Developer_references.PeopleRestServiceRoleNotInToc}
 
-
 || Name || Service URL || Location|| Description ||
 | *PeopleRestService* | {{{{restContextName}/social/people}}}| *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service| Provide REST services for manipulating jobs related to people. |
 
 * *API*:
 
 || Name || Service URL Endpoint || Parameters || Expected Values|| Description ||
-|*suggestUsernames*|{{{{restContextName}/social/people/suggest.{format}}}}| nameToSearch {example}{example}currentUser{example}{example}typeOfRelation {example}{example}spaceURL {example}{example} format | String{example}{example}String {example}{example}String {example}{example}String {example}{example}String: json or xml|Get and return a list of usernames which match the input string for suggest.|
+|*suggestUsernames*| {{{{restContextName}/social/people/suggest.{format}}}} | nameToSearch {example}{example} currentUser {example}{example} typeOfRelation {example}{example} spaceURL {example}{example} format | String {example}{example} String {example}{example} String {example}{example} String {example}{example} String: json or xml | Get and return a list of usernames which match the input string for suggest.|
+
 
 
 Example:
@@ -154,15 +155,15 @@ h1. Spaces REST service {anchor:id=SOCref.Developer_references.SpacesRESTService
 
 
 || Name || Service URL || Location || Description ||
-|*SpacesRestService* |{{{{restContextName}/{portalName}/social/spaces}}} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service | Provide REST services for space gadget to display users' spaces and pending spaces.  |
+|*SpacesRestService* | {{{{restContextName}/{portalName}/social/spaces}}} | *Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.component.service | Provide REST services for space gadget to display users' spaces and pending spaces.  |
 
 
 * *API*:
 
 || Name || Service URL Endpoint || Parameters || Expected Values || Description ||
-| *showMySpaceList* | {{{{restContextName}/social/spaces/mySpaces/show.{format}}}}| portalName {example}{example} format| String {example}{example} String: json or xml | Show mySpaceList by the JSON/XML format. |
-| *showPendingSpaceList* | {{{{restContextName}/social/spaces/pendingSpaces/show.{format}}}}|portalName {example}{example} format |  String {example}{example} String: json or xml| Show pendingSpaceList by the JSON/XML format.|
-| *suggestSpacenames*|{{{{restContextName}/social/spaces/spaceNames/suggest.{format}}}}|portalName {example}{example}conditionToSearch{example}{example}typeOfRelation{example}{example} currentUser{example}{example} format| String {example}{example} String{example}{example} String{example}{example} String {example}{example} String: json or xml| Get and return space's names that match the input string for suggest.|
+| *showMySpaceList* | {{{{restContextName}/social/spaces/mySpaces/show.{format}}}} | portalName {example}{example} format| String {example}{example} String: json or xml | Show mySpaceList by the JSON/XML format. |
+| *showPendingSpaceList* | {{{{restContextName}/social/spaces/pendingSpaces/show.{format}}}} | portalName {example}{example} format |  String {example}{example} String: json or xml| Show pendingSpaceList by the JSON/XML format.|
+| *suggestSpacenames*| {{{{restContextName}/social/spaces/spaceNames/suggest.{format}}}} | portalName {example}{example} conditionToSearch {example}{example} typeOfRelation {example}{example} currentUser {example}{example} format| String {example}{example} String {example}{example} String {example}{example} String {example}{example} String: json or xml | Get and return space's names that match the input string for suggest.|
 
 
 Example:
@@ -172,7 +173,7 @@ http://localhost:8080/rest-socialdemo/social/spaces/mySpaces/show.xml
 h1. Widget Rest Service {anchor:id=SOCref.Developer_references.WidgetRESTServiceRoleNotInToc}
 
 || Name || Service URL || Location|| Description ||
-| *WidgetRestService* |{{{{restContextName}/spaces/{containerName}}}} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest |Provide REST services for creating spaces or getting spaces' information.|
+| *WidgetRestService* | {{{{restContextName}/spaces/{containerName}}}} |*Maven groupId*: org.exoplatform.social {example}{example} *ArtifactId*: exo.social.extras.widget.rest | Provide REST services for creating spaces or getting spaces' information.|
 
 
 * *API*:
