@@ -77,7 +77,7 @@ public class OSHtmlSanitizerProcessorTest extends AbstractCoreTest {
     sample = "<script href='#' />bar</a>";
     activity.setTitle(sample);
     processor.processActivity(activity);
-    assertEquals("&lt;script href=&quot;#&quot; /&gt;bar&lt;/a&gt;", activity.getTitle());
+    assertEquals("&lt;script href='#' /&gt;bar&lt;/a&gt;", activity.getTitle());
 
     // forbidden tag
     sample = "<script>foo</script>";

@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.common.xmlprocessor.filters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -23,7 +26,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.common.xmlprocessor.BaseXMLFilterPlugin;
 import org.exoplatform.social.common.xmlprocessor.DOMParser;
 import org.exoplatform.social.common.xmlprocessor.Tokenizer;
+import org.exoplatform.social.common.xmlprocessor.model.Attributes;
 import org.exoplatform.social.common.xmlprocessor.model.Node;
+import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
 
 /**
  * This Filter try Smart way to autoCorrect the typo in HTML input (auto close opened TAG, escape wrong TAG).
@@ -31,6 +36,35 @@ import org.exoplatform.social.common.xmlprocessor.model.Node;
  * @author Ly Minh Phuong - http://phuonglm.net
  */
 public class XMLBalancerFilterPlugin extends BaseXMLFilterPlugin {
+
+  private LinkedHashMap<String, Attributes> allowedTags;
+  /**
+   * Gets allowed tags list
+   *
+   * @return the allowed tags list
+   */
+  public LinkedHashMap<String, Attributes> getAllowedTags() {
+    return allowedTags;
+  }
+
+  /**
+   * Sets allowed tags list
+   *
+   * @param allowedTags
+   */
+  public void setAllowedTags(LinkedHashMap<String, Attributes> allowedTags) {
+    this.allowedTags = allowedTags;
+  }
+
+
+  /**
+   * Constructor, the policy must be set from constructor.
+   *
+   * @param tagFilterPolicy
+   */
+  public XMLBalancerFilterPlugin(XMLTagFilterPolicy tagFilterPolicy) {
+    allowedTags = Util.getAllowedTagsFromTagFilterPolicy(tagFilterPolicy);
+  }
   /**
    * {@inheritDoc}
    */
@@ -64,7 +98,7 @@ public class XMLBalancerFilterPlugin extends BaseXMLFilterPlugin {
         parsingNode.setParentNode(currentNode);
         currentNode.addChildNode(parsingNode);
         parsingNode.setTitle(token);
-      } else if (startMatcher.find()) {
+      } else if (startMatcher.find() && allowedTags.containsKey(startMatcher.group(1).toLowerCase())) {
         String tag = startMatcher.group(1).toLowerCase();
 
         parsingNode = new Node();
@@ -74,17 +108,20 @@ public class XMLBalancerFilterPlugin extends BaseXMLFilterPlugin {
         String tokenBody = startMatcher.group(2);
 
         Matcher attributes = DOMParser.ATTRIBUTESPATTERN.matcher(tokenBody);
+        Attributes attributesWhiteList = allowedTags.get(tag);
 
         while (attributes.find()) {
           String attr = attributes.group(1).toLowerCase();
           String val = attributes.group(4) == null ? attributes.group(3) : attributes.group(4);
-          parsingNode.addAttribute(attr, val);
+          if (attributesWhiteList.hasKey(attr)) {
+            parsingNode.addAttribute(attr, val);
+          }
         }
         currentNode.addChildNode(parsingNode);
         if (!DOMParser.SELFTCLOSETAGPATTERN.matcher(token).find()) {
           currentNode = parsingNode;
         }
-      } else if (endMatcher.find()) {
+      } else if (endMatcher.find() && allowedTags.containsKey(endMatcher.group(1).toLowerCase())) {
         String tag = endMatcher.group(1).toLowerCase();
         Node searchOpenedNode = currentNode;
         while (!searchOpenedNode.getTitle().equals(tag)
