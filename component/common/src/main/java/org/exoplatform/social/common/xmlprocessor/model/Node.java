@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.common.xmlprocessor.model;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Model of XML node tree
@@ -30,6 +32,7 @@ public class Node {
   private String content = "";
   private LinkedList<Node> childNodes = new LinkedList<Node>();
 
+  public static final List<String> selfCloseElements = Arrays.asList("area", "base", "basefont", "br", "col", "frame", "hr", "img", "input", "link", "meta", "param");
   /**
    * Gets parent Node of current Node. If current Node is root, parent Node == null;
    *
@@ -158,12 +161,21 @@ public class Node {
   }
   
   /**
-   * Check if node is SelfCloseNode
+   * Check if node is empty ( no child content )
    * @return
    * @since 1.2.2
    */
-  public boolean isSelfClosedNode(){
+  public boolean isEmptyNode(){
     return childNodes.size() == 0 && content.isEmpty();
+  }
+
+  /**
+   * Check if node is self close able ( like <br /> )
+   * @return
+   * @since 1.2.2
+   */
+  public boolean isSelfCloseAble(){
+    return selfCloseElements.contains(title);
   }
   
   /**
@@ -206,16 +218,17 @@ public class Node {
 
         xmlString.append(attributes.toString());
 
-        if (isSelfClosedNode()) {
-          xmlString.append(" /");
+        if (isSelfCloseAble() && isEmptyNode()) {
+          xmlString.append(" />");
+        } else {
+          xmlString.append(">");
         }
-        xmlString.append(">");
       }
       for (Node childNode : childNodes) {
         xmlString.append(childNode.toString());
       }
 
-      if (this.parentNode != null && !isSelfClosedNode()) {
+      if (this.parentNode != null && !isSelfCloseAble()) {
         xmlString.append("</" + this.title + ">");
       }
     }
@@ -239,7 +252,7 @@ public class Node {
 
         xmlString.append(attributes.toString());
 
-        if (isSelfClosedNode()) {
+        if (isEmptyNode() && isSelfCloseAble()) {
           xmlString.append(" /");
         }
         xmlString.append(">");
@@ -259,7 +272,7 @@ public class Node {
     if (isTextNode()) {
       xmlString.append(this.content);
     } else {
-      if (this.parentNode != null && !isSelfClosedNode()) {
+      if (this.parentNode != null && !isSelfCloseAble()) {
         xmlString.append("</" + this.title + ">");
       }
     }

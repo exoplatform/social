@@ -19,6 +19,10 @@ package org.exoplatform.social.common.xmlprocessor.filters;
 import org.exoplatform.social.common.xmlprocessor.Filter;
 
 import junit.framework.TestCase;
+import org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Unit test for {@link XMLBalancerFilterPlugin}.
@@ -26,7 +30,12 @@ import junit.framework.TestCase;
 public class XMLBalancerFilterPluginTest extends TestCase {
 
   public void testXMLBalancerFilter() {
-    Filter balancer = new XMLBalancerFilterPlugin();
+    Set<String> aAttributes = new HashSet<String>();
+    aAttributes.add("href");
+    XMLTagFilterPolicy tagFilterPolicy = new XMLTagFilterPolicy();
+    tagFilterPolicy.addAllowedTags("div", "p", "b", "br","i");
+    tagFilterPolicy.addAllowedTag("a",aAttributes);
+    Filter balancer = new XMLBalancerFilterPlugin(tagFilterPolicy);
 
     assertEquals("hello 1",
             balancer.doFilter("hello 1"));
@@ -40,7 +49,7 @@ public class XMLBalancerFilterPluginTest extends TestCase {
     assertEquals("<b> hello 5 <br /></b>",
             balancer.doFilter("<b> hello 5 <br   /></b>"));
 
-    assertEquals("<b> hello 6 <br /><b /></b>",
+    assertEquals("<b> hello 6 <br /><b></b></b>",
             balancer.doFilter("<b> hello 6 <br /><b>"));
 
     assertEquals("3 &lt; 5 &gt;",

@@ -544,11 +544,6 @@
       <type>org.exoplatform.social.common.xmlprocessor.filters.XMLBalancerFilterPlugin</type>
     </component-plugin>
     <component-plugin>
-      <name>XMLTagFilterPlugin</name>
-      <set-method>addFilterPlugin</set-method>
-      <type>org.exoplatform.social.common.xmlprocessor.filters.XMLTagFilterPlugin</type>
-    </component-plugin>
-    <component-plugin>
       <name>LineBreakerFilterPlugin</name>
       <set-method>addFilterPlugin</set-method>
       <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>

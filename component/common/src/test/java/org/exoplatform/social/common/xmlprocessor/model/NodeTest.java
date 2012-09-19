@@ -50,7 +50,7 @@ public class NodeTest extends TestCase {
     rootNode.addChildNode(childNode);
     childNode.setParentNode(rootNode);
 
-    assertEquals("rootNode.toString() must be <b style=\"header\" />","<b style=\"header\" />", rootNode.toString());
+    assertEquals("rootNode.toString() must be <b style=\"header\"></b>","<b style=\"header\"></b>", rootNode.toString());
   }
 
 
@@ -68,7 +68,7 @@ public class NodeTest extends TestCase {
 
     childNode.convertToContent();
 
-    assertEquals("rootNode.toString() must be <b style=\"header\" />","<b style=\"header\" />",
+    assertEquals("rootNode.toString() must be <b style=\"header\">","<b style=\"header\">",
                             rootNode.getChildNodes().get(0).getContent());
   }
   /**
@@ -106,7 +106,7 @@ public class NodeTest extends TestCase {
   }
   
   /**
-   *  unit test for {@link Node#isSelfClosedNode()}
+   *  unit test for {@link Node#isEmptyNode()}
    */
   public void testIsSelfClosedNode(){
     Node testNode = new Node();
@@ -115,7 +115,7 @@ public class NodeTest extends TestCase {
     Attributes testNodeAttribute = new Attributes();
     testNodeAttribute.put("href", "http://google.com");
     
-    assertTrue("testNode.isSelfCloseNode() must be true", testNode.isSelfClosedNode());        
+    assertTrue("testNode.isSelfCloseNode() must be true", testNode.isEmptyNode());
   }
   
   public void testInsertAfterWithRefNode(){
