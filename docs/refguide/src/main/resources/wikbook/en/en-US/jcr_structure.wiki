@@ -175,7 +175,7 @@ h1. Activity parameters {anchor:id=SOCref.Social_JCR_Structure.ActivityParameter
 
 The _{{{soc:activityparam}}}_ node type has the following property:
 || Property Name || Required Type || Multiple|| Description ||
-|\*|String|false|A map of key-values. |
+| \* |String|false| A map of key-values. |
 
 h1. Space list  {anchor:id=SOCref.Social_JCR_Structure.SpaceListEntityRoleNotInToc}
 {include:document="chromattic/generated/org.exoplatform.social.core.chromattic.entity.SpaceListEntity.wiki"}
