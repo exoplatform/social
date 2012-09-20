@@ -50,7 +50,6 @@ import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
-import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormTabPane;
 
 /**
@@ -66,7 +65,6 @@ import org.exoplatform.webui.form.UIFormTabPane;
   events = {
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
     @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE),
-    @EventConfig(listeners = UISpaceAddForm.ChangePriorityActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE)
   }
 )
@@ -85,7 +83,6 @@ public class UISpaceAddForm extends UIFormTabPane {
   static private final String MSG_ERROR_SPACE_ALREADY_EXIST = "UISpaceAddForm.msg.error_space_already_exist";
   private final String SPACE_SETTINGS = "UISpaceSettings";
   private final String SPACE_VISIBILITY = "UISpaceVisibility";
-  private final String CHANGE_PRIORITY = "ChangePriority";
 
   /**
    * Constructor: add 3 UI component to this UIFormTabPane:
@@ -101,8 +98,6 @@ public class UISpaceAddForm extends UIFormTabPane {
   public UISpaceAddForm() throws Exception {
     super("UISpaceAddForm");
     UIFormInputSet uiSpaceSettings = new UISpaceSettings(SPACE_SETTINGS);
-    UIFormSelectBox uiSelectBox = uiSpaceSettings.getChild(UIFormSelectBox.class);
-    uiSelectBox.setOnChange(CHANGE_PRIORITY);
     addChild(uiSpaceSettings);
 
     UIFormInputSet uiSpaceVisibility = new UISpaceVisibility(SPACE_VISIBILITY);
@@ -211,45 +206,6 @@ public class UISpaceAddForm extends UIFormTabPane {
       } else {
         UIFormInputInfo uiFormInputInfo = uiSpaceGroupBound.getChild(UIFormInputInfo.class);
         uiFormInputInfo.setValue(null);
-      }
-    }
-  }
-
-  static public class ChangePriorityActionListener extends EventListener<UISpaceAddForm> {
-    private final String HIGH_PRIORITY_LABEL = "UISpaceSettings.label.HighPrio";
-    private final String INTERMEDIATE_PRIORITY_LABEL = "UISpaceSettings.label.InterMePrio";
-    private final String LOW_PRIORITY_LABEL = "UISpaceSettings.label.lowPrio";
-    
-    @Override
-    public void execute(Event<UISpaceAddForm> event) throws Exception {
-      WebuiRequestContext ctx = event.getRequestContext();
-      ResourceBundle resApp = ctx.getApplicationResourceBundle();
-      String highPrio = resApp.getString(HIGH_PRIORITY_LABEL);
-      String interMePrio = resApp.getString(INTERMEDIATE_PRIORITY_LABEL);
-      String lowPrio = resApp.getString(LOW_PRIORITY_LABEL);
-      
-      UISpaceAddForm uiSpaceAddForm = event.getSource();
-
-      UIFormInputSet uiSpaceSettings = uiSpaceAddForm.getChildById(uiSpaceAddForm.SPACE_SETTINGS);
-      
-      UIFormSelectBox selectedPriority = uiSpaceSettings.getChild(UIFormSelectBox.class);
-      
-      UIFormInputInfo uiFormInfo = uiSpaceSettings.getChild(UIFormInputInfo.class);
-      
-      int selectedValue = Integer.parseInt(selectedPriority.getValue());
-
-      switch (selectedValue) {
-        case 1:
-          uiFormInfo.setValue(highPrio);
-          break;
-       case 2:
-          uiFormInfo.setValue(interMePrio);
-          break;
-       case 3:
-          uiFormInfo.setValue(lowPrio);
-          break;
-       default:
-          break;
       }
     }
   }
