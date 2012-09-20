@@ -16,8 +16,6 @@
  */
 package org.exoplatform.social.webui.space;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -46,12 +44,10 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
-import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
-import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
@@ -78,10 +74,6 @@ public class UISpaceInfo extends UIForm {
   
   private static final Log LOG = ExoLogger.getLogger(UISpaceInfo.class);
   
-  private static final String SPACE_PRIORITY = "priority";
-  private static final String PRIORITY_HIGH = "high";
-  private static final String PRIORITY_IMMEDIATE = "immediate";
-  private static final String PRIORITY_LOW = "low";
   private static final String SPACE_ID = "id";
   private static final String SPACE_DISPLAY_NAME = "displayName";
   private static final String SPACE_DESCRIPTION = "description";
@@ -115,15 +107,6 @@ public class UISpaceInfo extends UIForm {
     addUIFormInput(new UIFormTextAreaInput(SPACE_DESCRIPTION, SPACE_DESCRIPTION, null).
                    addValidator(StringLengthValidator.class, 0, 255));
 
-    List<SelectItemOption<String>> priorityList = new ArrayList<SelectItemOption<String>>(3);
-    SelectItemOption<String> pHigh = new SelectItemOption<String>(PRIORITY_HIGH, Space.HIGH_PRIORITY);
-    SelectItemOption<String> pImmediate = new SelectItemOption<String>(PRIORITY_IMMEDIATE, Space.INTERMEDIATE_PRIORITY);
-    SelectItemOption<String> pLow = new SelectItemOption<String>(PRIORITY_LOW, Space.LOW_PRIORITY);
-    priorityList.add(pHigh);
-    priorityList.add(pImmediate);
-    priorityList.add(pLow);
-    UIFormSelectBox selectPriority = new UIFormSelectBox(SPACE_PRIORITY, SPACE_PRIORITY, priorityList);
-    addUIFormInput(selectPriority);
     //temporary disable tag
     UIFormStringInput tag = new UIFormStringInput("tag","tag",null);
     tag.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceInfo.label.tag"));
