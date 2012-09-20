@@ -64,16 +64,16 @@ public class ActivityStreamResources implements ResourceContainer {
    * Get activities of a defined identity which can be a user identity, a space identity, or any type of identities.
    * There is one special _identityId_ called "me" which stands for the authenticated user who makes this request.
    *
-   * @param uriInfo             The uri info
-   * @param portalContainerName the portal container name
+   * @param uriInfo             The URI information.
+   * @param portalContainerName The portal container name.
    * @param identityId          The identity id.
    *                            There is one special identityId: "me" standing for the authenticated user who make this request.
-   * @param format              The response format type, for example: json, xml...
+   * @param format              The response format type, for example: JSON, or XML.
    * @param limit               The number of activities retrieved with the default value of 100. This input value must
    *                            be less than or equal to its default value (100). The number of the returned results is
    *                            actually less than or equal to the *limit* value.
    *                            If no specified, 100 will be the default value.
-   * @param sinceId             Returns the activities having the created timestamps greater than the specified
+   * @param sinceId             Return the activities having the created timestamps greater than the specified
    *                            *since\_id*_'s created timestamp.
    * @param maxId               Return the activities having the created timestamps less than the specified *max\_id*'s
    *                            created timestamp. Note that *since\_id* and *max\_id* must not be defined in one
@@ -280,15 +280,15 @@ public class ActivityStreamResources implements ResourceContainer {
   /**
    * Get the activity stream feed of the authenticated user identity who makes this request.
    *
-   * @param uriInfo             The uri info
-   * @param portalContainerName The portal container name
-   * @param format              The response format type, for example: json, xml...
+   * @param uriInfo             The URI information.
+   * @param portalContainerName The portal container name.
+   * @param format              The response format type, for example: JSON, or XML.
    * @param limit               Specify the number of activities to retrieve. It must be less than or equal to 100.
    *                            The value you pass as limit is a maximum number of activities to be returned.
    *                            The actual number of activities you receive maybe less than limit.
    *                            If no specified, 100 will be the default value.
    * @param sinceId             Return the activities having the created timestamps greater than
-   *                            the specified sinceId's created timestamp
+   *                            the specified sinceId's created timestamp.
    * @param maxId               Return the activities having the created timestamp less than the specified maxId's created
    *                            timestamp. Note that sinceId and maxId must not be defined in one request,
    *                            if they are, the sinceId query param is chosen.
@@ -297,7 +297,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            considered as a limit number that must be equal or less than 100. If the actual number of
    *                            comments is less than the provided positive number, the number of actual comments must be
    *                            returned. If the total number of comments is more than 100,
-   *                            it's recommended to use: "activity/:activityId/comments.format" instead
+   *                            it's recommended to use: "activity/:activityId/comments.format" instead.
    * @param numberOfLikes       Specify the latest number of detailed likes to be returned along with this activity.
    *                            By default, numberOfLikes=0. If numberOfLikes is a positive number, this number is
    *                            considered as a limit number that must be equal or less than 100. If the actual number
@@ -482,15 +482,15 @@ public class ActivityStreamResources implements ResourceContainer {
   /**
    * Get activities of spaces in which the authenticated user identity is space member that makes this request.
    *
-   * @param uriInfo             The uri info
+   * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
-   * @param format              The response format type, for example: json, xml...
+   * @param format              The response format type, for example: JSON, or XML.
    * @param limit               Specify the number of activities to retrieve. Must be less than or equal to 100.
    *                            The value you pass as limit is a maximum number of activities to be returned.
    *                            The actual number of activities you receive maybe less than limit.
    *                            If no specified, 100 will be the default value.
    * @param sinceId             Return the activities having the created timestamps greater than
-   *                            the specified sinceId's created timestamp
+   *                            the specified sinceId's created timestamp.
    * @param maxId               Return the activities having the created timestamp less than the specified maxId's created
    *                            timestamp. Note that sinceId and maxId must not be defined in one request,
    *                            if they are, the sinceId query param is chosen.
@@ -499,7 +499,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            considered as a limit number that must be equal or less than 100. If the actual number of
    *                            comments is less than the provided positive number, the number of actual comments must be
    *                            returned. If the total number of comments is more than 100,
-   *                            it's recommended to use: "activity/:activityId/comments.format" instead
+   *                            it's recommended to use: "activity/:activityId/comments.format" instead.
    * @param numberOfLikes       Specify the latest number of detailed likes to be returned along with this activity.
    *                            By default, numberOfLikes=0. If numberOfLikes is a positive number, this number is
    *                            considered as a limit number that must be equal or less than 100. If the actual number
@@ -678,9 +678,9 @@ public class ActivityStreamResources implements ResourceContainer {
   /**
    * Get activities of connections of a specified identity.
    *
-   * @param uriInfo             The uri info
+   * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
-   * @param format              The response format type, for example: json, xml...
+   * @param format              The response format type, for example: JSON, or XML.
    * @param limit               Specify the number of activities to retrieve. Must be less than or equal to 100.
    *                            The value you pass as limit is a maximum number of activities to be returned.
    *                            The actual number of activities you receive maybe less than limit.
@@ -695,7 +695,7 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            considered as a limit number that must be equal or less than 100. If the actual number of
    *                            comments is less than the provided positive number, the number of actual comments must be
    *                            returned. If the total number of comments is more than 100,
-   *                            it's recommended to use: "activity/:activityId/comments.format" instead.
+   *                            it is recommended you use "activity/:activityId/comments.format" instead.
    * @param numberOfLikes       Specify the latest number of detailed likes to be returned along with this activity.
    *                            By default, numberOfLikes=0. If numberOfLikes is a positive number, this number is
    *                            considered as a limit number that must be equal or less than 100. If the actual number
