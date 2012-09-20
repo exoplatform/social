@@ -64,7 +64,7 @@ public class VersionResources implements ResourceContainer {
    * Get the latest eXo Social REST API version. This version number should be used as the latest and stable
    * version that is considered to include all new features and updates of eXo Social REST services.
    *
-   * @param uriInfo the uri info
+   * @param uriInfo The URI information.
    * @param format  The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get
    * @request
@@ -102,7 +102,7 @@ public class VersionResources implements ResourceContainer {
    * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
    * {{{[v1, v2, v1-beta3]}}}.
    *
-   * @param uriInfo the uri info
+   * @param uriInfo The URI information.
    * @param format  The expected returned format.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get
    * @request
