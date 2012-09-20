@@ -49,7 +49,7 @@ public class IdentityResources implements ResourceContainer {
   /**
    * Get the identity and its associated profile by the activity ID.
    *
-   * @param uriInfo the uri request uri
+   * @param uriInfo The uri request uri.
    * @param portalContainerName The associated portal container name.
    * @param identityId The specified  ID of identity.
    * @param format The expected returned format.
