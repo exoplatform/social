@@ -538,11 +538,11 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * Get an activity by its ID.
+   * Get an activity by its Id.
    *
    * @param uriInfo The URI request information.
    * @param portalContainerName The associated portal container name.
-   * @param activityId The specified activity ID.
+   * @param activityId The specified activity Id.
    * @param format The expected returned format.
    * @return a response object
    */
@@ -652,11 +652,11 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Comment an existing activity from a specified activity ID. Just returns the created comment.
+   * Comment an existing activity from a specified activity Id. Just returns the created comment.
    *
    * @param uriInfo The uri request uri
    * @param portalName The associated portal container name.
-   * @param activityId The specified activity ID.
+   * @param activityId The specified activity Id.
    * @param format The expected returned format.
    * @param text The content of comment.
    * @return a response object
