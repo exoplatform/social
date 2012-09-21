@@ -2,7 +2,7 @@ In Social, you may have two space types (classic and webos spaces).
 
 For the classic space, you can pre-configure the template. You can configure the layout to select where to display the applications (for example, the application's menu on the left, the selected application is displayed on the right, and more).
 
-Here is an example of the configuration file that displays the menu on the left. The application will be inserted in the container with the ID *Application*:
+Here is an example of the configuration file that displays the menu on the left. The application will be inserted in the container with the Id *Application*:
 
 {code:xml}
 <page>
@@ -26,7 +26,7 @@ Here is an example of the configuration file that displays the menu on the left.
 </page>
 {code}
 
-In this example, the outer container contains two inner containers: one container has id as *Menu* for your Menu and another has id as *Application* containing your applications.
+In this example, the outer container contains two inner containers: one container has Id as *Menu* for your Menu and another has Id as *Application* containing your applications.
 
 !images/spaces.png| align="center" width="150mm" fo:scalefit="1" html:scalefit="0"!
 

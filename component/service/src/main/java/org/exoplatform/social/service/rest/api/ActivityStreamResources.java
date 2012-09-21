@@ -71,21 +71,21 @@ public class ActivityStreamResources implements ResourceContainer {
    * @param format              The response format type, for example: JSON, or XML.
    * @param limit               The number of activities retrieved with the default value of 100. This input value must
    *                            be less than or equal to its default value (100). The number of the returned results is
-   *                            actually less than or equal to the *limit* value.
+   *                            actually less than or equal to the _limit_ value.
    *                            If no specified, 100 will be the default value.
    * @param sinceId             Return the activities having the created timestamps greater than the specified
-   *                            *since\_id*_'s created timestamp.
-   * @param maxId               Return the activities having the created timestamps less than the specified *max\_id*'s
-   *                            created timestamp. Note that *since\_id* and *max\_id* must not be defined in one
-   *                            request, if they are, the *since\_id* query param is chosen.
+   *                            _since\_id_'s created timestamp.
+   * @param maxId               Return the activities having the created timestamps less than the specified _max\_id_'s
+   *                            created timestamp. Note that _since\_id_ and _max\_id_ must not be defined in one
+   *                            request, if they are, the _since\_id_ query param is chosen.
    * @param numberOfComments    Specify the number of latest comments to be displayed along with each activity.
-   *                            By default, *number\_of\_comments=0*. If *number\_of\_comments* is a positive number,
+   *                            By default, _number\_of\_comments=0_. If _number\_of\_comments_ is a positive number,
    *                            this number is considered as a limit number that must be equal or less than 100. If the
    *                            total number of comments is less than the provided positive number, the number of actual
    *                            comments must be returned. If the total number of comments is more than 100, it is
    *                            recommended to use _activity/\:activityId/comments.format_ instead.
    * @param numberOfLikes       Specify the number of latest detailed likes to be returned along with this activity.
-   *                            By default, *number\_of\_likes=0*. If *number\_of\_likes* is a positive number, this
+   *                            By default, _number\_of\_likes=0_. If _number\_of\_likes_ is a positive number, this
    *                            number is considered as a limit number that must be equal or less than 100. If the total
    *                            number of likes is less than the provided positive number, the number of actual likes
    *                            must be returned. If the total number of likes is more than 100, it is recommended to
