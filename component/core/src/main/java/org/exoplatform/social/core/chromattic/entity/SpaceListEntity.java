@@ -38,7 +38,7 @@ import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 public abstract class SpaceListEntity {
 
   /**
-   * List of soc:spaceref as child node.
+   * List of _soc\:spaceref_ as child node.
    */
   @OneToMany
   @Owner
