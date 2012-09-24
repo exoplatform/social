@@ -76,12 +76,12 @@ public class ActivityResources implements ResourceContainer {
    * @param showPosterIdentity When this parameter is set to true, t or 1, the returned activity will provide more
    * information for the user who posted this activity.
    * @param numberOfComments Specify the number of comments to be displayed along with this activity. By default,
-   * number_of_comments=0. If number_of_comments is a positive number, this number is considered as a limit number that
+   * _number\_of\_comments=0_. If _number_of_comments_ is a positive number, this number is considered as a limit number that
    * must be equal or less than 100. If the actual number of comments is less than the provided positive number, the
    * number of actual comments must be returned. If the total number of comments is more than 100, it is recommended to
-   * use activity/:id/comments.format instead.
+   * use _activity/\:id/comments.format_ instead.
    * @param numberOfLikes Specify the number of latest detailed likes to be returned along with this activity. By
-   * default, number\_of\_likes=0. If number\_of\_likes is a positive number, this number is considered as a limit
+   * default, _number\_of\_likes=0_. If _number\_of\_likes_ is a positive number, this number is considered as a limit
    * number that must be equal or less than 100. If the total number of likes is less than the provided positive number,
    * the number of actual likes must be returned. If the total number of likes is more than 100, it is recommended to
    * use _activity/\:activityId/likes.format_ instead.
@@ -188,7 +188,7 @@ public class ActivityResources implements ResourceContainer {
 
 
   /**
-   * Create an activity to an identity's activity stream. If no identity\_id is specified, the activity will be created
+   * Create an activity to an identity's activity stream. If no _identity\_id_ is specified, the activity will be created
    * to the authenticated identity's activity stream.
    *
    * @param uriInfo the uri request info
