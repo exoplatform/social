@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import org.apache.lucene.search.BooleanQuery;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -185,7 +186,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   private QueryResult<ProfileEntity> getSpaceMemberIdentitiesByProfileFilterQueryBuilder(Space space,
       final ProfileFilter profileFilter, Type type,  long offset, long limit, boolean count)
       throws IdentityStorageException {
-
+    
     if (offset < 0) {
       offset = 0;
     }
@@ -235,13 +236,20 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     builder.where(whereExpression.toString());
     builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
-
+    
+    QueryResult<ProfileEntity> queryResult;
+    
+    deactivateMaxClauseLimitation();
+    
     if(count){
-     return builder.where(whereExpression.toString()).get().objects();
+      queryResult = builder.where(whereExpression.toString()).get().objects();
     } else {
-     return builder.where(whereExpression.toString()).get().objects(offset, limit);
+      queryResult = builder.where(whereExpression.toString()).get().objects(offset, limit);
     }
-
+    
+    activateMaxClauseLimitation();
+    
+    return queryResult;
   }
 
   /*

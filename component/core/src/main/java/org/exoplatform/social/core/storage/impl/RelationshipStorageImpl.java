@@ -174,9 +174,14 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     StorageUtils.applyFilter(whereExpression, filter);
 
     //
+    deactivateMaxClauseLimitation();
+    
     QueryResult<ProfileEntity> result = builder.where(whereExpression.toString())
                                                .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
                                                .get().objects(offset, limit);
+    
+    activateMaxClauseLimitation();
+    
     while(result.hasNext()) {
       IdentityEntity current = result.next().getIdentity();
       Identity i = new Identity(current.getProviderId(), current.getRemoteId());
@@ -206,8 +211,13 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     StorageUtils.applyFilter(whereExpression, filter);
 
     //
-    return builder.where(whereExpression.toString()).get().objects().size();
+    deactivateMaxClauseLimitation();
+    
+    int results = builder.where(whereExpression.toString()).get().objects().size();
 
+    activateMaxClauseLimitation();
+    
+    return results;
   }
 
   private RelationshipStorage getStorage() {

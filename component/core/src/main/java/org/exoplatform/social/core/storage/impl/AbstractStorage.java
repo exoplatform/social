@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
 
+import org.apache.lucene.search.BooleanQuery;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
@@ -49,6 +50,8 @@ public abstract class AbstractStorage {
   protected static final String RECEIVER = "receiver";
 
   private CachedActivityStorage cachedActivityStorage;
+  
+  private static final int DEFAULT_MAX_CLAUSE_COUNT = 1024;
 
   protected AbstractStorage() {
 
@@ -157,6 +160,14 @@ public abstract class AbstractStorage {
     }
   }
 
+  public static void deactivateMaxClauseLimitation() {
+    BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
+  }
+  
+  public static void activateMaxClauseLimitation() {
+    BooleanQuery.setMaxClauseCount(DEFAULT_MAX_CLAUSE_COUNT);
+  }
+  
   private static SocialChromatticLifeCycle lifecycleLookup() {
 
     PortalContainer container = PortalContainer.getInstance();
