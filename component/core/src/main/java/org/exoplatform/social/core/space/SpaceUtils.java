@@ -988,6 +988,8 @@ public class SpaceUtils {
           spaceNav = (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
         }
         
+      } else {
+        spaceNav = getGroupNavigation(groupId);
       }
       
       return spaceNav;
