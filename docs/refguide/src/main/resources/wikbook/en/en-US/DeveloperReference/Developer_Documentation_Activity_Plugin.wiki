@@ -46,10 +46,6 @@ You should have an idea about the [UI Extension Framework|http://wiki.exoplatfor
 
 h1. Create a custom UI component {anchor:id=Developer_document.Create_custom_UI_componentRoleNotInToc}
 
-{note}
-The Project Code is available [here.|http://wiki.exoplatform.org/xwiki/bin/download/Social/Developer%20Documentation%20Activity%20Plugin/exo.social.samples.activity-plugin.zip]
-{note}
-
 Creating a custom UI component allows you to display the activity based on its type. When an activity is displayed, UIActivityFactory will look for its registered custom activity display by activity's type. If not found, UIDefaultActivity will be called for displaying that activity.
 
 For example, in Social, there is an activity of type "exosocial:spaces" created by SpaceActivityPublisher, but now, you want to display it without own UI component instead of the default one. To do that, follow these steps.
