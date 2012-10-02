@@ -44,7 +44,7 @@ public class SpaceListAccess implements ListAccess<Space> {
   
   /** The type. */
   Type type;
-  
+
   /**
    * The space list access Type Enum.
    */
@@ -179,7 +179,6 @@ public class SpaceListAccess implements ListAccess<Space> {
    * {@inheritDoc}
    */
   public Space[] load(int offset, int limit) throws Exception, IllegalArgumentException {
-    ListAccessValidator.validateIndex(offset, limit, this.getSize());
     List<Space> listSpaces = null;
     switch (type) {
       case ALL: listSpaces = spaceStorage.getSpaces(offset, limit);
