@@ -191,6 +191,9 @@ public class SpaceServiceTest extends AbstractCoreTest {
     assertEquals("allSpaces.getSize() must return: " + count, count, allSpaces.getSize());
     assertEquals("allSpaces.load(0, 1).length must return: 1", 1, allSpaces.load(0, 1).length);
     assertEquals("allSpaces.load(0, count).length must return: " + count, count, allSpaces.load(0, count).length);
+    assertEquals("allSpaces.load(0, 30).lenght must return " + count + " spaces only", count, allSpaces.load(0, 30).length);
+    assertEquals("allSpaces.load(10, 30).lenght must return 10 spaces only", 10 , allSpaces.load(10, 30).length);
+
   }
 
   /**
