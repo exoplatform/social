@@ -61,16 +61,28 @@ public abstract class ProfileEntity {
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
 
+  /**
+   * The external URL of an identity who does not exist in the identities list of the Social providers,
+   * (_OrganizationIdentityProvider_ and _SpaceIdentityProvider_).
+   * @return
+   */
+
   @Property(name = "soc:externalUrl")
   public abstract String getExternalUrl();
   public abstract void setExternalUrl(String profileUrl);
+
+  /**
+   * The external avatar URL of an identity who does not exist in the identities list of the Social providers,
+   * (_OrganizationIdentityProvider_ and _SpaceIdentityProvider_).
+   * @return
+   */
 
   @Property(name = "soc:externalAvatarUrl")
   public abstract String getExternalAvatarUrl();
   public abstract void setExternalAvatarUrl(String avatarUrl);
 
   /**
-   * The parent id is the identity id. It is used for queries.
+   * The parent Id is the identity Id. It is used for queries.
    * @return
    */
   // TODO : find better

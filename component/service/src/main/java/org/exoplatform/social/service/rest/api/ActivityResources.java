@@ -575,6 +575,7 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
+   * @param commentId The specified comment Id.
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.ActivityResource.Activitycomments.Delete
    * @authenticated
    * @request
