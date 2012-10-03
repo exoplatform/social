@@ -26,6 +26,7 @@
     <artifactId>exo.parent</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>7.1</version>
+    <relativePath />
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
