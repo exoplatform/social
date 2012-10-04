@@ -57,7 +57,7 @@ public class IdentityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
    *{code}
    * @response
    *{code:json}
@@ -67,7 +67,7 @@ public class IdentityResources implements ResourceContainer {
    *   "remoteId": "demo",
    *   "profile": {
    *     "fullName": "Demo Gtn",
-   *     "avatarUrl": "http://cloud-workspaces.com/profile/avatar/demo.jpg"
+   *     "avatarUrl": "http://localhost:8080/profile/avatar/demo.jpg"
    *   }
    * }
    *{code}
@@ -122,7 +122,7 @@ public class IdentityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * GET: http://localhost:8080/rest-socialdemo/private/api/social/v1-alpha3/socialdemo/identity/organization/demo.json
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json
    *{code}
    * *user identities*: _providerId_ = organization; _remoteId_ = portal user name.
    *
@@ -136,7 +136,7 @@ public class IdentityResources implements ResourceContainer {
    *   "remoteId": "demo",
    *   "profile": {
    *     "fullName": "Demo Gtn",
-   *     "avatarUrl": "http://localhost:8080/socialdemo/demo/profile/avatar/demo.jpg"
+   *     "avatarUrl": "http://localhost:8080/portal/demo/profile/avatar/demo.jpg"
    *   }
    * }
    *{code}

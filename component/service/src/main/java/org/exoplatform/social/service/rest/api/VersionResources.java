@@ -69,9 +69,9 @@ public class VersionResources implements ResourceContainer {
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/api/social/version/latest.json
+   * GET: http://localhost:8080/rest/api/social/version/latest.json
    * or
-   * GET: http://cloud-workspaces.com/rest/api/social/version/latest.xml
+   * GET: http://localhost:8080/rest/api/social/version/latest.xml
    *{code}
    * @response
    *{code:json}
@@ -107,9 +107,9 @@ public class VersionResources implements ResourceContainer {
    * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/api/social/version/supported.json
+   * GET: http://localhost:8080/rest/api/social/version/supported.json
    * or
-   * GET: http://cloud-workspaces.com/rest/api/social/version/supported.xml
+   * GET: http://localhost:8080/rest/api/social/version/supported.xml
    *{code}
    * @response
    *{code:json}
