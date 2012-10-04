@@ -91,7 +91,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
    *{code}
    * @response
    *{code:json}
@@ -116,7 +116,7 @@ public class ActivityResources implements ResourceContainer {
    *   "prettyId": "root", // or space_abcde
    *   "faviconURL": "http://demo3.exoplatform.org/favicons/exo-default.jpg",
    *   "title": "Activity Stream of Root Root",
-   *   "permaLink": "http://cloud-workspaces.com/profile/root"
+   *   "permaLink": "http://localhost:8080/profile/root"
    * } //optional
    * }
    *{code}
@@ -200,7 +200,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity.json
    * BODY: {"title": "Hello World!!!"}
    *{code}
    * @response
@@ -284,7 +284,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * DELETE: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
+   * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
    *{code}
    * @response
    *{code:json}
@@ -309,7 +309,7 @@ public class ActivityResources implements ResourceContainer {
    *     "prettyId": "root", // or space_abcde
    *     "faviconURL": "http://demo3.exoplatform.org/favicons/exo-default.jpg",
    *     "title": "Activity Stream of Root Root",
-   *     "permaLink": "http://cloud-workspaces.com/profile/root"
+   *     "permaLink": "http://localhost:8080/profile/root"
    *   } //optional
    * }
    *{code}
@@ -365,7 +365,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json
    *{code}
    * @response
    *{code:json}
@@ -390,7 +390,7 @@ public class ActivityResources implements ResourceContainer {
    *     "prettyId": "root", // or space_abcde
    *     "faviconURL": "http://demo3.exoplatform.org/favicons/exo-default.jpg",
    *     "title": "Activity Stream of Root Root",
-   *     "permaLink": "http://cloud-workspaces.com/profile/root"
+   *     "permaLink": "http://localhost:8080/profile/root"
    *   } //optional
    * }
    *{code}
@@ -417,7 +417,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * GET: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.json
+   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.json
    *{code}
    * @response
    *{code:json}
@@ -504,7 +504,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment.json
    * BODY: {"text": "My comment here!!!"}
    *{code}
    * @response
@@ -580,7 +580,7 @@ public class ActivityResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * DELETE: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/123456.json
+   * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/123456.json
    *{code}
    * @response
    *{code:json}
@@ -651,7 +651,7 @@ public class ActivityResources implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/123456.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/123456.json
    *{code}
    * @response
    *{code:json}
@@ -784,7 +784,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
    *{code}
    * @response
    *{code:json}
@@ -840,7 +840,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * DELETE: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
+   * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
    *{code}
    * @response
    *{code:json}
@@ -899,7 +899,7 @@ public class ActivityResources implements ResourceContainer {
    * @authentication
    * @request
    *{code}
-   * POST: http://cloud-workspaces.com/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.json
+   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.json
    *{code}
    * @response
    *{code:json}
