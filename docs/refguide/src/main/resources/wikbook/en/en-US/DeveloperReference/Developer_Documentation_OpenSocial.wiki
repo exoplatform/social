@@ -20,7 +20,15 @@ Social leverages [Apache Shindig|http://shindig.apache.org/overview.html] - an O
 
 To get more details about Supported APIs, refer to [OpenSocial Specification|http://docs.opensocial.org/display/OSD/Specs].
 
-h2. REST/RPC API {anchor:id=Developer_document.Open_social.REST-RPC_API}
+{docbook}
+<para xml:id="Developer_document.Open_social.REST-RPC_API">
+<citetitle>
+<emphasis role="bold">
+REST/RPC API
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 Suppose that you are running the local host at port 8080 (http://localhost:8080/), the path of the API will be:
 
@@ -33,7 +41,15 @@ http://localhost:8080/social/social/rpc
 To learn what you can do with the APIs, have a look at the [specification|http://opensocial-resources.googlecode.com/svn/spec/1.0/Social-Data.xml]. If you are developing in Java, you can use the [opensocial-java-client|http://code.google.com/p/opensocial-java-client/].
 
 
-h2. Configure the security {anchor:id=Developer_document.Open_social.Configure_the_security}
+{docbook}
+<para xml:id="Developer_document.Open_social.Configure_the_security">
+<citetitle>
+<emphasis role="bold">
+Configure the security
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 If you are using OpenSocial, you need to configure the OAuth authentication. With the case of eXo Platform, you need to edit the file: _gatein/conf/portal/portal/configuration.xml_ and add the following configuration:
 {code:xml}
@@ -53,7 +69,15 @@ If you are using OpenSocial, you need to configure the OAuth authentication. Wit
 
 _consumerKey_ and _sharedSecret_ are keys that need to be shared with the application which is doing the request.
 
-h2. Publish an activity into a space  {anchor:id=Developer_document.Open_social.Publish_an_activity_into_a_space}
+{docbook}
+<para xml:id="Developer_document.Open_social.Publish_an_activity_into_a_space">
+<citetitle>
+<emphasis role="bold">
+Publish an activity into a space
+</emphasis>
+</citetitle>
+</para>
+{docbook}
 
 This functionality is not available in the standard OpenSocial APIs.
 
