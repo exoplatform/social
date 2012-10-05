@@ -1,6 +1,7 @@
 <%
   import org.exoplatform.webui.core.UIRightClickPopupMenu;
   import org.exoplatform.webui.application.WebuiRequestContext;
+  import org.exoplatform.web.application.JavascriptManager;
 
   UIRightClickPopupMenu uiPopupMenu = uicomponent.getUIRightClickPopupMenu();
   WebuiRequestContext rcontext = _ctx.getRequestContext();
