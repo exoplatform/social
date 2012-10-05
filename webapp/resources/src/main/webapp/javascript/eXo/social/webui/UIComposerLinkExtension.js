@@ -19,8 +19,6 @@
  * UIComposerLinkExtension.js
  */
 
-var uiComposerLinkExtension;
-
 var UIComposerLinkExtension = {
   HTTP: "http://",
   GRAY_COLOR: "gray",
@@ -82,17 +80,16 @@ var UIComposerLinkExtension = {
         // if class contains ContentDescription -> update description
         oldEl.css('display',"block")
         if (oldEl.hasClass('Title')) {
-          uiComposerLinkExtension.linkData.title = $(editableEl).val();
-          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
+          UIComposerLinkExtension.linkData.title = $(editableEl).val();
+          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
         } else if (oldEl.hasClass('Content')) {
-          uiComposerLinkExtension.linkData.description = $(editableEl).val();
-          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
+          UIComposerLinkExtension.linkData.description = $(editableEl).val();
+          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
         }
         $(editableEl).remove();
     }
   },
   onLoad: function(params) {
-    uiComposerLinkExtension = this;
     UIComposerLinkExtension.configure(params);
     UIComposerLinkExtension.init();
   },
@@ -139,7 +136,7 @@ var UIComposerLinkExtension = {
     
     var shareButton = $('#ShareButton');
     shareButton.attr('class','ShareButton');
-    uiComposerLinkExtension = this;
+    UIComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       //trick: enable share button
       if (shareButton) {
@@ -174,34 +171,34 @@ var UIComposerLinkExtension = {
         doStats.apply(this);
 
         this.backThumbnail.on('click', function(evt) {
-          if (uiComposerLinkExtension.shownThumbnailIndex > 0) {
-            uiComposerLinkExtension.shownThumbnailIndex--;
-            showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
-            UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
+          if (UIComposerLinkExtension.shownThumbnailIndex > 0) {
+            UIComposerLinkExtension.shownThumbnailIndex--;
+            showThumbnail.apply(UIComposerLinkExtension);
+            UIComposerLinkExtension.linkData.image = $(UIComposerLinkExtension.images[UIComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
           }
         });
         
         this.nextThumbnail.on('click', function(evt) {
-          if (uiComposerLinkExtension.shownThumbnailIndex < uiComposerLinkExtension.images.length - 1) {
-            uiComposerLinkExtension.shownThumbnailIndex++;
-            showThumbnail.apply(uiComposerLinkExtension);
-            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
-            UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
+          if (UIComposerLinkExtension.shownThumbnailIndex < UIComposerLinkExtension.images.length - 1) {
+            UIComposerLinkExtension.shownThumbnailIndex++;
+            showThumbnail.apply(UIComposerLinkExtension);
+            UIComposerLinkExtension.linkData.image = $(UIComposerLinkExtension.images[UIComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
           }
         });
         
         this.thumbnailCheckbox.on('click', function(evt) {
-          if (uiComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
-            uiComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '50px',
+          if (UIComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
+            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '50px',
                                                                      'display':'none'});
-            uiComposerLinkExtension.linkData.image = '';
+            UIComposerLinkExtension.linkData.image = '';
           } else {
-            uiComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
+            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
                                                                      'display':'block'});
-            uiComposerLinkExtension.linkData.image = $(uiComposerLinkExtension.images[uiComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            UIComposerLinkExtension.linkData.image = $(UIComposerLinkExtension.images[UIComposerLinkExtension.shownThumbnailIndex]).attr('src');
           }
-          UIComposerLinkExtension.changeLinkContent.apply(uiComposerLinkExtension);
+          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
         });
       } else {
         this.images = [];
@@ -217,7 +214,7 @@ var UIComposerLinkExtension = {
       this.attachButton = $('#' + this.attachButtonId);
       this.inputLink.val(UIComposerLinkExtension.HTTP);
       this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
-      var uiComposerLinkExtension = this;
+      var UIComposerLinkExtension = this;
       var inputLink = this.inputLink;
       inputLink.on('focus', function(evt) {
         if (inputLink.val() === UIComposerLinkExtension.HTTP) {
@@ -241,7 +238,7 @@ var UIComposerLinkExtension = {
         if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
           return;
         }
-        var url = uiComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
+        var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
         ajaxGet(url);
       });
       

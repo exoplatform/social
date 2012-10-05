@@ -56,7 +56,7 @@ var UIActivity = {
     UIActivity.activityContextBoxId = "ActivityContextBox" + UIActivity.activityId;
     if (UIActivity.allCommentSize > 0) {
       for (var i = 1; i <= UIActivity.allCommentSize; i++) {
-        UIActivity.deleteCommentButtonIds[i - 1] = 'DeleteCommentButton' + UIActivity.activityId + i;
+        UIActivity.deleteCommentButtonIds[i - 1] = "DeleteCommentButton" + UIActivity.activityId + i;
         UIActivity.commentBlockIds[i - 1] = "CommentBlock" + UIActivity.activityId + i;
       }
     }
@@ -80,7 +80,7 @@ var UIActivity = {
     }
     
     if (!(UIActivity.commentFormBlockEl && UIActivity.commentTextareaEl && UIActivity.commentButtonEl)) {
-      alert('err: init uiActivity!');
+      alert('err: init UIActivity!');
     }
     
     UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
@@ -98,39 +98,44 @@ var UIActivity = {
       } else {
         UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
       }
-    }
+    };
 
-    var uiActivity = this;
-    if (UIActivity.commentLinkEl) {
+    var commentLinkEl = $("#"+UIActivity.commentLinkId);
+    if (commentLinkEl.length > 0) {
+      
       //event handlers
-      UIActivity.commentLinkEl.on( 'click', function(evt) {
-        if (uiActivity.commentFormBlockEl.css('display') != 'block') {
-          if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
+      commentLinkEl.on( 'click', function(evt) {
+        var commentForms = $("[id^='CommentFormBlock']");
+        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+        var thiscommentBlockId = 'CommentFormBlock' + currentActivityId;
+        $.each(commentForms, function(idx, el) {
+          if ( $(el).attr('id') !== thiscommentBlockId ) {
+            if (UIActivity.allCommentSize == 0) {
+			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+			      } else {
+			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
+			      }
+			      
+			      $(el).hide();
+          } else {
+            $(el).show();
           }
-          $("#" + uiActivity.commentFormBlockId).show();
-          uiActivity.commentTextareaEl.focus();
-        } else {
-          if (uiActivity.allCommentSize == 0) {
-            uiActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
-          }
-          $("#" + uiActivity.commentFormBlockId).hide();
-        }
+        });
       });
 
       UIActivity.commentTextareaEl.on('focus', function(evt) {
         $(this).css('height', UIActivity.FOCUS_COMMENT_TEXT_AREA_HEIGHT);
         $(this).css('color', UIActivity.FOCUS_COMMENT_TEXT_AREA_COLOR);
-          if ($(this).val() === uiActivity.inputWriteAComment) {
+          if ($(this).val() === UIActivity.inputWriteAComment) {
           $(this).val('');
         }
-        $("#" + uiActivity.commentButtonId).show();
+        $("#" + UIActivity.commentButtonId).show();
       });
 
       UIActivity.commentTextareaEl.on('blur', function(evt) {
         if ($(this).val() === '') {
-          $("#" + uiActivity.commentButtonId).hide();
-          $(this).val(uiActivity.inputWriteAComment);
+          $("#" + UIActivity.commentButtonId).hide();
+          $(this).val(UIActivity.inputWriteAComment);
 
           $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
           $(this).css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
@@ -152,32 +157,30 @@ var UIActivity = {
     }
 
     if (UIActivity.deleteActivityButtonEl.length !== 0) {
+      var deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
       UIActivity.activityContextBoxEl.on('mouseover focus', function(evt) {
-        uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxHilight');
+        deleteActivityButtonEl.attr('class', 'CloseContentBoxHilight');
       });
 
       UIActivity.activityContextBoxEl.on('mouseout blur', function(evt) {
-        uiActivity.deleteActivityButtonEl.attr('class', 'CloseContentBoxNormal');
+        deleteActivityButtonEl.attr('class', 'CloseContentBoxNormal');
       });
 
     }
 
     if (UIActivity.allCommentSize > 0) {
+      $.each(UIActivity.deleteCommentButtonEls, function(idx, el) {
+        UIActivity.commentBlockEls[idx].on('mouseover focus', function(evt) {
+          el.attr('class','CloseContentBoxHilight');
+        });
+        
+        UIActivity.commentBlockEls[idx].on('mouseout blur', function(evt) {
+          el.attr('class','CloseContentBoxNormal');
+        });
+        
+      });
+      
 
-      for (var i = 0; i < UIActivity.allCommentSize; i++) {
-        (function(i) {
-          //when this element is displayed
-          if (uiActivity.commentBlockEls[i]) {
-            uiActivity.commentBlockEls[i].on('mouseover focus', function(evt) {
-              uiActivity.deleteCommentButtonEls[i].attr('class','CloseContentBoxHilight');
-            });
-
-            uiActivity.commentBlockEls[i].on('mouseout blur', function(evt) {
-              uiActivity.deleteCommentButtonEls[i].attr('class','CloseContentBoxNormal');
-            });
-          }
-        })(i);
-      }
     }
   }
 }
