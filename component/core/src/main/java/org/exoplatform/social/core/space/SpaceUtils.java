@@ -737,18 +737,6 @@ public class SpaceUtils {
    * @throws SpaceException
    */
   public static String createGroup(String spaceName, String creator) throws SpaceException {
-    return createGroup(spaceName, spaceName, creator);
-  }
-
-  /**
-   * Creates new group in /Spaces node and return groupId
-   * @param groupLabel String
-   * @param spaceName String
-   * @param creator String
-   * @return groupId String
-   * @throws SpaceException
-   */
-  public static String createGroup(String groupLabel,String spaceName, String creator) throws SpaceException {
 
     OrganizationService organizationService = getOrganizationService();
     GroupHandler groupHandler = organizationService.getGroupHandler();
@@ -774,7 +762,7 @@ public class SpaceUtils {
         throw new SpaceException(SpaceException.Code.SPACE_ALREADY_EXIST);
       }
       newGroup.setGroupName(shortName);
-      newGroup.setLabel(groupLabel);
+      newGroup.setLabel(spaceName);
       newGroup.setDescription("the " + parentGroup.getId() + "/" + shortName + " group");
       groupHandler.addChild(parentGroup, newGroup, true);
     } catch (Exception e) {
