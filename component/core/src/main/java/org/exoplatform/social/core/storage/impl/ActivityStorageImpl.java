@@ -619,35 +619,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
   }
-
+  
   /**
    * {@inheritDoc}
    */
   public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, ExoSocialActivity baseActivity) {
 
-    int nb = 0;
-
     try {
 
-      //
-      IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
       ActivityEntity activity = _findById(ActivityEntity.class, baseActivity.getId());
 
-      //
-      Long targetTimestamp = activity.getPostedTime();
-
-      for (ActivityEntity current : new ActivityList(identity.getActivityList())) {
-        //
-        if (current.getPostedTime() <= targetTimestamp) {
-          return nb;
-        }
-
-        //
-        ++nb;
-      }
-
-      return nb;
-
+      return getActivitiesOfIdentityQuery(ownerIdentity, TimestampType.NEWER.from(activity.getPostedTime())).objects().size();
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(
@@ -664,41 +646,56 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
                                                           int limit) {
 
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
-    int nb = 0;
-
+    //
     try {
-
-      //
-      IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
       ActivityEntity activity = _findById(ActivityEntity.class, baseActivity.getId());
 
-      //
-      Long targetTimestamp = activity.getPostedTime();
+      QueryResult<ActivityEntity> results = getActivitiesOfIdentityQuery(ownerIdentity,
+                                                                         TimestampType.NEWER.from(activity.getPostedTime())).objects(new Long(0),
+                                                                                                                                     (long) limit);
 
-      for (ActivityEntity current : new ActivityList(identity.getActivityList())) {
-
-        ExoSocialActivity a = getStorage().getActivity(current.getId());
-
-        if (targetTimestamp >= a.getPostedTime() || nb == limit) {
-          return activities;
-        }
-        else {
-          activities.add(a);
-        }
-
-        //
-        ++nb;
+      while (results.hasNext()) {
+        activities.add(getStorage().getActivity(results.next().getId()));
       }
 
-      return activities;
+    } catch (NodeNotFoundException e) {
+      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES,
+                                         e.getMessage());
+    }
 
-    }
-    catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT,
-          e.getMessage());
-    }
+    return activities;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  private Query<ActivityEntity> getActivitiesOfIdentityQuery(Identity identity, TimestampType type) throws ActivityStorageException {
+
+    QueryBuilder<ActivityEntity> builder = getSession().createQueryBuilder(ActivityEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    whereExpression.startGroup();    
+    whereExpression.equals(ActivityEntity.identity, identity.getId());
+    whereExpression.endGroup();
+
+    whereExpression.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+
+    if (type != null) {
+      switch (type) {
+        case NEWER:
+          whereExpression.and().greater(ActivityEntity.postedTime, type.get());
+          break;
+        case OLDER:
+          whereExpression.and().lesser(ActivityEntity.postedTime, type.get());
+          break;
+      }
+    }
+    builder.where(whereExpression.toString());
+    builder.orderBy(ActivityEntity.postedTime.getName(), Ordering.DESC);
+
+    return builder.get();
+  }
+  
 
   /**
    * {@inheritDoc}

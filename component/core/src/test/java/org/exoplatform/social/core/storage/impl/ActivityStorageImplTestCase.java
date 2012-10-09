@@ -455,6 +455,95 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ++i;
     }
   }
+  
+  @MaxQueryNumber(500)
+  public void testActivityNewer() throws Exception {
+    // fill 10 activities
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage._createActivity(rootIdentity, activity);
+    }
+
+    // remove 5 activities
+    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity).iterator();
+
+    for (int i = 0; i < 5; ++i) {
+      activityStorage.deleteActivity(it.next().getId());
+    }
+
+    // fill 10 others
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage._createActivity(rootIdentity, activity);
+    }
+
+    List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
+    int i = 0;
+    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    for (ExoSocialActivity activity : activityies) {
+      assertEquals("title " + values[i], activity.getTitle());
+      ++i;
+    }
+    ExoSocialActivity baseActivity = activityies.get(activityies.size()-1);
+    assertNotNull(baseActivity);
+    
+    //newer
+    List<ExoSocialActivity> newerList = activityStorage.getNewerOnUserActivities(rootIdentity, baseActivity, 5);
+    i = 0;
+    int[] newers = {4, 3, 2, 1, 0};
+    for (ExoSocialActivity activity : newerList) {
+      assertEquals("title " + newers[i], activity.getTitle());
+      ++i;
+    }
+    
+  }
+  
+  @MaxQueryNumber(500)
+  public void testActivityOlder() throws Exception {
+    // fill 10 activities
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage._createActivity(rootIdentity, activity);
+    }
+
+    // remove 5 activities
+    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity).iterator();
+
+    for (int i = 0; i < 5; ++i) {
+      activityStorage.deleteActivity(it.next().getId());
+    }
+
+    // fill 10 others
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage._createActivity(rootIdentity, activity);
+    }
+
+    List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
+    int i = 0;
+    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    for (ExoSocialActivity activity : activityies) {
+      assertEquals("title " + values[i], activity.getTitle());
+      ++i;
+    }
+    
+    
+    //older
+    ExoSocialActivity baseActivity = activityies.get(0);
+    assertNotNull(baseActivity);
+    List<ExoSocialActivity> olderList = activityStorage.getOlderOnUserActivities(rootIdentity, baseActivity, 5);
+
+    i = 0;
+    int[] olders = {8, 7, 6, 5, 4};
+    for (ExoSocialActivity activity : olderList) {
+      assertEquals("title " + olders[i], activity.getTitle());
+      ++i;
+    }
+  }
 
   @MaxQueryNumber(10)
   public void testCommentOrder() throws Exception {
