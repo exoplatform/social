@@ -46,7 +46,7 @@ public class UIActivitiesContainer extends UIContainer {
   //hold activities for user or space
   private Space space;
   private String ownerName;
-  private UIPopupWindow popupWindow;
+  private boolean hasDisplay = false;
 
   /**
    * constructor
@@ -95,6 +95,7 @@ public class UIActivitiesContainer extends UIContainer {
    * @throws Exception
    */
   private void init() throws Exception {
+    hasDisplay = false;
     while (getChild(BaseUIActivity.class) != null) {
       removeChild(BaseUIActivity.class);
     }
@@ -106,6 +107,7 @@ public class UIActivitiesContainer extends UIContainer {
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
     for (ExoSocialActivity activity : activityList) {
       factory.addChild(activity, this);
+      hasDisplay = true; 
     }
   }
 
@@ -124,5 +126,9 @@ public class UIActivitiesContainer extends UIContainer {
         break;
       }
     }
+  }
+  
+  public boolean hasDisplay() {
+    return hasDisplay;
   }
 }
