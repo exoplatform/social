@@ -26,7 +26,7 @@
 
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
+<% if (uicomponent.getActivitiesContainer().hasDisplay()) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
      uicomponent.renderChild(uicomponent.getPopupWindow());
