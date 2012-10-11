@@ -70,6 +70,18 @@ var UIComposer = {
     UIComposer.keypressCallback = params.keypressCallback;
     UIComposer.postMessageCallback = params.postMessageCallback;
     UIComposer.userTyped = false;
+    ;(function($, document, window){
+   var portal = window.eXo.env.portal
+
+   window.eXo.social = window.eXo.social || {};
+   window.eXo.social.portal = {
+     rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
+     portalName : (portal.portalName) ? portal.portalName : 'classic',
+     context : (portal.context) ? portal.context : '/socialdemo',
+     accessMode: (portal.accessMode) ? portal.accessMode : 'public',
+     userName : (portal.userName) ? portal.userName : ''
+   };
+})(jQuery, document, window);
   },
   init: function() {
     UIComposer.composer = $('#' + UIComposer.composerId);
@@ -129,6 +141,17 @@ var UIComposer = {
       }
     });
 
+    //
+    $('textarea#composerInput').mentionsInput({
+	    onDataRequest:function (mode, query, callback) {
+	      var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+	      $.getJSON(url, function(responseData) {
+	        responseData = mentions.underscore._.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+	        callback.call(this, responseData);
+	      });
+	    }
+	
+	  });
   },
   post: function() {
     UIComposer.composer.val(UIComposer.defaultInput);
