@@ -23,47 +23,47 @@
 
 var UIComposer = {
   onLoad: function(params) {
-		UIComposer.configure(params);
-		UIComposer.init();
+    UIComposer.configure(params);
+    UIComposer.init();
   },
-  handleShareButtonState: function(uiComposer) {
-    if (uiComposer.minCharactersRequired !== 0) {
+  handleShareButtonState: function() {
+    if (UIComposer.minCharactersRequired !== 0) {
       //TODO hoatle handle backspace problem
-      if (uiComposer.composer.val().length >= uiComposer.minCharactersRequired) {
-        uiComposer.shareButton.className = 'ShareButtonDisable';
+      if (UIComposer.composer.val().length >= UIComposer.minCharactersRequired) {
+        UIComposer.shareButton.className = 'ShareButtonDisable';
         if($("#ComposerContainer").length == 0){
-          uiComposer.shareButton.removeAttr("disabled");
-          uiComposer.shareButton.attr("class",'ShareButton');
+          UIComposer.shareButton.removeAttr("disabled");
+          UIComposer.shareButton.attr("class",'ShareButton');
         }
       } else {
-        uiComposer.shareButton.css(background, '');
-        uiComposer.shareButton.attr('class','ShareButton');
+        UIComposer.shareButton.css(background, '');
+        UIComposer.shareButton.attr('class','ShareButton');
       }
     } else {
       if($("ComposerContainer").length == 0){
-        uiComposer.shareButton.removeAttr("disabled");
-        uiComposer.shareButton.attr("class",'ShareButton');
+        UIComposer.shareButton.removeAttr("disabled");
+        UIComposer.shareButton.attr("class",'ShareButton');
       }
     }
 
-    if (uiComposer.maxCharactersAllowed !== 0) {
-      if (uiComposer.composer.val().length >= uiComposer.maxCharactersAllowed) {
+    if (UIComposer.maxCharactersAllowed !== 0) {
+      if (UIComposer.composer.val().length >= UIComposer.maxCharactersAllowed) {
         //substitue it
         //TODO hoatle have a countdown displayed on the form
-        uiComposer.composer.val( uiComposer.composer.val().substring(0, uiComposer.maxCharactersAllowed));
+        UIComposer.composer.val( UIComposer.composer.val().substring(0, UIComposer.maxCharactersAllowed));
       }
     }
   },
   configure: function(params) {
-    UIComposer.composerId = params.composerId || 'composerInput';
+    UIComposer.composerId = 'composerDisplay';
     UIComposer.defaultInput = params.defaultInput || "";
     UIComposer.minCharactersRequired = params.minCharactersRequired || 0;
     UIComposer.maxCharactersAllowed = params.maxCharactersAllowed || 0;
     UIComposer.focusColor = params.focusColor || '#000000';
     UIComposer.blurColor = params.blurColor || '#777777';
-    UIComposer.minHeight = params.minHeight || '20px';
-    UIComposer.focusHeight = params.focusHeight || '35px';
-    UIComposer.maxHeight = params.maxHeight || '50px';
+    UIComposer.minHeight = params.minHeight || '10px';
+    UIComposer.focusHeight = params.focusHeight || '48px';
+    UIComposer.maxHeight = params.maxHeight || '48px';
     UIComposer.padding = params.padding || '11px 0 11px 8px';
     UIComposer.focusCallback = params.focusCallback;
     UIComposer.blurCallback = params.blurCallback;
@@ -91,40 +91,31 @@ var UIComposer = {
     }
     
     UIComposer.composer.val(UIComposer.getValue());
-    UIComposer.composer.css({'height':UIComposer.minHeight,
-      'color':UIComposer.blurColor,
-      'padding':UIComposer.padding
-    });
+    if (UIComposer.composer.val().length > 0) {
+        UIComposer.composer.css('marginBottom' , '4px');
+    } else {
+      UIComposer.composer.css('marginBottom' , '4px');
+    }
+    
     UIComposer.shareButton.attr('class','ShareButtonDisable');
     UIComposer.shareButton.attr('disabled',"disabled");
-    
-    if ( UIComposer.getValue() !== UIComposer.defaultInput ) {
-      UIComposer.composer.css({'height' : UIComposer.maxHeight,
-        'color'  : UIComposer.focusColor});
-      UIComposer.shareButton.removeAttr("disabled");
-      UIComposer.shareButton.attr("class",'ShareButton');
-    }
     
     var isReadyEl = $("#isReadyId");
     var composerContainerEl = $("#ComposerContainer");
     var isReadyVal;
     UIComposer.composer.on('focus', function() {
-      UIComposer.handleShareButtonState(UIComposer);
-      if (UIComposer.composer.val() === UIComposer.defaultInput) {
-        UIComposer.composer.val('') ;
-      }
+      UIComposer.handleShareButtonState();
+      
       if (UIComposer.focusCallback) {
         UIComposer.focusCallback();
       }
-      UIComposer.composer.css({'height' : UIComposer.maxHeight,
-        'color'  : UIComposer.focusColor});
+      $(this).css('marginBottom' , '4px');
     });
 
     UIComposer.composer.on('blur', function() {
-      if (UIComposer.composer.val() === '') {
-        UIComposer.composer.val(UIComposer.defaultInput);
-        UIComposer.composer.css({'height' : UIComposer.minHeight,
-                                 'color'  : UIComposer.blurColor});
+      if (UIComposer.composer.val().length === 0) {
+
+        $(this).css('marginBottom' , '4px');
 
         //if current composer is default composer then disable share button
         if(!UIComposer.isReady){
@@ -133,7 +124,10 @@ var UIComposer = {
         }
         
       } else {
-        UIComposer.currentValue = UIComposer.composer.val();
+        
+        $(this).css('marginBottom' , '4px');
+        UIComposer.currentValue = $(this).val();
+        
       }
 
       if (UIComposer.blurCallback) {
@@ -142,48 +136,52 @@ var UIComposer = {
     });
 
     //
-    $('textarea#composerInput').mentionsInput({
-	    onDataRequest:function (mode, query, callback) {
-	      var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-	      $.getJSON(url, function(responseData) {
-	        responseData = mentions.underscore._.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-	        callback.call(this, responseData);
-	      });
-	    }
-	
-	  });
+    $('textarea#composerDisplay').mentionsInput({
+      onDataRequest:function (mode, query, callback) {
+        var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+        $.getJSON(url, function(responseData) {
+          responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+          callback.call(this, responseData);
+        });
+      }
+  
+    });
+
+    $('#ShareButton').on('mousedown', function() {
+      $('textarea#composerDisplay').mentionsInput('val', function(data) {
+        $('textarea#composerInput').val(data);
+      });
+    }) ;
+    
   },
   post: function() {
-    UIComposer.composer.val(UIComposer.defaultInput);
+    //UIComposer.composer.val(UIComposer.defaultInput);
     UIComposer.isReady = false;
-    UIComposer.currentValue = UIComposer.defaultInput;
+    UIComposer.currentValue = "";
     UIComposer.init();
   },
   getValue: function() {
-	  if (!UIComposer.currentValue) {
-	    return UIComposer.defaultInput;
-	  }
-	  return UIComposer.currentValue;
-	},
-	setCurrentValue: function() {
-	  var uiInputText = $("#" + UIComposer.composerId);
-	  UIComposer.currentValue = uiInputText.val();
-	},
-	handleShareButton: function(isReadyForPostingActivity) {
-	  UIComposer.isReady = isReadyForPostingActivity;
-	  var shareButton = $("#ShareButton");
-	  if ( isReadyForPostingActivity ) {
-	    shareButton.removeAttr("disabled");
-	    shareButton.attr("class",'ShareButton');
-	  } else {
-	    shareButton.attr("disabled","disabled");
-	    shareButton.attr("class",'ShareButtonDisable');
-	  }
-	  
-	  if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
-	    UIComposer.shareButton.removeAttr("disabled");
-	    UIComposer.shareButton.attr("class",'ShareButton');
-	  }
+    return (UIComposer.currentValue) ? UIComposer.currentValue : '';
+  },
+  setCurrentValue: function() {
+    var uiInputText = $("#" + UIComposer.composerId);
+    UIComposer.currentValue = uiInputText.val();
+  },
+  handleShareButton: function(isReadyForPostingActivity) {
+    UIComposer.isReady = isReadyForPostingActivity;
+    var shareButton = $("#ShareButton");
+    if ( isReadyForPostingActivity ) {
+      shareButton.removeAttr("disabled");
+      shareButton.attr("class",'ShareButton');
+    } else {
+      shareButton.attr("disabled","disabled");
+      shareButton.attr("class",'ShareButtonDisable');
+    }
+    
+    if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
+      UIComposer.shareButton.removeAttr("disabled");
+      UIComposer.shareButton.attr("class",'ShareButton');
+    }
   }
 }
 

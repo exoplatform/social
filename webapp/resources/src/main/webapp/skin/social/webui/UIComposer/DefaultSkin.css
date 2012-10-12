@@ -19,16 +19,6 @@
 	margin-bottom: 4px;
 }
 
-.UIComposer .BlastContainer textarea {
-	width: 99% !important;
-	border: 1px solid #e1e1e1;
-	font-size: 14px;
-	border-radius: 2px;
-	margin: 0 0 7px;
-	line-height: 20px;
-	padding: 0 0 0 8px;
-}
-
 .UIComposer .BlastContainer .BlastShare {
 	padding: 0px 0px 0px 5px;
 }

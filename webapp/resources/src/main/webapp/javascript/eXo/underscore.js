@@ -1196,7 +1196,7 @@
     }
 
   });
-  module.underscore = root;
+  module.underscore = root._;
 })(_module, window);
 
 
