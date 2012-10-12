@@ -1,6 +1,6 @@
 /*UILinkComposerPlugin style*/
 @import url('/social-resources/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css');
-@import url('/social-resources/skin/social/webui/UIComposer/jquery.mentionsInput.css');
+@import url('/social-resources/skin/social/jquery.mentionsInput.css');
 
 .UIComposer .BlastContainer {
 	background: #f8f8f8;

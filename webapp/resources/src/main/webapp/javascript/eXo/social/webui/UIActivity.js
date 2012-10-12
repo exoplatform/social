@@ -182,6 +182,23 @@ var UIActivity = {
       
 
     }
+    
+    //
+    $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput({
+      onDataRequest:function (mode, query, callback) {
+        var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+        $.getJSON(url, function(responseData) {
+          responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+          callback.call(this, responseData);
+        });
+      }
+    });
+
+    $('#CommentButton' + UIActivity.activityId).on('mousedown', function() {
+      $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput('val', function(data) {
+        $('textarea#CommentTextarea' + UIActivity.activityId).val(data);
+      });
+    });
   }
 }
 

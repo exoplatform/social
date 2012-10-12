@@ -160,6 +160,13 @@
       <module>jquery</module>
       <as>$</as>
     </depends>
+    <depends>
+       <module>mentionsPlugin</module>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
   </module>
 
   <module>

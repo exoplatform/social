@@ -305,7 +305,10 @@
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>
-        <div class="CommentInputBox"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
+        <div style="visibility:hidden; display:none"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
+        <div class="CommentInputBox">
+          <textarea title="$inputWriteAComment" placeholder="$inputWriteAComment" cols="30" rows="10" id="ComposerDisplay${activity.id}" name="ComposerDisplay${activity.id}" class="textarea" style="height: 20px;"></textarea>
+        </div>
         <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
       </div>
     </div>
