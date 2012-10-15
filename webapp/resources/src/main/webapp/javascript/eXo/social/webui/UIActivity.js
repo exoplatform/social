@@ -195,7 +195,7 @@ var UIActivity = {
     });
 
     $('#CommentButton' + UIActivity.activityId).on('mousedown', function() {
-      $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput('val', function(data) {
+      $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput('valClear', function(data) {
         $('textarea#CommentTextarea' + UIActivity.activityId).val(data);
       });
     });

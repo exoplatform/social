@@ -202,7 +202,12 @@
 
 .UIActivity .ContentBox h5 {
 	color: #f68a2f;
+	overflow: visible;
 	margin: 0;
+}
+
+.UIActivity .ContentBox .TitleContent {
+	height: 14px;
 }
 
 .UIActivity .ContentBox .Content, .AnswerActivity .BoxGray p {

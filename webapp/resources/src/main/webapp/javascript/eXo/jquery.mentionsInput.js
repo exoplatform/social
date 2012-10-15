@@ -377,11 +377,20 @@
         if (!_.isFunction(callback)) {
           return;
         }
-
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
       },
 
+      valClear : function (callback) {
+        if (!_.isFunction(callback)) {
+          return;
+        }
+        var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
+        callback.call(this, value);
+        var parent = $(this).parents('.mentions-input-box');
+        parent.find('.mentions').html('');
+      },
+      
       reset : function () {
         resetInput();
       },
