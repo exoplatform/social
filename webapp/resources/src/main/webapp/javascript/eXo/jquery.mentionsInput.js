@@ -11,7 +11,8 @@
 (function ($, _, undefined) {
 
   // Settings
-  var KEY = { BACKSPACE : 8, TAB : 9, RETURN : 13, ESC : 27, LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40, COMMA : 188, SPACE : 32, HOME : 36, END : 35 }; // Keys "enum"
+  var KEY = { BACKSPACE : 8, TAB : 9, RETURN : 13, ESC : 27, LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40, MENTION : 50, COMMA : 188, SPACE : 32, HOME : 36, END : 35 }; // Keys "enum"
+
   var defaultSettings = {
     triggerChar   : '@',
     onDataRequest : $.noop,
@@ -32,7 +33,17 @@
       mentionItemHighlight       : _.template('<strong><span><%= value %></span></strong>')
     }
   };
-
+  
+  function cacheMention() {
+    var mentionCache = {
+      id : '',
+      val : '',
+      mentions : [],
+      data : ''
+    };
+    return mentionCache;
+  };
+  
   var utils = {
     htmlEncode       : function (str) {
       return _.escape(str);
@@ -182,13 +193,29 @@
     function getInputBoxValue() {
       return $.trim(elmInputBox.val());
     }
+    
+    function saveCacheMention() {
+      var key = domInput.id;
+      if(key) {
+        var parentForm = $(domInput).parents('form:first').parent();
+        if(parentForm.length > 0) {
+          var dataCache = parentForm.data(key);
+          if(dataCache == null) {
+            dataCache = new cacheMention();
+          }
+          dataCache.mentions = mentionsCollection;
+          dataCache.val = elmInputBox.val();
+          dataCache.data = mentionsCollection.length > 0 ? elmInputBox.data('messageText') : getInputBoxValue() ;
+          parentForm.data(key, dataCache);
+        }
+      }
+    }
 
     function onAutoCompleteItemClick(e) {
       var elmTarget = $(this);
       var mention = autocompleteItemCollection[elmTarget.attr('data-uid')];
-
       addMention(mention);
-
+      saveCacheMention();
       return false;
     }
 
@@ -198,6 +225,7 @@
 
     function onInputBoxBlur(e) {
       hideAutoComplete();
+      saveCacheMention();
     }
 
     function onInputBoxInput(e) {
@@ -223,6 +251,14 @@
 
     function onInputBoxKeyDown(e) {
 
+      //
+      if ( e.keyCode == KEY.MENTION ) {
+        var query = '';
+        settings.onDataRequest.call(this, 'search', query, function (responseData) {
+          populateDropdown(query, responseData);
+        });
+      }
+      
       // This also matches HOME/END on OSX which is CMD+LEFT, CMD+RIGHT
       if (e.keyCode == KEY.LEFT || e.keyCode == KEY.RIGHT || e.keyCode == KEY.HOME || e.keyCode == KEY.END) {
         // Defer execution to ensure carat pos has changed after HOME/END keys
@@ -355,6 +391,33 @@
       mentionsCollection = [];
       updateValues();
     }
+    
+    function updateCacheData() {
+      var parentForm = $(domInput).parents('form:first').parent();
+      var key = domInput.id;
+      if(key) {
+        var dataCache = parentForm.data(key);
+        if(dataCache == null) {
+          resetInput();
+        } else {
+          mentionsCollection = dataCache.mentions;
+          elmInputBox.val(dataCache.val);
+          elmInputBox.data('messageText', dataCache.data);
+          updateValues();
+        }
+      }
+    }
+    
+    function clearCacheData() {
+      var parentForm = $(domInput).parents('form:first').parent();
+      var key = domInput.id;
+      if(key) {
+        var dataCache = parentForm.data(key);
+        if(dataCache != null) {
+          parentForm.data(key, null);
+        }
+      }
+    }
 
     // Public methods
     return {
@@ -365,7 +428,7 @@
         initTextarea();
         initAutocomplete();
         initMentionsOverlay();
-        resetInput();
+        updateCacheData();
 
         if( settings.prefillMention ) {
           addMention( settings.prefillMention );
@@ -387,8 +450,8 @@
         }
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
-        var parent = $(this).parents('.mentions-input-box');
-        parent.find('.mentions').html('');
+        resetInput();
+        
       },
       
       reset : function () {
