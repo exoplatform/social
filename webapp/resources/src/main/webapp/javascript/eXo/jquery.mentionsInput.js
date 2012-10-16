@@ -450,8 +450,6 @@
         }
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
-        resetInput();
-        
       },
       
       reset : function () {

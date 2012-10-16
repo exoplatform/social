@@ -150,6 +150,7 @@ var UIComposer = {
     $('#ShareButton').on('mousedown', function() {
       $('textarea#composerDisplay').mentionsInput('valClear', function(data) {
         $('textarea#composerInput').val(data);
+        $('textarea#composerInput').reset();
       });
     }) ;
     
