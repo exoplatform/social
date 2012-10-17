@@ -69,13 +69,12 @@
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
-  <div style="visibility:hidden; display:none"><% uicomponent.renderChild(UIFormTextAreaInput.class) %></div>
   <div class="BlastContainer">
     <% if (uicomponent.getPostContext() == PostContext.USER) { %>
          <h4>$shareStatusLabel</h4>
     <% } %>
     <div class="$blastInput">
-      <textarea title="$defaultInput" placeholder="$defaultInput" cols="30" rows="10" id="composerDisplay" name="composerDisplay" class="textarea" style="height: 20px;"></textarea>
+      <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
     </div>
     <div class="BlastShare ClearFix">
       <div class="AttachMents">

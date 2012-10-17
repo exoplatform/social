@@ -65,7 +65,7 @@ var UIActivity = {
     UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
     UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
     UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
-    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId);
+    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId).show();
     UIActivity.deleteCommentButtonEls = [];
     UIActivity.contentBoxEl = $(UIActivity.contentBoxId);
     UIActivity.deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
@@ -111,12 +111,12 @@ var UIActivity = {
         $.each(commentForms, function(idx, el) {
           if ( $(el).attr('id') !== thiscommentBlockId ) {
             if (UIActivity.allCommentSize == 0) {
-			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
-			      } else {
-			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
-			      }
-			      
-			      $(el).hide();
+              $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+            } else {
+              $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
+            }
+            
+            $(el).hide();
           } else {
             $(el).show();
           }
@@ -129,12 +129,12 @@ var UIActivity = {
           if ($(this).val() === UIActivity.inputWriteAComment) {
           $(this).val('');
         }
-        $("#" + UIActivity.commentButtonId).show();
+       // $("#" + UIActivity.commentButtonId).show();
       });
 
       UIActivity.commentTextareaEl.on('blur', function(evt) {
         if ($(this).val() === '') {
-          $("#" + UIActivity.commentButtonId).hide();
+         // $("#" + UIActivity.commentButtonId).hide();
           $(this).val(UIActivity.inputWriteAComment);
 
           $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
@@ -153,7 +153,7 @@ var UIActivity = {
         UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
       }
     } else {
-      $("#" + UIActivity.commentFormBlockId).hide();
+     // $("#" + UIActivity.commentFormBlockId).hide();
     }
 
     if (UIActivity.deleteActivityButtonEl.length !== 0) {
@@ -179,26 +179,22 @@ var UIActivity = {
         });
         
       });
-      
 
     }
     
     //
-    $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput({
-      onDataRequest:function (mode, query, callback) {
-        var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-        $.getJSON(url, function(responseData) {
-          responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-          callback.call(this, responseData);
-        });
-      }
-    });
-
-    $('#CommentButton' + UIActivity.activityId).on('mousedown', function() {
-      $('textarea#ComposerDisplay' + UIActivity.activityId).mentionsInput('valClear', function(data) {
-        $('textarea#CommentTextarea' + UIActivity.activityId).val(data);
+    $('textarea#CommentTextarea' + UIActivity.activityId)
+      .css({'height': '48px', 'maxHeight' : '48px', 'minHeight' : '28px'})
+      .mentionsInput({
+        onDataRequest:function (mode, query, callback) {
+          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+          $.getJSON(url, function(responseData) {
+            responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+            callback.call(this, responseData);
+          });
+        },
+        idAction : ('CommentButton'+UIActivity.activityId)
       });
-    });
   }
 }
 

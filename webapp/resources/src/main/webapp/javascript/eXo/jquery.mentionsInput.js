@@ -19,6 +19,7 @@
     minChars      : 1,
     showAvatars   : true,
     elastic       : true,
+    idAction      : "",
     classes       : {
       autoCompleteItemActive : "active"
     },
@@ -75,7 +76,7 @@
 
   var MentionsInput = function (settings) {
 
-    var domInput, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
+    var domInput, jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
@@ -195,9 +196,9 @@
     }
     
     function saveCacheMention() {
-      var key = domInput.id;
+      var key = jElmTarget.attr('id');
       if(key) {
-        var parentForm = $(domInput).parents('form:first').parent();
+        var parentForm = jElmTarget.parents('form:first').parent();
         if(parentForm.length > 0) {
           var dataCache = parentForm.data(key);
           if(dataCache == null) {
@@ -393,8 +394,8 @@
     }
     
     function updateCacheData() {
-      var parentForm = $(domInput).parents('form:first').parent();
-      var key = domInput.id;
+      var parentForm = jElmTarget.parents('form:first').parent();
+      var key = jElmTarget.attr('id');
       if(key) {
         var dataCache = parentForm.data(key);
         if(dataCache == null) {
@@ -409,8 +410,8 @@
     }
     
     function clearCacheData() {
-      var parentForm = $(domInput).parents('form:first').parent();
-      var key = domInput.id;
+      var parentForm = jElmTarget.parents('form:first').parent();
+      var key = jElmTarget.attr('id');
       if(key) {
         var dataCache = parentForm.data(key);
         if(dataCache != null) {
@@ -422,8 +423,13 @@
     // Public methods
     return {
       init : function (domTarget) {
+        jElmTarget = $(domTarget);
+        var displayInput = jElmTarget.clone();
+        $(domTarget).css({'visibility':'hidden', 'display':'none'});
+        displayInput.attr("id", "Display"+$(this).attr('id'))
+        displayInput.appendTo(jElmTarget.parent());
 
-        domInput = domTarget;
+        domInput = displayInput;
 
         initTextarea();
         initAutocomplete();
@@ -433,9 +439,18 @@
         if( settings.prefillMention ) {
           addMention( settings.prefillMention );
         }
+        
+        if(settings.idAction && settings.idAction.length > 0) {
+          $('#'+settings.idAction).on('mousedown', function() {
+            var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
+            jElmTarget.val(value);
+            clearCacheData();
+            resetInput();
+          })
+        } 
 
+        
       },
-
       val : function (callback) {
         if (!_.isFunction(callback)) {
           return;
@@ -450,6 +465,9 @@
         }
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
+        clearCacheData();
+        resetInput();
+        
       },
       
       reset : function () {
@@ -491,3 +509,4 @@
   };
 
 })(jQuery, mentions.underscore);
+

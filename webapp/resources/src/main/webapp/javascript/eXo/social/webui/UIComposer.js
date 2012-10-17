@@ -89,9 +89,9 @@ var UIComposer = {
     if (!(UIComposer.composer && UIComposer.shareButton)) {
       alert('error: can not find composer or shareButton!');
     }
-    
+
     UIComposer.composer.val(UIComposer.getValue());
-    if (UIComposer.composer.val().length > 0) {
+    if (UIComposer.getValue().length > 0) {
         UIComposer.composer.css('marginBottom' , '4px');
     } else {
       UIComposer.composer.css('marginBottom' , '4px');
@@ -136,24 +136,18 @@ var UIComposer = {
     });
 
     //
-    $('textarea#composerDisplay').mentionsInput({
-      onDataRequest:function (mode, query, callback) {
-        var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
-        $.getJSON(url, function(responseData) {
-          responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-          callback.call(this, responseData);
-        });
-      }
-  
-    });
-
-    $('#ShareButton').on('mousedown', function() {
-      $('textarea#composerDisplay').mentionsInput('valClear', function(data) {
-        $('textarea#composerInput').val(data);
-        $('textarea#composerInput').reset();
+    $('textarea#composerInput')
+      .css({'height': '48px', 'maxHeight' : '48px', 'minHeight' : '28px'})
+      .mentionsInput({
+        onDataRequest:function (mode, query, callback) {
+          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+          $.getJSON(url, function(responseData) {
+            responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+            callback.call(this, responseData);
+          });
+        },
+        idAction : "ShareButton"
       });
-    }) ;
-    
   },
   post: function() {
     //UIComposer.composer.val(UIComposer.defaultInput);
