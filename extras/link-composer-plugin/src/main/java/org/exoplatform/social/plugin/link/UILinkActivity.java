@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.plugin.link;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -77,7 +78,7 @@ public class UILinkActivity extends BaseUIActivity {
     this.linkSource = linkSource;
   }
   public String getLinkTitle() {
-    return linkTitle;
+    return StringEscapeUtils.escapeHtml(linkTitle);
   }
   public void setLinkTitle(String linkTitle) {                
     this.linkTitle = linkTitle;
