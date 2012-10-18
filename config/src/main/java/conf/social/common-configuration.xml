@@ -23,6 +23,11 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
+    <key>org.exoplatform.social.webui.space.access.SpaceAccessService</key>
+    <type>org.exoplatform.social.webui.space.access.SpaceAccessService</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
