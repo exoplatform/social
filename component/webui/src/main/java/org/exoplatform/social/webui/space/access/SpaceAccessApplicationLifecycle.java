@@ -23,6 +23,8 @@ import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.router.ExoRouter;
+import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.space.SpaceAccessType;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
@@ -56,16 +58,22 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     LOG.info("RequestNavigationData::siteName =" + pcontext.getSiteName());
     LOG.info("RequestNavigationData::requestPath =" + requestPath);
     
+    Route route = ExoRouter.route(requestPath);
+    String spacePrettyName = route.localArgs.get("spacePrettyName");
+    String wikiPage = route.localArgs.get("wikiPage");
+    String appName = route.localArgs.get("appName");
+    
     if (pcontext.getSiteType().equals(SiteType.GROUP)
-        && pcontext.getSiteName().startsWith("/spaces") && requestPath != null
-        && requestPath.length() > 0) {
+        && pcontext.getSiteName().startsWith("/spaces") && spacePrettyName != null
+        && spacePrettyName.length() > 0 && appName == null) {
       
-      Space space = Utils.getSpaceService().getSpaceByPrettyName(requestPath);
+      Space space = Utils.getSpaceService().getSpaceByPrettyName(spacePrettyName);
       String remoteId = Utils.getOwnerRemoteId();
       
       processSpaceAccess(pcontext, remoteId, space);
       processWikiSpaceAccess(pcontext, remoteId, space);
-       
+    } else {
+      
     }
   }
   
@@ -132,6 +140,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     
     pcontext.setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
     pcontext.setAttribute(SpaceAccessType.ACCESSED_SPACE_NAME_KEY, spacePrettyName);
+    
+    
     pcontext.sendRedirect(url);
   }
 
