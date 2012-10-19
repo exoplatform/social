@@ -63,56 +63,75 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       Space space = Utils.getSpaceService().getSpaceByPrettyName(requestPath);
       String remoteId = Utils.getOwnerRemoteId();
       
-      //
-      boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, gotStatus);
-        return;
-      }
-      
-      //
-      gotStatus = SpaceAccessType.INVITED_SPACE.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.INVITED_SPACE, gotStatus);
-        return;
-      }
-      
-      //
-      gotStatus = SpaceAccessType.REQUESTED_JOIN_SPACE.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.REQUESTED_JOIN_SPACE, gotStatus);
-        return;
-      }
-      
-      //
-      gotStatus = SpaceAccessType.NOT_MEMBER_SPACE.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.NOT_MEMBER_SPACE, gotStatus);
-        return;
-      }
-      
-      //
-      gotStatus = SpaceAccessType.PRIVATE_SPACE.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.PRIVATE_SPACE, gotStatus);
-        return;
-      }
-
-      //
-      gotStatus = SpaceAccessType.NOT_ADMINISTRATOR.doCheck(remoteId, space);
-      if (gotStatus) {
-        sendRedirect(pcontext, SpaceAccessType.NOT_ADMINISTRATOR, gotStatus);
-        return;
-      }
-      
+      processSpaceAccess(pcontext, remoteId, space);
+      processWikiSpaceAccess(pcontext, remoteId, space);
+       
     }
   }
   
-  private void sendRedirect(PortalRequestContext pcontext, SpaceAccessType type, boolean status) throws IOException {
+  private void processWikiSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
+    //Gets Wiki Page Perma link
+    //http://int.exoplatform.org/portal/intranet/wiki/group/spaces/engineering/Spec_Func_-_Wiki_Page_Permalink
+    
+  }
+  
+  private void processSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
+    //
+    boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, space.getPrettyName());
+      return;
+    }
+    
+    //
+    gotStatus = SpaceAccessType.INVITED_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.INVITED_SPACE, space.getPrettyName());
+      return;
+    }
+    
+    //
+    gotStatus = SpaceAccessType.REQUESTED_JOIN_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.REQUESTED_JOIN_SPACE, space.getPrettyName());
+      return;
+    }
+    
+    //
+    gotStatus = SpaceAccessType.JOIN_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.JOIN_SPACE, space.getPrettyName());
+      return;
+    }
+
+    //
+    gotStatus = SpaceAccessType.REQUEST_JOIN_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.REQUEST_JOIN_SPACE, space.getPrettyName());
+      return;
+    }
+    //
+    gotStatus = SpaceAccessType.CLOSED_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.CLOSED_SPACE, space.getPrettyName());
+      return;
+    }
+
+    //
+    gotStatus = SpaceAccessType.NOT_ADMINISTRATOR.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.NOT_ADMINISTRATOR, space.getPrettyName());
+      return;
+    }
+  }
+  
+  private void sendRedirect(PortalRequestContext pcontext, SpaceAccessType type, String spacePrettyName) throws IOException {
     //build url for redirect here.
     String url = Utils.getURI(SpaceAccessType.NODE_REDIRECT);
     LOG.info(type.toString());
-    pcontext.setAttribute(SpaceAccessType.ACCESS_TYPE_KEY, type);
+    
+    pcontext.setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
+    pcontext.setAttribute(SpaceAccessType.ACCESSED_SPACE_NAME_KEY, spacePrettyName);
     pcontext.sendRedirect(url);
   }
 
@@ -123,7 +142,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
 
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    LOG.info("SpaceAccessApplicationLifecycle::onEndRequest ================================|");
+    
     
   }
 

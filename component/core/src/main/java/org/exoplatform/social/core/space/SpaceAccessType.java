@@ -45,7 +45,6 @@ public enum SpaceAccessType {
       //
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-      //SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
       return acl.getSuperUser().equals(remoteId);
     }
   },
@@ -55,7 +54,7 @@ public enum SpaceAccessType {
     public boolean doCheck(String remoteId, Space space) {
       return getSpaceService().isInvitedUser(space, remoteId);
     }
-  },
+  }, //waiting to validate from space manager
   REQUESTED_JOIN_SPACE("social.space.access.requested-join-space") {
 
     @Override
@@ -63,19 +62,27 @@ public enum SpaceAccessType {
       return getSpaceService().isPendingUser(space, remoteId);
     }
   },
-  PRIVATE_SPACE("social.space.access.private-space") {
+  CLOSED_SPACE("social.space.access.closed-space") {
 
     @Override
     public boolean doCheck(String remoteId, Space space) {
-      return false;
+      return !getSpaceService().isMember(space, remoteId) && "close".equals(space.getRegistration());
     }
     
   },
-  NOT_MEMBER_SPACE("social.space.access.not-member-space") {
+  JOIN_SPACE("social.space.access.join-space") {
 
     @Override
     public boolean doCheck(String remoteId, Space space) {
-      return !getSpaceService().isMember(space, remoteId);
+      return !getSpaceService().isMember(space, remoteId) && "open".equals(space.getRegistration());
+    }
+    
+  }, //request to join space validation
+  REQUEST_JOIN_SPACE("social.space.access.request-join-space") {
+
+    @Override
+    public boolean doCheck(String remoteId, Space space) {
+      return !getSpaceService().isMember(space, remoteId) && "validation".equals(space.getRegistration());
     }
     
   },
@@ -85,6 +92,13 @@ public enum SpaceAccessType {
     public boolean doCheck(String remoteId, Space space) {
       return space == null;
     }
+  },
+  NOT_ACCESS_WIKI_SPACE("social.space.access.not-access-wiki-space") {
+
+      @Override
+      public boolean doCheck(String remoteId, Space space) {
+        return space == null;
+      }
     
   };
   
@@ -103,7 +117,8 @@ public enum SpaceAccessType {
     return name;
   }
   
-  public final static String ACCESS_TYPE_KEY = "social.space.access.type.key";
+  public final static String ACCESSED_TYPE_KEY = "social.accessed.space.type.key";
+  public final static String ACCESSED_SPACE_NAME_KEY = "social.accessed.space.key";
   public final static String NODE_REDIRECT = "space-access";
   
   public abstract boolean doCheck(String remoteId, Space space);

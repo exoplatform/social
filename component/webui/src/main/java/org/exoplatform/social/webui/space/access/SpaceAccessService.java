@@ -48,7 +48,6 @@ public class SpaceAccessService implements WebAppListener, Startable {
   @Override
   public void start() {
     DefaultServletContainerFactory.getInstance().getServletContainer().addWebAppListener(this);
-    
   }
 
   @Override
