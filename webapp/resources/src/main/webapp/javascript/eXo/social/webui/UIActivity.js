@@ -182,20 +182,24 @@ var UIActivity = {
 
     }
     
-    //
-    $('textarea#CommentTextarea' + UIActivity.activityId)
-      .css({'height': '48px', 'maxHeight' : '48px', 'minHeight' : '28px'})
-      .mentionsInput({
+	//
+    $('textarea#CommentTextarea' + UIActivity.activityId).mentionsInput({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
-            responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+            responseData = mentions.underscore.filter(responseData, function(item) { 
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+            });
             callback.call(this, responseData);
           });
         },
-        idAction : ('CommentButton'+UIActivity.activityId)
+        idAction : ('CommentButton'+UIActivity.activityId),
+        elasticStyle : {
+          maxHeight : '35px',
+          minHeight : '22px'
+        }
       });
   }
-}
+};
 
  _module.UIActivity = UIActivity;

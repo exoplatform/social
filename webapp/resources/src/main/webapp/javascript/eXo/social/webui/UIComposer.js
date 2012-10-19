@@ -61,10 +61,6 @@ var UIComposer = {
     UIComposer.maxCharactersAllowed = params.maxCharactersAllowed || 0;
     UIComposer.focusColor = params.focusColor || '#000000';
     UIComposer.blurColor = params.blurColor || '#777777';
-    UIComposer.minHeight = params.minHeight || '10px';
-    UIComposer.focusHeight = params.focusHeight || '48px';
-    UIComposer.maxHeight = params.maxHeight || '48px';
-    UIComposer.padding = params.padding || '11px 0 11px 8px';
     UIComposer.focusCallback = params.focusCallback;
     UIComposer.blurCallback = params.blurCallback;
     UIComposer.keypressCallback = params.keypressCallback;
@@ -91,12 +87,6 @@ var UIComposer = {
     }
 
     UIComposer.composer.val(UIComposer.getValue());
-    if (UIComposer.getValue().length > 0) {
-        UIComposer.composer.css('marginBottom' , '4px');
-    } else {
-      UIComposer.composer.css('marginBottom' , '4px');
-    }
-    
     UIComposer.shareButton.attr('class','ShareButtonDisable');
     UIComposer.shareButton.attr('disabled',"disabled");
     
@@ -109,25 +99,18 @@ var UIComposer = {
       if (UIComposer.focusCallback) {
         UIComposer.focusCallback();
       }
-      $(this).css('marginBottom' , '4px');
     });
 
     UIComposer.composer.on('blur', function() {
       if (UIComposer.composer.val().length === 0) {
-
-        $(this).css('marginBottom' , '4px');
 
         //if current composer is default composer then disable share button
         if(!UIComposer.isReady){
           UIComposer.shareButton.attr('disabled',"disabled");
           UIComposer.shareButton.attr('class','ShareButtonDisable');
         }
-        
       } else {
-        
-        $(this).css('marginBottom' , '4px');
         UIComposer.currentValue = $(this).val();
-        
       }
 
       if (UIComposer.blurCallback) {
@@ -136,17 +119,21 @@ var UIComposer = {
     });
 
     //
-    $('textarea#composerInput')
-      .css({'height': '48px', 'maxHeight' : '48px', 'minHeight' : '28px'})
-      .mentionsInput({
+    $('textarea#composerInput').mentionsInput({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
-            responseData = mentions.underscore.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+            responseData = mentions.underscore.filter(responseData, function(item) { 
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+            });
             callback.call(this, responseData);
           });
         },
-        idAction : "ShareButton"
+        idAction : "ShareButton",
+        elasticStyle : {
+          maxHeight : '38px',
+          minHeight : '24px'
+        }
       });
   },
   post: function() {
@@ -178,7 +165,7 @@ var UIComposer = {
       UIComposer.shareButton.attr("class",'ShareButton');
     }
   }
-}
+};
 
 window.UIComposer = UIComposer;
 _module.UIComposer = UIComposer;

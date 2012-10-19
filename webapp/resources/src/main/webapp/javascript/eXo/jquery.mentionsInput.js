@@ -9,7 +9,7 @@
  */
 
 (function ($, _, undefined) {
-
+  window.gj = $;
   // Settings
   var KEY = { BACKSPACE : 8, TAB : 9, RETURN : 13, ESC : 27, LEFT : 37, UP : 38, RIGHT : 39, DOWN : 40, MENTION : 50, COMMA : 188, SPACE : 32, HOME : 36, END : 35 }; // Keys "enum"
 
@@ -19,6 +19,7 @@
     minChars      : 1,
     showAvatars   : true,
     elastic       : true,
+    elasticStyle  : {},
     idAction      : "",
     classes       : {
       autoCompleteItemActive : "active"
@@ -34,6 +35,10 @@
       mentionItemHighlight       : _.template('<strong><span><%= value %></span></strong>')
     }
   };
+  //--tuvd--
+  function log(v) {
+    window.console.log(v);
+  }
   
   function cacheMention() {
     var mentionCache = {
@@ -44,39 +49,31 @@
     };
     return mentionCache;
   };
-  
+  //--/tuvd--
   var utils = {
-    htmlEncode       : function (str) {
+    htmlEncode : function (str) {
       return _.escape(str);
     },
-    highlightTerm    : function (value, term) {
+    highlightTerm : function (value, term) {
       if (!term && !term.length) {
         return value;
       }
       return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<b>$1</b>");
     },
-    setCaratPosition : function (domNode, caretPos) {
-      if (domNode.createTextRange) {
-        var range = domNode.createTextRange();
-        range.move('character', caretPos);
-        range.select();
-      } else {
-        if (domNode.selectionStart) {
-          domNode.focus();
-          domNode.setSelectionRange(caretPos, caretPos);
-        } else {
-          domNode.focus();
-        }
-      }
-    },
-    rtrim: function(string) {
+    rtrim : function(string) {
       return string.replace(/\s+$/,"");
+    },
+    getSimpleValue : function (val) {
+      return val.replace(/&amp;/g,'&').replace(/&nbsp;/g, ' ')
+            .replace(/<span class="icon">x<\/span>/gi, '')
+            .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
+            .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
     }
   };
 
   var MentionsInput = function (settings) {
 
-    var domInput, jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
+    var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
@@ -85,7 +82,6 @@
     settings = $.extend(true, {}, defaultSettings, settings );
 
     function initTextarea() {
-      elmInputBox = $(domInput);
 
       if (elmInputBox.attr('data-mentions-input') == 'true') {
         return;
@@ -101,11 +97,12 @@
       elmInputBox.bind('keypress', onInputBoxKeyPress);
       elmInputBox.bind('input', onInputBoxInput);
       elmInputBox.bind('click', onInputBoxClick);
+      elmInputBox.bind('paste', onInputBoxPaste);
       elmInputBox.bind('blur', onInputBoxBlur);
 
       // Elastic textareas, internal setting for the Dispora guys
       if( settings.elastic ) {
-        elmInputBox.elastic();
+        elmInputBox.elastic(settings);
       }
 
     }
@@ -123,7 +120,7 @@
 
     function updateValues() {
       var syntaxMessage = getInputBoxValue();
-
+      
       _.each(mentionsCollection, function (mention) {
         var textSyntax = settings.templates.mentionItemSyntax(mention);
         syntaxMessage = syntaxMessage.replace(mention.value, textSyntax);
@@ -161,7 +158,7 @@
 
     function addMention(mention) {
 
-      var currentMessage = getInputBoxValue();
+      var currentMessage = getInputBoxFullValue();
 
       // Using a regex to figure out positions
       var regex = new RegExp("\\" + settings.triggerChar + currentDataQuery, "gi");
@@ -182,19 +179,88 @@
       hideAutoComplete();
 
       // Mentions & syntax message
-      var updatedMessageText = start + mention.value + ' ' + end;
+      var updatedMessageText = start + '<span contenteditable="false">'+mention.value + 
+                                       '<span class="icon">x</span></span>&nbsp;<div id="cursorText"></div>' + end;
+
       elmInputBox.val(updatedMessageText);
+      jElmTarget.focus();
+      
+      setCaratPosition(elmInputBox);
+      
+      initClickMention();
       updateValues();
 
-      // Set correct focus and selection
-      elmInputBox.focus();
-      utils.setCaratPosition(elmInputBox[0], startEndIndex);
     }
 
-    function getInputBoxValue() {
-      return $.trim(elmInputBox.val());
+  // --tuvd--   keypress keydown change cut paste
+    function initClickMention() {
+      var sp = elmInputBox.find('> span');
+      if(sp.length > 0) {
+        $.each(sp, function(index, item) {
+          var sp = $(item).find('span');
+          sp.data('indexMS', {'indexMS':index}).off('click');
+          sp.on('click', function(e) {
+            var t = $(this).data('indexMS').indexMS;
+            mentionsCollection.splice(t, 1);
+            $(this).parent().remove();
+            updateValues();
+            saveCacheMention();
+            initClickMention();
+            e.stopPropagation();
+          });
+          $(item).on('click', function() {
+            var selection = getSelection();
+            if (selection) {
+            var range = document.createRange();
+            range.selectNodeContents(this);
+            range.selectNode(this);
+            
+            selection.removeAllRanges();
+            selection.addRange(range);
+            }
+          });
+        });
+      }
     }
-    
+
+    function getSelection() {
+      var selection;
+      if (window.getSelection) {
+        selection = window.getSelection();
+      } else if (document.getSelection) {
+        selection = document.getSelection();
+      } else if (document.selection) {
+        selection = document.selection;
+      }
+      return selection;
+    };
+
+    function setCaratPosition(inputField) {
+      if(inputField) {
+        var cursorText = inputField.find('#cursorText');
+        if (inputField.val().length != 0) {
+          var elm = inputField[0]; 
+          var selection = getSelection();
+          if (selection) {
+            cursorText.attr('contenteditable', 'true')
+              .css({'display':'inline', 'height':'14px'})
+              .html('&nbsp;&nbsp;&nbsp;');
+              
+          cursorText.focus();
+          var range = document.createRange();;
+            range.selectNode(elm);
+            range.selectNodeContents(cursorText[0]);
+            
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        } else {
+          inputField.focus();
+        }
+        cursorText.remove();
+      }
+    }
+
     function saveCacheMention() {
       var key = jElmTarget.attr('id');
       if(key) {
@@ -205,11 +271,20 @@
             dataCache = new cacheMention();
           }
           dataCache.mentions = mentionsCollection;
-          dataCache.val = elmInputBox.val();
+          dataCache.val = getInputBoxFullValue();
           dataCache.data = mentionsCollection.length > 0 ? elmInputBox.data('messageText') : getInputBoxValue() ;
           parentForm.data(key, dataCache);
         }
       }
+    }
+//--/tuvd--
+
+    function getInputBoxValue() {
+      return $.trim(elmInputBox.val());
+    }
+
+    function getInputBoxFullValue() {
+      return $.trim(elmInputBox.value());
     }
 
     function onAutoCompleteItemClick(e) {
@@ -220,6 +295,27 @@
       return false;
     }
 
+    function copyToClipboard() {
+      var text = '';
+      if (window.clipboardData) { // Internet Explorer
+        window.clipboardData.setData("Text", text);
+      } else {
+        unsafeWindow.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        var clipboardHelper = Components.classes["@mozilla.org/widget/clipboardhelper;1"].getService(Components.interfaces.nsIClipboardHelper);
+        clipboardHelper.copyString(text);
+      }
+      return text;
+    }
+    
+    function onInputBoxPaste(e) {
+      var elmTarget = $(this);
+      $.each(elmTarget.find('span'), function(index, item) {
+        if($(item).attr('background-color') != undefined) {
+          $(item).remove();
+        }
+      });
+    }
+
     function onInputBoxClick(e) {
       resetBuffer();
     }
@@ -227,6 +323,10 @@
     function onInputBoxBlur(e) {
       hideAutoComplete();
       saveCacheMention();
+      var plsd = $(this).parent().find('div.placeholder:first');
+      if(plsd.length > 0 && $.trim(elmInputBox.val()).length === 0) {
+        plsd.show();
+      }
     }
 
     function onInputBoxInput(e) {
@@ -244,14 +344,18 @@
     }
 
     function onInputBoxKeyPress(e) {
+
       if(e.keyCode !== KEY.BACKSPACE) {
         var typedValue = String.fromCharCode(e.which || e.keyCode);
         inputBuffer.push(typedValue);
+        var plsd = $(this).parent().find('div.placeholder:first');
+        if(plsd.length > 0) {
+          plsd.hide();
+        }
       }
     }
 
     function onInputBoxKeyDown(e) {
-
       //
       if ( e.keyCode == KEY.MENTION ) {
         var query = '';
@@ -277,6 +381,10 @@
 
       if (e.keyCode == KEY.BACKSPACE) {
         inputBuffer = inputBuffer.slice(0, -1 + inputBuffer.length); // Can't use splice, not available in IE
+        var plsd = $(this).parent().find('div.placeholder:first');
+        if(plsd.length > 0 && $.trim(elmInputBox.val()).length === 1) {
+          plsd.show();
+        }
         return;
       }
 
@@ -310,7 +418,6 @@
             elmActiveAutoCompleteItem.trigger('mousedown');
             return false;
           }
-
           break;
       }
 
@@ -392,7 +499,8 @@
       mentionsCollection = [];
       updateValues();
     }
-    
+
+    //--tuvd--    
     function updateCacheData() {
       var parentForm = jElmTarget.parents('form:first').parent();
       var key = jElmTarget.attr('id');
@@ -419,38 +527,76 @@
         }
       }
     }
+    
+    function getTemplate() {
+      return $('<div contenteditable="true" g_editable="true" class="ReplaceTextArea editable"><br></div>');
+    }
+
+    function initDisplay(id, target) {
+      var id_ = "Display"+id;
+      var displayInput = target.find('#'+id_);
+      if(displayInput.length === 0) {
+          displayInput = getTemplate().attr('id', id_);
+          displayInput.appendTo(target);
+      }
+      displayInput.val = function(v) {
+        if(v === null || typeof v === "undefined") {
+          return utils.getSimpleValue($(this).html());
+        } else {
+          if(typeof v === 'object') {
+            $(this).html('').append(v);
+          } else {
+            $(this).html(v);
+          }
+          
+        }
+      };
+      displayInput.value = function() {
+        var val = $(this).html().replace(/&amp;/g,'&').replace(/&nbsp;/g, ' ')
+                          .replace(/<br>/g, '').replace(/\n/g, '<br />');
+        return val;
+      };
+      return displayInput;
+    }
+    //--/tuvd--
 
     // Public methods
     return {
       init : function (domTarget) {
+        window.jq = $;
         jElmTarget = $(domTarget);
-        var displayInput = jElmTarget.clone();
-        $(domTarget).css({'visibility':'hidden', 'display':'none'});
-        displayInput.attr("id", "Display"+$(this).attr('id'))
-        displayInput.appendTo(jElmTarget.parent());
-
-        domInput = displayInput;
-
+        jElmTarget.css({'visibility':'hidden', 'display':'none'});
+        //
+        jElmTarget.val('');
+        
+        elmInputBox = initDisplay(jElmTarget.attr('id'), jElmTarget.parent());;
+        
         initTextarea();
         initAutocomplete();
         initMentionsOverlay();
         updateCacheData();
-
+    
+        // add placeholder
+        if($.trim(elmInputBox.val()).length == 0) {
+          var title = jElmTarget.attr('title');
+          $('<div class="placeholder">'+title+'</div>').attr('title', title).appendTo(elmInputBox.parent());
+        }
+        // prefill mentions
         if( settings.prefillMention ) {
           addMention( settings.prefillMention );
         }
-        
+        // action submit
         if(settings.idAction && settings.idAction.length > 0) {
           $('#'+settings.idAction).on('mousedown', function() {
             var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
+            value = value.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
             jElmTarget.val(value);
             clearCacheData();
             resetInput();
-          })
+          });
         } 
-
-        
       },
+
       val : function (callback) {
         if (!_.isFunction(callback)) {
           return;
@@ -467,7 +613,6 @@
         callback.call(this, value);
         clearCacheData();
         resetInput();
-        
       },
       
       reset : function () {
@@ -478,11 +623,41 @@
         if (!_.isFunction(callback)) {
           return;
         }
-
         callback.call(this, mentionsCollection);
       }
     };
   };
+  // elastic the mention content
+  $.fn.extend({  
+    elastic: function(settings) {
+      elasticStyle = settings.elasticStyle;
+      if(elasticStyle && typeof elasticStyle === 'object') {
+        return this.each(function () {
+          var delta = parseInt(elasticStyle.maxHeight) - parseInt(elasticStyle.minHeight);
+          $(this).css({
+              'height': elasticStyle.minHeight,
+              'marginBottom': (delta + 4) + 'px'
+          });
+          $(this).data('elasticStyle', {'maxHeight': elasticStyle.maxHeight, 'minHeight':elasticStyle.minHeight, 'delta': delta})
+          .on('keyup change cut paste focus', function(){
+            $(this).animate({
+              'height': $(this).data('elasticStyle').maxHeight,
+              'marginBottom': '4px'
+            }, 100, function(){});
+          }).on('blur',function(){
+            var val = $.trim($(this).html());
+            val = utils.getSimpleValue(val);
+            if(val.length == 0) {
+              $(this).animate({
+                'height': $(this).data('elasticStyle').minHeight,
+                'marginBottom': ($(this).data('elasticStyle').delta + 4) + 'px'
+              }, 300, function() {});
+            }
+          });
+        });
+      }
+    }
+  });
 
   $.fn.mentionsInput = function (method, settings) {
 
@@ -494,19 +669,14 @@
 
     return this.each(function () {
       var instance = $.data(this, 'mentionsInput') || $.data(this, 'mentionsInput', new MentionsInput(settings));
-
       if (_.isFunction(instance[method])) {
         return instance[method].apply(this, Array.prototype.slice.call(outerArguments, 1));
-
       } else if (typeof method === 'object' || !method) {
         return instance.init.call(this, this);
-
       } else {
         $.error('Method ' + method + ' does not exist');
       }
-
     });
   };
-
+  
 })(jQuery, mentions.underscore);
-

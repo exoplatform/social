@@ -124,7 +124,7 @@
   background: #FFCF00;
   font-weight: normal;
   padding: 1px 0px;
-	padding-bottom: 1.5px;
+  padding-bottom: 1.5px;
   border-radius: 3px;
 }
 
@@ -161,4 +161,52 @@
 input:-moz-read-write,
 textarea:-moz-read-write {
   -moz-user-modify: read-write !important;
+}
+
+.ReplaceTextArea {
+  border:none;
+  margin:0;
+  padding:0;
+  resize:none;
+  width:100%
+  outline:0;
+  position:relative;
+  overflow-x:hidden;
+  overflow-y:auto
+  cursor:text;
+  font:normal 13px/1.4 Lucida, arial, tahoma ,sans-serif;
+  word-wrap:break-word;
+  height: 28px;
+  border: solid 1px gray;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.mentions-input-box .ReplaceTextArea span {
+  background: #FFD400;
+  border-radius: 3px;
+  color: #036;
+}
+
+.mentions-input-box .ReplaceTextArea .icon {
+  font-weight: bold;
+  padding:0px 2px;
+  color: gray;
+  cursor: pointer;
+}
+
+.mentions-input-box .placeholder {
+  color: gray;
+  opacity: 0.8;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.mentions-input-box .mentions {
+  display: none;
+}
+
+.UIComposer textarea {
+  display: none;
 }
