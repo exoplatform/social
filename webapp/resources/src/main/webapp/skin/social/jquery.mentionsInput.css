@@ -164,40 +164,44 @@ textarea:-moz-read-write {
 }
 
 .ReplaceTextArea {
-  border:none;
   margin:0;
-  padding:0;
-  resize:none;
-  width:100%
+  width:auto;
+  height: 28px;
+  font:normal 13px/1.4 Lucida, arial, tahoma ,sans-serif;
+  border: solid 1px gray;
+  padding: 5px;
+  cursor: text;
   outline:0;
   position:relative;
+  resize:none;
   overflow-x:hidden;
-  overflow-y:auto
-  cursor:text;
-  font:normal 13px/1.4 Lucida, arial, tahoma ,sans-serif;
+  overflow-y:auto;
   word-wrap:break-word;
-  height: 28px;
-  border: solid 1px gray;
   border-radius: 5px;
-  padding: 5px;
 }
 
 .mentions-input-box .ReplaceTextArea span {
   background: #FFD400;
   border-radius: 3px;
   color: #036;
+  padding: 0px 3px;
+  display: inline-block;
 }
 
 .mentions-input-box .ReplaceTextArea .icon {
+  background: url('/social-resources/skin/ShareImages/mention-remove.png') no-repeat center right;
   font-weight: bold;
-  padding:0px 2px;
   color: gray;
   cursor: pointer;
+  width: 13px;
+  height: auto;
+  display: inline-block;
+  padding: 0px;
 }
 
 .mentions-input-box .placeholder {
   color: gray;
-  opacity: 0.8;
+  opacity: 0.85;
   position: absolute;
   top: 5px;
   left: 5px;

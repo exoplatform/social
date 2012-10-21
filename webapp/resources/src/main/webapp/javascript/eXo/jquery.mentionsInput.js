@@ -65,9 +65,25 @@
     },
     getSimpleValue : function (val) {
       return val.replace(/&amp;/g,'&').replace(/&nbsp;/g, ' ')
-            .replace(/<span class="icon">x<\/span>/gi, '')
             .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
             .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+    },
+    getCursorIndexOfText : function (val1, val2) {
+      var t = val2.length;
+      for(var i = 0; i < val2.length; ++i) {
+        if(val1[i] != val2[i]) {
+            t = i-1;
+            break;
+        }
+      }
+
+      if(t >=0) {
+        if($.trim(val1.substr(t)).indexOf('<span') === 0) {
+          return t;
+        }
+      }
+      
+      return -1;
     }
   };
 
@@ -93,12 +109,12 @@
       elmWrapperBox = elmInputWrapper.find('> div');
 
       elmInputBox.attr('data-mentions-input', 'true');
-      elmInputBox.bind('keydown', onInputBoxKeyDown);
-      elmInputBox.bind('keypress', onInputBoxKeyPress);
-      elmInputBox.bind('input', onInputBoxInput);
-      elmInputBox.bind('click', onInputBoxClick);
-      elmInputBox.bind('paste', onInputBoxPaste);
-      elmInputBox.bind('blur', onInputBoxBlur);
+      elmInputBox.on('keydown', onInputBoxKeyDown);
+      elmInputBox.on('keypress', onInputBoxKeyPress);
+      elmInputBox.on('input', onInputBoxInput);
+      elmInputBox.on('click', onInputBoxClick);
+      elmInputBox.on('paste', onInputBoxPaste);
+      elmInputBox.on('blur', onInputBoxBlur);
 
       // Elastic textareas, internal setting for the Dispora guys
       if( settings.elastic ) {
@@ -179,8 +195,7 @@
       hideAutoComplete();
 
       // Mentions & syntax message
-      var updatedMessageText = start + '<span contenteditable="false">'+mention.value + 
-                                       '<span class="icon">x</span></span>&nbsp;<div id="cursorText"></div>' + end;
+      var updatedMessageText = start + addItemMention(mention.value) + end;
 
       elmInputBox.val(updatedMessageText);
       jElmTarget.focus();
@@ -190,6 +205,13 @@
       initClickMention();
       updateValues();
 
+    }
+
+    function addItemMention(value) {
+      var val = '<span contenteditable="false">'+ value + 
+                '<span class="icon"'+(($.browser.mozilla)?'contenteditable="true"':'')+'>&nbsp;</span></span>' +
+                '&nbsp;<div id="cursorText"></div>';
+      return val;
     }
 
   // --tuvd--   keypress keydown change cut paste
@@ -314,6 +336,10 @@
           $(item).remove();
         }
       });
+      var plsd = $(this).parent().find('div.placeholder:first');
+      if(plsd.length > 0 && $.trim(elmInputBox.val()).length === 0) {
+        plsd.show();
+      }
     }
 
     function onInputBoxClick(e) {
@@ -356,6 +382,12 @@
     }
 
     function onInputBoxKeyDown(e) {
+
+      if ( e.keyCode == 86 && e.ctrlKey) {
+         alert('Can not support paste !!!!');
+         return;
+      }
+
       //
       if ( e.keyCode == KEY.MENTION ) {
         var query = '';
@@ -379,11 +411,37 @@
         return;
       }
 
+      if (e.keyCode == KEY.SPACE) {
+        inputBuffer = [];
+      }
       if (e.keyCode == KEY.BACKSPACE) {
         inputBuffer = inputBuffer.slice(0, -1 + inputBuffer.length); // Can't use splice, not available in IE
+
         var plsd = $(this).parent().find('div.placeholder:first');
         if(plsd.length > 0 && $.trim(elmInputBox.val()).length === 1) {
           plsd.show();
+        } else {
+          var before = elmInputBox.value();
+          elmInputBox.animate({'cursor': 'wait'}, 200 , function() {
+            var after = elmInputBox.value();
+            var delta = before.length - after.length;
+            var textSizeMention = 63;
+            if(delta > textSizeMention) {
+              var i = utils.getCursorIndexOfText(before, after);
+              log('index: ' + i);
+              if(i >= 0) {
+                after = after.substr(0, i) + ' @<div id="cursorText"></div>' + after.substr(i, after.length);
+                after = after.replace(/  @/g, ' @');
+                elmInputBox.val(after);
+                autoSetKeyCode(elmInputBox);
+                setCaratPosition(elmInputBox);
+              }
+            } else if(delta == 1 && after[after.length-1] === '@'){
+              autoSetKeyCode(elmInputBox);
+            }
+            elmInputBox.css('cursor', 'text');
+          });
+
         }
         return;
       }
@@ -422,6 +480,21 @@
       }
 
       return true;
+    }
+
+    function autoSetKeyCode(elm) {
+      var event = document.createEvent("KeyboardEvent");
+      if(event.initKeyboardEvent) {
+        event.initKeyboardEvent("keypress", true, true, null, false, false, false, false, 50, 0);
+      }else {
+        event.initUIEvent("keypress", true, true, window, 1);
+        event.keyCode = 50;
+      }
+      var e = jQuery.Event("keydown", { keyCode: 50, charCode : 50 });
+      elm.triggerHandler(e);
+      elm.trigger(e);
+      resetBuffer();
+      inputBuffer[0] = '@';
     }
 
     function hideAutoComplete() {
@@ -529,7 +602,7 @@
     }
     
     function getTemplate() {
-      return $('<div contenteditable="true" g_editable="true" class="ReplaceTextArea editable"><br></div>');
+      return $('<div contenteditable="true" g_editable="true" class="ReplaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -541,7 +614,9 @@
       }
       displayInput.val = function(v) {
         if(v === null || typeof v === "undefined") {
-          return utils.getSimpleValue($(this).html());
+          var temp = $(this).clone();
+          temp.find('.icon').remove();
+          return utils.getSimpleValue(temp.html());
         } else {
           if(typeof v === 'object') {
             $(this).html('').append(v);
@@ -639,11 +714,14 @@
               'marginBottom': (delta + 4) + 'px'
           });
           $(this).data('elasticStyle', {'maxHeight': elasticStyle.maxHeight, 'minHeight':elasticStyle.minHeight, 'delta': delta})
-          .on('keyup change cut paste focus', function(){
-            $(this).animate({
-              'height': $(this).data('elasticStyle').maxHeight,
-              'marginBottom': '4px'
-            }, 100, function(){});
+          .on('focus', function() {
+            var maxH = $(this).data('elasticStyle').maxHeight;
+            if($(this).height() < parseInt(maxH)) {
+              $(this).animate({
+                'height': maxH,
+                'marginBottom': '4px'
+              }, 100, function(){});
+            }
           }).on('blur',function(){
             var val = $.trim($(this).html());
             val = utils.getSimpleValue(val);
@@ -680,3 +758,4 @@
   };
   
 })(jQuery, mentions.underscore);
+
