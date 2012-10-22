@@ -25,7 +25,7 @@ import org.exoplatform.social.core.storage.api.ActivityStorage;
 
 /**
  * The realtime list access for comments of activities.
- *
+ * 
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since May 9, 2011
  */
@@ -34,21 +34,21 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   /**
    * The activity activityStorage.
    */
-  private ActivityStorage activityStorage;
+  private ActivityStorage   activityStorage;
 
   /**
    * The existing activity.
    */
   private ExoSocialActivity existingActivity;
 
-
   /**
    * The constructor.
-   *
+   * 
    * @param theActivityStorage
    * @param theExistingActivity
    */
-  public CommentsRealtimeListAccess(ActivityStorage theActivityStorage, ExoSocialActivity theExistingActivity) {
+  public CommentsRealtimeListAccess(ActivityStorage theActivityStorage,
+                                    ExoSocialActivity theExistingActivity) {
     this.activityStorage = theActivityStorage;
     this.existingActivity = theExistingActivity;
   }
@@ -100,5 +100,33 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
    */
   public int getNumberOfOlder(ExoSocialActivity baseComment) {
     return activityStorage.getNumberOfOlderComments(existingActivity, baseComment);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> loadNewer(Long sinceTime, int limit) {
+    return activityStorage.getNewerComments(existingActivity, sinceTime, limit);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> loadOlder(Long maxTime, int limit) {
+    return activityStorage.getOlderComments(existingActivity, maxTime, limit);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewer(Long sinceTime) {
+    return activityStorage.getNumberOfNewerComments(existingActivity, sinceTime);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfOlder(Long maxTime) {
+    return activityStorage.getNumberOfOlderComments(existingActivity, maxTime);
   }
 }

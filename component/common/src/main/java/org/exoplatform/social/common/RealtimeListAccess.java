@@ -21,17 +21,18 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 
 /**
- * The Realtime list access interface to provide more facility to list access for easier real-time access.
- *
+ * The Realtime list access interface to provide more facility to list access
+ * for easier real-time access.
+ * 
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @since  1.2.0-GA
- * @since  Apr 4, 2011
+ * @since 1.2.0-GA
+ * @since Apr 4, 2011
  */
 public interface RealtimeListAccess<E> extends ListAccess<E> {
 
   /**
    * Loads items as list instead of array as from {@link #load(int, int)}.
-   *
+   * 
    * @param index the index
    * @param limit the number to load
    * @return a list
@@ -40,6 +41,7 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
 
   /**
    * Overrides its parent interface to avoid checked-exception.
+   * 
    * @param index the index
    * @param limit the maximum of elements to return
    * @return array of elements
@@ -48,14 +50,14 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
 
   /**
    * Overrides its parent interface to avoid checked-exception.
-   *
+   * 
    * @return the number of elements.
    */
   int getSize();
 
   /**
    * Loads newer elements based on the provided element.
-   *
+   * 
    * @param e the based element
    * @param length number of newer elements to load
    * @return an array of newer elements
@@ -63,16 +65,33 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
   List<E> loadNewer(E e, int length);
 
   /**
+   * Loads newer elements based on the provided element.
+   * 
+   * @param sinceTime postedTime of newer elements to load
+   * @param limit number of newer elements to load
+   * @return an array of newer elements
+   */
+  List<E> loadNewer(Long sinceTime, int limit);
+
+  /**
    * Gets the number of newer elements based on the provided element.
-   *
+   * 
    * @param e the provided element
    * @return number of newer elements if any
    */
   int getNumberOfNewer(E e);
 
   /**
+   * Gets the number of newer elements based on the postedTime.
+   * 
+   * @param sinceTime the postedTime
+   * @return number of newer elements if any
+   */
+  int getNumberOfNewer(Long sinceTime);
+
+  /**
    * Loads older elements based on the provided element.
-   *
+   * 
    * @param e the based element
    * @param length number of older elements to load
    * @return an array of older elements
@@ -80,10 +99,28 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
   List<E> loadOlder(E e, int length);
 
   /**
+   * Loads older elements based on the provided element.
+   * 
+   * @param maxTime postedTime of older elements to load
+   * @param limit number of older elements to load
+   * @return an array of older elements
+   */
+  List<E> loadOlder(Long maxTime, int limit);
+
+  /**
    * Gets the number of older elements based on the provided element.
-   *
+   * 
    * @param e the provided element
    * @return number of older elements if any
    */
   int getNumberOfOlder(E e);
+
+  /**
+   * Gets the number of older elements based on the postedTime.
+   * 
+   * @param maxTime the postedTime
+   * @return number of older elements if any
+   */
+  int getNumberOfOlder(Long maxTime);
+
 }
