@@ -25,12 +25,12 @@
   <parent>
     <artifactId>social-project</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.11-SNAPSHOT</version>
+    <version>1.2.11-CR01</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.server</artifactId>
-  <version>1.2.11-SNAPSHOT</version>
+  <version>1.2.11-CR01</version>
   <packaging>pom</packaging>
   <name>eXo Social Server patch</name>
   <description>eXo Social Server patch</description>
