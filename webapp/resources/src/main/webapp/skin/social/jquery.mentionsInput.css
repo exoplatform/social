@@ -87,12 +87,11 @@
 
 .mentions-input-box .mentions-autocomplete-list li:hover,
 .mentions-input-box .mentions-autocomplete-list li.active {
-  background-color: #f2f2f2;
+  background-color: #649EED;
 }
 
 .mentions-input-box .mentions-autocomplete-list li b {
-  background: #ffff99;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 .mentions-input-box .mentions {
@@ -181,7 +180,7 @@ textarea:-moz-read-write {
 }
 
 .mentions-input-box .ReplaceTextArea span {
-  background: #FFD400;
+  background: #6495ED;
   border-radius: 3px;
   color: #036;
   padding: 0px 3px;
@@ -191,7 +190,7 @@ textarea:-moz-read-write {
 .mentions-input-box .ReplaceTextArea .icon {
   background: url('/social-resources/skin/ShareImages/mention-remove.png') no-repeat center right;
   font-weight: bold;
-  color: gray;
+  color: transparent;
   cursor: pointer;
   width: 13px;
   height: auto;
