@@ -196,6 +196,7 @@ textarea:-moz-read-write {
   height: auto;
   display: inline-block;
   padding: 0px;
+	font-size:0px;
 }
 
 .mentions-input-box .placeholder {

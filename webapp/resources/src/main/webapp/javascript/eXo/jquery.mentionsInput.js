@@ -237,7 +237,6 @@
       var updatedMessageText = start + addItemMention(mention.value) + end;
 
       elmInputBox.val(updatedMessageText);
-      jElmTarget.focus();
 
       initClickMention();
       setCaratPosition(elmInputBox);
@@ -271,12 +270,14 @@
           $(item).on('click', function() {
             var selection = getSelection();
             if (selection) {
-              var range = document.createRange();
-              range.selectNodeContents(this);
-              range.selectNode(this);
+              try {
+                var range = document.createRange();
+                range.selectNodeContents(this);
+                range.selectNode(this);
 
-              selection.removeAllRanges();
-              selection.addRange(range);
+                selection.removeAllRanges();
+                selection.addRange(range);
+              } catch(err) {}
             }
           });
         });
@@ -306,17 +307,18 @@
               'display' : 'inline',
               'height' : '14px'
             }).html('&nbsp;&nbsp;&nbsp;');
-
             cursorText.focus();
-            var range = document.createRange();
-            range.selectNode(elm);
-            range.selectNodeContents(cursorText[0]);
+            try{
+              var range = document.createRange();
+              range.selectNode(elm);
+              range.selectNodeContents(cursorText[0]);
 
-            selection.removeAllRanges();
-            selection.addRange(range);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }catch(err) {
+              inputField.focus();
+            }
           }
-        } else {
-          inputField.focus();
         }
         cursorText.remove();
         updateValues();
@@ -480,7 +482,11 @@
         }
         return;
       }
-
+      
+      if (navigator.userAgent.indexOf("MSIE") > -1 && mentionsCollection.length) {
+        updateValues();
+      }
+      
       if (!elmAutocompleteList.is(':visible')) {
         return true;
       }
@@ -514,26 +520,27 @@
         }
         break;
       }
-
       return true;
     }
 
     function autoSetKeyCode(elm) {
-      var event = document.createEvent("KeyboardEvent");
-      if (event.initKeyboardEvent) {
-        event.initKeyboardEvent("keypress", true, true, null, false, false, false, false, 50, 0);
-      } else {
-        event.initUIEvent("keypress", true, true, window, 1);
-        event.keyCode = 50;
-      }
-      var e = jQuery.Event("keydown", {
-        keyCode : 50,
-        charCode : 50
-      });
-      elm.triggerHandler(e);
-      elm.trigger(e);
-      resetBuffer();
-      inputBuffer[0] = settings.triggerChar;
+      try {
+        var event = document.createEvent("KeyboardEvent");
+        if (event.initKeyboardEvent) {
+          event.initKeyboardEvent("keypress", true, true, null, false, false, false, false, 50, 0);
+        } else {
+          event.initUIEvent("keypress", true, true, window, 1);
+          event.keyCode = 50;
+        }
+        var e = jQuery.Event("keydown", {
+          keyCode : 50,
+          charCode : 50
+        });
+        elm.triggerHandler(e);
+        elm.trigger(e);
+        resetBuffer();
+        inputBuffer[0] = settings.triggerChar;
+      } catch(err) {}
     }
 
     function hideAutoComplete() {
@@ -576,7 +583,7 @@
           'id' : utils.htmlEncode(item.id),
           'display' : utils.htmlEncode(item.name),
           'type' : utils.htmlEncode(item.type),
-          'content' : utils.highlightTerm(utils.htmlEncode((item.name)), query)
+          'content' : (utils.highlightTerm(utils.htmlEncode((item.name + ' (' + item.id.replace('@', '') + ')')), query))
         })).attr('data-uid', itemUid);
 
         if (index === 0) {
