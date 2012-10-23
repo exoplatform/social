@@ -86,4 +86,38 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return number of older elements if any
    */
   int getNumberOfOlder(E e);
+  
+  /**
+   * Loads newer elements based on the provided element.
+   * 
+   * @param sinceTime postedTime of newer elements to load
+   * @param limit number of newer elements to load
+   * @return an array of newer elements
+   */
+  List<E> loadNewer(Long sinceTime, int limit);
+  
+  /**
+   * Gets the number of newer elements based on the postedTime.
+   * 
+   * @param sinceTime the postedTime
+   * @return number of newer elements if any
+   */
+  int getNumberOfNewer(Long sinceTime);
+  
+  /**
+   * Loads older elements based on the provided element.
+   * 
+   * @param maxTime postedTime of older elements to load
+   * @param limit number of older elements to load
+   * @return an array of older elements
+   */
+  List<E> loadOlder(Long maxTime, int limit);
+  
+  /**
+   * Gets the number of older elements based on the postedTime.
+   * 
+   * @param maxTime the postedTime
+   * @return number of older elements if any
+   */
+  int getNumberOfOlder(Long maxTime);
 }

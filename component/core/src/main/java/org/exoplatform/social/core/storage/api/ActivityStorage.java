@@ -471,4 +471,241 @@ public interface ActivityStorage {
    * @throws ActivityStorageException
    */
   public void updateActivity(ExoSocialActivity existingActivity) throws ActivityStorageException;
+  
+  /**
+   * Gets the list of newer activities based on an sinceTime (postedTime).
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getNewerOnUserActivities(Identity ownerIdentity,
+                                                          Long sinceTime,
+                                                          int limit);
+                                                          
+ /**
+   * Gets the list of older activities based on an maxTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getOlderOnUserActivities(Identity ownerIdentity,
+                                                          Long maxTime,
+                                                          int limit);
+                                                          
+/**
+   * Gets the list of newer activities feed based on an postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getNewerOnActivityFeed(Identity ownerIdentity,
+                                                        Long sinceTime,
+                                                        int limit);
+
+ /**
+   * Gets the list of older activities feed based on an maxTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getOlderOnActivityFeed(Identity ownerIdentity,
+                                                        Long maxTime,
+                                                        int limit);
+                                                        
+  /**
+   * Gets the newer activities of connections based on sinceTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getNewerOnActivitiesOfConnections(Identity ownerIdentity,
+                                                                   Long sinceTime,
+                                                                   long limit);
+                                                                   
+/**
+   * Gets the older of activities of connections based on maxTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getOlderOnActivitiesOfConnections(Identity ownerIdentity,
+                                                                   Long maxTime,
+                                                                   int limit);
+
+/**
+   * Gets the newer activities of spaces where identity can access (manager or
+   * member), based on sinceTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getNewerOnUserSpacesActivities(Identity ownerIdentity,
+                                                                Long sinceTime,
+                                                                int limit);
+
+/**
+   * Gets the older activities of spaces where identity can access (manager or
+   * member), based on maxTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getOlderOnUserSpacesActivities(Identity ownerIdentity,
+                                                                Long maxTime,
+                                                                int limit);
+
+ /**
+   * Gets the newer comments of an activity based on a postedTime.
+   * 
+   * @param existingActivity
+   * @param sinceTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getNewerComments(ExoSocialActivity existingActivity,
+                                                  Long sinceTime,
+                                                  int limit);
+                                                  
+/**
+   * Gets the older comments of an activity based on postedTime.
+   * 
+   * @param existingActivity
+   * @param maxTime
+   * @param limit
+   * @return
+   * @since 1.2.12
+   */
+  public List<ExoSocialActivity> getOlderComments(ExoSocialActivity existingActivity,
+                                                  Long maxTime,
+                                                  int limit);
+
+  /**
+   * Gets the list of newer activities feed based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfNewerOnActivityFeed(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities based on postedTime of connections.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access, based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the list of older activities feed based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfOlderOnActivityFeed(Identity ownerIdentity, Long maxTime);
+
+  /**
+   * Gets the number of older activities based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfOlderOnUserActivities(Identity ownerIdentity, Long maxTime);
+
+  /**
+   * Gets the number of older activities of connections based on postedTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfOlderOnActivitiesOfConnections(Identity ownerIdentity, Long maxTime);
+
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access, based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param maxTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfOlderOnUserSpacesActivities(Identity ownerIdentity, Long maxTime);
+
+  /**
+   * Gets the number of newer comments of an activity based on a comment's
+   * postedTime.
+   * 
+   * @param existingActivity
+   * @param sinceTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfNewerComments(ExoSocialActivity existingActivity, Long sinceTime);
+
+  /**
+   * Gets the number of older comments of an activity based on a comment's
+   * postedTime.
+   * 
+   * @param existingActivity
+   * @param maxTime
+   * @return
+   * @since 1.2.12
+   */
+  public int getNumberOfOlderComments(ExoSocialActivity existingActivity, Long maxTime);
+
 }

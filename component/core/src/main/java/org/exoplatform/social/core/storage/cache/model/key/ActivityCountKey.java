@@ -31,6 +31,8 @@ public class ActivityCountKey extends ScopeCacheKey {
   private String baseId;
 
   private ActivityType type;
+  
+  private Long time;
 
   public ActivityCountKey(final IdentityKey key, final ActivityType type) {
     this.key = key;
@@ -40,6 +42,12 @@ public class ActivityCountKey extends ScopeCacheKey {
   public ActivityCountKey(final IdentityKey key, final String baseId, final ActivityType type) {
     this.key = key;
     this.baseId = baseId;
+    this.type = type;
+  }
+  
+  public ActivityCountKey(final IdentityKey key, final Long time, final ActivityType type) {
+    this.key = key;
+    this.time = time;
     this.type = type;
   }
 
@@ -70,6 +78,9 @@ public class ActivityCountKey extends ScopeCacheKey {
     if (type != that.type) {
       return false;
     }
+    if (time != that.time) {
+      return false;
+    }
 
     return true;
   }
@@ -80,6 +91,7 @@ public class ActivityCountKey extends ScopeCacheKey {
     result = 31 * result + (key != null ? key.hashCode() : 0);
     result = 31 * result + (baseId != null ? baseId.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
+    result = 31 * result + (time != null ? time.hashCode() : 0);
     return result;
   }
 
