@@ -346,6 +346,7 @@
     <!-- The following code includes tools.jar for JDKs on Windows, Linux and Solaris 
          (it is already included in the runtime for Mac OS X and some free JDKs). -->
     <profile>
+      <!-- required by byteman -->
       <id>default-tools.jar</id>
       <activation>
         <property>
