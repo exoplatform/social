@@ -36,8 +36,6 @@
   <description>eXo Social Samples Code</description>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <outputDirectory>target/classes</outputDirectory>
     <resources>
       <resource>
         <directory>src/main/java</directory>

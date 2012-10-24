@@ -35,8 +35,6 @@
   <description>eXo Social Web UI Component</description>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <outputDirectory>target/classes</outputDirectory>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

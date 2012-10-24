@@ -147,7 +147,6 @@
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
-        <version>${version.docbkx.plugin}</version>
         <!--
           not last generation due to incompatibilities with last docbook
           format

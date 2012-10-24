@@ -23,9 +23,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>exo.parent</artifactId>
     <groupId>org.exoplatform</groupId>
-    <version>7.1</version>
+    <artifactId>maven-parent-pom</artifactId>
+    <version>9-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -42,12 +42,18 @@
     <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
 
-  <ciManagement>
-    <system>hudson</system>
-    <url>https://ci.exoplatform.org/job/social-1.2.x-ci/</url>
-  </ciManagement>
-
   <properties>
+    <!-- **************************************** -->
+    <!-- Jira Settings                            -->
+    <!-- **************************************** -->
+    <jira.project.key>SOC</jira.project.key>
+    <!-- **************************************** -->
+    <!-- Jenkins Settings                         -->
+    <!-- **************************************** -->
+    <jenkins.job.name>social-master-ci</jenkins.job.name>
+    <!-- **************************************** -->
+    <!-- Project Dependencies                     -->
+    <!-- **************************************** -->
     <javax.resource.version>1.5</javax.resource.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <javax.portlet.version>2.0</javax.portlet.version>
@@ -140,43 +146,11 @@
     
     <org.exoplatform.doc.doc-style.version>1.0.8-SNAPSHOT</org.exoplatform.doc.doc-style.version>
 
-
-    <!-- ***************************************************** -->
-    <!-- Plugin versions (waiting for an upgrade in exo parent -->
-    <!-- ***************************************************** -->
-    <version.antrun.plugin>1.7</version.antrun.plugin>
-    <version.assembly.plugin>2.3</version.assembly.plugin>
-    <version.archetype.plugin>2.0-alpha-5</version.archetype.plugin>
-    <version.buildhelper.plugin>1.7</version.buildhelper.plugin>
-    <version.buildnumber.plugin>1.1</version.buildnumber.plugin>
-    <version.clean.plugin>2.4.1</version.clean.plugin>
-    <version.compiler.plugin>2.3.2</version.compiler.plugin>
-    <version.dependency.plugin>2.4</version.dependency.plugin>
-    <version.deploy.plugin>2.5</version.deploy.plugin>
-    <version.docbkx.plugin>2.0.13</version.docbkx.plugin>
-    <version.ear.plugin>2.7</version.ear.plugin>
-    <version.enforcer.plugin>1.0.1</version.enforcer.plugin>
-    <version.exec.plugin>1.2.1</version.exec.plugin>
-    <version.install.plugin>2.3.1</version.install.plugin>
-    <version.jar.plugin>2.3.1</version.jar.plugin>
-    <version.jmeter.plugin>1.0</version.jmeter.plugin>
-    <version.resources.plugin>2.5</version.resources.plugin>
-    <version.release.plugin>2.2.1</version.release.plugin>
-    <version.source.plugin>2.1.2</version.source.plugin>
-    <version.surefire.plugin>2.12</version.surefire.plugin>
-    <version.versions.plugin>1.2</version.versions.plugin>
-    <version.war.plugin>2.1</version.war.plugin>
-    <version.wikbook.plugin>0.9.35</version.wikbook.plugin>
-    <version.xml.plugin>1.0-beta-3</version.xml.plugin>
-
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
-
-    <!-- maven-enforcer-plugin -->
-    <jdk.min.version>1.6</jdk.min.version>
     <!-- maven-release-plugin -->
-    <arguments>-Prelease,distrib,java-api-compat,run-its,pkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
+    <arguments>-Prun-its,distrib,pkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
   </properties>
 
   <modules>
@@ -1031,19 +1005,8 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>${version.exec.plugin}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${version.buildhelper.plugin}</version>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.surefire.plugin}</version>
           <configuration>
             <forkMode>always</forkMode>
             <argLine>-Xms1024m -Xmx1024m</argLine>
@@ -1095,16 +1058,6 @@
             <maxmem>1024m</maxmem>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.wikbook</groupId>
-          <artifactId>wikbook.maven</artifactId>
-          <version>${org.wikbook.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>com.agilejava.docbkx</groupId>
-          <artifactId>docbkx-maven-plugin</artifactId>
-          <version>${docbkx-maven-plugin.version}</version>
-        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1131,7 +1084,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${version.surefire.plugin}</version>
             <configuration>
               <systemProperties>
                 <property>
@@ -1167,7 +1119,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${version.surefire.plugin}</version>
             <configuration>
               <forkMode>always</forkMode>
               <systemProperties>
@@ -1189,42 +1140,5 @@
         </plugins>
       </build>
     </profile>
-
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>${version.assembly.plugin}</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.apache.resources</groupId>
-                <artifactId>apache-source-release-assembly-descriptor</artifactId>
-                <version>1.0.2</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>source-release-assembly</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                  <descriptorRefs>
-                    <descriptorRef>source-release</descriptorRef>
-                  </descriptorRefs>
-                  <tarLongFileFormat>gnu</tarLongFileFormat>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
   </profiles>
 </project>

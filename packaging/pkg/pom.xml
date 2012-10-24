@@ -687,9 +687,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <repositoryUrl>http://repository.exoplatform.org/content/groups/all/</repositoryUrl>
-        </configuration>
         <executions>
           <execution>
             <id>unpack-dependencies</id>
