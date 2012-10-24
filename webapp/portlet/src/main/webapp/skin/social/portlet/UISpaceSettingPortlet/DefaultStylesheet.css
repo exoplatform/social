@@ -143,10 +143,6 @@
 	line-height: 24px;
 }
 
-.UISpaceSettingPortlet .UISpaceMember .UIGrid tr th + th {
-	width: 50%;
-}
-
 .UISpaceSettingPortlet .UISpaceMember .UIGrid td {
 	padding: 12px 10px;
 }
