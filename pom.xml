@@ -114,7 +114,6 @@
     <org.gatein.mop.version>1.1.1-GA</org.gatein.mop.version>
     <org.shindig.version>2.0.2-CP01</org.shindig.version>
     <org.chromattic.version>1.1.4</org.chromattic.version>
-    <org.wikbook.version>0.9.37</org.wikbook.version>
     <org.fontbox.version>0.1.0</org.fontbox.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
     <org.json.version>20070829</org.json.version>
@@ -951,12 +950,12 @@
       <dependency>
         <groupId>org.wikbook</groupId>
         <artifactId>wikbook.docbkxstyle</artifactId>
-        <version>${org.wikbook.version}</version>
+        <version>${version.wikbook.plugin}</version>
       </dependency>
       <dependency>
         <groupId>org.wikbook</groupId>
         <artifactId>wikbook.template.core</artifactId>
-        <version>${org.wikbook.version}</version>
+        <version>${version.wikbook.plugin}</version>
       </dependency>
       
     </dependencies>
