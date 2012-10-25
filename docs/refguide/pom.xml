@@ -25,12 +25,12 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-service</artifactId>
-      <classifier>doc-jaxrs</classifier>
+      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <classifier>doc-chromattic</classifier>
+      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.wikbook</groupId>
@@ -143,8 +143,8 @@
              <configuration>
                <includeGroupIds>org.exoplatform.social</includeGroupIds>
                <includeArtifactIds>social-component-service</includeArtifactIds>
-               <includeClassifiers>doc-jaxrs</includeClassifiers>
-               <excludes>META-INF/**</excludes>
+               <includeClassifiers>sources</includeClassifiers>
+               <includes>**/*.wiki</includes>
                <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/DeveloperReference/jaxrs</outputDirectory>
             </configuration>
            </execution>
@@ -157,8 +157,8 @@
              <configuration>
                <includeGroupIds>org.exoplatform.social</includeGroupIds>
                <includeArtifactIds>social-component-core</includeArtifactIds>
-               <includeClassifiers>doc-chromattic</includeClassifiers>
-               <excludes>META-INF/**</excludes>
+               <includeClassifiers>sources</includeClassifiers>
+               <includes>**/*.wiki</includes>
                <outputDirectory>${project.build.directory}/wikbook/tmp/en/en-US/chromattic</outputDirectory>
             </configuration>
            </execution>

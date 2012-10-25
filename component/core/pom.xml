@@ -34,122 +34,12 @@
   <name>eXo Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.properties</include>
-        </includes>
-      </resource>
-    </resources>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-            <configuration>
-              <compilerArguments>
-                <sourcepath>${project.build.directory}/templates</sourcepath>
-              </compilerArguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Reserve network ports -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-byteman-port</id>
-            <goals>
-              <goal>reserve-network-port</goal>
-            </goals>
-            <phase>process-test-classes</phase>
-            <configuration>
-              <portNames>
-                <portName>org.jboss.byteman.contrib.bmunit.agent.port</portName>
-              </portNames>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <org.jboss.byteman.contrib.bmunit.agent.port>${org.jboss.byteman.contrib.bmunit.agent.port}</org.jboss.byteman.contrib.bmunit.agent.port>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack-templates</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack-dependencies</goal>
-            </goals>
-            <configuration>
-              <includeGroupIds>org.exoplatform.doc</includeGroupIds>
-              <includeArtifactIds>doc-style</includeArtifactIds>
-              <includeClassifiers>templates</includeClassifiers>
-              <excludes>META-INF/**</excludes>
-              <outputDirectory>${project.build.directory}/templates</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>doc-chromattic</classifier>
-              <includes>
-                <include>**/generated/*</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-    
-  </build>
-
   <dependencies>
 
     <dependency>
-     <groupId>org.exoplatform.doc</groupId>
-     <artifactId>doc-style</artifactId>
-     <version>${org.exoplatform.doc.doc-style.version}</version>
+      <groupId>org.exoplatform.doc</groupId>
+      <artifactId>doc-style</artifactId>
+      <version>${org.exoplatform.doc.doc-style.version}</version>
       <optional>true</optional>
     </dependency>
 
@@ -341,7 +231,113 @@
     </dependency>
 
   </dependencies>
-  
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+
+      <!-- Extract templates used by wikbook -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-templates</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.exoplatform.doc</includeGroupIds>
+              <includeArtifactIds>doc-style</includeArtifactIds>
+              <includeClassifiers>templates</includeClassifiers>
+              <excludes>META-INF/**</excludes>
+              <outputDirectory>${project.build.directory}/templates</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+            <!-- Additional configuration to generate wiki pages from wikbook annotations-->
+            <configuration>
+              <compilerArguments>
+                <sourcepath>${project.build.directory}/templates</sourcepath>
+              </compilerArguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/annotations</source>
+              </sources>
+            </configuration>
+          </execution>
+          <!-- Reserve network ports for tests using byteman -->
+          <execution>
+            <id>generate-byteman-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <phase>process-test-classes</phase>
+            <configuration>
+              <portNames>
+                <portName>org.jboss.byteman.contrib.bmunit.agent.port</portName>
+              </portNames>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <org.jboss.byteman.contrib.bmunit.agent.port>${org.jboss.byteman.contrib.bmunit.agent.port}</org.jboss.byteman.contrib.bmunit.agent.port>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
   <profiles>
     <!-- The following code includes tools.jar for JDKs on Windows, Linux and Solaris 
          (it is already included in the runtime for Mac OS X and some free JDKs). -->
@@ -365,5 +361,5 @@
       </dependencies>
     </profile>
   </profiles>
-  
+
 </project>
