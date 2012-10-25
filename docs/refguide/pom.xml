@@ -95,8 +95,8 @@
       </plugin>
       
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
         <executions>
           <execution>
             <id>add-role</id>
@@ -283,7 +283,6 @@
       <plugin>
         <groupId>org.wikbook</groupId>
         <artifactId>wikbook.html2pdf</artifactId>
-        <version>${org.wikbook.version}</version>
 	<executions>
           <execution>
             <phase>package</phase>
