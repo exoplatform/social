@@ -38,6 +38,7 @@ function getProduct(version) {
   product.addDependencies(social.component.webui);
   product.addDependencies(social.webapp.opensocial) ;
   product.addDependencies(social.webapp.portlet);
+  product.addDependencies(social.webapp.juzu.portlet);
   product.addDependencies(social.webapp.resources);
   //product.addDependencies(social.webapp.socialExtensionPortal);
   product.addDependencies(social.extras.feedmash);

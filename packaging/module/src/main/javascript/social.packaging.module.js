@@ -55,6 +55,10 @@ function getModule(params) {
 
   module.webapp.resources = new Project("org.exoplatform.social", "social-webapp-resources", "war", module.version);
   module.webapp.resources.deployName = "social-resources";
+  
+  module.webapp.juzu = {};
+  module.webapp.juzu.portlet = new Project("org.exoplatform.social", "social-webapp-juzu-portlet", "war", module.version);
+  module.webapp.juzu.portlet.deployName = "juzu-social";
 
   //module.webapp.socialExtensionPortal = new Project("org.exoplatform.social", "social-webapp-social-extension-portal", "war", module.version);
   //module.webapp.socialExtensionPortal.deployName = "social-extension-portal";

@@ -38,6 +38,7 @@
   <modules>
     <module>resources</module>
     <module>portlet</module>
+    <module>juzu-portlet</module>
     <module>opensocial</module>
   </modules>
 
