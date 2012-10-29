@@ -444,7 +444,9 @@ public class SpaceUtils {
    * @param space
    * @throws Exception
    * @since 1.2.8
+   * @deprecated removed in Social 1.2.12
    */
+  @Deprecated
   public static void removePagesAndGroupNavigation(Space space) throws Exception {
     // remove pages
     DataStorage dataStorage = getDataStorage();
@@ -454,7 +456,7 @@ public class SpaceUtils {
     if (spaceNav == null) {
       return;
     }
-    UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, groupId);
+    UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, space.getUrl());
 
     Collection<UserNode> spaceNodes = userNode.getChildren();
     for (UserNode spaceNode : spaceNodes) {
@@ -465,6 +467,32 @@ public class SpaceUtils {
     
     // remove group navigation
     SpaceUtils.removeGroupNavigation(groupId);
+  }
+  
+  /**
+   * Remove pages and group navigation of space when delete space.
+   * 
+   * @param space
+   * @throws Exception
+   * @since 1.2.11
+   */
+  public static void removePages(Space space) throws Exception {
+    // remove pages
+    DataStorage dataStorage = getDataStorage();
+    String groupId = space.getGroupId();
+    UserNavigation spaceNav = SpaceUtils.getGroupNavigation(groupId);
+    // return in case group navigation was removed by portal SOC-548
+    if (spaceNav == null) {
+      return;
+    }
+    UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, space.getUrl());
+
+    Collection<UserNode> spaceNodes = userNode.getChildren();
+    for (UserNode spaceNode : spaceNodes) {
+      String pageId = spaceNode.getPageRef();
+      Page page = dataStorage.getPage(pageId);
+      dataStorage.remove(page);
+    }
   }
   
   /**
@@ -783,7 +811,9 @@ public class SpaceUtils {
   }
 
   /**
-   * Removes a group owning a space
+   * Removes a group owning a space. If GroupNavigation is existing, 
+   * org.exoplatform.portal.config.GroupPortalConfigListener#preDelete() method.
+   * and it invokes org.exoplatform.portal.config.GroupPortalConfigListener.removeGroupNavigation()
    *
    * @param space
    * @throws SpaceException
@@ -1128,7 +1158,7 @@ public class SpaceUtils {
       
       NavigationContext navContext = navService.loadNavigation(SiteKey.group(groupId));
       
-      if (userNavigationCtor != null || navContext != null) {
+      if (userNavigationCtor != null && navContext != null) {
         return (UserNavigation) userNavigationCtor.newInstance(new Object[]{userPortal, navContext, false});
       }
     }
@@ -1164,7 +1194,7 @@ public class SpaceUtils {
    *  to getChildren()
    *  
    * @param userNavigation
-   * @param spaceUrl
+   * @param spaceUrl : Space.getUrl(); Note: If use Space.getGroupId() => will have exception
    * @return
    */
   public static UserNode getHomeNodeWithChildren(UserNavigation userNavigation, String spaceUrl) {
@@ -1172,7 +1202,7 @@ public class SpaceUtils {
     UserNode homeNode = getUserPortal().resolvePath(userNavigation, null, spaceUrl);
     getUserPortal().updateNode(homeNode, Scope.CHILDREN, null);
     return homeNode;
-    
+
   }
 
   /**
