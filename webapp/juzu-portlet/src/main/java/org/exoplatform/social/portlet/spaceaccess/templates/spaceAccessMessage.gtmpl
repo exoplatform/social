@@ -1,0 +1,45 @@
+#{param name=spacePrettyName/}
+#{param name=spaceDisplayName/}
+#{param name=status/}
+#{param name=redirectURI/}
+
+<div class="UISpaceAccessPortlet">
+  <% if ("social.space.access.join-space".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessYellow">
+      <strong>Restricted Area</strong>
+      </br>You must be a member of the space <b>${spaceDisplayName}</b> to view this page. <a href="@{join(spacePrettyName=spacePrettyName)}">Join</a>
+    </div>
+  <% } else if ("social.space.access.closed-space".equals(status)) { %>
+    <div class="SpaceAccessBlock SpaceAccessRed">
+      <strong>Access Denied.</strong>
+      <br/>You must be invited by an administrator to the <b>${spaceDisplayName}</b> space  to access this page.
+    </div>
+  <%}  else if ("social.space.access.request-join-space".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessYellow">
+      <strong>Restricted Area</strong>
+      <br>You must be a member of the space <b>${spaceDisplayName}</b> to view this page. <a href="@{requestToJoin(spacePrettyName=spacePrettyName)}">Request to Join</a> </br>
+    </div>
+  <% } else if ("social.space.access.requested-join-space".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessBlue">
+      Your request to join <b>${spaceDisplayName}</b> has been sent.
+    </div>
+  <% } else if ("social.space.access.requested.success".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessBlue">
+      Your request to join <b>${spaceDisplayName}</b> has been sent.
+    </div>
+  <% } else if ("social.space.access.invited-space".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessYellow">
+      You are invited to join the space <b>${spaceDisplayName}<b> by the administrator. <a href="@{accept(spacePrettyName=spacePrettyName)}">Accept</a> | <a href="@{refuse(spacePrettyName=spacePrettyName)}">Refuse</a></br>
+    </div>
+  <% } else if ("social.space.access.not-access-wiki-space".equals(status)) {%>
+    <div class="SpaceAccessBlock PermanWikiLink">
+      <a href="${redirectURI}">Wiki Permalink</a>
+    </div>
+  <% } else if ("social.space.access.space-not-found".equals(status)) {%>
+    <div class="SpaceAccessBlock SpaceAccessRed">
+      <strong>Space Not Found</strong>
+      </br>No space is available at this URL. <a href="${redirectURI}">Find Spaces</a>
+    </div>
+  <% } %>
+  
+</div>

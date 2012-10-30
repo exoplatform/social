@@ -23,4 +23,25 @@
        <title>Hello World Juzu Portlet</title>
      </portlet-info>
    </portlet>
+   
+   <!--Space Access Portlet -->
+   <portlet>
+     <portlet-name>SpaceAccessPortlet</portlet-name>
+     <display-name xml:lang="EN">Space Access Portlet</display-name>
+     <portlet-class>org.exoplatform.social.portlet.spaceaccess.SpaceaccessPortlet</portlet-class>
+     <init-param>
+       <name>juzu.run_mode</name>
+       <value>prod</value>
+     </init-param>
+     <init-param>
+       <name>juzu.inject</name>
+       <value>weld</value>
+     </init-param>
+     <supports>
+       <mime-type>text/html</mime-type>
+     </supports>
+     <portlet-info>
+       <title>Space Access Juzu Portlet</title>
+     </portlet-info>
+   </portlet>
 </portlet-app>

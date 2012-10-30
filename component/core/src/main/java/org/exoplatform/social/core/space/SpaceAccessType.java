@@ -37,15 +37,14 @@ import org.exoplatform.social.core.space.spi.SpaceService;
  */
 public enum SpaceAccessType {
 
-  NOT_ADMINISTRATOR("social.space.access.not-administrator") {
+  SUPER_ADMINISTRATOR("social.space.access.administrator") {
 
     @Override
     public boolean doCheck(String remoteId, Space space) {
-      
       //
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-      return acl.getSuperUser().equals(remoteId);
+      return acl.getSuperUser().equals(remoteId) && (space != null);
     }
   },
   INVITED_SPACE("social.space.access.invited-space") {
@@ -90,14 +89,26 @@ public enum SpaceAccessType {
 
     @Override
     public boolean doCheck(String remoteId, Space space) {
-      return space == null;
+      boolean result = false;
+      if (space == null) {
+        result = true;
+      } else if (space != null) {
+        result = "hidden".equals(space.getVisibility()) && !getSpaceService().isMember(space, remoteId);
+      }
+      
+      return result;
     }
   },
   NOT_ACCESS_WIKI_SPACE("social.space.access.not-access-wiki-space") {
 
       @Override
       public boolean doCheck(String remoteId, Space space) {
-        return space == null;
+        //
+        ExoContainer container = ExoContainerContext.getCurrentContainer();
+        UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
+        boolean isSuperAdmin = acl.getSuperUser().equals(remoteId);
+        
+        return !getSpaceService().isMember(space, remoteId) && !isSuperAdmin;
       }
     
   };
@@ -118,10 +129,12 @@ public enum SpaceAccessType {
   }
   
   public final static String ACCESSED_TYPE_KEY = "social.accessed.space.type.key";
-  public final static String ACCESSED_SPACE_NAME_KEY = "social.accessed.space.key";
+  public final static String ACCESSED_SPACE_PRETTY_NAME_KEY = "social.accessed.space.key";
+  public final static String ACCESSED_SPACE_WIKI_PAGE_KEY = "social.accessed.space.wiki.page.key";
   public final static String NODE_REDIRECT = "space-access";
   
   public abstract boolean doCheck(String remoteId, Space space);
+  
+  
 }
-
 

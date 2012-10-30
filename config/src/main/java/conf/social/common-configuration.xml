@@ -66,7 +66,7 @@
                   </entry>
                   <entry>
                     <key><string>space.wiki.access</string></key>
-                    <value><string>wiki/group/spaces/{spacePrettyName}/{wikiPage}</string></value>
+                    <value><string>{spacePrettyName}/wiki/{wikiPage}</string></value>
                   </entry>
                 </map>
               </field>

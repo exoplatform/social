@@ -29,6 +29,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.router.regex.ExoMatcher;
 import org.exoplatform.social.common.router.regex.ExoPattern;
+import org.picocontainer.Startable;
 
 /**
  * Created by The eXo Platform SAS
@@ -36,7 +37,7 @@ import org.exoplatform.social.common.router.regex.ExoPattern;
  *          thanh_vucong@exoplatform.com
  * Oct 19, 2012  
  */
-public class ExoRouter {
+public class ExoRouter implements Startable {
 
   /**
    * The Logger.
@@ -361,6 +362,16 @@ public class ExoRouter {
 
       String defaultValue;
     }
+  }
+
+  @Override
+  public void start() {
+    
+  }
+
+  @Override
+  public void stop() {
+    
   }
 
 }

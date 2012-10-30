@@ -51,7 +51,9 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)context;
     
+
     //SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
+    
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     
     LOG.info("RequestNavigationData::siteType =" + pcontext.getSiteType());
@@ -59,35 +61,71 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     LOG.info("RequestNavigationData::requestPath =" + requestPath);
     
     Route route = ExoRouter.route(requestPath);
+    if (route == null) { 
+      return;
+    }
+    
     String spacePrettyName = route.localArgs.get("spacePrettyName");
     String wikiPage = route.localArgs.get("wikiPage");
-    String appName = route.localArgs.get("appName");
+    String appName = wikiPage != null ? "wiki" : route.localArgs.get("appName");
+    
     
     if (pcontext.getSiteType().equals(SiteType.GROUP)
         && pcontext.getSiteName().startsWith("/spaces") && spacePrettyName != null
-        && spacePrettyName.length() > 0 && appName == null) {
+        && spacePrettyName.length() > 0) {
       
       Space space = Utils.getSpaceService().getSpaceByPrettyName(spacePrettyName);
-      String remoteId = Utils.getOwnerRemoteId();
+      String remoteId = Utils.getViewerRemoteId();
       
-      processSpaceAccess(pcontext, remoteId, space);
-      processWikiSpaceAccess(pcontext, remoteId, space);
-    } else {
+    
+      if (isSuperAdmin(pcontext, remoteId, space)) {
+        return;
+      }
       
+      if (wikiPage != null && wikiPage.length() > 0) {
+        processWikiSpaceAccess(pcontext, remoteId, space, wikiPage);
+      } else {
+        processSpaceAccess(pcontext, remoteId, space);
+      }
     }
   }
   
-  private void processWikiSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
+  
+  private boolean isSuperAdmin(PortalRequestContext pcontext, String remoteId, Space space) {
+   //special case when remoteId is super administrator and allow to access
+    return SpaceAccessType.SUPER_ADMINISTRATOR.doCheck(remoteId, space);
+  }
+
+  
+  private void processWikiSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space, String wikiPage) throws IOException {
+    
+    boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
+    if (gotStatus) {
+      sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, null);
+      return;
+    }
+    
     //Gets Wiki Page Perma link
     //http://int.exoplatform.org/portal/intranet/wiki/group/spaces/engineering/Spec_Func_-_Wiki_Page_Permalink
+    //sendRedirect to Pemanent URI
     
+    gotStatus = SpaceAccessType.NOT_ACCESS_WIKI_SPACE.doCheck(remoteId, space);
+    if (gotStatus) {
+      pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_WIKI_PAGE_KEY, wikiPage);
+      
+      
+      sendRedirect(pcontext, SpaceAccessType.NOT_ACCESS_WIKI_SPACE, space.getPrettyName());
+      return;
+    }
   }
   
   private void processSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
+    
+    
     //
     boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
     if (gotStatus) {
-      sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, space.getPrettyName());
+      sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, null);
       return;
     }
     
@@ -125,12 +163,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       return;
     }
 
-    //
-    gotStatus = SpaceAccessType.NOT_ADMINISTRATOR.doCheck(remoteId, space);
-    if (gotStatus) {
-      sendRedirect(pcontext, SpaceAccessType.NOT_ADMINISTRATOR, space.getPrettyName());
-      return;
-    }
+    
   }
   
   private void sendRedirect(PortalRequestContext pcontext, SpaceAccessType type, String spacePrettyName) throws IOException {
@@ -138,8 +171,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     String url = Utils.getURI(SpaceAccessType.NODE_REDIRECT);
     LOG.info(type.toString());
     
-    pcontext.setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
-    pcontext.setAttribute(SpaceAccessType.ACCESSED_SPACE_NAME_KEY, spacePrettyName);
+    pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
+    pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY, spacePrettyName);
     
     
     pcontext.sendRedirect(url);
