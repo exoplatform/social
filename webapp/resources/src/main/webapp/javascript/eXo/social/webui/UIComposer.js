@@ -86,40 +86,11 @@ var UIComposer = {
       alert('error: can not find composer or shareButton!');
     }
 
-    UIComposer.composer.val(UIComposer.getValue());
     UIComposer.shareButton.attr('class','ShareButtonDisable');
     UIComposer.shareButton.attr('disabled',"disabled");
-    
-    var isReadyEl = $("#isReadyId");
-    var composerContainerEl = $("#ComposerContainer");
-    var isReadyVal;
-    UIComposer.composer.on('focus', function() {
-      UIComposer.handleShareButtonState();
-      
-      if (UIComposer.focusCallback) {
-        UIComposer.focusCallback();
-      }
-    });
-
-    UIComposer.composer.on('blur', function() {
-      if (UIComposer.composer.val().length === 0) {
-
-        //if current composer is default composer then disable share button
-        if(!UIComposer.isReady){
-          UIComposer.shareButton.attr('disabled',"disabled");
-          UIComposer.shareButton.attr('class','ShareButtonDisable');
-        }
-      } else {
-        UIComposer.currentValue = $(this).val();
-      }
-
-      if (UIComposer.blurCallback) {
-        UIComposer.blurCallback();
-      }
-    });
 
     //
-    $('textarea#composerInput').mentionsInput({
+    $('textarea#composerInput').exoMentions({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {

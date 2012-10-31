@@ -2,7 +2,6 @@
  * Mentions Input use for ExoPlatform
  * Version 1.0.
  * Written by: Vu Duy Tu
- * Development on jQuery-mentions-input of Kenneth Auchenberg 
  *
  * Using underscore.js
  *
@@ -19,7 +18,7 @@
     UP : 38,
     RIGHT : 39,
     DOWN : 40,
-    MENTION : 50,
+    MENTION : 64,
     COMMA : 188,
     SPACE : 32,
     HOME : 36,
@@ -37,18 +36,21 @@
     classes : {
       autoCompleteItemActive : "active"
     },
+    cacheResult : {
+      hasUse : true,
+      live : 30000 // MiniSeconds
+    },
     templates : {
-      wrapper : _.template('<div class="mentions-input-box"></div>'),
-      autocompleteList : _.template('<div class="mentions-autocomplete-list"></div>'),
+      wrapper : _.template('<div class="exo-mentions"></div>'),
+      autocompleteList : _.template('<div class="autocomplete-menu"></div>'),
       autocompleteListItem : _.template('<li data-ref-id="<%= id %>" data-ref-type="<%= type %>" data-display="<%= display %>"><%= content %></li>'),
       autocompleteListItemAvatar : _.template('<img  src="<%= avatar %>" />'),
       autocompleteListItemIcon : _.template('<div class="icon <%= icon %>"></div>'),
-      mentionsOverlay : _.template('<div class="mentions"><div></div></div>'),
       mentionItemSyntax : _.template('<%=id%>'),
       mentionItemHighlight : _.template('<strong><span><%= value %></span></strong>')
     }
   };
-  // --tuvd--
+
   function log(v) {
     window.console.log(v);
   }
@@ -62,8 +64,8 @@
     };
     return mentionCache;
   }
-  ;
-  // --/tuvd--
+
+  
   var utils = {
     htmlEncode : function(str) {
       return _.escape(str);
@@ -78,7 +80,9 @@
       return string.replace(/\s+$/, "");
     },
     getSimpleValue : function(val) {
-      return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '').replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+      return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+                .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
+                .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
     },
     getCursorIndexOfText : function(before, after) {
       var t = 0;
@@ -89,13 +93,11 @@
           break;
         }
       }
-
       if (t >= 0) {
-        if ($.trim(before.substr(t)).indexOf('<span') === 0) {
+        if ($.trim(before.substr(t)).toLowerCase().indexOf('<span') === 0) {
           return t;
         }
       }
-
       return -1;
     },
     getIndexChange : function(before, after) {// before , after
@@ -120,12 +122,14 @@
         }
       }
       return info;
-    }
+    },
+    isIE : ($.browser.msie),
+    isFirefox : ($.browser.mozilla)
   };
 
-  var MentionsInput = function(settings) {
+  var eXoMentions = function(settings) {
 
-    var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
+    var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmActiveAutoCompleteItem;
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
@@ -133,9 +137,11 @@
 
     settings = $.extend(true, {}, defaultSettings, settings);
 
+    KEY.MENTION = settings.triggerChar.charCodeAt(0);
+
     function initTextarea() {
 
-      if (elmInputBox.attr('data-mentions-input') == 'true') {
+      if (elmInputBox.attr('data-mentions') == 'true') {
         return;
       }
 
@@ -144,7 +150,7 @@
       elmInputBox.wrapAll(elmWrapperBox);
       elmWrapperBox = elmInputWrapper.find('> div');
 
-      elmInputBox.attr('data-mentions-input', 'true');
+      elmInputBox.attr('data-mentions', 'true');
       elmInputBox.on('keydown', onInputBoxKeyDown);
       elmInputBox.on('keypress', onInputBoxKeyPress);
       elmInputBox.on('input', onInputBoxInput);
@@ -152,7 +158,6 @@
       elmInputBox.on('paste', onInputBoxPaste);
       elmInputBox.on('blur', onInputBoxBlur);
 
-      // Elastic textareas, internal setting for the Dispora guys
       if (settings.elastic) {
         elmInputBox.elastic(settings);
       }
@@ -165,11 +170,6 @@
       elmAutocompleteList.delegate('li', 'mousedown', onAutoCompleteItemClick);
     }
 
-    function initMentionsOverlay() {
-      elmMentionsOverlay = $(settings.templates.mentionsOverlay());
-      elmMentionsOverlay.prependTo(elmWrapperBox);
-    }
-
     function updateValues() {
       var syntaxMessage = getInputBoxValue();
 
@@ -178,23 +178,7 @@
         syntaxMessage = syntaxMessage.replace(mention.value, textSyntax);
       });
 
-      var mentionText = utils.htmlEncode(syntaxMessage);
-
-      _.each(mentionsCollection, function(mention) {
-        var formattedMention = _.extend({}, mention, {
-          value : utils.htmlEncode(mention.value)
-        });
-        var textSyntax = settings.templates.mentionItemSyntax(formattedMention);
-        var textHighlight = settings.templates.mentionItemHighlight(formattedMention);
-
-        mentionText = mentionText.replace(textSyntax, textHighlight);
-      });
-
-      mentionText = mentionText.replace(/\n/g, '<br />');
-      mentionText = mentionText.replace(/ {2}/g, '&nbsp; ');
-
       elmInputBox.data('messageText', syntaxMessage);
-      elmMentionsOverlay.find('div').html(mentionText);
     }
 
     function resetBuffer() {
@@ -243,9 +227,9 @@
 
     }
 
-    // --tuvd-- 
+
     function addItemMention(value) {
-      var val = '<span contenteditable="false">' + value + '<span class="icon"' + (($.browser.mozilla) ? 'contenteditable="true"' : '') + '>x</span></span>'
+      var val = '<span contenteditable="false">' + value + '<span class="icon"' + ((utils.isFirefox) ? 'contenteditable="true"' : '') + '>x</span></span>'
           + '&nbsp;<div id="cursorText"></div>';
       return val;
     }
@@ -263,7 +247,7 @@
             mentionsCollection.splice(t, 1);
             $(this).parent().remove();
             updateValues();
-            saveCacheMention();
+            saveCacheData();
             initClickMention();
             e.stopPropagation();
           });
@@ -285,7 +269,7 @@
     }
 
     function getSelection() {
-      var selection;
+      var selection = null;
       if (window.getSelection) {
         selection = window.getSelection();
       } else if (document.getSelection) {
@@ -300,6 +284,7 @@
       if (inputField) {
         var cursorText = inputField.find('#cursorText');
         if (inputField.val().length != 0) {
+          
           var elm = inputField[0];
           var selection = getSelection();
           if (selection) {
@@ -310,7 +295,7 @@
             cursorText.focus();
             try{
               var range = document.createRange();
-              range.selectNode(elm);
+              range.selectNode(cursorText[0]);
               range.selectNodeContents(cursorText[0]);
 
               selection.removeAllRanges();
@@ -321,31 +306,14 @@
           }
         }
         cursorText.remove();
+        inputField.focus();
         updateValues();
-      }
-    }
-
-    function saveCacheMention() {
-      var key = jElmTarget.attr('id');
-      if (key) {
-        var parentForm = jElmTarget.parents('form:first').parent();
-        if (parentForm.length > 0) {
-          var dataCache = parentForm.data(key);
-          if (dataCache == null) {
-            dataCache = new cacheMention();
-          }
-          dataCache.mentions = mentionsCollection;
-          dataCache.val = getInputBoxFullValue();
-          dataCache.data = mentionsCollection.length > 0 ? elmInputBox.data('messageText') : getInputBoxValue();
-          parentForm.data(key, dataCache);
-        }
       }
     }
     
     function getInputBoxFullValue() {
       return $.trim(elmInputBox.value());
     }
-    // --/tuvd--
 
     function getInputBoxValue() {
       return $.trim(elmInputBox.val());
@@ -355,7 +323,7 @@
       var elmTarget = $(this);
       var mention = autocompleteItemCollection[elmTarget.attr('data-uid')];
       addMention(mention);
-      saveCacheMention();
+      saveCacheData();
       return false;
     }
 
@@ -387,7 +355,7 @@
 
     function onInputBoxBlur(e) {
       hideAutoComplete();
-      saveCacheMention();
+      saveCacheData();
       var plsd = $(this).parent().find('div.placeholder:first');
       if (plsd.length > 0 && $.trim(elmInputBox.val()).length === 0) {
         plsd.show();
@@ -409,31 +377,30 @@
     }
 
     function onInputBoxKeyPress(e) {
-
       if (e.keyCode !== KEY.BACKSPACE) {
         var typedValue = String.fromCharCode(e.which || e.keyCode);
         inputBuffer.push(typedValue);
-        var plsd = $(this).parent().find('div.placeholder:first');
-        if (plsd.length > 0) {
-          plsd.hide();
+        if (utils.isIE) {
+          onInputBoxInput(e);
         }
+      }
+      var plsd = $(this).parent().find('div.placeholder:first');
+      if (plsd.length > 0) {
+        plsd.hide();
       }
     }
 
     function onInputBoxKeyDown(e) {
-      //
-      if (e.keyCode == KEY.MENTION) {
-        var query = '';
-        settings.onDataRequest.call(this, 'search', query, function(responseData) {
-          populateDropdown(query, responseData);
-        });
+      // Run without IE
+      if (String.fromCharCode(e.which || e.keyCode) === settings.triggerChar) {
+        onInputBoxInput(e);
       }
-
+      
       // This also matches HOME/END on OSX which is CMD+LEFT, CMD+RIGHT
       if (e.keyCode == KEY.LEFT || e.keyCode == KEY.RIGHT || e.keyCode == KEY.HOME || e.keyCode == KEY.END) {
         // Defer execution to ensure carat pos has changed after HOME/END keys
         _.defer(resetBuffer);
-
+        
         // IE9 doesn't fire the oninput event when backspace or delete is
         // pressed. This causes the highlighting
         // to stay on the screen whenever backspace is pressed after a
@@ -443,16 +410,21 @@
         if (navigator.userAgent.indexOf("MSIE 9") > -1) {
           _.defer(updateValues);
         }
-
         return;
       }
-
+      
       if (e.keyCode == KEY.SPACE) {
         inputBuffer = [];
       }
       if (e.keyCode == KEY.BACKSPACE) {
-        inputBuffer = inputBuffer.slice(0, -1 + inputBuffer.length); // Can't use splice, not available in IE
-
+        inputBuffer.splice((inputBuffer.length - 1), 1);
+        if (utils.isIE) {
+          if (inputBuffer.length > 1 || (inputBuffer.length == 1 && $.browser.version < 9)) {
+            onInputBoxInput();
+          } else {
+            hideAutoComplete();
+          }
+        }
         var plsd = $(this).parent().find('div.placeholder:first');
         if (plsd.length > 0 && $.trim(elmInputBox.val()).length === 1) {
           plsd.show();
@@ -478,68 +450,69 @@
             }
             elmInputBox.css('cursor', 'text');
           });
-
         }
         return;
       }
       
-      if (navigator.userAgent.indexOf("MSIE") > -1 && mentionsCollection.length) {
+      if (utils.isIE && mentionsCollection.length) {
         updateValues();
       }
       
       if (!elmAutocompleteList.is(':visible')) {
         return true;
       }
-
+      
       switch (e.keyCode) {
-      case KEY.UP:
-      case KEY.DOWN:
-        var elmCurrentAutoCompleteItem = null;
-        if (e.keyCode == KEY.DOWN) {
-          if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) {
-            elmCurrentAutoCompleteItem = elmActiveAutoCompleteItem.next();
+        case KEY.UP:
+        case KEY.DOWN:
+          var elmCurrentAutoCompleteItem = null;
+          if (e.keyCode == KEY.DOWN) {
+            if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) {
+              elmCurrentAutoCompleteItem = elmActiveAutoCompleteItem.next();
+            } else {
+              elmCurrentAutoCompleteItem = elmAutocompleteList.find('li').first();
+            }
           } else {
-            elmCurrentAutoCompleteItem = elmAutocompleteList.find('li').first();
+            elmCurrentAutoCompleteItem = $(elmActiveAutoCompleteItem).prev();
           }
-        } else {
-          elmCurrentAutoCompleteItem = $(elmActiveAutoCompleteItem).prev();
-        }
-
-        if (elmCurrentAutoCompleteItem.length) {
-          selectAutoCompleteItem(elmCurrentAutoCompleteItem);
-        }
-
-        return false;
-
-      case KEY.RETURN:
-      case KEY.TAB:
-        if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) {
-          elmActiveAutoCompleteItem.trigger('mousedown');
-          e.stopPropagation();
+          
+          if (elmCurrentAutoCompleteItem.length) {
+            selectAutoCompleteItem(elmCurrentAutoCompleteItem);
+          }
           return false;
+          
+        case KEY.RETURN:
+        case KEY.TAB:
+          if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) {
+            elmActiveAutoCompleteItem.trigger('mousedown');
+            e.stopPropagation();
+            return false;
+          }
+        default: {
+          return true;
         }
-        break;
       }
       return true;
     }
 
     function autoSetKeyCode(elm) {
       try {
-        var event = document.createEvent("KeyboardEvent");
-        if (event.initKeyboardEvent) {
-          event.initKeyboardEvent("keypress", true, true, null, false, false, false, false, 50, 0);
-        } else {
-          event.initUIEvent("keypress", true, true, window, 1);
-          event.keyCode = 50;
-        }
-        var e = jQuery.Event("keydown", {
-          keyCode : 50,
-          charCode : 50
-        });
-        elm.triggerHandler(e);
-        elm.trigger(e);
         resetBuffer();
         inputBuffer[0] = settings.triggerChar;
+        if(utils.isIE && $.browser.version < 9) {
+          onInputBoxInput();
+        } else {
+          var e = jQuery.Event("keypress", {
+            keyCode : KEY.MENTION,
+            charCode : settings.triggerChar
+          });
+          var e1 = jQuery.Event("keydown", {
+            keyCode : KEY.MENTION,
+            charCode : settings.triggerChar
+          });
+          elm.triggerHandler(e);
+          elm.trigger(e1);
+        }
       } catch(err) {}
     }
 
@@ -557,12 +530,6 @@
 
     function populateDropdown(query, results) {
       elmAutocompleteList.show();
-
-      // Filter items that has already been mentioned
-      // var mentionValues = _.pluck(mentionsCollection, 'value');
-      // results = _.reject(results, function (item) {
-      // return _.include(mentionValues, item.name);
-      // });
 
       if (!results.length) {
         hideAutoComplete();
@@ -611,21 +578,77 @@
       elmDropDownList.show();
     }
 
-    function doSearch(query) {
-      if (query && query.length && query.length >= settings.minChars) {
-        settings.onDataRequest.call(this, 'search', query, function(responseData) {
-          populateDropdown(query, responseData);
-        });
-      }
-    }
-
     function resetInput() {
       elmInputBox.val('');
       mentionsCollection = [];
       updateValues();
     }
 
-    // --tuvd--
+    function doSearch(query) {
+      if (query === '' || String(query) === 'undefined')  query = ' ';
+      if (query.length >= settings.minChars) {
+        if(settings.cacheResult.hasUse) {
+          var data = getCaseSearch(query);
+          if (data) {
+            populateDropdown(query, data);
+          } else {
+            search(query);
+          }
+          clearCaseSearch();
+        } else {
+          search(query);
+        }
+      }
+    }
+
+    function search(query) {
+      settings.onDataRequest.call(this, 'search', query, function(responseData) {
+        populateDropdown(query, responseData);
+        saveCaseSearch(query, responseData);
+      });
+    }
+
+    function saveCaseSearch(id, obj) {
+      if(settings.cacheResult.hasUse) {
+        id = 'result' + ((id === ' ') ? '_20' : id);
+        var data = elmInputBox.parent().data("CaseSearch");
+        if (String(data) === "undefined") data = {};
+        data[id] = obj;
+        elmInputBox.parent().data("CaseSearch", data);
+      }
+    }
+
+    function getCaseSearch(id) {
+      id = 'result' + ((id === ' ') ? '_20' : id);
+      var data = elmInputBox.parent().data("CaseSearch");
+      return (String(data) === "undefined") ? data : data[id];
+    }
+
+    function clearCaseSearch() {
+      elmInputBox.parent().stop().animate({
+        'cursor' : 'none'
+      }, settings.cacheResult.live, function() {
+        $(this).data("CaseSearch", {});
+      });
+    }
+
+    function saveCacheData() {
+      var key = jElmTarget.attr('id');
+      if (key) {
+        var parentForm = jElmTarget.parents('form:first').parent();
+        if (parentForm.length > 0) {
+          var dataCache = parentForm.data(key);
+          if (dataCache == null) {
+            dataCache = new cacheMention();
+          }
+          dataCache.mentions = mentionsCollection;
+          dataCache.val = getInputBoxFullValue();
+          dataCache.data = mentionsCollection.length > 0 ? elmInputBox.data('messageText') : getInputBoxValue();
+          parentForm.data(key, dataCache);
+        }
+      }
+    }
+
     function updateCacheData() {
       var parentForm = jElmTarget.parents('form:first').parent();
       var key = jElmTarget.attr('id');
@@ -684,7 +707,6 @@
       };
       return displayInput;
     }
-    // --/tuvd--
 
     // Public methods
     return {
@@ -699,17 +721,19 @@
         jElmTarget.val('');
 
         elmInputBox = initDisplay(jElmTarget.attr('id'), jElmTarget.parent());
-        ;
 
         initTextarea();
         initAutocomplete();
-        initMentionsOverlay();
         updateCacheData();
 
         // add placeholder
         if ($.trim(elmInputBox.val()).length == 0) {
           var title = jElmTarget.attr('title');
-          $('<div class="placeholder">' + title + '</div>').attr('title', title).appendTo(elmInputBox.parent());
+          var placeholder = $('<div class="placeholder">' + title + '</div>').attr('title', title);
+          placeholder.on('click', function() {
+            elmInputBox.focus();
+          });
+          placeholder.appendTo(elmInputBox.parent());
         }
         // prefill mentions
         if (settings.prefillMention) {
@@ -786,7 +810,7 @@
     }
   });
 
-  $.fn.mentionsInput = function(method, settings) {
+  $.fn.exoMentions = function(method, settings) {
 
     var outerArguments = arguments;
 
@@ -795,7 +819,7 @@
     }
 
     return this.each(function() {
-      var instance = $.data(this, 'mentionsInput') || $.data(this, 'mentionsInput', new MentionsInput(settings));
+      var instance = $.data(this, 'exoMentions') || $.data(this, 'exoMentions', new eXoMentions(settings));
       if (_.isFunction(instance[method])) {
         return instance[method].apply(this, Array.prototype.slice.call(outerArguments, 1));
       } else if (typeof method === 'object' || !method) {

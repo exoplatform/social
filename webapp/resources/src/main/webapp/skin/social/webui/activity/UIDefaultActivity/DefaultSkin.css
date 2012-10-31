@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-@import url('/social-resources/skin/social/jquery.mentionsInput.css');
+@import url('/social-resources/skin/social/jquery.exomentions.css');
 
 .DisplayNone {
 	display: none;
@@ -23,6 +23,11 @@
 .UIActivity .AvatarPeopleBG img {
 	height: 47px;
 	width: 47px;
+}
+
+.UIActivity .CommentInputBox textarea {
+  height: 28px;
+  width: 80%;  
 }
 
 .UIActivity .Avatar {

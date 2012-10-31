@@ -123,25 +123,6 @@ var UIActivity = {
         });
       });
 
-      UIActivity.commentTextareaEl.on('focus', function(evt) {
-        $(this).css('height', UIActivity.FOCUS_COMMENT_TEXT_AREA_HEIGHT);
-        $(this).css('color', UIActivity.FOCUS_COMMENT_TEXT_AREA_COLOR);
-          if ($(this).val() === UIActivity.inputWriteAComment) {
-          $(this).val('');
-        }
-       // $("#" + UIActivity.commentButtonId).show();
-      });
-
-      UIActivity.commentTextareaEl.on('blur', function(evt) {
-        if ($(this).val() === '') {
-         // $("#" + UIActivity.commentButtonId).hide();
-          $(this).val(UIActivity.inputWriteAComment);
-
-          $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-          $(this).css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
-        }
-      });
-
       if (UIActivity.commentFormDisplayed) {
         $("#" + UIActivity.commentFormBlockId).show();
         UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
@@ -183,7 +164,7 @@ var UIActivity = {
     }
     
 	//
-    $('textarea#CommentTextarea' + UIActivity.activityId).mentionsInput({
+    $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
