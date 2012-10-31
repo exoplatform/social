@@ -489,9 +489,12 @@ public class SpaceUtils {
 
     Collection<UserNode> spaceNodes = userNode.getChildren();
     for (UserNode spaceNode : spaceNodes) {
-      String pageId = spaceNode.getPageRef();
-      Page page = dataStorage.getPage(pageId);
-      dataStorage.remove(page);
+      if (spaceNode.getPageRef() != null) {
+        String pageId = spaceNode.getPageRef();
+        Page page = dataStorage.getPage(pageId);
+        dataStorage.remove(page);
+      }
+      
     }
   }
   
