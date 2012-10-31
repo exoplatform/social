@@ -44,7 +44,7 @@ public enum SpaceAccessType {
       //
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-      return acl.getSuperUser().equals(remoteId) && (space != null);
+      return acl.isUserInGroup(acl.getAdminGroups()) && (space != null);
     }
   },
   INVITED_SPACE("social.space.access.invited-space") {
@@ -106,9 +106,9 @@ public enum SpaceAccessType {
         //
         ExoContainer container = ExoContainerContext.getCurrentContainer();
         UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-        boolean isSuperAdmin = acl.getSuperUser().equals(remoteId);
+        boolean isAdminGroup = acl.isUserInGroup(acl.getAdminGroups());
         
-        return !getSpaceService().isMember(space, remoteId) && !isSuperAdmin;
+        return !getSpaceService().isMember(space, remoteId) && !isAdminGroup;
       }
     
   };

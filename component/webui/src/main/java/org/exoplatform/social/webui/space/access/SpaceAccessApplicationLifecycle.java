@@ -78,7 +78,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       String remoteId = Utils.getViewerRemoteId();
       
     
-      if (isSuperAdmin(pcontext, remoteId, space)) {
+      if (inAdminGroup(remoteId, space)) {
         return;
       }
       
@@ -91,7 +91,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   }
   
   
-  private boolean isSuperAdmin(PortalRequestContext pcontext, String remoteId, Space space) {
+  private boolean inAdminGroup(String remoteId, Space space) {
    //special case when remoteId is super administrator and allow to access
     return SpaceAccessType.SUPER_ADMINISTRATOR.doCheck(remoteId, space);
   }

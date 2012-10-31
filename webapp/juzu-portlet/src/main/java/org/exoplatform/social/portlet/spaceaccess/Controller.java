@@ -132,7 +132,7 @@ public class Controller {
     String remoteId = Utils.getOwnerRemoteId();
     Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
     spaceService.addMember(space, remoteId);
-    return Response.redirect(Utils.getURI(ALL_SPACE_LINK));
+    return Response.redirect(Utils.getSpaceHomeURL(space));
   }
   
   /**
