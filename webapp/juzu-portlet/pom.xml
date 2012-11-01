@@ -25,22 +25,18 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-juzu-portlet</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>eXo Social Juzu Portlet Web App</name>
 
   <properties>
-    <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.source>1.6</maven.compiler.source>
     <!--Define version dependencies-->
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
-    <org.exoplatform.social.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.social.version>
     <juzu.version>0.5.1</juzu.version>
   </properties>
 
@@ -68,19 +64,19 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>
-      <version>${org.exoplatform.social.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -133,7 +129,6 @@
 
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
         <configuration>
           <compilerArguments>
             <sourcepath>${project.basedir}/src/main/java</sourcepath>
@@ -143,7 +138,6 @@
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.3</version>
         <dependencies>
           <dependency>
             <groupId>org.juzu</groupId>
