@@ -27,12 +27,12 @@
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-jar</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Extension JAR</name>
   <description>eXo Social Extension JAR</description>

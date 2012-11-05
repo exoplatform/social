@@ -25,12 +25,12 @@
   <parent>
     <artifactId>social-demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-demo-config</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Demo Portal Container Definition</name>
   <description>eXo Social Demo Portal Container Definition</description>

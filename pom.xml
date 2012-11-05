@@ -31,7 +31,7 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -102,8 +102,8 @@
     <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.ecms.version>
-    <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.ecms.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.ecms.version>
+    <org.exoplatform.commons.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
