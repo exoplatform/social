@@ -140,12 +140,6 @@
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
     
     <org.exoplatform.doc.doc-style.version>1.0.8-SNAPSHOT</org.exoplatform.doc.doc-style.version>
-
-    <!-- ************** -->
-    <!-- Build settings -->
-    <!-- ************** -->
-    <!-- maven-release-plugin -->
-    <arguments>-Prun-its,distrib,pkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
   </properties>
 
   <modules>
@@ -156,7 +150,6 @@
     <module>extras</module>
     <module>server</module>
     <module>docs</module>
-    <module>packaging</module>
     <module>config</module>
   </modules>
 
