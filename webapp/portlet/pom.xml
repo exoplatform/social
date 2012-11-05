@@ -25,12 +25,12 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-portlet</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Portlet Web App</name>
   <description>eXo Social Portlet Web App</description>

@@ -25,12 +25,12 @@
   <parent>
     <artifactId>social-demo</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-demo-war</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Demo WAR</name>
   <description>eXo Social Demo WAR</description>
