@@ -162,10 +162,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       throw new SpaceException(SpaceException.Code.UNABLE_TO_INIT_APP, e);
     }
   }
-  
-  
-  
-  
+   
   
   /**
    * {@inheritDoc}
@@ -178,7 +175,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       if (spaceNav == null) {
         return;
       }
-      UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, groupId);
+      UserNode userNode = SpaceUtils.getHomeNodeWithChildren(spaceNav, space.getUrl());
 
       Collection<UserNode> spaceNodes = userNode.getChildren();
       for (UserNode spaceNode : spaceNodes) {

@@ -454,6 +454,9 @@ public class SpaceServiceImpl implements SpaceService {
       
       spaceStorage.deleteSpace(space.getId());
       
+      //remove pages and group navigation of space
+      SpaceUtils.removePages(space);
+      
       OrganizationService orgService = getOrgService();
       UserACL acl = getUserACL();
       GroupHandler groupHandler = orgService.getGroupHandler();
@@ -466,10 +469,6 @@ public class SpaceServiceImpl implements SpaceService {
       } else {
         LOG.warn("deletedGroup is null");
       }
-      
-      //remove pages and group navigation of space
-      SpaceUtils.removePagesAndGroupNavigation(space);
-      
     } catch (Exception e) {
       LOG.error("Unable delete space", e);
     }
