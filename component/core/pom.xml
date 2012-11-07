@@ -30,7 +30,6 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-core</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   <name>eXo Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
 
@@ -39,14 +38,12 @@
     <dependency>
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
-      <version>${org.exoplatform.doc.doc-style.version}</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
-      <version>${org.exoplatform.doc.doc-style.version}</version>
       <classifier>templates</classifier>
     </dependency>
 

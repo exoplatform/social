@@ -30,7 +30,6 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-demo-config</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Demo Portal Container Definition</name>
   <description>eXo Social Demo Portal Container Definition</description>

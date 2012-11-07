@@ -30,7 +30,6 @@
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-server-tomcat-patch</artifactId>
-  <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   <name>eXo Social Patch for Tomcat (patch)</name>
   <description>eXo Social Patch for Tomcat (patch)</description>
 

@@ -97,10 +97,10 @@
     <jbossxb.version>2.0.1.GA</jbossxb.version>
     <jboss-common-core.version>2.2.9.GA</jboss-common-core.version>
 
-    <org.exoplatform.kernel.version>2.3.6-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.6-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.6-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.6-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.kernel.version>2.3.9-GA-SNAPSHOT</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.9-GA-SNAPSHOT</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.9-GA-SNAPSHOT</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.9-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
     <org.exoplatform.ecms.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.ecms.version>
     <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
@@ -140,6 +140,8 @@
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
     
     <org.exoplatform.doc.doc-style.version>1.0.8-SNAPSHOT</org.exoplatform.doc.doc-style.version>
+
+    <juzu.version>0.5.1</juzu.version>
   </properties>
 
   <modules>
@@ -767,6 +769,14 @@
         <artifactId>commons-component-common</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
+      
+      <!-- Can be remove ? -->
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.container</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
+      </dependency>
+      <!-- -->
 
       <!-- eXo Social -->
       <dependency>
@@ -924,19 +934,16 @@
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman</artifactId>
         <version>${byteman.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman-install</artifactId>
         <version>${byteman.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman-bmunit</artifactId>
         <version>${byteman.version}</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -950,6 +957,37 @@
         <version>${version.wikbook.plugin}</version>
       </dependency>
       
+      <dependency>
+        <groupId>org.exoplatform.doc</groupId>
+        <artifactId>doc-style</artifactId>
+        <version>${org.exoplatform.doc.doc-style.version}</version>
+        <optional>true</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.doc</groupId>
+        <artifactId>doc-style</artifactId>
+        <version>${org.exoplatform.doc.doc-style.version}</version>
+        <classifier>templates</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-webui-component</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.juzu</groupId>
+        <artifactId>juzu-builder</artifactId>
+        <version>${juzu.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.juzu</groupId>
+        <artifactId>juzu-plugins-portlet</artifactId>
+        <version>${juzu.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -958,7 +996,6 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-jdk14</artifactId>
         <version>${org.slf4j.version}</version>
-        <scope>test</scope>
      </dependency>
   </dependencies>
 
@@ -1023,7 +1060,6 @@
         <dependency>
           <groupId>org.hsqldb</groupId>
           <artifactId>hsqldb</artifactId>
-          <scope>test</scope>
         </dependency>
       </dependencies>
       <build>
@@ -1049,7 +1085,6 @@
         <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
-          <scope>test</scope>
         </dependency>
       </dependencies>
       <build>
