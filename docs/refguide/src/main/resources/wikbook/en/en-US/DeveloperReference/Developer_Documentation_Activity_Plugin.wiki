@@ -23,7 +23,7 @@ This section helps you further understand about Activity Plugin {anchor:id=Devel
 Also, you also know how to create an activity plugin {anchor:id=Developer_document.Create_activity_plugin} via the ways described later.
 
 {note}
-You should have an idea about the [UI Extension Framework|../../../developer-guide/html/DEV.UI_Extension_Framework.html] first. If you have already worked with the UI Extension Framework, it is really easy to create an activity plugin. If not, you have chance to work with it now.
+You should first have an idea about the UI Extensions framework as described in [Extend eXo applications|../../../developer-guide/html/DEV.ExtendeXoApplications.html]. If you have already worked with the UI Extensions framework, it is really easy to create an activity plugin. If not, you have chance to work with it now.
 {note}
 
 {docbook}
