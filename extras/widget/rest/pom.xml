@@ -37,49 +37,42 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
+    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>exo.ws.rest.core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>

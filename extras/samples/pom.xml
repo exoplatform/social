@@ -67,70 +67,40 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>quartz</groupId>
-      <artifactId>quartz</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
+    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.framework</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portlet</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-extras-feedmash</artifactId>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>

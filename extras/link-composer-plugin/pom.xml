@@ -69,73 +69,72 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
 
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
+    <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.web.controller</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.framework</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-service</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>

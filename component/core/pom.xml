@@ -36,18 +36,6 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.exoplatform.doc</groupId>
-      <artifactId>doc-style</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.doc</groupId>
-      <artifactId>doc-style</artifactId>
-      <classifier>templates</classifier>
-    </dependency>
-
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
@@ -224,9 +212,50 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
 
+    <!-- added for dependency-analyze -->
+    <dependency>
+       <groupId>org.chromattic</groupId>
+       <artifactId>chromattic.spi</artifactId>
+       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.resources</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.common</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.chromattic</groupId>
+       <artifactId>chromattic.apt</artifactId>
+       <scope>compile</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.chromattic</groupId>
+       <artifactId>chromattic.ext</artifactId>
+       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.security.core</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-logging</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

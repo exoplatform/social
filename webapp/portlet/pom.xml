@@ -77,20 +77,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.portal</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.resources</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -138,12 +126,6 @@
 
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-component-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -153,7 +135,10 @@
       <artifactId>social-component-webui</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
