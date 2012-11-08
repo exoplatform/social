@@ -108,8 +108,11 @@ public class LinkShare extends DefaultFilter {
   private String mediaHeight;
   private String mediaWidth;
   
-  private static final String HTTP_PROTOCOL = "http://";
-  private static final String HTTPS_PROTOCOL = "https://";
+  private static final String SCHEMA_SEPARATOR = "://";
+  private static final String HTTP_SCHEMA = "http";
+  private static final String HTTPS_SCHEMA = "https";
+  private static final String HTTP_PROTOCOL = HTTP_SCHEMA + SCHEMA_SEPARATOR;
+  private static final String HTTPS_PROTOCOL = HTTPS_SCHEMA + SCHEMA_SEPARATOR;
   
   //min with and height of images to get from img attributes in pixel.
   // With <img src="img_src" width="55px" height="55px" /> ~ <img src="img_src" width="55" height="55" />
@@ -336,7 +339,9 @@ public class LinkShare extends DefaultFilter {
     if (!Util.isValidURL(link))
       return null;
     
-    if (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL))) {
+    if (!link.contains("@")
+        && !link.contains(SCHEMA_SEPARATOR)
+        && (!(link.toLowerCase().startsWith(HTTP_PROTOCOL) || link.toLowerCase().startsWith(HTTPS_PROTOCOL)))) {
       URI uri = URI.create(link);
       String uriScheme = uri.getScheme();
       if (uriScheme != null) {
