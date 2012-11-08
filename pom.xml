@@ -91,15 +91,15 @@
     <jbossxb.version>2.0.1.GA</jbossxb.version>
     <jboss-common-core.version>2.2.9.GA</jboss-common-core.version>
 
-    <org.exoplatform.kernel.version>2.3.9-CR01</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.9-CR01</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.9-CR01</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.9-CR01</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.6-CR01</org.exoplatform.portal.version>
-    <org.exoplatform.ecms.version>2.3.9-CR01</org.exoplatform.ecms.version>  
+    <org.exoplatform.kernel.version>2.3.9-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.4.9-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.2.9-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.14.9-GA</org.exoplatform.jcr.version>
+    <org.exoplatform.portal.version>3.2.6-PLF</org.exoplatform.portal.version>
+    <org.exoplatform.ecms.version>2.3.9</org.exoplatform.ecms.version>  
 
    
-    <org.exoplatform.commons.version>1.1.10-CR01</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>1.1.10</org.exoplatform.commons.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.exoplatform.tool.version>1.0.0</org.exoplatform.tool.version>
 
@@ -138,7 +138,7 @@
 
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
     
-    <org.exoplatform.doc.doc-style.version>1.0.8-CR01</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.doc.doc-style.version>1.0.8</org.exoplatform.doc.doc-style.version>
 
 
     <!-- ***************************************************** -->
