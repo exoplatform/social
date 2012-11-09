@@ -25,12 +25,12 @@
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-opensocial</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
+  <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social OpenSocial Web App</name>
   <description>eXo Social OpenSocial Web App</description>
