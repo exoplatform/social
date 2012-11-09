@@ -98,11 +98,9 @@
 
   <modules>
     <module>extension</module>
-    <module>demo</module>
     <module>component</module>
     <module>webapp</module>
     <module>extras</module>
-    <module>server</module>
     <module>config</module>
   </modules>
 
