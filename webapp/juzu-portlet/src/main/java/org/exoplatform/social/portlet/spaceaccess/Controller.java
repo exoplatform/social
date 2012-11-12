@@ -92,16 +92,6 @@ public class Controller {
 
     
   }
-  @View
-  public void requestedSuccessful(String spacePrettyName) {
-    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
-    message.with()
-    .status("social.space.access.requested.success")
-    .spaceDisplayName(space.getDisplayName())
-    .spacePrettyName("")
-    .redirectURI("")
-    .render();
-  }
   
   @Action
   public Response.Redirect accept(String spacePrettyName) {
@@ -112,11 +102,11 @@ public class Controller {
   }
   
   @Action
-  public Response requestToJoin(String spacePrettyName) {
+  public Response.Redirect requestToJoin(String spacePrettyName) {
     String remoteId = Utils.getOwnerRemoteId();
     Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
     spaceService.addPendingUser(space, remoteId);
-    return Controller_.requestedSuccessful(spacePrettyName);
+    return Response.redirect(Utils.getSpaceHomeURL(space));
   }
   
   @Action
