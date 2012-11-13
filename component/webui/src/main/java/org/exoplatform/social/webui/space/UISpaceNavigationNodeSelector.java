@@ -26,9 +26,9 @@ import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.Visibility;
-import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
@@ -349,7 +349,15 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         handleError(ex.getError(), uiNodeSelector);
         return;
       }
-      
+
+      if (node.getId().equals(uiNodeSelector.getRootNode().getId())) {
+        UIApplication uiApp = context.getUIApplication();
+        uiApp.addMessage(new ApplicationMessage("UISpaceNavigationNodeSelector.msg.rootnode-add",
+                                                null,
+                                                ApplicationMessage.WARNING));
+        return;
+      }
+
       UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
       UIPopupWindow uiManagementPopup = uiSpaceNavigationManagement.getChild(UIPopupWindow.class);
       UIPageNodeForm uiNodeForm = uiManagementPopup.createUIComponent(UIPageNodeForm.class,
