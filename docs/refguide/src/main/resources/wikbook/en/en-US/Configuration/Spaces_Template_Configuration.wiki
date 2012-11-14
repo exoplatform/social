@@ -4,8 +4,7 @@ For the classic space, you can pre-configure the template. You can configure the
 
 Here is an example of the configuration file that displays the menu on the left. The application will be inserted in the container with the Id *Application*:
 
-{code:xml}
-<page>
+{code:xml}<page>
   <owner-type></owner-type>
   <owner-id></owner-id>
   <name></name>
@@ -23,8 +22,7 @@ Here is an example of the configuration file that displays the menu on the left.
     <container id="Application" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
     </container>
   </container>
-</page>
-{code}
+</page>{code}
 
 In this example, the outer container contains two inner containers: one container has Id as *Menu* for your Menu and another has Id as *Application* containing your applications.
 
@@ -32,8 +30,7 @@ In this example, the outer container contains two inner containers: one containe
 
 If you want to put the menu on the right and the application on the left, you can swap the declared position of these two containers:
 
-{code:xml}
-<page>
+{code:xml}<page>
   <owner-type></owner-type>
   <owner-id></owner-id>
   <name></name>
@@ -51,8 +48,7 @@ If you want to put the menu on the right and the application on the left, you ca
     </container>
     </container>
   </container>
-</page>
-{code}
+</page>{code}
 
 
 In Social standalone, this configuration file is at:

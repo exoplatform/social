@@ -52,8 +52,7 @@ For example, in Social, there is an activity of type "exosocial:spaces" created 
 
 *1.* Create a sample project:
 
-{code}
-mvn archetype:generate
+{code}mvn archetype:generate
 [INFO] Scanning for projects...
 [INFO] Searching repository for plugin with prefix: 'archetype'.
 [INFO] artifact org.apache.maven.plugins:maven-archetype-plugin: checking for updates from central
@@ -98,13 +97,11 @@ groupId: org.exoplatform.social.samples
 artifactId: exo.social.samples.activity-plugin
 version: 1.0.0-SNAPSHOT
 package: org.exoplatform.social.samples.activityPlugin
-Y: y
-{code}
+Y: y{code}
 
 *2.* Edit the _pom.xml_ file as below.
 
-{code:xml}
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+{code:xml}<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -162,15 +159,13 @@ Y: y
       <scope>provided</scope>
     </dependency>
   </dependencies>
-</project>
-{code}
+</project>{code}
 
 To use the custom UI component for displaying its activity, you need a class that must be a subclass of _BaseUIActivity_. 
 
 *3.* Call _UISpaceSimpleActivity_
 
-{code:java}
-package org.exoplatform.social.samples.activityplugin;
+{code:java}package org.exoplatform.social.samples.activityplugin;
 
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -182,19 +177,15 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 )
 public class UISpaceSimpleActivity extends BaseUIActivity {
 
-}
-{code}
+}{code}
 
 The _UISpaceSimpleActivity.gtmpl_ template should be created under _main/resources/groovy/social/plugin/space_:
 
-{code:html}
-<div>This is a space activity UI component displayed for type "exosocial:spaces"</div>
-{code}
+{code:html}<div>This is a space activity UI component displayed for type "exosocial:spaces"</div>{code}
 
 An activity builder as [explained later|#Developer_document.What_is_activity_builder] is also needed.
 
-{code:java}
-package org.exoplatform.social.samples.activityplugin;
+{code:java}package org.exoplatform.social.samples.activityplugin;
 
 import org.exoplatform.social.core.activity.model.Activity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
@@ -208,13 +199,11 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
 
   }
 
-}
-{code}
+}{code}
 
 *4.* Create the _configuration.xml_ file under _conf/portal_:
 
-{code:xml}
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+{code:xml}<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd" xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
@@ -243,8 +232,7 @@ public class SimpleSpaceUIActivityBuilder extends BaseUIActivityBuilder {
       </init-params>
     </component-plugin>
   </external-component-plugins>
-</configuration>
-{code}
+</configuration>{code}
 
 Note that _{{{exosocial:spaces}}}_ must have its value matching with the activity's type that you want to display with your UI component.
 
@@ -260,14 +248,11 @@ The custom UI component for displaying activity of type "exosocial:spaces" is li
 
 When displaying an activity, you should make sure that the look and feel of the custom UI component is consistent and match with other activities and have the full functions of *Like*, *Comments*. To create another UI component to display, call _UISpaceLookAndFeelActivity_:
 
-{code:java}
-package org.exoplatform.social.samples.activityplugin;
-
+{code:java}package org.exoplatform.social.samples.activityplugin;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
-
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/plugin/space/UISpaceLookAndFeelActivity.gtmpl",
@@ -282,14 +267,11 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
   }
 )
 public class UISpaceLookAndFeelActivity extends BaseUIActivity {
-
-}
-{code}
+}{code}
 
 *6.* Create the _UISpaceLookAndFeelActivity_ template. The easiest way is to copy the content of _UIDefaultActivity.gtmpl_ to this template file:
 
-{code:groovy}
-<%
+{code:groovy}<%
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.webui.form.UIFormTextAreaInput;
 
@@ -548,21 +530,17 @@ public class UISpaceLookAndFeelActivity extends BaseUIActivity {
 </div>
 <% } else { %> <!-- activity deleted -->
 <div class="UIActivity Deleted">$labelActivityHasBeenDeleted</div>
-<% }%>
-{code}
+<% }%>{code}
 
 And you should make needed modifications for this template:
 
-{code:groovy}
-<div class="Content">
+{code:groovy}<div class="Content">
   $activityContentTitle (from custom UI component)<br>
-</div>
-{code}
+</div>{code}
 
 *7.* Reconfigure the _configuration.xml_ file:
 
-{code:xml}
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+{code:xml}<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd http://www.exoplaform.org/xml/ns/kernel_1_1.xsd" xmlns="http://www.exoplaform.org/xml/ns/kernel_1_1.xsd">
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
@@ -591,8 +569,7 @@ And you should make needed modifications for this template:
       </init-params>
     </component-plugin>
   </external-component-plugins>
-</configuration>
-{code}
+</configuration>{code}
 
 *8.* Rebuild the sample project, copy the *.jar* file to tomcat/lib. Run the server again and see the result:
 
@@ -615,8 +592,7 @@ ActivityBuilder is one class which is used to get values of _ExoSocialActivity_ 
 
 For example, to write your own UILinkActivityBuilder, you just need to extend BaseUIActivityBuilder and then customize attributes and behaviors of the activity builder as below.
 
-{code:java}
-public class UILinkActivityBuilder extends BaseUIActivityBuilder {
+{code:java}public class UILinkActivityBuilder extends BaseUIActivityBuilder {
   private static final Log LOG = ExoLogger.getLogger(UILinkActivityBuilder.class);
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
@@ -628,8 +604,7 @@ public class UILinkActivityBuilder extends BaseUIActivityBuilder {
     uiLinkActivity.setLinkDescription(templateParams.get(UILinkActivityComposer.DESCRIPTION_PARAM));
     uiLinkActivity.setLinkComment(templateParams.get(UILinkActivityComposer.COMMENT_PARAM));
   }
-}
-{code}
+}{code}
 
 {note}
 To learn more about ActivityBuilder, refer to the [BaseUIActivity class.|http://svn.exoplatform.org/projects/social/trunk/component/webui/src/main/java/org/exoplatform/social/webui/activity/BaseUIActivity.java]
@@ -643,8 +618,7 @@ For example, to create an input component for inserting video links into your ac
 
 *1.* Write UIVideoActivityComposer which extends UIActivityComposer. The UIActivityComposer allows you to input extended activities (for example, adding videos, links or documents) on the UI composer.
 
-{code:java}
-package org.exoplatform.social.plugin.videolink;
+{code:java}package org.exoplatform.social.plugin.videolink;
 
 import org.exoplatform.social.plugin.videolink.util.VideoEmbedTool;
 @ComponentConfig(
@@ -841,13 +815,11 @@ public class UIVideoActivityComposer extends UIActivityComposer {
       }
     }
   }
-}
-{code}
+}{code}
 
 *2.* Use the BaseUIActivity class to write and customize the UIActivity display as below:
 
-{code:java}
-package org.exoplatform.social.plugin.videolink;
+{code:java}package org.exoplatform.social.plugin.videolink;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -932,13 +904,11 @@ public class UIVideoActivity extends BaseUIActivity {
   public void setLinkTitle(String linkTitle) {
     this.linkTitle = linkTitle;
   }
-}
-{code}
+}{code}
 
 *3.* Use the _UIVideoActivityBuilder_ class to get values of _ExoSocialActivity_ that are set to UIVideoActivity for displaying.
 
-{code:java}
-package org.exoplatform.social.plugin.videolink;
+{code:java}package org.exoplatform.social.plugin.videolink;
 import java.util.Map;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
@@ -954,8 +924,7 @@ public class UIVideoActivityBuilder extends BaseUIActivityBuilder {
     uiVideoActivity.setLinkHTML(templateParams.get(UIVideoActivityComposer.HTML_PARAM));
     uiVideoActivity.setLinkComment(templateParams.get(UIVideoActivityComposer.COMMENT_PARAM));
   }
-}
-{code}
+}{code}
 
 {note}
 You can check out the [source code|https://github.com/exosocial/exo.social.extras.youtube-composer-plugin] to get more details.
