@@ -52,8 +52,7 @@ Configure the security
 {docbook}
 
 If you are using OpenSocial, you need to configure the OAuth authentication. With the case of eXo Platform, you need to edit the file: _gatein/conf/portal/portal/configuration.xml_ and add the following configuration:
-{code:xml}
-<component>
+{code:xml}<component>
   <key>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</key>
   <type>org.exoplatform.social.opensocial.oauth.ServiceProviderStore</type>
   <init-params>
@@ -64,8 +63,7 @@ If you are using OpenSocial, you need to configure the OAuth authentication. Wit
       <property name="sharedSecret" value="YOUR_SECRET_KEY_HERE" />
     </properties-param>
   </init-params>
-</component>
-{code}
+</component>{code}
 
 _consumerKey_ and _sharedSecret_ are keys that need to be shared with the application which is doing the request.
 
@@ -85,21 +83,19 @@ Instead of publishing your activities to the group @self as usual, you will publ
 
 After using the OpenSocial Java library and Groovy, your code will look like this:
 
-{code:groovy}
-      def client = getOpenSocialClient()
+{code:groovy}  def client = getOpenSocialClient()
 
-      //create your new activity
-      Activity activity = new Activity()
-	  activity.body = "xx purchased the book xxx"
-      activity.title = "BookFlow Purchased"
+  //create your new activity
+  Activity activity = new Activity()
+activity.body = "xx purchased the book xxx"
+  activity.title = "BookFlow Purchased"
 
-      //prepare the request that will create the activity
-      Request request = ActivitiesService.createActivity(activity);
-      //specify that the creation of this new activity is for the space bookflow
-      request.groupId = "space:bookflow";
+  //prepare the request that will create the activity
+  Request request = ActivitiesService.createActivity(activity);
+  //specify that the creation of this new activity is for the space bookflow
+  request.groupId = "space:bookflow";
 
-      client.send(request);
-{code}
+  client.send(request);{code}
 
 In the example above, the groupId is set to "space:bookflow" and bookflow is the name of the space. 
 

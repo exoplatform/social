@@ -88,41 +88,39 @@ h1. ActivityResourceBundlePlugin  {anchor:id=SOCref.Configuration.External_compo
 This plugin is used to register the external resource bundle for the internationalized activity type.
 
 *Sample configuration*:
-{code:xml}
-      <component-plugin>
-        <name>exosocial:spaces</name> <!-- activity type -->
-        <set-method>addActivityResourceBundlePlugin</set-method>
-        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
-        <init-params>
-          <object-param>
-            <name>locale.social.Core</name> <!-- resource bundle key file -->
-            <description>activity key type resource bundle mapping for exosocial:spaces</description>
-            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
-              <field name="activityKeyTypeMapping">
-                <map type="java.util.HashMap">
-                  <entry>
-                    <key><string>space_created</string></key>
-                    <value><string>SpaceActivityPublisher.space_created</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>manager_role_granted</string></key>
-                    <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>user_joined</string></key>
-                    <value><string>SpaceActivityPublisher.user_joined</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>member_left</string></key>
-                    <value><string>SpaceActivityPublisher.member_left</string></value>
-                  </entry>
-                </map>
-              </field>
-            </object>
-          </object-param>
-        </init-params>
-      </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>exosocial:spaces</name> <!-- activity type -->
+  <set-method>addActivityResourceBundlePlugin</set-method>
+  <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+  <init-params>
+    <object-param>
+      <name>locale.social.Core</name> <!-- resource bundle key file -->
+      <description>activity key type resource bundle mapping for exosocial:spaces</description>
+      <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+        <field name="activityKeyTypeMapping">
+          <map type="java.util.HashMap">
+            <entry>
+              <key><string>space_created</string></key>
+              <value><string>SpaceActivityPublisher.space_created</string></value>
+            </entry>
+            <entry>
+              <key><string>manager_role_granted</string></key>
+              <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
+            </entry>
+            <entry>
+              <key><string>user_joined</string></key>
+              <value><string>SpaceActivityPublisher.user_joined</string></value>
+            </entry>
+            <entry>
+              <key><string>member_left</string></key>
+              <value><string>SpaceActivityPublisher.member_left</string></value>
+            </entry>
+          </map>
+        </field>
+      </object>
+    </object-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 
@@ -140,22 +138,20 @@ h1. IdentityProviderPlugin {anchor:id=SOCref.Configuration.IdentityProviderPlugi
 The plugin provides the identity for a space.
 
 *Sample configuration*:
-{code:xml}
-  <component-plugins>
-    <component-plugin>
-      <name>SpaceIdentityProvider plugin</name>
-      <set-method>registerIdentityProviders</set-method>
-      <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
-      <init-params>
-        <values-param>
-          <name>providers</name>
-          <description>Identity Providers</description>
-          <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </component-plugins>
-{code}
+{code:xml}<component-plugins>
+  <component-plugin>
+    <name>SpaceIdentityProvider plugin</name>
+    <set-method>registerIdentityProviders</set-method>
+    <type>org.exoplatform.social.core.identity.IdentityProviderPlugin</type>
+    <init-params>
+      <values-param>
+        <name>providers</name>
+        <description>Identity Providers</description>
+        <value>org.exoplatform.social.core.identity.provider.SpaceIdentityProvider</value>
+      </values-param>
+    </init-params>
+  </component-plugin>
+</component-plugins>{code}
 
 In which:
 
@@ -174,25 +170,21 @@ This plugin allows creating a link to a user profile when the user is mentioned 
 
 To use the plugin in the component configuration, you must use the following target-component:
 
-{code:xml}
-<target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>{code}
 
 *Sample Configuration*:
-{code:xml}
-    <component-plugin>
-      <name>MentionsProcessor</name>
-      <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
-      <init-params>
-        <value-param>
-          <name>priority</name>
-          <description>priority of this processor (lower are executed first)</description>
-          <value>2</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>MentionsProcessor</name>
+  <set-method>addProcessorPlugin</set-method>
+  <type>org.exoplatform.social.core.processor.MentionsProcessor</type>
+  <init-params>
+    <value-param>
+      <name>priority</name>
+      <description>priority of this processor (lower are executed first)</description>
+      <value>2</value>
+    </value-param>
+  </init-params>
+</component-plugin>{code}
 In which:
 
 * *Name*: _MentionsProcessor_
@@ -209,8 +201,7 @@ h1. OSHtmlSanitizerProcessor {anchor:id=SOCref.Configuration.OSHtmlSanitizerProc
 The plugin renders valid HTML tags appearing in the Activity body (content).
 
 *Sample configuration*:
-{code:xml}
-<component>
+{code:xml}<component>
     <key>org.exoplatform.social.core.manager.ActivityManager</key>
     <type>org.exoplatform.social.core.manager.ActivityManagerImpl</type>
     <component-plugins>
@@ -220,8 +211,7 @@ The plugin renders valid HTML tags appearing in the Activity body (content).
         <type>org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor</type>
       </component-plugin>
     </component-plugins>
-</component>
-{code}
+</component>{code}
 
 In which:
 
@@ -235,26 +225,22 @@ h1. PortletPreferenceRequiredPlugin {anchor:id=SOCref.Configuration.SpaceService
 This plugin is used to configure the list of portlet names which will have portlet preference of space context.
 
 To use the plugin in the component configuration, you must use the following target-component:
-{code:xml}
-<target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>{code}
 
 *Sample configuration*:
-{code:xml}
-  <component-plugin>
-    <name>portlets.prefs.required</name>
-    <set-method>setPortletsPrefsRequired</set-method>
-    <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
-    <init-params>
-      <values-param>
-        <name>portletsPrefsRequired</name>
-        <value>SpaceActivityStreamPortlet</value>
-        <value>SpaceSettingPortlet</value>
-        <value>MembersPortlet</value>
-      </values-param>
-    </init-params>
-  </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>portlets.prefs.required</name>
+  <set-method>setPortletsPrefsRequired</set-method>
+  <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
+  <init-params>
+    <values-param>
+      <name>portletsPrefsRequired</name>
+      <value>SpaceActivityStreamPortlet</value>
+      <value>SpaceSettingPortlet</value>
+      <value>MembersPortlet</value>
+    </values-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 
@@ -272,69 +258,67 @@ h1. SpaceApplicationConfigPlugin  {anchor:id=SOCref.Configuration.External_compo
 This plugin is used to configure the default applications when creating a new space.
 
 *Sample configuration*:
-{code:xml}
-      <component-plugin>
-        <name>Space Application Configuration</name>
-        <set-method>setSpaceApplicationConfigPlugin</set-method>
-        <type>org.exoplatform.social.core.space.SpaceApplicationConfigPlugin</type>
-        <init-params>
-          <object-param>
-            <name>spaceHomeApplication</name>
-            <description>Space Home Application</description>
-            <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
-              <field name="portletApp"><string>social-portlet</string></field>
-              <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
-              <field name="appTitle"><string>Home</string></field>
-              <!--<field name="icon"><string>SpaceHomeIcon</string></field>-->
-            </object>
-          </object-param>
+{code:xml}<component-plugin>
+  <name>Space Application Configuration</name>
+  <set-method>setSpaceApplicationConfigPlugin</set-method>
+  <type>org.exoplatform.social.core.space.SpaceApplicationConfigPlugin</type>
+  <init-params>
+    <object-param>
+      <name>spaceHomeApplication</name>
+      <description>Space Home Application</description>
+      <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+        <field name="portletApp"><string>social-portlet</string></field>
+        <field name="portletName"><string>SpaceActivityStreamPortlet</string></field>
+        <field name="appTitle"><string>Home</string></field>
+        <!--<field name="icon"><string>SpaceHomeIcon</string></field>-->
+      </object>
+    </object-param>
 
-          <object-param>
-            <name>spaceApplicationListConfig</name>
-            <description>space application list configuration</description>
-            <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin">
-              <field name="spaceApplicationList">
-                <collection type="java.util.ArrayList">
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
-                      <field name="portletApp"><string>dashboard</string></field>
-                      <field name="portletName"><string>DashboardPortlet</string></field>
-                      <field name="appTitle"><string>Dashboard</string></field>
-                      <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>1</int></field>
-                      <field name="uri"><string>dashboard</string></field>
-                      <!--<field name="icon"><string>SpaceDashboardIcon</string></field>-->
-                    </object>
-                  </value>
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
-                      <field name="portletApp"><string>social-portlet</string></field>
-                      <field name="portletName"><string>SpaceSettingPortlet</string></field>
-                      <field name="appTitle"><string>Space Settings</string></field>
-                      <field name="removable"><boolean>false</boolean></field>
-                      <field name="order"><int>2</int></field>
-                      <field name="uri"><string>settings</string></field>
-                      <!--<field name="icon"><string>SpaceSettingsIcon</string></field>-->
-                    </object>
-                  </value>
-                  <value>
-                    <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
-                      <field name="portletApp"><string>social-portlet</string></field>
-                      <field name="portletName"><string>MembersPortlet</string></field>
-                      <field name="appTitle"><string>Members</string></field>
-                      <field name="removable"><boolean>true</boolean></field>
-                      <field name="order"><int>3</int></field>
-                      <field name="uri"><string>members</string></field>
-                      <!--<field name="icon"><string>SpaceMembersIcon</string></field>-->
-                    </object>
-                  </value>
-                </collection>
-              </field>
-            </object>
-          </object-param>
-        </init-params>
-      </component-plugin>
-{code}
+    <object-param>
+      <name>spaceApplicationListConfig</name>
+      <description>space application list configuration</description>
+      <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin">
+        <field name="spaceApplicationList">
+          <collection type="java.util.ArrayList">
+            <value>
+              <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                <field name="portletApp"><string>dashboard</string></field>
+                <field name="portletName"><string>DashboardPortlet</string></field>
+                <field name="appTitle"><string>Dashboard</string></field>
+                <field name="removable"><boolean>true</boolean></field>
+                <field name="order"><int>1</int></field>
+                <field name="uri"><string>dashboard</string></field>
+                <!--<field name="icon"><string>SpaceDashboardIcon</string></field>-->
+              </object>
+            </value>
+            <value>
+              <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                <field name="portletApp"><string>social-portlet</string></field>
+                <field name="portletName"><string>SpaceSettingPortlet</string></field>
+                <field name="appTitle"><string>Space Settings</string></field>
+                <field name="removable"><boolean>false</boolean></field>
+                <field name="order"><int>2</int></field>
+                <field name="uri"><string>settings</string></field>
+                <!--<field name="icon"><string>SpaceSettingsIcon</string></field>-->
+              </object>
+            </value>
+            <value>
+              <object type="org.exoplatform.social.core.space.SpaceApplicationConfigPlugin$SpaceApplication">
+                <field name="portletApp"><string>social-portlet</string></field>
+                <field name="portletName"><string>MembersPortlet</string></field>
+                <field name="appTitle"><string>Members</string></field>
+                <field name="removable"><boolean>true</boolean></field>
+                <field name="order"><int>3</int></field>
+                <field name="uri"><string>members</string></field>
+                <!--<field name="icon"><string>SpaceMembersIcon</string></field>-->
+              </object>
+            </value>
+          </collection>
+        </field>
+      </object>
+    </object-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 
@@ -362,60 +346,56 @@ h1. SocialChromatticLifeCycle  {anchor:id=SOCref.Configuration.External_componen
 This plugin is used to manage _ChromatticSession_ in the Social project.
 
 To use the plugin in the component configuration, you must use the following target-component:
-{code:xml}
-<target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>{code}
 
 *Sample configuration*:
-{code:xml}
-    <component-plugin>
-      <name>chromattic</name>
-      <set-method>addLifeCycle</set-method>
-      <type>org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle</type>
-      <init-params>
-        <value-param>
-          <name>domain-name</name>
-          <value>soc</value>
-        </value-param>
-        <value-param>
-          <name>workspace-name</name>
-          <value>social</value>
-        </value-param>
-        <value-param profiles="all,default,minimal">
-          <name>workspace-name</name>
-          <value>social</value>
-        </value-param>
-        <values-param>
-          <name>entities</name>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
+{code:xml}<component-plugin>
+  <name>chromattic</name>
+  <set-method>addLifeCycle</set-method>
+  <type>org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle</type>
+  <init-params>
+    <value-param>
+      <name>domain-name</name>
+      <value>soc</value>
+    </value-param>
+    <value-param>
+      <name>workspace-name</name>
+      <value>social</value>
+    </value-param>
+    <value-param profiles="all,default,minimal">
+      <name>workspace-name</name>
+      <value>social</value>
+    </value-param>
+    <values-param>
+      <name>entities</name>
+      <value>org.exoplatform.social.core.chromattic.entity.ProviderRootEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ProviderEntity</value>
 
-          <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
 
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
 
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
 
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
-          <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
-        </values-param>
-        <properties-param>
-          <name>options</name>
-          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
-          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-{code}
+      <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.SpaceListEntity</value>
+      <value>org.exoplatform.social.core.chromattic.entity.SpaceRef</value>
+    </values-param>
+    <properties-param>
+      <name>options</name>
+      <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
+      <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+    </properties-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 
@@ -443,24 +423,20 @@ This plugin uses the value in the _template_ parameter of the activity and repla
 the _template_ parameter of this activity.
 
 To use the plugin in the component configuration, you must use the following target-component:
-{code:xml}
-<target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>{code}
 
 *Sample configuration*:
-{code:xml}
-    <component-plugin>
-      <name>TemplateParamsProcessor</name>
-      <set-method>addProcessorPlugin</set-method>
-      <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
-      <init-params>
-        <value-param>
-          <name>priority</name>
-          <value>1</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>TemplateParamsProcessor</name>
+  <set-method>addProcessorPlugin</set-method>
+  <type>org.exoplatform.social.core.processor.TemplateParamsProcessor</type>
+  <init-params>
+    <value-param>
+      <name>priority</name>
+      <value>1</value>
+    </value-param>
+  </init-params>
+</component-plugin>{code}
 In which:
 
 * *Name*: _TemplateParamsProcessor_
@@ -478,25 +454,21 @@ h1. URLConverterFilterPlugin {anchor:id=SOCref.Configuration.External_component_
 This plugin converts all the URLs in the activity into the hyperlinks.
 
 To use the plugin in the component configuration, you must use the following target-component:
-{code:xml}
-<target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>{code}
 
 *Sample configuration*:
-{code:xml}
-    <component-plugin>
-      <name>URLConverterFilterPlugin</name>
-      <set-method>addFilterPlugin</set-method>
-      <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
-      <init-params>
-        <value-param>
-          <name>urlMaxLength</name>
-          <description>the max length of URL</description>
-          <value>-1</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>URLConverterFilterPlugin</name>
+  <set-method>addFilterPlugin</set-method>
+  <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
+  <init-params>
+    <value-param>
+      <name>urlMaxLength</name>
+      <description>the max length of URL</description>
+      <value>-1</value>
+    </value-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 
@@ -515,23 +487,19 @@ h1. RestPortalContainerNameConfig {anchor:id=SOCref.Configuration.External_compo
 This plugin is used to set the portal container name used for REST service.
 
 To use the plugin in the component configuration, you must use the following target-component:
-{code:xml}
-<target-component>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</target-component>
-{code}
+{code:xml}<target-component>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</target-component>{code}
 *Sample configuration*:
-{code:xml}
-    <component-plugin>
-      <name>set portal container name used for REST service</name>
-      <set-method>setRestContainerName</set-method>
-      <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
-        <init-params>
-        <value-param>
-          <name>rest-container-name</name>
-          <value>socialdemo</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-{code}
+{code:xml}<component-plugin>
+  <name>set portal container name used for REST service</name>
+  <set-method>setRestContainerName</set-method>
+  <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
+    <init-params>
+    <value-param>
+      <name>rest-container-name</name>
+      <value>socialdemo</value>
+    </value-param>
+  </init-params>
+</component-plugin>{code}
 
 In which:
 

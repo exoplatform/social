@@ -17,34 +17,30 @@ Each filter is responsible for enriching the content of the input texts. For exa
 remove the forbidden HTML tags.
 
 The XMLProcessor component is configured in the _config/src/main/java/conf/social/common-configuration.xml_ file:
-{code:xml}
-<component>
+{code:xml}<component>
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
-</component>
-{code}  
+</component>{code}  
 
 To manage the chain of the filters in XMLProcessor, you can use the _addFilterPlugin()_ and _removeFilterPlugin()_ methods.
 XMLProcessor is initialized by IOC (Invesion of Control) via the configuration files defined in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
 
 *Sample code*: {anchor: id="Sample_code"}
-{code:xml}
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
-    <component-plugin>
-      <name>URLConverterFilterPlugin</name>
-      <set-method>addFilterPlugin</set-method>
-      <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
-      <init-params>
-        <value-param>
-          <name>urlMaxLength</name>
-          <description>the max length of URL</description>
-          <value>-1</value>
-        </value-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-{code}
+{code:xml}<external-component-plugins>
+  <target-component>org.exoplatform.social.common.xmlprocessor.XMLProcessor</target-component>
+  <component-plugin>
+    <name>URLConverterFilterPlugin</name>
+    <set-method>addFilterPlugin</set-method>
+    <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
+    <init-params>
+      <value-param>
+        <name>urlMaxLength</name>
+        <description>the max length of URL</description>
+        <value>-1</value>
+      </value-param>
+    </init-params>
+  </component-plugin>
+</external-component-plugins>{code}
 
 {docbook}
 <para xml:id="SOCref_developreference_XMLProcessor_Plugins">
@@ -70,8 +66,7 @@ The following is the general Class diagram of XMLProcesscor in Social:
 !images/ProcessorAndFilterClassDiagram.png|align="center" width="120mm" fo:scalefit="1" html:scalefit="0"!
 
 All of these filters implements the Filter interface as follows: {anchor: id="Filter_Interface"}
-{code:java}
-package org.exoplatform.social.common.xmlprocessor;
+{code:java}package org.exoplatform.social.common.xmlprocessor;
 public interface Filter {
   /**
    * Filters the input data.
@@ -80,14 +75,12 @@ public interface Filter {
    * @return an Object with the result after filtered
    */
   public Object doFilter(Object input);
-}
-{code}
+}{code}
 
 These filters will process the input texts in the _doFilter(Object input)_ method and return the result to XMLProcessor. 
 They are declared in the configuration files found in the _/demo/war/src/main/webapp/WEB-INF/conf/socialdemo/social/component-plugins-configuration.xml_ path.
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
     <target-component>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</target-component>
       <component-plugin>
         <name>setAllowedTagPlugin</name>
@@ -190,7 +183,6 @@ They are declared in the configuration files found in the _/demo/war/src/main/we
           </object-param>
         </init-params>
       </component-plugin>
-  </external-component-plugins>  
-{code}
+  </external-component-plugins>{code}
 
 You can write your own filter by implementing the [Filter interface|#Filter_Interface] and add it to XMLProcessor as the [sample code|#Sample_code] in the *XMLProccessor Component* section.

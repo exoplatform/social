@@ -14,8 +14,7 @@ Publish an activity for a user
 </para>
 {docbook}
 
-{code:java}
-package org.exoplatform.publish.user;
+{code:java}package org.exoplatform.publish.user;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -73,9 +72,7 @@ public class PublishActivityForUser {
       LOG.error("can not save activity.", e);
     }
   }  
-}
-
-{code}
+}{code}
 
 {docbook}
 <para xml:id="SOCref.Developer_references.Publish_an_activity_for_a_space">
@@ -87,8 +84,7 @@ Publish an activity for a space
 </para>
 {docbook}
 
-{code:java}
-package org.exoplatform.publish.space;
+{code:java}package org.exoplatform.publish.space;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -164,8 +160,7 @@ public class PublishActivityForSpace {
       LOG.error("Can not save activity.", e);
     }
   }
-}
-{code}
+}{code}
 
 
 h1. Configure an activity processor {anchor:id=SOCref.Developer_references.ConfigureAnActivityProcessor}
@@ -174,8 +169,7 @@ An activity processor is used to modify the content of activities before they ar
 
 Firstly, create the _SmileyProcessor_ class by extending the _BaseActivityProcessorPlugin_.
 
-{code:java}
-package org.exoplatform.social.core.activitystream;
+{code:java}package org.exoplatform.social.core.activitystream;
 
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.container.xml.InitParams;
@@ -195,13 +189,11 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
     activity.setTitle(title.replaceAll(":-)", this.smiley));
   }
 }
-
 {code}
 
 Then, register this processor by editing the _configuration.xml_ file:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
   <component-plugin>
     <name>SmileyProcessor</name>
@@ -215,8 +207,7 @@ Then, register this processor by editing the _configuration.xml_ file:
       </values-param>
     </init-params>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 
 The "init-params" contains all the key-value data which a processor will use to initialize. In the above configuration, the *priority* value indicates the order in which this processor is executed. If the value is 1, this processor will be used before all the remaining processors with the lower priority.
 
@@ -224,8 +215,7 @@ h1. Publish an RSS feed with feedmash {anchor:id=SOCref.Developer_references.Pub
 
 It is really easy to publish an RSS feed to a space's activity stream. Social provides _FeedmashJobPlugin_ to publish the RSS feeds. As you can see in the project "_exo.social.extras.feedmash_", there are the _JiraFeedConsumer_ and _HudsonFeedConsumer_ samples to post Social project's feeds (jira and hudson) to a pre-defined space named _exosocial_ in a specific portal container named _socialdemo_ as in the configuration file:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.services.scheduler.JobSchedulerService</target-component>
   <component-plugin>
     <name>RepubSocialJiraActivityJob</name>
@@ -278,16 +268,14 @@ It is really easy to publish an RSS feed to a space's activity stream. Social pr
       </properties-param>
     </init-params>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 
 Run Social with the URL: http://localhost:8080/socialdemo, then log in and create a space named "exosocial". After creating the "exosocial" space, all the feeds of the Social project on Jira and Hudson will be automatically published to the _exosocial_ space.
 
 h1. Sample Code {anchor:id=SOCref.Developer_references.Sample_code}
 See the following code snippet to know more details about how to publish an activity and add comments to an activity:
 
-{code:java}
-package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
+{code:java}package org.exoplatform.social.introduction.activitystreamandexosocialactivity;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -386,5 +374,4 @@ public class IntroduceActivityStreamAndExoSocialActivity {
     //Saves a comment.
     activityManager.saveComment(activity, comment);
   }
-}
-{code}
+}{code}

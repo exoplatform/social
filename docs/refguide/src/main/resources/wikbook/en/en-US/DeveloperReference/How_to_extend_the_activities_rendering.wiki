@@ -30,8 +30,7 @@ Write an ActivityProcessor
 
 Social lets you pre-process an activity before it is returned by the ActivityManager. To do this, you simply need to implement the interface ActivityProcessor:
 
-{code:java}
-/**
+{code:java}/**
  * An activity processor is responsible to pre-process an activity before it is returned by the {@link ActivityManager}
  */
 public interface ActivityProcessor {
@@ -49,14 +48,12 @@ public interface ActivityProcessor {
    */
   int getPriority();
 
-}
-{code}
+}{code}
 
 
 For example, the following shows you how to implement a _SmileyProcessor_ that will replace text smileys by icons:
 
-{code:java}
-public class SmileyProcessor implements ActivityProcessor {
+{code:java}public class SmileyProcessor implements ActivityProcessor {
 
   String smiley =  "<img src='/images/smiley.gif'/>";
 
@@ -69,8 +66,7 @@ public class SmileyProcessor implements ActivityProcessor {
     return 100;
   }
 
-}
-{code}
+}{code}
 
 {docbook}
 <para xml:id="SOCref.DeveloperReferences.how_extend_the_activities_rendering.Configure_Processor">
@@ -89,8 +85,7 @@ But there is also a component plugin hooked for it: _public void addProcessorPlu
 
 So, to make your processor easy to hook, you simply need to let him extend the BaseActivityProcessorPlugin.
 
-{code:java}
-public class SmileyProcessor extends BaseActivityProcessorPlugin {
+{code:java}public class SmileyProcessor extends BaseActivityProcessorPlugin {
 
   String smiley =  "<img src='/images/smiley.gif'/>";
 
@@ -102,15 +97,13 @@ public class SmileyProcessor extends BaseActivityProcessorPlugin {
     String title = activity.getTitle();
       activity.setTitle(title.replaceAll(":-\\)", smiley));
   }
-}
-{code}
+}{code}
 
 It will have the additional benefit to make the priority field configurable, so you do not need to implement _getPriorty()_.
 
 Then your processor can be configured as a component plugin like this:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.activitystream.ActivityManager</target-component>
   <component-plugin>
     <name>SmileyProcessor</name>
@@ -124,7 +117,6 @@ Then your processor can be configured as a component plugin like this:
       </value-param>
     </init-params>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 
 Restart, then place the smiley images on the server.

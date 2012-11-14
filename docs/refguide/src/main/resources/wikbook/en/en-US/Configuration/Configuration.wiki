@@ -46,10 +46,13 @@ This section describes services which provide low-level functionality for UI com
 
 h1. SpaceService {anchor:id=SOCref.Configuration.Component.SpaceServiceRoleNotInToc}
 The service is used for spaces management, including creating spaces, and installing applications.
-
+{docbook}
+<command>
+sjfdfksa kjhdkgoeri ksh oie iudshg iogidsg iusd iudfg dg ierj dfs idfg eriudf sriuf idf er iudf sdfsdaasd  -asd -asdf -as sadth-sa afsdf sdf assfd asg-r adf asdf asfd
+</command>
+{docbook}
 *Sample configuration*:
-{code:xml}
-<component>
+{code:xml}<component>
   <key>org.exoplatform.social.core.space.spi.SpaceService</key>
   <type>org.exoplatform.social.core.space.impl.SpaceServiceImpl</type>
   <!--Deprecated, Use external-component-plugins instead
@@ -66,8 +69,7 @@ The service is used for spaces management, including creating spaces, and instal
     </values-param>
   </init-params>
   -->
-</component>
-{code}
+</component>{code}
 
 * *Init-params*:
 || Name || Type || Value || Description ||
@@ -82,8 +84,7 @@ h1. LifeCycleCompletionService {anchor:id=SOCref.Configuration.Component.LifeCyc
 This component is used to process the callable request out of the HTTP request.
 
 *Sample configuration*:
-{code:xml}
-  <component>
+{code:xml}<component>
     <key>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</key>
     <type>org.exoplatform.social.common.lifecycle.LifeCycleCompletionService</type>
     <init-params>
@@ -96,8 +97,7 @@ This component is used to process the callable request out of the HTTP request.
         <value>false</value>
       </value-param>
     </init-params>
-  </component>
-{code}
+</component>{code}
 * *Init-params*:
 || Name || Type || Value || Description ||
 | thread-number | {{integer}} | {{10}} |The maximum number of threads parallel executed. |
@@ -107,8 +107,7 @@ h1. RestPortalContainerNameConfig  {anchor:id=SOCref.Configuration.RestPortalCon
 This plugin is used to set the portal container name used for REST service.
 
 *Sample configuration*:
-{code:xml}
-<component>
+{code:xml}<component>
     <key>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</key>
     <type>org.exoplatform.social.opensocial.auth.RestPortalContainerNameConfig</type>
     <init-params>
@@ -117,8 +116,7 @@ This plugin is used to set the portal container name used for REST service.
         <value>portal</value>
       </value-param>
     </init-params>
-</component>
-{code}
+</component>{code}
 
 * *Init-params*:
 
@@ -129,8 +127,7 @@ h1. LinkProvider {anchor:id=SOCref.Configuration.LinkProviderRoleNotInToc}
 This service is used to provide the utility to get the URLs of the activities, profiles, spaces, avatars and more.
 
 *Sample configuration*:
-{code:xml}
-  <component>
+{code:xml}<component>
     <key>org.exoplatform.social.core.service.LinkProvider</key>
     <type>org.exoplatform.social.core.service.LinkProvider</type>
     <init-params>
@@ -140,8 +137,7 @@ This service is used to provide the utility to get the URLs of the activities, p
           <value>classic</value>
         </value-param>
     </init-params>
-  </component>
-{code}
+  </component>{code}
 
 * *Init-params*:
 

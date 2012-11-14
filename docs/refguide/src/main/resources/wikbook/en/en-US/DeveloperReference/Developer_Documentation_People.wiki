@@ -16,8 +16,7 @@ The identity allows identifying a unique social object. The Social objects can b
 
 Social provides IdentityProvider as an identiy mechanism for the third parties to extend Social's identity system without any limitation. Here is an example:
 
-{code:java}
-class SampleIdentityProvider extends OrganizationIdentityProvider{
+{code:java}class SampleIdentityProvider extends OrganizationIdentityProvider{
   public SampleIdentityProvider(OrganizationService organizationService) {
     super(organizationService);
   }
@@ -29,8 +28,7 @@ class SampleIdentityProvider extends OrganizationIdentityProvider{
     profile.setProperty(Profile.USERNAME, "this is user name");
     profile.setUrl("/path/to/profile/");
   }
-}
-{code}
+}{code}
 
 In this example, the _SampleIdentityProvider_ class extends _OrganizationIdentityProvider_ which is the IdentityProvider used to connect to the portal user's base. In this class, the _populateProfile_ method is overridden and some dummy data are added to the profile fields.
 
@@ -39,8 +37,7 @@ In this example, the _SampleIdentityProvider_ class extends _OrganizationIdentit
 
 IdentityManager is the service used to manipulate the identity operations, such as creating, getting, deleting or finding a profile. You can get the IdentityManager via the ExoContainer. The following code will show how to get an IdentityManager instance and create a basic identity instance:
 
-{code:language=java}
-import org.exoplatform.container.ExoContainer;
+{code:language=java}import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
@@ -61,8 +58,7 @@ IdentityManager identityManager = (IdentityManager) container.getComponentInstan
 ActivityManager activityManager = (ActivityManager) container.getComponentInstanceOfType(ActivityManager.class);
 
 //create new user with name Zun
-Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);
-{code}
+Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username);{code}
 
 
 {docbook}
@@ -79,8 +75,7 @@ APIs provide notification interfaces which you can implement to create your own 
 
 *1.* Create the _ProfileLoggerListener_ class to log all profile modifications of the systems. The abstract class named _ProfileListenerPlugin_ provides the interface to implement this method.
 
-{code:java}
-import org.exoplatform.services.log.ExoLogger;
+{code:java}import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.lifecycle.ProfileListenerPlugin;
 import org.exoplatform.social.core.identity.spi.ProfileLifeCycleEvent;
@@ -112,21 +107,18 @@ public class ProfileLoggerListener extends ProfileListenerPlugin{
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
     logger.info("@" + event.getUsername() + " has updated his header info.");
   }
-}
-{code}
+}{code}
 
 *2.* Add some configurations to this class to the configuration.xml:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.identity.IdentityManager</target-component>
   <component-plugin>
     <name>ProfileLoggerListener</name>
     <set-method>addProfileListener</set-method>
     <type>path.to.ProfileLoggerListener</type>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 
 {docbook}
 <para xml:id="SOCref.Developers_References.People.Relationships">
@@ -154,8 +146,7 @@ Users connection
 
 The following code will show you how to invite a user to connect with another:
 
-{code:java}
-import org.exoplatform.container.ExoContainer;
+{code:java}import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.identity.IdentityManager;
 import org.exoplatform.social.core.identity.impl.organization.OrganizationIdentityProvider;
@@ -177,8 +168,7 @@ public void inviteUser() throws Exception {
 
   RelationshipManager relationshipManager = (RelationshipManager) container.getComponentInstanceOfType(RelationshipManager.class);
   Relationship relationship = relationshipManager.invite( currentIdentity, invitedIdentity);
-}
-{code}
+}{code}
 
 
 {docbook}
@@ -195,8 +185,7 @@ The following example will show you how to implement one of these interfaces and
 
 *1.* Create the _RelationshipLoggerListener_ class:
 
-{code:java}
-import org.exoplatform.social.core.relationship.Relationship;
+{code:java}import org.exoplatform.social.core.relationship.Relationship;
 import org.exoplatform.social.core.relationship.lifecycle.RelationshipListenerPlugin;
 import org.exoplatform.social.relationship.spi.RelationshipEvent;
 
@@ -232,19 +221,16 @@ public class RelationshipLoggerListener extends RelationshipListenerPlugin{
 
     return new String[]{user1, user2 };
   }
-}
-{code}
+}{code}
 
 *2.* Add some configurations for this class in the _configuration.xml_ file:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.relationship.RelationshipManager</target-component>
   <component-plugin>
     <name>RelationshipLoggerListener</name>
     <set-method>addListenerPlugin</set-method>
     <type>classpath.of.your.RelationshipLoggerListener</type>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 

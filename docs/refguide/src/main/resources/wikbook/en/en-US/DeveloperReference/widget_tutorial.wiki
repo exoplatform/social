@@ -17,10 +17,8 @@ Basic version
 
 To insert the basic version, you need to have an iFrame to insert on your site.
 
-{code:html}
-<iframe  scrolling="no" height="180" frameborder="no" width="220" src="http://URL_OF_YOUR_EXO_INSTALLATION.COM/rest/private/spaces/portal/space_info?
-spaceName=NAME_OF_YOUR_SPACE&description=DESCRIPTION_OF_THE_SPACE"></iframe>
-{code}
+{code:html}<iframe  scrolling="no" height="180" frameborder="no" width="220" src="http://URL_OF_YOUR_EXO_INSTALLATION.COM/rest/private/spaces/portal/space_info?
+spaceName=NAME_OF_YOUR_SPACE&description=DESCRIPTION_OF_THE_SPACE"></iframe>{code}
 
 To install this version in your application, replace all the uppercase text below:
 * _{{{URL_OF_YOUR_EXO_INSTALLATION.COM}}}_: This is the URL of your Social installation. If you are testing on your local computer, the URL may be _{{{localhost:8080}}}_.
@@ -42,16 +40,13 @@ To install an advanced version of the widget, you need to insert a code snippet 
 
 Next, insert the following code at the position you want the button to be displayed:
 
-{code:html}
-<div class="exoSpacesContainer"><a href="javascript:void(0);" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
+{code:html}<div class="exoSpacesContainer"><a href="javascript:void(0);" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
 <script src="/socialWidgetResources/javascript/space.js"></script>
-<script>spaces.createPopup("exoSpacesLink", "MyAppName - my social object", "my cool description");</script>
-{code}
+<script>spaces.createPopup("exoSpacesLink", "MyAppName - my social object", "my cool description");</script>{code}
 
 The important function here is:
 
-{code:js}
-spaces.createPopup(link, spaceName, description)
+{code:js}spaces.createPopup(link, spaceName, description)
 {code}
 
 In which:
@@ -75,13 +70,11 @@ Configurations
 
 If you want to change any part of this configuration, the best way is to change before creating the pop-up. For example:
 
-{code:html}
-<div class="exoSpacesContainer"><a href="#" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
+{code:html}<div class="exoSpacesContainer"><a href="#" id="exoSpacesLink" class="exoSpacesLink" target="_blank">Space</a></div>
 <script src="/socialWidgetResources/javascript/space.js"></script>
 <script>
   spaces.setServerURL("http://192.168.2.100:8080");
   spaces.createPopup("exoSpacesLink", "My cool new space", "my cool description");
-</script>
-{code}
+</script>{code}
 
 You can see an example of integration at: [http://localhost:8080/socialWidgetResources/test.html]

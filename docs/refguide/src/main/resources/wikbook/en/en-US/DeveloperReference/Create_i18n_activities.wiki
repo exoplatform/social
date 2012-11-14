@@ -61,8 +61,7 @@ The sample code above is enough for creating an internationalized activity that 
 all the configurations below are done. The returned result will be displayed in English like this: "_Test was created by <a href="link-to-john-profile">John</a>_".
 
 *2.* Register the _ActivityResourceBundlePlugin_ plugin to the _I18NActivityProcessor_ component in the configuration file as the example below:
-{code}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
     <target-component>org.exoplatform.social.core.processor.I18NActivityProcessor</target-component>
     <component-plugin>
       <name>exosocial:spaces</name> <!-- activity type -->
@@ -85,22 +84,18 @@ all the configurations below are done. The returned result will be displayed in 
         </object-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
-{code}
+  </external-component-plugins>{code}
 
 If the resource bundle message is compound, you must provide _templateParams_. The argument number will be counted as it appears on the map.
 For example:
-{code}
-templateParams = {"key1": "value1", "key2": "value2"} => arguments = ["value1", "value2"]
-{code}
+{code}templateParams = {"key1": "value1", "key2": "value2"} => arguments = ["value1", "value2"]{code}
 
 {note}
 To reserve this order, _LinkedHashMap_ must be used to create _templateParams_ instead of _HashMap_.
 {note}
 
 *3.* Register an external resource bundle for that activity type to get an associated resource bundle as follow:
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
     <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
     <component-plugin>
       <name>Social Core Component Resource Bundle</name>
@@ -119,8 +114,7 @@ To reserve this order, _LinkedHashMap_ must be used to create _templateParams_ i
         </values-param>
       </init-params>
     </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
 
 
 {docbook}
@@ -138,10 +132,8 @@ Get an internationalized message
 * If you have registered ui activity plugins, you just need to display _activity.getTitle()_ as it is already internationalized by _BaseUIActivity_.
 
 * In other cases, base on a provided locale as the code below:
-{code:java}
-I18NActivityProcessor i18NActivityProcessor = (I18NActivityProcessor) PortalContainer.getInstance().getComponentInstanceOfType(I18NActivityProcessor.class);
-ExoSocialActivity processedActivity =  i18NActivityProcessor.process(unprocessedActivity, chosenLocale);
-{code}
+{code:java}I18NActivityProcessor i18NActivityProcessor = (I18NActivityProcessor) PortalContainer.getInstance().getComponentInstanceOfType(I18NActivityProcessor.class);
+ExoSocialActivity processedActivity =  i18NActivityProcessor.process(unprocessedActivity, chosenLocale);{code}
 
 
 

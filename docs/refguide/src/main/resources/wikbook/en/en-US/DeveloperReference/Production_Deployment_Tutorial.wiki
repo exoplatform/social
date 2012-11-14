@@ -23,8 +23,7 @@ h1. Configure Apache {anchor:id=SOCref.DeveloperReference.Configure_Apache}
 To match our URL (http://social.demo.exoplatform.org), we need to configure an apache virtualhost.
 Here is what you need to define in apache configuration.
 
-{code:xml}
-<VirtualHost *:80>
+{code:xml}<VirtualHost *:80>
   ServerAdmin undisclosed@example.org
   DocumentRoot /var/www/sites/social.demo.exoplatform.org
   ServerName social.demo.exoplatform.org
@@ -44,15 +43,13 @@ Here is what you need to define in apache configuration.
           Order Allow,Deny
           Allow from All
   </Directory>
-</VirtualHost>
-{code}
+</VirtualHost>{code}
 
 * The virtualhost will answer on the port 80 of social.demo.exoplatform.org.
 * The redirect allows you to serve only the /socialdemo portal which contains the demo.
 * The JKMount instructions refer to the _{{{mod_jk}}}_ configuration.
 
-{code:xml}
-# ----
+{code:xml}# ----
 # Connector to TomCat App Server
 # ----
 
@@ -77,13 +74,11 @@ LoadModule jk_module modules/mod_jk.so
   JkLogStampFormat "[%a %b %d %H:%M:%S %Y] "
   # ---- Send everything for context /examples to worker named worker1 (ajp13)
   JkMountFileReload "0"
-</IfModule>
-{code}
+</IfModule>{code}
 
 Here is the _workers.properties_ that works with it:
 
-{code:xml}
-worker.list=WRK_SOCIAL
+{code:xml}worker.list=WRK_SOCIAL
 
 # WRK_SOCIAL
 worker.WRK_SOCIAL.type=ajp13
@@ -91,8 +86,7 @@ worker.WRK_SOCIAL.host=localhost
 worker.WRK_SOCIAL.port=8106
 worker.WRK_SOCIAL.socket_timeout=10
 worker.WRK_SOCIAL.lbfactor=10
-worker.WRK_SOCIAL.socket_keepalive=true
-{code}
+worker.WRK_SOCIAL.socket_keepalive=true{code}
 
 {info}
 You need to set the same ports in _workers.properties_ and in the _tomcat/conf/server.xml_ for the AJP port.
@@ -110,15 +104,13 @@ A dedicated schema is being used for the demo called _{{{demo_social}}}_.
 h1. Configure Social {anchor:id=SOCref.DeveloperReference.Configure_eXo_Social}
 * Drop your mysql jdbc jar driver in $SOCIAL_HOME/lib
 * Edit the database configuration in this file : $SOCIAL_HOME/gatein/conf/portal/socialdemo/socialdemo.properties
-{code:xml}
-gatein.jcr.datasource.dialect=mysql-utf8
+{code:xml}gatein.jcr.datasource.dialect=mysql-utf8
 gatein.jcr.datasource.driver=com.mysql.jdbc.Driver
 gatein.jcr.datasource.url=jdbc:mysql://localhost/demo_social
 gatein.jcr.datasource.username=XXX
 gatein.jcr.datasource.password=YYY
 gatein.idm.datasource.driver=com.mysql.jdbc.Driver
-gatein.idm.datasource.url=jdbc:mysql://localhost/demo_social
-{code}
+gatein.idm.datasource.url=jdbc:mysql://localhost/demo_social{code}
 
 This file is dedicated to /socialdemo portal
 

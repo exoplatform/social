@@ -14,8 +14,7 @@ Create a space
 
 The following example will show how to create a space:
 
-{code:java}
-package org.exoplatform.social.sample;
+{code:java}javapackage org.exoplatform.social.sample;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.application.impl.DefaultSpaceApplicationHandler;
@@ -46,8 +45,7 @@ public class SpaceCreationSample {
       
     }
   }
-}
-{code}
+}{code}
 
 h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_document_Spaces.Space_applications_managemnet}
 
@@ -61,8 +59,7 @@ h1. Space's applications management  {anchor:id=SOCref.Developer_Ref.Developer_d
 
 You can add portlet or gadget applications to spaces. Once added, all members of the space can use that application. The following code shows you how to add an application to a space:
 
-{code:java}
-public void addApplicationToSpace() throws SpaceException {
+{code:java}public void addApplicationToSpace() throws SpaceException {
   //Your portlet name
   String appId = "SocialBannerPortlet";
   String spaceId = "zunSpace";
@@ -78,8 +75,7 @@ public void addApplicationToSpace() throws SpaceException {
 
   //you must activate installed application to be able to use it
   spaceService.activateApplication(spaceId, appId);
-}
-{code}
+}{code}
 
 {note}
 _appId_ is the portlet or gadget name as defined in _portlet.xml_ or _gadget.xml_ in the web-app. You can find it in _social-portlet.war_ and _social.war_.
@@ -94,8 +90,7 @@ _appId_ is the portlet or gadget name as defined in _portlet.xml_ or _gadget.xml
 {docbook}
 
 You can remove portlet or gadget applications from a space and the members of this space will not see them anymore. The following code shows you how to remove an application from a space:
-{code:java}
-public void removeApplicationFromSpace() throws SpaceException {
+{code:java}public void removeApplicationFromSpace() throws SpaceException {
   //Your portlet name
   String appId = "SocialBannerPortlet";
   String appName = "SocialBannerPortlet1"
@@ -109,13 +104,11 @@ public void removeApplicationFromSpace() throws SpaceException {
 
   //install application for the space
   spaceService.removeApplication(spaceId, appId, appName);
-}
-{code}
+}{code}
 
 h1. Space's members management	 {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Members_Management}
 SpaceService allows you to manage the spaces' members. Here is the way to add a new member to a space:
-{code:java}
-String spacePrettyName = "mySpace";
+{code:java}String spacePrettyName = "mySpace";
 
 PortalContainer container = PortalContainer.getInstance();
 SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(SpaceService.class);
@@ -123,8 +116,7 @@ SpaceService spaceService = (SpaceService) container.getComponentInstanceOfType(
 Space space = service.getSpaceByPrettyName(spacePrettyName);
 if (space != null) {
     spaceService.addMember(space, "mary");
-}
-{code}
+}{code}
 
 
 h1. Listener to a space lifecycle  {anchor:id=SOCref.Developer_Ref.Developer_document_Space.Listener_to_a_space_lifecycle}
@@ -143,25 +135,21 @@ The available events are:
 * _grantedLead_: This event is called right after a user is granted the space's manager role.
 * _revokedLead_: This event is called right after the space's manager is revoked his role to be a space member.
 
-{code:java}
-import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
+{code:java}import org.exoplatform.social.space.lifecycle.SpaceListenerPlugin;
 
 public class MySpaceListenerPlugin extends SpaceListenerPlugin {
 ...
-}
-{code}
+}{code}
 
 As an example, see [SpaceActivityPublisher|https://fisheye.exoplatform.org/browse/social/branches/1.2.x/component/core/src/main/java/org/exoplatform/social/core/application/SpaceActivityPublisher.java?hb=true] that publishes an activity based on an event that happened in a space.
 
 To register your listener, configure it as a plugin to the SpaceService like this:
 
-{code:xml}
-<external-component-plugins>
+{code:xml}<external-component-plugins>
   <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
   <component-plugin>
     <name>SpaceActivityPublisher</name>
     <set-method>addSpaceListener</set-method>
     <type>org.mycompany.MySpaceListenerPlugin</type>
   </component-plugin>
-</external-component-plugins>
-{code}
+</external-component-plugins>{code}
