@@ -17,32 +17,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses />.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>social-webapp</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-webapp-juzu-portlet</artifactId>
   <packaging>war</packaging>
-
   <name>eXo Social Juzu Portlet Web App</name>
-
   <dependencies>
-
     <!-- Application dependencies-->
-
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-core</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-portlet</artifactId>
@@ -56,18 +47,14 @@
       <artifactId>exo.kernel.container</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
-
   </dependencies>
-
   <build>
     <finalName>juzu-social</finalName>
     <plugins>
-
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -76,9 +63,23 @@
           </compilerArguments>
         </configuration>
       </plugin>
-
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>gatein</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.build.finalName}</finalName>
+              <descriptorRefs>
+                <descriptorRef>gatein</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
         <dependencies>
           <dependency>
             <groupId>org.juzu</groupId>
@@ -90,24 +91,7 @@
           <attach>true</attach>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
-        <executions>
-          <execution>
-            <id>gatein</id>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <finalName>${project.build.finalName}</finalName>
-              <descriptorRefs>
-                <descriptorRef>gatein</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
-
     </plugins>
   </build>
-
 </project>

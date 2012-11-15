@@ -8,66 +8,51 @@
 	PURPOSE. See the GNU General Public License for more details. You should 
 	have received a copy of the GNU General Public License along with this program; 
 	if not, see<http://www.gnu.org/licenses />. -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<artifactId>social-extras</artifactId>
-		<groupId>org.exoplatform.social</groupId>
-		<version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
-	</parent>
-
-	<groupId>org.exoplatform.social</groupId>
-	<artifactId>social-extras-feedmash</artifactId>
-	<packaging>jar</packaging>
-	<name>eXo Social Feedmash</name>
-	<description>eXo Social Feedmash</description>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>quartz</groupId>
-			<artifactId>quartz</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>rome</groupId>
-			<artifactId>rome</artifactId>
-		</dependency>
-
-		<!-- This dependency needed to compile but mvn dependency:analyze says "unused" -->
-		<dependency>
-			<groupId>org.gatein.shindig</groupId>
-			<artifactId>shindig-social-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.exoplatform.kernel</groupId>
-			<artifactId>exo.kernel.commons</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.exoplatform.kernel</groupId>
-			<artifactId>exo.kernel.container</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.exoplatform.kernel</groupId>
-			<artifactId>exo.kernel.component.common</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.exoplatform.social</groupId>
-			<artifactId>social-component-core</artifactId>
-		</dependency>
-
-	</dependencies>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>social-extras</artifactId>
+    <groupId>org.exoplatform.social</groupId>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+  </parent>
+  <groupId>org.exoplatform.social</groupId>
+  <artifactId>social-extras-feedmash</artifactId>
+  <packaging>jar</packaging>
+  <name>eXo Social Feedmash</name>
+  <description>eXo Social Feedmash</description>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
+    </dependency>
+    <!-- This dependency needed to compile but mvn dependency:analyze says "unused" -->
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+    </dependency>
+  </dependencies>
 </project>
