@@ -34,6 +34,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -647,7 +648,19 @@ public class BaseUIActivity extends UIForm {
       LOG.error(e.getMessage(), e);
     }
   }
-
+  
+  /**
+   * Gets user profile uri of an user.
+   * 
+   * @param remoteId
+   * @return
+   */
+  protected String getUserProfileUri(String remoteId) {
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, false);
+    if(identity.isDeleted()) return "#";
+    return LinkProvider.getUserProfileUri(remoteId);
+  }
+  
   private ExoSocialActivity getI18N(ExoSocialActivity activity) {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     I18NActivityProcessor i18NActivityProcessor = getApplicationComponent(I18NActivityProcessor.class);
