@@ -120,6 +120,11 @@
         <version>${commons-lang.version}</version>
       </dependency>
       <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>${javax.inject.version}</version>
+      </dependency>
+      <dependency>
         <groupId>javax.jcr</groupId>
         <artifactId>jcr</artifactId>
         <version>${javax.jcr.version}</version>
@@ -128,11 +133,6 @@
         <groupId>javax.portlet</groupId>
         <artifactId>portlet-api</artifactId>
         <version>${javax.portlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>${javax.inject.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -176,28 +176,12 @@
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.core</artifactId>
-        <version>${org.chromattic.version}</version>
-        <type>jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.apt</artifactId>
-        <version>${org.chromattic.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
         <version>${org.chromattic.version}</version>
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.spi</artifactId>
-        <version>${org.chromattic.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.ext</artifactId>
+        <artifactId>chromattic.apt</artifactId>
         <version>${org.chromattic.version}</version>
       </dependency>
       <dependency>
@@ -207,13 +191,24 @@
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.core</artifactId>
+        <version>${org.chromattic.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.ext</artifactId>
+        <version>${org.chromattic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.metamodel</artifactId>
         <version>${org.chromattic.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-webui-ext</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
+        <groupId>org.chromattic</groupId>
+        <artifactId>chromattic.spi</artifactId>
+        <version>${org.chromattic.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
@@ -223,6 +218,11 @@
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-webui-component</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-webui-ext</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <dependency>
@@ -319,7 +319,44 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.application-registry</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.common</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.identity</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.portal</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.portal</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.resources</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.test.core</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.test.jcr</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
@@ -344,29 +381,22 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
+        <artifactId>exo.portal.gadgets-core</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.identity</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.resources</artifactId>
+        <artifactId>exo.portal.webui.core</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.application-registry</artifactId>
+        <artifactId>exo.portal.webui.dashboard</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.webui.eXo</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
@@ -382,36 +412,6 @@
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.webui.portlet</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.webui.eXo</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.webui.core</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.webui.dashboard</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.gadgets-core</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.core</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.jcr</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
@@ -437,6 +437,11 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-component-webui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -474,11 +479,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-migration</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extras-feedmash</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -489,7 +489,7 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-widget-rest</artifactId>
+        <artifactId>social-extras-migration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -497,6 +497,11 @@
         <artifactId>social-extras-widget-resources</artifactId>
         <version>${project.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-widget-rest</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -517,9 +522,9 @@
         <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-config</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.frameworks.json</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
@@ -532,18 +537,13 @@
         <version>${org.exoplatform.ws.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.frameworks.json</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
+        <artifactId>common-common</artifactId>
         <version>${org.gatein.common.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gatein.common</groupId>
-        <artifactId>common-common</artifactId>
+        <artifactId>common-logging</artifactId>
         <version>${org.gatein.common.version}</version>
       </dependency>
       <dependency>
@@ -553,12 +553,12 @@
       </dependency>
       <dependency>
         <groupId>org.gatein.shindig</groupId>
-        <artifactId>shindig-gadgets</artifactId>
+        <artifactId>shindig-common</artifactId>
         <version>${org.shindig.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gatein.shindig</groupId>
-        <artifactId>shindig-common</artifactId>
+        <artifactId>shindig-gadgets</artifactId>
         <version>${org.shindig.version}</version>
       </dependency>
       <dependency>
@@ -578,12 +578,12 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-install</artifactId>
+        <artifactId>byteman-bmunit</artifactId>
         <version>${byteman.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-bmunit</artifactId>
+        <artifactId>byteman-install</artifactId>
         <version>${byteman.version}</version>
       </dependency>
       <dependency>
