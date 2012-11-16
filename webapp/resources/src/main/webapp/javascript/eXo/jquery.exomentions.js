@@ -167,7 +167,8 @@
     function initAutocomplete() {
       elmAutocompleteList = $(settings.templates.autocompleteList());
       elmAutocompleteList.appendTo(elmWrapperBox);
-      elmAutocompleteList.delegate('li', 'mousedown', onAutoCompleteItemClick);
+      elmAutocompleteList.on('mousedown', 'li', onAutoCompleteItemClick);
+      elmAutocompleteList.on('mouseover', 'li', selectAutoCompleteItem);
     }
 
     function updateValues() {
@@ -469,15 +470,21 @@
           if (e.keyCode == KEY.DOWN) {
             if (elmActiveAutoCompleteItem && elmActiveAutoCompleteItem.length) {
               elmCurrentAutoCompleteItem = elmActiveAutoCompleteItem.next();
+              if(elmCurrentAutoCompleteItem.length == 0) {
+                elmCurrentAutoCompleteItem = elmAutocompleteList.find('li:first');
+              }
             } else {
               elmCurrentAutoCompleteItem = elmAutocompleteList.find('li').first();
             }
           } else {
             elmCurrentAutoCompleteItem = $(elmActiveAutoCompleteItem).prev();
+            if(elmCurrentAutoCompleteItem.length == 0) {
+              elmCurrentAutoCompleteItem = elmAutocompleteList.find('li:last');
+            }
           }
           
           if (elmCurrentAutoCompleteItem.length) {
-            selectAutoCompleteItem(elmCurrentAutoCompleteItem);
+            selectAutoCompleteElement(elmCurrentAutoCompleteItem);
           }
           return false;
           
@@ -521,11 +528,16 @@
       elmAutocompleteList.empty().hide();
     }
 
-    function selectAutoCompleteItem(elmItem) {
+    function selectAutoCompleteElement(elmItem) {
       elmItem.addClass(settings.classes.autoCompleteItemActive);
       elmItem.siblings().removeClass(settings.classes.autoCompleteItemActive);
-
       elmActiveAutoCompleteItem = elmItem;
+    }
+
+    function selectAutoCompleteItem(e) {
+      var elmItem = $(this);
+      selectAutoCompleteElement(elmItem);
+      e.stopPropagation();
     }
 
     function populateDropdown(query, results) {
@@ -554,7 +566,7 @@
         })).attr('data-uid', itemUid);
 
         if (index === 0) {
-          selectAutoCompleteItem(elmListItem);
+         // selectAutoCompleteElement(elmListItem);
         }
 
         if (settings.showAvatars) {
@@ -573,7 +585,6 @@
         }
         elmListItem = elmListItem.appendTo(elmDropDownList);
       });
-
       elmAutocompleteList.show();
       elmDropDownList.show();
     }

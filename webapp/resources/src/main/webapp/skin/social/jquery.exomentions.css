@@ -67,7 +67,6 @@
   font-style: none;
 }
 
-.exo-mentions .autocomplete-menu li:hover,
 .exo-mentions .autocomplete-menu li.active {
   background-color: #649EED;
 }
