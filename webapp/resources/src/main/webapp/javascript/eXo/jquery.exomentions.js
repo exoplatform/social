@@ -124,7 +124,8 @@
       return info;
     },
     isIE : ($.browser.msie),
-    isFirefox : ($.browser.mozilla)
+    isFirefox : ($.browser.mozilla),
+    brVersion : $.browser.version
   };
 
   var eXoMentions = function(settings) {
@@ -153,6 +154,7 @@
       elmInputBox.attr('data-mentions', 'true');
       elmInputBox.on('keydown', onInputBoxKeyDown);
       elmInputBox.on('keypress', onInputBoxKeyPress);
+      elmInputBox.on('keyup', onInputBoxKeyUp);
       elmInputBox.on('input', onInputBoxInput);
       elmInputBox.on('click', onInputBoxClick);
       elmInputBox.on('paste', onInputBoxPaste);
@@ -246,11 +248,17 @@
           sp.on('click', function(e) {
             var t = $(this).data('indexMS').indexMS;
             mentionsCollection.splice(t, 1);
-            $(this).parent().remove();
+            var parent = $(this).parent();
+            var tx = document.createTextNode('@');
+            $('<div id="cursorText"></div>').insertAfter(parent);
+            $(tx).insertAfter(parent);
+            parent.remove();
             updateValues();
             saveCacheData();
             initClickMention();
             e.stopPropagation();
+            autoSetKeyCode(elmInputBox);
+            setCaratPosition(elmInputBox);
           });
           $(item).on('click', function() {
             var selection = getSelection();
@@ -420,7 +428,7 @@
       if (e.keyCode == KEY.BACKSPACE) {
         inputBuffer.splice((inputBuffer.length - 1), 1);
         if (utils.isIE) {
-          if (inputBuffer.length > 1 || (inputBuffer.length == 1 && $.browser.version < 9)) {
+          if (inputBuffer.length > 1 || (inputBuffer.length == 1 && utils.brVersion < 9)) {
             onInputBoxInput();
           } else {
             hideAutoComplete();
@@ -502,9 +510,35 @@
       return true;
     }
 
+    function onInputBoxKeyUp(e) {
+      backspceBroswerFix(e);
+      //
+    }
+    
+    function backspceBroswerFix(e) {
+      var selection = getSelection();
+      if(utils.isFirefox) {
+        var node = selection.focusNode;
+        log(node);
+        log(node.parentNode);
+        if(String(node.tagName).toLowerCase() === 'span' && node.className === 'icon') {
+          $(node).trigger('click');
+        }
+      } else if(utils.isIE) {
+        var cRange = selection.createRange();
+        //log(cRange.parentElement());
+        //cRange.pasteHTML('text');
+      }
+      
+    }
+
     function autoSetKeyCode(elm) {
       try {
-        if(utils.isIE && $.browser.version < 9) {
+        if(utils.isIE && utils.brVersion < 9) {
+          resetBuffer();
+          inputBuffer[0] = settings.triggerChar;
+          
+          //
           onInputBoxInput();
         } else {
           var e = jQuery.Event("keypress", {
@@ -517,9 +551,11 @@
           });
           elm.triggerHandler(e);
           elm.trigger(e1);
+          
+          //
+          resetBuffer();
+          inputBuffer[0] = settings.triggerChar;
         }
-        resetBuffer();
-        inputBuffer[0] = settings.triggerChar;
       } catch(err) {}
     }
 
