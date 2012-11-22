@@ -504,8 +504,6 @@
 
     function autoSetKeyCode(elm) {
       try {
-        resetBuffer();
-        inputBuffer[0] = settings.triggerChar;
         if(utils.isIE && $.browser.version < 9) {
           onInputBoxInput();
         } else {
@@ -520,6 +518,8 @@
           elm.triggerHandler(e);
           elm.trigger(e1);
         }
+        resetBuffer();
+        inputBuffer[0] = settings.triggerChar;
       } catch(err) {}
     }
 
