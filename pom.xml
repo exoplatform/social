@@ -75,6 +75,7 @@
     <org.exoplatform.jcr.version>1.14.9-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
     <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.ecms.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.ecms.version>
     <org.gatein.common.version>2.0.4-GA</org.gatein.common.version>
     <org.gatein.pc.version>2.3.2-GA</org.gatein.pc.version>
     <org.shindig.version>2.0.2-CP01</org.shindig.version>
@@ -232,6 +233,11 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.core</groupId>
+        <artifactId>exo.core.component.resources.api</artifactId>
+        <version>${org.exoplatform.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.core</groupId>
         <artifactId>exo.core.component.security.core</artifactId>
         <version>${org.exoplatform.core.version}</version>
       </dependency>
@@ -246,6 +252,11 @@
         <artifactId>doc-style</artifactId>
         <version>${org.exoplatform.doc.doc-style.version}</version>
         <classifier>templates</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ecm.dms.core</groupId>
+        <artifactId>exo.ecm.dms.core.webui.ext</artifactId>
+        <version>${org.exoplatform.ecms.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
@@ -699,7 +710,8 @@
         </plugin>
       </plugins>
     </pluginManagement>
-  </build>  <profiles>
+  </build>
+  <profiles>
     <profile>
       <id>hsqldb</id>
       <activation>
