@@ -18,11 +18,6 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.ecm.dms.core</groupId>
-      <artifactId>exo.ecm.dms.core.webui.ext</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
       <scope>runtime</scope>
