@@ -47,7 +47,7 @@
 }
 
 .exo-mentions .autocomplete-menu li:last-child {
-  border-radius:5px;
+  border-radius:0px 0px 5px 5px;
 }
 
 .exo-mentions .autocomplete-menu li > img,
@@ -71,7 +71,12 @@
   background-color: #649EED;
 }
 
-.exo-mentions .autocomplete-menu li b {
+.exo-mentions .autocomplete-menu li.msg {
+  background-color: #fff;
+	cursor: inherit;
+}
+
+.exo-mentions .autocomplete-menu li strong {
   font-weight: bold;
 }
 
