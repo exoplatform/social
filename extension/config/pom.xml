@@ -34,4 +34,11 @@
   <name>eXo Social Extension Portal Container Definition</name>
   <description>eXo Social Extension Portal Container Definition</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>

@@ -31,6 +31,11 @@
   <description>eXo Social Extras - Link Composer Plugin</description>
   <dependencies>
     <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-webui-ext</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
@@ -58,6 +63,11 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.resources</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>

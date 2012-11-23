@@ -38,7 +38,6 @@
 
   <modules>
     <module>config</module>
-    <module>ear</module>
     <module>jar</module>
     <module>war</module>
   </modules>
