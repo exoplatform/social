@@ -479,6 +479,12 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extension-war</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extras-feedmash</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -511,7 +517,25 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-opensocial</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-portlet</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-resources</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
@@ -519,7 +543,7 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-resources</artifactId>
         <version>${project.version}</version>
-        <type>war</type>
+        <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
