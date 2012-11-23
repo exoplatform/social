@@ -178,6 +178,10 @@ var UIActivity = {
         elasticStyle : {
           maxHeight : '35px',
           minHeight : '22px'
+        },
+        messages : {
+          foundNoMatch : 'Found no matching users for',
+          helpSearch: 'Type to start searching for users.'
         }
       });
   }

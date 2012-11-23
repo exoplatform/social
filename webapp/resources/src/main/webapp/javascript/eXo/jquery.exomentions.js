@@ -30,6 +30,8 @@
     onDataRequest : $.noop,
     minChars : 1,
     showAvatars : true,
+    firstShowAll : false,
+    selectFirst : false,
     elastic : true,
     elasticStyle : {},
     idAction : "",
@@ -39,6 +41,10 @@
     cacheResult : {
       hasUse : true,
       live : 30000 // MiniSeconds
+    },
+    messages : {
+          foundNoMatch : 'Found no matching users for ',
+          helpSearch: 'Type to start searching for users.'
     },
     templates : {
       wrapper : _.template('<div class="exo-mentions"></div>'),
@@ -74,7 +80,7 @@
       if (!term && !term.length) {
         return value;
       }
-      return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<b>$1</b>");
+      return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
     },
     rtrim : function(string) {
       return string.replace(/\s+$/, "");
@@ -135,6 +141,7 @@
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery = '';
+    var cursor = '<div id="cursorText"></div>&nbsp;';
 
     settings = $.extend(true, {}, defaultSettings, settings);
 
@@ -232,8 +239,15 @@
 
 
     function addItemMention(value) {
-      var val = '<span contenteditable="false">' + value + '<span class="icon"' + ((utils.isFirefox) ? 'contenteditable="true"' : '') + '>x</span></span>'
-          + '&nbsp;<div id="cursorText"></div>';
+      var val = '<span contenteditable="false">' + value + '<span class="icon"' + ((utils.isFirefox) ? 'contenteditable="true"' : '') + '>x</span></span>';
+      return insertCursorText(val, -1, false);
+    }
+
+    function insertCursorText(value, index, add) {
+      var cursor_ = ' ' + ((add && add === true) ? (settings.triggerChar + cursor) : cursor);
+      var val = (index == 0) ? ($.trim(cursor_) + value) :
+                 ((index < 0) ? (value + cursor_) : 
+                  ($.trim(value.substring(0, index)) + cursor_ + $.trim(value.substring(index, value.length))));
       return val;
     }
 
@@ -249,8 +263,8 @@
             var t = $(this).data('indexMS').indexMS;
             mentionsCollection.splice(t, 1);
             var parent = $(this).parent();
-            var tx = document.createTextNode('@');
             $('<div id="cursorText"></div>').insertAfter(parent);
+            var tx = document.createTextNode('@');
             $(tx).insertAfter(parent);
             parent.remove();
             updateValues();
@@ -346,7 +360,7 @@
         var text = after.substr(info.from, info.to);
         var nt = text.replace(new RegExp("(<[a-z0-9].*?>)(.*)(</[a-z0-9].*?>)", "gi"), "$2");
         if (nt.length < text.length) {
-          after = after.substr(0, info.from) + $('<div/>').html(text).text() + after.substr(info.to) + ' <div id="cursorText"></div>';
+          after = after.substr(0, info.from) + $('<div/>').html(text).text() + ' ' + cursor + after.substr(info.to);
           elmInputBox.val(after);
           setCaratPosition(elmInputBox);
         }
@@ -445,11 +459,10 @@
             var after = elmInputBox.value();
             var delta = before.length - after.length;
             var textSizeMention = 63;
-            if (delta > textSizeMention) {
+            if (delta > textSizeMention && !utils.isFirefox) {
               var i = utils.getCursorIndexOfText(before, after);
               if (i >= 0) {
-                after = after.substr(0, i) + ' @<div id="cursorText"></div>' + after.substr(i, after.length);
-                after = after.replace(/  @/g, ' @');
+                after = insertCursorText(after, i, true);
                 elmInputBox.val(after);
                 autoSetKeyCode(elmInputBox);
                 setCaratPosition(elmInputBox);
@@ -519,8 +532,6 @@
       var selection = getSelection();
       if(utils.isFirefox) {
         var node = selection.focusNode;
-        log(node);
-        log(node.parentNode);
         if(String(node.tagName).toLowerCase() === 'span' && node.className === 'icon') {
           $(node).trigger('click');
         }
@@ -529,7 +540,6 @@
         //log(cRange.parentElement());
         //cRange.pasteHTML('text');
       }
-      
     }
 
     function autoSetKeyCode(elm) {
@@ -576,51 +586,63 @@
       e.stopPropagation();
     }
 
+    function addMessageMenu(parent, msg) {
+      $('<li></li>').html('<em>'+msg+'</em>').appendTo(parent);
+    }
+
     function populateDropdown(query, results) {
       elmAutocompleteList.show();
-
-      if (!results.length) {
-        hideAutoComplete();
-        return;
-      }
-
       elmAutocompleteList.empty();
       var elmDropDownList = $("<ul>").appendTo(elmAutocompleteList).hide();
 
-      _.each(results, function(item, index) {
-        var itemUid = _.uniqueId('mention_');
+      //
+      if(query === '' && !settings.firstShowAll) {
+        addMessageMenu(elmDropDownList, settings.messages.helpSearch);
+      }
 
-        autocompleteItemCollection[itemUid] = _.extend({}, item, {
-          value : item.name
-        });
+      //
+      if ((results === null || results === undefined || results.length === 0) && query != '') {
+        addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
+      }
+      
+      
+      if (results && results.length > 0 && (query != '' || settings.firstShowAll)) {
+        _.each(results, function(item, index) {
+          var itemUid = _.uniqueId('mention_');
 
-        var elmListItem = $(settings.templates.autocompleteListItem({
-          'id' : utils.htmlEncode(item.id),
-          'display' : utils.htmlEncode(item.name),
-          'type' : utils.htmlEncode(item.type),
-          'content' : (utils.highlightTerm(utils.htmlEncode((item.name + ' (' + item.id.replace('@', '') + ')')), query))
-        })).attr('data-uid', itemUid);
+          autocompleteItemCollection[itemUid] = _.extend({}, item, {
+            value : item.name
+          });
 
-        if (index === 0) {
-         // selectAutoCompleteElement(elmListItem);
-        }
+          var elmListItem = $(settings.templates.autocompleteListItem({
+            'id' : utils.htmlEncode(item.id),
+            'display' : utils.htmlEncode(item.name),
+            'type' : utils.htmlEncode(item.type),
+            'content' : (utils.highlightTerm(utils.htmlEncode((item.name + ' (' + item.id.replace('@', '') + ')')), query))
+          })).attr('data-uid', itemUid);
 
-        if (settings.showAvatars) {
-          var elmIcon;
-
-          if (item.avatar) {
-            elmIcon = $(settings.templates.autocompleteListItemAvatar({
-              avatar : item.avatar
-            }));
-          } else {
-            elmIcon = $(settings.templates.autocompleteListItemIcon({
-              icon : item.icon
-            }));
+          if (index === 0 && settings.selectFirst) {
+            selectAutoCompleteElement(elmListItem);
           }
-          elmIcon.prependTo(elmListItem);
-        }
-        elmListItem = elmListItem.appendTo(elmDropDownList);
-      });
+
+          if (settings.showAvatars) {
+            var elmIcon;
+
+            if (item.avatar) {
+              elmIcon = $(settings.templates.autocompleteListItemAvatar({
+                avatar : item.avatar
+              }));
+            } else {
+              elmIcon = $(settings.templates.autocompleteListItemIcon({
+                icon : item.icon
+              }));
+            }
+            elmIcon.prependTo(elmListItem);
+          }
+          elmListItem = elmListItem.appendTo(elmDropDownList);
+        });
+      }
+
       elmAutocompleteList.show();
       elmDropDownList.show();
     }
@@ -632,8 +654,9 @@
     }
 
     function doSearch(query) {
-      if (query === '' || String(query) === 'undefined')  query = ' ';
-      if (query.length >= settings.minChars) {
+      if ((query === '' || String(query) === 'undefined') && !settings.firstShowAll)  {
+        populateDropdown('', null);
+      } else if (query.length >= settings.minChars) {
         if(settings.cacheResult.hasUse) {
           var data = getCaseSearch(query);
           if (data) {
@@ -649,6 +672,7 @@
     }
 
     function search(query) {
+      populateDropdown('', null);
       settings.onDataRequest.call(this, 'search', query, function(responseData) {
         populateDropdown(query, responseData);
         saveCaseSearch(query, responseData);

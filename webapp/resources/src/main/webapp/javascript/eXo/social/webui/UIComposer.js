@@ -104,6 +104,10 @@ var UIComposer = {
         elasticStyle : {
           maxHeight : '38px',
           minHeight : '24px'
+        },
+        messages : {
+          foundNoMatch : 'Found no matching users for',
+          helpSearch: 'Type to start searching for users.'
         }
       });
   },
