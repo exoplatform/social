@@ -28,4 +28,15 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
 %>
 <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
 <% } %>
+<div id="ActivityIndicator">
+  <div class="blockG" id="rotateG_01"></div>
+  <div class="blockG" id="rotateG_02"></div>
+  <div class="blockG" id="rotateG_03"></div>
+  <div class="blockG" id="rotateG_04"></div>
+  <div class="blockG" id="rotateG_05"></div>
+  <div class="blockG" id="rotateG_06"></div>
+  <div class="blockG" id="rotateG_07"></div>
+  <div class="blockG" id="rotateG_08"></div>
+</div>
+<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>" class="ActivitiesLoader"></div>
 </div>

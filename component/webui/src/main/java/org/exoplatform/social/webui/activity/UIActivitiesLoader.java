@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -50,7 +51,7 @@ public class UIActivitiesLoader extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesLoader.class);
 
   private int currentLoadIndex;
-  private boolean unableLoadNext;
+  private boolean hasMore;
   private UIActivitiesLoader lastActivitiesLoader;
   private ListAccess<ExoSocialActivity> activityListAccess;
   private String ownerName;
@@ -66,6 +67,7 @@ public class UIActivitiesLoader extends UIContainer {
   private UIContainer extendContainer;
   private int loadingCapacity;
   private Space space;
+  private int activitiesCounter;
 
   public UIActivitiesLoader() {
     try {
@@ -112,12 +114,12 @@ public class UIActivitiesLoader extends UIContainer {
     this.loadingCapacity = loadingCapacity;
   }
 
-  public void setUnableLoadNext(boolean unableLoadNext) {
-    this.unableLoadNext = unableLoadNext;
+  public boolean isHasMore() {
+    return hasMore;
   }
 
-  public boolean isUnableLoadNext() {
-    return unableLoadNext;
+  public void setHasMore(boolean hasMore) {
+    this.hasMore = hasMore;
   }
 
   public UIActivitiesLoader getLastActivitiesLoader() {
@@ -134,10 +136,11 @@ public class UIActivitiesLoader extends UIContainer {
 
   public void init() {
     try {
-      unableLoadNext = true;
+      hasMore = false;
       currentLoadIndex = 0;
+      activitiesCounter = 0;
       isExtendLoader = false;
-
+      
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
       if (space != null) {
@@ -145,9 +148,6 @@ public class UIActivitiesLoader extends UIContainer {
       }
 
       List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
-      if (activityListAccess.getSize() > loadingCapacity) {
-        setUnableLoadNext(false);
-      }
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -160,21 +160,12 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
 
-    if (activities.size()> 0) {
-      if (activities.size() < loadingCapacity) {
-        setUnableLoadNext(true);
-        lastActivitiesLoader.setUnableLoadNext(true);
-      }
-
-      UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
-      lastActivitiesContainer.setPostContext(postContext);
-      lastActivitiesContainer.setSpace(space);
-
-      lastActivitiesLoader.setActivities(activities);
-    } else {
-      setUnableLoadNext(true);
-      lastActivitiesLoader.setUnableLoadNext(true);
-    }
+    UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
+    lastActivitiesContainer.setPostContext(postContext);
+    lastActivitiesContainer.setSpace(space);
+    
+    lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+    lastActivitiesLoader.setActivities(activities);
   }
 
   private void setActivities(List<ExoSocialActivity> activities) throws Exception {
@@ -183,20 +174,29 @@ public class UIActivitiesLoader extends UIContainer {
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
     ExoSocialActivity[] activities = activityListAccess.load(index, length);
+
     if (activities == null)
       return null;
+    
+    activitiesCounter += activities.length;
+    setHasMore(activityListAccess.getSize() > activitiesCounter);
+    
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
   }
 
 
-  public static class LoadMoreActionListener extends EventListener<UIActivitiesLoader> {
+  public static class LoadMoreActionListener extends EventListener<UIActivitiesContainer> {
     @Override
-    public void execute(Event<UIActivitiesLoader> event) throws Exception {
-      UIActivitiesLoader uiActivitiesLoader = event.getSource();
+    public void execute(Event<UIActivitiesContainer> event) throws Exception {
+      UIActivitiesContainer uiActivitiesContainer = event.getSource();
+      UIActivitiesLoader uiActivitiesLoader = uiActivitiesContainer.getAncestorOfType(UIActivitiesLoader.class);
       uiActivitiesLoader.loadNext();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesLoader.getExtendContainer());
       UIActivitiesLoader lastLoader = uiActivitiesLoader.getLastActivitiesLoader();
       uiActivitiesLoader.setExtendContainer(lastLoader.getExtendContainer());
+      
+      RequireJS require = event.getRequestContext().getJavascriptManager().require("SHARED/social-ui-activities-loader", "activitiesLoader");
+      require.addScripts("activitiesLoader.UIActivityLoader.setStatus(" + uiActivitiesLoader.isHasMore()  + ");");
     }
   }
 }

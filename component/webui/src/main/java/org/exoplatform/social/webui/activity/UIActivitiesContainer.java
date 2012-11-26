@@ -27,6 +27,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
 
 /**
@@ -36,7 +37,10 @@ import org.exoplatform.webui.core.UIPopupWindow;
  * @since Apr 12, 2010
  */
 @ComponentConfig(
-  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl"
+  template = "classpath:groovy/social/webui/UIActivitiesContainer.gtmpl",
+  events = {
+    @EventConfig(listeners = UIActivitiesLoader.LoadMoreActionListener.class)
+  }
 )
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
