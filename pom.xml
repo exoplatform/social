@@ -77,6 +77,7 @@
     <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
     <org.gatein.common.version>2.0.4-GA</org.gatein.common.version>
     <org.gatein.pc.version>2.3.2-GA</org.gatein.pc.version>
+    <org.gatein.wci.version>2.1.0-GA</org.gatein.wci.version>
     <org.shindig.version>2.0.2-CP01</org.shindig.version>
     <org.chromattic.version>1.1.4</org.chromattic.version>
     <org.slf4j.version>1.5.8</org.slf4j.version>
@@ -574,6 +575,11 @@
         <groupId>org.gatein.pc</groupId>
         <artifactId>pc-api</artifactId>
         <version>${org.gatein.pc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gatein.wci</groupId>
+        <artifactId>wci-wci</artifactId>
+        <version>${org.gatein.wci.version}</version>
       </dependency>
       <dependency>
         <groupId>org.gatein.shindig</groupId>

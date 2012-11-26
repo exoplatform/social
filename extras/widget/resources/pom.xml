@@ -29,6 +29,13 @@
   <packaging>war</packaging>
   <name>eXo Social Widget (Resources)</name>
   <description>eXo Social Widget (Resources)</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-wci</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
   <build>
     <finalName>socialWidgetResources</finalName>
   </build>
