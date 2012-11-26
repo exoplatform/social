@@ -577,11 +577,6 @@
         <version>${org.gatein.pc.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.gatein.wci</groupId>
-        <artifactId>wci-wci</artifactId>
-        <version>${org.gatein.wci.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.gatein.shindig</groupId>
         <artifactId>shindig-common</artifactId>
         <version>${org.shindig.version}</version>
@@ -595,6 +590,11 @@
         <groupId>org.gatein.shindig</groupId>
         <artifactId>shindig-social-api</artifactId>
         <version>${org.shindig.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gatein.wci</groupId>
+        <artifactId>wci-wci</artifactId>
+        <version>${org.gatein.wci.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
