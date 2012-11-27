@@ -58,7 +58,7 @@ public class UIHomeSpacePortlet extends UIPortletApplication implements Dashboar
   }
 
   public boolean canEdit() {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     try {
       Space space = Utils.getSpaceService().getSpaceByUrl(spaceUrl);
       return Utils.getSpaceService().hasEditPermission(space, Utils.getViewerRemoteId());

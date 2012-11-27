@@ -95,6 +95,7 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public UISpaceMenu() throws Exception {
+    spaceService = getSpaceService();
   }
 
   /**
@@ -104,7 +105,7 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public List<UserNode> getApps() throws Exception {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     space = spaceSrc.getSpaceByUrl(spaceUrl);
     if (space == null) {
@@ -142,7 +143,7 @@ public class UISpaceMenu extends UIContainer {
       UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
-      String spaceUrl = SpaceUtils.getSpaceUrl();
+      String spaceUrl = Utils.getSpaceUrlByContext();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
 
       UserNode selectedNode = uiPortal.getSelectedUserNode();
@@ -263,7 +264,6 @@ public class UISpaceMenu extends UIContainer {
    * @throws SpaceException
    */
   protected boolean hasSettingPermission() throws SpaceException {
-    spaceService = getSpaceService();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     Space space = getSpace();
     return spaceService.hasSettingPermission(space, userId);
@@ -290,8 +290,7 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space getSpace() {
     if (space == null) {
-      spaceService = getSpaceService();
-      String spaceUrl = SpaceUtils.getSpaceUrl();
+      String spaceUrl = Utils.getSpaceUrlByContext();
       space = spaceService.getSpaceByUrl(spaceUrl);
     }
     return space;

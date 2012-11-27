@@ -21,14 +21,21 @@
 */
 %>
 <%
+  import org.exoplatform.social.webui.Utils;
+
+  def labelOutOfSpaceContext = _ctx.appRes("UISpacePortlet.label.OutOfSpaceContext");
   uicomponent.refresh();
 %>
 <div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
   <div class="UITabPane">
  	  <div class="UISpaceActivitiesContainer">
       <%
-        uicomponent.renderChildren();
+        if (Utils.isSpaceContext()) {
+          uicomponent.renderChildren();
+        } else {
       %>
+          <div class="UISpaceMenu" id="UISpaceMenu">$labelOutOfSpaceContext</div>
+      <%}%>
     </div>
   </div>
 </div>

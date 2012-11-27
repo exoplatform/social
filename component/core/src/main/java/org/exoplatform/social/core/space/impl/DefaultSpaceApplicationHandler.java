@@ -499,25 +499,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     page.setEditPermission("manager:" + space.getGroupId());
 
     ArrayList<ModelObject> pageChilds = page.getChildren();
-
-    Container menuContainer = SpaceUtils.findContainerById(pageChilds, SpaceUtils.MENU_CONTAINER);
-    org.exoplatform.portal.config.model.Application<Portlet> menuPortlet =
-            (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
-                    .get(0);
-    ApplicationState<Portlet> state = menuPortlet.getState();
-    Portlet portletPreference = null;
-    try {
-      portletPreference = dataStorage.load(state, ApplicationType.PORTLET);
-      if (portletPreference == null) {
-        portletPreference = new PortletBuilder().add(SpaceUtils.SPACE_URL, space.getUrl()).build();
-      } else {
-        portletPreference.setValue(SpaceUtils.SPACE_URL, space.getUrl());
-      }
-      dataStorage.save(state, portletPreference);
-    } catch (Exception e) {
-      LOG.warn("Failed to setPage", e);
-    }
-
     Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
     ArrayList<ModelObject> children = container.getChildren();
     if (app.getType() == ApplicationType.GADGET) {
@@ -618,15 +599,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     String persistenceid = instanceId.substring(i1 + 2);
     String[] persistenceChunks = Utils.split("/", persistenceid);
     PortletBuilder pb = new PortletBuilder();
-    SpaceService spaceSrv = getSpaceService();
-    String[] appNames = spaceSrv.getPortletsPrefsRequired();
-    for (String appName : appNames) {
-      if (instanceId.contains(appName)) {
-        pb.add(SpaceUtils.SPACE_URL, space.getUrl());
-        break;
-      }
-    }
-
+    if (spaceService == null) spaceService = getSpaceService();
     List<SpaceApplication> spaceApplicationList = spaceService.getSpaceApplicationConfigPlugin().getSpaceApplicationList();
     SpaceApplication spaceApplication = null;
     for (Iterator<SpaceApplication> iterator = spaceApplicationList.iterator(); iterator.hasNext() && spaceApplication == null;) {

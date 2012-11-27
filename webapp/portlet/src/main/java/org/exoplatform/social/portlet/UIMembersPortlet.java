@@ -249,7 +249,7 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws SpaceException
    */
   public Space getSpace() throws SpaceException {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return spaceService.getSpaceByUrl(spaceUrl);
   }

@@ -29,7 +29,7 @@
 	
   //SpaceUtils.reloadNavigation();
   def apps = uicomponent.getApps();
-  def spaceUrl = SpaceUtils.getSpaceUrl();
+  def spaceUrl = Utils.getSpaceUrlByContext();
   def space = uicomponent.getSpace(spaceUrl);
   def appSelected = uicomponent.getAppSelected();
   def imageSource = uicomponent.getImageSource();
