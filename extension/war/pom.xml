@@ -30,6 +30,12 @@
   <name>eXo Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
   <dependencies>
+    <!-- used in the packaging only and repackaged here -->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-extension-config</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-webui-ext</artifactId>
@@ -51,6 +57,16 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
       <scope>runtime</scope>
@@ -61,25 +77,9 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.portal</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.gatein.wci</groupId>
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <!-- used in the packaging only and repackaged here -->
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-extension-config</artifactId>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>

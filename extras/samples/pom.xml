@@ -30,27 +30,17 @@
   <name>eXo Social Samples Code</name>
   <description>eXo Social Samples Code</description>
   <dependencies>
-    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
-    <dependency>
-      <groupId>org.gatein.shindig</groupId>
-      <artifactId>shindig-social-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.component.common</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.framework</artifactId>
+      <artifactId>exo.portal.webui.core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.core</artifactId>
+      <artifactId>exo.portal.webui.framework</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
@@ -65,6 +55,16 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>
+    </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.common</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 </project>

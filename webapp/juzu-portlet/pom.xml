@@ -29,14 +29,9 @@
   <packaging>war</packaging>
   <name>eXo Social Juzu Portlet Web App</name>
   <dependencies>
-    <!-- Application dependencies-->
     <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-plugins-portlet</artifactId>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.portlet</groupId>
@@ -46,9 +41,14 @@
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
+    <!-- Application dependencies-->
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>org.juzu</groupId>
+      <artifactId>juzu-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.juzu</groupId>
+      <artifactId>juzu-plugins-portlet</artifactId>
     </dependency>
   </dependencies>
   <build>
