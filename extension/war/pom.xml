@@ -17,23 +17,18 @@
     along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-war</artifactId>
   <packaging>war</packaging>
   <name>eXo Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
-
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
@@ -87,10 +82,8 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
   <build>
     <finalName>social-extension</finalName>
-
     <plugins>
       <plugin>
         <groupId>com.github.goldin</groupId>
