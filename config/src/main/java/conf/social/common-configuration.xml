@@ -64,9 +64,9 @@
                     <key><string>space.app.access</string></key>
                     <value><string>{spacePrettyName}/{appName}</string></value>
                   </entry>
-                  <entry>
-                    <key><string>space.wiki.access</string></key>
-                    <value><string>{spacePrettyName}/wiki/{wikiPage}</string></value>
+                   <entry>
+                    <key><string>space.app.page.access</string></key>
+                    <value><string><![CDATA[{spacePrettyName}/{appName}/{<.*>path}]]></string></value>
                   </entry>
                 </map>
               </field>

@@ -66,8 +66,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     }
     
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    String wikiPage = route.localArgs.get("wikiPage");
-    String appName = wikiPage != null ? "wiki" : route.localArgs.get("appName");
+    String appName = route.localArgs.get("appName");
+    String page = route.localArgs.get("page");
     
     
     if (pcontext.getSiteType().equals(SiteType.GROUP)
@@ -78,12 +78,12 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
       String remoteId = Utils.getViewerRemoteId();
       
     
-      if (inAdminGroup(remoteId, space)) {
+      if (inSuperAdminGroup(remoteId, space)) {
         return;
       }
       
-      if (wikiPage != null && wikiPage.length() > 0) {
-        processWikiSpaceAccess(pcontext, remoteId, space, wikiPage);
+      if ("wiki".equals(appName) && (page != null && page.length() > 0)) {
+        processWikiSpaceAccess(pcontext, remoteId, space, page);
       } else {
         processSpaceAccess(pcontext, remoteId, space);
       }
@@ -91,7 +91,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   }
   
   
-  private boolean inAdminGroup(String remoteId, Space space) {
+  private boolean inSuperAdminGroup(String remoteId, Space space) {
    //special case when remoteId is super administrator and allow to access
     return SpaceAccessType.SUPER_ADMINISTRATOR.doCheck(remoteId, space);
   }
@@ -171,9 +171,13 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     String url = Utils.getURI(SpaceAccessType.NODE_REDIRECT);
     LOG.info(type.toString());
     
+    String requestPath = pcontext.getRequestURI();
+    
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_TYPE_KEY, type);
     pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY, spacePrettyName);
+    pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY, requestPath);
     
+    pcontext.setResponseComplete(true);
     
     pcontext.sendRedirect(url);
   }

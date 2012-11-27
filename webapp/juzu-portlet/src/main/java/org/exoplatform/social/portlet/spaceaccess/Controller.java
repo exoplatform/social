@@ -122,7 +122,11 @@ public class Controller {
     String remoteId = Utils.getOwnerRemoteId();
     Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
     spaceService.addMember(space, remoteId);
-    return Response.redirect(Utils.getSpaceHomeURL(space));
+    //
+    PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
+    String originalRequest = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY).toString();
+    pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
+    return Response.redirect(originalRequest);
   }
   
   /**

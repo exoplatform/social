@@ -174,8 +174,8 @@
                     <value><string>{spacePrettyName}/{appName}</string></value>
                   </entry>
                   <entry>
-                    <key><string>space.wiki.access</string></key>
-                    <value><string>wiki/group/spaces/{spacePrettyName}/{wikiPage}</string></value>
+                    <key><string>space.app.page.access</string></key>
+                    <value><string><![CDATA[{spacePrettyName}/{appName}/{<.*>page}]]></string></value>
                   </entry>
                   <entry>
                     <key><string>forum.home</string></key>

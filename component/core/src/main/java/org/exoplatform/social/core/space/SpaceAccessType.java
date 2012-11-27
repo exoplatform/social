@@ -44,7 +44,7 @@ public enum SpaceAccessType {
       //
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-      return acl.isUserInGroup(acl.getAdminGroups()) && (space != null);
+      return acl.getSuperUser().equals(remoteId) && (space != null);
     }
   },
   INVITED_SPACE("social.space.access.invited-space") {
@@ -106,9 +106,10 @@ public enum SpaceAccessType {
         //
         ExoContainer container = ExoContainerContext.getCurrentContainer();
         UserACL acl = (UserACL) container.getComponentInstanceOfType(UserACL.class);
-        boolean isAdminGroup = acl.isUserInGroup(acl.getAdminGroups());
+        //boolean isAdminGroup = acl.isUserInGroup(acl.getAdminGroups());
+        boolean isSuperAdmin = acl.getSuperUser().equals(remoteId);
         
-        return !getSpaceService().isMember(space, remoteId) && !isAdminGroup;
+        return !getSpaceService().isMember(space, remoteId) && !isSuperAdmin;
       }
     
   };
@@ -131,6 +132,7 @@ public enum SpaceAccessType {
   public final static String ACCESSED_TYPE_KEY = "social.accessed.space.type.key";
   public final static String ACCESSED_SPACE_PRETTY_NAME_KEY = "social.accessed.space.key";
   public final static String ACCESSED_SPACE_WIKI_PAGE_KEY = "social.accessed.space.wiki.page.key";
+  public final static String ACCESSED_SPACE_REQUEST_PATH_KEY = "social.accessed.space.request.path.key";
   public final static String NODE_REDIRECT = "space-access";
   
   public abstract boolean doCheck(String remoteId, Space space);
