@@ -31,6 +31,12 @@
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def space = uicomponent.getSpace(spaceUrl);
+  
+  if ( space == null ) {
+    print(_ctx.appRes("UIPortlet.message.RuntimeError"));
+    return;
+  }
+  
   def appSelected = uicomponent.getAppSelected();
   def imageSource = uicomponent.getImageSource();
   if (imageSource == null) {
