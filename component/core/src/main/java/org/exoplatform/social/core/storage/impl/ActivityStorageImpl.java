@@ -1085,7 +1085,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     limit = (limit > commentIds.size() ? commentIds.size() : limit);
-    for(String commentId : commentIds.subList(offset, limit)) {
+    int toIndex = (limit+offset >= commentIds.size() ? commentIds.size() : limit+offset);
+    for(String commentId : commentIds.subList(offset, toIndex)) {
       activities.add(getStorage().getActivity(commentId));
     }
 

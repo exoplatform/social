@@ -60,12 +60,12 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
  */
 public class BaseUIActivity extends UIForm {
   private static final Log LOG = ExoLogger.getLogger(BaseUIActivity.class);
-
+  
   private static int LATEST_COMMENTS_SIZE = 2;
   private int commentMinCharactersAllowed = 0;
   private int commentMaxCharactersAllowed = 100;
 
-  private static final int DEFAULT_LIMIT = 20;
+  private static final int DEFAULT_LIMIT = 10;
   
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
@@ -78,9 +78,11 @@ public class BaseUIActivity extends UIForm {
     private String commentStatus;
   }
 
+  private int loadCapacity;
+  private int currentLoadIndex = 0;
+  private RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess;
   private ExoSocialActivity activity;
   private Identity ownerIdentity;
-  private List<ExoSocialActivity> comments;
   private String[] identityLikes;
   private boolean commentFormDisplayed = false;
   private boolean likesDisplayed = false;
@@ -99,7 +101,27 @@ public class BaseUIActivity extends UIForm {
     //tricktip for gatein bug
     setSubmitAction("return false;");
 
-    comments = new ArrayList<ExoSocialActivity>();
+    //comments = new ArrayList<ExoSocialActivity>();
+  }
+
+  public RealtimeListAccess<ExoSocialActivity> getActivityCommentsListAccess() {
+    return activityCommentsListAccess;
+  }
+
+  public void setActivityCommentsListAccess(RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess) {
+    this.activityCommentsListAccess = activityCommentsListAccess;
+  }
+
+  public int getCurrentLoadIndex() {
+    return currentLoadIndex;
+  }
+
+  public int getLoadCapacity() {
+    return loadCapacity;
+  }
+
+  public void setLoadCapacity(int loadCapacity) {
+    this.loadCapacity = loadCapacity;
   }
 
   public void setActivity(ExoSocialActivity activity) {
@@ -181,7 +203,7 @@ public class BaseUIActivity extends UIForm {
   }
 
   public boolean commentListToggleable() {
-    return comments.size() > LATEST_COMMENTS_SIZE;
+    return activityCommentsListAccess.getSize() > LATEST_COMMENTS_SIZE;
   }
 
 
@@ -192,21 +214,34 @@ public class BaseUIActivity extends UIForm {
    * @return
    */
   public List<ExoSocialActivity> getComments() {
+    int commentsSize = activityCommentsListAccess.getSize();
+    List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     if (commentListStatus == CommentStatus.ALL) {
-      return comments;
+      if (currentLoadIndex == 0) {
+        currentLoadIndex = commentsSize - DEFAULT_LIMIT - LATEST_COMMENTS_SIZE;
+        loadCapacity = DEFAULT_LIMIT + LATEST_COMMENTS_SIZE;
+      } else { 
+        currentLoadIndex -= DEFAULT_LIMIT;
+      }
+      if (currentLoadIndex < 0) currentLoadIndex = 0;
+      comments = activityCommentsListAccess.loadAsList(currentLoadIndex, loadCapacity);
+      if (currentLoadIndex > 0) { 
+        loadCapacity += currentLoadIndex;
+      }
     } else if (commentListStatus == CommentStatus.NONE) {
-      return new ArrayList<ExoSocialActivity>();
+      return comments;
     } else {
-      int commentsSize = comments.size();
       if (commentsSize > LATEST_COMMENTS_SIZE) {
-        return comments.subList(commentsSize - LATEST_COMMENTS_SIZE, commentsSize);
+        comments = activityCommentsListAccess.loadAsList(commentsSize-LATEST_COMMENTS_SIZE, LATEST_COMMENTS_SIZE);
+      } else {
+        comments = activityCommentsListAccess.loadAsList(commentsSize, DEFAULT_LIMIT);
       }
     }
     return comments;
   }
 
   public List<ExoSocialActivity> getAllComments() {
-    return comments;
+    return activityCommentsListAccess.loadAsList(0, activityCommentsListAccess.getSize());
   }
 
   public String[] getIdentityLikes() {
@@ -359,8 +394,8 @@ public class BaseUIActivity extends UIForm {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
             SpaceService.SPACES_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
-    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
-    comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+    //comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     setCommentListStatus(CommentStatus.ALL);
   }
 
@@ -398,11 +433,12 @@ public class BaseUIActivity extends UIForm {
       LOG.info("activity is null, not found. It can be deleted!");
       return;
     }
-    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
-    comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
+    //RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
+    //comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
+    setActivityCommentsListAccess(Utils.getActivityManager().getCommentsWithListAccess(activity));
     identityLikes = activity.getLikeIdentityIds();
   }
-
+  
   public boolean isUserActivity() {
     boolean isUserActivity = false;
     if (getOwnerIdentity() != null) {
@@ -571,7 +607,7 @@ public class BaseUIActivity extends UIForm {
         commentListStatus = CommentStatus.ALL;
       } else if (status.equals(CommentStatus.NONE.getStatus())) {
         commentListStatus = CommentStatus.NONE;
-      }
+      } 
       if (commentListStatus != null) {
         uiActivity.setCommentListStatus(commentListStatus);
       }

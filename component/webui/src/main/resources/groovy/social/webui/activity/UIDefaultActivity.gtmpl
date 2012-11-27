@@ -47,6 +47,7 @@
   def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
+  def labelShowPreviousComments = _ctx.appRes("UIActivity.label.Show_Previous_Comments");
   def labelOnePersonLikeThis = _ctx.appRes("UIActivity.label.One_Person_Like_This");
   def labelPeopleLikeThis = _ctx.appRes("UIActivity.label.People_Like_This");
   def labelYouLikeThis = _ctx.appRes("UIActivity.label.You_Like_This");
@@ -63,6 +64,7 @@
     labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
 
   }
+  def commentsHidden = allComments.size()-commentList.size();
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
   def labelLikes = null;
@@ -222,6 +224,7 @@
       <% if (uicomponent.commentListToggleable()) {
       def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
+      def loadPreviousCommentsAction = uicomponent.event("SetCommentListStatus", "all");
       %>
       <% if (commentListStatus.getStatus().equals("none")) {%>
       <div class="CommentListInfo HideBottomLine">
@@ -233,9 +236,15 @@
                 $labelShowAllComments
               </a>
             <% } else if (commentListStatus.getStatus().equals("all")) { %>
-              <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
-                $labelHideAllComments
-              </a>
+              <% if (commentsHidden > 0) { %>
+                <a onclick="$loadPreviousCommentsAction" href="#">
+                  $labelShowPreviousComments
+                </a>
+              <% } else { %>
+                <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                  $labelHideAllComments
+                </a>
+              <% } %>
             <% } %>
       </div>
       <% } %>
