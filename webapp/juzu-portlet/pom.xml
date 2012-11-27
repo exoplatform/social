@@ -45,10 +45,17 @@
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-core</artifactId>
+      <version>${org.juzu.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.juzu</groupId>
+      <artifactId>juzu-builder</artifactId>
+      <version>${org.juzu.version}</version>
     </dependency>
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-portlet</artifactId>
+      <version>${org.juzu.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -91,7 +98,7 @@
           <dependency>
             <groupId>org.juzu</groupId>
             <artifactId>juzu-builder</artifactId>
-            <version>${juzu.version}</version>
+            <version>${org.juzu.version}</version>
           </dependency>
         </dependencies>
         <configuration>
