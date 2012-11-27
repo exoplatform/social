@@ -80,6 +80,12 @@
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <!-- used in the packaging only and repackaged here -->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-extension-config</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>

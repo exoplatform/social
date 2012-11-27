@@ -52,6 +52,14 @@
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/java</directory>
+        <includes>
+          <include>**/*.gtmpl</include>
+        </includes>
+      </resource>
+    </resources>
     <finalName>juzu-social</finalName>
     <plugins>
       <plugin>
