@@ -34,7 +34,7 @@
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
     </dependency>
-    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
@@ -55,10 +55,12 @@
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>exo.ws.rest.core</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>

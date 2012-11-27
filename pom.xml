@@ -65,6 +65,7 @@
     <commons-collections.version>3.2.1</commons-collections.version>
     <hsqldb.version>2.0.0</hsqldb.version>
     <junit.version>4.10</junit.version>
+    <log4j.version>1.2.17</log4j.version>
     <byteman.version>2.0.4</byteman.version>
     <rome.version>1.0</rome.version>
     <xerces.version>2.9.1</xerces.version>
@@ -155,10 +156,11 @@
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
       </dependency>
+      <!-- Log4J is required by wikbook to compile but we don't want to propagate it -->
       <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>${mysql.version}</version>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>net.oauth.core</groupId>
@@ -187,11 +189,6 @@
       </dependency>
       <dependency>
         <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.common</artifactId>
-        <version>${org.chromattic.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
         <artifactId>chromattic.core</artifactId>
         <version>${org.chromattic.version}</version>
         <type>jar</type>
@@ -199,11 +196,6 @@
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.ext</artifactId>
-        <version>${org.chromattic.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.metamodel</artifactId>
         <version>${org.chromattic.version}</version>
       </dependency>
       <dependency>
@@ -252,6 +244,16 @@
         <groupId>org.exoplatform.jcr</groupId>
         <artifactId>exo.jcr.component.core</artifactId>
         <version>${org.exoplatform.jcr.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
@@ -287,6 +289,16 @@
         <groupId>org.exoplatform.kernel</groupId>
         <artifactId>exo.kernel.component.cache</artifactId>
         <version>${org.exoplatform.kernel.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.kernel</groupId>
@@ -338,6 +350,12 @@
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.portal</artifactId>
         <version>${org.exoplatform.portal.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
@@ -625,11 +643,6 @@
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
         <version>${org.json.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-builder</artifactId>
-        <version>${juzu.version}</version>
       </dependency>
       <dependency>
         <groupId>org.juzu</groupId>

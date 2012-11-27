@@ -47,7 +47,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
@@ -81,18 +81,22 @@
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-service</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>

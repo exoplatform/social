@@ -75,21 +75,17 @@
       <artifactId>exo.portal.component.test.core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- added for dependency:analyze -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

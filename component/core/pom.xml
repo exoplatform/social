@@ -109,6 +109,7 @@
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portlet</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
@@ -160,46 +161,37 @@
       <artifactId>chromattic.core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- added for dependency-analyze -->
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.spi</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.resources</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.apt</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.ext</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.gatein.common</groupId>
       <artifactId>common-logging</artifactId>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -302,7 +294,7 @@
         <dependency>
           <groupId>com.sun</groupId>
           <artifactId>tools</artifactId>
-          <version>1.4.2</version>
+          <version>1.6</version>
           <scope>system</scope>
           <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>

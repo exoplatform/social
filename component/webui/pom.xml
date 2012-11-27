@@ -42,6 +42,7 @@
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
@@ -62,6 +63,7 @@
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
@@ -114,10 +116,12 @@
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-webui-ext</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
@@ -126,12 +130,14 @@
     <dependency>
       <groupId>org.gatein.common</groupId>
       <artifactId>common-common</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.web.resources</artifactId>
-      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
     </dependency>
   </dependencies>
 </project>

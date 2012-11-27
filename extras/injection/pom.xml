@@ -12,7 +12,7 @@
   <name>eXo Social Injectors</name>
   <description>eXo Social Injectors</description>
   <dependencies>
-    <!-- This dependency is needed to compile but mvn dependency:analyze says "unused" -->
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.gatein.shindig</groupId>
       <artifactId>shindig-social-api</artifactId>
@@ -46,10 +46,12 @@
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
