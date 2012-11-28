@@ -35,6 +35,7 @@
     elastic : true,
     elasticStyle : {},
     idAction : "",
+    actionLink : null,
     classes : {
       autoCompleteItemActive : "active"
     },
@@ -57,6 +58,10 @@
     }
   };
 
+  var regexpURL = /(https?:\/\/)?((www\.[\w+]+\.[\w+]+\.?(:\d+)?)|([\w+]+\.[\w+]+\.?(\w+)?(:\d+)?))(\/\S*)?/g;
+  // /^(ht|f)tps?:\/\/[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/
+  // /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+
   function log(v) {
     if(window.console && window.console.log) {
       window.console.log(v);
@@ -68,12 +73,12 @@
       id : '',
       val : '',
       mentions : [],
-      data : ''
+      data : '',
+      actionLink : {}
     };
     return mentionCache;
   }
 
-  
   var utils = {
     htmlEncode : function(str) {
       return _.escape(str);
@@ -86,6 +91,23 @@
     },
     rtrim : function(string) {
       return string.replace(/\s+$/, "");
+    },
+    validateWWWURL : function (url) {
+      if(url.indexOf('www.') > 0) {
+        return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
+      }
+      return true;
+    },
+    searchFirstURL : function(x) {
+      var result = String(x).match(regexpURL);
+      if(result && result.length > 0) {
+        for(var i = 0; i < result.length; ++i) {
+          if(result[i].length > 0 && this.validateWWWURL(result[i])) {
+            return result[i];
+          }
+        }
+      }
+      return "";
     },
     getSimpleValue : function(val) {
       return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
@@ -136,16 +158,27 @@
 
   var eXoMentions = function(settings) {
 
-    var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmActiveAutoCompleteItem, valueBeforMention;
+    var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmActiveAutoCompleteItem;
+    var valueBeforMention;
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery = '';
     var cursor = '<div id="cursorText"></div>&nbsp;';
-
+    // action add link
+    var ActionLink = {
+        isRun : false,
+        actionLink : null,
+        hasNotLink : true,
+        linkSaved : ''
+    };
+    
     settings = $.extend(true, {}, defaultSettings, settings);
 
     KEY.MENTION = settings.triggerChar.charCodeAt(0);
+
+    ActionLink.isRun = (settings.actionLink && settings.actionLink.length > 0);
+    ActionLink.actionLink = settings.actionLink;
 
     function initTextarea() {
 
@@ -192,7 +225,6 @@
     }
 
     function resetBuffer() {
-      log('resetBuffer');
       inputBuffer = [];
     }
 
@@ -224,7 +256,6 @@
 
       // Cleaning before inserting the value, otherwise auto-complete would be
       // triggered with "old" inputbuffer
-      log('addMention')
       resetBuffer();
       currentDataQuery = '';
       hideAutoComplete();
@@ -365,6 +396,7 @@
           after = after.substr(0, info.from) + $('<div/>').html(text).text() + ' ' + cursor + after.substr(info.to);
           elmInputBox.val(after);
           setCaratPosition(elmInputBox);
+          autoAddLink(text);
         }
         elmInputBox.css('cursor', 'text');
         elmInputBox.parent().find('.placeholder').hide();
@@ -378,7 +410,6 @@
       if(elmAutocompleteList.find('li').length > 0) {
         elmAutocompleteList.show();
       } else {
-        log('onInputBoxClick')
         resetBuffer();
       }
     }
@@ -394,13 +425,11 @@
 
     function onInputBoxInput(e) {
       var isBlockMenu = (elmAutocompleteList.css('display') === 'block');
-      log(inputBuffer);
       updateValues();
       updateMentionsCollection();
       hideAutoComplete();
       
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
-      log(triggerCharIndex)
       if (triggerCharIndex === 0) {
         if(!isBlockMenu && e && e.type === 'input') {
           var after = elmInputBox.value();
@@ -409,7 +438,6 @@
             var val = after.substring(indexChanged-1, indexChanged);
             var isRun = (val === ' ') || (val === '') || (val === '&nbsp;');
             if(!isRun) {
-              log('return ....')
               return;
             }
           }
@@ -499,10 +527,7 @@
               var t = lVal.indexOf(' ');
               if(t < 0) t = lVal.length;
               lVal = lVal.substring(0, t);
-              log('x'+lVal+'x')
-              log(fVal)
               var hasTrigger = hasTriggerChar(fVal+lVal);
-              log(hasTrigger)
               if(hasTrigger != false) {
                 inputBuffer = hasTrigger;
                 onInputBoxInput(); 
@@ -587,6 +612,8 @@
 
     function onInputBoxKeyUp(e) {
       backspceBroswerFix(e);
+      
+      checkAutoAddLink(e);
       //
     }
     
@@ -603,7 +630,34 @@
         //cRange.pasteHTML('text');
       }
     }
-
+    
+    function checkAutoAddLink(e) {
+      var keyCode = (e.which || e.keyCode);
+      if(keyCode && keyCode === KEY.SPACE) {
+        var val = getInputBoxFullValue();
+        autoAddLink(val);
+      }
+    }
+    
+    function autoAddLink(val) {
+      if(ActionLink.isRun && ActionLink.hasNotLink) {
+        ActionLink.linkSaved = utils.searchFirstURL(val);
+        if(ActionLink.linkSaved && ActionLink.linkSaved.length > 0) {
+          var action = ActionLink.actionLink;
+          action = $((typeof action === 'string') ? ('#'+action) : action);
+          if(action.length > 0) {
+            var input = $('#InputLink');
+            if(input.length > 0) {
+              ActionLink.hasNotLink = false;
+              saveCacheData();
+              input.val(ActionLink.linkSaved);
+              action.trigger('click');
+            }
+          }
+        }
+      }
+    }
+    
     function autoSetKeyCode(elm) {
       try {
         if(utils.isIE && utils.brVersion < 9) {
@@ -785,6 +839,7 @@
           dataCache.mentions = mentionsCollection;
           dataCache.val = getInputBoxFullValue();
           dataCache.data = mentionsCollection.length > 0 ? elmInputBox.data('messageText') : getInputBoxValue();
+          dataCache.actionLink = ActionLink;
           parentForm.data(key, dataCache);
         }
       }
@@ -801,6 +856,7 @@
           mentionsCollection = dataCache.mentions;
           elmInputBox.val(dataCache.val);
           elmInputBox.data('messageText', dataCache.data);
+          ActionLink = dataCache.actionLink;
           updateValues();
         }
       }
@@ -899,6 +955,12 @@
         }
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
+      },
+      
+      clearLink : function(callback) {
+        ActionLink.hasNotLink = true;
+        ActionLink.linkSaved = '';
+        saveCacheData();
       },
 
       reset : function() {

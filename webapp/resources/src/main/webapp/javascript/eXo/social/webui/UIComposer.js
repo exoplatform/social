@@ -20,7 +20,6 @@
  *
  */
 
-
 var UIComposer = {
   onLoad: function(params) {
     UIComposer.configure(params);
@@ -89,6 +88,19 @@ var UIComposer = {
     UIComposer.shareButton.attr('class','ShareButtonDisable');
     UIComposer.shareButton.attr('disabled',"disabled");
 
+    $(document).ready(function() {
+      var actionLink = $('#actionLink');
+      if(actionLink.length > 0){
+        if($('#InputLink').length == 0) {
+          actionLink.trigger('click');
+        } else {
+          var container = $('#ComposerContainer');
+          if(container.find('.LinkExtensionContainer').length > 0) {
+            container.find('.LinkExtensionContainer').hide().data('isShow', {isShow: false});
+          }
+        }
+      }
+    });
     //
     $('textarea#composerInput').exoMentions({
         onDataRequest:function (mode, query, callback) {
@@ -100,7 +112,8 @@ var UIComposer = {
             callback.call(this, responseData);
           });
         },
-        idAction : "ShareButton",
+        idAction : 'ShareButton',
+        actionLink : 'AttachButton',
         elasticStyle : {
           maxHeight : '38px',
           minHeight : '24px'
@@ -138,6 +151,23 @@ var UIComposer = {
     if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
       UIComposer.shareButton.removeAttr("disabled");
       UIComposer.shareButton.attr("class",'ShareButton');
+    }
+  },
+  showLink : function() {
+  	var container = $('#ComposerContainer')
+  	var link = container.find('.LinkExtensionContainer');
+  	if(link.length > 0) {
+  		if(link.data('isShow').isShow) {
+  			link.hide().data('isShow', {isShow: false});
+  		} else {
+  			link.show().data('isShow', {isShow: true});
+  		}
+    } else {
+      var cmp = container.find('.UILinkShareDisplay');
+      if(cmp.length > 0) {
+        $('textarea#composerInput').exoMentions('clearLink', function() {});
+        $('#actionLink').trigger('click');
+      }
     }
   }
 };
