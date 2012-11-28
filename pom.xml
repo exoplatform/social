@@ -149,14 +149,14 @@
   </properties>
 
   <modules>
-    <module>extension</module>
-    <module>demo</module>
     <module>component</module>
     <module>webapp</module>
     <module>extras</module>
+    <module>demo</module>
     <module>server</module>
     <module>packaging</module>
     <module>config</module>
+    <module>extension</module>
   </modules>
 
   <dependencyManagement>
@@ -751,29 +751,30 @@
 
 
       <!-- platform -->
-<!--
       <dependency>
-        <groupId>org.exoplatform.platform</groupId>
+        <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-testing</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
--->
+      
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-webui-ext</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-component-upgrade</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
+      
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-component-common</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
-
+      
       <!-- eXo Social -->
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -1001,8 +1002,10 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
+          <!--
             <argLine>-Xmx1g</argLine>
             <forkMode>always</forkMode>
+            -->
             <systemPropertyVariables>
               <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
               <org.apache.commons.logging.simplelog.defaultlog>info</org.apache.commons.logging.simplelog.defaultlog>

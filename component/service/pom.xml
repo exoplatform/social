@@ -170,6 +170,12 @@
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
@@ -255,6 +261,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/InitContainerTestSuite.java</include>
+            <include>**/NoContainerTestSuite.java</include>
+          </includes>
+        </configuration>
       </plugin>
 
     </plugins>

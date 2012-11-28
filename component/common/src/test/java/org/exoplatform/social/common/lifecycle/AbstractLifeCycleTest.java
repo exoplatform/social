@@ -21,11 +21,12 @@ package org.exoplatform.social.common.lifecycle;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.exoplatform.component.test.AbstractKernelTest;
+import junit.framework.TestCase;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
 
-public class AbstractLifeCycleTest extends AbstractKernelTest {
+public class AbstractLifeCycleTest extends TestCase {
 
   private LifeCycleCompletionService asyncCompletionService;
   private LifeCycleCompletionService syncCompletionService;

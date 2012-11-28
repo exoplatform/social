@@ -189,6 +189,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
@@ -331,6 +337,10 @@
           <systemPropertyVariables>
             <org.jboss.byteman.contrib.bmunit.agent.port>${org.jboss.byteman.contrib.bmunit.agent.port}</org.jboss.byteman.contrib.bmunit.agent.port>
           </systemPropertyVariables>
+          <includes>
+            <include>**/InitContainerTestSuite.java</include>
+            <include>**/NoContainerTestSuite.java</include>
+          </includes>
         </configuration>
       </plugin>
 

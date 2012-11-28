@@ -30,6 +30,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.processor.MentionsProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
@@ -75,6 +76,8 @@ public class ActivityManagerTest extends AbstractCoreTest {
     jameIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "jame", true);
     paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul", true);
 
+    
+    
   }
 
   @Override
@@ -86,6 +89,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
         LOG.warn("can not delete activity with id: " + activity.getId());
       }
     }
+    
+    RealtimeListAccess<ExoSocialActivity> demoActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity);
+    assertEquals(0, demoActivities.getSize());
+    
     identityManager.deleteIdentity(rootIdentity);
     identityManager.deleteIdentity(johnIdentity);
     identityManager.deleteIdentity(maryIdentity);
@@ -587,12 +594,15 @@ public class ActivityManagerTest extends AbstractCoreTest {
                  demoListAccess.getNumberOfOlder(baseActivity));
   }
   
+  
   /**
    * Test {@link ActivityManager#getActivitiesOfConnectionsWithListAccess(Identity)}
    * 
    * @throws Exception
    * @since 1.2.0-Beta3
    */
+  
+  /**
   public void testGetActivitiesOfConnectionsWithListAccess() throws Exception {
     ExoSocialActivity baseActivity = null;
     for (int i = 0; i < 10; i ++) {
@@ -647,12 +657,16 @@ public class ActivityManagerTest extends AbstractCoreTest {
     relationshipManager.remove(demoMaryRelationship);
   }
   
+  **/
+  
   /**
    * Test {@link ActivityManager#getActivitiesOfUserSpacesWithListAccess(Identity)}
    * 
    * @throws Exception
    * @since 1.2.0-Beta3s
    */
+  
+  
   public void testGetActivitiesOfUserSpacesWithListAccess() throws Exception {
     Space space = this.getSpaceInstance(spaceService, 0);
     Identity spaceIdentity = this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
