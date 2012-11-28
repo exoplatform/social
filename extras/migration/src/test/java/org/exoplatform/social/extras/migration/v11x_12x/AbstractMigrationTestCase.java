@@ -17,13 +17,13 @@
 
 package org.exoplatform.social.extras.migration.v11x_12x;
 
-import org.exoplatform.component.test.AbstractKernelTest;
+import javax.jcr.Session;
+
+import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.social.extras.migration.Utils;
-
-import javax.jcr.Session;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -37,7 +37,7 @@ import javax.jcr.Session;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml")
 })
-public abstract class AbstractMigrationTestCase extends AbstractKernelTest {
+public abstract class AbstractMigrationTestCase extends BaseExoTestCase {
 
   protected Session session;
 

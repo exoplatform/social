@@ -71,6 +71,22 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <!-- Import versions of external dependencies to use -->
+      <dependency>
+        <groupId>org.exoplatform</groupId>
+        <artifactId>maven-depmgt-pom</artifactId>
+        <version>1-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Import versions from commons project -->
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- To be replaced by an import of core parent POM -->
       <dependency>
         <groupId>org.exoplatform.core</groupId>
@@ -462,12 +478,12 @@
         <!-- Don't include apache tomcat artifacts to avoid conflicts in a tomcat appserver -->
         <exclusions>
           <exclusion>
-            <groupId>org.apache.tomcat</groupId>
             <artifactId>el-api</artifactId>
+            <groupId>org.apache.tomcat</groupId>
           </exclusion>
           <exclusion>
-            <groupId>org.apache.tomcat</groupId>
             <artifactId>jasper-el</artifactId>
+            <groupId>org.apache.tomcat</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -478,8 +494,8 @@
         <!-- Don't include apache tomcat artifacts to avoid conflicts in a tomcat appserver -->
         <exclusions>
           <exclusion>
-            <groupId>org.apache.tomcat</groupId>
             <artifactId>el-api</artifactId>
+            <groupId>org.apache.tomcat</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -493,22 +509,6 @@
         <groupId>org.gatein.wci</groupId>
         <artifactId>wci-wci</artifactId>
         <version>${org.gatein.wci.version}</version>
-      </dependency>
-      <!-- Import versions of external dependencies to use -->
-      <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>maven-depmgt-pom</artifactId>
-        <version>1-SNAPSHOT</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from commons project -->
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -531,8 +531,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
-            <argLine>-Xmx1g</argLine>
-            <forkMode>always</forkMode>
             <systemPropertyVariables>
               <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
               <org.apache.commons.logging.simplelog.defaultlog>info</org.apache.commons.logging.simplelog.defaultlog>

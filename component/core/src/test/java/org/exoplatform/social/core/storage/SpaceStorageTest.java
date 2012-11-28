@@ -122,7 +122,6 @@ public class SpaceStorageTest extends AbstractCoreTest {
     for (Identity id : tearDownIdentityList) {
       identityStorage.deleteIdentity(id);
     }
-
     super.tearDown();
   }
 
