@@ -35,22 +35,20 @@
   uicomponent.setSubmitAction("return false;");
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
-  def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
-  def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
+  def defaultInput = _ctx.appRes("UIComposer.label.Write_Something");
+  def addLabel = _ctx.appRes("UIComposer.label.Add");
+  def shareLabel = _ctx.appRes("UIComposer.label.Share");
   def blastInput = "BlastInputSpace";
-  def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
+  def shareStatusLabel = _ctx.appRes("UIComposer.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
+    defaultInput = _ctx.appRes("UIComposer.label.What_Are_You_Working_On");
     blastInput = "BlastInputPeople";
   }
 
-  def composerId = uicomponent.getChild(UIFormTextAreaInput.class).getId();
-
   def params = """
     {
-      composerId: '${composerId}',
+      composerId: '${uicomponent.COMPOSER_TEXT_AREA_INPUT}',
       defaultInput: '${defaultInput}',
       focusColor: null,
       blurColor: null,
@@ -74,7 +72,7 @@
          <h4>$shareStatusLabel</h4>
     <% } %>
     <div class="$blastInput">
-      <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
+      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT) %>
     </div>
     <div class="BlastShare ClearFix">
       <div class="AttachMents">
@@ -86,18 +84,16 @@
           counter++;
           simpleName = acComposer.getClass().getSimpleName();
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-          if (acComposer.isDisplayed()) {
-            actionEvent = "Close";
-          } else {
-            actionEvent = "Activate";
-          }
-          if (counter > 1) {
+
+          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue()";
+	      if(simpleName.equals("UILinkActivityComposer")) {
+	      	print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
+	      	action = "UIComposer.showLink()";
+	      }
+          	
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" >$labelSimpleName</a>
-      <% } else { %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " >$labelSimpleName</a>
+          <a href="javascript:void(0)" title="$labelSimpleName" class="$simpleName <%=((counter > 1) ? "DottedLine" : "")%>" onclick="$action">$labelSimpleName</a>
       <%
-         }
         }
       %>
       </div>
