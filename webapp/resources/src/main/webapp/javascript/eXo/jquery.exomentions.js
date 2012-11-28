@@ -44,8 +44,8 @@
       live : 30000 // MiniSeconds
     },
     messages : {
-          foundNoMatch : 'Found no matching users for ',
-          helpSearch: 'Type to start searching for users.'
+      foundNoMatch : 'Found no matching users for ',
+      helpSearch: 'Type to start searching for users.'
     },
     templates : {
       wrapper : _.template('<div class="exo-mentions"></div>'),
@@ -92,17 +92,17 @@
     rtrim : function(string) {
       return string.replace(/\s+$/, "");
     },
-    validateWWWURL : function (url) {
-      if(url.indexOf('www.') > 0) {
+    validateWWWURL : function(url) {
+      if (url.indexOf('www.') > 0) {
         return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
       }
       return true;
     },
     searchFirstURL : function(x) {
       var result = String(x).match(regexpURL);
-      if(result && result.length > 0) {
-        for(var i = 0; i < result.length; ++i) {
-          if(result[i].length > 0 && this.validateWWWURL(result[i])) {
+      if (result && result.length > 0) {
+        for ( var i = 0; i < result.length; ++i) {
+          if (result[i].length > 0 && this.validateWWWURL(result[i])) {
             return result[i];
           }
         }
@@ -167,10 +167,10 @@
     var cursor = '<div id="cursorText"></div>&nbsp;';
     // action add link
     var ActionLink = {
-        isRun : false,
-        actionLink : null,
-        hasNotLink : true,
-        linkSaved : ''
+      isRun : false,
+      actionLink : null,
+      hasNotLink : true,
+      linkSaved : ''
     };
     
     settings = $.extend(true, {}, defaultSettings, settings);
@@ -317,7 +317,7 @@
 
                 selection.removeAllRanges();
                 selection.addRange(range);
-              } catch(err) {}
+              } catch (err) {}
             }
           });
         });
@@ -340,7 +340,7 @@
       if (inputField) {
         var cursorText = inputField.find('#cursorText');
         if (inputField.val().length != 0) {
-          
+
           var elm = inputField[0];
           var selection = getSelection();
           if (selection) {
@@ -349,14 +349,14 @@
               'height' : '14px'
             }).html('&nbsp;&nbsp;&nbsp;');
             cursorText.focus();
-            try{
+            try {
               var range = document.createRange();
               range.selectNode(cursorText[0]);
               range.selectNodeContents(cursorText[0]);
 
               selection.removeAllRanges();
               selection.addRange(range);
-            }catch(err) {
+            } catch (err) {
               inputField.focus();
             }
           }
@@ -428,16 +428,16 @@
       updateValues();
       updateMentionsCollection();
       hideAutoComplete();
-      
+
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
-        if(!isBlockMenu && e && e.type === 'input') {
+        if (!isBlockMenu && e && e.type === 'input') {
           var after = elmInputBox.value();
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, after);
-          if(indexChanged > 0) {
-            var val = after.substring(indexChanged-1, indexChanged);
+          if (indexChanged > 0) {
+            var val = after.substring(indexChanged - 1, indexChanged);
             var isRun = (val === ' ') || (val === '') || (val === '&nbsp;');
-            if(!isRun) {
+            if (!isRun) {
               return;
             }
           }
@@ -525,12 +525,13 @@
               var fVal = after.substring(0, indexChanged);
               var lVal = after.substring(indexChanged, after.length);
               var t = lVal.indexOf(' ');
-              if(t < 0) t = lVal.length;
+              if (t < 0)
+                t = lVal.length;
               lVal = lVal.substring(0, t);
-              var hasTrigger = hasTriggerChar(fVal+lVal);
-              if(hasTrigger != false) {
+              var hasTrigger = hasTriggerChar(fVal + lVal);
+              if (hasTrigger != false) {
                 inputBuffer = hasTrigger;
-                onInputBoxInput(); 
+                onInputBoxInput();
               }
             }
             elmInputBox.css('cursor', 'text');
@@ -592,18 +593,18 @@
 
     function hasTriggerChar(val) {
       //
-      if(val && val.length > 0) {
+      if (val && val.length > 0) {
         var chs = [];
-        for(var i = val.length-1; i >= 0; --i) {
-          if(val[i] === ' ' || val[i] === '&nbsp;') {
+        for ( var i = val.length - 1; i >= 0; --i) {
+          if (val[i] === ' ' || val[i] === '&nbsp;') {
             return false;
-          } else if(val[i] == settings.triggerChar){
-            if(i > 0 && (val[i-1] === ' ' || val[i-1] === '&nbsp;') || i === 0) {
-              chs.splice(0,0, settings.triggerChar);
+          } else if (val[i] == settings.triggerChar) {
+            if (i > 0 && (val[i - 1] === ' ' || val[i - 1] === '&nbsp;') || i === 0) {
+              chs.splice(0, 0, settings.triggerChar);
               return chs;
             }
           } else {
-            chs.splice(0,0,val[i]);
+            chs.splice(0, 0, val[i]);
           }
         }
       }
@@ -619,35 +620,35 @@
     
     function backspceBroswerFix(e) {
       var selection = getSelection();
-      if(utils.isFirefox) {
+      if (utils.isFirefox) {
         var node = selection.focusNode;
-        if(String(node.tagName).toLowerCase() === 'span' && node.className === 'icon') {
+        if (String(node.tagName).toLowerCase() === 'span' && node.className === 'icon') {
           $(node).trigger('click');
         }
-      } else if(utils.isIE) {
+      } else if (utils.isIE) {
         var cRange = selection.createRange();
-        //log(cRange.parentElement());
-        //cRange.pasteHTML('text');
+        // log(cRange.parentElement());
+        // cRange.pasteHTML('text');
       }
     }
     
     function checkAutoAddLink(e) {
       var keyCode = (e.which || e.keyCode);
-      if(keyCode && keyCode === KEY.SPACE) {
+      if (keyCode && keyCode === KEY.SPACE) {
         var val = getInputBoxFullValue();
         autoAddLink(val);
       }
     }
     
     function autoAddLink(val) {
-      if(ActionLink.isRun && ActionLink.hasNotLink) {
+      if (ActionLink.isRun && ActionLink.hasNotLink) {
         ActionLink.linkSaved = utils.searchFirstURL(val);
-        if(ActionLink.linkSaved && ActionLink.linkSaved.length > 0) {
+        if (ActionLink.linkSaved && ActionLink.linkSaved.length > 0) {
           var action = ActionLink.actionLink;
-          action = $((typeof action === 'string') ? ('#'+action) : action);
-          if(action.length > 0) {
+          action = $((typeof action === 'string') ? ('#' + action) : action);
+          if (action.length > 0) {
             var input = $('#InputLink');
-            if(input.length > 0) {
+            if (input.length > 0) {
               ActionLink.hasNotLink = false;
               saveCacheData();
               input.val(ActionLink.linkSaved);
@@ -660,10 +661,10 @@
     
     function autoSetKeyCode(elm) {
       try {
-        if(utils.isIE && utils.brVersion < 9) {
+        if (utils.isIE && utils.brVersion < 9) {
           resetBuffer();
           inputBuffer[0] = settings.triggerChar;
-          
+
           //
           onInputBoxInput();
         } else {
@@ -677,13 +678,13 @@
           });
           elm.triggerHandler(e);
           elm.trigger(e1);
-          
+
           //
-         // resetBuffer();
-         // log('reset')
-         // inputBuffer[0] = settings.triggerChar;
+          // resetBuffer();
+          // log('reset')
+          // inputBuffer[0] = settings.triggerChar;
         }
-      } catch(err) {}
+      } catch (err) {}
     }
 
     function hideAutoComplete(isClear) {
@@ -708,10 +709,13 @@
     }
 
     function addMessageMenu(parent, msg) {
-      $('<li class="msg"></li>').html('<em>'+msg+'</em>').appendTo(parent).on('click mousedown', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-      });
+      $('<li class="msg"></li>')
+          .html('<em>'+msg+'</em>')
+          .appendTo(parent)
+          .on('click mousedown', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+          });
     }
 
     function populateDropdown(query, results) {
@@ -778,10 +782,10 @@
     }
 
     function doSearch(query) {
-      if ((query === '' || String(query) === 'undefined') && !settings.firstShowAll)  {
+      if ((query === '' || String(query) === 'undefined') && !settings.firstShowAll) {
         populateDropdown('', null);
       } else if (query.length >= settings.minChars) {
-        if(settings.cacheResult.hasUse) {
+        if (settings.cacheResult.hasUse) {
           var data = getCaseSearch(query);
           if (data) {
             populateDropdown(query, data);
@@ -956,7 +960,7 @@
         var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
         callback.call(this, value);
       },
-      
+
       clearLink : function(callback) {
         ActionLink.hasNotLink = true;
         ActionLink.linkSaved = '';
@@ -975,6 +979,7 @@
       }
     };
   };
+
   // elastic the mention content
   $.fn.extend({
     elastic : function(settings) {
