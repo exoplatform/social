@@ -57,7 +57,7 @@
     <!-- **************************************** -->
     <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.core.version>2.4.10-GA-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.doc.doc-style.version>1.0.8-SNAPSHOT</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.doc.doc-style.version>1.0.8-CR01</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.14.10-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.exoplatform.kernel.version>2.3.10-GA-SNAPSHOT</org.exoplatform.kernel.version>
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
