@@ -18,10 +18,11 @@ package org.exoplatform.social.service.test;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.exoplatform.component.test.AbstractKernelTest;
+import org.exoplatform.commons.testing.BaseExoTestCase;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.component.test.KernelBootstrap;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
@@ -49,13 +50,16 @@ import org.exoplatform.services.security.Identity;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.service.test.configuration.xml")
 })
-public abstract class AbstractServiceTest extends AbstractKernelTest {
+public abstract class AbstractServiceTest extends BaseExoTestCase {
   protected static Log log = ExoLogger.getLogger(AbstractServiceTest.class.getName());
   protected SessionProvider sessionProvider;
   protected ProviderBinder providerBinder;
   protected ResourceBinder resourceBinder;
   protected RequestHandlerImpl requestHandler;
   private static SessionProviderService sessionProviderService;
+  /** . */
+  public static KernelBootstrap socialBootstrap = null;
+
 
   protected void setUp() throws Exception {
     sessionProviderService = (SessionProviderService) getContainer().
@@ -74,7 +78,7 @@ public abstract class AbstractServiceTest extends AbstractKernelTest {
     endSession();
     end();
   }
-
+ 
   /**
    * registry resource object
    *

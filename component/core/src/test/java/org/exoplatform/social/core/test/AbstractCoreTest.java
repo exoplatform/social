@@ -16,23 +16,17 @@
  */
 package org.exoplatform.social.core.test;
 
-import com.sun.tools.attach.AgentInitializationException;
-import junit.framework.AssertionFailedError;
-import org.apache.http.impl.cookie.PublicSuffixFilter;
-import org.exoplatform.component.test.AbstractKernelTest;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
-import org.jboss.byteman.agent.install.Install;
-import org.jboss.byteman.agent.install.VMInfo;
-import org.jboss.byteman.contrib.bmunit.BMUnit;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import junit.framework.AssertionFailedError;
+
+import org.exoplatform.commons.testing.BaseExoTestCase;
+import org.exoplatform.component.test.ConfigurationUnit;
+import org.exoplatform.component.test.ConfiguredBy;
+import org.exoplatform.component.test.ContainerScope;
+import org.jboss.byteman.contrib.bmunit.BMUnit;
 
 /**
  *
@@ -49,12 +43,14 @@ import java.lang.reflect.Modifier;
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml")
 })
-public abstract class AbstractCoreTest extends AbstractKernelTest {
+public abstract class AbstractCoreTest extends BaseExoTestCase {
 
   public static boolean wantCount = false;
   private static int count;
   private int maxQuery;
-
+  
+  
+  
   @Override
   protected void setUp() throws Exception {
     begin();
@@ -73,52 +69,53 @@ public abstract class AbstractCoreTest extends AbstractKernelTest {
     wantCount = false;
     end();
   }
+  
 
   // Fork from Junit 3.8.2
   @Override
   /**
-	 * Override to run the test and assert its state.
-	 * @throws Throwable if any exception is thrown
-	 */
-	protected void runTest() throws Throwable {
+   * Override to run the test and assert its state.
+   * @throws Throwable if any exception is thrown
+   */
+  protected void runTest() throws Throwable {
     String fName = getName();
-		assertNotNull("TestCase.fName cannot be null", fName); // Some VMs crash when calling getMethod(null,null);
-		Method runMethod= null;
-		try {
-			// use getMethod to get all public inherited
-			// methods. getDeclaredMethods returns all
-			// methods of this class but excludes the
-			// inherited ones.
-			runMethod= getClass().getMethod(fName, (Class[])null);
-		} catch (NoSuchMethodException e) {
-			fail("Method \""+fName+"\" not found");
-		}
-		if (!Modifier.isPublic(runMethod.getModifiers())) {
-			fail("Method \""+fName+"\" should be public");
-		}
+    assertNotNull("TestCase.fName cannot be null", fName); // Some VMs crash when calling getMethod(null,null);
+    Method runMethod= null;
+    try {
+      // use getMethod to get all public inherited
+      // methods. getDeclaredMethods returns all
+      // methods of this class but excludes the
+      // inherited ones.
+      runMethod= getClass().getMethod(fName, (Class[])null);
+    } catch (NoSuchMethodException e) {
+      fail("Method \""+fName+"\" not found");
+    }
+    if (!Modifier.isPublic(runMethod.getModifiers())) {
+      fail("Method \""+fName+"\" should be public");
+    }
 
-		try {
+    try {
       MaxQueryNumber queryNumber = runMethod.getAnnotation(MaxQueryNumber.class);
       if (queryNumber != null) {
         wantCount = true;
         maxQuery = queryNumber.value();
       }
-			runMethod.invoke(this);
-		}
-		catch (InvocationTargetException e) {
-			e.fillInStackTrace();
-			throw e.getTargetException();
-		}
-		catch (IllegalAccessException e) {
-			e.fillInStackTrace();
-			throw e;
-		}
+      runMethod.invoke(this);
+    }
+    catch (InvocationTargetException e) {
+      e.fillInStackTrace();
+      throw e.getTargetException();
+    }
+    catch (IllegalAccessException e) {
+      e.fillInStackTrace();
+      throw e;
+    }
 
     if (wantCount && count > maxQuery) {
       throw new AssertionFailedError(""+ count + " JDBC queries was executed but the maximum is : " + maxQuery);
     }
     
-	}
+  }
 
   // Called by byteman
   public static void count() {

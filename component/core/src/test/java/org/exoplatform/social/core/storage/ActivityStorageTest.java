@@ -61,7 +61,8 @@ public class ActivityStorageTest extends AbstractCoreTest {
   private Identity johnIdentity;
   private Identity maryIdentity;
   private Identity demoIdentity;
-
+ 
+  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -75,6 +76,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     johnIdentity = new Identity(OrganizationIdentityProvider.NAME, "john");
     maryIdentity = new Identity(OrganizationIdentityProvider.NAME, "mary");
     demoIdentity = new Identity(OrganizationIdentityProvider.NAME, "demo");
+    
     identityStorage.saveIdentity(rootIdentity);
     identityStorage.saveIdentity(johnIdentity);
     identityStorage.saveIdentity(maryIdentity);
@@ -953,7 +955,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1600)
   public void testGetUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1018,7 +1020,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1350)
+  @MaxQueryNumber(1450)
   public void testGetNumberOfUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1073,7 +1075,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1350)
+  @MaxQueryNumber(1450)
   public void testGetNumberOfNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1133,7 +1135,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1350)
+  @MaxQueryNumber(1450)
   public void testGetNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1195,7 +1197,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1350)
+  @MaxQueryNumber(1450)
   public void testGetNumberOfOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1258,7 +1260,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1350)
+  @MaxQueryNumber(1450)
   public void testGetOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1790,10 +1792,10 @@ public class ActivityStorageTest extends AbstractCoreTest {
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
     space.setUrl(space.getPrettyName());
-    String[] managers = new String[] {"demo", "tom"};
-    String[] members = new String[] {"raul", "ghost", "dragon"};
-    String[] invitedUsers = new String[] {"register1", "mary"};
-    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    String[] managers = new String[] {"demo"};
+    String[] members = new String[] {"demo"};
+    String[] invitedUsers = new String[] {"mary"};
+    String[] pendingUsers = new String[] {"john",};
     space.setInvitedUsers(invitedUsers);
     space.setPendingUsers(pendingUsers);
     space.setManagers(managers);

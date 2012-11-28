@@ -251,7 +251,10 @@ public class CachedSpaceStorage implements SpaceStorage {
     if (identitySpace == null) {
       identitySpace = cachedIdentityStorage.findIdentity(SpaceIdentityProvider.NAME, oldPrettyName);
     }
-    cachedIdentityStorage.clearIdentityCached(identitySpace, oldPrettyName);
+    
+    if (identitySpace != null) {
+      cachedIdentityStorage.clearIdentityCached(identitySpace, oldPrettyName);
+    }
 
     // remove activities cached of a space
     cachedActivityStorage = this.getCachedActivityStorage();

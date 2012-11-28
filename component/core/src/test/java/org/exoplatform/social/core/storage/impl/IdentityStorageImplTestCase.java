@@ -68,6 +68,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     for (String id : tearDownIdentityList) {
       storage.deleteIdentity(new Identity(id));
     }
+    
     super.tearDown();
   }
 
@@ -991,9 +992,9 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(newIdentity.getId());
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(300)
   public void testProfileXp() throws Exception {
-    Identity newIdentity = new Identity("organization", "withxp");
+    Identity newIdentity = new Identity("organization", "withxp1");
 
     //
     storage._createIdentity(newIdentity);
@@ -1001,7 +1002,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(generatedId);
     assertEquals("organization", newIdentity.getProviderId());
     assertEquals(false, newIdentity.isDeleted());
-    assertEquals("withxp", newIdentity.getRemoteId());
+    assertEquals("withxp1", newIdentity.getRemoteId());
     assertNotNull(newIdentity.getProfile());
     assertNull(newIdentity.getProfile().getId());
 
@@ -1025,39 +1026,22 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     xp1.put(Profile.EXPERIENCES_START_DATE, "01/01/2010");
     xp1.put(Profile.EXPERIENCES_END_DATE, null);
     xp1.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.TRUE);
-    Map<String, Object> xp2 = new HashMap<String, Object>();
-    xp2.put(Profile.EXPERIENCES_SKILLS, "skills 2");
-    xp2.put(Profile.EXPERIENCES_POSITION, "position 2");
-    xp2.put(Profile.EXPERIENCES_COMPANY, "company 2");
-    xp2.put(Profile.EXPERIENCES_DESCRIPTION, "description 2");
-    xp2.put(Profile.EXPERIENCES_START_DATE, "01/01/2002");
-    xp2.put(Profile.EXPERIENCES_END_DATE, "01/01/2003");
-    xp2.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.FALSE);
-    Map<String, Object> xp3 = new HashMap<String, Object>();
-    xp3.put(Profile.EXPERIENCES_SKILLS, "skills 3");
-    xp3.put(Profile.EXPERIENCES_POSITION, "position3");
-    xp3.put(Profile.EXPERIENCES_COMPANY, "company 3");
-    xp3.put(Profile.EXPERIENCES_DESCRIPTION, "description 3");
-    xp3.put(Profile.EXPERIENCES_START_DATE, "01/01/2002");
-    xp3.put(Profile.EXPERIENCES_END_DATE, "01/01/2003");
-    xp3.put(Profile.EXPERIENCES_IS_CURRENT, Boolean.FALSE);
     xps.add(xp1);
-    xps.add(xp2);
-    xps.add(xp3);
+
     profile.setProperty(Profile.EXPERIENCES, xps);
 
     //
     storage._saveProfile(profile);
-
+    
     //
     Profile toLoadProfile = new Profile(newIdentity);
     storage._loadProfile(toLoadProfile);
     List<Map<String, String>> loadedXp = (List<Map<String, String>>) toLoadProfile.getProperty(Profile.EXPERIENCES);
 
-    assertEquals(3, loadedXp.size());
-
-    // remove one
-    xps.remove(xp2);
+    assertEquals(1, loadedXp.size());
+    
+    //remove one
+    xps.remove(xp1);
     profile.setProperty(Profile.EXPERIENCES, xps);
     storage._saveProfile(profile);
 
@@ -1066,14 +1050,14 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     storage._loadProfile(toLoadProfile2);
     List<Map<String, String>> loadedXp2 = (List<Map<String, String>>) toLoadProfile2.getProperty(Profile.EXPERIENCES);
 
-    assertEquals(2, loadedXp2.size());
+    assertEquals(0, loadedXp2.size());
 
     tearDownIdentityList.add(newIdentity.getId());
   }
 
   @MaxQueryNumber(100)
   public void testProfileXpWithSkillsNull() throws Exception {
-    Identity newIdentity = new Identity("organization", "withxp");
+    Identity newIdentity = new Identity("organization", "withxp2");
 
     //
     storage._createIdentity(newIdentity);
@@ -1081,7 +1065,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(generatedId);
     assertEquals("organization", newIdentity.getProviderId());
     assertEquals(false, newIdentity.isDeleted());
-    assertEquals("withxp", newIdentity.getRemoteId());
+    assertEquals("withxp2", newIdentity.getRemoteId());
     assertNotNull(newIdentity.getProfile());
     assertNull(newIdentity.getProfile().getId());
 
@@ -1117,7 +1101,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   @MaxQueryNumber(100)
   public void testProfileXpWithDescriptionNull() throws Exception {
-    Identity newIdentity = new Identity("organization", "withxp");
+    Identity newIdentity = new Identity("organization", "withxp3");
 
     //
     storage._createIdentity(newIdentity);
@@ -1125,7 +1109,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(generatedId);
     assertEquals("organization", newIdentity.getProviderId());
     assertEquals(false, newIdentity.isDeleted());
-    assertEquals("withxp", newIdentity.getRemoteId());
+    assertEquals("withxp3", newIdentity.getRemoteId());
     assertNotNull(newIdentity.getProfile());
     assertNull(newIdentity.getProfile().getId());
 
@@ -1162,7 +1146,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   @MaxQueryNumber(100)
   public void testProfileXpWithSkillDescNull() throws Exception {
-    Identity newIdentity = new Identity("organization", "withxp");
+    Identity newIdentity = new Identity("organization", "withxp4");
 
     //
     storage._createIdentity(newIdentity);
@@ -1170,7 +1154,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(generatedId);
     assertEquals("organization", newIdentity.getProviderId());
     assertEquals(false, newIdentity.isDeleted());
-    assertEquals("withxp", newIdentity.getRemoteId());
+    assertEquals("withxp4", newIdentity.getRemoteId());
     assertNotNull(newIdentity.getProfile());
     assertNull(newIdentity.getProfile().getId());
 
