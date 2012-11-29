@@ -199,7 +199,9 @@ public class UIActivitiesLoader extends UIContainer {
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
   }
   
-  private boolean isShowActivities(Space space){
+  private boolean isShowActivities(Space space) {
+    if (space == null) return true;
+    
     String remoteId = Util.getPortalRequestContext().getRemoteUser();
     return Utils.getSpaceService().isMember(space, remoteId);
   }
