@@ -30,12 +30,6 @@
   <name>eXo Social Extension WAR</name>
   <description>eXo Social Extension WAR</description>
   <dependencies>
-    <!-- used in the packaging only and repackaged here -->
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-extension-config</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-webui-ext</artifactId>
@@ -74,6 +68,11 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-extension-config</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
