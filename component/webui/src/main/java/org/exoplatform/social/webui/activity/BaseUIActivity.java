@@ -234,7 +234,7 @@ public class BaseUIActivity extends UIForm {
       if (commentsSize > LATEST_COMMENTS_SIZE) {
         comments = activityCommentsListAccess.loadAsList(commentsSize-LATEST_COMMENTS_SIZE, LATEST_COMMENTS_SIZE);
       } else {
-        comments = activityCommentsListAccess.loadAsList(commentsSize, DEFAULT_LIMIT);
+        comments = activityCommentsListAccess.loadAsList(0, commentsSize >= DEFAULT_LIMIT ? DEFAULT_LIMIT : commentsSize);
       }
     }
     return comments;

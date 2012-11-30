@@ -64,6 +64,8 @@
     labelHideAllComments = labelHideAllComments.replace("{0}", allComments.size() + "");
 
   }
+  
+  def totalComments = allComments.size();
   def commentsHidden = allComments.size()-commentList.size();
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
@@ -240,6 +242,7 @@
                 <a onclick="$loadPreviousCommentsAction" href="#">
                   $labelShowPreviousComments
                 </a>
+                <span style="float:right">$commentsHidden/$totalComments</span>
               <% } else { %>
                 <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
                   $labelHideAllComments
