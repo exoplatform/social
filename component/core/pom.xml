@@ -152,14 +152,14 @@
     <dependency>
      <groupId>org.exoplatform.doc</groupId>
      <artifactId>doc-style</artifactId>
-     <version>${org.exoplatform.doc.doc-style.version}</version>
+     <version>${doc-style.version}</version>
       <optional>true</optional>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
-      <version>${org.exoplatform.doc.doc-style.version}</version>
+      <version>${doc-style.version}</version>
       <classifier>templates</classifier>
     </dependency>
 
