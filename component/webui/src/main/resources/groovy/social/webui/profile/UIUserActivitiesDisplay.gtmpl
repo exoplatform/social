@@ -22,41 +22,18 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-
-  def labelAllUpdates = _ctx.appRes("${uicomponent.id}.label.All_Updates");
-  def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
-  def labelSpaceUpdates = _ctx.appRes("${uicomponent.id}.label.Space_Updates");
-  def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
-  def labelMyActivityStream = _ctx.appRes("${uicomponent.id}.label.My_Activity_Stream");
-
-  def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
-  def allUpdatesDisplayModeStyle = "LightBlueStyle";
-  def connectionsDisplayModeStyle = "LightBlueStyle";
-  def mySpacesDisplayModeStyle = "LightBlueStyle";
-  def myStatusDisplayModeStyle = "LightBlueStyle";
-  if (selectedDisplayMode.toString().equals("ALL_UPDATES")) {
-    allUpdatesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("NETWORK_UPDATES")) {
-    connectionsDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("SPACE_UPDATES")) {
-    mySpacesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("MY_STATUS") || selectedDisplayMode.toString().equals("OWNER_STATUS")) {
-    myStatusDisplayModeStyle = "DarkBlueStyle";
-  }
-
+  import org.exoplatform.webui.form.UIFormSelectBox;
 %>
-<div id="$uicomponent.id" class="$uicomponent.id">
-  <h4 class="ActivityStreamTitle">$labelMyActivityStream</h4>
-<% if (uicomponent.isActivityStreamOwner()) { %>
-  <div class="UIAction">
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "ALL_UPDATES");%>" class="ActionButton $allUpdatesDisplayModeStyle">$labelAllUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "NETWORK_UPDATES");%>" class="ActionButton $connectionsDisplayModeStyle">$labelNetworkUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACE_UPDATES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaceUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
+<div class="$uicomponent.id">
+  <% uiform.begin() %>
+  <div class="UISelectDisplayMode">
+    <%
+       if (uicomponent.isActivityStreamOwner()) {
+         uicomponent.renderChild(UIFormSelectBox.class);
+       }
+    %>
   </div>
-<% } %>
+  <div class="ClearFix"></div>
+  <% uiform.end() %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
 </div>

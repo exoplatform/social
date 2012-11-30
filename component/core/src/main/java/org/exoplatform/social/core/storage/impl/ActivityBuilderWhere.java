@@ -133,6 +133,12 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
         }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
         where.endGroup();
         
       }
@@ -158,7 +164,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           return Strings.EMPTY;
         }
       }
-      
+      System.out.println("\n\n " + where.toString() + "\n\n");
       return where.toString();
     }
   };
@@ -184,6 +190,12 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
         }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
         where.endGroup();
         
       }

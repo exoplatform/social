@@ -180,7 +180,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(80)
+  @MaxQueryNumber(82)
   public void testSaveComment() throws Exception {
 
     //
@@ -213,7 +213,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(108)
   public void testRemoveComment() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -247,8 +247,8 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     activityStorage.deleteComment(activity.getId(), comment.getId());
 
     //
-    assertEquals(1, cacheService.getActivityCache().getCacheSize());
-    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+    assertEquals(0, cacheService.getActivityCache().getCacheSize());
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
     assertEquals(activity.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
     assertEquals(0, activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId().length);
 

@@ -110,6 +110,22 @@ public class ActiviyBuilderWhereTest extends TestCase {
     assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
   }
   
+  public void testFeedWithMentions() throws Exception {
+    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_FEED_BUILDER;
+
+    //
+    List<Identity> identities = new ArrayList<Identity>(2);
+    identities.add(demoIdentity);
+    identities.add(rootIdentity);
+    where.owners(identities);
+    where.mentioner(maryIdentity);
+    
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' OR CONTAINS (soc:mentioners, 'mary123456') ) AND soc:isComment = 'false' ";
+    String actualWhere =  where.build(filter);
+    assertEquals(expectedWhere, actualWhere);
+    
+  }
   
   public void testFeedOlderOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;

@@ -48,6 +48,8 @@ public interface ActivityStorage {
     }
   }
 
+  static final String MENTION_CHAR = "@";
+  
   /**
    * Load an activity by its id.
    *

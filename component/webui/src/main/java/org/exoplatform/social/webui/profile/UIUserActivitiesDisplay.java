@@ -16,6 +16,12 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.Validate;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -29,9 +35,12 @@ import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIForm;
+import org.exoplatform.webui.form.UIFormSelectBox;
 
 /**
  * Displays user's activities
@@ -41,12 +50,13 @@ import org.exoplatform.webui.event.EventListener;
  * @copyright eXo SAS
  */
 @ComponentConfig(
+  lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
   events = {
     @EventConfig(listeners = UIUserActivitiesDisplay.ChangeDisplayModeActionListener.class)
   }
 )
-public class UIUserActivitiesDisplay extends UIContainer {
+public class UIUserActivitiesDisplay extends UIForm {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
@@ -59,17 +69,46 @@ public class UIUserActivitiesDisplay extends UIContainer {
     SPACE_UPDATES,
     MY_STATUS
   }
-  private DisplayMode selectedDisplayMode = DisplayMode.ALL_UPDATES;
-  private UIActivitiesLoader activitiesLoader;
-  private String                ownerName;
-  private String                viewerName;
-  private boolean               isActivityStreamOwner = false;
+
+  private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_UPDATES;
+  private boolean                    isActivityStreamOwner = false;
+  private UIActivitiesLoader         activitiesLoader;
+  private String                     ownerName;
+  private String                     viewerName;
+
+  /** Store user's last visit stream. */
+  private static Map<String, String> lastVisitStream = new HashMap<String, String>();
 
   /**
-   * constructor
+   * Default constructor.
+   * 
+   * @throws Exception 
    */
-  public UIUserActivitiesDisplay() {
+  public UIUserActivitiesDisplay() throws Exception {
+    //
+    ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
+    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.NETWORK_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.SPACE_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_STATUS.toString()));
+    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox("SelectBoxDisplayModes", null, displayModes);
+    uiFormSelectBox.setOnChange("ChangeDisplayMode");
+    setSelectedDisplayMode(uiFormSelectBox);
+    addChild(uiFormSelectBox);
 
+    //
+    this.setOwnerName(Utils.getOwnerRemoteId());
+    String selectedDisplayMode = this.getChild(UIFormSelectBox.class).getValue();
+    if (DisplayMode.ALL_UPDATES.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
+    } else if (DisplayMode.MY_STATUS.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+    } else if (DisplayMode.SPACE_UPDATES.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
+    } else {
+      this.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
+    }
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
@@ -112,26 +151,6 @@ public class UIUserActivitiesDisplay extends UIContainer {
     return ownerName;
   }
 
-  public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
-    @Override
-    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
-      WebuiRequestContext requestContext = event.getRequestContext();
-      String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
-
-      if (selectedDisplayMode.equals(DisplayMode.ALL_UPDATES.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
-      } else if (selectedDisplayMode.equals(DisplayMode.MY_STATUS.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
-      } else if (selectedDisplayMode.equals(DisplayMode.SPACE_UPDATES.toString())) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
-      } else {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
-      }
-      requestContext.addUIComponentToUpdateByAjax(uiUserActivitiesDisplay);
-    }
-
-  }
   /**
    * initialize
    *
@@ -173,5 +192,37 @@ public class UIUserActivitiesDisplay extends UIContainer {
    
     //
     activitiesLoader.init();
+  }
+
+  public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
+    @Override
+    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
+      //
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
+      UIFormSelectBox uiFormSelectBox = uiUserActivitiesDisplay.getChild(UIFormSelectBox.class);
+
+      //
+      String selectedDisplayMode = uiFormSelectBox.getValue();
+      lastVisitStream.put(Utils.getOwnerRemoteId(), selectedDisplayMode);
+      if (DisplayMode.ALL_UPDATES.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
+      } else if (DisplayMode.MY_STATUS.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      } else if (DisplayMode.SPACE_UPDATES.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
+      } else {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
+      }
+
+      //
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class));
+    }
+  }
+
+  private void setSelectedDisplayMode(UIFormSelectBox uiFormSelectBox) {
+    String selectedDisplayMode = lastVisitStream.get(Utils.getOwnerRemoteId());
+    if (selectedDisplayMode != null) {
+      uiFormSelectBox.setValue(selectedDisplayMode);
+    }
   }
 }

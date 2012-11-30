@@ -47,6 +47,11 @@
   font-weight: normal;
 }
 
+.UIUserActivityStreamPortlet .UIUserActivitiesDisplay .UISelectDisplayMode {
+  float: right;
+  margin: 10px 0px 10px 0px;
+}
+
 .UIUserActivityStreamPortlet .UIAction {
   border: none;
   border-bottom: 1px solid #e1e1e1;

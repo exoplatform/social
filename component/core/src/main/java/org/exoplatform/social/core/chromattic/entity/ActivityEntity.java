@@ -186,6 +186,16 @@ public abstract class ActivityEntity implements NamedEntity {
       new PropertyLiteralExpression<Long>(Long.class, "soc:lastUpdated");
 
   /**
+   * The list of identity Ids who mentioned.
+   */
+  @Property(name = "soc:mentioners")
+  public abstract String[] getMentioners();
+  public abstract void setMentioners(String[] mentionerId);
+  public static final PropertyLiteralExpression<String> mentioners =
+    new PropertyLiteralExpression<String>(String.class, "soc:mentioners");
+
+  
+  /**
    * The activity parameters.
    * @return
    */

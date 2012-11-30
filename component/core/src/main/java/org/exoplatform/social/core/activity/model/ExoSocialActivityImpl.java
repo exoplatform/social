@@ -75,6 +75,11 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   private transient String permaLink;
 
   /**
+   * array of identity ids who mentioned on this activity.
+   */
+  private String[] mentionedIds;
+  
+  /**
    * constructor.
    */
   public ExoSocialActivityImpl() {
@@ -380,6 +385,27 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     return activityStream.getPermaLink();
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @return array of identity ids
+   */
+  public final String[] getMentionedIds() {
+    if (mentionedIds != null) {
+      return Arrays.copyOf(mentionedIds, mentionedIds.length);
+    }
+    return ArrayUtils.EMPTY_STRING_ARRAY;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param identityIds array of identity Ids
+   */
+  public final void setMentionedIds(final String[] identityIds) {
+    mentionedIds = Arrays.copyOf(identityIds, identityIds.length);
+  }
+  
   /**
    * init time.
    */
