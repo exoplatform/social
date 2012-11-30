@@ -1098,7 +1098,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse1.getStatus() must return 200", 200, containerResponse1.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
-      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadAsList(0, limit);
+      demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity).loadNewer(baseActivity, limit);
       
       compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity());
       compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse1.getEntity(), 
@@ -1133,7 +1133,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
           containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
       List<ExoSocialActivity> demoActivitiesFeed = activityManager.getActivityFeedWithListAccess(demoIdentity)
                                           .loadAsList(0, limit);
-      compareActivities(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity());
+      
       compareNumberOfComments(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
                               numberOfComments);
       compareNumberOfLikes(demoActivitiesFeed, (ActivityRestListOut) containerResponse2.getEntity(), 
