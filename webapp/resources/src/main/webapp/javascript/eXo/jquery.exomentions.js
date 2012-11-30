@@ -31,7 +31,7 @@
     minChars : 1,
     showAvatars : true,
     firstShowAll : false,
-    selectFirst : false,
+    selectFirst : true,
     elastic : true,
     elasticStyle : {},
     idAction : "",
