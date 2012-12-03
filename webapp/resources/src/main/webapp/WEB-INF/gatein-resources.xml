@@ -198,6 +198,22 @@
   </module>
 
   <module>
+    <name>social-ui-activity-updates</name>
+    <script>
+      <name>eXo.social.webui.UIComposerLinkExtension</name>
+      <path>/javascript/eXo/social/webui/UIActivityUpdates.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
+    </depends>
+  </module>
+
+  <module>
     <name>social-ui-customize-control</name>
     <script>
       <name>eXo.social.webui.UICustomizeControl</name>

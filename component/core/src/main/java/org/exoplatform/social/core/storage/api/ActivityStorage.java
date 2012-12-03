@@ -475,7 +475,48 @@ public interface ActivityStorage {
    * @throws ActivityStorageException
    */
   public void updateActivity(ExoSocialActivity existingActivity) throws ActivityStorageException;
-  
+
+  /**
+   * Gets the list of newer activities feed based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfNewerOnActivityFeed(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities based on postedTime of connections.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime);
+
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access, based on an existing postedTime.
+   * 
+   * @param ownerIdentity
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime);
+
   /**
    * 
    * @param where

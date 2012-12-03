@@ -19,9 +19,20 @@
 
 -->
 */
+import org.exoplatform.portal.webui.util.Util;
+
 def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
+def activities = uicomponent.getActivityList();
+def cookieName = uicomponent.getOwnerName() + "_" + uicomponent.getSelectedDisplayMode();
+def cookieValue = activities.size() > 0 ? activities.get(0).getUpdated().getTime() : null;
+
+def pcontext = Util.getPortalRequestContext();
+def jsManager = pcontext.getJavascriptManager();
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName', $cookieValue);");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
+<div class="UpdateInfo"><span id="numberInfo"><%= numberOfUpdatedActivities > 0 ? String.valueOf(numberOfUpdatedActivities) : 'No' %></span> Updates</div>
 <% if (uicomponent.getChildren().size() > 1) {
      uicomponent.renderChildren();
    } else {

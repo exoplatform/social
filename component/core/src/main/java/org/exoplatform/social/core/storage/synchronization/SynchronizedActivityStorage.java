@@ -341,6 +341,69 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
+  public int getNumberOfNewerOnActivityFeed(final Identity ownerIdentity,final Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnActivityFeed(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnUserActivities(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnActivitiesOfConnections(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnUserSpacesActivities(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public List<ExoSocialActivity> getNewerOnActivityFeed(final Identity ownerIdentity, final ExoSocialActivity baseActivity,
                                                         final int limit) {
 

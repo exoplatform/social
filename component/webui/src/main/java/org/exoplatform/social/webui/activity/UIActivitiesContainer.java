@@ -19,13 +19,20 @@ package org.exoplatform.social.webui.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.portlet.PortletRequest;
+import javax.servlet.http.Cookie;
+
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.web.application.JavascriptManager;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
@@ -50,6 +57,7 @@ public class UIActivitiesContainer extends UIContainer {
   //hold activities for user or space
   private Space space;
   private String ownerName;
+  private String selectedDisplayMode;
   private UIPopupWindow popupWindow;
 
   /**
@@ -66,6 +74,10 @@ public class UIActivitiesContainer extends UIContainer {
 
   public UIPopupWindow getPopupWindow() {
     return popupWindow;
+  }
+
+  public List<ExoSocialActivity> getActivityList() {
+    return activityList;
   }
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
@@ -97,6 +109,14 @@ public class UIActivitiesContainer extends UIContainer {
   public void setOwnerName(String ownerName) {
     this.ownerName = ownerName;
   }
+  
+  public String getSelectedDisplayMode() {
+    return selectedDisplayMode;
+  }
+
+  public void setSelectedDisplayMode(String selectedDisplayMode) {
+    this.selectedDisplayMode = selectedDisplayMode;
+  }
 
 
   /**
@@ -112,12 +132,17 @@ public class UIActivitiesContainer extends UIContainer {
     if (activityList == null) {
       return;
     }
-    
+
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-    
+
     for (ExoSocialActivity activity : activityList) {
       factory.addChild(activity, this);
+    }
+
+    if (getStreamInfosCookie() == null && selectedDisplayMode != null) {
+      storeStreamInfosCookie(ownerName + "_" + selectedDisplayMode,
+                             activityList.size() > 0 ? activityList.get(0).getUpdated().getTime() : null);
     }
   }
 
@@ -136,5 +161,43 @@ public class UIActivitiesContainer extends UIContainer {
         break;
       }
     }
+  }
+
+  protected int getNumberOfUpdatedActivities() {
+    try {
+      UIActivitiesLoader uiActivitiesLoader = this.getAncestorOfType(UIActivitiesLoader.class);
+      ListAccess<ExoSocialActivity> activitiesListAccess = uiActivitiesLoader.getActivityListAccess();
+      String lastUpdatedTime = getStreamInfosCookie();
+      return ((ActivitiesRealtimeListAccess) activitiesListAccess).getNumberOfNewer(Long.parseLong(lastUpdatedTime));
+    } catch(Exception e) {
+      return 0;
+    }
+  }
+
+  public void storeStreamInfosCookie(String name, Long value) {
+    try {
+      WebuiRequestContext webuiRequestContext = WebuiRequestContext.getCurrentInstance();
+      JavascriptManager jsManager = webuiRequestContext.getJavascriptManager();
+      jsManager.addJavascript(";document.cookie = '" + name + "=" + (value != null ? value.toString() : null) + "';");
+    } catch(Exception e) {
+      LOG.error("Failed to store user stream infos cookie.");
+    }
+  }
+
+  public String getStreamInfosCookie() {
+    try {
+      WebuiRequestContext webuiRequestContext = WebuiRequestContext.getCurrentInstance();
+      PortletRequest request = webuiRequestContext.getRequest();
+      Cookie[] cookies = request.getCookies();
+      String cookieName = ownerName + "_" + selectedDisplayMode;
+      for (Cookie cookie : cookies) {
+        if (cookieName.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
+    } catch(Exception e) {
+      LOG.error("Failed to get user stream infos cookie.");
+    }
+    return null;
   }
 }

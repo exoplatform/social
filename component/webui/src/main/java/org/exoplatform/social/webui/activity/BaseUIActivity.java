@@ -43,8 +43,10 @@ import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -637,6 +639,15 @@ public class BaseUIActivity extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
       String message = uiFormComment.getValue();
+      
+      if (message == null || message.equals("")) {
+        UIApplication uiApplication = requestContext.getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+                                                      null,
+                                                      ApplicationMessage.WARNING));
+        return;
+      }
+      
       uiFormComment.reset();
       uiActivity.saveComment(requestContext.getRemoteUser(), message);
       uiActivity.setCommentFormFocused(true);

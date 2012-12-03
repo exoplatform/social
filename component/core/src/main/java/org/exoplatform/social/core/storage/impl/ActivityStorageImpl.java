@@ -74,7 +74,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   /** Logger */
   private static final Log LOG = ExoLogger.getLogger(ActivityStorageImpl.class);
-
+  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
   private ActivityStorage activityStorage;
 
   private final SortedSet<ActivityProcessor> activityProcessors;
@@ -762,6 +762,77 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   }
 
+  @Override
+  public int getNumberOfNewerOnActivityFeed(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
+
+  }
+  
+  @Override
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    if (ownerIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
+                                      
+  }
+
+  @Override
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+
+    //
+    if (connectionList.size() == 0) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
+  }
+
+  @Override
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+
+    //
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
+
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1270,8 +1341,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   //
   private String[] processMentions(String[] mentionerIds, String title, boolean isAdded) {
-    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-    Matcher matcher = pattern.matcher(title);
+    if (title == null || title.length() == 0) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    
+    Matcher matcher = MENTION_PATTERN.matcher(title);
     
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);

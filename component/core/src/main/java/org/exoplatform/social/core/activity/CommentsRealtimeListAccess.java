@@ -91,6 +91,14 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   /**
    * {@inheritDoc}
    */
+  public int getNumberOfNewer(Long sinceTime) {
+//    return activityStorage.getNumberOfNewerComments(existingActivity, sinceTime);
+    return 0;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public List<ExoSocialActivity> loadOlder(ExoSocialActivity baseComment, int length) {
     return activityStorage.getOlderComments(existingActivity, baseComment, length);
   }
@@ -101,4 +109,5 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   public int getNumberOfOlder(ExoSocialActivity baseComment) {
     return activityStorage.getNumberOfOlderComments(existingActivity, baseComment);
   }
+
 }

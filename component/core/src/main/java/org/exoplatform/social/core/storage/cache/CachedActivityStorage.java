@@ -915,7 +915,69 @@ public class CachedActivityStorage implements ActivityStorage {
     exoActivityCache.remove(key);
 
   }
-  
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewerOnActivityFeed(final Identity ownerIdentity, final Long sinceTime) {
+
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity),
+                                                sinceTime,
+                                                ActivityType.NEWER_FEED);
+
+    return activitiesCountCache.get(new ServiceContext<IntegerData>() {
+      public IntegerData execute() {
+        return new IntegerData(storage.getNumberOfNewerOnActivityFeed(ownerIdentity, sinceTime));
+      }
+    }, key).build();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewerOnUserActivities(final Identity ownerIdentity, final Long sinceTime) {
+
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity),
+                                                sinceTime,
+                                                ActivityType.NEWER_USER);
+
+    return activitiesCountCache.get(new ServiceContext<IntegerData>() {
+      public IntegerData execute() {
+        return new IntegerData(storage.getNumberOfNewerOnUserActivities(ownerIdentity, sinceTime));
+      }
+    }, key).build();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewerOnActivitiesOfConnections(final Identity ownerIdentity, final Long sinceTime) {
+
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), sinceTime, ActivityType.NEWER_CONNECTION);
+
+    return activitiesCountCache.get(new ServiceContext<IntegerData>() {
+      public IntegerData execute() {
+        return new IntegerData(storage.getNumberOfNewerOnActivitiesOfConnections(ownerIdentity, sinceTime));
+      }
+    }, key).build();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewerOnUserSpacesActivities(final Identity ownerIdentity, final Long sinceTime) {
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity),
+                                                sinceTime,
+                                                ActivityType.NEWER_SPACE);
+
+    return activitiesCountCache.get(new ServiceContext<IntegerData>() {
+      public IntegerData execute() {
+        return new IntegerData(storage.getNumberOfNewerOnUserSpacesActivities(ownerIdentity,
+                                                                              sinceTime));
+      }
+    }, key).build();
+  }
+
   @Override
   public List<ExoSocialActivity> getActivitiesOfIdentities(ActivityBuilderWhere where,
                                                            ActivityFilter filter,

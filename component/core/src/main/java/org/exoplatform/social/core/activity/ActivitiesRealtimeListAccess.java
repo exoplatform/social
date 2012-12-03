@@ -205,4 +205,26 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     }
     return 0;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewer(Long sinceTime) {
+    switch (activityType) {
+    case ACTIVITY_FEED: {
+      return activityStorage.getNumberOfNewerOnActivityFeed(ownerIdentity, sinceTime);
+    }
+    case USER_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnUserActivities(ownerIdentity, sinceTime);
+    }
+    case CONNECTIONS_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnActivitiesOfConnections(ownerIdentity, sinceTime);
+    }
+    case USER_SPACE_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnUserSpacesActivities(ownerIdentity, sinceTime);
+    }
+    }
+    return 0;
+  }
+
 }

@@ -23,13 +23,16 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.Validate;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -167,28 +170,35 @@ public class UIUserActivitiesDisplay extends UIForm {
     activitiesLoader.setPostContext(PostContext.USER);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setOwnerName(ownerName);
-
+    activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
+    
     //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
     ActivityManager activityManager = Utils.getActivityManager();
-
+    ListAccess<ExoSocialActivity> activitiesListAccess = null;
+    
     switch (this.selectedDisplayMode) {
-      case MY_STATUS :
-       activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
-       break;
-      case OWNER_STATUS :
-        activitiesLoader.setActivityListAccess(activityManager.getActivitiesWithListAccess(ownerIdentity));
-        break;
-      case NETWORK_UPDATES :
-        activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity));
-        break;
-      case SPACE_UPDATES :
-        activitiesLoader.setActivityListAccess(activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity));
-        break;
-      default :
-        activitiesLoader.setActivityListAccess(activityManager.getActivityFeedWithListAccess(ownerIdentity));
-        break;
-    }
+    case MY_STATUS :
+     activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
+     activitiesLoader.setActivityListAccess(activitiesListAccess);
+     break;
+    case OWNER_STATUS :
+      activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
+      activitiesLoader.setActivityListAccess(activitiesListAccess);
+      break;
+    case NETWORK_UPDATES :
+      activitiesListAccess = activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity);
+      activitiesLoader.setActivityListAccess(activitiesListAccess);
+      break;
+    case SPACE_UPDATES :
+      activitiesListAccess = activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity);
+      activitiesLoader.setActivityListAccess(activitiesListAccess);
+      break;
+    default :
+      activitiesListAccess = activityManager.getActivityFeedWithListAccess(ownerIdentity);
+      activitiesLoader.setActivityListAccess(activitiesListAccess);
+      break;
+  }
    
     //
     activitiesLoader.init();
@@ -214,6 +224,12 @@ public class UIUserActivitiesDisplay extends UIForm {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
       }
 
+      UIActivitiesContainer uiActivitiesContainer = uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class).getChild(UIActivitiesContainer.class);
+      if (selectedDisplayMode != null) {
+        uiActivitiesContainer.storeStreamInfosCookie(uiActivitiesContainer.getOwnerName() + "_" + selectedDisplayMode,
+                              uiActivitiesContainer.getActivityList().size() > 0 ? uiActivitiesContainer.getActivityList().get(0).getUpdated().getTime() : null);
+      }
+      
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class));
     }

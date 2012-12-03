@@ -164,7 +164,6 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           return Strings.EMPTY;
         }
       }
-      System.out.println("\n\n " + where.toString() + "\n\n");
       return where.toString();
     }
   };

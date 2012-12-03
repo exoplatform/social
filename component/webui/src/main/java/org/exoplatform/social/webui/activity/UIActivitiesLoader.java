@@ -55,6 +55,7 @@ public class UIActivitiesLoader extends UIContainer {
   private UIActivitiesLoader lastActivitiesLoader;
   private ListAccess<ExoSocialActivity> activityListAccess;
   private String ownerName;
+  private String selectedDisplayMode;
 
   public static String genereateId() {
     Random random = new Random();
@@ -76,6 +77,10 @@ public class UIActivitiesLoader extends UIContainer {
     } catch (Exception e) {
       LOG.error(e);
     }
+  }
+
+  public ListAccess<ExoSocialActivity> getActivityListAccess() {
+    return activityListAccess;
   }
 
   public void setActivityListAccess(ListAccess<ExoSocialActivity> activityListAccess) {
@@ -133,6 +138,10 @@ public class UIActivitiesLoader extends UIContainer {
   public void setOwnerName(String ownerName) {
     this.ownerName = ownerName;
   }
+  
+  public void setSelectedDisplayMode(String selectedDisplayMode) {
+    this.selectedDisplayMode = selectedDisplayMode;
+  }
 
   public void init() {
     try {
@@ -143,6 +152,7 @@ public class UIActivitiesLoader extends UIContainer {
       
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
+      activitiesContainer.setSelectedDisplayMode(selectedDisplayMode);
       if (space != null) {
         activitiesContainer.setSpace(space);
       }
