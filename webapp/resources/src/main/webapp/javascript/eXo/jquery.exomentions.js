@@ -688,7 +688,7 @@
             'id' : utils.htmlEncode(item.id),
             'display' : utils.htmlEncode(item.name),
             'type' : utils.htmlEncode(item.type),
-            'content' : (utils.highlightTerm(utils.htmlEncode((item.name + ' (' + item.id.replace('@', '') + ')')), query))
+            'content' : (utils.highlightTerm(utils.htmlEncode(item.name), query) + ' (' + item.id.replace('@', '') + ')')
           })).attr('data-uid', itemUid);
 
           if (index === 0 && settings.selectFirst) {
