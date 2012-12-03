@@ -66,10 +66,10 @@ public class UIComposer extends UIForm {
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    
+    if(this.getId() == null) this.setId("UIComposer");
     //add textbox for inputting message
     UIFormTextAreaInput messageInput = new UIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT, COMPOSER_TEXT_AREA_INPUT, null);
-    messageInput.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("Write_Something"));
+    messageInput.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("What_Are_You_Working_On"));
     addUIFormInput(messageInput);
 
     //add composer container
