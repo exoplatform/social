@@ -125,26 +125,26 @@
 					 <ul class="InviteTitle">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
 				      <li class="Status FL">$invitationReceivedLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" title="$confirmTitle">$confirmTitle</a></li>				      
+              <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" title="$confirmTitle">$confirmTitle</button></li>				      
 				      <li class="Line FL">&nbsp;</li>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$ignoreTitle">$ignoreTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$ignoreTitle">$ignoreTitle</button></li>
 				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
 				      <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</button></li>
 				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
 				      <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$removeTitle">$removeTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$removeTitle">$removeTitle</button></li>
 				<% } else if (contactStatus == null) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="$connectAction" title="$connectTitle">$connectTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="$connectAction" title="$connectTitle">$connectTitle</button></li>
 				<% } %>
 				</ul>
     </div>
   <% } %>
   </div>
   <% if(uicomponent.isEnableLoadNext()) { %>
-	    <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+	    <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
 	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
-	    </div>
+	    </button>
   <% } else { %>
 	      <script type="text/javascript">
 	        var loadMoreButton = document.getElementById("LoadMoreButton");

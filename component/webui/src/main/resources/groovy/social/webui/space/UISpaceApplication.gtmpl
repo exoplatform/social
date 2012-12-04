@@ -33,11 +33,7 @@
 %>
 <div class="$uicomponent.id">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-	 <div class="UIAction">
-		<span class="ActionButton LightBlueStyle">
-		  <a href="#" class="AddAplicationIcon" onclick="$addApplication">$addApplicationLabel</a>
-		</span>
-	 </div>
+	<button class="btn" rel="tooltip" title="$addApplication" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
   <div class="ContainerSpace">
   <% for(app in applications) {

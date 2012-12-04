@@ -123,7 +123,7 @@
         jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
       %>
           
-      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()" value="$shareLabel"></input>
+      <button class="btn" title="$shareLabel" rel="tooltip" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
     </div>
   </div>
   <% uiform.end()%>

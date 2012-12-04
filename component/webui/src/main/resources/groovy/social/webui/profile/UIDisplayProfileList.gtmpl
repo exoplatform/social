@@ -124,15 +124,15 @@
                 
                 <ul class="InviteTitle">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$denyTitle">$denyTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$denyTitle">$denyTitle</button></li>
 				      <li class="Line FL">&nbsp;</li>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" title="$acceptTitle">$acceptTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("AcceptContact",identity.getId())%>" title="$acceptTitle">$acceptTitle</button></li>
 				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$revokeTitle">$revokeTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$revokeTitle">$revokeTitle</button></li>
 				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$removeTitle">$removeTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("DenyContact",identity.getId())%>" title="$removeTitle">$removeTitle</button></li>
 				<% } else if (contactStatus == null) { %>
-				      <li class="FL"><a href="javascript:void(0)" onclick="$addAction" title="$inviteTitle">$inviteTitle</a></li>
+				      <li class="FL"><button class="btn" rel="tooltip" onclick="$addAction" title="$inviteTitle">$inviteTitle</button></li>
 				<% } %>
 				</ul>
           </div>
@@ -141,9 +141,9 @@
   <% } %>
   </div>
   <% if(uicomponent.isEnableLoadNext()) { %>
-	    <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+	    <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
 	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
-	    </div>
+	    </button>
   <% } else { %>
 	      <script type="text/javascript">
 	        var loadMoreButton = document.getElementById("LoadMoreButton");

@@ -306,7 +306,7 @@
           <span class="BorderBottomCM"></span>
         </a>
         <div class="CommentInputBox"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
-        <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
+        <button class="btn" rel="tooltip" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
       </div>
     </div>
    </div>

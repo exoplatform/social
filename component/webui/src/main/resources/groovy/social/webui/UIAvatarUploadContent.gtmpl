@@ -44,8 +44,8 @@
     <div><span>$labelImageSize</span> <%= avatarAttachment.size %></div>
     
   </div>
-  <div class="UIAction">
-      <a onclick="$saveAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelSave</a>
-      <a onclick="$cancelAction" href="javascript:void(0);" class="ActionButton LightBlueStyle">$labelCancel</a>
+  <div class="uiAction">
+      <button class="btn" rel="tooltip" title="$labelSave" onclick="$saveAction">$labelSave</button>
+      <button class="btn" rel="tooltip" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
     </div>
 </div>

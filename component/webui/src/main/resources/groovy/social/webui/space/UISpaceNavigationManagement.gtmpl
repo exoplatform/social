@@ -20,8 +20,8 @@
      def addNodeAction = uicomponent.event("AddNode") + "; return false;"
      def saveAction = uicomponent.event("Save") + "; return false;"
   %>
-  <a class="AddNodeButton" href="#" onclick="$addNodeAction">$addNodeActionLabel</a>
-  <div class="UIAction UISaveButton">
-	  <a href="#" onclick="$saveAction" class="ActionButton LightBlueStyle">$saveActionLabel</a>
+  <button class="btn" rel="tooltip" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
+  <div class="uiAction">
+	  <button class="btn" rel="tooltip" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
 	</div>
 </div>

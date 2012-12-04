@@ -33,16 +33,16 @@ var UIComposer = {
         uiComposer.shareButton.className = 'ShareButtonDisable';
         if($("#ComposerContainer").length == 0){
           uiComposer.shareButton.removeAttr("disabled");
-          uiComposer.shareButton.attr("class",'ShareButton');
+          uiComposer.shareButton.attr("class",'btn');
         }
       } else {
         uiComposer.shareButton.css(background, '');
-        uiComposer.shareButton.attr('class','ShareButton');
+        uiComposer.shareButton.attr('class','btn');
       }
     } else {
       if($("ComposerContainer").length == 0){
         uiComposer.shareButton.removeAttr("disabled");
-        uiComposer.shareButton.attr("class",'ShareButton');
+        uiComposer.shareButton.attr("class",'btn');
       }
     }
 
@@ -83,14 +83,13 @@ var UIComposer = {
       'color':UIComposer.blurColor,
       'padding':UIComposer.padding
     });
-    UIComposer.shareButton.attr('class','ShareButtonDisable');
     UIComposer.shareButton.attr('disabled',"disabled");
     
     if ( UIComposer.getValue() !== UIComposer.defaultInput ) {
       UIComposer.composer.css({'height' : UIComposer.maxHeight,
         'color'  : UIComposer.focusColor});
       UIComposer.shareButton.removeAttr("disabled");
-      UIComposer.shareButton.attr("class",'ShareButton');
+      UIComposer.shareButton.attr("class",'btn');
     }
     
     var isReadyEl = $("#isReadyId");
@@ -117,7 +116,6 @@ var UIComposer = {
         //if current composer is default composer then disable share button
         if(!UIComposer.isReady){
           UIComposer.shareButton.attr('disabled',"disabled");
-          UIComposer.shareButton.attr('class','ShareButtonDisable');
         }
         
       } else {
@@ -151,15 +149,14 @@ var UIComposer = {
 	  var shareButton = $("#ShareButton");
 	  if ( isReadyForPostingActivity ) {
 	    shareButton.removeAttr("disabled");
-	    shareButton.attr("class",'ShareButton');
+	    shareButton.attr("class",'btn');
 	  } else {
 	    shareButton.attr("disabled","disabled");
-	    shareButton.attr("class",'ShareButtonDisable');
 	  }
 	  
 	  if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
 	    UIComposer.shareButton.removeAttr("disabled");
-	    UIComposer.shareButton.attr("class",'ShareButton');
+	    UIComposer.shareButton.attr("class",'btn');
 	  }
   }
 }

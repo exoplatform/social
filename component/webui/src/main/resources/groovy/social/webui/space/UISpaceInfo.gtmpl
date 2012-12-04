@@ -35,6 +35,8 @@
   def saveAction = uicomponent.url('Save');
   def childs = uicomponent.getChildren();
   def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar");
+  def changePictureLabel = _ctx.appRes(uicomponent.getId() + ".label.ChangePicture");
+  def saveLabel = _ctx.appRes(uicomponent.getId() + ".action.Save");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
@@ -51,7 +53,7 @@
 										<img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
 									</a>
 									<div class="ChangeAvaButton">
-										<a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
+										<button class="btn" rel="tooltip" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
 									</div>
 								</div>
 							</div>
@@ -79,8 +81,8 @@
           </tr>
         </tbody>
       </table>
-      <div class="UIAction UISaveButton">
-	      <a href="javascript:void(0);" onclick="$saveAction" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
+      <div class="uiAction">
+	      <button class="btn" rel="tooltip" title="$saveLabel" onclick="$saveAction">$saveLabel</button>
 	    </div>
       
     </div>
