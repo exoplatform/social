@@ -17,7 +17,10 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.Validate;
@@ -61,8 +64,9 @@ public class UIUserActivitiesDisplay extends UIForm {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
+  private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
   private Object locker = new Object();
-  
+
   public enum DisplayMode {
     OWNER_STATUS,
     ALL_ACTIVITIES,
@@ -72,10 +76,13 @@ public class UIUserActivitiesDisplay extends UIForm {
   }
 
   private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_ACTIVITIES;
-  private boolean                    isActivityStreamOwner = false;
+  private boolean                   isActivityStreamOwner = false;
   private UIActivitiesLoader         activitiesLoader;
   private String                     ownerName;
   private String                     viewerName;
+
+  /** Store user's last visit stream. */
+  private static Map<String, String> lastVisitStream = new HashMap<String, String>();
 
   /**
    * Default constructor.
@@ -90,32 +97,21 @@ public class UIUserActivitiesDisplay extends UIForm {
     displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.CONNECTIONS.toString()));
     displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.MY_SPACE.toString()));
     displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_ACTIVITIES.toString()));
-    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox("SelectBoxDisplayModes", null, displayModes);
+    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox(SELECT_BOX_DISPLAY_MODE, SELECT_BOX_DISPLAY_MODE, displayModes);
     uiFormSelectBox.setOnChange("ChangeDisplayMode");
-    setSelectedDisplayMode(uiFormSelectBox);
     addChild(uiFormSelectBox);
 
+    // TODO: init() run two time when initiation this form.
+    String remoteId = Utils.getOwnerRemoteId();
+    this.setOwnerName(remoteId);
+    String selectedDisplayMode = lastVisitStream.get(remoteId);
+    selectedDisplayMode = (selectedDisplayMode != null) ? selectedDisplayMode : DisplayMode.ALL_ACTIVITIES.name();
+
     //
-    this.setOwnerName(Utils.getOwnerRemoteId());
-    String selectedDisplayMode = this.getChild(UIFormSelectBox.class).getValue();
-    if (DisplayMode.ALL_ACTIVITIES.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
-    } else if (DisplayMode.MY_ACTIVITIES.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.MY_ACTIVITIES);
-    } else if (DisplayMode.MY_SPACE.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.MY_SPACE);
-    } else {
-      this.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
-    }
+    setSelectedDisplayMode(selectedDisplayMode);
+    
   }
   
-  private void setSelectedDisplayMode(UIFormSelectBox uiFormSelectBox) {
-    String selectedDisplayMode = Utils.getCookiesForTabSelected();
-    if (selectedDisplayMode != null) {
-      uiFormSelectBox.setValue(selectedDisplayMode);
-    }
-  }
-
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
   }
@@ -126,10 +122,21 @@ public class UIUserActivitiesDisplay extends UIForm {
 
   public void setSelectedDisplayMode(DisplayMode displayMode) {
     selectedDisplayMode = displayMode;
+    getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setValue(displayMode.name());
     try {
       init();
     } catch (Exception e) {
       LOG.error("Failed to init()");
+    }
+  }
+
+  public void setSelectedDisplayMode(String selectedDisplayMode) {
+    DisplayMode[] displayModes = DisplayMode.values();
+    for (int i = 0; i < displayModes.length; ++i) {
+      if (displayModes[i].name().equals(selectedDisplayMode)) {
+        setSelectedDisplayMode(displayModes[i]);
+        break;
+      }
     }
   }
 
@@ -210,30 +217,25 @@ public class UIUserActivitiesDisplay extends UIForm {
     @Override
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
       //
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
-      UIFormSelectBox uiFormSelectBox = uiUserActivitiesDisplay.getChild(UIFormSelectBox.class);
+      UIUserActivitiesDisplay uiUserActivities = event.getSource();
 
       //
-      String selectedDisplayMode = uiFormSelectBox.getValue();
-      Utils.setCookiesForTabSelected(selectedDisplayMode);
-      if (DisplayMode.ALL_ACTIVITIES.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
-      } else if (DisplayMode.MY_ACTIVITIES.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_ACTIVITIES);
-      } else if (DisplayMode.MY_SPACE.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_SPACE);
-      } else {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
-      }
-
-      UIActivitiesContainer uiActivitiesContainer = uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class).getChild(UIActivitiesContainer.class);
+      String selectedDisplayMode = uiUserActivities.getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).getValue();
       if (selectedDisplayMode != null) {
-        uiActivitiesContainer.storeStreamInfosCookie(uiActivitiesContainer.getOwnerName() + "_" + selectedDisplayMode,
-                              uiActivitiesContainer.getActivityList().size() > 0 ? uiActivitiesContainer.getActivityList().get(0).getUpdated().getTime() : null);
+        lastVisitStream.put(Utils.getOwnerRemoteId(), selectedDisplayMode);
+        uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
+        
+        UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
+        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+        Iterator<ExoSocialActivity> activityList = activitiesContainer.getActivityList().iterator();
+        activitiesContainer.storeStreamInfosCookie(activitiesContainer.getOwnerName() + "_" + selectedDisplayMode,
+                                                     activityList.hasNext() ? activityList.next().getUpdated().getTime() : null);
+
+          event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
       
       //
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class));
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
     }
   }
 }

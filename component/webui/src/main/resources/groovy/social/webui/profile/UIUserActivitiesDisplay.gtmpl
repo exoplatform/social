@@ -22,18 +22,25 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
-  import org.exoplatform.webui.form.UIFormSelectBox;
+  
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  String script = "var slbox = jq('select[name="+uiform.SELECT_BOX_DISPLAY_MODE+"]');" + 
+                  "slbox.find('option[value='+ slbox.val() +']').hide();";
+  jsManager.require("SHARED/jquery", "jq").addScripts(script);
+
 %>
-<div class="$uicomponent.id">
+<div class="$uiform.id ClearFix">
   <% uiform.begin() %>
   <div class="UISelectDisplayMode">
     <%
-       if (uicomponent.isActivityStreamOwner()) {
-         uicomponent.renderChild(UIFormSelectBox.class);
+       if (uiform.isActivityStreamOwner()) {
+         uiform.renderField(uiform.SELECT_BOX_DISPLAY_MODE);
        }
     %>
   </div>
-  <div class="ClearFix"></div>
   <% uiform.end() %>
-  <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+  <div class="ClearFix">
+    <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+  </div>
 </div>
