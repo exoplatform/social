@@ -171,7 +171,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
     String receiverLink = LinkProvider.getProfileLink(receiverName);
 
     if (titleId == TitleId.CONNECTION_CONFIRMED) {
-      if ((isActivityStreamOwner() && (displayMode == DisplayMode.MY_STATUS))
+      if ((isActivityStreamOwner() && (displayMode == DisplayMode.MY_ACTIVITIES))
           || Utils.getViewerRemoteId().equals(getOwnerIdentity().getRemoteId())) {
         if(isSender()) {
           return ResourceBundleUtil.
@@ -188,7 +188,7 @@ public class UIRelationshipActivity extends BaseUIActivity {
                                            new String[] { receiverLink, senderLink });
       }
     } else if (titleId == TitleId.CONNECTION_REQUESTED) {
-      if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_STATUS))) {
+      if (isActivityStreamOwner() && ((displayMode == DisplayMode.MY_ACTIVITIES))) {
         if(isSender()) {
           return ResourceBundleUtil.
                   replaceArguments(ctx.appRes("UIRelationshipActivity.msg.You_Invited_UserName_To_Connect"),

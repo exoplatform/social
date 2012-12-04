@@ -475,9 +475,9 @@ public class BaseUIActivity extends UIForm {
         return true;
       }
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_ACTIVITIES) {
           return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
+        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
           //currently displays only
           return false;
         } else {
@@ -523,9 +523,9 @@ public class BaseUIActivity extends UIForm {
       } else if (postContext == PostContext.USER) {
         UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
         if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
+          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_ACTIVITIES) {
             return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
+          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
             return false;
           } else {
             //connections
@@ -656,7 +656,7 @@ public class BaseUIActivity extends UIForm {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = uiActivity.getAncestorOfType(UIUserActivitiesDisplay.class);
       
       if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.ALL_UPDATES) {
+        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.ALL_ACTIVITIES) {
           uiUserActivitiesDisplay.init();
         } else {
           requestContext.addUIComponentToUpdateByAjax(uiActivity);

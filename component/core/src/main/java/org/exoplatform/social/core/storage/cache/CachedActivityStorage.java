@@ -720,7 +720,7 @@ public class CachedActivityStorage implements ActivityStorage {
   public List<ExoSocialActivity> getUserSpacesActivities(final Identity ownerIdentity, final int offset, final int limit) {
 
     //
-    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACE);
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES);
     ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
 
     //
@@ -745,7 +745,7 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACE);
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACES);
 
     //
     return activitiesCountCache.get(
@@ -766,7 +766,7 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACE);
+        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACES);
 
     //
     return activitiesCountCache.get(
@@ -787,7 +787,7 @@ public class CachedActivityStorage implements ActivityStorage {
                                                                 final ExoSocialActivity baseActivity, final int limit) {
 
     //
-    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACE);
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACES);
     ListActivitiesKey listKey = new ListActivitiesKey(key, 0, limit);
 
     //
@@ -812,7 +812,7 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACE);
+        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACES);
 
     //
     return activitiesCountCache.get(
@@ -833,7 +833,7 @@ public class CachedActivityStorage implements ActivityStorage {
                                                                 final ExoSocialActivity baseActivity, final int limit) {
 
     //
-    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACE);
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACES);
     ListActivitiesKey listKey = new ListActivitiesKey(key, 0, limit);
 
     //
@@ -1003,6 +1003,137 @@ public class CachedActivityStorage implements ActivityStorage {
 
     //
     return buildActivities(keys);
+  }
+
+  @Override
+  public int getNumberOfSpaceActivities(final Identity ownerIdentity) {
+    //
+    ActivityCountKey key =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACE);
+
+    //
+    return activitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getNumberOfUserSpacesActivities(ownerIdentity));
+          }
+        },
+        key)
+        .build();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getSpaceActivities(final Identity ownerIdentity, final int offset, final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACE);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getSpaceActivities(ownerIdentity, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
+  }
+
+  @Override
+  public List<ExoSocialActivity> getNewerOnSpaceActivities(final Identity ownerIdentity,
+                                                           final ExoSocialActivity baseActivity,
+                                                           final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACE);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, 0, limit);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getNewerOnSpaceActivities(ownerIdentity, baseActivity, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
+  }
+
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(final Identity ownerIdentity,
+                                               final ExoSocialActivity baseActivity) {
+    //
+    ActivityCountKey key =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.NEWER_SPACE);
+
+    //
+    return activitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getNumberOfNewerOnSpaceActivities(ownerIdentity, baseActivity));
+          }
+        },
+        key)
+        .build();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getOlderOnSpaceActivities(final Identity ownerIdentity,
+                                                            final ExoSocialActivity baseActivity,
+                                                            final int limit) {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACE);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, 0, limit);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getOlderOnSpaceActivities(ownerIdentity, baseActivity, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
+  }
+
+  @Override
+  public int getNumberOfOlderOnSpaceActivities(final Identity ownerIdentity,
+                                               final ExoSocialActivity baseActivity) {
+    //
+    ActivityCountKey key =
+        new ActivityCountKey(new IdentityKey(ownerIdentity), baseActivity.getId(), ActivityType.OLDER_SPACE);
+
+    //
+    return activitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getNumberOfOlderOnUserSpacesActivities(ownerIdentity, baseActivity));
+          }
+        },
+        key)
+        .build();
+  }
+
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(final Identity ownerIdentity, final Long sinceTime) {
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(ownerIdentity),
+                                                sinceTime,
+                                                ActivityType.NEWER_SPACE);
+
+    return activitiesCountCache.get(new ServiceContext<IntegerData>() {
+      public IntegerData execute() {
+        return new IntegerData(storage.getNumberOfNewerOnUserSpacesActivities(ownerIdentity,
+                                                                              sinceTime));
+      }
+    }, key).build();
   }
   
 }

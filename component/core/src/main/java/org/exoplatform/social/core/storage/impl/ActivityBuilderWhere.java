@@ -112,7 +112,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     return this.identities == null ? new ArrayList<Identity>() : this.identities;
   }
   
-  public static ActivityBuilderWhere ACTIVITY_FEED_BUILDER = new ActivityBuilderWhere() {
+  public static ActivityBuilderWhere ACTIVITY_SPACE_BUILDER = new ActivityBuilderWhere() {
 
     @Override
     public String make(ActivityFilter filter) {
@@ -144,7 +144,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
 
-      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {
         TimestampType type = null;
@@ -160,8 +160,6 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
               break;
             }
           }
-        } else {
-          return Strings.EMPTY;
         }
       }
       return where.toString();
@@ -200,7 +198,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
 
-      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {
         TimestampType type = null;
@@ -216,8 +214,6 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
               break;
             }
           }
-        } else {
-          return Strings.EMPTY;
         }
       }
       

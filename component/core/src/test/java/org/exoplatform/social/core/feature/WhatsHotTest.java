@@ -174,6 +174,41 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getActivityFeed(rootIdentity, 0, 15);
     int i = 0;
+    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    for (ExoSocialActivity activity : activityies) {
+      assertEquals("title " + values[i], activity.getTitle());
+      ++i;
+    }
+  }
+  
+  @MaxQueryNumber(4500)
+  public void testSpaceStreamActivityTab() throws Exception {
+    // fill 5 activities
+    for (int i = 0; i < 5; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+    }
+
+    Iterator<ExoSocialActivity> it = activityStorage.getSpaceActivities(rootIdentity, 0, 5).iterator();
+
+    // fill 10 others
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+    
+    //creates comments
+    while (it.hasNext()) {
+      ExoSocialActivity activity = it.next();
+      createComment(activity, rootIdentity, 1);
+      tearDownActivityList.add(activity);
+    }
+
+    List<ExoSocialActivity> activityies = activityStorage.getSpaceActivities(rootIdentity, 0, 15);
+    int i = 0;
     int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());

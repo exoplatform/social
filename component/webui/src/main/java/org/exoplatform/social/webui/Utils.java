@@ -18,6 +18,8 @@ package org.exoplatform.social.webui;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
@@ -36,6 +38,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.web.login.InitiateLoginServlet;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
@@ -44,6 +47,9 @@ import org.exoplatform.web.url.navigation.NodeURL;
  *
  */
 public class Utils {
+  /** . */
+  private static final String COOKIE_NAME = "exo_social_activity_stream_tab_selected";
+  
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
    *
@@ -276,4 +282,35 @@ public class Utils {
     
     return nodeURL.setResource(resource).toString(); 
   }
+  
+  /**
+   * 
+   * @param value
+   */
+  public static void setCookiesForTabSelected(String value) {
+    PortalRequestContext request = Util.getPortalRequestContext() ;
+    Cookie cookie = new Cookie(COOKIE_NAME, value);
+    cookie.setPath(request.getRequest().getContextPath());
+    cookie.setMaxAge(0);
+    request.getResponse().addCookie(cookie);
+  }
+  
+  /**
+   * 
+   * @param value
+   */
+  public static String getCookiesForTabSelected() {
+    PortalRequestContext request = Util.getPortalRequestContext() ;
+
+    Cookie[] cookies = request.getRequest().getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (COOKIE_NAME.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
+    }
+    return null;
+  }
+  
 }

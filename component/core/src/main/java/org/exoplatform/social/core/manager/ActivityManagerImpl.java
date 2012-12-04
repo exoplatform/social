@@ -80,12 +80,6 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public void saveActivityNoReturn(Identity streamOwner, ExoSocialActivity newActivity) {
-    long currentTime = System.currentTimeMillis();
-    newActivity.setUpdated(new Date(currentTime));
-    //new activity
-    if (newActivity.getId() == null) {
-      newActivity.setPostedTime(currentTime);
-    }
     activityStorage.saveActivity(streamOwner, newActivity);
   }
 
@@ -228,6 +222,13 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public RealtimeListAccess<ExoSocialActivity> getActivitiesOfUserSpacesWithListAccess(Identity existingIdentity) {
     return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.USER_SPACE_ACTIVITIES, existingIdentity);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public RealtimeListAccess<ExoSocialActivity> getActivitiesOfSpaceWithListAccess(Identity existingSpaceIdentity) {
+    return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.SPACE_ACTIVITIES, existingSpaceIdentity);
   }
 
   /**

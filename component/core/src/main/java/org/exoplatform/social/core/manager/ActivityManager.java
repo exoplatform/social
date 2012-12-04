@@ -242,6 +242,16 @@ public interface ActivityManager {
    * @return the real time list access for activities
    * @since 1.2.0-GA
    */
+  RealtimeListAccess<ExoSocialActivity> getActivitiesOfSpaceWithListAccess(Identity existingSpaceIdentity);
+  
+  /**
+   * Gets the activities posted on all space activity streams in which the provided identity joins via {@link
+   * RealtimeListAccess}.
+   *
+   * @param existingIdentity the existing identity
+   * @return the real time list access for activities
+   * @since 4.0.0-alph1
+   */
   RealtimeListAccess<ExoSocialActivity> getActivitiesOfUserSpacesWithListAccess(Identity existingIdentity);
 
   /**

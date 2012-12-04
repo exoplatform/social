@@ -88,12 +88,12 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   
   public void testFeedNewerOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_NEWER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_FEED_BUILDER;
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -101,18 +101,17 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
     //Order
     assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
-    assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
   }
   
   public void testFeedWithMentions() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_FEED_BUILDER;
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
 
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -128,12 +127,12 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testFeedOlderOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_FEED_BUILDER;
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -141,13 +140,12 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
     //Order
     assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
-    assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
   }
   
   public void testUserNewerOwner() throws Exception {
@@ -156,7 +154,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
   
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -177,7 +175,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -192,13 +190,78 @@ public class ActiviyBuilderWhereTest extends TestCase {
     assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
   }
   
+  public void testUserSpaceOwner() throws Exception {
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+
+    Identity spaceIdentity = new Identity("space_new1");
+    spaceIdentity.setRemoteId("space_new1");
+    
+    //
+    List<Identity> identities = new ArrayList<Identity>(2);
+    identities.add(spaceIdentity);
+    where.owners(identities);
+    
+    String expectedWhere = "(soc:identity = 'space_new1' ) AND soc:isComment = 'false' ";
+    String actualWhere =  where.build(filter);
+    assertEquals(expectedWhere, actualWhere);
+    
+    //Order
+    assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
+    assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
+  }
+  
+  public void testUserSpaceNewerOwner() throws Exception {
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+
+    long accessPoint = Calendar.getInstance().getTime().getTime();
+    
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+  
+    //
+    List<Identity> identities = new ArrayList<Identity>(2);
+    identities.add(demoIdentity);
+    where.owners(identities);
+    
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String actualWhere =  where.build(filter);
+    assertEquals(expectedWhere, actualWhere);
+    
+    //Order
+    assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
+    assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
+  }
+  
+  public void testUserSpaceOlderOwner() throws Exception {
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+
+    long accessPoint = Calendar.getInstance().getTime().getTime();
+    
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    
+    //
+    List<Identity> identities = new ArrayList<Identity>(2);
+    identities.add(demoIdentity);
+    where.owners(identities);
+    
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String actualWhere =  where.build(filter);
+    assertEquals(expectedWhere, actualWhere);
+    
+    //Order
+    assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.LAST_UPDATED_ORDERBY).getDirection());
+    assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
+  }
+  
   public void testConnectionNewerOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
     ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -220,7 +283,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);

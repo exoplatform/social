@@ -17,9 +17,7 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.Validate;
@@ -64,23 +62,20 @@ public class UIUserActivitiesDisplay extends UIForm {
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
   private Object locker = new Object();
-
+  
   public enum DisplayMode {
     OWNER_STATUS,
-    ALL_UPDATES,
-    NETWORK_UPDATES,
-    SPACE_UPDATES,
-    MY_STATUS
+    ALL_ACTIVITIES,
+    CONNECTIONS,
+    MY_SPACE,
+    MY_ACTIVITIES
   }
 
-  private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_UPDATES;
+  private DisplayMode                selectedDisplayMode   = DisplayMode.ALL_ACTIVITIES;
   private boolean                    isActivityStreamOwner = false;
   private UIActivitiesLoader         activitiesLoader;
   private String                     ownerName;
   private String                     viewerName;
-
-  /** Store user's last visit stream. */
-  private static Map<String, String> lastVisitStream = new HashMap<String, String>();
 
   /**
    * Default constructor.
@@ -91,10 +86,10 @@ public class UIUserActivitiesDisplay extends UIForm {
     //
     ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.NETWORK_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.SPACE_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_STATUS.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_ACTIVITIES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.CONNECTIONS.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.MY_SPACE.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_ACTIVITIES.toString()));
     UIFormSelectBox uiFormSelectBox = new UIFormSelectBox("SelectBoxDisplayModes", null, displayModes);
     uiFormSelectBox.setOnChange("ChangeDisplayMode");
     setSelectedDisplayMode(uiFormSelectBox);
@@ -103,14 +98,21 @@ public class UIUserActivitiesDisplay extends UIForm {
     //
     this.setOwnerName(Utils.getOwnerRemoteId());
     String selectedDisplayMode = this.getChild(UIFormSelectBox.class).getValue();
-    if (DisplayMode.ALL_UPDATES.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
-    } else if (DisplayMode.MY_STATUS.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.MY_STATUS);
-    } else if (DisplayMode.SPACE_UPDATES.toString().equals(selectedDisplayMode)) {
-      this.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
+    if (DisplayMode.ALL_ACTIVITIES.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
+    } else if (DisplayMode.MY_ACTIVITIES.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.MY_ACTIVITIES);
+    } else if (DisplayMode.MY_SPACE.toString().equals(selectedDisplayMode)) {
+      this.setSelectedDisplayMode(DisplayMode.MY_SPACE);
     } else {
-      this.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
+      this.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
+    }
+  }
+  
+  private void setSelectedDisplayMode(UIFormSelectBox uiFormSelectBox) {
+    String selectedDisplayMode = Utils.getCookiesForTabSelected();
+    if (selectedDisplayMode != null) {
+      uiFormSelectBox.setValue(selectedDisplayMode);
     }
   }
 
@@ -178,7 +180,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     ListAccess<ExoSocialActivity> activitiesListAccess = null;
     
     switch (this.selectedDisplayMode) {
-    case MY_STATUS :
+    case MY_ACTIVITIES :
      activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
      activitiesLoader.setActivityListAccess(activitiesListAccess);
      break;
@@ -186,11 +188,11 @@ public class UIUserActivitiesDisplay extends UIForm {
       activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
-    case NETWORK_UPDATES :
+    case CONNECTIONS :
       activitiesListAccess = activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
-    case SPACE_UPDATES :
+    case MY_SPACE :
       activitiesListAccess = activityManager.getActivitiesOfUserSpacesWithListAccess(ownerIdentity);
       activitiesLoader.setActivityListAccess(activitiesListAccess);
       break;
@@ -213,15 +215,15 @@ public class UIUserActivitiesDisplay extends UIForm {
 
       //
       String selectedDisplayMode = uiFormSelectBox.getValue();
-      lastVisitStream.put(Utils.getOwnerRemoteId(), selectedDisplayMode);
-      if (DisplayMode.ALL_UPDATES.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
-      } else if (DisplayMode.MY_STATUS.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
-      } else if (DisplayMode.SPACE_UPDATES.toString().equals(selectedDisplayMode)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.SPACE_UPDATES);
+      Utils.setCookiesForTabSelected(selectedDisplayMode);
+      if (DisplayMode.ALL_ACTIVITIES.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
+      } else if (DisplayMode.MY_ACTIVITIES.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_ACTIVITIES);
+      } else if (DisplayMode.MY_SPACE.toString().equals(selectedDisplayMode)) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_SPACE);
       } else {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
       }
 
       UIActivitiesContainer uiActivitiesContainer = uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class).getChild(UIActivitiesContainer.class);
@@ -232,13 +234,6 @@ public class UIUserActivitiesDisplay extends UIForm {
       
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivitiesDisplay.getChild(UIActivitiesLoader.class));
-    }
-  }
-
-  private void setSelectedDisplayMode(UIFormSelectBox uiFormSelectBox) {
-    String selectedDisplayMode = lastVisitStream.get(Utils.getOwnerRemoteId());
-    if (selectedDisplayMode != null) {
-      uiFormSelectBox.setValue(selectedDisplayMode);
     }
   }
 }

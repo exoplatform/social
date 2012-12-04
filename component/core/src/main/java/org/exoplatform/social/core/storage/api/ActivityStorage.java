@@ -528,4 +528,25 @@ public interface ActivityStorage {
    */
   public List<ExoSocialActivity> getActivitiesOfIdentities(ActivityBuilderWhere where, ActivityFilter filter,
                                                            long offset, long limit) throws ActivityStorageException;
+
+  public int getNumberOfSpaceActivities(Identity spaceIdentity);
+
+  public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit);
+
+  public List<ExoSocialActivity> getNewerOnSpaceActivities(Identity spaceIdentity,
+                                                           ExoSocialActivity baseActivity,
+                                                           int limit);
+
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity);
+
+  public List<ExoSocialActivity> getOlderOnSpaceActivities(Identity spaceIdentity,
+                                                            ExoSocialActivity baseActivity,
+                                                            int limit);
+
+  public int getNumberOfOlderOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity);
+
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity, Long sinceTime);
+  
 }
