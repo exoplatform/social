@@ -54,10 +54,6 @@ def allSpacesURL = Utils.getURI("all-spaces");
 def mySpaceURL = Utils.getURI("spaces");
 def invitationsReceivedURL = Utils.getURI("invitationSpace");
 def requestPendingURL = Utils.getURI("pendingSpace");
-def allSpacesDisplayModeStyle = "NotSelectedTab";
-def mySpaceDisplayModeStyle = "NotSelectedTab";
-def receivedInvitationDisplayModeStyle = "NotSelectedTab";
-def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
 def restContextName = uicomponent.getRestContextName();
 def currentUserName = uicomponent.getCurrentUserName();
@@ -78,15 +74,6 @@ def params = """ {
 
 jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.UISpaceSearch.init($params);");
 
-if (selectedNode.equals("all-spaces")) {
-  allSpacesDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("spaces")) {
-  mySpaceDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("invitationSpace")) {
-  receivedInvitationDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("pendingSpace")) {
-  sentInvitationDisplayModeStyle = "SelectedTab";
-}
 %>
 <div class="UISpaceSearch">
 <% uiform.begin() %>
@@ -134,14 +121,11 @@ if (selectedNode.equals("all-spaces")) {
         <% uiform.end() %>
         <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
         
-        <ul class="MenuSpace ClearFix">
-	        <li class="FL"><a href="$allSpacesURL" class="$allSpacesDisplayModeStyle">$labelAllSpaces</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$mySpaceURL" class="$mySpaceDisplayModeStyle">$labelMySpace</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$invitationsReceivedURL" class="$receivedInvitationDisplayModeStyle">$labelInvitationsReceived</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$requestPendingURL" class="$sentInvitationDisplayModeStyle">$labelRequestsPending</a></li>
+        <ul class='nav nav-tabs'>
+	        <li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
+	        <li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
+	        <li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
+	        <li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
         </ul>
         
      <div class="BoxSpaceList">
