@@ -75,22 +75,7 @@
     def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
     def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
     def selectedNode = uicomponent.getSelectedNode();
- 
-    def allPeopleDisplayModeStyle = "NotSelectedTab";
-    def networkDisplayModeStyle = "NotSelectedTab";
-    def receivedInvitationsDisplayModeStyle = "NotSelectedTab";
-    def pendingRequestsDisplayModeStyle = "NotSelectedTab";
-    
-    if (selectedNode.equals("all-people")) {
-      allPeopleDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("network")) {
-      networkDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("receivedInvitations")) {
-      receivedInvitationsDisplayModeStyle = "SelectedTab";
-    } else if (selectedNode.equals("pendingRequests")) {
-      pendingRequestsDisplayModeStyle = "SelectedTab";
-    }
- 
+
     def searchAction = uicomponent.event('Search');
     def peopleFoundLabel = uicomponent.getPeopleFoundLabel();
 	  
@@ -161,14 +146,11 @@
     </ul>
     
      <% if (uicomponent.isHasPeopleTab()) {%>
-     <ul class="MenuSpace ClearFix">
-		  <li class="FL"><a href="$allPeopleURL" class="$allPeopleDisplayModeStyle">$labelEveryone</a></li>
-		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$networkURL" class="$networkDisplayModeStyle">$myConnectionsLabel</a></li>
-		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$receivedInvitationsURL" class="$receivedInvitationsDisplayModeStyle">$labelRequestsReceived</a></li>
-		  <li class="Line FL">&nbsp;</li>
-		  <li class="FL"><a href="$sentInvitationURL" class="$pendingRequestsDisplayModeStyle">$labelRequestsSent</a></li>
+     <ul class="nav nav-tabs">
+		  <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
+		  <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
+		  <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
+		  <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
      </ul>
     <% } %>
  
