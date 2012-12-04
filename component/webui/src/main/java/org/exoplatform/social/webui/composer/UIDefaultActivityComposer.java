@@ -85,9 +85,10 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.NETWORK_UPDATES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_UPDATES);
+      } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.ALL_UPDATES) {
+        uiUserActivitiesDisplay.init();
       }
     }
   }
