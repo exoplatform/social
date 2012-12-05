@@ -181,6 +181,8 @@ public class UISpaceSetting extends UIContainer {
         }
       }
       uiTabPane.setSelectedTab(renderTab);
+      //Not a good solution but let's accept it as temporary solution.
+      context.addUIComponentToUpdateByAjax(uiTabPane);
     }
   }
 }
