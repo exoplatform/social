@@ -125,6 +125,10 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -178,6 +182,10 @@
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
           </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <!-- To be replaced by an import of kernel parent POM -->
@@ -213,6 +221,10 @@
             <artifactId>log4j</artifactId>
             <groupId>log4j</groupId>
           </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -231,6 +243,10 @@
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -254,6 +270,10 @@
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -297,6 +317,10 @@
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
           </exclusion>
+          <exclusion>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
       <dependency>
@@ -308,6 +332,10 @@
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -351,6 +379,12 @@
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.web.server</artifactId>
         <version>${org.exoplatform.portal.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
@@ -360,6 +394,10 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -391,6 +429,14 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -546,6 +592,12 @@
         <groupId>org.exoplatform.ws</groupId>
         <artifactId>exo.ws.rest.core</artifactId>
         <version>${org.exoplatform.ws.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.ws</groupId>
@@ -568,6 +620,12 @@
         <groupId>org.gatein.pc</groupId>
         <artifactId>pc-api</artifactId>
         <version>${org.gatein.pc.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- To be replaced by an import of GateIn Shinding parent POM -->
       <dependency>
@@ -631,6 +689,17 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.juzu</groupId>
+        <artifactId>juzu-core</artifactId>
+        <version>${org.juzu.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
