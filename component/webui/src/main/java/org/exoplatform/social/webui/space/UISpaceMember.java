@@ -22,12 +22,16 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.UISocialGroupSelector;
+import org.exoplatform.social.webui.UIUsersInGroupSelector;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
@@ -74,6 +78,7 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
      events = {
        @EventConfig(listeners = UISpaceMember.InviteActionListener.class),
        @EventConfig(listeners = UISpaceMember.SearchUserActionListener.class, phase=Phase.DECODE),
+       @EventConfig(listeners = UISpaceMember.SearchGroupActionListener.class, phase=Phase.DECODE),
        @EventConfig(listeners = UISpaceMember.RevokeInvitedUserActionListener.class, phase=Phase.DECODE),
        @EventConfig(listeners = UISpaceMember.DeclineUserActionListener.class, phase=Phase.DECODE),
        @EventConfig(listeners = UISpaceMember.ValidateUserActionListener.class, phase=Phase.DECODE),
@@ -89,7 +94,8 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
     events = {
       @EventConfig(listeners = UIPopupWindow.CloseActionListener.class, name = "ClosePopup")  ,
       @EventConfig(listeners = UISpaceMember.CloseActionListener.class, name = "Close", phase = Phase.DECODE)  ,
-      @EventConfig(listeners = UISpaceMember.AddActionListener.class, name = "Add", phase = Phase.DECODE)
+      @EventConfig(listeners = UISpaceMember.AddActionListener.class, name = "Add", phase = Phase.DECODE),
+      @EventConfig(listeners = UISpaceMember.SelectGroupActionListener.class, phase = Phase.DECODE)
     }
  )
 })
@@ -379,7 +385,8 @@ public class UISpaceMember extends UIForm {
    * @return string of user names input
    */
   public String getUsersName() {
-    return getUIStringInput(USER).getValue();
+    String value = getUIStringInput(USER).getValue();
+    return value != null ? value : "";
   }
 
   /**
@@ -488,6 +495,25 @@ public class UISpaceMember extends UIForm {
       userSelector.setShowSearchGroup(false);
       searchUserPopup.setUIComponent(userSelector);
       searchUserPopup.setShow(true);
+    }
+  }
+
+  /**
+   * Triggers this action when user clicks on "search users" button.
+   *
+   * @author hoatle
+   */
+  static public class SearchGroupActionListener extends EventListener<UISpaceMember> {
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      UIPopupWindow searchGroupPopup = uiSpaceMember.getChild(UIPopupWindow.class);
+      UIUsersInGroupSelector groupSelector = uiSpaceMember.createUIComponent(UIUsersInGroupSelector.class, null, null);
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      groupSelector.setCurrentGroupId(space.getGroupId());
+      uiSpaceMember.setNewSearch(true);
+      searchGroupPopup.setUIComponent(groupSelector);
+      searchGroupPopup.setShow(true);
     }
   }
 
@@ -678,6 +704,53 @@ public class UISpaceMember extends UIForm {
     }
   }
 
+  /**
+   * Triggers this action when user click on "add" button.
+   *
+   * @author hoatle
+   */
+  static public class SelectGroupActionListener extends  EventListener<UIUsersInGroupSelector> {
+    public void execute(Event<UIUsersInGroupSelector> event) throws Exception {
+      String selectedGroupId = event.getRequestContext().getRequestParameter(OBJECTID);
+      UIUsersInGroupSelector uiForm = event.getSource();
+      UISpaceMember uiSpaceMember = uiForm.getAncestorOfType(UISpaceMember.class);
+      ExoContainer container = ExoContainerContext.getCurrentContainer();
+      OrganizationService orgService = (OrganizationService) container.getComponentInstanceOfType(OrganizationService.class);
+      ListAccess<User> groupMembersAccess = orgService.getUserHandler().findUsersByGroupId(selectedGroupId);
+      
+      String userNamesInputted = uiSpaceMember.getUsersName();
+      
+      if (groupMembersAccess != null && groupMembersAccess.getSize() > 0) {
+        User[] users = groupMembersAccess.load(0, groupMembersAccess.getSize());
+  
+        SpaceService spaceService = uiSpaceMember.getSpaceService();
+        Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+        
+        for (User user : users) {
+          String userId = user.getUserName();
+          String[] invitedUsers = space.getInvitedUsers();
+          String[] pendingUsers = space.getPendingUsers();
+          String[] members = space.getMembers();
+          if (!ArrayUtils.contains(invitedUsers, userId) && !ArrayUtils.contains(pendingUsers, userId) 
+               && !ArrayUtils.contains(members, userId)) {
+            if ((userNamesInputted == null) || (userNamesInputted.length() == 0)) {
+              userNamesInputted = userId;
+            } else {
+              userNamesInputted = userNamesInputted.trim() + ", " + userId;
+            }
+          }
+        }
+      }
+      
+      uiSpaceMember.setUsersName(userNamesInputted);
+      UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
+      uiPopup.setUIComponent(null);
+      uiPopup.setShow(false);
+      uiSpaceMember.validateInvitedUser();
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
+    }
+  }
+  
   /**
    * Triggers this action when user clicks on popup's close button.
    *

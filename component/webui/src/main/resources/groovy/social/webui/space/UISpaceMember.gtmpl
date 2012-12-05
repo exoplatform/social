@@ -27,6 +27,7 @@
   
   def uicomponentId = uicomponent.id;
   def labelSearchUserAction = _ctx.appRes("${uicomponentId}.label.SearchUserAction");
+  def labelSearchGroupAction = _ctx.appRes("${uicomponentId}.label.SearchGroupAction");
   def labelInviteUsers = _ctx.appRes("${uicomponentId}.label.InviteUsers");
   def labelInviteAction = _ctx.appRes("${uicomponentId}.label.InviteAction");
   def labelValidateInvitation = _ctx.appRes("${uicomponentId}.label.ValidateInvitation");
@@ -65,10 +66,12 @@
 <div class="$uicomponent.id">
 <% uiform.begin() %>
   <% def searchUserAction = uicomponent.event("SearchUser") + "; return false;"; %>
+  <% def searchGroupAction = uicomponent.event("SearchGroup") + "; return false;"; %>
   <% def inviteAction = uicomponent.event("Invite") + "; return false;"%>
 		<span class="AddInvite"><label for="user">$labelInviteUsers</label> :<% uiform.renderField("user") %></span>
-		<a href="#" class="SearchAddMemberIcon SearchInviteButton" onclick="$inviteAction" title="$labelInviteAction">&nbsp;</a>
 		<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction" title="$labelSearchUserAction">&nbsp;</a>
+	  <a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchGroupAction" title="$labelSearchGroupAction">&nbsp;</a>
+		<button class="btn" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
   <%
     if ((invitedUserNames != null) && uicomponent.isHasErr()) {
   %>
