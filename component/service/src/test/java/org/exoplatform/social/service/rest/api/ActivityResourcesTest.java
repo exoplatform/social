@@ -1044,4 +1044,5 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     }
     tearDownRelationshipList.add(relationshipManager.get(senderIdentity, receiverIdentity));
   }
+
 }

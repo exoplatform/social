@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.test;
 
+import org.exoplatform.social.core.feature.ActiviyBuilderWhereTest;
 import org.exoplatform.social.core.identity.model.GlobalIdTest;
 import org.exoplatform.social.core.identity.model.IdentityTest;
 import org.exoplatform.social.core.image.ImageUtilsTest;
@@ -49,7 +50,8 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceUtilsTest.class,
   ExpressionConstructorTestCase.class,
   WhereExpressionTypesafetyTestCase.class,
-  WhereExpressionValuesTestCase.class
+  WhereExpressionValuesTestCase.class,
+  ActiviyBuilderWhereTest.class
   })
 public class NoContainerTestSuite {
   

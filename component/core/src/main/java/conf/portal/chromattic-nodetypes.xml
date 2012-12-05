@@ -263,6 +263,9 @@
           <valueConstraint>soc:identitydefinition</valueConstraint>
         </valueConstraints>
       </propertyDefinition>
+      <propertyDefinition name="soc:lastUpdated" requiredType="Long" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
     </propertyDefinitions>
     <childNodeDefinitions>
       <childNodeDefinition name="*" defaultPrimaryType="soc:activity" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">

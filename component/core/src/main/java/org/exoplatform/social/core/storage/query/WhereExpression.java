@@ -26,60 +26,76 @@ public class WhereExpression {
   private static final String QUOTED = "'%s'";
   private static final String DIRECT = "%s";
 
-  private final StringBuilder builder;
+  
+  ThreadLocal<StringBuilder> sbLocal = new ThreadLocal<StringBuilder>();
 
   private int openGroup = 0;
 
   public WhereExpression() {
-    builder = new StringBuilder();
+    getStringBuilder();
+  }
+  
+  public final StringBuilder getStringBuilder() {
+    if (sbLocal.get() == null) {
+      sbLocal.set(new StringBuilder());
+    }
+    
+    return sbLocal.get();
+  }
+  
+  public final void destroy() {
+    if (sbLocal.get() != null) {
+      sbLocal.set(null);
+    }
+    
   }
 
   public <T> WhereExpression equals(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s = %s ", property.getName(), espace(property, value)));
+    getStringBuilder().append(String.format("%s = %s ", property.getName(), espace(property, value)));
     return this;
   }
 
   public <T> WhereExpression lesser(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s < %s ", property.getName(), value));
+    getStringBuilder().append(String.format("%s < %s ", property.getName(), value));
     return this;
   }
 
   public <T> WhereExpression lessEq(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s <= %s ", property.getName(), value));
+    getStringBuilder().append(String.format("%s <= %s ", property.getName(), value));
     return this;
   }
 
   public <T> WhereExpression greater(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s > %s ", property.getName(), espace(property, value)));
+    getStringBuilder().append(String.format("%s > %s ", property.getName(), espace(property, value)));
     return this;
   }
 
   public <T> WhereExpression greaterEq(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s >= '%s' ", property.getName(), value));
+    getStringBuilder().append(String.format("%s >= '%s' ", property.getName(), value));
     return this;
   }
 
   public <T> WhereExpression like(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 
-    builder.append(String.format("%s LIKE %s ", property.getName(), espace(property, value)));
+    getStringBuilder().append(String.format("%s LIKE %s ", property.getName(), espace(property, value)));
     return this;
   }
 
   public <T> WhereExpression like(CallExpression<T> call, T value) {
     checkParam(call.getProperty(), value);
 
-    builder.append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(),
+    getStringBuilder().append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(),
                                  value)));
     return this;
   }
@@ -88,18 +104,18 @@ public class WhereExpression {
 
     checkParam(property, value);
 
-    builder.append(String.format("CONTAINS (%s, '%s') ", property.getName(), value));
+    getStringBuilder().append(String.format("CONTAINS (%s, '%s') ", property.getName(), value));
     return this;
   }
 
   public WhereExpression startGroup() {
-    builder.append("(");
+    getStringBuilder().append("(");
     ++openGroup;
     return this;
   }
 
   public WhereExpression endGroup() {
-    builder.append(") ");
+    getStringBuilder().append(") ");
     --openGroup;
     return this;
   }
@@ -112,22 +128,22 @@ public class WhereExpression {
   }
 
   public WhereExpression not() {
-    builder.append("NOT ");
+    getStringBuilder().append("NOT ");
     return this;
   }
 
   public WhereExpression or() {
-    builder.append("OR ");
+    getStringBuilder().append("OR ");
     return this;
   }
 
   public WhereExpression and() {
-    builder.append("AND ");
+    getStringBuilder().append("AND ");
     return this;
   }
 
   public String toString() {
-    return builder.toString();
+    return getStringBuilder().toString();
   }
 
   public <T> CallExpression callFunction(QueryFunction function, PropertyLiteralExpression<T> property) {

@@ -178,6 +178,12 @@ public abstract class ActivityEntity implements NamedEntity {
   public abstract void setPostedTime(Long postedTime);
   public static final PropertyLiteralExpression<Long> postedTime =
       new PropertyLiteralExpression<Long>(Long.class, "soc:postedTime");
+  
+  @Property(name = "soc:lastUpdated")
+  public abstract Long getLastUpdated();
+  public abstract void setLastUpdated(Long lastUpdated);
+  public static final PropertyLiteralExpression<Long> lastUpdated =
+      new PropertyLiteralExpression<Long>(Long.class, "soc:lastUpdated");
 
   /**
    * The activity parameters.
