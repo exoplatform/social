@@ -68,8 +68,6 @@
     <org.gatein.wci.version>2.1.0-GA</org.gatein.wci.version>
     <!-- Juzu version is required to create the assembly -->
     <org.juzu.version>0.5.1</org.juzu.version>
-    <quartz.version>1.5.2</quartz.version>
-    <org.slf4j.version>1.5.8</org.slf4j.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -702,22 +700,6 @@
             <artifactId>servlet-api</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>quartz</groupId>
-        <artifactId>quartz</artifactId>
-        <version>${quartz.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>${org.slf4j.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
