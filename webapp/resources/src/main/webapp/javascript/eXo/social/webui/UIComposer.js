@@ -20,73 +20,35 @@
  *
  */
 
+(function(eXo) {
+  var portal = eXo.env.portal
+  eXo.social = eXo.social || {};
+  eXo.social.portal = {
+    rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
+    portalName : (portal.portalName) ? portal.portalName : 'classic',
+    context : (portal.context) ? portal.context : '/socialdemo',
+    accessMode : (portal.accessMode) ? portal.accessMode : 'public',
+    userName : (portal.userName) ? portal.userName : ''
+  };
+  eXo.social.I18n = eXo.social.I18n || {};
+  eXo.social.I18n.mentions = eXo.social.I18n.mentions || {};
+})(window.eXo);
+
 var UIComposer = {
+  onLoadI18n : function(i18n) {
+    window.eXo.social.I18n.mentions = $.extend(true, {}, window.eXo.social.I18n.mentions, i18n);
+  },
   onLoad: function(params) {
     UIComposer.configure(params);
     UIComposer.init();
   },
-  handleShareButtonState: function() {
-    if (UIComposer.minCharactersRequired !== 0) {
-      //TODO hoatle handle backspace problem
-      if (UIComposer.composer.val().length >= UIComposer.minCharactersRequired) {
-        UIComposer.shareButton.className = 'ShareButtonDisable';
-        if($("#ComposerContainer").length == 0){
-          UIComposer.shareButton.removeAttr("disabled");
-          UIComposer.shareButton.attr("class",'ShareButton');
-        }
-      } else {
-        UIComposer.shareButton.css(background, '');
-        UIComposer.shareButton.attr('class','ShareButton');
-      }
-    } else {
-      if($("ComposerContainer").length == 0){
-        UIComposer.shareButton.removeAttr("disabled");
-        UIComposer.shareButton.attr("class",'ShareButton');
-      }
-    }
-
-    if (UIComposer.maxCharactersAllowed !== 0) {
-      if (UIComposer.composer.val().length >= UIComposer.maxCharactersAllowed) {
-        //substitue it
-        //TODO hoatle have a countdown displayed on the form
-        UIComposer.composer.val( UIComposer.composer.val().substring(0, UIComposer.maxCharactersAllowed));
-      }
-    }
-  },
   configure: function(params) {
-    UIComposer.composerId = 'composerDisplay';
-    UIComposer.defaultInput = params.defaultInput || "";
-    UIComposer.minCharactersRequired = params.minCharactersRequired || 0;
-    UIComposer.maxCharactersAllowed = params.maxCharactersAllowed || 0;
-    UIComposer.focusColor = params.focusColor || '#000000';
-    UIComposer.blurColor = params.blurColor || '#777777';
-    UIComposer.focusCallback = params.focusCallback;
-    UIComposer.blurCallback = params.blurCallback;
-    UIComposer.keypressCallback = params.keypressCallback;
-    UIComposer.postMessageCallback = params.postMessageCallback;
+    UIComposer.composerId = params.composerId;
+    UIComposer.textareaId = params.textareaId;
     UIComposer.userTyped = false;
-    ;(function($, document, window){
-   var portal = window.eXo.env.portal
-
-   window.eXo.social = window.eXo.social || {};
-   window.eXo.social.portal = {
-     rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
-     portalName : (portal.portalName) ? portal.portalName : 'classic',
-     context : (portal.context) ? portal.context : '/socialdemo',
-     accessMode: (portal.accessMode) ? portal.accessMode : 'public',
-     userName : (portal.userName) ? portal.userName : ''
-   };
-})(jQuery, document, window);
   },
   init: function() {
     UIComposer.composer = $('#' + UIComposer.composerId);
-    UIComposer.shareButton = $('#ShareButton');
-    if (!(UIComposer.composer && UIComposer.shareButton)) {
-      alert('error: can not find composer or shareButton!');
-    }
-
-    UIComposer.shareButton.attr('class','ShareButtonDisable');
-    UIComposer.shareButton.attr('disabled',"disabled");
 
     $(document).ready(function() {
       var actionLink = $('#actionLink');
@@ -101,8 +63,9 @@ var UIComposer = {
         }
       }
     });
+
     //
-    $('textarea#composerInput').exoMentions({
+    $('textarea#'+UIComposer.textareaId).exoMentions({
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
@@ -118,41 +81,22 @@ var UIComposer = {
           maxHeight : '38px',
           minHeight : '24px'
         },
-        messages : {
-          foundNoMatch : 'Found no matching users for',
-          helpSearch: 'Type to start searching for users.'
-        }
+        messages : window.eXo.social.I18n.mentions
       });
   },
   post: function() {
-    //UIComposer.composer.val(UIComposer.defaultInput);
     UIComposer.isReady = false;
     UIComposer.currentValue = "";
-    UIComposer.init();
+   // UIComposer.init();
   },
   getValue: function() {
     return (UIComposer.currentValue) ? UIComposer.currentValue : '';
   },
   setCurrentValue: function() {
-    var uiInputText = $("#" + UIComposer.composerId);
+    var uiInputText =$('textarea#'+UIComposer.textareaId);
     UIComposer.currentValue = uiInputText.val();
   },
-  handleShareButton: function(isReadyForPostingActivity) {
-    UIComposer.isReady = isReadyForPostingActivity;
-    var shareButton = $("#ShareButton");
-    if ( isReadyForPostingActivity ) {
-      shareButton.removeAttr("disabled");
-      shareButton.attr("class",'ShareButton');
-    } else {
-      shareButton.attr("disabled","disabled");
-      shareButton.attr("class",'ShareButtonDisable');
-    }
-    
-    if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
-      UIComposer.shareButton.removeAttr("disabled");
-      UIComposer.shareButton.attr("class",'ShareButton');
-    }
-  },
+ 
   showLink : function() {
   	var container = $('#ComposerContainer')
   	var link = container.find('.LinkExtensionContainer');

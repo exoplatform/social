@@ -33,37 +33,21 @@
 
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
+  uicomponent.changeTitleTextAreInput();
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("UIComposer.label.Write_Something");
-  def addLabel = _ctx.appRes("UIComposer.label.Add");
-  def shareLabel = _ctx.appRes("UIComposer.label.Share");
-  def blastInput = "BlastInputSpace";
-  def shareStatusLabel = _ctx.appRes("UIComposer.label.ShareStatus");
 
-  if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("UIComposer.label.What_Are_You_Working_On");
-    blastInput = "BlastInputPeople";
-  }
-
-  def params = """
-    {
-      composerId: '${uicomponent.COMPOSER_TEXT_AREA_INPUT}',
-      defaultInput: '${defaultInput}',
-      focusColor: null,
-      blurColor: null,
-      minHeight: null,
-      maxHeight: null,
-      padding: '11px 0 11px 8px',
-      focusHeight: null,
-      focusCallback: null,
-      blurCallback: null,
-      keypressCallback: null,
-      postMessageCallback: null
-    }
-  """
-
-  jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.onLoad($params);");
+  String addLabel = _ctx.appRes("UIComposer.label.Add");
+  String shareLabel = _ctx.appRes("UIComposer.label.Share");
+  String blastInput = "BlastInputSpace";
+  String shareStatusLabel = _ctx.appRes("UIComposer.label.ShareStatus");
+  String foundNoMatch = _ctx.appRes("Mentions.msg.foundNoMatch");
+  foundNoMatch = foundNoMatch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+  String helpSearch = _ctx.appRes("Mentions.msg.helpSearch");
+  helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+   
+  jsManager.require("SHARED/social-ui-activity-composer", "composer")
+           .addScripts("UIComposer.onLoadI18n({foundNoMatch: \"$foundNoMatch\", helpSearch: \"$helpSearch\"}); composer.UIComposer.onLoad({composerId:'$uicomponent.id', textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}'});");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
@@ -100,7 +84,6 @@
 
     <%
       def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
-      def isReady = currentActivityComposer.isReadyForPostingActivity();
 
       if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
     %>
@@ -114,12 +97,7 @@
     <%
       }
     %>
-      <%
-        def isReadyForPostingActivity = currentActivityComposer.isReadyForPostingActivity();
-        jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
-      %>
-          
-      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()" value="$shareLabel"></input>
+      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>;" value="$shareLabel"></input>
     </div>
   </div>
   <% uiform.end()%>
