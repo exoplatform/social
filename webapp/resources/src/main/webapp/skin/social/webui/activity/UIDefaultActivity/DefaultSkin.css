@@ -104,7 +104,7 @@
 
 .UIActivity .NormalBox .CommentBox .CommentButton {
 	border-radius: 3px;
-	background: #6C6C6C !important;
+	background: #6C6C6C;
 	border: 1px solid #7B7B7B;
 	color: #FFFFFF;
 	cursor: pointer;
@@ -113,6 +113,12 @@
 	font-weight: bold;
 	margin: 5px 0px 0px 0px;
 	padding: 3px 15px;
+}
+
+.UIActivity .NormalBox .CommentBox .DisableButton {
+	border: 1px solid #E7E7E7;
+	background: #E7E7E7;
+	cursor: auto;
 }
 
 .UIActivity .CommentBlockBound {

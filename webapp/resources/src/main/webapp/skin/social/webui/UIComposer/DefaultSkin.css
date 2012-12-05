@@ -78,17 +78,10 @@
 	color: #fff;
 }
 
-.UIComposer .BlastContainer .BlastShare .ShareButtonDisable {
+.UIComposer .BlastContainer .BlastShare .DisableButton {
 	border: 1px solid #E7E7E7;
-	border-radius: 3px;
 	background: #E7E7E7;
-	padding: 3px 15px;
-	float: right;
-	cursor: pointer;
-	margin-right: 0px;
-	font-size: 12px;
-	font-weight: bold;
-	color: #fff;
+	cursor: auto;
 }
 
 .UIComposer .BlastContainer .LinkForm {

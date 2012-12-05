@@ -179,10 +179,7 @@ var UIActivity = {
           maxHeight : '35px',
           minHeight : '22px'
         },
-        messages : {
-          foundNoMatch : 'Found no matching users for',
-          helpSearch: 'Type to start searching for users.'
-        }
+        messages : window.eXo.social.I18n.mentions
       });
   }
 };

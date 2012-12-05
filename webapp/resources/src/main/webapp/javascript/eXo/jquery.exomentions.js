@@ -399,7 +399,7 @@
           autoAddLink(text);
         }
         elmInputBox.css('cursor', 'text');
-        elmInputBox.parent().find('.placeholder').hide();
+        disabledPlaceholder();
       });
 
       // 
@@ -417,9 +417,8 @@
     function onInputBoxBlur(e) {
       hideAutoComplete(false);
       saveCacheData();
-      var plsd = $(this).parent().find('div.placeholder:first');
-      if (plsd.length > 0 && $.trim(elmInputBox.val()).length === 0) {
-        plsd.show();
+      if (getInputBoxValue().length === 0) {
+        enabledPlaceholder();
       }
     }
 
@@ -459,10 +458,6 @@
           onInputBoxInput(e);
         }
       }
-      var plsd = $(this).parent().find('div.placeholder:first');
-      if (plsd.length > 0) {
-        plsd.hide();
-      }
     }
 
     function onInputBoxKeyDown(e) {
@@ -501,9 +496,8 @@
             hideAutoComplete();
           }
         }
-        var plsd = $(this).parent().find('div.placeholder:first');
-        if (plsd.length > 0 && $.trim(elmInputBox.val()).length === 1) {
-          plsd.show();
+        if (getInputBoxValue().length === 1) {
+          enabledPlaceholder();
         } else {
           var before = elmInputBox.value();
           elmInputBox.animate({
@@ -615,6 +609,12 @@
       backspceBroswerFix(e);
       
       checkAutoAddLink(e);
+
+      if(getInputBoxValue().length === 0) {
+        enabledPlaceholder
+      } else {
+        disabledPlaceholder();
+      }
       //
     }
     
@@ -908,7 +908,27 @@
       };
       return displayInput;
     }
-
+    
+    function enabledPlaceholder() {
+      var parent = elmInputBox.parent();
+      parent.find('div.placeholder:first').show();
+      
+      var isLinked = ($('#LinkTitle').length > 0);
+      var action = $('#' + settings.idAction);
+      if(isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
+        $('#' + settings.idAction).attr('disabled', 'disabled').removeAttr('onclick').addClass('DisableButton');
+      }
+    }
+    
+    function disabledPlaceholder() {
+      log('disabledPlaceholder.........')
+      elmInputBox.parent().find('div.placeholder:first').hide();
+      var action = $('#' + settings.idAction);
+      if (action.length > 0 && action.attr('disabled') === 'disabled') {
+        action.removeAttr('disabled').removeClass('DisableButton');
+        action.attr('onclick', action.data('actionLink').action);        
+      }
+    }
     // Public methods
     return {
       init : function(domTarget) {
@@ -927,29 +947,38 @@
         initAutocomplete();
         updateCacheData();
 
+        // prefill mentions
+        if (settings.prefillMention) {
+          addMention(settings.prefillMention);
+        }
+
+        // action submit
+        if (settings.idAction && settings.idAction.length > 0) {
+          var actionLink = $('#' + settings.idAction).on('mousedown', function() {
+            var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
+            value = value.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
+            jElmTarget.val(value);
+            $(this).click();
+            clearCacheData();
+            resetInput();
+          });
+          actionLink.attr('disabled', 'disabled').addClass('DisableButton');
+          actionLink.data('actionLink', {action: actionLink.attr('onclick')});
+        }
+
         // add placeholder
-        if ($.trim(elmInputBox.val()).length == 0) {
-          var title = jElmTarget.attr('title');
+        var title = jElmTarget.attr('title');
+        if ($.trim(title).length > 0) {
           var placeholder = $('<div class="placeholder">' + title + '</div>').attr('title', title);
           placeholder.on('click', function() {
             elmInputBox.focus();
           });
           placeholder.appendTo(elmInputBox.parent());
-        }
-        // prefill mentions
-        if (settings.prefillMention) {
-          addMention(settings.prefillMention);
-        }
-        // action submit
-        if (settings.idAction && settings.idAction.length > 0) {
-          $('#' + settings.idAction).on('mousedown', function() {
-            var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
-
-            value = value.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
-            jElmTarget.val(value);
-            clearCacheData();
-            resetInput();
-          });
+          if(getInputBoxValue().length > 0) {
+            disabledPlaceholder();
+          } else {
+            enabledPlaceholder();
+          }
         }
       },
 
@@ -965,6 +994,14 @@
         ActionLink.hasNotLink = true;
         ActionLink.linkSaved = '';
         saveCacheData();
+      },
+
+      showButton : function(callback) {
+        var action = $('#' + settings.idAction);
+        if (action.length > 0 && action.attr('disabled') === 'disabled') {
+          action.removeAttr('disabled').removeClass('DisableButton');
+          action.attr('onclick', action.data('actionLink').action);        
+        }
       },
 
       reset : function() {

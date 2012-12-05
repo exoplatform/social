@@ -69,7 +69,6 @@ public class UIComposer extends UIForm {
     if(this.getId() == null) this.setId("UIComposer");
     //add textbox for inputting message
     UIFormTextAreaInput messageInput = new UIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT, COMPOSER_TEXT_AREA_INPUT, null);
-    messageInput.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("What_Are_You_Working_On"));
     addUIFormInput(messageInput);
 
     //add composer container
@@ -92,7 +91,12 @@ public class UIComposer extends UIForm {
     return isActivityStreamOwner;
   }
 
+  protected void changeTitleTextAreInput() throws Exception {
+    getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT).setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("What_Are_You_Working_On"));
+  }
+
   private void initActivityComposerManager() throws Exception {
+
     UIExtensionManager uiExtensionManager = (UIExtensionManager) PortalContainer.getInstance().
                                                                   getComponentInstanceOfType(UIExtensionManager.class);
     final List<UIExtension> extensionList = uiExtensionManager.getUIExtensions(UIActivityComposer.class.getName());
