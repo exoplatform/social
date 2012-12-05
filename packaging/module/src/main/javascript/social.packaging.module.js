@@ -24,7 +24,9 @@ function getModule(params) {
     new Project("org.exoplatform.social", "social-component-common","jar", module.version);
 
   module.component.core =
-  new Project("org.exoplatform.social", "social-component-core","jar", module.version);
+  new Project("org.exoplatform.social", "social-component-core","jar", module.version).
+    addDependency(new Project("org.exoplatform.commons", "commons-component-common", "jar", platformCommonsVersion)).
+    addDependency(new Project("org.exoplatform.commons", "commons-api", "jar", platformCommonsVersion));
 
   module.component.service =
   new Project("org.exoplatform.social", "social-component-service","jar", module.version).

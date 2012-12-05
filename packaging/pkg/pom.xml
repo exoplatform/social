@@ -331,6 +331,20 @@
           <version>${org.exoplatform.commons.version}</version>
           <type>jar</type>
       </dependency>
+      
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-common</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+        <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-api</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+        <type>jar</type>
+      </dependency>
 
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
