@@ -667,7 +667,7 @@
         <artifactId>shindig-social-api</artifactId>
         <version>${org.gatein.shindig.version}</version>
         <exclusions>
-		  <exclusion>
+          <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
