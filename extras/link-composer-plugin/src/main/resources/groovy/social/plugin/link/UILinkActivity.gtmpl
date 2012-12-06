@@ -46,6 +46,7 @@
   def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
+  def labelShowPreviousComments = _ctx.appRes("UIActivity.label.Show_Previous_Comments");
 
   def labelOnePersonLikeThis=_ctx.appRes("UIActivity.label.One_Person_Like_This");
   def labelTwoPersonLikeThis=_ctx.appRes("UIActivity.label.Two_Person_Like_This");
@@ -68,6 +69,8 @@
   def identityLikesNum = 0;
   def totalLikesNum = uicomponent.getIdentityLikes().length;
   def labelLikes = null;
+  def commentsHidden = allComments.size()-commentList.size();
+  def totalComments = allComments.size();
   def loadLikesAction = uicomponent.event("LoadLikes");
   def hasMore = (totalLikesNum > uicomponent.LIKES_NUM_DEFAULT) && !uicomponent.isAllLoaded();
   if (displayedIdentityLikes != null) {
@@ -206,7 +209,11 @@
      <% if (activityCommentAndLikable) { %>
         <a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
           $labelComment
-        </a> |
+        </a>
+        <% if ( totalComments > 0 ) { %>
+          <span>$totalComments</span>
+        <% } %>
+         |
       <% if (uicomponent.isLiked()) { %>
         <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
           $labelUnlike
@@ -266,9 +273,16 @@
                 $labelShowAllComments
               </a>
             <% } else if (commentListStatus.getStatus().equals("all")) { %>
-              <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
-                $labelHideAllComments
-              </a>
+              <% if (commentsHidden > 0) { %>
+                <a onclick="$showAllCommentsAction" href="#">
+                  $labelShowPreviousComments
+                </a>
+                <span style="float:right">$commentsHidden/$totalComments</span>
+              <% } else { %>
+                <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                  $labelHideAllComments
+                </a>
+              <% } %>
             <% } %>
       </div>
     <% } %>

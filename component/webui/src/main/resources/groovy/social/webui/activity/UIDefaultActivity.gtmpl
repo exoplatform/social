@@ -184,7 +184,11 @@
      <% if (activityCommentAndLikable) { %>
         <a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
           $labelComment
-        </a> |
+        </a> 
+        <% if ( totalComments > 0 ) { %>
+          <span>$totalComments</span>
+        <% } %>
+        |
       <% if (uicomponent.isLiked()) { %>
         <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
           $labelUnlike
