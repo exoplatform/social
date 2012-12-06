@@ -45,7 +45,7 @@ import org.exoplatform.webui.event.EventListener;
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/activity/plugin/UIRelationshipActivity.gtmpl",
   events = {
-    @EventConfig(listeners = BaseUIActivity.ToggleDisplayLikesActionListener.class),
+    @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
     @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
     @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
     @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),

@@ -17,6 +17,8 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +71,8 @@ public class BaseUIActivity extends UIForm {
 
   private static final int DEFAULT_LIMIT = 10;
   
+  protected static final int LIKES_NUM_DEFAULT = 15;
+  
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
     public String getStatus() {
@@ -87,7 +91,7 @@ public class BaseUIActivity extends UIForm {
   private Identity ownerIdentity;
   private String[] identityLikes;
   private boolean commentFormDisplayed = false;
-  private boolean likesDisplayed = false;
+  private boolean allLoaded = false;
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
@@ -169,12 +173,12 @@ public class BaseUIActivity extends UIForm {
     return commentFormDisplayed;
   }
 
-  public void setLikesDisplayed(boolean likesDisplayed) {
-    this.likesDisplayed = likesDisplayed;
+  public boolean isAllLoaded() {
+    return allLoaded;
   }
 
-  public boolean isLikesDisplayed() {
-    return likesDisplayed;
+  public void setAllLoaded(boolean allLoaded) {
+    this.allLoaded = allLoaded;
   }
 
   public void setAllCommentsHidden(boolean allCommentsHidden) {
@@ -256,9 +260,13 @@ public class BaseUIActivity extends UIForm {
    * @throws Exception
    */
   public String[] getDisplayedIdentityLikes() throws Exception {
-    if (isLiked()) {
-      return (String[]) ArrayUtils.removeElement(identityLikes, Utils.getViewerIdentity().getId());
+    List<String> likes = Arrays.asList(identityLikes);
+    Collections.reverse(likes);
+    identityLikes = (String[])likes.toArray();
+    if ( (identityLikes.length > LIKES_NUM_DEFAULT) && !isAllLoaded() ) {
+      return (String[]) ArrayUtils.subarray(identityLikes, 0, LIKES_NUM_DEFAULT);
     }
+    
     return identityLikes;
   }
 
@@ -438,7 +446,7 @@ public class BaseUIActivity extends UIForm {
     //RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
     //comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     setActivityCommentsListAccess(Utils.getActivityManager().getCommentsWithListAccess(activity));
-    identityLikes = activity.getLikeIdentityIds();
+    setIdenityLikes(activity.getLikeIdentityIds());
   }
   
   public boolean isUserActivity() {
@@ -569,16 +577,12 @@ public class BaseUIActivity extends UIForm {
     return (getParent().getParent().getParent() instanceof UISpaceActivitiesDisplay);
   }
   
-  public static class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
+  public static class LoadLikesActionListener extends EventListener<BaseUIActivity> {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       uiActivity.refresh();
-      if (uiActivity.isLikesDisplayed()) {
-        uiActivity.setLikesDisplayed(false);
-      } else {
-        uiActivity.setLikesDisplayed(true);
-      }
+      uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
   }

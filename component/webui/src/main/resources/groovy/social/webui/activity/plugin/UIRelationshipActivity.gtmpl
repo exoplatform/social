@@ -55,11 +55,13 @@
   def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
-  def labelOnePersonLikeThis = _ctx.appRes("UIActivity.label.One_Person_Like_This");
-  def labelPeopleLikeThis = _ctx.appRes("UIActivity.label.People_Like_This");
-  def labelYouLikeThis = _ctx.appRes("UIActivity.label.You_Like_This");
-  def labelYouAndOnePersonLikeThis = _ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
-  def labelYouAndPeopleLikeThis = _ctx.appRes("UIActivity.label.You_And_People_Like_This");
+
+  def labelOnePersonLikeThis=_ctx.appRes("UIActivity.label.One_Person_Like_This");
+  def labelTwoPersonLikeThis=_ctx.appRes("UIActivity.label.Two_Person_Like_This");
+  def labelOneAndOthersLikeThis=_ctx.appRes("UIActivity.label.One_And_Others_Like_This");
+  def labelYouLikeThis=_ctx.appRes("UIActivity.label.You_Like_This");
+  def labelYouAndOnePersonLikeThis=_ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
+  def labelYouAndOthersLikeThis=_ctx.appRes("UIActivity.label.You_And_Others_Like_This");
 
   def likeActivityAction = uicomponent.event("LikeActivity", "true");
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
@@ -73,16 +75,17 @@
 
   def displayedIdentityLikes = uicomponent.getDisplayedIdentityLikes();
   def identityLikesNum = 0;
+  def totalLikesNum = uicomponent.getIdentityLikes().length;
   def labelLikes = null;
-  def toggleDisplayLikesAction = uicomponent.event("ToggleDisplayLikes");
-  def startTag = "<a onclick=\"$toggleDisplayLikesAction\" id=\"ToggleDisplayListPeopleLikes${activity.id}\" href=\"#ToggleDisplayListPeopleLikes\">";
-  def endTag = "</a>";
+  
+  def loadLikesAction = uicomponent.event("LoadLikes");
+  def hasMore = (totalLikesNum > uicomponent.LIKES_NUM_DEFAULT) && !uicomponent.isAllLoaded();
   if (displayedIdentityLikes != null) {
     identityLikesNum = displayedIdentityLikes.length;
   }
   def commentListStatus = uicomponent.getCommentListStatus();
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
-  def likesDisplayed = uicomponent.isLikesDisplayed();
+  def likesDisplayed = uicomponent.isAllLoaded();
   //params for init UIActivity javascript object
 
   def params = """ {
@@ -102,29 +105,28 @@
   def ownerName, ownerUri, ownerAvatar, activityContentBody, activityPostedTime, activityPostedTimeInSpace;
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
-  if (!likesDisplayed) {
-    listPeopleLikeBlockClass = "DisplayNone";
-  }
-
   if (uicomponent.isLiked()) {
-    if (identityLikesNum > 1) {
-      labelLikes = labelYouAndPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
-    } else if (identityLikesNum == 1) {
-      labelLikes = labelYouAndOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    if (totalLikesNum > 2) {
+      labelLikes = labelYouAndOthersLikeThis.replace("{0}", totalLikesNum + "");
+    } else if (totalLikesNum == 2) {
+      def likeId = (displayedIdentityLikes[0] == Utils.getViewerIdentity().getId()) ? displayedIdentityLikes[1] : displayedIdentityLikes[0];
+      def id = Utils.getIdentityManager().getIdentity(likeId);
+      labelLikes = labelYouAndOnePersonLikeThis.replace("{0}", id.profile.fullName);
     } else {
       labelLikes = labelYouLikeThis;
     }
   } else {
-    if (identityLikesNum > 1) {
-      labelLikes = labelPeopleLikeThis.replace("{start}", startTag).replace("{end}", endTag).replace("{0}", identityLikesNum + "");
-    } else if (identityLikesNum == 1) {
-      labelLikes = labelOnePersonLikeThis.replace("{start}", startTag).replace("{end}", endTag);
+    if (totalLikesNum > 2) {
+      def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
+      labelLikes = labelOneAndOthersLikeThis.replace("{0}", id.profile.fullName).replace("{1}", totalLikesNum + "");
+    } else if (totalLikesNum == 1) {
+      def id = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
+      labelLikes = labelOnePersonLikeThis.replace("{0}", id.profile.fullName);
+    } else if (totalLikesNum == 2) {
+      def id1 = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[0]);
+      def id2 = Utils.getIdentityManager().getIdentity(displayedIdentityLikes[1]);
+      labelLikes = labelTwoPersonLikeThis.replace("{0}", id1.profile.fullName).replace("{1}", id2.profile.fullName);
     }
-  }
-
-  if (!labelLikes) {
-   //hides diplayPeopleBG
-   listPeopleBGClass = "DisplayNone";
   }
 
   activityContentTitle = uicomponent.getActivityTitle(_ctx); //default activity.title;
@@ -199,6 +201,9 @@
           $labelLike
         </a>
       <% }%>
+      <% if (totalLikesNum > 0) {%>
+        <span style="margin-left: 3px;">$totalLikesNum</span>
+      <% }%>
      <% }%>
      <% if (canShowAction) {
          if (isReceiver) {%>
@@ -230,6 +235,9 @@
                   <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
                 </a>
              <% })%>
+             <% if ( hasMore ) { %>
+               <button onclick="$loadLikesAction" class="btn">...</button>
+             <% } %>
             </div>
             <% }%>
           </div>
