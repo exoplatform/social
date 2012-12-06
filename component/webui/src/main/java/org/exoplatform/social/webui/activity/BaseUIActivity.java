@@ -655,18 +655,7 @@ public class BaseUIActivity extends UIForm {
       uiFormComment.reset();
       uiActivity.saveComment(requestContext.getRemoteUser(), message);
       uiActivity.setCommentFormFocused(true);
-      //requestContext.addUIComponentToUpdateByAjax(uiActivity);
-      
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = uiActivity.getAncestorOfType(UIUserActivitiesDisplay.class);
-      
-      if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.ALL_ACTIVITIES) {
-          uiUserActivitiesDisplay.init();
-        } else {
-          requestContext.addUIComponentToUpdateByAjax(uiActivity);
-        }
-      }
-
+      requestContext.addUIComponentToUpdateByAjax(uiActivity);
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
