@@ -32,7 +32,9 @@ def jsManager = pcontext.getJavascriptManager();
 jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName', $cookieValue);");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<div class="UpdateInfo"><span id="numberInfo"><%= numberOfUpdatedActivities > 0 ? String.valueOf(numberOfUpdatedActivities) : 'No' %></span> Updates</div>
+<% if (!uicomponent.getParent().isExtendLoader()) { %>
+  <div class="UpdateInfo"><span id="numberInfo"><%= numberOfUpdatedActivities > 0 ? String.valueOf(numberOfUpdatedActivities) : 'No' %></span> Updates</div>
+<% } %>
 <% if (uicomponent.getChildren().size() > 1) {
      uicomponent.renderChildren();
    } else {
