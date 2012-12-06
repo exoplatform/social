@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -36,7 +37,6 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -66,6 +66,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   private static final int      ACTIVITY_PER_PAGE = 20;
   private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
   private Object locker = new Object();
+  private Locale currentLocale = null;
 
   public enum DisplayMode {
     OWNER_STATUS,
@@ -90,14 +91,9 @@ public class UIUserActivitiesDisplay extends UIForm {
    * @throws Exception 
    */
   public UIUserActivitiesDisplay() throws Exception {
+    if (this.getId() == null) this.setId("UIUserActivitiesDisplay");
     //
-    ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
-    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_ACTIVITIES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.CONNECTIONS.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.MY_SPACE.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_ACTIVITIES.toString()));
-    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox(SELECT_BOX_DISPLAY_MODE, SELECT_BOX_DISPLAY_MODE, displayModes);
+    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox(SELECT_BOX_DISPLAY_MODE, SELECT_BOX_DISPLAY_MODE, getSelectItemOption());
     uiFormSelectBox.setOnChange("ChangeDisplayMode");
     addChild(uiFormSelectBox);
 
@@ -110,8 +106,29 @@ public class UIUserActivitiesDisplay extends UIForm {
     //
     setSelectedDisplayMode(selectedDisplayMode);
     
+    this.currentLocale = Util.getPortalRequestContext().getLocale();
   }
   
+  private List<SelectItemOption<String>> getSelectItemOption() throws Exception {
+    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
+    displayModes.add(new SelectItemOption<String>(getLabel("All_Updates"), DisplayMode.ALL_ACTIVITIES.name()));
+    displayModes.add(new SelectItemOption<String>(getLabel("Network_Updates"), DisplayMode.CONNECTIONS.name()));
+    displayModes.add(new SelectItemOption<String>(getLabel("Space_Updates"), DisplayMode.MY_SPACE.name()));
+    displayModes.add(new SelectItemOption<String>(getLabel("My_Status"), DisplayMode.MY_ACTIVITIES.name()));
+    return displayModes;
+  }
+
+  protected void changeLocale() throws Exception {
+    PortalRequestContext portalContext = Util.getPortalRequestContext();
+    Locale locale = portalContext.getLocale();
+    if (this.currentLocale == null || !this.currentLocale.getLanguage().equals(locale.getLanguage())) {
+      // change options of SelectBoxInput
+      getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setOptions(getSelectItemOption());
+      
+      this.currentLocale = locale;
+    }
+  }
+
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
   }

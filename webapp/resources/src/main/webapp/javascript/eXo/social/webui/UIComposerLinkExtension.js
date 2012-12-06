@@ -121,7 +121,11 @@ var UIComposerLinkExtension = {
     }
   },
   init: function() {
-  
+    
+    function get(id){
+      return $('#'+id);
+    }
+    
     function showThumbnail() {
       for (var i = 0, l = this.images.length; i < l; i++) {
         this.images[i].style.display = 'none';
@@ -131,19 +135,29 @@ var UIComposerLinkExtension = {
     }
     
     function doStats() {
-      this.stats.innerHTML = (this.shownThumbnailIndex + 1) + ' / ' + this.images.length;
+      this.stats.html((this.shownThumbnailIndex + 1) + ' / ' + this.images.length);
     }
-
+    
     UIComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       
-      this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
-      this.thumbnails = $('#' + this.thumbnailsId);
-      this.backThumbnail = $('#' + this.backThumbnailId);
-      this.nextThumbnail = $('#' + this.nextThumbnailId);
-      this.stats = $('#' + this.statsId);
-      this.linkTitle = $('#' + 'LinkTitle');
-      this.linkDescription = $('#' + 'LinkDescription');
+      this.uiThumbnailDisplay = get(this.uiThumbnailDisplayId);
+      this.thumbnails = get(this.thumbnailsId);
+      this.backThumbnail = get(this.backThumbnailId);
+      this.nextThumbnail = get(this.nextThumbnailId);
+      this.stats = get(this.statsId);
+      this.linkTitle = $('#LinkTitle');
+      this.linkDescription = $('#LinkDescription');
+      
+      this.uiThumbnailDisplay.find('.ThumbnailAction').css({margin:'auto'});
+     
+      var parent = this.uiThumbnailDisplay.parent().parent();
+      parent.css('position', 'relative');
+      
+      $('<a class="RemoveLinkIcon" style="width:16px;height:16px;display:block;position:absolute;top:5px;right:20px"></a>')
+        .attr('href', 'javascript:void(0)')
+        .on('click', UIComposer.showLink)
+        .appendTo(parent);
       
       var titleParam = this.titleEditable;
       if (this.linkTitle) {
@@ -159,7 +173,8 @@ var UIComposerLinkExtension = {
       }
       
       if (this.thumbnails) {
-        this.thumbnailCheckbox = $('#' + this.thumbnailCheckboxId);
+        this.thumbnails.css({minHeight:'100px', textAlign:'center'});
+        this.thumbnailCheckbox = get(this.thumbnailCheckboxId);
         this.images = $('img',this.thumbnails);
         doStats.apply(this);
 
@@ -199,23 +214,23 @@ var UIComposerLinkExtension = {
 
     } else {
 
-      this.inputLink = $('#' + this.inputLinkId);
-      this.attachButton = $('#' + this.attachButtonId);
+      this.inputLink = get(this.inputLinkId);
+      this.attachButton = get(this.attachButtonId);
       this.inputLink.val(UIComposerLinkExtension.HTTP);
-      this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
+      this.inputLink.css({color: UIComposerLinkExtension.GRAY_COLOR, border: 'none', outlineWidth: '0'});
       var UIComposerLinkExtension = this;
       var inputLink = this.inputLink;
       inputLink.on('focus', function(evt) {
         if (inputLink.val() === UIComposerLinkExtension.HTTP) {
           inputLink.val('');
-          inputLink.css('color', UIComposerLinkExtension.BLACK_COLOR);
+          inputLink.css({color: UIComposerLinkExtension.BLACK_COLOR});
         }
       });
       
       this.inputLink.on('blur', function(evt) {
         if (inputLink.val() === '') {
           inputLink.val(UIComposerLinkExtension.HTTP);
-          inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
+          inputLink.css({color: UIComposerLinkExtension.GRAY_COLOR});
         }
       });
       

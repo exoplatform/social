@@ -29,6 +29,7 @@
                   "slbox.find('option[value='+ slbox.val() +']').hide();";
   jsManager.require("SHARED/jquery", "jq").addScripts(script);
 
+  uicomponent.changeLocale();
 %>
 <div class="$uiform.id ClearFix">
   <% uiform.begin() %>

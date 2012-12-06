@@ -120,6 +120,10 @@
 	background: none;
 }
 
+.UILinkShareDisplay .RemoveLinkIcon {
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -204px; /* orientation=lt */
+}
+
 .UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .NextIcon {
 	width: 9px;
 	height: 12px;
