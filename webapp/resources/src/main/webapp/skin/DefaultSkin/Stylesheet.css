@@ -79,6 +79,20 @@ blockquote {
 
  */
 
+@import url('../social/webui/activity/UIDefaultActivity/DefaultSkin.css'); 
+@import url('../social/webui/UIActivitiesLoader/DefaultSkin.css'); 
+@import url('../social/webui/UIAutoSuggestControl/DefaultSkin.css'); 
+@import url('../social/webui/UIComposer/DefaultSkin.css'); 
+@import url('../social/webui/UILinkComposerPlugin/DefaultSkin.css'); 
+@import url('../social/webui/UIManageSpaces/DefaultSkin.css'); 
+@import url('../social/webui/UIManageUsers/DefaultSkin.css'); 
+@import url('../social/webui/UIPopup/DefaultSkin.css'); 
+@import url('../social/webui/UIProfileUserSearch/DefaultSkin.css'); 
+@import url('../social/webui/UISpaceApplicationInstaller/DefaultSkin.css'); 
+@import url('../social/webui/UISpaceSearch/DefaultSkin.css'); 
+
+@import url('../css/social.css'); 
+
 .FL {
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
