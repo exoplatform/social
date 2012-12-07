@@ -445,7 +445,7 @@ public class SpaceUtils {
     for (NodeContext<?> child : homeNodeCtx.getNodes()) {
        @SuppressWarnings("unchecked")
        NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
-       Page page = dataStorage.getPage(childNode.getState().getPageRef());
+       Page page = dataStorage.getPage(childNode.getState().getPageRef().format());
        dataStorage.remove(page);
     }
     
@@ -467,7 +467,7 @@ public class SpaceUtils {
                                               Space space,
                                               String newSpaceName) throws Exception {
     DataStorage dataStorage = getDataStorage();
-    Page page = dataStorage.getPage(spacePageNode.getPageRef());
+    Page page = dataStorage.getPage(spacePageNode.getPageRef().format());
     
     ArrayList<ModelObject> pageChildren = page.getChildren();
     

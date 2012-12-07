@@ -20,7 +20,7 @@
  *
  */
 
-
+(function($){ 
 var UIComposer = {
   onLoad: function(params) {
 		UIComposer.configure(params);
@@ -165,4 +165,5 @@ var UIComposer = {
 }
 
 window.UIComposer = UIComposer;
-_module.UIComposer = UIComposer;
+return UIComposer;
+})($);

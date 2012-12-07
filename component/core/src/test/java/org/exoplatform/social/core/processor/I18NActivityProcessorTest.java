@@ -214,22 +214,22 @@ public class I18NActivityProcessorTest extends TestCase {
     }
 
     @Override
-    public ResourceBundleData getResourceBundleData(String id) throws Exception {
+    public ResourceBundleData getResourceBundleData(String id) {
       return null;
     }
 
     @Override
-    public ResourceBundleData removeResourceBundleData(String id) throws Exception {
+    public ResourceBundleData removeResourceBundleData(String id) {
       return null;
     }
 
     @Override
-    public void saveResourceBundle(ResourceBundleData data) throws Exception {
+    public void saveResourceBundle(ResourceBundleData data) {
 
     }
 
     @Override
-    public PageList<ResourceBundleData> findResourceDescriptions(Query q) throws Exception {
+    public PageList<ResourceBundleData> findResourceDescriptions(Query q) {
       return null;
     }
   }

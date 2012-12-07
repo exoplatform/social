@@ -31,7 +31,7 @@
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.portal</artifactId>
     </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
@@ -66,7 +66,7 @@
       <artifactId>xml-apis</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -81,34 +81,34 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.identity</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.portal</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.framework</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>test</scope>
     </dependency>

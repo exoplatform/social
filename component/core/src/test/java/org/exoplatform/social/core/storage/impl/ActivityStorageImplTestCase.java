@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -34,8 +33,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.processor.MentionsProcessor;
-import org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -112,13 +109,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testSaveActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -136,7 +133,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    *  For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
    * </pre>
    */
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testTemplateParams() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
@@ -145,7 +142,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     templateParams.put("key2", "value2");
     templateParams.put("key3", "value3");
     activity.setTemplateParams(templateParams);
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     ExoSocialActivity got = activityStorage.getActivity(activity.getId());
@@ -157,14 +154,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testUpdateActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("&");
     activity.setBody("test&amp;");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -182,14 +179,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testUpdateActivityForLike() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("a");
     activity.setBody("test");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -216,14 +213,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testUpdateActivityForWrong() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("&");
     activity.setBody("test&amp;");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -241,14 +238,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
     activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -275,7 +272,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testUpdateActivityForUnLikeWrong() throws Exception {
 
     //
@@ -283,7 +280,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     activity.setTitle("&");
     activity.setBody("test&amp;");
     activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -302,13 +299,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testSaveComment() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity ");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -337,14 +334,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(900)
   public void testActivityCount() throws Exception {
 
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
     }
 
     //
@@ -387,13 +384,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     identityStorage.deleteIdentity(spaceIdentity);
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(600)
   public void testActivityOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
     }
 
@@ -404,7 +401,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(600)
   public void testActivityOrderByPostedTime() throws Exception {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
@@ -417,7 +414,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activity.setPostedTime(i> 5 ? today + i : yesterday + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
     }
 
     int i = 9;
@@ -434,13 +431,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(400)
+  @MaxQueryNumber(1500)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
       
     }
 
@@ -459,7 +456,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
     }
 
@@ -472,14 +469,14 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(4000)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       Thread.sleep(10);
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
 
       // fill 10 comments for each activity
@@ -826,7 +823,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testActivityProcessing() throws Exception {
 
     //
@@ -836,7 +833,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //

@@ -18,7 +18,7 @@
 /**
  * UIActivity.js
  */
-
+(function ($) {  
 var UIActivity = {
   COMMENT_BLOCK_BOUND_CLASS_NAME : "CommentBlockBound",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "CommentBlockBoundNone",
@@ -185,4 +185,5 @@ var UIActivity = {
   }
 }
 
- _module.UIActivity = UIActivity;
+return UIActivity;
+})($);

@@ -19,6 +19,7 @@
  * UIComposerLinkExtension.js
  */
 
+(function($, webui) { 
 var UIComposerLinkExtension = {
   HTTP: "http://",
   GRAY_COLOR: "gray",
@@ -246,4 +247,5 @@ var UIComposerLinkExtension = {
   }
 };
  
-_module.UIComposerLinkExtension = UIComposerLinkExtension;
+return UIComposerLinkExtension;
+})($, webui);

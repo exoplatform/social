@@ -1,3 +1,4 @@
+(function($, webui) { 
 var UIApplicationCategorySelector = {
   init: function(params) {
 	  var applicationCategoryIds = (params.applicationCategoryIds.replace('[','').replace(']','')).split(',');
@@ -17,4 +18,5 @@ var UIApplicationCategorySelector = {
   }
 };
 
-_module.UIApplicationCategorySelector = UIApplicationCategorySelector;
+return UIApplicationCategorySelector;
+})($, webui);

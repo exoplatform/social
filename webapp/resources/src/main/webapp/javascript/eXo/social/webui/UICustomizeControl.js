@@ -1,3 +1,4 @@
+(function($, webui) { 
 var UICustomizeControl = {
   onLoad : function(uicomponentId) {
 		$('#' + uicomponentId).click(function() {
@@ -9,4 +10,5 @@ var UICustomizeControl = {
   }
 };
 
-_module.UICustomizeControl = UICustomizeControl;
+return UICustomizeControl;
+})($, webui);

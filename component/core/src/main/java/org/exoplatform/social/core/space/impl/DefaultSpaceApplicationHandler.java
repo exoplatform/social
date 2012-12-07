@@ -44,6 +44,7 @@ import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
 import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
@@ -185,7 +186,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       for (NodeContext<?> child : homeNodeCtx.getNodes()) {
         @SuppressWarnings("unchecked")
         NodeContext<NodeContext<?>> childNode = (NodeContext<NodeContext<?>>) child;
-        Page page = dataStorage.getPage(childNode.getState().getPageRef());
+        Page page = dataStorage.getPage(childNode.getState().getPageRef().format());
         dataStorage.remove(page);
      }
       
@@ -323,14 +324,14 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
       //remove page
       if (removedNode != null) {
-        String pageRef = removedNode.getState().getPageRef();
-        if (pageRef != null && pageRef.length() > 0) {
-          Page page = configService.getPage(pageRef);
+        PageKey pageRef = removedNode.getState().getPageRef();
+        if (pageRef.format() != null && pageRef.format().length() > 0) {
+          Page page = dataStorage.getPage(pageRef.format());
           if (page != null)
             dataStorage.remove(page);
           UIPortal uiPortal = Util.getUIPortal();
           // Remove from cache
-          uiPortal.setUIPage(pageRef, null);
+          uiPortal.setUIPage(pageRef.format(), null);
         }
       }
 
@@ -437,7 +438,7 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
       
     }
     NodeContext<NodeContext<?>> childNodeCtx = nodeCtx.add(null, pageName);
-    childNodeCtx.setState(new NodeState.Builder().label(label).icon(spaceApplication.getIcon()).pageRef(page.getPageId()).build());
+    childNodeCtx.setState(new NodeState.Builder().label(label).icon(spaceApplication.getIcon()).pageRef(PageKey.parse(page.getPageId())).build());
     return childNodeCtx;
   }
   
