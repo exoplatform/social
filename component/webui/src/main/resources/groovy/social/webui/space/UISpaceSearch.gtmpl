@@ -75,65 +75,67 @@ def params = """ {
 jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.UISpaceSearch.init($params);");
 
 %>
-<div class="UISpaceSearch">
+<div class="uiSpaceSearch">
 <% uiform.begin() %>
     <!--search by name-->   
-    <div class="SpaceSearchContainer ClearFix">
-       <div class="UIAction">
-         <button class="btn" rel="tooltip" title="$labelActionAddSpace" onclick="<%= uicomponent.event("AddSpace") %>" ><%= labelActionAddSpace %></button>
-       </div>
-		   <label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
-		     $findSpaceLabel:&nbsp; 
-		   </label>
-		   <div class="SearchContent">
-		     <%uiform.renderField(childs.get(0)); %>
-		   </div>
-       <button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button>
-    </div>
+	<div class="uiGrayLightBox ClearFix">
+		<button class="btn btn-primary pull-left" rel="tooltip" title="$labelActionAddSpace" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconAdd"></i><%= labelActionAddSpace %></button>
+		
+		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
+			$findSpaceLabel:&nbsp; 
+		</label-->
+		<div class="uiSearchInput pull-right">
+			<%uiform.renderField(childs.get(0)); %>
+		</div>
+		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
+	</div>
     
-    <!--search by directory-->
-    <div class="BoxSpaceList">
-            <div class="SpaceListTitle">
-              $spaceFilterLabel
-            </div>
-            <div class="DirectoryNormalBox">
-                <ul class="LetterList">
-                        <li>
-                            <%  if ((selectedChar != null) && (selectedChar == "All")) { %>
-                                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-                             <%} else {%>
-                                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-                            <% } %>
-                        </li>
-                        <% for (ch in alphabets) { %>
-                        <li>
-                        <% if ((selectedChar != null) && (selectedChar == ch)) {
-                            %>
-                                        <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-                             <%} else {%>
-                                        <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-                                <% } %>
-                        </li>
-                        <% } %>
-                </ul>
-            </div>
-        </div>
-        <% uiform.end() %>
-        <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
-        
-        <ul class='nav nav-tabs'>
-	        <li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
-	        <li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
-	        <li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
-	        <li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
-        </ul>
-        
-     <div class="BoxSpaceList">
-	     <div class="SpaceListTitle">
-	          $labelSpaceFoundListing
-            <%if (uicomponent.getSpaceNum() > 0) {%>
-                $spacesOrder
-            <%}%>
-	     </div>
-     </div>
+	<!--search by directory-->
+	<div class="boxSpaceList">
+		<!--div class="SpaceListTitle">
+		  $spaceFilterLabel
+		</div-->
+		<h4 class="titleWithBorder">Spaces Found</h4>
+		<!--div class="DirectoryNormalBox"-->
+		<ul class="letterList">	
+			<li>
+			<% if ((selectedChar != null) && (selectedChar == "All")) { %>
+					<a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+			<%} else {%>
+					<a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+			<% } %>
+			</li>
+			<% for (ch in alphabets) { %>
+			<li>
+			<% if ((selectedChar != null) && (selectedChar == ch)) { %>
+				<a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+			<%} else {%>
+				<a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+			<% } %>
+			</li>
+			<% } %>
+		</ul>
+		<!--/div-->
+	</div>
+		
+	<% uiform.end() %>
+	
+	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+			
+	<ul class='nav nav-tabs'>
+		<li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
+		<li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
+		<li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
+		<li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
+	</ul>
+			
+	<div class="BoxSpaceList">
+		<div class="SpaceListTitle">
+				$labelSpaceFoundListing
+				<%if (uicomponent.getSpaceNum() > 0) {%>
+						$spacesOrder
+				<%}%>
+		</div>
+	</div>
+		
 </div>

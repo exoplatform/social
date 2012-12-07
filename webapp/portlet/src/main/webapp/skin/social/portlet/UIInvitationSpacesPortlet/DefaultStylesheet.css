@@ -5,6 +5,8 @@
 @import url('/social-resources/skin/social/webui/UISpaceSearch/DefaultSkin.css');
 @import url('/social-resources/skin/social/webui/UIManageSpaces/DefaultSkin.css');
 
+@import url('../../../css/uiInvitationSpacesPortlet/Style.css');
+
 .InvitationSpacesPortletTDContainer {
 	background: #fff;
 }

@@ -20,3 +20,5 @@
 
 @import url('/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin.css');
 @import url('/social-resources/skin/social/webui/UIManageUsers/DefaultSkin.css');
+
+@import url('../../../css/uiInvitationsPortlet/Style.css');
