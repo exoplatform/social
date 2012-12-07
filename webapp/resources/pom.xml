@@ -36,14 +36,6 @@
   <name>eXo Social Resources Web App</name>
   <description>eXo Social Resources Web App</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-web-eXoResources</artifactId>
-      <type>war</type>
-    </dependency>
-  </dependencies>
-
   <build>
     <finalName>social-resources</finalName>
     <plugins>
@@ -86,9 +78,10 @@
                     <sourceDirectory>${project.build.directory}/${project.build.finalName}/skin/less</sourceDirectory>
                     <outputDirectory>${project.build.directory}/${project.build.finalName}/skin/css</outputDirectory>
                     <compress>false</compress>
-                    <includes>
-                      <include>wiki.less</include>
-                    </includes>
+                    <excludes>
+                      <exclude>mixins.less</exclude>
+                      <exclude>variables.less</exclude>
+                    </excludes>
                  </configuration>
                  <goals>
                     <goal>compile</goal>

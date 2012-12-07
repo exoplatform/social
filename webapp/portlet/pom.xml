@@ -78,9 +78,10 @@
                     <sourceDirectory>${project.build.directory}/${project.build.finalName}/skin/less</sourceDirectory>
                     <outputDirectory>${project.build.directory}/${project.build.finalName}/skin/css</outputDirectory>
                     <compress>false</compress>
-                    <includes>
-                      <include>wiki.less</include>
-                    </includes>
+                    <excludes>
+                      <exclude>mixins.less</exclude>
+                      <exclude>variables.less</exclude>
+                    </excludes>
                  </configuration>
                  <goals>
                     <goal>compile</goal>
@@ -88,7 +89,6 @@
               </execution>
            </executions>
         </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -223,11 +223,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-web-eXoResources</artifactId>
-      <type>war</type>
-    </dependency>
   </dependencies>
 
 </project>
