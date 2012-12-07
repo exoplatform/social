@@ -57,6 +57,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
   private final String streamTitle;
   private final String streamUrl;
   private final String[] mentioners;
+  private final String[] commenters;
   private final ActivityStream.Type streamType;
 
   public ActivityData(final ExoSocialActivity activity) {
@@ -83,6 +84,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.streamTitle = activity.getStreamTitle();
     this.streamUrl = activity.getStreamUrl();
     this.mentioners = activity.getMentionedIds();
+    this.commenters = activity.getCommentedIds();
     this.streamType = activity.getActivityStream().getType();
 
     if (activity.getTemplateParams() != null) {
@@ -115,6 +117,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     activity.setExternalId(externalId);
     activity.setUrl(url);
     if (mentioners != null) { activity.setMentionedIds(mentioners); }
+    if (commenters != null) { activity.setCommentedIds(commenters); }
 
     ActivityStream activityStream = activity.getActivityStream();
     activityStream.setId(streamId);

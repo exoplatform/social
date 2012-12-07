@@ -80,6 +80,11 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   private String[] mentionedIds;
   
   /**
+   * array of identity ids who commented on this activity.
+   */
+  private String[] commentedIds;
+  
+  /**
    * constructor.
    */
   public ExoSocialActivityImpl() {
@@ -404,6 +409,27 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    */
   public final void setMentionedIds(final String[] identityIds) {
     mentionedIds = Arrays.copyOf(identityIds, identityIds.length);
+  }
+  
+  /**
+   * {@inheritDoc}
+   *
+   * @return array of identity ids
+   */
+  public final String[] getCommentedIds() {
+    if (commentedIds != null) {
+      return Arrays.copyOf(commentedIds, commentedIds.length);
+    }
+    return ArrayUtils.EMPTY_STRING_ARRAY;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param identityIds array of identity Ids
+   */
+  public final void setCommentedIds(final String[] identityIds) {
+    commentedIds = Arrays.copyOf(identityIds, identityIds.length);
   }
   
   /**

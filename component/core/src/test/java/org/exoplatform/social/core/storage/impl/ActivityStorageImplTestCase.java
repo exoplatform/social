@@ -152,7 +152,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivity() throws Exception {
 
     //
@@ -177,7 +177,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForLike() throws Exception {
 
     //
@@ -211,7 +211,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForWrong() throws Exception {
 
     //
@@ -236,7 +236,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //
@@ -270,7 +270,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForUnLikeWrong() throws Exception {
 
     //
@@ -297,7 +297,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(80)
+  @MaxQueryNumber(84)
   public void testSaveComment() throws Exception {
 
     //
@@ -332,7 +332,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(802)
+  @MaxQueryNumber(812)
   public void testActivityCount() throws Exception {
 
     // fill 10 activities
@@ -438,7 +438,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1502)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -476,7 +476,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(4126)
+  @MaxQueryNumber(4526)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -509,7 +509,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(304)
+  @MaxQueryNumber(334)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -703,7 +703,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(500)
+  @MaxQueryNumber(502)
   public void testManyDaysNoActivityOnYear() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -738,7 +738,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(600)
+  @MaxQueryNumber(614)
   public void testManyDaysNoActivityOnAll() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);

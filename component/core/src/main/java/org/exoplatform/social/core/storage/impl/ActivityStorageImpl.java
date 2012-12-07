@@ -165,6 +165,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setPriority(activity.getPriority());
     activityEntity.setLastUpdated(activity.getUpdated().getTime());
     activityEntity.setMentioners(activity.getMentionedIds());
+    activityEntity.setCommenters(activity.getCommentedIds());
 
     //
     Map<String, String> params = activity.getTemplateParams();
@@ -213,6 +214,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setMentionedIds(activityEntity.getMentioners());
     }
 
+    String[] commenters = activityEntity.getCommenters();
+    if (commenters != null) {
+      activity.setCommentedIds(activityEntity.getCommenters());
+    }
+    
     //
     ActivityParameters params = activityEntity.getParams();
     if (params != null) {
@@ -347,7 +353,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(owner).owners(owner), filter, offset, limit);
+    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
     
   }
   
@@ -365,6 +371,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
 
       activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), true));
+      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), true));
       
       //
       activityEntity.getComments().add(commentEntity);
@@ -491,6 +498,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (activityEntity.isComment()) {
         ActivityEntity activityEntityOfComment = activityEntity.getParentActivity();
         activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), false));
+        
+        //
+        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), false));
       } else {
         activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), false));
       }
@@ -1281,6 +1291,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       _saveActivity(changedActivity);
       
+      getSession().save();
+      
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(
@@ -1350,6 +1362,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     return mentionerIds;
   }
+  
+  private String[] processCommenters(String[] commenters, String commenter, boolean isAdded) {
+    if (commenter == null || commenter.length() == 0) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    
+    commenter += MENTION_CHAR; 
+    commenters = isAdded ? add(commenters, commenter) : remove(commenters, commenter);
+    
+    return commenters;
+  }
 
   private String[] add(String[] mentionerIds, String mentionStr) {
     if (ArrayUtils.toString(mentionerIds).indexOf(mentionStr) == -1) { // the first mention
@@ -1364,8 +1387,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         break;
       }
     }
-
-    return (String[]) ArrayUtils.add(mentionerIds, storedId);
+    
+    mentionerIds = (String[]) ArrayUtils.add(mentionerIds, storedId);
+    return mentionerIds;
   }
 
   private String[] remove(String[] mentionerIds, String mentionStr) {
@@ -1382,7 +1406,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         break;
       }
     }
-    
     return mentionerIds;
   }
 

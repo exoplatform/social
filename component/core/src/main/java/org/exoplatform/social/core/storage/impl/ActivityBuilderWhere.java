@@ -18,7 +18,6 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.BuilderWhereExpression;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-import org.jboss.util.Strings;
 
 /**
  * Created by The eXo Platform SAS
@@ -45,6 +43,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
 
   final WhereExpression where = new WhereExpression();
   Identity mentioner;
+  Identity liker;
+  Identity commenter;
   List<Identity> identities;
   
   public String build(ActivityFilter filter) {
@@ -79,6 +79,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     where.destroy();
     filter.destroy();
     mentioner = null;
+    liker = null;
+    commenter = null;
     identities = null;
   }
   
@@ -87,6 +89,15 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     return this;
   }
   
+  public ActivityBuilderWhere liker(Identity liker) {
+    this.liker = liker;
+    return this;
+  }
+  
+  public ActivityBuilderWhere commenter(Identity commenter) {
+    this.commenter = commenter;
+    return this;
+  }
   /**
    * @param identities contains StreamOwner of Activity
    * @return
@@ -193,6 +204,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           where.contains(ActivityEntity.mentioners, mentioner.getId());
         }
         
+        if (commenter != null) {
+          where.or();
+          where.contains(ActivityEntity.commenters, commenter.getId());
+        }
+        
+        if (liker != null) {
+          where.or();
+          where.contains(ActivityEntity.likes, liker.getId());
+        }
+        
         where.endGroup();
         
       }
@@ -216,7 +237,6 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           }
         }
       }
-      
       return where.toString();
     }
   };

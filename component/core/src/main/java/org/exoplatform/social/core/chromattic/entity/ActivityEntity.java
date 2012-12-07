@@ -194,6 +194,14 @@ public abstract class ActivityEntity implements NamedEntity {
   public static final PropertyLiteralExpression<String> mentioners =
     new PropertyLiteralExpression<String>(String.class, "soc:mentioners");
 
+  /**
+   * The list of identity Ids who commented.
+   */
+  @Property(name = "soc:commenters")
+  public abstract String[] getCommenters();
+  public abstract void setCommenters(String[] commenterId);
+  public static final PropertyLiteralExpression<String> commenters =
+    new PropertyLiteralExpression<String>(String.class, "soc:commenters");
   
   /**
    * The activity parameters.

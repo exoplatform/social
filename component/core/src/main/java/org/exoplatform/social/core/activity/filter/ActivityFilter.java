@@ -50,6 +50,8 @@ public class ActivityFilter extends JCRFilterLiteral {
   public static JCRFilterOption POSTER_FIELD = new JCRFilterOption(ActivityEntity.poster);
   public static JCRFilterOption TITLE_FIELD = new JCRFilterOption(ActivityEntity.title);
   public static JCRFilterOption MENTIONERS_FIELD = new JCRFilterOption(ActivityEntity.mentioners);
+  public static JCRFilterOption COMMENTERS_FIELD = new JCRFilterOption(ActivityEntity.commenters);
+  public static JCRFilterOption LIKES_FIELD = new JCRFilterOption(ActivityEntity.likes);
   
 
   public static JCRFilterOption TITLE_MENTION_FIELD = new JCRFilterOption(MENTION_TITLE) {
@@ -76,6 +78,8 @@ public class ActivityFilter extends JCRFilterLiteral {
     try {
       this.append(ACTIVITY_POSTED_POINT_FIELD.clone())
       .append(MENTIONERS_FIELD.clone())
+      .append(COMMENTERS_FIELD.clone())
+      .append(LIKES_FIELD.clone())
       .with(IS_COMMENT_FIELD).value(Boolean.FALSE)
       .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
     } catch (Exception ex) {
@@ -87,6 +91,8 @@ public class ActivityFilter extends JCRFilterLiteral {
   public void destroy() {
     this.with(ACTIVITY_POSTED_POINT_FIELD).value(null);
     this.with(MENTIONERS_FIELD).value(null);
+    this.with(COMMENTERS_FIELD).value(null);
+    this.with(LIKES_FIELD).value(null);
   }
   
   

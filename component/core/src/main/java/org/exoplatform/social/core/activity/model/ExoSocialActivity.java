@@ -204,4 +204,18 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param identityIds array of identity Ids
    */
   void setMentionedIds(String[] identityIds);
+  
+  /**
+   * Gets array of identityIds who comment this activity.
+   *
+   * @return array of identityIds
+   */
+  String[] getCommentedIds();
+
+  /**
+   * Sets array of identityIds who comment this activity.
+   *
+   * @param identityIds array of identity Ids
+   */
+  void setCommentedIds(String[] identityIds);
 }
