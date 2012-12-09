@@ -28,6 +28,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.web.application.RequireJS;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -164,9 +165,9 @@ public class UIActivitiesLoader extends UIContainer {
     }
   }
 
-  public void loadNext() throws Exception {
+  private void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+    
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
 
@@ -174,8 +175,11 @@ public class UIActivitiesLoader extends UIContainer {
     lastActivitiesContainer.setPostContext(postContext);
     lastActivitiesContainer.setSpace(space);
     
-    lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+    List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
     lastActivitiesLoader.setActivities(activities);
+    if(activityListAccess != null) {
+      lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
+    }
   }
 
   private void setActivities(List<ExoSocialActivity> activities) throws Exception {
@@ -183,30 +187,33 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
-    ExoSocialActivity[] activities = activityListAccess.load(index, length);
+    if (activityListAccess != null) {
+      ExoSocialActivity[] activities = activityListAccess.load(index, length);
+      if (activities != null) {
+        activitiesCounter += activities.length;
+        setHasMore(activityListAccess.getSize() > activitiesCounter);
 
-    if (activities == null)
-      return null;
-    
-    activitiesCounter += activities.length;
-    setHasMore(activityListAccess.getSize() > activitiesCounter);
-    
-    return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+        return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+      }
+    }
+    return null;
   }
 
 
-  public static class LoadMoreActionListener extends EventListener<UIActivitiesContainer> {
+  public static class LoadMoreActionListener extends EventListener<UIActivitiesLoader> {
     @Override
-    public void execute(Event<UIActivitiesContainer> event) throws Exception {
-      UIActivitiesContainer uiActivitiesContainer = event.getSource();
-      UIActivitiesLoader uiActivitiesLoader = uiActivitiesContainer.getAncestorOfType(UIActivitiesLoader.class);
+    public void execute(Event<UIActivitiesLoader> event) throws Exception {
+      UIActivitiesLoader uiActivitiesLoader = event.getSource();
       uiActivitiesLoader.loadNext();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesLoader.getExtendContainer());
+      WebuiRequestContext context = event.getRequestContext();
+      context.addUIComponentToUpdateByAjax(uiActivitiesLoader.getExtendContainer());
+      
       UIActivitiesLoader lastLoader = uiActivitiesLoader.getLastActivitiesLoader();
       uiActivitiesLoader.setExtendContainer(lastLoader.getExtendContainer());
-      
-      RequireJS require = event.getRequestContext().getJavascriptManager().require("SHARED/social-ui-activities-loader", "activitiesLoader");
-      require.addScripts("activitiesLoader.UIActivityLoader.setStatus(" + uiActivitiesLoader.isHasMore()  + ");");
+
+      RequireJS require = context.getJavascriptManager()
+                                 .require("SHARED/social-ui-activities-loader", "activitiesLoader");
+      require.addScripts("activitiesLoader.UIActivityLoader.setStatus(" + uiActivitiesLoader.isHasMore() + ");");
     }
   }
 }

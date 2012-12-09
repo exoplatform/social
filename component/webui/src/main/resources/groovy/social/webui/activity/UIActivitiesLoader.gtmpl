@@ -29,9 +29,11 @@
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
 
-  boolean hasMore = uicomponent.isHasMore();
-
-  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader").addScripts("activitiesLoader.UIActivityLoader.init($hasMore);");
+  if(uicomponent.id.equals("UIActivitiesLoader")) {
+	  boolean hasMore = uicomponent.isHasMore();
+	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
+	    .addScripts("activitiesLoader.UIActivityLoader.init('$uicomponent.id', $hasMore);");
+  }
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
@@ -44,5 +46,9 @@
        <%
      }
    }
+  if(uicomponent.id.equals("UIActivitiesLoader")) {
 %>
+<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>" class="ActivitiesLoader"></div>
+<%} %>
+<div class="BottomContainer"></div>
 </div>

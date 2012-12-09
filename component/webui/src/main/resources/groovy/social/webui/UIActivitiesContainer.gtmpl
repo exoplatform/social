@@ -23,6 +23,8 @@ import org.exoplatform.portal.webui.util.Util;
 
 def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
 def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
+def noUpdates = _ctx.appRes("UIActivitiesLoader.label.No_Updates");
+def updates = _ctx.appRes("UIActivitiesLoader.label.Updates");
 def activities = uicomponent.getActivityList();
 def cookieName = uicomponent.getOwnerName() + "_" + uicomponent.getSelectedDisplayMode();
 def cookieValue = activities.size() > 0 ? activities.get(0).getUpdated().getTime() : null;
@@ -33,7 +35,13 @@ jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScr
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>
-  <div class="UpdateInfo"><span id="numberInfo"><%= numberOfUpdatedActivities > 0 ? String.valueOf(numberOfUpdatedActivities) : 'No' %></span> Updates</div>
+  <div class="UpdateInfo">
+  	<% if(numberOfUpdatedActivities > 0) { %>
+  	<span id="numberInfo"><%=String.valueOf(numberOfUpdatedActivities) + " " + updates%></span>
+  	<% } else {%>
+  	<span id="noUpdates"><%=noUpdates%></span>
+  	<% } %>
+  </div>
 <% } %>
 <% if (uicomponent.getChildren().size() > 1) {
      uicomponent.renderChildren();
@@ -41,15 +49,5 @@ jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScr
 %>
 <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
 <% } %>
-<div id="ActivityIndicator">
-  <div class="blockG" id="rotateG_01"></div>
-  <div class="blockG" id="rotateG_02"></div>
-  <div class="blockG" id="rotateG_03"></div>
-  <div class="blockG" id="rotateG_04"></div>
-  <div class="blockG" id="rotateG_05"></div>
-  <div class="blockG" id="rotateG_06"></div>
-  <div class="blockG" id="rotateG_07"></div>
-  <div class="blockG" id="rotateG_08"></div>
-</div>
-<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>" class="ActivitiesLoader"></div>
+
 </div>

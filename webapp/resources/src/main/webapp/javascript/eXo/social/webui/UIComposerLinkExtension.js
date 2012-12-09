@@ -154,11 +154,17 @@ var UIComposerLinkExtension = {
       var parent = this.uiThumbnailDisplay.parent().parent();
       parent.css('position', 'relative');
       
-      $('<a class="RemoveLinkIcon" style="width:16px;height:16px;display:block;position:absolute;top:5px;right:20px"></a>')
+      $('<a class="RemoveLinkIcon"></a>')
         .attr('href', 'javascript:void(0)')
         .on('click', UIComposer.showLink)
         .appendTo(parent);
       
+      parent.on('mouseover', function(){
+        $(this).find('.RemoveLinkIcon').css({opacity:'1', filter: 'alpha(opacity=100)'});
+      }).on('mouseout', function(){
+        $(this).find('.RemoveLinkIcon').css({opacity:'0.5', filter: 'alpha(opacity=50)'});
+      });
+
       var titleParam = this.titleEditable;
       if (this.linkTitle) {
         this.linkTitle.on('click', function(evt) {

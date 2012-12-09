@@ -30,17 +30,19 @@ var UIActivityUpdates = {
       }
       return false;
     }
-
-    $(window).on('scroll', function () {
+    
+    function runOnScroll() {
       if (isScrolledIntoView()) {
         $('#UIActivitiesLoader').find('.UpdatedActivity').removeClass('UpdatedActivity');
         $('#numberInfo').html('No');
         document.cookie = UIActivityUpdates.cookieName + "=" + UIActivityUpdates.cookieValue;
-        $(window).off('scroll');
+       
+        $(window).off('scroll', runOnScroll);
       }
-    });
+    }
+
+    $(window).on('scroll', runOnScroll );
   }
 }
 
-window.jq = $;
 _module.UIActivityUpdates = UIActivityUpdates;

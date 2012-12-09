@@ -3,36 +3,55 @@
  */
 
 var UIActivityLoader = {
+  delta : 65,    
   hasMore: false,
-  init: function (hasMore) { 
+  scrollBottom : function() {
+  return $(document).height() - $(window).scrollTop() - $(window).height();  
+  },
+  init: function (parentId, hasMore) {
     UIActivityLoader.hasMore = hasMore;
-    $('#ActivityIndicator').hide();
+    UIActivityLoader.initIndicator();
 
-    $(window).scroll(function(e) {
-      var distanceToBottom = $(document).height() - $(window).scrollTop() - $(window).height();
-      var isLoading = $('#ActivityIndicator').css('display') != 'none';
-      if (distanceToBottom <= 0 && !isLoading) {
-        if (UIActivityLoader.hasMore) {
-          $('#ActivityIndicator').animate({'display': 'block'}, 2000, function() {
-                                                                    $('#ActivityIndicator').show();
-                                                                    $('#ActivitiesLoader').click();
-                                                                  });
-        }
+    $(document).ready(function() {
+      // check onLoad page.
+      if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
+        $(window).scrollTop($(document).height() - $(window).height() - (UIActivityLoader.delta+1));
       }
+      $(window).scroll(function(e) {
+        var distanceToBottom = UIActivityLoader.scrollBottom();
+        var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator'); 
+        loadAnimation.stop();
+        var isLoading = loadAnimation.css('display') != 'none';
+        if (distanceToBottom <= UIActivityLoader.delta && !isLoading) {
+          if (UIActivityLoader.hasMore) {
+            loadAnimation
+              .animate({'display': 'block'}, 
+                500, function() {
+                  $(this).show();
+                  $('div.BottomContainer:last')[0].scrollIntoView(true);
+                  $('#ActivitiesLoader').click();
+                });
+          }
+        }
+      });
     });
+
   },
   setStatus : function(hasMore) {
+    if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
+      $(window).scrollTop($(window).scrollTop()-5);
+    }
     UIActivityLoader.hasMore = hasMore;
     UIActivityLoader.initIndicator();
   },
   initIndicator : function() {
-    $('#ActivityIndicator').remove();
-    var activityIndicator = $('<div>').attr('id', 'ActivityIndicator');
+    $('#UIActivitiesLoader').find('div.ActivityIndicator').remove();
+    var activityIndicator = $('<div class="ActivityIndicator" id="ActivityIndicator" style="display:none"></div>');
     for (var i=1; i < 9; i++) {
-      activityIndicator.append($("<div>").attr("id", "rotateG_0" + i).addClass("blockG"));
+      activityIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
     }
-    activityIndicator.insertAfter('#UIActivitiesContainer');
+    activityIndicator.appendTo('#UIActivitiesLoader');
   }
 }
-window.jq = $;
+
 _module.UIActivityLoader = UIActivityLoader;
