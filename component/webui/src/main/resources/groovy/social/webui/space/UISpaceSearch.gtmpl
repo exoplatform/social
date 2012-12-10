@@ -89,11 +89,7 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		</div>
 		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
 	</div>
-    
-	
-		
-	
-
+ 
 	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 			
 	<ul class='nav nav-tabs'>
