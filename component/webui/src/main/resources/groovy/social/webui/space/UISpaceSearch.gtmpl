@@ -90,36 +90,6 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
 	</div>
     
-	<!--search by directory-->
-	<div class="boxSpaceList">
-		<!--div class="SpaceListTitle">
-		  $spaceFilterLabel
-		</div-->
-		<h4 class="titleWithBorder">Spaces Found</h4>
-		<!--div class="DirectoryNormalBox"-->
-		<ul class="letterList">	
-			<li>
-			<% if ((selectedChar != null) && (selectedChar == "All")) { %>
-					<a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-			<%} else {%>
-					<a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-			<% } %>
-			</li>
-			<% for (ch in alphabets) { %>
-			<li>
-			<% if ((selectedChar != null) && (selectedChar == ch)) { %>
-				<a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-			<%} else {%>
-				<a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-			<% } %>
-			</li>
-			<% } %>
-		</ul>
-		<!--/div-->
-	</div>
-		
-	<% uiform.end() %>
-	
 	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 			
 	<ul class='nav nav-tabs'>
@@ -129,13 +99,26 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		<li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
 	</ul>
 			
-	<div class="BoxSpaceList">
-		<div class="SpaceListTitle">
-				$labelSpaceFoundListing
-				<%if (uicomponent.getSpaceNum() > 0) {%>
-						$spacesOrder
-				<%}%>
-		</div>
-	</div>
-		
+  <!--search by directory-->
+  <h4 class="titleWithBorder">Spaces Found</h4>
+  <div>$spaceNum</div>
+	<ul class="letterList"> 
+	    <li>
+	    <% if ((selectedChar != null) && (selectedChar == "All")) { %>
+	            <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+	    <%} else {%>
+	            <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+	    <% } %>
+	    </li>
+	    <% for (ch in alphabets) { %>
+	    <li>
+	    <% if ((selectedChar != null) && (selectedChar == ch)) { %>
+	        <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+	    <%} else {%>
+	        <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+	    <% } %>
+	    </li>
+	    <% } %>
+	</ul>
+	<% uiform.end() %>
 </div>

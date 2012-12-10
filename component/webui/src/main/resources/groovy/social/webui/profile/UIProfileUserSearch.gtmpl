@@ -109,13 +109,20 @@
     </div>
    </div>
     
-    <div class="UISocTitleBar">
-        <div class="TitleBar Bold">
-		  ${contactsDirectory}
-		</div>
-    </div>
+     <% if (uicomponent.isHasPeopleTab()) {%>
+     <ul class="nav nav-tabs">
+		  <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
+		  <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
+		  <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
+		  <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
+     </ul>
+    <% } %>
+ 
+	 <div class="UISocTitleBar">
+	  <div class="TitleBar Bold"> $peopleFoundLabel </div>
+	 </div>
 
-    <ul class="DirectorySpaces LetterList"  id="DirectorySpaces">
+	 <ul class="DirectorySpaces LetterList"  id="DirectorySpaces">
      
      <% if (uicomponentId == "UIPeopleSearch") {%>
             <li>
@@ -143,18 +150,6 @@
      <% } %>
     </ul>
     
-     <% if (uicomponent.isHasPeopleTab()) {%>
-     <ul class="nav nav-tabs">
-		  <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
-		  <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
-		  <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
-		  <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
-     </ul>
-    <% } %>
- 
-	 <div class="UISocTitleBar">
-	  <div class="TitleBar Bold"> $peopleFoundLabel </div>
-	 </div>
  <% uiform.end() %>
  
 </div>
