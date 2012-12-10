@@ -122,6 +122,11 @@
 	font-size:10.5px;
 }
 
+.exo-mentions .ReplaceTextArea .cursorText {
+  display: inline;
+  width: 0px;
+}
+
 .exo-mentions .placeholder {
   color: gray;
   opacity: 0.85;
