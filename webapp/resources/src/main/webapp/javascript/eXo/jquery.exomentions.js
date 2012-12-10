@@ -164,7 +164,7 @@
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery = '';
-    var cursor = '<div id="cursorText"></div>&nbsp;';
+    var cursor = '<div class="cursorText"></div>&nbsp;';
     // action add link
     var ActionLink = {
       isRun : false,
@@ -242,7 +242,7 @@
       var currentMessage = getInputBoxFullValue();
 
       // Using a regex to figure out positions
-      var regex = new RegExp("\\" + settings.triggerChar + currentDataQuery, "gi");
+      var regex = new RegExp("\\ " + settings.triggerChar + currentDataQuery, "gi");
       regex.exec(currentMessage);
 
       var startCaretPosition = regex.lastIndex - currentDataQuery.length - 1;
@@ -296,8 +296,8 @@
             var t = $(this).data('indexMS').indexMS;
             mentionsCollection.splice(t, 1);
             var parent = $(this).parent();
-            $('<div id="cursorText"></div>').insertAfter(parent);
-            var tx = document.createTextNode('@');
+            $('<div class="cursorText"></div>').insertAfter(parent);
+            var tx = document.createTextNode(settings.triggerChar);
             $(tx).insertAfter(parent);
             parent.remove();
             updateValues();
@@ -338,7 +338,7 @@
 
     function setCaratPosition(inputField) {
       if (inputField) {
-        var cursorText = inputField.find('#cursorText');
+        var cursorText = inputField.find('.cursorText');
         if (inputField.val().length != 0) {
 
           var elm = inputField[0];
@@ -408,6 +408,7 @@
 
     function onInputBoxClick(e) {
       if(elmAutocompleteList.find('li').length > 0) {
+        setCaratPosition(elmInputBox);
         elmAutocompleteList.show();
       } else {
         resetBuffer();
@@ -416,6 +417,16 @@
 
     function onInputBoxBlur(e) {
       hideAutoComplete(false);
+      if(elmAutocompleteList.find('li').length > 0) {
+        var value = elmInputBox.value();
+        var type = inputBuffer.join('');
+        if(value.indexOf(type) > 0) {
+          type = ' ' + type;
+        }
+        log(type)
+        value = $.trim(value.replace(type, type+'<div class="cursorText"></div>'));
+        elmInputBox.val(value);
+      }
       saveCacheData();
       if (getInputBoxValue().length === 0) {
         enabledPlaceholder();
