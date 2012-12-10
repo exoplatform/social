@@ -1,0 +1,34 @@
+
+.uiFilterList {
+	padding: 10px 0;
+	.result {
+		.number {
+			color: @linkColor;
+			font-size: 30px;
+			font-weight: bold;
+			margin-right: 10px;
+			vertical-align: bottom;
+		}
+	}
+	.letterList {
+		margin: 15px 0;
+		li {
+			display: inline-block;
+			a {
+				.uiActionWithLabel;
+				border: 1px solid #d9d9d9;
+				color: @textColor;
+				.size(22px, 23px);
+				line-height: 22px;
+				text-align: center;
+				padding: 0;
+				.border-radius(4px);
+			}
+			a.selected {
+			 #StatusElements .StatusActive();
+			 color: @linkColor;
+			 font-weight: bold;
+			}
+		}
+	}
+}
