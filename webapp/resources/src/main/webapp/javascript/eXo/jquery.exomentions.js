@@ -458,6 +458,7 @@
           onInputBoxInput(e);
         }
       }
+      disabledPlaceholder();
     }
 
     function onInputBoxKeyDown(e) {
@@ -496,9 +497,8 @@
             hideAutoComplete();
           }
         }
-        if (getInputBoxValue().length === 1) {
-          enabledPlaceholder();
-        } else {
+        
+        if (elmInputBox.val().length > 1) {
           var before = elmInputBox.value();
           elmInputBox.animate({
             'cursor' : 'wait'
@@ -519,8 +519,7 @@
               var fVal = after.substring(0, indexChanged);
               var lVal = after.substring(indexChanged, after.length);
               var t = lVal.indexOf(' ');
-              if (t < 0)
-                t = lVal.length;
+              if (t < 0) t = lVal.length;
               lVal = lVal.substring(0, t);
               var hasTrigger = hasTriggerChar(fVal + lVal);
               if (hasTrigger != false) {
@@ -611,7 +610,7 @@
       checkAutoAddLink(e);
 
       if(getInputBoxValue().length === 0) {
-        enabledPlaceholder
+        enabledPlaceholder();
       } else {
         disabledPlaceholder();
       }
@@ -678,11 +677,6 @@
           });
           elm.triggerHandler(e);
           elm.trigger(e1);
-
-          //
-          // resetBuffer();
-          // log('reset')
-          // inputBuffer[0] = settings.triggerChar;
         }
       } catch (err) {}
     }
@@ -921,7 +915,6 @@
     }
     
     function disabledPlaceholder() {
-      log('disabledPlaceholder.........')
       elmInputBox.parent().find('div.placeholder:first').hide();
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
