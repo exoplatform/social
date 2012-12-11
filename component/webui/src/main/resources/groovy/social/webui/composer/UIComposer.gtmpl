@@ -45,9 +45,11 @@
   foundNoMatch = foundNoMatch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   String helpSearch = _ctx.appRes("Mentions.msg.helpSearch");
   helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+  String searching = _ctx.appRes("Mentions.msg.searching");
+  searching = searching.replaceAll("'","&#39;").replaceAll('"',"&#34;");
    
   jsManager.require("SHARED/social-ui-activity-composer", "composer")
-           .addScripts("UIComposer.onLoadI18n({foundNoMatch: \"$foundNoMatch\", helpSearch: \"$helpSearch\"}); composer.UIComposer.onLoad({composerId:'$uicomponent.id', textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}'});");
+           .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"}); composer.UIComposer.onLoad({composerId:'$uicomponent.id', textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}'});");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
