@@ -104,7 +104,7 @@
       	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
       %>
         <a href="<%= spaceUrl %>" class="AvatarSpace" height="65px" width="65px">
-          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+          <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
@@ -118,13 +118,13 @@
             $space.description<br/>
           </div>
 			  <ul class="ActionContent ClearFix">
-			    <li class="FL"><a href="<%= editSpaceLink %>" title="<%= labelActionEditSpace %>" class="Action">$labelActionEditSpace</a></li>
+			    <li class="FL"><a href="<%= editSpaceLink %>" rel="tooltip" data-placement="bottom" title="<%= labelActionEditSpace %>" class="Action">$labelActionEditSpace</a></li>
 				<% if (hasMembership) { %>
 					<li class="FL Line">&nbsp;</li>
-					<li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Action" style="display:block;">$labelActionLeaveSpace</a></li>
+					<li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" class="Action" style="display:block;">$labelActionLeaveSpace</a></li>
 				<% } %>
 					<li class="FL Line">&nbsp;</li>
-					<li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" title="<%= labelActionDeleteSpace %>" class="Action">$labelActionDeleteSpace</a></li>
+					<li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionDeleteSpace %>" class="Action">$labelActionDeleteSpace</a></li>
 			  </ul>
         </div>
       </div>
@@ -133,7 +133,7 @@
       <%if (role == 2) {
       %>
         <a href="<%= spaceUrl %>" class="AvatarSpace">
-          <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+          <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
           <span class="BorderTop"></span>
           <span class="BorderBottom"></span>
         </a>
@@ -147,7 +147,7 @@
             $space.description<br/>
           </div>
 		      <ul class="ActionContent ClearFix">
-			      <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= labelActionLeaveSpace %>" class="Action">$labelActionLeaveSpace</a></li>
+			      <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" class="Action">$labelActionLeaveSpace</a></li>
 		      </ul>
         </div>
     </div>

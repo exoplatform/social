@@ -33,7 +33,7 @@
 %>
 <div class="$uicomponent.id">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-	<button class="btn" rel="tooltip" title="$addApplication" onclick="$addApplication">$addApplicationLabel</button>
+	<button class="btn" rel="tooltip" data-placement="bottom" title="$addApplication" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
   <div class="ContainerSpace">
   <% for(app in applications) {
@@ -46,14 +46,14 @@
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
   %>
     <div class="ContentSpace ClearFix">
-      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" title="$applicationIconTitle" alt="$applicationIconTitle" /></div>
+      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" rel="tooltip" data-placement="bottom" title="$applicationIconTitle" /></div>
       <div class="CommunityContainer">
         <div class="CommunityMane ClearFix Line">
           <div class="CommunityName FL"><%= appName %></div>
           <% if (isRemovable) { %>
           <div class="SpaceAction">
               <% def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
-              <a href="#" class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>">&nbsp;</a>
+              <a href="#" class="CenterButton RemoveButton" onclick="$removeApplication" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>">&nbsp;</a>
           </div>
           <% } %>
         </div>

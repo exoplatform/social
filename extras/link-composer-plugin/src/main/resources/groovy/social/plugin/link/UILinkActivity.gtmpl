@@ -139,15 +139,15 @@
 <div class="UIActivity">
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
-    <a class="Avatar" title="$ownerName" href="$ownerUri">
-      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName" />
+    <a class="Avatar" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
+      <img rel="tooltip" data-placement="bottom" title="$ownerName" src="$ownerAvatar"/>
 		  <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent ClearFix">
-          <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a>
+          <a class="Text" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">$ownerName</a>
         <% if (activityDeletable) {%>
           <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
         <%}%>
@@ -167,7 +167,7 @@
           if (linkImage.equals("")) {
             linkClass = "";
           } else {
-            link = "<img width=\"110px\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
+            link = "<img width=\"110px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
           }
           def embedHtml = uicomponent.getEmbedHtml();
         %>
@@ -195,7 +195,7 @@
     				def spaceName = spaceSource.displayName;
     				activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
           %>
-          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
+          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
         <%} else {%>
           <span class="DateTime">$activityPostedTime *</span>
         <% } %>
@@ -234,8 +234,8 @@
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               %>
-                <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
-                  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                <a class="AvatarPeopleBG" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+                  <img src="$personLikeAvatarImageSource" rel="tooltip" data-placement="bottom" title="$personLikeFullName" />
                 </a>
              <% })%>
             </div>
@@ -290,8 +290,8 @@
   <% } else { %>
     <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
   <% } %>
-      <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
-        <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+      <a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="AvatarCM">
+        <img width="38px" height="36px" rel="tooltip" data-placement="bottom" title="$commenterFullName" src="$commenterAvatarImgSrc" />
         <span class="BorderTopCM"></span>
         <span class="BorderBottomCM"></span>
       </a>
@@ -325,13 +325,13 @@
     <% } else { %>
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
-      <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-        <img src="$currentCommenterAvatar" title="$currentCommenterName" alt="$currentCommenterName" />
+      <a class="AvatarCM" rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
+        <img src="$currentCommenterAvatar" rel="tooltip" data-placement="bottom" title="$currentCommenterName"/>
 		    <span class="BorderTopCM"></span>
         <span class="BorderBottomCM"></span>
 		  </a>
       <div class="CommentInputBox"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
-      <button class="btn" rel="tooltip" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
+      <button class="btn" onclick="<%= uicomponent.event("PostComment") %>" rel="tooltip" data-placement="bottom" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
       </div>
      </div>
     </div>

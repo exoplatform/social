@@ -76,7 +76,7 @@
 	<% }%>
 				
             <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
+              <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
               <span class="BorderTop"></span>
               <span class="BorderBottom"></span>
             </a>
@@ -105,7 +105,7 @@
        <% if (isEditable) {%>
        <ul class="InviteTitle">
               <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
+              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
        </ul>
       <% } %>
 		</div>

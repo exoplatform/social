@@ -93,9 +93,9 @@
           }
           if (counter > 1) {
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" >$labelSimpleName</a>
+        <a href="#" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" >$labelSimpleName</a>
       <% } else { %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " >$labelSimpleName</a>
+        <a href="#" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " >$labelSimpleName</a>
       <%
          }
         }
@@ -123,7 +123,7 @@
         jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
       %>
           
-      <button class="btn" title="$shareLabel" rel="tooltip" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
+      <button class="btn" rel="tooltip" data-placement="bottom" title="$shareLabel" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
     </div>
   </div>
   <% uiform.end()%>

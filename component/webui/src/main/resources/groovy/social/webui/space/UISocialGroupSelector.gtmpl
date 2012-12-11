@@ -25,7 +25,7 @@
 							even = !even; 
 					%>
 						<div class="$rowCssClass">
-							<a class="ItemIcon" href="<%=uicomponent.event("SelectGroup", member)%>" title="$member">$member</a>
+							<a class="ItemIcon" href="<%=uicomponent.event("SelectGroup", member)%>" rel="tooltip" data-placement="bottom" title="$member">$member</a>
 						</div>
 						<%}%>
 					<% } else if( groups != null && groups.size() == 0 ) { %>

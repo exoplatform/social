@@ -57,7 +57,7 @@
                    def actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
                    def link = uicomponent.event(action);
               %>
-           <button class="btn" rel="tooltip" title="$actionLabel" onclick="$link">$actionLabel</button>
+           <button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$actionLabel" onclick="$link">$actionLabel</button>
        		<% } %>
         </div>
     </div>

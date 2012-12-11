@@ -52,7 +52,7 @@
            adminProfileURL = LinkProvider.getUserProfileUri(admin.getRemoteId());
            if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
        } %>
-				<img class="ImgAvatarRoot" src="$adminImageSource" title="$adminName" alt="$adminName" />
+				<img class="ImgAvatarRoot" src="$adminImageSource" rel="tooltip" data-placement="bottom" title="$adminName"/>
         <a href="${adminProfileURL}" class="TitleAvatarRoot">($adminLabel $adminName)</a>
     </div>
     <!-- End left section -->
@@ -80,7 +80,7 @@
 	          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
 	      	%>
 	        <div class="$clzz ClearFix">
-						<img class="ImgAvatar" src="$leaderImageSource" title="$userName" alt="$userName" />
+						<img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
 						<div class="CommunityMane ClearFix">
 							<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
 						</div>
@@ -119,7 +119,7 @@
 				  }
       %>
         <div class="$cssClass ClearFix">
-					<img class="ImgAvatar" src="$memberImageSource" title="$memberUserName" alt="$memberUserName" />
+					<img class="ImgAvatar" src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName"/>
 					<div class="CommunityMane ClearFix">
 							<a href="${profileURL}" class="CommunityName InviteTitle">$memberUserName</a>
 					</div>

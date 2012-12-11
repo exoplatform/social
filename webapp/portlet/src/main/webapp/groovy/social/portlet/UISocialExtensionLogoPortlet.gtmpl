@@ -22,5 +22,5 @@
   def titleLogo = _ctx.appRes("UISocialExtensionLogoPortlet.title.Logo")
 %>
 <div class="UILogoSocialEx">
-	<a href="#" title="$titleLogo"></a>
+	<a href="#" rel="tooltip" data-placement="bottom" title="$titleLogo"></a>
 </div>

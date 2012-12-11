@@ -78,7 +78,7 @@
          <% } else {%>
           <div class="ContentSpace ClearFix"><% }%>
             <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
+              <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
               <span class="BorderTop"></span>
               <span class="BorderBottom"></span>
             </a>
@@ -106,7 +106,7 @@
         <% if (isEditable) {%>
          <ul class="InviteTitle">
               <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" title="$removeTitle">$removeTitle</a></li>
+              <li class="FL"><a href="javascript:void(0)" onclick="$removeConnectionAction" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</a></li>
          </ul>
         <% } %>	         
 	   </div>

@@ -78,10 +78,10 @@
 <div class="UISpaceMenu" id="UISpaceMenu">
   <div class="SpaceMenuPortlet ClearFix">
     <div class="UISpaceName FL ">
-      <a class="Avartar" href="$homeUrl"><img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
-      <a title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
+      <a class="Avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
+      <a rel="tooltip" data-placement="bottom" title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
       <% if (uicomponent.hasSettingPermission()) { %>
-      <a class="SpaceSettingIcon" href='$homeUrl/settings' title="$settingsLabel"><span>&nbsp</span></a>
+      <a class="SpaceSettingIcon" href='$homeUrl/settings' rel="tooltip" data-placement="bottom" title="$settingsLabel"><span>&nbsp</span></a>
       <% }%>
     </div>
 
@@ -102,7 +102,7 @@
                   <div class="LeftTab">
                     <div class="RightTab">
                       <div class="MiddleTab">
-                        <a class="HomeSpace" title="$homeLabel" href="$homeUrl">$homeLabel</a>
+                        <a class="HomeSpace" rel="tooltip" data-placement="bottom" title="$homeLabel" href="$homeUrl">$homeLabel</a>
                       </div>
                     </div>
                   </div>
@@ -130,7 +130,7 @@
                       <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
                         <span id='$nodeName' class="ApplicationAdd">$nodeLabel</span>
                       <% } else {%>
-                        <a class="ApplicationAdd" title="$nodeTitle" href="$pageURI">$nodeLabel</a>
+                        <a class="ApplicationAdd" rel="tooltip" data-placement="bottom" title="$nodeTitle" href="$pageURI">$nodeLabel</a>
                       <% }%>
                       </div>
                     </div>

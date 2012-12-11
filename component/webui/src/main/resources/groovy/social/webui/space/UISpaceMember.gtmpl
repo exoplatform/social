@@ -107,8 +107,8 @@
 			<td class="Text"><%= uicomponent.getFullName(pendingUser) %></td>
 			<td>
 				<div class="ActionContainer">
-					<a href="#" onclick="$validateAction" title="$labelValidateInvitation"><span class="ValidateButton">$labelValidateInvitation</span></a>
-					<a href="#" onclick="$declineAction" title="$labelDeclineInvitation"><span class="DeclineButton">$labelDeclineInvitation</span></a>
+					<a href="#" onclick="$validateAction" rel="tooltip" data-placement="bottom" title="$labelValidateInvitation"><span class="ValidateButton">$labelValidateInvitation</span></a>
+					<a href="#" onclick="$declineAction" rel="tooltip" data-placement="bottom" title="$labelDeclineInvitation"><span class="DeclineButton">$labelDeclineInvitation</span></a>
 				</div>
 			</td>
 		</tr>
@@ -146,7 +146,7 @@
 			<td class="Text"><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
 				<div class="ActionContainer">
-					<a href="#" onclick="$revokeAction" title="$labelCancelRequest"><span class="DeleteButton IconDelete">$labelCancelRequest</span></a>
+					<a href="#" onclick="$revokeAction" rel="tooltip" data-placement="bottom" title="$labelCancelRequest"><span class="DeleteButton IconDelete">$labelCancelRequest</span></a>
 				</div>
 			</td>
 		</tr>
@@ -197,22 +197,22 @@
 					<% if(isLeader) { %>
 
 					<% if(uicomponent.isCurrentUser(user)) { %>
-					<a href="#" onclick="$selfRemoveLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
+					<a href="#" onclick="$selfRemoveLeader" rel="tooltip" data-placement="bottom" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
 					<% } else {%>
-					<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRevokeManager"><span
+					<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" rel="tooltip" data-placement="bottom" title="$labelRevokeManager"><span
 						class="ManageMemButtonSub label">$labelRevokeManager</span></a>
 					<% } %>
 
 					<% } else { %>
 
-					<a onclick="$makeLeader" title="$labelGrantManager"><span
+					<a onclick="$makeLeader" rel="tooltip" data-placement="bottom" title="$labelGrantManager"><span
 						class="ManageMemButtonAdd label">$labelGrantManager</span></a>
 
 					<% } %>
 					<% if(uicomponent.isCurrentUser(user)) { %>
-					<a href="#" onclick="$removeOwnerAction" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
+					<a href="#" onclick="$removeOwnerAction" rel="tooltip" data-placement="bottom" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
 					<% } else { %>
-					<a href="#" onclick="$removeAction" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
+					<a href="#" onclick="$removeAction" rel="tooltip" data-placement="bottom" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
 					<% } %>
 				</div>
 			</td>

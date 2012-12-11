@@ -67,7 +67,7 @@
     <% } else  {%>
     <div class="NormalTab Tab">
     <%}%>
-      <a href="${myfriendsURL}" title="$labelRelationTitle" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
+      <a href="${myfriendsURL}" rel="tooltip" data-placement="bottom" title="$labelRelationTitle" class="FriendIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%></a>
     </div>
   <% if (isOwner == true) { %>
     <% if (selectedNode == "invitations") { %>
@@ -75,14 +75,14 @@
     <% } else  { %>
     <div class="NormalTab Tab">
     <% } %>
-      <a href="${invitationsURL}" title="$labelInvitationTitle" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
+      <a href="${invitationsURL}" rel="tooltip" data-placement="bottom" title="$labelInvitationTitle" class="InviIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Invitations")%></a>
     </div>
     <% if (selectedNode == "requests")  { %>
     <div class="SelectedTab Tab">
     <% } else { %>
     <div class="NormalTab Tab">
     <% } %>
-      <a href="${requestsURL}" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
+      <a href="${requestsURL}" rel="tooltip" data-placement="bottom" title="$labelRequestTitle" class="RequestIcon"><%=_ctx.appRes(uicomponent.getId() + ".label.Requests")%></a>
     </div>
   <% } %>
   </div>

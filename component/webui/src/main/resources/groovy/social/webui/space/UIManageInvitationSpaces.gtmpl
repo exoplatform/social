@@ -76,7 +76,7 @@
     <div class="NormalBox ClearFix FL">
     <% } %>
       <div class="AvatarSpace">
-        <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+        <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
         <span class="BorderTop"></span>
         <span class="BorderBottom"></span>
       </div>
@@ -90,9 +90,9 @@
           $space.description
         </div>
 	      <ul class="ActionContent ClearFix">
-		      <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptSpaceAction %>" title="<%= acceptSpaceActionLabel %>" class="Action">$acceptSpaceActionLabel</a></li>
+		      <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= acceptSpaceActionLabel %>" class="Action">$acceptSpaceActionLabel</a></li>
 		      <li class="Line FL">&nbsp;</li>
-		      <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreSpaceAction %>" title="<%= ignoreSpaceActionLabel %>" class="Action">$ignoreSpaceActionLabel</a></li>
+		      <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= ignoreSpaceActionLabel %>" class="Action">$ignoreSpaceActionLabel</a></li>
 	      </ul>
       </div>
     </div>

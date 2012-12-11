@@ -106,7 +106,7 @@ link
       if(UILinkUtil.isImageLink(link)){
         %>
           <div>
-            <a href="$link" target="_blank"><img src="$link" title="$title" alt="$title" height="120"/></a> 
+            <a href="$link" target="_blank"><img src="$link" rel="tooltip" data-placement="bottom" title="$title" height="120"/></a> 
           </div>
         <%
       }
@@ -120,7 +120,7 @@ link
                 <%
                   def thumbnailClass = "ThumbnailShown";
                   images.each({ %>
-                   <img src="$it" class="$thumbnailClass" title="$title" alt="$title" />
+                   <img src="$it" class="$thumbnailClass" rel="tooltip" data-placement="bottom" title="$title"/>
                   <%
                     thumbnailClass = "ThumbnailHidden";
                   })%>
@@ -139,7 +139,7 @@ link
               </div>
             </div>
             <div class="ThumbnailOption ClearFix">
-              <input title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
+              <input rel="tooltip" data-placement="bottom" title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
               <label for="ThumbnailCheckbox" class="Label FL">$noThumbnail</label>
             </div>
             <% } %>

@@ -42,11 +42,11 @@ def applicationList = uicomponent.getApplicationList();
         def srcBG = application.getIconURL();
     %>
       <div class="Application ApplicationDescription ClearFix">
-          <img class="PortletIcon" onerror="src='$srcErrorBG'" title="$application.displayName" alt="$application.displayName" src="$srcBG">
+          <img class="PortletIcon" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG">
           <div class="ApplicationContent">
             <div class="TitleBarApplication ClearFix">
               <div class="Title">$application.displayName</div>
-              <div class="AddButton" title="$installApplicationLabel" onclick="$addApplicationAction"></div>
+              <div class="AddButton" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction"></div>
             </div>
             <div class="ApplicationContentLabel">
                 $typeLabel:

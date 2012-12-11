@@ -49,11 +49,11 @@
         		<td class="FieldComponent">
         			<div class="SpaceInfoBound">
 								<div class="SpaceInfoLeft">
-									<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-										<img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
+									<a href="#" class="Image" onclick="$changeAvatar" rel="tooltip" data-placement="bottom" title="$clickChangeAvatar">
+										<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" height="64px" width="64px"/>
 									</a>
 									<div class="ChangeAvaButton">
-										<button class="btn" rel="tooltip" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
+										<button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
 									</div>
 								</div>
 							</div>
@@ -74,7 +74,7 @@
         </tbody>
       </table>
       <div class="uiAction">
-	      <button class="btn" rel="tooltip" title="$saveLabel" onclick="$saveAction">$saveLabel</button>
+	      <button class="btn" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button>
 	    </div>
       
     </div>

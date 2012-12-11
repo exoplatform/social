@@ -54,7 +54,7 @@ jsmanager.require("SHARED/social-category-selector", "categorySelector").addScri
         itemClass = "SelectedItem Item";
       }
   %>
-    <div id="$applicationCategory.displayName" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
+    <div id="$applicationCategory.displayName" rel="tooltip" data-placement="bottom" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
 	  <div class="ItemTitle" id="$applicationCategory.name">
 		<div class="CenterItemTitle">
 		  $applicationCategory.displayName

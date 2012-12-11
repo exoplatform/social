@@ -38,14 +38,14 @@
 
 <div id="$uicomponent.id" class="UIAvatarUploadContent">
   <div class="AvatarInfo ClearFix">
-    <a class="ImageAvatar"><img src="$imageSource" title="$avatarTitle" alt="$avatarTitle" /></a>
+    <a class="ImageAvatar"><img src="$imageSource" rel="tooltip" data-placement="bottom" title="$avatarTitle" alt="$avatarTitle" /></a>
     <div><span>$lalbelFileName</span></span> <%= avatarAttachment.fileName %></div>
     <div><span>$labelFileType</span> <%= avatarAttachment.mimeType %></div>
     <div><span>$labelImageSize</span> <%= avatarAttachment.size %></div>
     
   </div>
   <div class="uiAction">
-      <button class="btn" rel="tooltip" title="$labelSave" onclick="$saveAction">$labelSave</button>
-      <button class="btn" rel="tooltip" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
+      <button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelSave" onclick="$saveAction">$labelSave</button>
+      <button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
     </div>
 </div>

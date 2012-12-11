@@ -20,8 +20,8 @@
      def addNodeAction = uicomponent.event("AddNode") + "; return false;"
      def saveAction = uicomponent.event("Save") + "; return false;"
   %>
-  <button class="btn" rel="tooltip" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
+  <button class="btn" rel="tooltip" data-placement="bottom" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
   <div class="uiAction">
-	  <button class="btn" rel="tooltip" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
+	  <button class="btn" rel="tooltip" data-placement="bottom" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
 	</div>
 </div>

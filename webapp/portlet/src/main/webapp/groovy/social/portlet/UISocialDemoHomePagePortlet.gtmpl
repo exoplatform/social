@@ -62,31 +62,31 @@
         <div class="RightSocialHomepage">
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon" title="$titleContactUs"></a>
+              <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="IconContactUs Icon" rel="tooltip" data-placement="bottom" title="$titleContactUs"></a>
               <a href="http://www.exoplatform.com/company/public/website/company/contact-us" target="_blank" class="TxtLinkIcon">$titleContactUs</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon" title="$titleResourceCenter"></a>
+              <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="IconResource Icon" rel="tooltip" data-placement="bottom" title="$titleResourceCenter"></a>
               <a href="http://www.exoplatform.com/company/public/website/resource-center" target="_blank" class="TxtLinkIcon">$titleResourceCenter</a>
             </div>
           </div>
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon" title="$titleSupport"></a>
+              <a href="http://support.exoplatform.org/" target="_blank" class="IconSupport Icon" rel="tooltip" data-placement="bottom" title="$titleSupport"></a>
               <a href="http://support.exoplatform.org/" target="_blank" class="TxtLinkIcon">$titleSupport</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon" title="$titleTraining"></a>
+              <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="IconTraining Icon" rel="tooltip" data-placement="bottom" title="$titleTraining"></a>
               <a href="http://www.exoplatform.com/company/public/website/services/development/development-training"  target="_blank" class="TxtLinkIcon">$titleTraining</a>
             </div>
           </div>
           <div class="ClearFix">
             <div class="BlockWebsite FL">
-              <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon" title="$titleExoBlog"></a>
+              <a href="http://blog.exoplatform.org" target="_blank" class="IconBlog Icon" rel="tooltip" data-placement="bottom" rel="tooltip" data-placement="bottom" title="$titleExoBlog"></a>
               <a href="http://blog.exoplatform.org" target="_blank" class="TxtLinkIcon">$titleExoBlog</a>
             </div>
             <div class="BlockResource FL">
-              <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon" title="$titleExoWebsite"></a>
+              <a href="http://www.exoplatform.com" target="_blank" class="IconWebsite Icon" rel="tooltip" data-placement="bottom" rel="tooltip" data-placement="bottom" title="$titleExoWebsite"></a>
               <a href="http://www.exoplatform.com" target="_blank" class="TxtLinkIcon">$titleExoWebsite</a>
             </div>
           </div>
