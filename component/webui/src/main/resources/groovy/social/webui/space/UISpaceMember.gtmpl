@@ -57,7 +57,7 @@
   
   def invitedUserNames = uicomponent.invitedUserNames;
 %>
-<div class="$uicomponent.id">
+<div id="$uicomponent.id" class="uiSpaceMember">
 <% uiform.begin() %>
 
 	<%
@@ -65,12 +65,14 @@
 	String searchGroupAction = uicomponent.event("SearchGroup") + "; return false;";
 	String inviteAction = uicomponent.event("Invite") + "; return false;";
 	%>
-	<span class="AddInvite"><label for="user">$labelInviteUsers</label> :<% uiform.renderField("user") %></span>
-	<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchUserAction"
-		 title="$labelSearchUserAction">&nbsp;</a>
-	<a href="#" class="InviteButton UIActionContainer ButtonSelectUse" onclick="$searchGroupAction"
-		 title="$labelSearchGroupAction">&nbsp;</a>
-	<button class="btn" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
+	<div class="addInvite">
+		<% uiform.renderField("user") %>
+		<span class="groupPermissionBox">
+			<a rel="tooltip" data-placement="bottom" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser"></i></a>
+			<a rel="tooltip" data-placement="bottom" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup"></i></a>	 
+			<button class="btn" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
+		</span>
+	</div>	
 	<%
     if ((invitedUserNames != null) && uicomponent.isHasErr()) {
   %>
@@ -86,14 +88,14 @@
 
 	<!-- Pending users table -->
 	<% if (pendingUsers.size() > 0) { %>
-	<table class="UIGrid" cellspacing="0">
+	<table class="uiGrid table  table-hover table-striped">
 		<thead>
 		<tr>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".title.pending")%></th>
+			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		</tr>
 		</thead>
-		<tbody class="portlet-table-body">
+		<tbody>
 		<%
 		boolean even = true;
 		for(pendingUser in pendingUsers)
@@ -103,13 +105,11 @@
 		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
 		%>
-		<tr class="$rowClass">
-			<td class="Text"><%= uicomponent.getFullName(pendingUser) %></td>
-			<td>
-				<div class="ActionContainer">
-					<a href="#" onclick="$validateAction" rel="tooltip" data-placement="bottom" title="$labelValidateInvitation"><span class="ValidateButton">$labelValidateInvitation</span></a>
-					<a href="#" onclick="$declineAction" rel="tooltip" data-placement="bottom" title="$labelDeclineInvitation"><span class="DeclineButton">$labelDeclineInvitation</span></a>
-				</div>
+		<tr>
+			<td><%= uicomponent.getFullName(pendingUser) %></td>
+			<td class="center" width="30%">
+					<a  onclick="$validateAction" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate"></i></a>
+					<a  onclick="$declineAction" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove"></i></a>
 			</td>
 		</tr>
 		<% }%>
@@ -127,14 +127,14 @@
 	<!-- Invited users table -->
 	<% if(invitedUsers.size() > 0) { %>
 
-	<table class="UIGrid" cellspacing="0">
+	<table class="uiGrid table  table-hover table-striped" >
 		<thead>
 		<tr>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".title.invited")%></th>
+			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		</tr>
 		</thead>
-		<tbody class="portlet-table-body">
+		<tbody >
 		<%
 		boolean even = true;
 		for(invitedUser in invitedUsers) {
@@ -142,12 +142,19 @@
 		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
 		%>
+<<<<<<< HEAD
 		<tr class="$rowClass">
 			<td class="Text"><%= uicomponent.getFullName(invitedUser) %></td>
 			<td>
 				<div class="ActionContainer">
 					<a href="#" onclick="$revokeAction" rel="tooltip" data-placement="bottom" title="$labelCancelRequest"><span class="DeleteButton IconDelete">$labelCancelRequest</span></a>
 				</div>
+=======
+		<tr>
+			<td><%= uicomponent.getFullName(invitedUser) %></td>
+			<td class="center" width="15%">
+				<a  onclick="$revokeAction" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete"></i></a>
+>>>>>>> UI-2056-[PLF 4] Social - Space Configuration - Members
 			</td>
 		</tr>
 		<% } /*end for*/%>
@@ -164,14 +171,15 @@
 
 	<!-- Existing users table -->
 	<% if(existingUsers.size() > 0) { %>
-	<table class="UIGrid" cellspacing="0">
+	<table class="uiGrid table  table-hover table-striped">
 		<thead>
 		<tr>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
-			<th class="portlet-table-header"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
+			<th><%= _ctx.appRes(uicomponent.getId() + ".title.members")%></th>
+			<th class="center">Manager</th>
+			<th class="center"><%= _ctx.appRes(uicomponent.getId() + ".button.actions")%></th>
 		</tr>
 		</thead>
-		<tbody class="portlet-table-body">
+		<tbody >
 		<%
 		boolean even = true;
 		for(user in existingUsers) {
@@ -190,6 +198,7 @@
 		String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
 		%>
+<<<<<<< HEAD
 		<tr class="$rowClass">
 			<td class="Text"><%= uicomponent.getFullName(user) %></td>
 			<td>
@@ -215,6 +224,32 @@
 					<a href="#" onclick="$removeAction" rel="tooltip" data-placement="bottom" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
 					<% } %>
 				</div>
+=======
+		<tr>
+			<td><%= uicomponent.getFullName(user) %></td>
+			<td class="center" width="15%"><% if(isLeader) { %>
+
+				<% if(uicomponent.isCurrentUser(user)) { %>
+				<a  onclick="$selfRemoveLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
+				<% } else {%>
+				<a  href="$homeSpaceUrl" onclick="$removeLeader" title="$labelRevokeManager"><span
+					class="ManageMemButtonSub label">$labelRevokeManager</span></a>
+				<% } %>
+
+				<% } else { %>
+
+				<a onclick="$makeLeader" title="$labelGrantManager"><span
+					class="ManageMemButtonAdd label">$labelGrantManager</span></a>
+
+				<% } %>
+			</td>
+			<td class="center" width="15%">				
+				<% if(uicomponent.isCurrentUser(user)) { %>
+				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<% } else { %>
+				<a  onclick="$removeAction" title="$labelRemoveMember" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<% } %>
+>>>>>>> UI-2056-[PLF 4] Social - Space Configuration - Members
 			</td>
 		</tr>
 		<% } %>
