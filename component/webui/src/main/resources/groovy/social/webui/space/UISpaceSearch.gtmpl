@@ -90,8 +90,6 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
 	</div>
  
-	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
-			
 	<ul class='nav nav-tabs'>
 		<li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
 		<li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
@@ -130,4 +128,5 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		
 	</div>
 	<% uiform.end() %>
+	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
