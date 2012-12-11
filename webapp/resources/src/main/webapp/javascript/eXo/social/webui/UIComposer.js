@@ -31,7 +31,11 @@
     userName : (portal.userName) ? portal.userName : ''
   };
   eXo.social.I18n = eXo.social.I18n || {};
-  eXo.social.I18n.mentions = eXo.social.I18n.mentions || {};
+  eXo.social.I18n.mentions = eXo.social.I18n.mentions || {
+    helpSearch: 'Type to start searching for users.',
+    searching: 'Searching for ',
+    foundNoMatch : 'Found no matching users for '
+  };
 })(window.eXo);
 
 var UIComposer = {

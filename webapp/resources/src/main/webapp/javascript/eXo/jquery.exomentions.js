@@ -44,8 +44,9 @@
       live : 30000 // MiniSeconds
     },
     messages : {
-      foundNoMatch : 'Found no matching users for ',
-      helpSearch: 'Type to start searching for users.'
+      helpSearch: 'Type to start searching for users.',
+      searching: 'Searching for ',
+      foundNoMatch : 'Found no matching users for '
     },
     templates : {
       wrapper : _.template('<div class="exo-mentions"></div>'),
@@ -429,7 +430,6 @@
         if(value.indexOf(type) > 0) {
           type = ' ' + type;
         }
-        log(type)
         value = $.trim(value.replace(type, type+'<div class="cursorText"></div>'));
         elmInputBox.val(value);
       }
@@ -746,12 +746,17 @@
       }
 
       //
+      if(query != '' && results === 'searching') {
+        addMessageMenu(elmDropDownList, (settings.messages.searching + ' <strong>' + query + '</strong>.'));
+      }
+
+      //
       if ((results === null || results === undefined || results.length === 0) && query != '') {
         addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
       }
       
       
-      if (results && results.length > 0 && (query != '' || settings.firstShowAll)) {
+      if (results && results.length > 0 && results != 'searching' && (query != '' || settings.firstShowAll)) {
         _.each(results, function(item, index) {
           var itemUid = _.uniqueId('mention_');
 
@@ -817,7 +822,7 @@
     }
 
     function search(query) {
-      populateDropdown('', null);
+      populateDropdown(query, 'searching');
       settings.onDataRequest.call(this, 'search', query, function(responseData) {
         populateDropdown(query, responseData);
         saveCaseSearch(query, responseData);
