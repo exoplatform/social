@@ -68,7 +68,6 @@
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
     <!-- Juzu version is required to create the assembly -->
     <org.juzu.version>0.5.1</org.juzu.version>
-    <org.apache.lucene.version>3.5.0</org.apache.lucene.version>
   </properties>
   <dependencyManagement>
     <dependencies>
