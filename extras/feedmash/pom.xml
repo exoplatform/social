@@ -48,7 +48,7 @@
       <artifactId>shindig-social-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>quartz</groupId>
+      <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <exclusions>
         <!-- commons-logging is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
