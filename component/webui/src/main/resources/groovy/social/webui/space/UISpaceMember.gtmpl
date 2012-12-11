@@ -68,10 +68,10 @@
 	<div class="addInvite">
 		<% uiform.renderField("user") %>
 		<span class="groupPermissionBox">
-			<a rel="tooltip" data-placement="bottom" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser"></i></a>
-			<a rel="tooltip" data-placement="bottom" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup"></i></a>	 
-			<button class="btn" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
+			<a rel="tooltip" data-placement="bottom" href="javascript:void(0);" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser"></i></a>
+			<a rel="tooltip" data-placement="bottom" href="javascript:void(0);" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup"></i></a>	 			
 		</span>
+		<button class="btn" data-placement="bottom" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
 	</div>	
 	<%
     if ((invitedUserNames != null) && uicomponent.isHasErr()) {
@@ -108,8 +108,8 @@
 		<tr>
 			<td><%= uicomponent.getFullName(pendingUser) %></td>
 			<td class="center" width="30%">
-					<a  onclick="$validateAction" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate"></i></a>
-					<a  onclick="$declineAction" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove"></i></a>
+					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate"></i></a>
+					<a  onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove"></i></a>
 			</td>
 		</tr>
 		<% }%>
@@ -142,19 +142,10 @@
 		String rowClass = even ? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
 		%>
-<<<<<<< HEAD
-		<tr class="$rowClass">
-			<td class="Text"><%= uicomponent.getFullName(invitedUser) %></td>
-			<td>
-				<div class="ActionContainer">
-					<a href="#" onclick="$revokeAction" rel="tooltip" data-placement="bottom" title="$labelCancelRequest"><span class="DeleteButton IconDelete">$labelCancelRequest</span></a>
-				</div>
-=======
 		<tr>
 			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td class="center" width="15%">
-				<a  onclick="$revokeAction" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete"></i></a>
->>>>>>> UI-2056-[PLF 4] Social - Space Configuration - Members
+				<a  onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete"></i></a>
 			</td>
 		</tr>
 		<% } /*end for*/%>
@@ -198,33 +189,6 @@
 		String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
 		%>
-<<<<<<< HEAD
-		<tr class="$rowClass">
-			<td class="Text"><%= uicomponent.getFullName(user) %></td>
-			<td>
-				<div class="ActionContainer">
-					<% if(isLeader) { %>
-
-					<% if(uicomponent.isCurrentUser(user)) { %>
-					<a href="#" onclick="$selfRemoveLeader" rel="tooltip" data-placement="bottom" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
-					<% } else {%>
-					<a href="#" href="$homeSpaceUrl" onclick="$removeLeader" rel="tooltip" data-placement="bottom" title="$labelRevokeManager"><span
-						class="ManageMemButtonSub label">$labelRevokeManager</span></a>
-					<% } %>
-
-					<% } else { %>
-
-					<a onclick="$makeLeader" rel="tooltip" data-placement="bottom" title="$labelGrantManager"><span
-						class="ManageMemButtonAdd label">$labelGrantManager</span></a>
-
-					<% } %>
-					<% if(uicomponent.isCurrentUser(user)) { %>
-					<a href="#" onclick="$removeOwnerAction" rel="tooltip" data-placement="bottom" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
-					<% } else { %>
-					<a href="#" onclick="$removeAction" rel="tooltip" data-placement="bottom" title="$labelRemoveMember"><span class="DeleteButton IconDelete">$labelRemoveMember</span></a>
-					<% } %>
-				</div>
-=======
 		<tr>
 			<td><%= uicomponent.getFullName(user) %></td>
 			<td class="center" width="15%"><% if(isLeader) { %>
@@ -245,11 +209,10 @@
 			</td>
 			<td class="center" width="15%">				
 				<% if(uicomponent.isCurrentUser(user)) { %>
-				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
 				<% } else { %>
-				<a  onclick="$removeAction" title="$labelRemoveMember" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
 				<% } %>
->>>>>>> UI-2056-[PLF 4] Social - Space Configuration - Members
 			</td>
 		</tr>
 		<% } %>
