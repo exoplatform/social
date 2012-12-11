@@ -22,7 +22,7 @@
   <parent>
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
-    <version>9-SNAPSHOT</version>
+    <version>9-alpha-3</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.social</groupId>
@@ -94,20 +94,9 @@
         <version>${org.exoplatform.core.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
-          <exclusion>
-            <artifactId>xstream</artifactId>
-            <groupId>xstream</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-component-common</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-        <exclusions>
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
@@ -120,12 +109,12 @@
         <version>${org.exoplatform.core.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -150,8 +139,8 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
             <artifactId>xstream</artifactId>
@@ -173,16 +162,16 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -201,8 +190,8 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -220,8 +209,8 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -243,8 +232,8 @@
             <groupId>xstream</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -262,16 +251,16 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -293,8 +282,8 @@
         <type>test-jar</type>
         <exclusions>
           <exclusion>
-            <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -308,16 +297,16 @@
             <groupId>log4j</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
             <artifactId>xstream</artifactId>
             <groupId>xstream</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
+            <groupId>javax.servlet.jsp</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -332,8 +321,8 @@
             <groupId>xstream</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
+            <groupId>javax.servlet.jsp</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -379,8 +368,8 @@
         <version>${org.exoplatform.portal.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -390,12 +379,12 @@
         <version>${org.exoplatform.portal.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -425,16 +414,16 @@
         <version>${org.exoplatform.portal.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
           <exclusion>
-            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
+            <groupId>javax.servlet.jsp</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -592,8 +581,8 @@
         <version>${org.exoplatform.ws.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -620,8 +609,8 @@
         <version>${org.gatein.pc.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -641,8 +630,8 @@
             <groupId>org.apache.tomcat</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -657,8 +646,8 @@
             <groupId>org.apache.tomcat</groupId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -668,8 +657,8 @@
         <version>${org.gatein.shindig.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -685,8 +674,8 @@
         <version>${org.juzu.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -696,8 +685,8 @@
         <version>${org.juzu.version}</version>
         <exclusions>
           <exclusion>
-            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
       </dependency>

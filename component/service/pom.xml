@@ -41,6 +41,12 @@
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
     </dependency>
+    <!-- Log4J is required by wikbook to compile but we don't want to propagate it -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
@@ -56,6 +62,13 @@
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
+    </dependency>
+    <!-- doc-style is required by wikbook to compile but we don't want to propagate it -->
+    <dependency>
+      <groupId>org.exoplatform.doc</groupId>
+      <artifactId>doc-style</artifactId>
+      <classifier>templates</classifier>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
@@ -123,19 +136,6 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- Log4J is required by wikbook to compile but we don't want to propagate it -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- doc-style is required by wikbook to compile but we don't want to propagate it -->
-    <dependency>
-      <groupId>org.exoplatform.doc</groupId>
-      <artifactId>doc-style</artifactId>
-      <classifier>templates</classifier>
       <scope>provided</scope>
     </dependency>
     <dependency>

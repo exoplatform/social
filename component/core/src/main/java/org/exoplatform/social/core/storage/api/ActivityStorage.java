@@ -18,9 +18,11 @@
 package org.exoplatform.social.core.storage.api;
 
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
+import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -32,7 +34,7 @@ import java.util.SortedSet;
 public interface ActivityStorage {
 
   enum TimestampType {
-    NEWER, OLDER;
+    NEWER, OLDER, UPDATED;
 
     private Long number;
 
@@ -471,4 +473,16 @@ public interface ActivityStorage {
    * @throws ActivityStorageException
    */
   public void updateActivity(ExoSocialActivity existingActivity) throws ActivityStorageException;
+  
+  /**
+   * 
+   * @param where
+   * @param filter
+   * @param offset
+   * @param limit
+   * @return
+   * @throws ActivityStorageException
+   */
+  public List<ExoSocialActivity> getActivitiesOfIdentities(ActivityBuilderWhere where, ActivityFilter filter,
+                                                           long offset, long limit) throws ActivityStorageException;
 }

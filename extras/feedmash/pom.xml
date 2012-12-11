@@ -53,20 +53,20 @@
       <exclusions>
         <!-- commons-logging is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
         <exclusion>
-          <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>rome</groupId>
+      <artifactId>rome</artifactId>
     </dependency>
     <!-- commons-logging used by quartz is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>rome</groupId>
-      <artifactId>rome</artifactId>
     </dependency>
   </dependencies>
 </project>
