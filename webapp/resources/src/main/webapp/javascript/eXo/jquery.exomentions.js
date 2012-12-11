@@ -242,7 +242,13 @@
       var currentMessage = getInputBoxFullValue();
 
       // Using a regex to figure out positions
-      var regex = new RegExp("\\ " + settings.triggerChar + currentDataQuery, "gi");
+      var strReg = settings.triggerChar + currentDataQuery;
+      if(currentMessage.indexOf(strReg) === 0) {
+        strReg = "\\"+strReg;
+      } else {
+        strReg = "\\ "+strReg;
+      }
+      var regex = new RegExp(strReg, "gi");
       regex.exec(currentMessage);
 
       var startCaretPosition = regex.lastIndex - currentDataQuery.length - 1;
