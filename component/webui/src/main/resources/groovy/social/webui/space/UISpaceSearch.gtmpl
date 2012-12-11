@@ -90,13 +90,14 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
 	</div>
  
-	<ul class='nav nav-tabs'>
-		<li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
-		<li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
-		<li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
-		<li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
-	</ul>
-			
+	<div class="uiTabNormal uiTabInPage">
+		<ul class='nav nav-tabs'>
+			<li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
+			<li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
+			<li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
+			<li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
+		</ul>
+	</div>	
 	<!--search by directory-->
 	<div class="boxSpaceList">
 		<!--div class="SpaceListTitle">
