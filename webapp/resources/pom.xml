@@ -78,10 +78,9 @@
                     <sourceDirectory>${project.build.directory}/${project.build.finalName}/skin/less</sourceDirectory>
                     <outputDirectory>${project.build.directory}/${project.build.finalName}/skin/css</outputDirectory>
                     <compress>false</compress>
-                    <excludes>
-                      <exclude>mixins.less</exclude>
-                      <exclude>variables.less</exclude>
-                    </excludes>
+                    <includes>
+                      <include>social.less</include>
+                    </includes>
                  </configuration>
                  <goals>
                     <goal>compile</goal>
