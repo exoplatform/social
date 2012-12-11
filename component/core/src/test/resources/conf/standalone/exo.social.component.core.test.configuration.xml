@@ -87,6 +87,11 @@
       </values-param>
     </init-params>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
+    <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>

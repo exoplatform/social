@@ -20,6 +20,7 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -348,14 +349,22 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(10, activityStorage.getNumberOfUserActivities(rootIdentity));
 
     // remove 5 activities
-    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity).iterator();
+    Iterator<ExoSocialActivity> it = activityStorage.getUserActivities(rootIdentity, 0, 100).iterator();
 
     for (int i = 0; i < 5; ++i) {
       activityStorage.deleteActivity(it.next().getId());
     }
-
+    
+    it = activityStorage.getUserActivities(rootIdentity, 0, 100).iterator();
+    
     //
     assertEquals(5, activityStorage.getNumberOfUserActivities(rootIdentity));
+    
+    while(it.hasNext()) {
+      tearDownActivityList.add(it.next());
+    }
+
+
   }
 
   /**
@@ -502,7 +511,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(250)
+  @MaxQueryNumber(300)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -560,7 +569,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertTrue(!ids.contains(maryIdentity.getId()));
   }
 
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1600)
   public void testContactActivities() throws Exception {
 
     //
@@ -599,7 +608,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(100)
   public void testTimeStamp() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -622,7 +631,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(400)
+  @MaxQueryNumber(420)
   public void testManyDays() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -731,7 +740,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(550)
+  @MaxQueryNumber(600)
   public void testManyDaysNoActivityOnAll() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -779,7 +788,6 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     activity.setExternalId("externalId");
     //activity.setId("id");
     activity.setUrl("http://www.exoplatform.org");
-    activity.setUserId(demoIdentity.getId());
     
     Map<String,String> params = new HashMap<String,String>();
     params.put("SENDER", "senderRemoteId");

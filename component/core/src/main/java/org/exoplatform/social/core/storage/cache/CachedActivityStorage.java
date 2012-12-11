@@ -21,6 +21,7 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -30,6 +31,7 @@ import org.exoplatform.social.core.storage.cache.model.key.ActivityType;
 import org.exoplatform.social.core.storage.cache.model.key.ListActivitiesKey;
 import org.exoplatform.social.core.storage.cache.selector.ActivityOwnerCacheSelector;
 import org.exoplatform.social.core.storage.cache.selector.ScopeCacheSelector;
+import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.cache.loader.ServiceContext;
@@ -219,7 +221,7 @@ public class CachedActivityStorage implements ActivityStorage {
     ActivityKey activityKey = new ActivityKey(activity.getId());
     exoActivityCache.remove(activityKey);
     exoActivityCache.put(activityKey, new ActivityData(getActivity(activity.getId())));
-
+    clearCache();
   }
 
   /**
@@ -911,6 +913,33 @@ public class CachedActivityStorage implements ActivityStorage {
     ActivityKey key = new ActivityKey(existingActivity.getId());
     exoActivityCache.remove(key);
 
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfIdentities(ActivityBuilderWhere where,
+                                                           ActivityFilter filter,
+                                                           final long offset,
+                                                           final long limit) throws ActivityStorageException {
+    final List<Identity> connectionList = where.getOwners();
+    //
+    List<IdentityKey> keyskeys = new ArrayList<IdentityKey>();
+    for (Identity i : connectionList) {
+      keyskeys.add(new IdentityKey(i));
+    }
+    ListActivitiesKey listKey = new ListActivitiesKey(new ListIdentitiesData(keyskeys), 0, limit);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getActivitiesOfIdentities(connectionList, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
   }
   
 }
