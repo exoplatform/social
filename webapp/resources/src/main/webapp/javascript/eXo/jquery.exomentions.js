@@ -468,13 +468,14 @@
 
     function onInputBoxKeyPress(e) {
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.SPACE) {
+      if (keyCode !== KEY.BACKSPACE) {
         var typedValue = String.fromCharCode(keyCode);
         inputBuffer.push(typedValue);
         if (utils.isIE) {
           onInputBoxInput(e);
         }
       }
+      disabledPlaceholder();
     }
 
     function onInputBoxKeyDown(e) {
@@ -500,8 +501,8 @@
         }
         return;
       }
-      
-      if (e.keyCode == KEY.SPACE) {
+
+      if (e.keyCode == KEY.SPACE && (elmAutocompleteList.find('li.msg').length > 0) || elmAutocompleteList.css('display') === 'none') {
         inputBuffer = [];
       }
       if (e.keyCode == KEY.BACKSPACE) {
@@ -513,9 +514,8 @@
             hideAutoComplete();
           }
         }
-        if (getInputBoxValue().length === 1) {
-          enabledPlaceholder();
-        } else {
+        
+        if (elmInputBox.val().length > 1) {
           var before = elmInputBox.value();
           elmInputBox.animate({
             'cursor' : 'wait'
@@ -536,8 +536,7 @@
               var fVal = after.substring(0, indexChanged);
               var lVal = after.substring(indexChanged, after.length);
               var t = lVal.indexOf(' ');
-              if (t < 0)
-                t = lVal.length;
+              if (t < 0) t = lVal.length;
               lVal = lVal.substring(0, t);
               var hasTrigger = hasTriggerChar(fVal + lVal);
               if (hasTrigger != false) {
@@ -604,7 +603,7 @@
 
     function hasTriggerChar(val) {
       //
-      if (val && val.length > 0) {
+      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
         var chs = [];
         for ( var i = val.length - 1; i >= 0; --i) {
           if (val[i] === ' ' || val[i] === '&nbsp;') {
@@ -628,7 +627,7 @@
       checkAutoAddLink(e);
 
       if(getInputBoxValue().length === 0) {
-        enabledPlaceholder
+        enabledPlaceholder();
       } else {
         disabledPlaceholder();
       }
@@ -695,11 +694,7 @@
           });
           elm.triggerHandler(e);
           elm.trigger(e1);
-
-          //
-          // resetBuffer();
-          // log('reset')
-          // inputBuffer[0] = settings.triggerChar;
+          inputBuffer[0] = settings.triggerChar;
         }
       } catch (err) {}
     }
@@ -943,7 +938,6 @@
     }
     
     function disabledPlaceholder() {
-      log('disabledPlaceholder.........')
       elmInputBox.parent().find('div.placeholder:first').hide();
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
