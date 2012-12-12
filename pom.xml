@@ -68,7 +68,6 @@
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
     <!-- Juzu version is required to create the assembly -->
     <org.juzu.version>0.5.1</org.juzu.version>
-    <org.picketlink.idm.version>1.4.0.Final</org.picketlink.idm.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -710,12 +709,6 @@
             <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.picketlink.idm</groupId>
-        <artifactId>picketlink-idm-hibernate</artifactId>
-        <version>${org.picketlink.idm.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
