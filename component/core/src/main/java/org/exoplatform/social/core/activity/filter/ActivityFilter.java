@@ -175,4 +175,23 @@ public class ActivityFilter extends JCRFilterLiteral {
       }
     }
   };
+  
+ public static JCRFilterLiteral ACTIVITY_NEW_UPDATED_FILTER = new JCRFilterLiteral() {
+    
+    @Override
+    protected void start() {
+      try {
+        //
+        this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
+      } catch (Exception ex) {
+        LOG.warn(ex);
+      }
+    }
+
+    @Override
+    public void destroy() {
+      
+    }
+  };
 }

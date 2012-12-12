@@ -518,35 +518,151 @@ public interface ActivityStorage {
   public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime);
 
   /**
-   * 
+   * Gets the list of activities feed based on ActivityFilter.
    * @param where
    * @param filter
    * @param offset
    * @param limit
    * @return
    * @throws ActivityStorageException
+   * @since 4.0 Alpha01
    */
   public List<ExoSocialActivity> getActivitiesOfIdentities(ActivityBuilderWhere where, ActivityFilter filter,
                                                            long offset, long limit) throws ActivityStorageException;
 
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access.
+   * @param spaceIdentity
+   * @return
+   * @since 4.0 Alpha01
+   */
   public int getNumberOfSpaceActivities(Identity spaceIdentity);
 
+  /**
+   * Gets list of activities of spaces where the identity can
+   * access.
+   * @param spaceIdentity
+   * @param index
+   * @param limit
+   * 
+   * @return
+   * @since 4.0 Alpha01
+   * 
+   */
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit);
 
+  /**
+   * Gets list of newer activities of spaces where the identity can
+   * access
+   * @param spaceIdentity
+   * @param baseActivity
+   * @param limit
+   * @return
+   * @since 4.0 Alpha01
+   */
   public List<ExoSocialActivity> getNewerOnSpaceActivities(Identity spaceIdentity,
                                                            ExoSocialActivity baseActivity,
                                                            int limit);
 
+  /**
+   * Gets the number of newer activities of spaces where the identity can
+   * access and based on an existing postedTime of baseActivity.
+   * @param spaceIdentity
+   * @param baseActivity
+   * @return
+   * @since 4.0 Alpha01
+   */
   public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity,
                                                ExoSocialActivity baseActivity);
 
+  /**
+   * Gets the list of older activities of spaces where the identity can
+   * access and based on an existing postedTime of baseActivity.
+   * @param spaceIdentity
+   * @param baseActivity
+   * @param limit
+   * @return
+   * @since 4.0 Alpha01
+   */
   public List<ExoSocialActivity> getOlderOnSpaceActivities(Identity spaceIdentity,
                                                             ExoSocialActivity baseActivity,
                                                             int limit);
 
+  /**
+   * Gets the number of older activities of spaces where the identity can
+   * access and based on an existing postedTime of baseActivity.
+   * @param spaceIdentity
+   * @param baseActivity
+   * @since 4.0 Alpha01
+   * @return
+   */
   public int getNumberOfOlderOnSpaceActivities(Identity spaceIdentity,
                                                ExoSocialActivity baseActivity);
 
+  /**
+   * Gets the number of older activities of spaces where the identity can
+   * access and based on an existing postedTime of baseActivity.
+   * @param spaceIdentity
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
   public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity, Long sinceTime);
+  
+  /**
+   * Gets the number of updated activities feed where the identity can
+   * access and based on an existing since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime);
+  
+  /**
+   * Gets the number of updated user activities where the identity can
+   * access and based on an existing since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime);
+  
+  /**
+   * Gets the number of updated activities where the identity can
+   * access and based on an existing since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime);
+  
+  /**
+   * Gets the number of updated spaces activities where the identity can
+   * access and based on an existing since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime);
+  
+  /**
+   * Gets the number of updated space activities where the identity can
+   * access and based on an existing since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime);
   
 }

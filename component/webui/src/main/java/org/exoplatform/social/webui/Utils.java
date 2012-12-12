@@ -38,7 +38,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
-import org.exoplatform.web.login.InitiateLoginServlet;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
@@ -48,7 +47,8 @@ import org.exoplatform.web.url.navigation.NodeURL;
  */
 public class Utils {
   /** . */
-  private static final String COOKIE_NAME = "exo_social_activity_stream_tab_selected";
+  public static final String ACTIVITY_STREAM_TAB_SELECTED_COOKIED = "exo_social_activity_stream_tab_selected";
+  
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -287,11 +287,15 @@ public class Utils {
    * 
    * @param value
    */
-  public static void setCookiesForTabSelected(String value) {
+  public static void setCookies(String key, String value, boolean override) {
+    if (override == false) {
+      if (hasCookies(key)) return;
+    }
+    
     PortalRequestContext request = Util.getPortalRequestContext() ;
-    Cookie cookie = new Cookie(COOKIE_NAME, value);
+    Cookie cookie = new Cookie(key, value);
     cookie.setPath(request.getRequest().getContextPath());
-    cookie.setMaxAge(0);
+    cookie.setMaxAge(Integer.MAX_VALUE);
     request.getResponse().addCookie(cookie);
   }
   
@@ -299,18 +303,22 @@ public class Utils {
    * 
    * @param value
    */
-  public static String getCookiesForTabSelected() {
+  public static String getCookies(String key) {
     PortalRequestContext request = Util.getPortalRequestContext() ;
 
     Cookie[] cookies = request.getRequest().getCookies();
     if (cookies != null) {
       for (Cookie cookie : cookies) {
-        if (COOKIE_NAME.equals(cookie.getName())) {
+        if (key.equals(cookie.getName())) {
           return cookie.getValue();
         }
       }
     }
     return null;
+  }
+  
+  public static boolean hasCookies(String key) {
+    return (getCookies(key) != null);
   }
   
 }

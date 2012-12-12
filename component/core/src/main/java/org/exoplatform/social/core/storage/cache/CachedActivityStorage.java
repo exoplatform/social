@@ -1135,5 +1135,30 @@ public class CachedActivityStorage implements ActivityStorage {
       }
     }, key).build();
   }
+
+  @Override
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
+    return storage.getNumberOfUpdatedOnActivityFeed(owner, sinceTime);
+  }
+
+  @Override
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
+    return storage.getNumberOfUpdatedOnUserActivities(owner, sinceTime);
+  }
+
+  @Override
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime) {
+    return storage.getNumberOfUpdatedOnActivitiesOfConnections(owner, sinceTime);
+  }
+
+  @Override
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
+    return storage.getNumberOfUpdatedOnUserSpacesActivities(owner, sinceTime);
+  }
+
+  @Override
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
+    return storage.getNumberOfUpdatedOnSpaceActivities(owner, sinceTime);
+  }
   
 }

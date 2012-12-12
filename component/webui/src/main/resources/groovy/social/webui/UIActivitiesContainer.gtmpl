@@ -26,12 +26,11 @@ def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
 def noUpdates = _ctx.appRes("UIActivitiesLoader.label.No_Updates");
 def updates = _ctx.appRes("UIActivitiesLoader.label.Updates");
 def activities = uicomponent.getActivityList();
-def cookieName = uicomponent.getOwnerName() + "_" + uicomponent.getSelectedDisplayMode();
-def cookieValue = activities.size() > 0 ? activities.get(0).getUpdated().getTime() : null;
+def cookieName = uicomponent.getCookiesKey(uicomponent.getSelectedDisplayMode());
 
 def pcontext = Util.getPortalRequestContext();
 def jsManager = pcontext.getJavascriptManager();
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName', $cookieValue);");
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName');");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>

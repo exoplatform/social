@@ -20,14 +20,12 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -35,8 +33,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.processor.MentionsProcessor;
-import org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -868,6 +864,51 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
     //
     activityStorage.getActivityProcessors().remove(processor);
+
+  }
+  
+  @MaxQueryNumber(600)
+  public void testNumberNetworkUpdated() throws Exception {
+    long sinceTime = Calendar.getInstance().getTimeInMillis();
+    // fill 10 activities
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+      
+    }
+
+    // remove 10 activities
+    int numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(rootIdentity, sinceTime);
+    assertEquals(10, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(rootIdentity, sinceTime);
+    assertEquals(0, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserActivities(rootIdentity, sinceTime);
+    assertEquals(10, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(rootIdentity, sinceTime);
+    assertEquals(10, numberOfActivitiesUpdated);
+    
+    for (int i = 0; i < 5; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(demoIdentity, activity);
+      
+    }
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(demoIdentity, sinceTime);
+    assertEquals(5, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(demoIdentity, sinceTime);
+    assertEquals(0, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserActivities(demoIdentity, sinceTime);
+    assertEquals(5, numberOfActivitiesUpdated);
+    
+    numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
+    assertEquals(5, numberOfActivitiesUpdated);
 
   }
 

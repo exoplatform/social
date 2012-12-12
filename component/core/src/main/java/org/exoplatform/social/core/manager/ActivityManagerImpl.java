@@ -442,5 +442,4 @@ public class ActivityManagerImpl implements ActivityManager {
     Validate.notNull(newActivity.getUserId(), "activity.getUserId() must not be null!");
     return identityManager.getIdentity(newActivity.getUserId(), false);
   }
-
 }

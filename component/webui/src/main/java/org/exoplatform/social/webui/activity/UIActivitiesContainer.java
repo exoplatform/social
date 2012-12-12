@@ -17,12 +17,9 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-import javax.portlet.PortletRequest;
-import javax.servlet.http.Cookie;
-
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -30,9 +27,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
-import org.exoplatform.web.application.JavascriptManager;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
 
@@ -47,6 +43,9 @@ import org.exoplatform.webui.core.UIPopupWindow;
 )
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
+  
+  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited";
+
 
   private List<ExoSocialActivity> activityList;
   private PostContext postContext;
@@ -55,6 +54,7 @@ public class UIActivitiesContainer extends UIContainer {
   private String ownerName;
   private String selectedDisplayMode;
   private UIPopupWindow popupWindow;
+  private long lastVisited = 0;
 
   /**
    * constructor
@@ -136,10 +136,7 @@ public class UIActivitiesContainer extends UIContainer {
       factory.addChild(activity, this);
     }
 
-    if (getStreamInfosCookie() == null && selectedDisplayMode != null) {
-      storeStreamInfosCookie(ownerName + "_" + selectedDisplayMode,
-                             activityList.size() > 0 ? activityList.get(0).getUpdated().getTime() : null);
-    }
+    lastVisited = getLastVisited();
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
@@ -162,38 +159,24 @@ public class UIActivitiesContainer extends UIContainer {
   protected int getNumberOfUpdatedActivities() {
     try {
       UIActivitiesLoader uiActivitiesLoader = this.getAncestorOfType(UIActivitiesLoader.class);
-      ListAccess<ExoSocialActivity> activitiesListAccess = uiActivitiesLoader.getActivityListAccess();
-      String lastUpdatedTime = getStreamInfosCookie();
-      return ((ActivitiesRealtimeListAccess) activitiesListAccess).getNumberOfNewer(Long.parseLong(lastUpdatedTime));
+      ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) uiActivitiesLoader.getActivityListAccess();
+      return activitiesListAccess.getNumberOfUpdated(lastVisited);
     } catch(Exception e) {
       return 0;
     }
   }
-
-  public void storeStreamInfosCookie(String name, Long value) {
-    try {
-      WebuiRequestContext webuiRequestContext = WebuiRequestContext.getCurrentInstance();
-      JavascriptManager jsManager = webuiRequestContext.getJavascriptManager();
-      jsManager.addJavascript(";document.cookie = '" + name + "=" + (value != null ? value.toString() : null) + "';");
-    } catch(Exception e) {
-      LOG.error("Failed to store user stream infos cookie.");
+  
+  private long getLastVisited() {
+    long currentVisited = Calendar.getInstance().getTimeInMillis();
+    String strValue = Utils.getCookies(getCookiesKey(this.selectedDisplayMode));
+    if(strValue == null) {
+      return currentVisited;
     }
+    
+    return Long.parseLong(strValue);
   }
-
-  public String getStreamInfosCookie() {
-    try {
-      WebuiRequestContext webuiRequestContext = WebuiRequestContext.getCurrentInstance();
-      PortletRequest request = webuiRequestContext.getRequest();
-      Cookie[] cookies = request.getCookies();
-      String cookieName = ownerName + "_" + selectedDisplayMode;
-      for (Cookie cookie : cookies) {
-        if (cookieName.equals(cookie.getName())) {
-          return cookie.getValue();
-        }
-      }
-    } catch(Exception e) {
-      LOG.error("Failed to get user stream infos cookie.");
-    }
-    return null;
+  
+  public String getCookiesKey(String displayMode) {
+    return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode);
   }
 }

@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -82,9 +83,6 @@ public class UIUserActivitiesDisplay extends UIForm {
   private String                     ownerName;
   private String                     viewerName;
 
-  /** Store user's last visit stream. */
-  private static Map<String, String> lastVisitStream = new HashMap<String, String>();
-
   /**
    * Default constructor.
    * 
@@ -100,7 +98,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     // TODO: init() run two time when initiation this form.
     String remoteId = Utils.getOwnerRemoteId();
     this.setOwnerName(remoteId);
-    String selectedDisplayMode = lastVisitStream.get(remoteId);
+    String selectedDisplayMode = Utils.getCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED);
     selectedDisplayMode = (selectedDisplayMode != null) ? selectedDisplayMode : DisplayMode.ALL_ACTIVITIES.name();
 
     //
@@ -239,16 +237,14 @@ public class UIUserActivitiesDisplay extends UIForm {
       //
       String selectedDisplayMode = uiUserActivities.getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).getValue();
       if (selectedDisplayMode != null) {
-        lastVisitStream.put(Utils.getOwnerRemoteId(), selectedDisplayMode);
+        Utils.setCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, selectedDisplayMode, false);
         uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
         UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
-        Iterator<ExoSocialActivity> activityList = activitiesContainer.getActivityList().iterator();
-        activitiesContainer.storeStreamInfosCookie(activitiesContainer.getOwnerName() + "_" + selectedDisplayMode,
-                                                     activityList.hasNext() ? activityList.next().getUpdated().getTime() : null);
-
-          event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
+        long currentVisited = Calendar.getInstance().getTimeInMillis();
+        Utils.setCookies(activitiesContainer.getCookiesKey(selectedDisplayMode), String.valueOf(currentVisited), true);
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
       
       //

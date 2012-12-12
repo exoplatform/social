@@ -27,6 +27,7 @@ import org.exoplatform.social.common.jcr.filter.FilterLiteral.DIRECTION;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.BuilderWhereExpression;
@@ -39,7 +40,7 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
  *          thanh_vucong@exoplatform.com
  * Nov 21, 2012  
  */
-public abstract class ActivityBuilderWhere implements BuilderWhereExpression<ActivityFilter, QueryBuilder<ActivityEntity>> {
+public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();
   Identity mentioner;
@@ -47,7 +48,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   Identity commenter;
   List<Identity> identities;
   
-  public String build(ActivityFilter filter) {
+  public String build(JCRFilterLiteral filter) {
     init();
     String result = make(filter);
     destroy(filter);
@@ -55,7 +56,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   }
    
   @Override
-  public void orderBy(QueryBuilder<ActivityEntity> orderByBuilder, ActivityFilter filter) {
+  public void orderBy(QueryBuilder<ActivityEntity> orderByBuilder, JCRFilterLiteral filter) {
     Iterator<OrderByOption<PropertyLiteralExpression<?>>> it = filter.getOrders();
     
     OrderByOption<PropertyLiteralExpression<?>> orderBy = null;
@@ -67,7 +68,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     }
   }
   
-  public String make(ActivityFilter filter) {
+  public String make(JCRFilterLiteral filter) {
     return where.toString();
   }
   
@@ -75,7 +76,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     where.getStringBuilder();
   }
   
-  private void destroy(ActivityFilter filter) {
+  private void destroy(JCRFilterLiteral filter) {
     where.destroy();
     filter.destroy();
     mentioner = null;
@@ -126,7 +127,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   public static ActivityBuilderWhere ACTIVITY_SPACE_BUILDER = new ActivityBuilderWhere() {
 
     @Override
-    public String make(ActivityFilter filter) {
+    public String make(JCRFilterLiteral filter) {
       
       //has relationship
       if (identities != null && identities.size() > 0) {
@@ -177,10 +178,63 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     }
   };
   
+  public static ActivityBuilderWhere ACTIVITY_UPDATED_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      
+      //has relationship
+      if (identities != null && identities.size() > 0) {
+        boolean first = true;
+        where.startGroup();
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        where.endGroup();
+        
+      }
+
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
+      //
+      if (objFilter != null) {
+        TimestampType type = null;
+        if (objFilter instanceof TimestampType) {
+          type = (TimestampType) objFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
+        }
+      }
+      return where.toString();
+    }
+  };
+  
   public static ActivityBuilderWhere ACTIVITY_BUILDER = new ActivityBuilderWhere() {
 
     @Override
-    public String make(ActivityFilter filter) {
+    public String make(JCRFilterLiteral filter) {
       
       //has relationship
       if (identities != null && identities.size() > 0) {

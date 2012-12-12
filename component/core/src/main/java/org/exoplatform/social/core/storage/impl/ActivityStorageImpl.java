@@ -52,6 +52,7 @@ import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityParameters;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -1324,7 +1325,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   private Query<ActivityEntity> getActivitiesOfIdentitiesQuery(ActivityBuilderWhere whereBuilder,
-                                                               ActivityFilter filter) throws ActivityStorageException {
+                                                               JCRFilterLiteral filter) throws ActivityStorageException {
 
     QueryBuilder<ActivityEntity> builder = getSession().createQueryBuilder(ActivityEntity.class);
 
@@ -1519,4 +1520,69 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
   }
+  
+  @Override
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
+    
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(owner));
+    identities.addAll(getSpacesId(owner));
+    identities.add(owner);
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner).owners(owner), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime) {
+    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+
+    if (connectionList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects().size();
+  }
+  
 }

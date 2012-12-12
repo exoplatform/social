@@ -95,4 +95,12 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    */
   int getNumberOfNewer(Long sinceTime);
   
+  /**
+   * Gets the number of updated elements based on the postedTime.
+   * 
+   * @param sinceTime the postedTime
+   * @return number of newer elements if any
+   */
+  int getNumberOfUpdated(Long sinceTime);
+  
 }
