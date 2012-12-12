@@ -36,7 +36,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
@@ -50,7 +49,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
   template = "classpath:groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
   events = {
       @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class),
-      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class),
       @EventConfig(listeners = UIManagePendingSpaces.LoadMoreSpaceActionListener.class)
   }
 )

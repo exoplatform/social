@@ -37,12 +37,9 @@
 	def andOrLabel = _ctx.appRes("${uicomponentId}.label.AndOr");
 	def skillsDefaultVal = _ctx.appRes("${uicomponentId}.label.Skills");
 	def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactDirectory");
-	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 	def searchId = "Search";
 	def positionId = "position";
 	def skillsId = "skills";
-	def selectedStartChar = uicomponent.getSelectedChar();
-	def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 	def childs = uicomponent.getChildren();
 	
 	
@@ -64,32 +61,16 @@
 
   jsmanager.require("SHARED/social-ui-user-search", "search").addScripts("search.UIProfileUserSearch.init($params);");
 	
-	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
-    def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
-    def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
-    def portalURI = Utils.getURI("");
-    def ownerIdentity = Utils.getOwnerIdentity();
-    def ownerId = ownerIdentity.getRemoteId();
-    def allPeopleURL = "${portalURI}connections/all-people/${ownerId}";
-    def networkURL = "${portalURI}connections/network/${ownerId}";
-    def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
-    def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
-    def selectedNode = uicomponent.getSelectedNode();
-
-    def searchAction = uicomponent.event('Search');
-    def peopleFoundLabel = uicomponent.getPeopleFoundLabel();
-	  
-	  uicomponent.resetUIComponentValues();
-	  
-	  def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
+  def searchAction = uicomponent.event('Search');
+  uicomponent.resetUIComponentValues();
+  def ownerIdentity = Utils.getOwnerIdentity();
+  def myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(ownerIdentity.getRemoteId());
+  if (!Utils.isOwner()) {
+    myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
+  }
   
-    if (!Utils.isOwner()) {
-      myConnectionsLink = LinkProvider.getUserConnectionsYoursUri(URLUtils.getCurrentUser());
-    }
-    def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
 %>
 <div class="UIProfileUserSearch">
-
 <% uiform.begin() %>
    <div class="SearchSpacesBG ClearFix">	
     <div class="ClearFix">
@@ -108,48 +89,5 @@
       </div>
     </div>
    </div>
-    
-     <% if (uicomponent.isHasPeopleTab()) {%>
-     <ul class="nav nav-tabs">
-		  <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
-		  <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
-		  <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
-		  <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
-     </ul>
-    <% } %>
- 
-	 <div class="UISocTitleBar">
-	  <div class="TitleBar Bold"> $peopleFoundLabel </div>
-	 </div>
-
-	 <ul class="DirectorySpaces LetterList"  id="DirectorySpaces">
-     
-     <% if (uicomponentId == "UIPeopleSearch") {%>
-            <li>
-     <% } else {%>
-            <li>
-     <% } %>
-     <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
-                <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-     <%} else {%>
-                <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-     <% } %>
-     </li>
-     
-     <% for (ch in alphabets) { %>
-          <li>
-     <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
-            <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-     <%   } else {%>
-            <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-     <%   } %>
-          </li>
-     <% } %>
-     <% if (uicomponent.isHasConnectionLink()) {%>
-          <li><a href="${myConnectionsLink}" id="MyConnectionLink" class="LinkMC">$myConnectionsLabel</a></li>
-     <% } %>
-    </ul>
-    
  <% uiform.end() %>
- 
 </div>

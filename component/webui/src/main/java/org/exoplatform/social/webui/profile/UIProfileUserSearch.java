@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -95,11 +94,11 @@ public class UIProfileUserSearch extends UIForm {
   /** Empty character. */
   private static final char EMPTY_CHARACTER = '\u0000';
   
-  /** All people filter. */
-  private static final String ALL_FILTER = "All";
-  
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
+  
+  /** All people filter. */
+  private static final String ALL_FILTER = "All";
   
   /**
    * List used for identities storage.
@@ -110,11 +109,6 @@ public class UIProfileUserSearch extends UIForm {
    * The input conditional of search
    */
   private String rawSearchConditional;
-
-  /**
-   * Stores selected character when search by alphabet
-   */
-  String selectedChar = null;
 
   /**
    * Used stores filter information.
@@ -237,24 +231,6 @@ public class UIProfileUserSearch extends UIForm {
   }
 
   /**
-   * Gets selected character when search by alphabet.
-   *
-   * @return The selected character.
-   */
-  public final String getSelectedChar() {
-    return selectedChar;
-  }
-
-  /**
-   * Sets selected character to variable.
-   *
-   * @param selectedChar <code>char</code>
-   */
-  public final void setSelectedChar(final String selectedChar) {
-    this.selectedChar = selectedChar;
-  }
-
-  /**
    * Gets type of relation with current user.
    */
   public String getTypeOfRelation() {
@@ -343,7 +319,6 @@ public class UIProfileUserSearch extends UIForm {
     addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
-    setSelectedChar(ALL_FILTER);
   }
 
   protected void resetUIComponentValues() {
@@ -392,7 +367,6 @@ public class UIProfileUserSearch extends UIForm {
     public final void execute(final Event<UIProfileUserSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UIProfileUserSearch uiSearch = event.getSource();
-      String charSearch = ctx.getRequestParameter(OBJECTID);
       ProfileFilter filter = new ProfileFilter();
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
@@ -405,22 +379,6 @@ public class UIProfileUserSearch extends UIForm {
       String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
       String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
       try {
-        uiSearch.setSelectedChar(charSearch);
-        if (charSearch != null) { // search by alphabet
-          ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
-          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
-          filter.setName(charSearch);
-          filter.setPosition("");
-          filter.setSkills("");
-          filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
-          if (ALL_FILTER.equals(charSearch)) {
-            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
-            filter.setName("");
-          }
-          uiSearch.setRawSearchConditional("");
-        } else {
-          uiSearch.setSelectedChar(null);
           StringBuffer rawSearchMessageStringBuffer = new StringBuffer();
           if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
             filter.setName("");
@@ -451,7 +409,6 @@ public class UIProfileUserSearch extends UIForm {
               filter.setPosition("");
             }
           } else {
-            uiSearch.setSelectedChar(ALL_FILTER);
             uiSearch.setRawSearchConditional(ALL_FILTER);
             filter.setFirstCharacterOfName(EMPTY_CHARACTER);
             filter.setName("");
@@ -459,7 +416,7 @@ public class UIProfileUserSearch extends UIForm {
             filter.setSkills("");
             filter.setPosition("");
           }
-        }
+          
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);
         
@@ -576,38 +533,6 @@ public class UIProfileUserSearch extends UIForm {
     return GetUniqueIdentities(identityLst);
   }
 
-  /**
-   * Gets label to display the number of matching spaces.
-   * 
-   * @return
-   * @since 1.2.2
-   */
-  protected String getPeopleFoundLabel() {
-    String labelArg = "UIProfileUserSearch.label.FoundContactFilter"; 
-    
-    if (getPeopleNum() > 1) {
-      labelArg = "UIProfileUserSearch.label.FoundContactsFilter";
-    }
-    
-    String searchCondition = getSelectedChar();
-    if (selectedChar == null) {
-      labelArg = "UIProfileUserSearch.label.FoundContactSearch";
-      if (getPeopleNum() > 1) {
-        labelArg = "UIProfileUserSearch.label.FoundContactsSearch";
-      }
-      searchCondition = getRawSearchConditional();
-    }
-    if(ALL_FILTER.equals(searchCondition)) {
-      searchCondition = WebuiRequestContext.getCurrentInstance()
-          .getApplicationResourceBundle().getString("UIProfileUserSearch.label.SearchAll");
-    }
-    
-    return ResourceBundleUtil.
-    replaceArguments(WebuiRequestContext.getCurrentInstance()
-                     .getApplicationResourceBundle().getString(labelArg), new String[] {
-                 Integer.toString(getPeopleNum()) });
-  }
-  
   /**
    * Unions to collection to make one collection.
    *

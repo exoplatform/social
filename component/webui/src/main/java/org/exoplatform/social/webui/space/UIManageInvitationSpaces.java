@@ -40,7 +40,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
@@ -56,7 +55,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
   events = {
     @EventConfig(listeners = UIManageInvitationSpaces.AcceptActionListener.class),
     @EventConfig(listeners = UIManageInvitationSpaces.IgnoreActionListener.class),
-    @EventConfig(listeners = UIManageInvitationSpaces.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIManageInvitationSpaces.SearchActionListener.class),
     @EventConfig(listeners = UIManageInvitationSpaces.LoadMoreSpaceActionListener.class)
   }
 )
