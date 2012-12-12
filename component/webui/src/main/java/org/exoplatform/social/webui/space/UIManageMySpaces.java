@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.mop.user.UserNavigation;
@@ -40,6 +41,7 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UIManageMySpaces.java <br />
@@ -73,6 +75,7 @@ public class UIManageMySpaces extends UIContainer {
    * SEARCH ALL.
    */
   private static final String SEARCH_ALL = "All";
+  private static final String SPACE_SEARCH = "SpaceSearch";
 
   private final Integer SPACES_PER_PAGE = 20;
   private SpaceService spaceService = null;
@@ -89,6 +92,7 @@ public class UIManageMySpaces extends UIContainer {
   private List<Space> mySpacesList;
   private ListAccess<Space> mySpacesListAccess;
   private int mySpacesNum;
+  private String selectedChar = null;
   
   
   /**
@@ -116,6 +120,7 @@ public class UIManageMySpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       mySpacesList = new ArrayList<Space>();
       setMySpacesList(loadMySpaces(currentLoadIndex, loadingCapacity));
+      setSelectedChar(SEARCH_ALL);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -231,6 +236,24 @@ public class UIManageMySpaces extends UIContainer {
   }
 
   /**
+   * Gets selected character.
+   *
+   * @return Character is selected.
+   */
+  public String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character.
+   *
+   * @param selectedChar A {@code String}
+   */
+  public void setSelectedChar(String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+  
+  /**
    * Gets name of searched space.
    * 
    * @return the spaceNameSearch
@@ -290,7 +313,7 @@ public class UIManageMySpaces extends UIContainer {
   }
   
   private List<Space> loadMySpaces(int index, int length) throws Exception {
-    String charSearch = uiSpaceSearch.getSelectedChar();
+    String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
       setMySpacesListAccess(getSpaceService().getAccessibleSpacesWithListAccess(getUserId()));
@@ -311,19 +334,6 @@ public class UIManageMySpaces extends UIContainer {
     
     return new ArrayList<Space>(Arrays.asList(spaces));
   }
-  
-  /**
-   * @return
-   */
-  private List<String> getMySpaceNames() {
-    List<String> spaceNames = new ArrayList<String>();
-    for (Space space : this.mySpacesList) {
-      spaceNames.add(space.getDisplayName());
-    }
-
-    return spaceNames;
-  }
-  
   
   /**
    * Listeners loading more space action.
@@ -349,6 +359,18 @@ public class UIManageMySpaces extends UIContainer {
     @Override
     public void execute(Event<UIManageMySpaces> event) throws Exception {
       UIManageMySpaces uiManageMySpaces = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      if (charSearch == null) {
+        uiManageMySpaces.setSelectedChar(SEARCH_ALL);
+      } else {
+        ResourceBundle resApp = ctx.getApplicationResourceBundle();
+        String defaultSpaceNameAndDesc = resApp.getString(uiManageMySpaces.getId() + ".label.DefaultSpaceNameAndDesc");
+        ((UIFormStringInput) uiManageMySpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        uiManageMySpaces.setSelectedChar(charSearch);
+      }
+      
       uiManageMySpaces.loadSearch();
       uiManageMySpaces.setLoadAtEnd(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageMySpaces);

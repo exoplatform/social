@@ -30,30 +30,13 @@ def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
 
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
-def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
-def spaceFilterLabel = _ctx.appRes("${uicomponentId}.label.SpaceFilter");
-def labelSpaceFoundListing = uicomponent.getLabelSpaceFound();
 def searchId = "SpaceSearch";
-def selectedChar = uicomponent.getSelectedChar();
 def nameForSearch = uicomponent.getSpaceNameSearch();
 def spaceNum = uicomponent.getSpaceNum();
-def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
-def spacesOrder = _ctx.appRes("${uicomponentId}.label.SpacesOrder");
-
-def labelAllSpaces = _ctx.appRes("${uicomponent.id}.label.All_Space");
-def labelMySpace = _ctx.appRes("${uicomponent.id}.label.My_Space");
-def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
-def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
-
-def selectedNode = Utils.getSelectedNode();
-def allSpacesURL = Utils.getURI("all-spaces");
-def mySpaceURL = Utils.getURI("spaces");
-def invitationsReceivedURL = Utils.getURI("invitationSpace");
-def requestPendingURL = Utils.getURI("pendingSpace");
 
 def restContextName = uicomponent.getRestContextName();
 def currentUserName = uicomponent.getCurrentUserName();
@@ -90,44 +73,6 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
 	</div>
  
-	<div class="uiTabNormal uiTabInPage">
-		<ul class='nav nav-tabs'>
-			<li class='<%= selectedNode.equals("all-spaces")? "active" : "" %>'><a href='$allSpacesURL'>$labelAllSpaces</a></li>
-			<li class='<%= selectedNode.equals("spaces")? "active" : "" %>'><a href='$mySpaceURL'>$labelMySpace</a></li>
-			<li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
-			<li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
-		</ul>
-	</div>	
-	<!--search by directory-->
-	<div class="boxSpaceList">
-		<!--div class="SpaceListTitle">
-		  $spaceFilterLabel
-		</div-->
-		<h4 class="titleWithBorder">Spaces Found</h4>
-		<!--div class="DirectoryNormalBox"-->
-		<div class="uiFilterList">
-			<div class="result"><span class="number">$spaceNum</span>(Results display in order of alphabet)</div>
-			<ul class="letterList">	
-				<li>
-				<% if ((selectedChar != null) && (selectedChar == "All")) { %>
-						<a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				<%} else {%>
-						<a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				<% } %>
-				</li>
-				<% for (ch in alphabets) { %>
-				<li>
-				<% if ((selectedChar != null) && (selectedChar == ch)) { %>
-					<a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				<%} else {%>
-					<a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				<% } %>
-				</li>
-				<% } %>
-			</ul>
-		</div>
-		
-	</div>
 	<% uiform.end() %>
 	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

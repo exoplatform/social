@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.social.common.ResourceBundleUtil;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
@@ -66,11 +65,6 @@ public class UISpaceSearch extends UIForm {
   public static final String SEARCH = "Search";
 
   /**
-   * SEARCH ALL.
-   */
-  static final String ALL = "All";
-
-  /**
    * DEFAULT SPACE NAME SEARCH.
    */
   public static final String DEFAULT_SPACE_NAME_SEARCH = "name or description";
@@ -102,11 +96,6 @@ public class UISpaceSearch extends UIForm {
    * The spaceList is used for search result storage.
    */
   private List<Space> spaceList = null;
-
-  /**
-   * The selectedChar is used for selected character storage when search by alphabet.
-   */
-  String selectedChar = null;
 
   /**
    * The spaceNameSearch is used for input space name storage.
@@ -254,24 +243,6 @@ public class UISpaceSearch extends UIForm {
   }
 
   /**
-   * Gets selected character.
-   *
-   * @return Character is selected.
-   */
-  public String getSelectedChar() {
-    return selectedChar;
-  }
-
-  /**
-   * Sets selected character.
-   *
-   * @param selectedChar A {@code String}
-   */
-  public void setSelectedChar(String selectedChar) {
-    this.selectedChar = selectedChar;
-  }
-  
-  /**
    * Initializes search form fields.
    *
    * @throws Exception
@@ -287,7 +258,6 @@ public class UISpaceSearch extends UIForm {
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
-    setSelectedChar(ALL);
   }
 
   /**
@@ -300,12 +270,10 @@ public class UISpaceSearch extends UIForm {
     public void execute(Event<UISpaceSearch> event) throws Exception {
       WebuiRequestContext ctx = event.getRequestContext();
       UISpaceSearch uiSpaceSearch = event.getSource();
-      String charSearch = ctx.getRequestParameter(OBJECTID);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
-      if ((searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) && charSearch == null) {
-        uiSpaceSearch.setSelectedChar(ALL);
+      if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) {
         uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
         uiSpaceSearch.setNewSearch(true);
       } else {
@@ -313,10 +281,6 @@ public class UISpaceSearch extends UIForm {
           searchCondition = searchCondition.trim();
         }
         
-        if (charSearch != null) {
-          ((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
-        }
-        uiSpaceSearch.setSelectedChar(charSearch);
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
         uiSpaceSearch.setNewSearch(true);
 
@@ -357,37 +321,4 @@ public class UISpaceSearch extends UIForm {
     this.isNewSearch = isNewSearch;
   }
   
-  /**
-   * Gets label to display the number of matching spaces.
-   * 
-   * @return
-   * @since 1.2.2
-   */
-  protected String getLabelSpaceFound() {
-    String labelArg = "UISpaceSearch.label.SpaceFoundListingFilter"; 
-    
-    if (getSpaceNum() > 1) {
-      labelArg = "UISpaceSearch.label.SpacesFoundListingFilter";
-    }
-    
-    String searchCondition = getSelectedChar();
-    
-    if (selectedChar == null) {
-      labelArg = "UISpaceSearch.label.SpaceFoundListingSearch";
-      if (getSpaceNum() > 1) {
-        labelArg = "UISpaceSearch.label.SpacesFoundListingSearch";
-      }
-      searchCondition = getSpaceNameSearch();
-    } 
-      
-    if(ALL.equals(searchCondition)) {
-        searchCondition = WebuiRequestContext.getCurrentInstance()
-            .getApplicationResourceBundle().getString("UISpaceSearch.label.SearchAll");
-      }
-      
-    return ResourceBundleUtil.
-    replaceArguments(WebuiRequestContext.getCurrentInstance()
-                     .getApplicationResourceBundle().getString(labelArg), new String[] {
-                 Integer.toString(getSpaceNum())});
-  }
 }

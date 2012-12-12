@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
@@ -39,6 +40,7 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UI component to list all spaces that is associated with current logged-in user: public spaces to join,
@@ -57,12 +59,13 @@ import org.exoplatform.webui.event.Event.Phase;
     @EventConfig(listeners = UIManageAllSpaces.LeaveSpaceActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.DeleteSpaceActionListener.class,
                  confirm = "UIManageAllSpaces.msg.confirm_space_delete"),
-    @EventConfig(listeners = UIManageAllSpaces.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIManageAllSpaces.SearchActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.LoadMoreSpaceActionListener.class)
   }
 )
 public class UIManageAllSpaces extends UIContainer {
   public static final String SEARCH_ALL = "All";
+  private static final String SPACE_SEARCH = "SpaceSearch";
   private static final Log LOG = ExoLogger.getLogger(UIManageAllSpaces.class);
   
   private static final String SPACE_DELETED_INFO = "UIManageAllSpaces.msg.DeletedInfo";
@@ -86,6 +89,7 @@ public class UIManageAllSpaces extends UIContainer {
   private List<Space> spacesList;
   private ListAccess<Space> spacesListAccess;
   private int spacesNum;
+  private String selectedChar = null;
   
   public enum TypeOfSpace {
     INVITED,
@@ -119,6 +123,7 @@ public class UIManageAllSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       spacesList = new ArrayList<Space>();
       setSpacesList(loadSpaces(currentLoadIndex, loadingCapacity));
+      setSelectedChar(SEARCH_ALL);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -232,6 +237,24 @@ public class UIManageAllSpaces extends UIContainer {
   }
 
   /**
+   * Gets selected character.
+   *
+   * @return Character is selected.
+   */
+  public String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character.
+   *
+   * @param selectedChar A {@code String}
+   */
+  public void setSelectedChar(String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+  
+  /**
    * Gets name of searched space.
    * 
    * @return the spaceNameSearch
@@ -313,7 +336,7 @@ public class UIManageAllSpaces extends UIContainer {
   }
 
   private List<Space> loadSpaces(int index, int length) throws Exception {
-    String charSearch = uiSpaceSearch.getSelectedChar();
+    String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
@@ -362,6 +385,18 @@ public class UIManageAllSpaces extends UIContainer {
     @Override
     public void execute(Event<UIManageAllSpaces> event) throws Exception {
       UIManageAllSpaces uiManageAllSpaces = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      if (charSearch == null) {
+        uiManageAllSpaces.setSelectedChar(SEARCH_ALL);
+      } else {
+        ResourceBundle resApp = ctx.getApplicationResourceBundle();
+        String defaultSpaceNameAndDesc = resApp.getString(uiManageAllSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
+        ((UIFormStringInput) uiManageAllSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        uiManageAllSpaces.setSelectedChar(charSearch);
+      }
+      
       uiManageAllSpaces.loadSearch();
       uiManageAllSpaces.setLoadAtEnd(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManageAllSpaces);
@@ -634,20 +669,5 @@ public class UIManageAllSpaces extends UIContainer {
       spaceService = getApplicationComponent(SpaceService.class);
     }
     return spaceService;
-  }
-
-  /**
-   * Gets public space names.
-   *
-   * @return public space names
-   * @throws Exception
-   */
-  private List<String> getSpacesNames() throws Exception {
-    List<String> spaceNames = new ArrayList<String>();
-    for (Space space : this.spacesList) {
-      spaceNames.add(space.getDisplayName());
-    }
-
-    return spaceNames;
   }
 }

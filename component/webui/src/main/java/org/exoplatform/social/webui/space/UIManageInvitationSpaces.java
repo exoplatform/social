@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
@@ -40,6 +41,7 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
@@ -68,7 +70,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * SEARCH ALL.
    */
   private static final String SEARCH_ALL = "All";
-  
+  private static final String SPACE_SEARCH = "SpaceSearch";
   static public final Integer LEADER = 1, MEMBER = 2;
 
   private final Integer SPACES_PER_PAGE = 20;
@@ -85,6 +87,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   private List<Space> invitedSpacesList;
   private ListAccess<Space> invitedSpacesListAccess;
   private int invitedSpacesNum;
+  private String selectedChar = null;
   
   /**
    * Constructor for initialize UIPopupWindow for adding new space popup.
@@ -111,6 +114,7 @@ public class UIManageInvitationSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       invitedSpacesList = new ArrayList<Space>();
       setInvitedSpacesList(loadInvitedSpaces(currentLoadIndex, loadingCapacity));
+      setSelectedChar(SEARCH_ALL);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -235,6 +239,24 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   /**
+   * Gets selected character.
+   *
+   * @return Character is selected.
+   */
+  public String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character.
+   *
+   * @param selectedChar A {@code String}
+   */
+  public void setSelectedChar(String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+  
+  /**
    * Sets name of searched space.
    * 
    * @param spaceNameSearch the spaceNameSearch to set
@@ -285,7 +307,7 @@ public class UIManageInvitationSpaces extends UIContainer {
   }
 
   private List<Space> loadInvitedSpaces(int index, int length) throws Exception {
-    String charSearch = uiSpaceSearch.getSelectedChar();
+    String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
       setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesWithListAccess(getUserId()));
@@ -330,9 +352,21 @@ public class UIManageInvitationSpaces extends UIContainer {
     @Override
     public void execute(Event<UIManageInvitationSpaces> event) throws Exception {
       UIManageInvitationSpaces uiManageInvitedSpaces = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      if (charSearch == null) {
+        uiManageInvitedSpaces.setSelectedChar(SEARCH_ALL);
+      } else {
+        ResourceBundle resApp = ctx.getApplicationResourceBundle();
+        String defaultSpaceNameAndDesc = resApp.getString(uiManageInvitedSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
+        ((UIFormStringInput) uiManageInvitedSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        uiManageInvitedSpaces.setSelectedChar(charSearch);
+      }
+      
       uiManageInvitedSpaces.loadSearch();
       uiManageInvitedSpaces.setLoadAtEnd(false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
+      ctx.addUIComponentToUpdateByAjax(uiManageInvitedSpaces);
     }
   }
 
@@ -474,20 +508,4 @@ public class UIManageInvitationSpaces extends UIContainer {
     }
     return userId;
   }
-  
-  /**
-   * Gets invited space name list.
-   *
-   * @return invited space name list
-   * @throws Exception
-   */
-  private List<String> getInvitedSpaceNames() throws Exception {
-    List<String> spaceNames = new ArrayList<String>();
-    for (Space space : this.invitedSpacesList) {
-      spaceNames.add(space.getDisplayName());
-    }
-
-    return spaceNames;
-  }
-
 }
