@@ -5,7 +5,8 @@
 var UIActivityUpdates = {
   numberOfUpdatedActivities: 0,
   cookieName: '',
-  init: function (numberOfUpdatedActivities, cookieName) {
+  noUpdates: '',
+  init: function (numberOfUpdatedActivities, cookieName, noUpdates) {
     //
     UIActivityUpdates.numberOfUpdatedActivities = numberOfUpdatedActivities;
     UIActivityUpdates.cookieName = cookieName;
@@ -32,7 +33,7 @@ var UIActivityUpdates = {
     function runOnScroll() {
       if (isScrolledIntoView()) {
         $('#UIActivitiesLoader').find('.UpdatedActivity').removeClass('UpdatedActivity');
-        $('#numberInfo').html('No Updates');
+        $('#numberInfo').html(noUpdates);
         eXo.core.Browser.setCookie(UIActivityUpdates.cookieName, (new Date().getTime()), 365);
         $(window).off('scroll', runOnScroll);
       }

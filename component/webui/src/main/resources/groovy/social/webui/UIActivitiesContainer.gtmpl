@@ -30,7 +30,9 @@ def cookieName = uicomponent.getCookiesKey(uicomponent.getSelectedDisplayMode())
 
 def pcontext = Util.getPortalRequestContext();
 def jsManager = pcontext.getJavascriptManager();
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName');");
+
+noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.UIActivityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates');");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>
