@@ -468,7 +468,7 @@
 
     function onInputBoxKeyPress(e) {
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.SPACE) {
+      if (keyCode !== KEY.BACKSPACE) {
         var typedValue = String.fromCharCode(keyCode);
         inputBuffer.push(typedValue);
         if (utils.isIE) {
@@ -501,8 +501,8 @@
         }
         return;
       }
-      
-      if (e.keyCode == KEY.SPACE) {
+
+      if (e.keyCode == KEY.SPACE && (elmAutocompleteList.find('li.msg').length > 0) || elmAutocompleteList.css('display') === 'none') {
         inputBuffer = [];
       }
       if (e.keyCode == KEY.BACKSPACE) {
@@ -603,7 +603,7 @@
 
     function hasTriggerChar(val) {
       //
-      if (val && val.length > 0) {
+      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
         var chs = [];
         for ( var i = val.length - 1; i >= 0; --i) {
           if (val[i] === ' ' || val[i] === '&nbsp;') {
@@ -694,6 +694,7 @@
           });
           elm.triggerHandler(e);
           elm.trigger(e1);
+          inputBuffer[0] = settings.triggerChar;
         }
       } catch (err) {}
     }
