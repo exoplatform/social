@@ -70,7 +70,7 @@
   def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
   def selectedNode = Utils.getSelectedNode();
 %>
-<div class="UIManageAllSpace" id="$uicomponent.id">
+<div class="uiManageAllSpace" id="$uicomponent.id">
     <% uicomponent.renderChild(UISpaceSearch.class); %>
     
     <div class="uiTabNormal uiTabInPage">
@@ -82,171 +82,150 @@
       </ul>
     </div>  
     
-    <div>
-	    <!--search by directory-->
-	    <div class="boxSpaceList">
-	        <h4 class="titleWithBorder">$spacesFoundLabel</h4>
-	        <!--div class="DirectoryNormalBox"-->
-	        <div class="uiFilterList">
-	            <div class="result"><span class="number"><%=uicomponent.spacesNum; %></span>(Results display in order of alphabet)</div>
-	            <ul class="letterList"> 
-	                <li>
-	                <% if ((selectedChar != null) && (selectedChar == "All")) { %>
-	                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-	                <%} else {%>
-	                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-	                <% } %>
-	                </li>
-	                <% for (ch in alphabets) { %>
-	                <li>
-	                <% if ((selectedChar != null) && (selectedChar == ch)) { %>
-	                    <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-	                <%} else {%>
-	                    <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-	                <% } %>
-	                </li>
-	                <% } %>
-	            </ul>
-	        </div>
-	    </div>
     
-      <div class="ContentBoxSpaceList ClearFix">
+    <!--search by directory-->
+    <div class="boxSpaceList">
+        <h4 class="titleWithBorder">$spacesFoundLabel</h4>
+        <!--div class="DirectoryNormalBox"-->
+        <div class="uiFilterList">
+            <div class="result"><span class="number"><%=uicomponent.spacesNum; %></span>(Results display in order of alphabet)</div>
+            <ul class="letterList"> 
+                <li>
+                <% if ((selectedChar != null) && (selectedChar == "All")) { %>
+                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                <%} else {%>
+                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                <% } %>
+                </li>
+                <% for (ch in alphabets) { %>
+                <li>
+                <% if ((selectedChar != null) && (selectedChar == ch)) { %>
+                    <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                <%} else {%>
+                    <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                <% } %>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+    
+  	<div class="spaceList clearfix">
 
-	    <%for (space in allSpaces) {
-	        def typeOfSpace = uicomponent.getTypeOfSpace(space);
-	        def iconImgLabel = null
-	        def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
-	        def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
-	        def acceptInvitationAction = uicomponent.event("AcceptInvitation", space.id) + "; return false"
-	        def ignoreInvitationAction = uicomponent.event("IgnoreInvitation", space.id) + "; return false"
-	        def cancelInvitationAction = uicomponent.event("CancelInvitation", space.id) + "; return false"
-	        def requestToJoinSpaceAction = uicomponent.event("RequestToJoin", space.id) + "; false"
-	        def spaceUrl = Utils.getSpaceHomeURL(space)
-	        def editSpaceLink = spaceUrl + "/" + "settings";
-	        def visibility = space.visibility
-	        def registration = space.registration
-	        def isPublic = false
-	        def isClose = false
-	        def hasEditPermission = false
-	        
-	        if ("INVITED".equals(typeOfSpace.toString())) {
-	          // Action{Accept-Deny}, Icon {Clock}
-	          iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
-	        } else if ("SENT".equals(typeOfSpace.toString())) {
-	          // Action{Cancel}, Icon{Clock}
-	          iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending")
-	        } else if ("MEMBER".equals(typeOfSpace.toString())) {
-	          //  Action{Leave}, Icon{Link}
-	          iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
-	        } else if ("MANAGER".equals(typeOfSpace.toString())) {
-	          // Action{Edit-Leave-Delete}, Icon{Member}
-	          iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
-	        } else {
-	          // Action{Join}, Icon{None}
-	        }
-	        
-	        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
-	        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
-	        if (registration.equals(Space.CLOSE)) isClose = true
-	        
-	        //Temporary use private as visible
-	        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
-	        def status = visibleStatus + " "
-	        if (registration.equals("open")) {
-	          status += openStatus
-	        } else if (registration.equals("validation")) {
-	          status += validationStatus
-	        } else {
-	          status += closeStatus
-	        }
-	        def imageSource = uicomponent.getImageSource(space);
-	        if (imageSource == null) {
-	          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-	        }
-	        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
-	        allSpaceIdx += 1;
-	      %>
-	      <% if (allSpaceIdx % 2 == 0) { %>
-	        <div class="GrayBox ClearFix FL">
-	        <% } else { %>
-	        <div class="NormalBox ClearFix FL">
-	        <% } %>
-	        <% if (isPublic) { %>
-	          <a href="$spaceUrl" class="AvatarSpace">
-	            <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
-	            <span class="BorderTop"></span>
-	            <span class="BorderBottom"></span>
-	          </a>
-	        <%} else { %>
-	          <div class="AvatarSpace">
-	             <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
-	             <span class="BorderTop"></span>
-	             <span class="BorderBottom"></span>
-	          </div>
-	        <%} %>
-	
-	        <div class="ContentBox">
-	          <div class="TitleContent">
-	            <% if (uicomponent.hasAccessPermission(space))  { %>
-	            <a class="Text" href="<%= spaceUrl %>">$space.displayName</a>
-	            <% } else {%>
-	            <a class="Text" href="javascript:void(0)">$space.displayName</a>
-	            <% } %> 
-	            <% if (iconImgLabel) {%>
-	            	($iconImgLabel)
-	            <% } %>
-	          </div>
-	          <div class="MembersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-	          <div class="Content">
-	            $space.description<br/>
-	          </div>
-			      <ul class="ActionContent ClearFix">
-			      <% if ("INVITED".equals(typeOfSpace.toString())) { %>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptInvitationAction %>" rel="tooltip" data-placement="bottom" title="<%= acceptInvitationLabel %>" class="Action">$acceptInvitationLabel</a></li>
-			          <li class="Line FL">&nbsp;</li>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreInvitationAction %>" rel="tooltip" data-placement="bottom" title="<%= ignoreInvitationLabel %>" class="Action">$ignoreInvitationLabel</a></li>
-			      <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= cancelInvitationAction %>" rel="tooltip" data-placement="bottom" title="<%= cancelInvitationLabel %>" class="Action">$cancelInvitationLabel</a></li>
-			      <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= leaveSpaceLabel %>" class="Action">$leaveSpaceLabel</a></li>
-			      <% } else if ("MANAGER".equals(typeOfSpace.toString())) {  %>
-			          <li class="FL"><a href="<%= editSpaceLink %>" rel="tooltip" data-placement="bottom" title="<%= editSpaceLabel %>" class="Action">$editSpaceLabel</a></li>
-			          <li class="Line FL">&nbsp;</li>
-	  	          <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= leaveSpaceLabel %>" class="Action">$leaveSpaceLabel</a></li>
-	  	          <li class="Line FL">&nbsp;</li>
-	  	          <li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= deleteSpaceLabel %>" class="Action">$deleteSpaceLabel</a></li>
-			        <%} else {
-			              if (Space.VALIDATION.equals(registration)) {
-			        %>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= requestToJoinSpaceLabel %>" class="Action">$requestToJoinSpaceLabel</a></li>
-			        <%    } else if (Space.OPEN.equals(registration)) { %>
-			          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= joinSpaceLabel %>" class="Action">$joinSpaceLabel</a></li>
-			        <%    } %>
-			       <% } %>
-				     
-			      </ul>
-	        </div>
-	      </div>
-	      <%}%>
-	    </div>
-	    
-	    <%
-	    if(uicomponent.isEnableLoadNext()) {
-	    %>
-	      <div id="LoadMoreSpacesButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
-	        $labelShowMoreSpace
-	      </div>
-	    <%
-	    } else {
-	    %>
-	        <script type="text/javascript">
-	          try{
-	            var loadMoreButton = document.getElementById("LoadMoreSpacesButton");
-	            if (loadMoreButton) loadMoreButton.style.display = "none";
-	          }catch(e){};
-	        </script>
-	    <%
-	    }
-	    %>
-  </div>
+    <%for (space in allSpaces) {
+        def typeOfSpace = uicomponent.getTypeOfSpace(space);
+        def iconImgLabel = null
+        def deleteSpaceAction = uicomponent.event("DeleteSpace", space.id) + "; return false"
+        def leaveSpaceAction = uicomponent.event("LeaveSpace", space.id) + "; return false"
+        def acceptInvitationAction = uicomponent.event("AcceptInvitation", space.id) + "; return false"
+        def ignoreInvitationAction = uicomponent.event("IgnoreInvitation", space.id) + "; return false"
+        def cancelInvitationAction = uicomponent.event("CancelInvitation", space.id) + "; return false"
+        def requestToJoinSpaceAction = uicomponent.event("RequestToJoin", space.id) + "; false"
+        def spaceUrl = Utils.getSpaceHomeURL(space)
+        def editSpaceLink = spaceUrl + "/" + "settings";
+        def visibility = space.visibility
+        def registration = space.registration
+        def isPublic = false
+        def isClose = false
+        def hasEditPermission = false
+        
+        if ("INVITED".equals(typeOfSpace.toString())) {
+          // Action{Accept-Deny}, Icon {Clock}
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
+        } else if ("SENT".equals(typeOfSpace.toString())) {
+          // Action{Cancel}, Icon{Clock}
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending")
+        } else if ("MEMBER".equals(typeOfSpace.toString())) {
+          //  Action{Leave}, Icon{Link}
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.member_of_space")
+        } else if ("MANAGER".equals(typeOfSpace.toString())) {
+          // Action{Edit-Leave-Delete}, Icon{Member}
+          iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
+        } else {
+          // Action{Join}, Icon{None}
+        }
+        
+        //if (uicomponent.hasEditPermission(space)) hasEditPermission = true
+        if (visibility.equals(Space.PUBLIC) || uicomponent.hasEditPermission(space)) isPublic = true
+        if (registration.equals(Space.CLOSE)) isClose = true
+        
+        //Temporary use private as visible
+        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+        def status = visibleStatus + " "
+        if (registration.equals("open")) {
+          status += openStatus
+        } else if (registration.equals("validation")) {
+          status += validationStatus
+        } else {
+          status += closeStatus
+        }
+        def imageSource = uicomponent.getImageSource(space);
+        if (imageSource == null) {
+          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+        }
+        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+        allSpaceIdx += 1;
+      %>
+      
+       <div class="spaceBox pull-left">
+        
+        <% if (isPublic) { %>
+          <a href="$spaceUrl" class="avatarXLarge pull-left">
+            <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+          </a>
+        <%} else { %>
+          <div class="avatarXLarge pull-left">
+             <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+          </div>
+        <%} %>
+
+        <div class="contentBox">
+          <h4 class="spaceTitle">
+            <% if (uicomponent.hasAccessPermission(space))  { %>
+            <a href="<%= spaceUrl %>">$space.displayName</a>
+            <% } else {%>
+            <a href="javascript:void(0)">$space.displayName</a>
+            <% } %> 
+            <% if (iconImgLabel) {%>
+            	($iconImgLabel)
+            <% } %>
+          </h4>
+          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
+          <div class="content">
+            $space.description<br/>
+          </div>
+          
+          <button type="button" class="btn pull-right">Leave</button>
+          <!-- /TH button mau xanh/ button type="button" class="btn btn-primary pull-right">Leave</button-->
+		      <!--ul class="ActionContent ClearFix">
+		      <% if ("INVITED".equals(typeOfSpace.toString())) { %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptInvitationAction %>" title="<%= acceptInvitationLabel %>" class="Action">$acceptInvitationLabel</a></li>
+		          <li class="Line FL">&nbsp;</li>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreInvitationAction %>" title="<%= ignoreInvitationLabel %>" class="Action">$ignoreInvitationLabel</a></li>
+		      <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= cancelInvitationAction %>" title="<%= cancelInvitationLabel %>" class="Action">$cancelInvitationLabel</a></li>
+		      <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>" class="Action">$leaveSpaceLabel</a></li>
+		      <% } else if ("MANAGER".equals(typeOfSpace.toString())) {  %>
+		          <li class="FL"><a href="<%= editSpaceLink %>" title="<%= editSpaceLabel %>" class="Action">$editSpaceLabel</a></li>
+		          <li class="Line FL">&nbsp;</li>
+  	          <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>" class="Action">$leaveSpaceLabel</a></li>
+  	          <li class="Line FL">&nbsp;</li>
+  	          <li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>" class="Action">$deleteSpaceLabel</a></li>
+		        <%} else {
+		              if (Space.VALIDATION.equals(registration)) {
+		        %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" title="<%= requestToJoinSpaceLabel %>" class="Action">$requestToJoinSpaceLabel</a></li>
+		        <%    } else if (Space.OPEN.equals(registration)) { %>
+		          <li class="FL"><a href="javascript:void(0)" onclick="<%= requestToJoinSpaceAction %>" title="<%= joinSpaceLabel %>" class="Action">$joinSpaceLabel</a></li>
+		        <%    } %>
+		       <% } %>
+			     
+		      </ul-->
+        </div>
+        
+      </div>
+      <%}%>
+    </div>
+    
 </div>
