@@ -300,7 +300,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(100)
   public void testSaveComment() throws Exception {
 
     //
@@ -831,7 +831,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(100)
   public void testActivityProcessing() throws Exception {
 
     //
