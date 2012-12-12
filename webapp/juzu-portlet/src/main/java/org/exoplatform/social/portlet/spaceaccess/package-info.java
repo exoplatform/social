@@ -7,7 +7,8 @@
     @Script(src = "js/bootstrap.js", depends = "jquery"),
     @Script(src = "js/bootstrap-collapse.js", depends = "jquery"),
     @Script(src = "js/bootstrap-tooltip.js", depends = "jquery"),
-    @Script(src = "js/bootstrap-popover.js", depends = "jquery")
+    @Script(src = "js/bootstrap-popover.js", depends = "jquery"),
+    @Script(src = "js/space-access.js", depends = "jquery")
   },
   stylesheets = {
     @Stylesheet(src = "css/gatein.less"),
