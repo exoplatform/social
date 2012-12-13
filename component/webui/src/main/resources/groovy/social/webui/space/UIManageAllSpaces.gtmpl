@@ -168,7 +168,7 @@
       %>
       
        <div class="spaceBox pull-left">
-        
+        <!---khi can co image checked chi can add them class "checkedBox spaceBox pull-left" -->
         <% if (isPublic) { %>
           <a href="$spaceUrl" class="avatarXLarge pull-left">
             <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />

@@ -1,7 +1,7 @@
 @import "mixins.less";
 @import "variables.less";
 @import "FilterList/Style.less";
-@import "Activity/Style.less";
+
 /*=================UISpaceMember=================*/
 
 .addInvite {
@@ -13,14 +13,28 @@
 
 /************uiManageAllSpaces************/
 
-.uiManageAllSpace .spaceBox {
+.spaceBox {
 	.size(165px,315px);
 	.uiGrayLightBox();
 	padding: 10px;
+	margin: 10px;
+	.avatarXLarge img {
+		border: 1px solid @borderColor;
+	}
 	.contentBox {
 		margin-left: 140px;
+		.content {
+			height: 65px;
+			overflow: hidden;
+		}
 		.btn {
 			margin: 10px 0;
 		}
 	}
+}
+
+.checkedBox {
+	background-image: url(/social-resources/skin/DefaultSkin/images/checked.png);
+	background-position: top right;
+	background-repeat: no-repeat;
 }
