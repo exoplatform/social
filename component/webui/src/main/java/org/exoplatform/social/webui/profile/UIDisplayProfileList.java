@@ -151,7 +151,7 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public UIDisplayProfileList() throws Exception {
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-    setHasPeopleTab(true);
+    setHasPeopleTab(false);
     uiProfileUserSearch.setHasConnectionLink(false);
     setSelectedChar(ALL_FILTER);
     init();

@@ -53,36 +53,13 @@
   
   def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
   def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactsDirectory")
-  def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
-  def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
-	def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
-	def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
 	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
-	def portalURI = Utils.getURI("");
-	def ownerIdentity = Utils.getOwnerIdentity();
-	def ownerId = ownerIdentity.getRemoteId();
-	def allPeopleURL = "${portalURI}connections/all-people/${ownerId}";
-	def networkURL = "${portalURI}connections/network/${ownerId}";
-	def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
-	def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
-	def selectedNode = uicomponent.getSelectedNode();
 	def selectedStartChar = uicomponent.getSelectedChar();
   
 %>
 <div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
   
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-  
-  <% if (uicomponent.isHasPeopleTab()) {%>
-  <div class="uiTabNormal uiTabInPage">
-     <ul class="nav nav-tabs">
-          <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
-          <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
-          <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
-          <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
-     </ul>
-  </div>
-  <% } %>
   
   <div>
     <div class="boxSpaceList">
