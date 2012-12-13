@@ -46,6 +46,9 @@
        <path>/javascript/eXo/social/webui/UIProfile.js</path>
     </script>
     <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
       <module>jquery</module>
       <as>$</as>
     </depends>
@@ -55,10 +58,21 @@
   </module>
   
   <module>
+    <name>socialUtil</name>
+    <script>
+       <name>eXo.social.SocialUtil</name>
+       <path>/javascript/eXo/social/SocialUtil.js</path>
+    </script>
+  </module>
+  
+  <module>
     <name>social-ui-user-search</name>
     <script>
        <path>/javascript/eXo/social/webui/UIProfileUserSearch.js</path>
     </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
     <depends>
       <module>jquery</module>
       <as>$</as>
@@ -77,6 +91,9 @@
        <path>/javascript/eXo/social/webui/UISpaceSearch.js</path>
     </script>
     <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
       <module>jquery</module>
       <as>$</as>
     </depends>
@@ -93,6 +110,9 @@
     <script>
        <path>/javascript/eXo/social/webui/UISpaceMemberSuggestion.js</path>
     </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
     <depends>
       <module>jquery</module>
       <as>$</as>
@@ -111,6 +131,9 @@
        <path>/javascript/eXo/social/webui/UISpaceAppNameEdition.js</path>
     </script>
     <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
        <module>base</module>
     </depends>
     <depends>
@@ -124,6 +147,9 @@
     <script>
        <path>/javascript/eXo/social/webui/UIComposer.js</path>
     </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
     <depends>
        <module>base</module>
     </depends>
@@ -139,6 +165,9 @@
       <path>/javascript/eXo/social/webui/UIActivity.js</path>
     </script>
     <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
       <module>webui</module>
     </depends>
     <depends>
@@ -152,6 +181,9 @@
     <script>
       <path>/javascript/eXo/social/webui/UIComposerLinkExtension.js</path>
     </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
     <depends>
       <module>jquery</module>
       <as>$</as>
@@ -168,6 +200,9 @@
       <path>/javascript/eXo/social/webui/UICustomizeControl.js</path>
     </script>
     <depends>
+      <module>socialUtil</module>
+    </depends>
+    <depends>
       <module>jquery</module>
       <as>$</as>
     </depends>
@@ -182,6 +217,9 @@
     <script>
       <path>/javascript/eXo/social/webui/UIApplicationCategorySelector.js</path>
     </script>
+    <depends>
+      <module>socialUtil</module>
+    </depends>
     <depends>
       <module>jquery</module>
       <as>$</as>
