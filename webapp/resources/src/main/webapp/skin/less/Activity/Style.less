@@ -16,6 +16,15 @@
 			width: 88.8%;
 		}
 	}	
+	.blastShare  {
+		.uiContentBox {
+			padding: 5px; 
+		}
+	}
+	.attachMents .actionIcon{
+		margin: 0;
+		float: right;
+	}
 }
 .uiLinkShareDisplay {
 	position: relative;
@@ -28,8 +37,10 @@
 	.thumbnailContainer {
 		.thumbnailLeft { 
 			float: left;	
-			.size(140px,130px);			
-			margin-right: 10px;	
+			.size(140px,130px);		
+		}
+		.thumbnailLeft + .contentRight  {			
+			margin-left: 140px;
 		}
 		.uiContentBox {
 			padding: 6px;
@@ -73,13 +84,4 @@
 		right:6px;
 		top: 6px;
 	}
-}
-.blastShare  {
-	.uiContentBox {
-		padding: 5px; 
-	}
-}
-.attachMents .actionIcon{
-	margin: 0;
-	float: right;
 }
