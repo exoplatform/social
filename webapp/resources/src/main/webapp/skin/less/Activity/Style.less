@@ -6,21 +6,16 @@
 	.box-shadow(0 1px 2px -1px rgba(13, 13, 13, 0.27));
 	.textarea {
 		width: 98.9%;
-		height: 62px;
+		height: 62px e('!important');
 	}
 	.blastInputPeople  {
 		margin: 0 0 10px 0; 
 	}
 	.inputLink {
 		input[type="text"] {
-			width: 85%;
+			width: 88.8%;
 		}
-	}
-	.blastContainer {
-		.btn {
-			min-width: 90px;
-		}
-	}
+	}	
 }
 .uiLinkShareDisplay {
 	position: relative;
@@ -30,13 +25,14 @@
 	background: @grayWhiteSmoke;
 	margin: 0 0 10px 0; 
 	padding: 10px;
-	.thumbnailLeft {
-		margin: 0;
-		.size(140px,130px);
-		float: left;
-		margin-right: 10px;
+	.thumbnailContainer {
+		.thumbnailLeft { 
+			float: left;	
+			.size(140px,130px);			
+			margin-right: 10px;	
+		}
 		.uiContentBox {
-			padding: 6px;	
+			padding: 6px;
 			.thumbnailInner {
 				min-height: 100px;
 				img {
@@ -49,8 +45,7 @@
 			.stats {
 				text-align: center;
 			}
-		}
-		
+		}		
 	}
 	
 	.thumbnailHidden {
@@ -70,7 +65,7 @@
 			margin: 0;
 		}
 		textarea,input[type="text"] {
-			width: 90%;
+			width: 90%;			
 		}
 	}
 	.uiIconClose {
@@ -81,7 +76,7 @@
 }
 .blastShare  {
 	.uiContentBox {
-		padding: 5px;
+		padding: 5px; 
 	}
 }
 .attachMents .actionIcon{

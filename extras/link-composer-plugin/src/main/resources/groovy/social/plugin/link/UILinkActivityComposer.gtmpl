@@ -101,12 +101,12 @@ link
      uicomponent.clearLinkShare();
      def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);
                            %>
-  <div class="uiLinkShareDisplay blastShare clearfix">
+  <div class="uiLinkShareDisplay blastShare">
 	<a class="uiIconClose" href="javascript:void(0)" ></a>
     <%
       if(UILinkUtil.isImageLink(link)){
         %>
-          <div>
+          <div class="ImageLink">
             <a href="$link" target="_blank"><img src="$link" rel="tooltip" data-placement="bottom" title="$title" height="120"/></a> 
           </div>
         <%
@@ -114,9 +114,9 @@ link
       else {
         if (embedHtml == null) {
         %>
-          <% if (images.size() > 0) { %>		  
-          <div class="thumbnailLeft">
-			<div class="uiBox">
+		<div class="thumbnailContainer">
+          <% if (images.size() > 0) { %>
+			<div class="uiBox thumbnailLeft">
 				<div id="UIThumbnailDisplay" class="uiContentBox">
 				  <div id="Thumbnails" class="thumbnailInner">
 					<%
@@ -140,7 +140,7 @@ link
 				  </div>
 				</div>
 			 </div>			 
-          </div>
+          
             <% } %>
           <% } %>
           <div class="contentRight">
@@ -158,7 +158,8 @@ link
             <% } %>			
 			 <label for="ThumbnailCheckbox"  rel="tooltip" data-placement="bottom" title="<%=noThumbnail%>" ><span class="uiCheckbox"><input id="ThumbnailCheckbox" type="checkbox" class="checkbox" ><span></span></span>$noThumbnail</label>
           </div>
-        <%
+			</div>
+		<%
       }
     %>
   </div>
