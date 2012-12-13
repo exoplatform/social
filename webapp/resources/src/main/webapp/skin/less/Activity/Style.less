@@ -1,0 +1,90 @@
+
+/*=================uiComposer =================*/
+
+
+.uiComposer.uiGrayLightBox {
+	.box-shadow(0 1px 2px -1px rgba(13, 13, 13, 0.27));
+	.textarea {
+		width: 98.9%;
+		height: 62px;
+	}
+	.blastInputPeople  {
+		margin: 0 0 10px 0; 
+	}
+	.inputLink {
+		input[type="text"] {
+			width: 85%;
+		}
+	}
+	.blastContainer {
+		.btn {
+			min-width: 90px;
+		}
+	}
+}
+.uiLinkShareDisplay {
+	position: relative;
+	.border-radius(@baseBorderRadius);
+	.box-shadow(~"inset 0px 1px 0 #fbfbfb ,0px 1px 0 #fbfbfb");
+	border: 1px solid @tableBorder;
+	background: @grayWhiteSmoke;
+	margin: 0 0 10px 0; 
+	padding: 10px;
+	.thumbnailLeft {
+		margin: 0;
+		.size(140px,130px);
+		float: left;
+		margin-right: 10px;
+		.uiContentBox {
+			padding: 6px;	
+			.thumbnailInner {
+				min-height: 100px;
+				img {
+					.border-radius(@baseBorderRadius);
+				}
+			}
+		}
+		.thumbnailAction {
+			margin: 4px 0 0 0;
+			.stats {
+				text-align: center;
+			}
+		}
+		
+	}
+	
+	.thumbnailHidden {
+		display: none;
+	}
+	.contentRight {		
+		padding: 0 20px 0 0;
+		.title  {
+			color : @linkColor;
+			margin: 0px;
+		}
+		.source {
+			margin: 10px 0;
+			color : @linkColor;
+		}
+		.source + label {
+			margin: 0;
+		}
+		textarea,input[type="text"] {
+			width: 90%;
+		}
+	}
+	.uiIconClose {
+		position: absolute;
+		right:6px;
+		top: 6px;
+	}
+}
+.blastShare  {
+	.uiContentBox {
+		padding: 5px;
+	}
+}
+.attachMents .actionIcon{
+	margin: 0;
+	float: right;
+}

@@ -33,16 +33,16 @@ var UIComposer = {
         uiComposer.shareButton.className = 'ShareButtonDisable';
         if($("#ComposerContainer").length == 0){
           uiComposer.shareButton.removeAttr("disabled");
-          uiComposer.shareButton.attr("class",'btn');
+          uiComposer.shareButton.attr("class",'btn pull-right btn-primary');
         }
       } else {
         uiComposer.shareButton.css(background, '');
-        uiComposer.shareButton.attr('class','btn');
+        uiComposer.shareButton.attr('class','btn pull-right btn-primary');
       }
     } else {
       if($("ComposerContainer").length == 0){
         uiComposer.shareButton.removeAttr("disabled");
-        uiComposer.shareButton.attr("class",'btn');
+        uiComposer.shareButton.attr("class",'btn pull-right btn-primary');
       }
     }
 
@@ -89,7 +89,7 @@ var UIComposer = {
       UIComposer.composer.css({'height' : UIComposer.maxHeight,
         'color'  : UIComposer.focusColor});
       UIComposer.shareButton.removeAttr("disabled");
-      UIComposer.shareButton.attr("class",'btn');
+      UIComposer.shareButton.attr("class",'btn pull-right btn-primary');
     }
     
     var isReadyEl = $("#isReadyId");
@@ -149,14 +149,14 @@ var UIComposer = {
 	  var shareButton = $("#ShareButton");
 	  if ( isReadyForPostingActivity ) {
 	    shareButton.removeAttr("disabled");
-	    shareButton.attr("class",'btn');
+	    shareButton.attr("class",'btn pull-right btn-primary');
 	  } else {
 	    shareButton.attr("disabled","disabled");
 	  }
 	  
 	  if ( UIComposer.currentValue !== UIComposer.defaultInput ) {
 	    UIComposer.shareButton.removeAttr("disabled");
-	    UIComposer.shareButton.attr("class",'btn');
+	    UIComposer.shareButton.attr("class",'btn pull-right btn-primary');
 	  }
   }
 }

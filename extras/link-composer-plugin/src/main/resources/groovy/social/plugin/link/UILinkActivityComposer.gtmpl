@@ -115,10 +115,10 @@ link
         if (embedHtml == null) {
         %>
           <% if (images.size() > 0) { %>		  
-          <div class="span2 thumbnailLeft">
+          <div class="thumbnailLeft">
 			<div class="uiBox">
 				<div id="UIThumbnailDisplay" class="uiContentBox">
-				  <div id="Thumbnails">
+				  <div id="Thumbnails" class="thumbnailInner">
 					<%
 					  def thumbnailClass = "thumbnailShown";
 					  images.each({ %>

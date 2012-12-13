@@ -135,13 +135,13 @@ var UIComposerLinkExtension = {
     }
     
     var shareButton = $('#ShareButton');
-    shareButton.attr('class','ShareButton');
+    shareButton.attr('class','btn pull-right btn-primary');
     UIComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
       //trick: enable share button
       if (shareButton) {
         shareButton.removeAttr('disabled');
-        shareButton.attr('class', 'ShareButton');
+        shareButton.attr('class', 'btn pull-right btn-primary');
       }
       
       this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
@@ -208,7 +208,7 @@ var UIComposerLinkExtension = {
 
       if (shareButton) {
         shareButton.attr('disabled',"disabled");
-        shareButton.attr('class','ShareButtonDisable');
+        shareButton.attr('class','btn pull-right btn-primary');
       }
       this.inputLink = $('#' + this.inputLinkId);
       this.attachButton = $('#' + this.attachButtonId);
