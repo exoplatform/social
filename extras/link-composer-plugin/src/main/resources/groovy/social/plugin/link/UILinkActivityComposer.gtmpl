@@ -101,7 +101,8 @@ link
      uicomponent.clearLinkShare();
      def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);
                            %>
-  <div class="UILinkShareDisplay ClearFix">
+  <div class="uiLinkShareDisplay blastShare clearfix">
+	<a class="uiIconClose" href="javascript:void(0)" ></a>
     <%
       if(UILinkUtil.isImageLink(link)){
         %>
@@ -113,63 +114,58 @@ link
       else {
         if (embedHtml == null) {
         %>
-          <div class="ThumbnailLeft">
-          <% if (images.size() > 0) { %>
-            <div id="UIThumbnailDisplay">
-              <div id="Thumbnails">
-                <%
-                  def thumbnailClass = "ThumbnailShown";
-                  images.each({ %>
-                   <img src="$it" class="$thumbnailClass" rel="tooltip" data-placement="bottom" title="$title"/>
-                  <%
-                    thumbnailClass = "ThumbnailHidden";
-                  })%>
-              </div>
-              <div class="ThumbnailAction ClearFix">
-                <div class="BackIcon" id="BackThumbnail">
-                  <span></span>
-                </div>
-                <div id="Stats" class="Stats">
+          <% if (images.size() > 0) { %>		  
+          <div class="span2 thumbnailLeft">
+			<div class="uiBox">
+				<div id="UIThumbnailDisplay" class="uiContentBox">
+				  <div id="Thumbnails">
+					<%
+					  def thumbnailClass = "thumbnailShown";
+					  images.each({ %>
+					   <img src="$it" class="$thumbnailClass" rel="tooltip" data-placement="bottom" title="$title"/>
+					  <%
+						thumbnailClass = "thumbnailHidden";
+					  })%>
+				  </div>
+				  <div class="thumbnailAction clearfix">
+					<div class="actionIconSmall pull-left" id="BackThumbnail">
+					  <i class="uiIconArrowLeft"></i>
+					</div>
+					<div class="actionIconSmall pull-right" id="NextThumbnail">
+					  <i class="uiIconArrowRight"></i>
+					</div>				   
+					<div id="Stats" class="stats">
 
-                </div>
-                <div class="NextIcon" id="NextThumbnail">
-                  <span></span>
-                </div>
-               
-              </div>
-            </div>
-            <div class="ThumbnailOption ClearFix">
-              <input rel="tooltip" data-placement="bottom" title="<%=noThumbnail%>" class="FL" id="ThumbnailCheckbox" type="checkbox" />
-              <label for="ThumbnailCheckbox" class="Label FL">$noThumbnail</label>
-            </div>
-            <% } %>
+					</div>
+				  </div>
+				</div>
+			 </div>			 
           </div>
-          <% } %>
-          <div class="ContentRight">
-            <div id="LinkTitle" class="Title Editable">
-              $title
-            </div>
-            <% if (embedHtml == null) { %>
-                 <div id="LinkDescription" class="Content Editable">$description</div>
             <% } %>
-            <div id="LinkUrl" class="Source">
-              $link
+          <% } %>
+          <div class="contentRight">
+            <h5 id="LinkTitle" class="title editable">
+				$title
+            </h5>
+            <% if (embedHtml == null) { %>
+                 <div id="LinkDescription" class="content editable">$description</div>
+            <% } %>
+            <div id="LinkUrl" class="source">
+             $link
             </div>
             <% if (embedHtml != null) { %>
                  <div id="embedHtml">$embedHtml</div>
-            <% } %>
+            <% } %>			
+			 <label for="ThumbnailCheckbox"  rel="tooltip" data-placement="bottom" title="<%=noThumbnail%>" ><span class="uiCheckbox"><input id="ThumbnailCheckbox" type="checkbox" class="checkbox" ><span></span></span>$noThumbnail</label>
           </div>
         <%
       }
     %>
   </div>
 <% } else { %>
-  <div class="UIComposerExtensionContainer">
-  	<span class="TopInputLink"></span>
-    <div class="UIComposerLinkExtension ClearFix">
-      <a href="#" id="AttachButton" class="AttachButton" >&nbsp;</a>
-      <div class="InputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
+    <div class="uiComposerLink clearfix">
+      <button id="AttachButton" class="btn pull-right" >Attach</button>
+      <div class="inputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
     </div>
-  </div>
 <% } %>
 </div>
