@@ -62,6 +62,7 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
   lifecycle = UIFormLifecycle.class,
   template = "system:/groovy/webui/form/UIFormTabPane.gtmpl",
   events = {
+    @EventConfig(listeners = UIFormTabPane.SelectTabActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UISpaceAddForm.CreateActionListener.class),
     @EventConfig(listeners = UISpaceAddForm.ToggleUseGroupActionListener.class, phase = Phase.DECODE),
     @EventConfig(listeners = UISpaceAddForm.ChangeOptionActionListener.class, phase = Phase.DECODE)
