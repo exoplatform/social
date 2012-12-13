@@ -19,23 +19,29 @@ package org.exoplatform.social.webui.profile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * Displays the list of all existing users and their information. By using this UIAllPeople component, users could manage
@@ -51,7 +57,7 @@ import org.exoplatform.webui.event.EventListener;
     @EventConfig(listeners = UIDisplayProfileList.ConnectActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.ConfirmActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.IgnoreActionListener.class),
-    @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class, phase = Phase.DECODE),
+    @EventConfig(listeners = UIDisplayProfileList.SearchActionListener.class),
     @EventConfig(listeners = UIDisplayProfileList.LoadMorePeopleActionListener.class)
   }
 )
@@ -73,6 +79,13 @@ public class UIDisplayProfileList extends UIContainer {
    * Number element per page.
    */
   private static final Integer PEOPLE_PER_PAGE = 45;
+  
+  /** All people filter. */
+  private static final String ALL_FILTER = "All";
+
+  public static final String SEARCH = "Search";
+
+  private static final char EMPTY_CHARACTER = '\u0000';
 
   /**
    * The search object variable.
@@ -87,7 +100,50 @@ public class UIDisplayProfileList extends UIContainer {
   private List<Identity> peopleList;
   private ListAccess<Identity> peopleListAccess;
   private int peopleNum;
-  
+  private boolean hasPeopleTab;
+  String selectedChar = null;
+
+  public boolean isHasPeopleTab() {
+    return hasPeopleTab;
+  }
+
+  public void setHasPeopleTab(boolean hasPeopleTab) {
+    this.hasPeopleTab = hasPeopleTab;
+  }
+
+  /**
+   * Gets selected character when search by alphabet.
+   *
+   * @return The selected character.
+   */
+  public final String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character to variable.
+   *
+   * @param selectedChar <code>char</code>
+   */
+  public final void setSelectedChar(final String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+
+  /**
+   * Returns the current selected node.<br>
+   *
+   * @return selected node.
+   * @since 1.2.2
+   */
+  public String getSelectedNode() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    if (currentPath.split("/").length >= 2) {
+      return  currentPath.split("/")[1];
+    }
+    return currentPath;
+  }
+
   /**
    * Constructor to initialize iterator.
    *
@@ -95,8 +151,9 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public UIDisplayProfileList() throws Exception {
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-    uiProfileUserSearch.setHasPeopleTab(false);
-    uiProfileUserSearch.setHasConnectionLink(true);
+    setHasPeopleTab(true);
+    uiProfileUserSearch.setHasConnectionLink(false);
+    setSelectedChar(ALL_FILTER);
     init();
   }
   
@@ -399,7 +456,43 @@ public class UIDisplayProfileList extends UIContainer {
   static public class SearchActionListener extends EventListener<UIDisplayProfileList> {
     @Override
     public void execute(Event<UIDisplayProfileList> event) throws Exception {
+      WebuiRequestContext ctx = event.getRequestContext();
       UIDisplayProfileList uiAllPeople = event.getSource();
+      UIProfileUserSearch uiSearch = uiAllPeople.uiProfileUserSearch;
+
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+
+      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
+      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
+      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
+
+      ProfileFilter filter = uiAllPeople.uiProfileUserSearch.getProfileFilter();
+
+      try {
+        uiAllPeople.setSelectedChar(charSearch);
+        if (charSearch != null) { // search by alphabet
+          ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
+          filter.setName(charSearch);
+          filter.setPosition("");
+          filter.setSkills("");
+          filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
+          if (ALL_FILTER.equals(charSearch)) {
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
+            filter.setName("");
+          }
+          uiSearch.setRawSearchConditional("");
+        } 
+        
+        uiSearch.setProfileFilter(filter);
+        uiSearch.setNewSearch(true);
+      } catch (Exception e) {
+        uiSearch.setIdentityList(new ArrayList<Identity>());
+      }
+
       uiAllPeople.loadSearch();
       uiAllPeople.setLoadAtEnd(false);
     }
