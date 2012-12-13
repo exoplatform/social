@@ -57,7 +57,7 @@
   
   def invitedUserNames = uicomponent.invitedUserNames;
 %>
-<div id="$uicomponent.id" class="uiSpaceMember">
+<div class="uiSpaceMember">
 <% uiform.begin() %>
 
 	<%
