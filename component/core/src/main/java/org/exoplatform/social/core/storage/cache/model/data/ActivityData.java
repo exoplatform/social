@@ -18,6 +18,7 @@
 package org.exoplatform.social.core.storage.cache.model.data;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
   private final String[] likes;
   private final boolean isComment;
   private final Long postedTime;
+  private final Long lastUpdated;
   private final String[] replyIds;
   private final String userId;
   private final String appId;
@@ -64,6 +66,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.likes = activity.getLikeIdentityIds();
     this.isComment = activity.isComment();
     this.postedTime = activity.getPostedTime();
+    this.lastUpdated = activity.getUpdated().getTime();
     this.replyIds = activity.getReplyToId();
     this.userId = activity.getUserId();
     this.appId = activity.getAppId();
@@ -100,6 +103,7 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     activity.setReplyToId(replyIds);
     activity.isComment(isComment);
     activity.setPostedTime(postedTime);
+    activity.setUpdated(new Date(lastUpdated));
     activity.setUserId(userId);
     activity.setAppId(appId);
     activity.setTitleId(titleId);
