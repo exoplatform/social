@@ -251,7 +251,7 @@
       }
       var regex = new RegExp(strReg, "gi");
       regex.exec(currentMessage);
-
+      
       var startCaretPosition = regex.lastIndex - currentDataQuery.length - 1;
       var currentCaretPosition = regex.lastIndex;
 
@@ -303,6 +303,7 @@
             var t = $(this).data('indexMS').indexMS;
             mentionsCollection.splice(t, 1);
             var parent = $(this).parent();
+            elmInputBox.find('.cursorText').remove();
             $('<div class="cursorText"></div>').insertAfter(parent);
             var tx = document.createTextNode(settings.triggerChar);
             $(tx).insertAfter(parent);
@@ -425,12 +426,17 @@
     function onInputBoxBlur(e) {
       hideAutoComplete(false);
       if(elmAutocompleteList.find('li').length > 0) {
+        elmInputBox.find('.cursorText').remove();
         var value = elmInputBox.value();
-        var type = inputBuffer.join('');
-        if(value.indexOf(type) > 0) {
-          type = ' ' + type;
+        var typed = inputBuffer.join('');
+        var reBy = $.trim(typed);
+        currentDataQuery = reBy.replace(settings.triggerChar, '');
+        inputBuffer = reBy.split('');
+        if(value.indexOf(typed) > 0) {
+          typed = ' ' + typed;
+          reBy = ' ' + reBy;
         }
-        value = $.trim(value.replace(type, type+'<div class="cursorText"></div>'));
+        value = value.replace(typed, reBy+'<div class="cursorText"></div>');
         elmInputBox.val(value);
       }
       saveCacheData();
@@ -443,7 +449,6 @@
       var isBlockMenu = (elmAutocompleteList.css('display') === 'block');
       updateValues();
       updateMentionsCollection();
-      hideAutoComplete();
 
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
@@ -460,9 +465,10 @@
         }
 
         currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
-        currentDataQuery = utils.rtrim(currentDataQuery);
-
-        _.defer(_.bind(doSearch, this, currentDataQuery));
+        doSearch(currentDataQuery);
+      //  _.defer(_.bind(doSearch, this, currentDataQuery));
+      } else {
+        hideAutoComplete();
       }
     }
 
@@ -502,7 +508,10 @@
         return;
       }
 
-      if (e.keyCode == KEY.SPACE && (elmAutocompleteList.find('li.msg').length > 0) || elmAutocompleteList.css('display') === 'none') {
+      if (e.keyCode == KEY.SPACE && ((elmAutocompleteList.find('li.msg').length > 0) || 
+             (elmAutocompleteList.css('display') === 'none') || 
+             (inputBuffer[inputBuffer.length-1] === ' '))) {
+        
         inputBuffer = [];
       }
       if (e.keyCode == KEY.BACKSPACE) {
@@ -734,7 +743,7 @@
       elmAutocompleteList.show();
       elmAutocompleteList.empty();
       var elmDropDownList = $("<ul>").appendTo(elmAutocompleteList).hide();
-
+      var isShow = true;
       //
       if(query === '' && !settings.firstShowAll) {
         addMessageMenu(elmDropDownList, settings.messages.helpSearch);
@@ -747,7 +756,11 @@
 
       //
       if ((results === null || results === undefined || results.length === 0) && query != '') {
-        addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
+        if(inputBuffer[inputBuffer.length - 1] != ' ') {
+          addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
+        } else {
+          elmAutocompleteList.hide();
+        }
       }
       
       
@@ -788,7 +801,6 @@
         });
       }
 
-      elmAutocompleteList.show();
       elmDropDownList.show();
     }
 
