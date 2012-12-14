@@ -181,7 +181,4 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-  <build>
-    <finalName>social-portlet</finalName>
-  </build>
 </project>
