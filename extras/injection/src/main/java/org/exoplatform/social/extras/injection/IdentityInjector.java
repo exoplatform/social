@@ -1,14 +1,9 @@
 package org.exoplatform.social.extras.injection;
 
-import org.exoplatform.services.organization.OrganizationService;
+import java.util.HashMap;
+
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.manager.ActivityManager;
-import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.space.spi.SpaceService;
-
-import java.util.HashMap;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
