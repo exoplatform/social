@@ -875,7 +875,9 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   
   @MaxQueryNumber(600)
   public void testNumberNetworkUpdated() throws Exception {
-    long sinceTime = Calendar.getInstance().getTimeInMillis();
+    Calendar cal = Calendar.getInstance();
+    cal.roll(Calendar.MINUTE, -5);
+    long sinceTime = cal.getTimeInMillis();
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
