@@ -1,4 +1,0 @@
-Conditions:
-- Need to run script "Test_SNF_SOC_Demo_ConfigData" before to import application, add NewStaff page and ManagementUser page. 
-Issues:
-- Test_SNF_SOC_26 & Test_SNF_SOC_27 : The script is valid but this function has bug that causes the system work invidly(SOC-1828)
