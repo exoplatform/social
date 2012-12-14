@@ -70,6 +70,7 @@
   }
   
 %>
+<!-- 
 <div class="UIProfileUserSearch">
 <% uiform.begin() %>
    <div class="SearchSpacesBG ClearFix">	
@@ -91,3 +92,17 @@
    </div>
  <% uiform.end() %>
 </div>
+-->
+
+<div class="uiProfileUserSearch">
+<% uiform.begin() %>
+   <div class="uiGrayLightBox">	
+		<label for="<%=childs.get(0).getId()%>">${searchByNameLabel}:&nbsp;</label>
+		<% uiform.renderField(childs.get(0));%>&nbsp;&nbsp;
+		<% uiform.renderField(childs.get(1))%>&nbsp;&nbsp;
+		<% uiform.renderField(childs.get(2))%>&nbsp;&nbsp;
+		<button class="btn btn-primary" rel="tooltip" title="$searchActionLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></button>
+   </div>
+ <% uiform.end() %>
+</div>
+

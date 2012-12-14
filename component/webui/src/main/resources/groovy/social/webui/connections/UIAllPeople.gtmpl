@@ -71,7 +71,7 @@
 	def selectedNode = uicomponent.getSelectedNode();
 	def selectedStartChar = uicomponent.getSelectedChar();
 %>
-<div class="$uicomponent.id ContainerSpace" id="$uicomponent.id">
+<div class="uiAllPeople" id="$uicomponent.id">
   
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
   
@@ -115,10 +115,10 @@
     </div>
   
 	  <% if ((list == null) || (list.size() == 0)) {%>
-	    <div class="NoneContentSpace">
+	    <div class="noneContentSpace">
 	    </div>
 	  <%}%>
-	  <div class="ClearFix">
+	  <div class="userList clearfix">
 	  
 	  <% list.each {
 	      def identity = it;
@@ -146,63 +146,38 @@
 	        statusIconSrc = LinkProvider.WAITING_CONFIRMATION_ICON;
 	      }
 	  %>
-	    <% if (peopleIdx % 2 == 0) { %>
-	       <div class="ContentSpaceGray ClearFix">
-	    <% } else {%>
-	       <div class="ContentSpace ClearFix">
-	    <% }%>
-	         <a class="AvatarUser">
-	           <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
-	           <span class="BorderTop"></span>
-	           <span class="BorderBottom"></span>
-	         </a>
-	
-	          <div class="CommunityMane">
-	                <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-	                <%if ((position.length() + email.length()) == 0 ) {%>
-	                  <span class="NonePositionAndEmail"></span>
-	                <% } else {%>
-		                <% if(position.length() > 0) { %>
-		                <div class="Position">
-		                  ${position}
-		                </div>
-		                <%  } else {%>
-		                <span class="NonePosition"></span>
-		                <%  } %>
-		                <% if((email != null) && (email.length() > 0)) { %>
-		                <div class="Email">
-		                <a href="mailto:${email}">${email}</a> 
-		                </div>
-		                <%  } else {%>
-		                <span class="NoneEmail"></span>
-		                <%  } %>
-	                <% } %>
-	                
-	               
-	          </div>
-						 <ul class="InviteTitle">
-					<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-					      <li class="Status FL">$invitationReceivedLabel &nbsp;:&nbsp;</li>
-	              <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button></li>				      
-					      <li class="Line FL">&nbsp;</li>
-					      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreTitle">$ignoreTitle</button></li>
-					<% } else if (contactStatus == Relationship.Type.PENDING) { %>
-					      <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
-					      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button></li>
-					<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-					      <li class="Status FL">$connectionLabel &nbsp;:&nbsp;</li>
-					      <li class="FL"><button class="btn" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</button></li>
-					<% } else if (contactStatus == null) { %>
-					      <li class="FL"><button class="btn" rel="tooltip" onclick="$connectAction" rel="tooltip" data-placement="bottom" title="$connectTitle">$connectTitle</button></li>
-					<% } %>
-					</ul>
-	    </div>
-	  <% } %>
-	  </div>
-	  <% if(uicomponent.isEnableLoadNext()) { %>
-		    <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
-		      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
-		    </button>
+		<div class="spaceBox pull-left">
+			<a class="avatarXLarge pull-left">
+				<img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
+			</a>
+			<div class="contentBox">
+				<h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>
+				<% if(position.length() > 0) { %>
+				<div class="position">${position}</div>
+				<% } %>
+				<% if((email != null) && (email.length() > 0)) { %>
+				<div class="email"><a href="mailto:${email}">${email}</a></div>
+				<% } %>
+			</div>
+			<div class="pull-right">
+				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
+					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button>&nbsp;&nbsp;
+					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreTitle">$ignoreTitle</button>
+				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
+					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
+				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</button>
+				<% } else if (contactStatus == null) { %>
+					<button class="btn pull-right" rel="tooltip" onclick="$connectAction" rel="tooltip" data-placement="bottom" title="$connectTitle">$connectTitle</button>
+				<% } %>
+				</div>
+			</div>
+		<% } %>
+		</div>
+		<% if(uicomponent.isEnableLoadNext()) { %>
+		<button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+		<%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+		</button>
 	  <% } else { %>
 		      <script type="text/javascript">
 		        var loadMoreButton = document.getElementById("LoadMoreButton");
