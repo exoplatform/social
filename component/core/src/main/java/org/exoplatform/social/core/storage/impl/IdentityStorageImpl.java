@@ -940,6 +940,53 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   /**
    * {@inheritDoc}
    */
+  public List<Identity> getIdentitiesForMentions(
+      final String providerId, final ProfileFilter profileFilter, long offset, long limit,
+      boolean forceLoadOrReloadProfile)
+      throws IdentityStorageException {
+
+    if (offset < 0) {
+      offset = 0;
+    }
+
+    String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
+    StorageUtils.processUsernameSearchPattern(inputName);
+    List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
+    List<Identity> listIdentity = new ArrayList<Identity>();
+
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    whereExpression
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(
+                                                    providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
+
+    StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
+    StorageUtils.applyFilter(whereExpression, profileFilter);
+
+    builder.where(whereExpression.toString());
+    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+
+    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+    while (results.hasNext()) {
+
+      ProfileEntity profileEntity = results.next();
+
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      Profile profile = getStorage().loadProfile(new Profile(identity));
+      identity.setProfile(profile);
+      listIdentity.add(identity);
+
+    }
+
+    return listIdentity;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public int getIdentitiesByProfileFilterCount(final String providerId, final ProfileFilter profileFilter)
       throws IdentityStorageException {
 
