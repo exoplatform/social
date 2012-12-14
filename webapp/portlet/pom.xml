@@ -85,21 +85,6 @@
               </execution>
            </executions>
         </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-               <goal>war</goal>
-             </goals>
-            <configuration>
-              <packagingExcludes>**/gwt-unitCache/**,**/less/**</packagingExcludes>
-             </configuration>
-           </execution>
-         </executions>
-      </plugin>
     </plugins>
   </build>
 
