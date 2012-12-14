@@ -35,7 +35,7 @@ def selectedTab = uicomponent.getSelectedTabId();
 		String link = uicomponent.event("SelectTab", childID);
 		%>
 		<li class='<%= selectedTab.equals(childID) ? "active" : "" %>' onclick="$link">
-			<a data-toggle="tab" data-target="$childID-tab"><%=_ctx.appRes("UITabPane.title." + childID);%></a>
+			<a data-toggle="tab" data-target="#$childID-tab"><%=_ctx.appRes("UITabPane.title." + childID);%></a>
 		</li>
 		<%
 		}
@@ -47,17 +47,13 @@ def selectedTab = uicomponent.getSelectedTabId();
 		<%
 		for(child in uicomponent.getChildren())
 		{
-		if(child.isRendered())
-		{
 		String childID = child.getId();
 		%>
-		<div class='tab-pane <%= selectedTab.equals(childID)? "active" : "" %>' id="$childID-tab">
+		<div id="$childID-tab" class='tab-pane fade <%= selectedTab.equals(childID)? "in active" : "" %>' style="overflow: auto">
 			<% uicomponent.renderUIComponent(child); %>
 		</div>
 		<%
 		}
-		}
 		%>
 	</div>
 </div>
-
