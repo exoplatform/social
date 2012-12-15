@@ -26,8 +26,8 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-rest</artifactId>
-  <packaging>jar</packaging>
   <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>eXo Social widget (REST Service)</name>
   <description>eXo Social Widget (REST Service)</description>
   <dependencies>

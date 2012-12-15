@@ -55,7 +55,6 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-
     <org.exoplatform.core.version>2.4.10-GA-SNAPSHOT</org.exoplatform.core.version>
     <org.exoplatform.doc.doc-style.version>1.0.8-CR01</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.14.10-GA-SNAPSHOT</org.exoplatform.jcr.version>
@@ -83,25 +82,18 @@
     <org.apache.httpcomponents.httpclient.version>4.0.1</org.apache.httpcomponents.httpclient.version>
     <org.apache.httpcomponents.httpcore.version>4.0.1</org.apache.httpcomponents.httpcore.version>
     <org.staxnav.version>0.9.6</org.staxnav.version>
-
-
     <net.sf.ehcache.version>1.6.0</net.sf.ehcache.version>
     <net.oauth.core.oauth.version>20100527</net.oauth.core.oauth.version>
     <net.oauth.core.oauth-provider.version>20100527</net.oauth.core.oauth-provider.version>
     <net.oauth.core.oauth-httpclient4.version>20090913</net.oauth.core.oauth-httpclient4.version>
-
     <com.google.guava.version>r09</com.google.guava.version>
     <com.google.code.guice.version>2.0</com.google.code.guice.version>
     <com.ibm.icu.version>3.8</com.ibm.icu.version>
     <com.sun.xml.bind.version>2.1.7</com.sun.xml.bind.version>
     <com.google.inject.extensions.version>2.0</com.google.inject.extensions.version>
-
     <de.odysseus.juel.version>2.1.2</de.odysseus.juel.version>
-    
     <org.exoplatform.doc.doc-style.version>1.0.8-CR01</org.exoplatform.doc.doc-style.version>
-
     <platform-ui.version>1.0.0-SNAPSHOT</platform-ui.version>
-
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
@@ -397,6 +389,12 @@
             <groupId>jmock</groupId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.platform-ui</groupId>
+        <artifactId>platform-ui-web-eXoResources</artifactId>
+        <version>${platform-ui.version}</version>
+        <type>war</type>
       </dependency>
       <!-- To be replaced by an import of GateIn Portal parent POM -->
       <dependency>
@@ -897,12 +895,6 @@
             <groupId>javax.servlet</groupId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.platform-ui</groupId>
-        <artifactId>platform-ui-web-eXoResources</artifactId>
-        <version>${platform-ui.version}</version>
-        <type>war</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
