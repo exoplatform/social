@@ -41,7 +41,6 @@ public class ActivityFilter extends JCRFilterLiteral {
   //
   private static PropertyLiteralExpression<String> MENTION_TITLE = new PropertyLiteralExpression<String>(String.class, "soc:title");
   private static PropertyLiteralExpression<TimestampType> ACTIVITY_UPDATED_POINT = new PropertyLiteralExpression<TimestampType>(TimestampType.class, ActivityEntity.lastUpdated.toString());
-  private static PropertyLiteralExpression<TimestampType> ACTIVITY_POSTED_POINT = new PropertyLiteralExpression<TimestampType>(TimestampType.class, ActivityEntity.postedTime.toString());
 
   //
   public static JCRFilterOption IS_COMMENT_FIELD = new JCRFilterOption(ActivityEntity.isComment);
@@ -66,7 +65,7 @@ public class ActivityFilter extends JCRFilterLiteral {
   };
   
   public static JCRFilterOption ACTIVITY_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
-  public static JCRFilterOption ACTIVITY_POSTED_POINT_FIELD = new JCRFilterOption(ACTIVITY_POSTED_POINT);
+  //public static JCRFilterOption ACTIVITY_POSTED_POINT_FIELD = new JCRFilterOption(ACTIVITY_POSTED_POINT);
   
 
   //ORDER_BY
@@ -76,12 +75,13 @@ public class ActivityFilter extends JCRFilterLiteral {
   @Override
   protected void start() {
     try {
-      this.append(ACTIVITY_POSTED_POINT_FIELD.clone())
+      this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
       .append(MENTIONERS_FIELD.clone())
       .append(COMMENTERS_FIELD.clone())
       .append(LIKES_FIELD.clone())
       .with(IS_COMMENT_FIELD).value(Boolean.FALSE)
-      .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
+      .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
+      .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
     } catch (Exception ex) {
       LOG.warn(ex);
     }
@@ -89,7 +89,7 @@ public class ActivityFilter extends JCRFilterLiteral {
   
   @Override
   public void destroy() {
-    this.with(ACTIVITY_POSTED_POINT_FIELD).value(null);
+    this.with(ACTIVITY_UPDATED_POINT_FIELD).value(null);
     this.with(MENTIONERS_FIELD).value(null);
     this.with(COMMENTERS_FIELD).value(null);
     this.with(LIKES_FIELD).value(null);
@@ -155,7 +155,8 @@ public class ActivityFilter extends JCRFilterLiteral {
     protected void start() {
       try {
         super.start();
-        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
+        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC).
+        with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }
@@ -169,7 +170,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         super.start();
         //
-        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
+        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC).
+        with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }
@@ -183,6 +185,7 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         //
         this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC)
         .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
       } catch (Exception ex) {
         LOG.warn(ex);

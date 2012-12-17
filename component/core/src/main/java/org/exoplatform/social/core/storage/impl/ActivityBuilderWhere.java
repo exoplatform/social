@@ -273,7 +273,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
 
-      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).getValue();
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {
         TimestampType type = null;
@@ -282,10 +282,10 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
           if (type != null) {
             switch (type) {
             case NEWER:
-              where.and().greater(ActivityEntity.postedTime, type.get());
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
               break;
             case OLDER:
-              where.and().lesser(ActivityEntity.postedTime, type.get());
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
               break;
             }
           }

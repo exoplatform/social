@@ -23,6 +23,8 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.component.test.KernelBootstrap;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
@@ -42,9 +44,9 @@ import org.exoplatform.services.security.Identity;
  */
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.portal-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.test.jcr-configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.common.test.configuration.xml"),
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/exo.social.component.core.test.configuration.xml"),
@@ -71,7 +73,17 @@ public abstract class AbstractServiceTest extends BaseExoTestCase {
     providerBinder = ProviderBinder.getInstance();
     ApplicationContextImpl.setCurrent(new ApplicationContextImpl(null, null, providerBinder));
     resourceBinder.clear();
+    configures();
     begin();
+  }
+  
+  /**
+   * trick to configure for Unit Testing avoid NPE in SpaceUtils at line 850.
+   */
+  private void configures() {
+    UserACL acl = (UserACL) getContainer().getComponentInstanceOfType(UserACL.class);
+    //trick to configure for Unit Testing avoid NPE in SpaceUtils at line 850.
+    acl.setAdminMSType("manager");
   }
 
   protected void tearDown() throws Exception {

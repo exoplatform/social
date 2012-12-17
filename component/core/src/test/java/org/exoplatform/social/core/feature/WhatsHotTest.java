@@ -139,7 +139,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -174,7 +174,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getActivityFeed(rootIdentity, 0, 15);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -246,7 +246,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -273,8 +273,9 @@ public class WhatsHotTest extends AbstractCoreTest {
     list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
     assertEquals(2, list.size());
     
-    assertEquals(firstActivity.getTitle(), list.get(0).getTitle());
-    assertEquals(secondActivity.getTitle(), list.get(1).getTitle());
+    //lastUpdated will be updated when creates new comment.
+    assertEquals(secondActivity.getTitle(), list.get(0).getTitle());
+    assertEquals(firstActivity.getTitle(), list.get(1).getTitle());
    
     tearDownActivityList.add(firstActivity);
     tearDownActivityList.add(secondActivity);

@@ -93,7 +93,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -101,7 +101,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -132,7 +132,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -140,7 +140,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -154,14 +154,14 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
   
     //
     List<Identity> identities = new ArrayList<Identity>(2);
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -175,14 +175,14 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -217,14 +217,14 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
   
     //
     List<Identity> identities = new ArrayList<Identity>(2);
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -239,14 +239,14 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -261,7 +261,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -269,7 +269,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -283,7 +283,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
     
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -291,7 +291,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     

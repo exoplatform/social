@@ -687,7 +687,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
     
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter, 0, limit);
@@ -705,7 +705,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
@@ -723,7 +723,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter, 0, limit);
@@ -741,8 +741,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.addAll(getSpacesId(ownerIdentity));
     identities.add(ownerIdentity);
     
+    ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), ActivityFilter.ACTIVITY_OLDER_FILTER, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   /**
@@ -774,7 +775,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
@@ -790,7 +791,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
     return getActivitiesOfIdentitiesQuery (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
@@ -809,7 +810,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
@@ -848,7 +849,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
@@ -868,7 +869,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, 0, limit);
@@ -889,7 +890,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
@@ -909,7 +910,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, 0, limit);
@@ -976,7 +977,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
@@ -998,7 +999,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter, 0, limit);
@@ -1020,7 +1021,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
@@ -1043,7 +1044,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter, 0, limit);
@@ -1104,7 +1105,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
@@ -1126,7 +1127,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter, 0, limit);
@@ -1147,7 +1148,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
@@ -1169,7 +1170,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POSTED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter, 0, limit);
