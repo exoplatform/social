@@ -90,7 +90,7 @@
     %>
 		<div  class="clearfix">
 		 <button class="pull-right btn btn-primary" rel="tooltip" data-placement="bottom" title="$shareLabel" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
-		  <div class="attachMents pull-left">
+		  <div id="ActivityComposerExt" class="attachMents pull-left">
 		  <%
 			def simpleName, labelSimpleName, actionEvent;
 			def counter = 0;

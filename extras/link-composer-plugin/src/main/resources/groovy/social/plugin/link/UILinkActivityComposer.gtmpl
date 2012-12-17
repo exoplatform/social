@@ -102,7 +102,7 @@ link
      def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);
                            %>
   <div class="uiLinkShareDisplay blastShare">
-	<a class="uiIconClose" href="javascript:void(0)" ></a>
+	<a class="uiIconClose" href="javascript:void(0)" onclick="<%= uicomponent.event("Close")%>;" ></a>
     <%
       if(UILinkUtil.isImageLink(link)){
         %>
@@ -114,9 +114,9 @@ link
       else {
         if (embedHtml == null) {
         %>
-		<div class="thumbnailContainer">
+		<div id="ThumbnailContainer" class="thumbnailContainer">
           <% if (images.size() > 0) { %>
-			<div class="uiBox thumbnailLeft">
+			<div id="UIThumbnailLeftBox" class="uiBox thumbnailLeft">
 				<div id="UIThumbnailDisplay" class="uiContentBox">
 				  <div id="Thumbnails" class="thumbnailInner">
 					<%
@@ -143,11 +143,16 @@ link
           
             <% } %>
           <% } %>
-          <div class="contentRight">
+          <div id="UIRightBox" class="contentRight">
             <h5 id="LinkTitle" class="title editable">
 				$title
             </h5>
-            <% if (embedHtml == null) { %>
+            <% if (embedHtml == null) { 
+                 if (description.length() > 273) {
+                   description = description.substring(0, 270) + '...';
+                 }
+            %>
+                 
                  <div id="LinkDescription" class="content editable">$description</div>
             <% } %>
             <div id="LinkUrl" class="source">
@@ -156,7 +161,9 @@ link
             <% if (embedHtml != null) { %>
                  <div id="embedHtml">$embedHtml</div>
             <% } %>			
-			 <label for="ThumbnailCheckbox"  rel="tooltip" data-placement="bottom" title="<%=noThumbnail%>" ><span class="uiCheckbox"><input id="ThumbnailCheckbox" type="checkbox" class="checkbox" ><span></span></span>$noThumbnail</label>
+            <% if (images.size() > 0) { %>
+			      <span class="uiCheckbox"><input id="ThumbnailCheckbox" type="checkbox" class="checkbox" /><span>$noThumbnail</span></span>
+			      <% } %>
           </div>
 			</div>
 		<%

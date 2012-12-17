@@ -121,7 +121,7 @@ var UIComposerLinkExtension = {
     }
   },
   init: function() {
-  
+
     function showThumbnail() {
       for (var i = 0, l = this.images.length; i < l; i++) {
         this.images[i].style.display = 'none';
@@ -131,7 +131,7 @@ var UIComposerLinkExtension = {
     }
     
     function doStats() {
-      this.stats.innerHTML = (this.shownThumbnailIndex + 1) + ' / ' + this.images.length;
+      this.stats.html((this.shownThumbnailIndex + 1) + ' / ' + this.images.length);
     }
     
     var shareButton = $('#ShareButton');
@@ -190,13 +190,15 @@ var UIComposerLinkExtension = {
         
         this.thumbnailCheckbox.on('click', function(evt) {
           if (UIComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
-            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '50px',
-                                                                     'display':'none'});
             UIComposerLinkExtension.linkData.image = '';
+            $('#UIRightBox').removeClass('contentRight');
+            $('#UIRightBox').addClass('resetMargin');
+            $('#UIThumbnailLeftBox').toggle();
           } else {
-            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
-                                                                     'display':'block'});
             UIComposerLinkExtension.linkData.image = $(UIComposerLinkExtension.images[UIComposerLinkExtension.shownThumbnailIndex]).attr('src');
+            $('#UIRightBox').removeClass('resetMargin');
+            $('#UIRightBox').addClass('contentRight');
+            $('#UIThumbnailLeftBox').toggle();
           }
           UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
         });

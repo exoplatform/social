@@ -72,6 +72,20 @@ var UIComposer = {
     UIComposer.userTyped = false;
   },
   init: function() {
+  
+    // add @ button using js
+    var mentionButton = $('<a />', {
+      'href' : 'javascript:void(0);',
+      'rel':'tooltip',
+      'data-placement':'bottom',
+      'title':'mention',
+      'class':'actionIcon'
+      }
+    ).append($('<i />',{
+      'class':'uiIconMention'
+    }));
+    $('div#ActivityComposerExt>a:first-child').after(mentionButton);
+    
     UIComposer.composer = $('#' + UIComposer.composerId);
     UIComposer.shareButton = $('#ShareButton');
     if (!(UIComposer.composer && UIComposer.shareButton)) {
