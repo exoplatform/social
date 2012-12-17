@@ -21,6 +21,15 @@
       <artifactId>commons-component-common</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-api</artifactId>
+    </dependency>
+    <dependency>
+      <artifactId>exo.tool.framework.junit</artifactId>
+      <groupId>org.exoplatform.tool</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.organization.api</artifactId>
     </dependency>
