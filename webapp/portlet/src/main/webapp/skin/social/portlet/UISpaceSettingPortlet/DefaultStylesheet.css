@@ -657,6 +657,10 @@
 	padding: 0px 12px;
 }
 
+.UISpaceSettingPortlet .UIHorizontalTabs .MiddleTab {
+	line-height: 28px !important;
+}
+
 .UISpaceSettingPortlet .NewTabs .UITab {
 	float: none;
 	font-weight: normal;

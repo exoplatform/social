@@ -45,11 +45,17 @@ import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  * @version $Revision$
  */
+// TODO :
+// * Fix tests to not have to specify the order of execution like this
+// * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
+@FixMethodOrder(MethodSorters.JVM)
 @QueryNumberTest
 public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;

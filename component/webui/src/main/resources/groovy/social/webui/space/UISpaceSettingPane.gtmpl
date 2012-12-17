@@ -35,12 +35,10 @@
             %>
                 <div class="UITab GrayTabStyle">
                     <div class="$style">
-                        <div class="LeftTab">
-                            <div class="RightTab">
+
                                 <% String actionLink = uicomponent.event("SelectTab", tabId); %>                             
                                 <div class="MiddleTab" onclick="eXo.webui.UIHorizontalTabs.changeTabForUITabPane(this, '$tabId', '$url');$actionLink"><%=_ctx.appRes("UITabPane.title." + uiChild.getId());%></div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>                          
             <%}%>

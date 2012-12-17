@@ -18,70 +18,52 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.exoplatform.social</groupId>
     <artifactId>social-extras-widget</artifactId>
+    <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-rest</artifactId>
   <packaging>jar</packaging>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <name>eXo Social widget (REST Service)</name>
   <description>eXo Social Widget (REST Service)</description>
   <dependencies>
-
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
-      <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.gatein.shindig</groupId>
-      <artifactId>shindig-social-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
-      <scope>provided</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.exoplatform.ws</groupId>
-      <artifactId>exo.ws.rest.core</artifactId>
-      <scope>provided</scope>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.commons</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+    </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
-      <scope>provided</scope>
     </dependency>
-    
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.exoplatform.ws</groupId>
+      <artifactId>exo.ws.rest.core</artifactId>
+    </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+    </dependency>
   </dependencies>
 </project>
