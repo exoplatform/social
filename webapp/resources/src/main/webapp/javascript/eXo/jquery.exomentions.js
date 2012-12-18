@@ -95,8 +95,9 @@
     },
     replaceFirst : function(string, by){
       while(string.indexOf(by) === 0) {
-        strInput = strInput.substring(1);
+        string = string.substring(1);
       }
+      return string;
     },
     validateWWWURL : function(url) {
       if (url.indexOf('www.') > 0) {
