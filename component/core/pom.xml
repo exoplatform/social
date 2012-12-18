@@ -17,218 +17,207 @@
     along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>social-component</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-core</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <name>eXo Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
-
   <dependencies>
-
     <dependency>
-      <groupId>org.exoplatform.doc</groupId>
-      <artifactId>doc-style</artifactId>
-      <version>${org.exoplatform.doc.doc-style.version}</version>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.portlet</groupId>
+      <artifactId>portlet-api</artifactId>
+    </dependency>
+    <!-- Log4J is required by wikbook to compile but we don't want to propagate it -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
       <optional>true</optional>
     </dependency>
-
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.apt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.ext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-component-common</artifactId>
+    </dependency>
+    <dependency>
+      <artifactId>exo.tool.framework.junit</artifactId>
+      <groupId>org.exoplatform.tool</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.organization.api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.security.core</artifactId>
+    </dependency>
+    <!-- doc-style is required by wikbook to compile but we don't want to propagate it -->
     <dependency>
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
-      <version>${org.exoplatform.doc.doc-style.version}</version>
       <classifier>templates</classifier>
+      <optional>true</optional>
     </dependency>
-
+    <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.application-registry</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.resources</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.controller</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portlet</artifactId>
+    </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.pc</groupId>
+      <artifactId>pc-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-gadgets</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.shindig</groupId>
+      <artifactId>shindig-social-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>javax.portlet</groupId>
-      <artifactId>portlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.ibm.icu</groupId>
-      <artifactId>icu4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.common</groupId>
-      <artifactId>common-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.pc</groupId>
-      <artifactId>pc-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.shindig</groupId>
-      <artifactId>shindig-social-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gatein.shindig</groupId>
-      <artifactId>shindig-gadgets</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.component.cache</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.core</groupId>
-      <artifactId>exo.core.component.organization.api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.application-registry</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.portal</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.web.controller</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.framework</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.portal</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.webui.portlet</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-component-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.test.core</artifactId>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.core</artifactId>
       <scope>test</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-component-common</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-testing</artifactId>
       <scope>test</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.identity</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.test.core</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.identity</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.component.portal</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.jboss.byteman</groupId>
       <artifactId>byteman</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-bmunit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -237,37 +226,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.byteman</groupId>
-      <artifactId>byteman-bmunit</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
   </dependencies>
-
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.xml</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.properties</include>
-        </includes>
-      </resource>
-    </resources>
-
     <plugins>
-
       <!-- Extract templates used by wikbook -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -289,17 +254,16 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
             <id>default-compile</id>
+            <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
-            <phase>compile</phase>
             <!-- Additional configuration to generate wiki pages from wikbook annotations-->
             <configuration>
               <compilerArguments>
@@ -309,7 +273,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -329,10 +292,10 @@
           <!-- Reserve network ports for tests using byteman -->
           <execution>
             <id>generate-byteman-port</id>
+            <phase>process-test-classes</phase>
             <goals>
               <goal>reserve-network-port</goal>
             </goals>
-            <phase>process-test-classes</phase>
             <configuration>
               <portNames>
                 <portName>org.jboss.byteman.contrib.bmunit.agent.port</portName>
@@ -341,7 +304,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -355,11 +317,8 @@
           </includes>
         </configuration>
       </plugin>
-
     </plugins>
-
   </build>
-
   <profiles>
     <!-- The following code includes tools.jar for JDKs on Windows, Linux and Solaris 
          (it is already included in the runtime for Mac OS X and some free JDKs). -->
@@ -376,12 +335,11 @@
         <dependency>
           <groupId>com.sun</groupId>
           <artifactId>tools</artifactId>
-          <version>1.4.2</version>
+          <version>1.6</version>
           <scope>system</scope>
           <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
       </dependencies>
     </profile>
   </profiles>
-
 </project>

@@ -19,22 +19,16 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-jar</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Extension JAR</name>
   <description>eXo Social Extension JAR</description>
-
 </project>

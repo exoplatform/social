@@ -17,22 +17,23 @@
     along with this program; if not, see<http://www.gnu.org/licenses />.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-config</artifactId>
-  <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Extension Portal Container Definition</name>
   <description>eXo Social Extension Portal Container Definition</description>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>
