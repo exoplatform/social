@@ -38,9 +38,9 @@
   def changePictureLabel = _ctx.appRes(uicomponent.getId() + ".label.ChangePicture");
   def saveLabel = _ctx.appRes(uicomponent.getId() + ".action.Save");
 %>
-<div class="$uicomponent.id">
+<div class="uiSpaceInfo">
   <% uiform.begin() %>
-    <div class="SpaceContainer">
+ <!--   <div class="SpaceContainer">
    
       <table class="UIFormGrid">
         <tbody>
@@ -78,6 +78,26 @@
 	    </div>
       
     </div>
+	-->
+	<div class="changeAccount clearfix">
+		<div class="changeAvatar pull-left">
+			<a href="#" class="avatarXLargeWithBorder" onclick="$changeAvatar" rel="tooltip" data-placement="bottom" title="$clickChangeAvatar">
+				<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"/>
+			</a>
+			<button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
+		</div>
+		<div class="form-horizontal pull-left">
+			<div class="control-group">
+				<label class="control-label" for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
+				<div class="controls"><% uiform.renderField(childs.get(1))%></div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
+				<div class="controls"><% uiform.renderField(childs.get(2)); %></div>
+			</div>
+		</div>
+	</div>
+	<div class="uiAction"><button class="btn" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
-  <div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+  <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

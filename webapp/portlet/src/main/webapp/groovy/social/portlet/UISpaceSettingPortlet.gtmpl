@@ -23,7 +23,7 @@
 <%
   import org.exoplatform.social.webui.space.UISpaceSetting;
 %>
-<div class="UISpaceSettingPortlet" id="$uicomponent.id">
+<div class="uiSpaceSettingPortlet" id="$uicomponent.id">
   <% 
   uicomponent.renderChild(UISpaceSetting.class);
   %>
