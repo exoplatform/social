@@ -64,7 +64,7 @@
     uicomponent.setLoadAtEnd(true)
   }
 %>
-<div class="UIManageInvitationSpaces" id="$uicomponent.id">
+<div class="uiManageSpace" id="$uicomponent.id">
   <% uicomponent.renderChild(UISpaceSearch.class); %>
   
 	<div class="uiTabNormal uiTabInPage">
@@ -74,94 +74,94 @@
 	    <li class='<%= selectedNode.equals("invitationSpace")? "active" : "" %>'><a href='$invitationsReceivedURL'>$labelInvitationsReceived</a></li>
 	    <li class='<%= selectedNode.equals("pendingSpace")? "active" : "" %>'><a href='$requestPendingURL'>$labelRequestsPending</a></li>
 	  </ul>
-	</div>  
 	
-	<div>
-		<!--search by directory-->
-		<div class="boxSpaceList">
-		    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
-		    <!--div class="DirectoryNormalBox"-->
-		    <div class="uiFilterList">
-		        <div class="result"><span class="number"><%=uicomponent.getPendingSpacesNum(); %></span>(Results display in order of alphabet)</div>
-		        <ul class="letterList"> 
-		            <li>
-		            <% if ((selectedChar != null) && (selectedChar == "All")) { %>
-		                    <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-		            <%} else {%>
-		                    <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-		            <% } %>
-		            </li>
-		            <% for (ch in alphabets) { %>
-		            <li>
-		            <% if ((selectedChar != null) && (selectedChar == ch)) { %>
-		                <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-		            <%} else {%>
-		                <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-		            <% } %>
-		            </li>
-		            <% } %>
-		        </ul>
-		    </div>
-		    
-		</div>
-		
-	  <div class="ContentBoxSpaceList ClearFix">
-	
-	    <%for (space in pendingSpaces) {
-	        def spaceUrl = Utils.getSpaceHomeURL(space)
-	        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
-	        def visibility = space.visibility
-	        //trick, temporary use private as visible
-	        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
-	        def imageSource = uicomponent.getImageSource(space);
-	        if (imageSource == null) {
-	          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-	        }
-	        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
-	        mySpaceIdx += 1;
-	    %>
-	
-	    <% if (mySpaceIdx % 2 == 0) { %>
-	    <div class="GrayBox ClearFix FL">
-	    <% } else { %>
-	    <div class="NormalBox ClearFix FL">
-	    <% } %>
-	      <div class="AvatarSpace">
-	        <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
-	        <span class="BorderTop"></span>
-	        <span class="BorderBottom"></span>
-	      </div>
-	      <div class="ContentBox">
-	        <div class="TitleContent">
-	          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
-	          ($iconImgLabel)
-	        </div>
-	        <div><span class="MembersCount" />$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
-	        <div class="Content">
-	          $space.description
-	        </div>
-		      <ul class="ActionContent ClearFix">
-			      <li class="FL"><a href="javascript:void(0)" onclick="<%= revokeSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= cancelInvitationActionLabel %>" class="Action">$cancelInvitationActionLabel</a></li>
-		      </ul>
-	      </div>
-	    </div>
-	  <%}%>
-	  
+		<div class="tab-content">
+	    <div class="tab-pane active">
+				<!--search by directory-->
+				<div class="boxSpaceList">
+				    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
+				    <!--div class="DirectoryNormalBox"-->
+				    <div class="uiFilterList">
+				        <div class="result"><span class="number"><%=uicomponent.getPendingSpacesNum(); %></span>(Results display in order of alphabet)</div>
+				        <ul class="letterList"> 
+				            <li>
+				            <% if ((selectedChar != null) && (selectedChar == "All")) { %>
+				                    <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+				            <%} else {%>
+				                    <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+				            <% } %>
+				            </li>
+				            <% for (ch in alphabets) { %>
+				            <li>
+				            <% if ((selectedChar != null) && (selectedChar == ch)) { %>
+				                <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+				            <%} else {%>
+				                <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+				            <% } %>
+				            </li>
+				            <% } %>
+				        </ul>
+				    </div>
+				    
+				</div>
+				
+			  <div class="spaceList clearfix">
+			
+			    <%for (space in pendingSpaces) {
+			        def spaceUrl = Utils.getSpaceHomeURL(space)
+			        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
+			        def visibility = space.visibility
+			        //trick, temporary use private as visible
+			        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+			        def imageSource = uicomponent.getImageSource(space);
+			        if (imageSource == null) {
+			          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
+			        }
+			        def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+			        mySpaceIdx += 1;
+			    %>
+			
+			    <div class="spaceBox pull-left">
+					<!---khi can co image checked chi can add them class "checkedBox spaceBox pull-left" -->
+			      <div class="avatarXLarge pull-left">
+			        <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
+			      </div>
+			      <div class="contentBox">
+			        <h4 class="spaceTitle">
+			          <a class="Text" href="javascript:void(0)">$space.displayName</a> 
+			          ($iconImgLabel)
+			        </h4>
+			        <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
+			        <div class="content">
+			          $space.description
+			        </div>
+			        <button type="button" class="btn pull-right">Leave</button>
+						  <!-- /TH button mau xanh/ button type="button" class="btn btn-primary pull-right">Leave</button-->
+				      <!--ul class="ActionContent ClearFix">
+					      <li class="FL"><a href="javascript:void(0)" onclick="<%= revokeSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= cancelInvitationActionLabel %>" class="Action">$cancelInvitationActionLabel</a></li>
+				      </ul-->
+			      </div>
+			    </div>
+			  <%}%>
+			  
+			  </div>
+			    <%
+			   if(uicomponent.isEnableLoadNext()) {
+			  %>
+			      <div id="LoadMoreSentInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+			        $labelShowMoreSpace
+			      </div>
+			    <%
+			   } else {
+			   %>
+			        <script type="text/javascript">
+			          try{document.getElementById("LoadMoreSentInvitationButton").style.display = "none";}catch(e){};
+			        </script>
+			    <%
+			    }
+			    %>
+			</div>
 	  </div>
-	    <%
-	   if(uicomponent.isEnableLoadNext()) {
-	  %>
-	      <div id="LoadMoreSentInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
-	        $labelShowMoreSpace
-	      </div>
-	    <%
-	   } else {
-	   %>
-	        <script type="text/javascript">
-	          try{document.getElementById("LoadMoreSentInvitationButton").style.display = "none";}catch(e){};
-	        </script>
-	    <%
-	    }
-	    %>
-  </div>
+	  
+	</div> 
 </div>
