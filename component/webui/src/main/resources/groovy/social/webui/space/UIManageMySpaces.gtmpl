@@ -145,8 +145,7 @@
 			        mySpaceIdx += 1;
 			    %>
 			
-			    <div class="spaceBox pull-left">
-		        <!---khi can co image checked chi can add them class "checkedBox spaceBox pull-left" -->
+			    <div class="checkedBox spaceBox pull-left">
 			      <!-- Leader -->
 			      <% if (role == 1) {
 			      	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space")
@@ -163,24 +162,19 @@
 			          <div class="content">
 			            $space.description<br/>
 			          </div>
-			          <button type="button" class="btn pull-right">Leave</button>
-			          <!-- /TH button mau xanh/ button type="button" class="btn btn-primary pull-right">Leave</button-->
-							  <!--ul class="ActionContent ClearFix">
-							    <li class="FL"><a href="<%= editSpaceLink %>" rel="tooltip" data-placement="bottom" title="<%= labelActionEditSpace %>" class="Action">$labelActionEditSpace</a></li>
+							  
+							  <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'" rel="tooltip" data-placement="bottom" title="<%= labelActionEditSpace %>">$labelActionEditSpace</button>
 								<% if (hasMembership) { %>
-									<li class="FL Line">&nbsp;</li>
-									<li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" class="Action" style="display:block;">$labelActionLeaveSpace</a></li>
+							  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" style="display:block;">$labelActionLeaveSpace</button>
 								<% } %>
-									<li class="FL Line">&nbsp;</li>
-									<li class="FL"><a href="javascript:void(0)" onclick="<%= deleteSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionDeleteSpace %>" class="Action">$labelActionDeleteSpace</a></li>
-							  </ul-->
+								<button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionDeleteSpace %>">$labelActionDeleteSpace</button>
 			        </div>
 			      </div>
 			      <% }%>
 			      <!-- Member -->
 			      <%if (role == 2) {
 			      %>
-			        <a href="<%= spaceUrl %>" class="AvatarSpace">
+			        <a href="<%= spaceUrl %>" class="avatarXLarge pull-left">
 			          <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
 			        </a>
 			        <div class="contentBox">
@@ -192,11 +186,7 @@
 			          <div class="content">
 			            $space.description<br/>
 			          </div>
-			          <button type="button" class="btn pull-right">Leave</button>
-			          <!-- /TH button mau xanh/ button type="button" class="btn btn-primary pull-right">Leave</button-->
-					      <!--ul class="ActionContent ClearFix">
-						      <li class="FL"><a href="javascript:void(0)" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" class="Action">$labelActionLeaveSpace</a></li>
-					      </ul-->
+						    <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>">$labelActionLeaveSpace</button>
 			        </div>
 			    </div>
 			    <%}%>

@@ -124,7 +124,6 @@
 				  %>
 				
 				    <div class="spaceBox pull-left">
-					  <!---khi can co image checked chi can add them class "checkedBox spaceBox pull-left" -->
 				      <div class="avatarXLarge pull-left">
 				        <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
 				      </div>
@@ -137,13 +136,9 @@
 				        <div class="content">
 				          $space.description
 				        </div>
-				        <button type="button" class="btn pull-right">Leave</button>
-					      <!-- /TH button mau xanh/ button type="button" class="btn btn-primary pull-right">Leave</button-->
-					      <!--ul class="ActionContent ClearFix">
-						      <li class="FL"><a href="javascript:void(0)" onclick="<%= acceptSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= acceptSpaceActionLabel %>" class="Action">$acceptSpaceActionLabel</a></li>
-						      <li class="Line FL">&nbsp;</li>
-						      <li class="FL"><a href="javascript:void(0)" onclick="<%= ignoreSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= ignoreSpaceActionLabel %>" class="Action">$ignoreSpaceActionLabel</a></li>
-					      </ul-->
+				        
+				        <button type="button" class="btn pull-right" onclick="<%= ignoreSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= ignoreSpaceActionLabel %>">$ignoreSpaceActionLabel</button>
+				        <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= acceptSpaceActionLabel %>">$acceptSpaceActionLabel</button>
 				      </div>
 				    </div>
 				    <%}%>
