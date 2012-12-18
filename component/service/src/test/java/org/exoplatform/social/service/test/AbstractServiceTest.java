@@ -23,7 +23,10 @@ import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.component.test.KernelBootstrap;
+<<<<<<< HEAD
 import org.exoplatform.container.PortalContainer;
+=======
+>>>>>>> 0d9553d9206afc4196019074dda9c8832ec314ab
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
