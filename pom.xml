@@ -706,7 +706,7 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extension-war</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -744,7 +744,7 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-opensocial</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -756,7 +756,7 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-portlet</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
@@ -768,7 +768,7 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-webapp-resources</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <!-- To be replaced by an import of WS parent POM -->
       <dependency>
