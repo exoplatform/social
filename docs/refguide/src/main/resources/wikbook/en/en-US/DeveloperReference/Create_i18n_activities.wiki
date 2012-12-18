@@ -25,8 +25,7 @@ The _titleId_ is used to map with a corresponding message bundle key via the con
 
 *Sample code for saving internationalized activities*
 
-{code:java}
-  public void saveActivity() {
+{code:java}public void saveActivity() {
     ActivityManager activityManager = (ActivityManager) PortalContainer.getInstance().getComponentInstanceOfType(ActivityManager.class);
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setType("exosocial:spaces"); // the associated activity type
@@ -54,8 +53,7 @@ The _titleId_ is used to map with a corresponding message bundle key via the con
 
     //posts this activity to space's activity stream
     activityManager.saveActivityNoReturn(spaceIdentity, activity);
-  }
-{code}
+}{code}
 
 The sample code above is enough for creating an internationalized activity that will be displayed on the space activity stream portlet after
 all the configurations below are done. The returned result will be displayed in English like this: "_Test was created by <a href="link-to-john-profile">John</a>_".
