@@ -33,8 +33,8 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
-import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputInfo;
+import org.exoplatform.webui.form.input.UICheckBoxInput;
 /**
  * This UI component is used for setting space's bound to a group <br />
  *
@@ -73,7 +73,7 @@ public class UISpaceGroupBound extends UIContainer {
   public UISpaceGroupBound() throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    UIFormCheckBoxInput<Boolean> uiUseExisting = new UIFormCheckBoxInput<Boolean>(USE_EXISTING_GROUP, null, false);
+    UICheckBoxInput uiUseExisting = new UICheckBoxInput(USE_EXISTING_GROUP, null, false);
     uiUseExisting.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UISpaceGroupBound.label.useExistingGroup"));
     uiUseExisting.setId(USE_EXISTING_GROUP);
     uiUseExisting.setOnChange("ToggleUseGroup");
@@ -93,7 +93,7 @@ public class UISpaceGroupBound extends UIContainer {
    */
   @SuppressWarnings("unchecked")
   public String getSelectedGroup() {
-    UIFormCheckBoxInput<Boolean> uiCheckBox = getChild(UIFormCheckBoxInput.class);
+    UICheckBoxInput uiCheckBox = getChild(UICheckBoxInput.class);
     if(uiCheckBox.isChecked()) {
       UIFormInputInfo uiInfo = getChild(UIFormInputInfo.class);
       return uiInfo.getValue();
@@ -143,7 +143,7 @@ public class UISpaceGroupBound extends UIContainer {
       UISocialGroupSelector uiGroupSelector = (UISocialGroupSelector)uiPopup.getUIComponent();
       Group group = uiGroupSelector.getCurrentGroup();
       if (group == null) {
-        UIFormCheckBoxInput<Boolean> uiUseExisting = uiGroupBound.getChild(UIFormCheckBoxInput.class);
+        UICheckBoxInput uiUseExisting = uiGroupBound.getChild(UICheckBoxInput.class);
         uiUseExisting.setChecked(false);
       } else {
         UIFormInputInfo uiSelected = uiGroupBound.getChild(UIFormInputInfo.class);

@@ -61,7 +61,6 @@ import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.exception.MessageException;
-import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInputBase;
 import org.exoplatform.webui.form.UIFormInputIconSelector;
@@ -69,6 +68,7 @@ import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTabPane;
+import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.DateTimeValidator;
 import org.exoplatform.webui.form.validator.IdentifierValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
@@ -123,15 +123,15 @@ public class UIPageNodeForm extends UIFormTabPane {
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     
     UIFormInputSet uiSettingSet = new UIFormInputSet("PageNodeSetting");
-    UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(SHOW_PUBLICATION_DATE,
+    UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(SHOW_PUBLICATION_DATE,
                                                                                      null,
                                                                                      false);
     uiDateInputCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.showPublicationDate"));
-    UIFormCheckBoxInput<Boolean> uiVisibleCheck = new UIFormCheckBoxInput<Boolean>(VISIBLE,
+    UICheckBoxInput uiVisibleCheck = new UICheckBoxInput(VISIBLE,
                                                                                    null,
                                                                                    true);
     uiVisibleCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.visible"));
-    UIFormCheckBoxInput<Boolean> uiSwitchLabelMode = new UIFormCheckBoxInput<Boolean>(SWITCH_MODE,
+    UICheckBoxInput uiSwitchLabelMode = new UICheckBoxInput(SWITCH_MODE,
                                                                                       null,
                                                                                       true);
     uiSwitchLabelMode.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.switchMode"));
@@ -310,8 +310,8 @@ public class UIPageNodeForm extends UIFormTabPane {
       Visibility visibility = pageNode.getVisibility();
       boolean isVisible = visibility == null
           || EnumSet.of(Visibility.DISPLAYED, Visibility.TEMPORAL).contains(visibility);
-      getUIFormCheckBoxInput(VISIBLE).setChecked(isVisible);
-      getUIFormCheckBoxInput(SHOW_PUBLICATION_DATE).setChecked(Visibility.TEMPORAL.equals(visibility));
+      getUICheckBoxInput(VISIBLE).setChecked(isVisible);
+      getUICheckBoxInput(SHOW_PUBLICATION_DATE).setChecked(Visibility.TEMPORAL.equals(visibility));
       setShowCheckPublicationDate(isVisible);
       Calendar cal = Calendar.getInstance();
       if (pageNode.getStartPublicationTime() != -1) {
@@ -331,7 +331,7 @@ public class UIPageNodeForm extends UIFormTabPane {
       isExtendedMode = false;
     }
 
-    getUIFormCheckBoxInput(SWITCH_MODE).setChecked(isExtendedMode);
+    getUICheckBoxInput(SWITCH_MODE).setChecked(isExtendedMode);
     this.switchLabelMode(isExtendedMode);
   }
 
@@ -341,8 +341,8 @@ public class UIPageNodeForm extends UIFormTabPane {
 
     if (node.getVisibility() != Visibility.SYSTEM) {
       Visibility visibility;
-      if (getUIFormCheckBoxInput(VISIBLE).isChecked()) {
-        UIFormCheckBoxInput showPubDate = getUIFormCheckBoxInput(SHOW_PUBLICATION_DATE);
+      if (getUICheckBoxInput(VISIBLE).isChecked()) {
+        UICheckBoxInput showPubDate = getUICheckBoxInput(SHOW_PUBLICATION_DATE);
         visibility = showPubDate.isChecked() ? Visibility.TEMPORAL : Visibility.DISPLAYED;
       } else {
         visibility = Visibility.HIDDEN;
@@ -379,13 +379,13 @@ public class UIPageNodeForm extends UIFormTabPane {
 
     node.setI18nizedLabels(labels);
 
-    if (getUIFormCheckBoxInput(SWITCH_MODE).getValue().toString().equals("true"))
+    if (getUICheckBoxInput(SWITCH_MODE).getValue().toString().equals("true"))
       node.setLabel(null);
   }
 
   public void setShowCheckPublicationDate(boolean show) {
-    getUIFormCheckBoxInput(VISIBLE).setChecked(show);
-    UIFormCheckBoxInput<Boolean> uiForm = getUIFormCheckBoxInput(SHOW_PUBLICATION_DATE);
+    getUICheckBoxInput(VISIBLE).setChecked(show);
+    UICheckBoxInput uiForm = getUICheckBoxInput(SHOW_PUBLICATION_DATE);
     uiForm.setRendered(show);
     setShowPublicationDate(show && uiForm.isChecked());
   }
@@ -440,7 +440,7 @@ public class UIPageNodeForm extends UIFormTabPane {
       TreeNode pageNode = uiPageNodeForm.getPageNode();
 
       if (pageNode == null
-          || (pageNode.getVisibility() != Visibility.SYSTEM && uiPageNodeForm.getUIFormCheckBoxInput(SHOW_PUBLICATION_DATE)
+          || (pageNode.getVisibility() != Visibility.SYSTEM && uiPageNodeForm.getUICheckBoxInput(SHOW_PUBLICATION_DATE)
                                                                              .isChecked())) {
         Calendar currentCalendar = Calendar.getInstance();
         currentCalendar.set(currentCalendar.get(Calendar.YEAR),
@@ -578,7 +578,7 @@ public class UIPageNodeForm extends UIFormTabPane {
   static public class SwitchPublicationDateActionListener extends EventListener<UIPageNodeForm> {
     public void execute(Event<UIPageNodeForm> event) throws Exception {
       UIPageNodeForm uiForm = event.getSource();
-      boolean isCheck = uiForm.getUIFormCheckBoxInput(SHOW_PUBLICATION_DATE).isChecked();
+      boolean isCheck = uiForm.getUICheckBoxInput(SHOW_PUBLICATION_DATE).isChecked();
       uiForm.setShowPublicationDate(isCheck);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
@@ -588,7 +588,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     @Override
     public void execute(Event<UIPageNodeForm> event) throws Exception {
       UIPageNodeForm uiForm = event.getSource();
-      boolean isCheck = uiForm.getUIFormCheckBoxInput(VISIBLE).isChecked();
+      boolean isCheck = uiForm.getUICheckBoxInput(VISIBLE).isChecked();
       uiForm.setShowCheckPublicationDate(isCheck);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
@@ -598,7 +598,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     @Override
     public void execute(Event<UIPageNodeForm> event) throws Exception {
       UIPageNodeForm uiForm = event.getSource();
-      boolean isExtendedMode = uiForm.getUIFormCheckBoxInput(SWITCH_MODE).isChecked();
+      boolean isExtendedMode = uiForm.getUICheckBoxInput(SWITCH_MODE).isChecked();
       uiForm.switchLabelMode(isExtendedMode);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
