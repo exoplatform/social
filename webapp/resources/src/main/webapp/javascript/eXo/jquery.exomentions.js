@@ -93,6 +93,11 @@
     rtrim : function(string) {
       return string.replace(/\s+$/, "");
     },
+    replaceFirst : function(string, by){
+      while(string.indexOf(by) === 0) {
+        strInput = strInput.substring(1);
+      }
+    },
     validateWWWURL : function(url) {
       if (url.indexOf('www.') > 0) {
         return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
@@ -450,6 +455,7 @@
       updateValues();
       updateMentionsCollection();
 
+      inputBuffer = utils.replaceFirst(inputBuffer.join(''), ' ').split('');
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
         if (!isBlockMenu && e && e.type === 'input') {
