@@ -62,7 +62,7 @@ jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.
 <% uiform.begin() %>
     <!--search by name-->   
 	<div class="uiGrayLightBox ClearFix">
-		<button class="btn btn-primary pull-left" rel="tooltip" data-placement="bottom" title="$labelActionAddSpace" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconAdd"></i><%= labelActionAddSpace %></button>
+		<button class="btn btn-primary pull-left" rel="tooltip" data-placement="bottom" title="$labelActionAddSpace" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconAdd"></i><%= labelActionAddSpace %></button>
 		
 		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
 			$findSpaceLabel:&nbsp; 
