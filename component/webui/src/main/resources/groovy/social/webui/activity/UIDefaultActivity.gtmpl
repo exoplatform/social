@@ -155,7 +155,7 @@
 	<div id="ContextBox${activity.id}"class="contentBox">
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading uiBox  roundedTop">
-				<div class="arrow left"></div>
+				<span class="arrow left"></span>
 				 <% if (activityDeletable) {%>
 					<a href="javascript:void(0)" onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose" id="DeleteActivityButton${activity.id}"></a>
 				  <%}%>
@@ -232,14 +232,14 @@
 						<% }%>
 					 </div>
 				<%}%>
-			</div><!--end list like people-->
+				</div><!--end list like people-->
 			<div id="CommentBlockBound${activity.id}" class="commentArea">    
 			  <% if (uicomponent.commentListToggleable()) {
 			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
 			  %>
 			  <div class="commentListInfo clearfix">
-				<div class="pull-right">0/31 </div><!--hackcode-->
+				<div class="pull-right numberComment">0/31 </div><!--hackcode-->
 				<% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
 				  <a onclick="$showAllCommentsAction" href="#show-all-comments">
 				   view previous comments
@@ -270,7 +270,7 @@
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 			%>
 			  <% if (commentCounter == commentList.size()) {%>
-			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem commentBoxNoneBottomLine">
+			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem commentItemLast">
 			  <% } else { %>
 			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem">
 			  <% } %>
@@ -307,7 +307,7 @@
 			  if (!currentCommenterAvatar) currentCommenterAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 			%>
 			<% if (commentList.size() == 0) { %>
-			  <div class="commentFormBoxNone commentItem" id="CommentFormBlock${activity.id}">
+			  <div class="commentItem noCommentFormBox" id="CommentFormBlock${activity.id}">
 			<% } else { %>
 			  <div class="commentItem commentFormBox" id="CommentFormBlock${activity.id}">
 			<% } %>
@@ -322,9 +322,10 @@
 							<div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
 						</div>
 					</div><!--end commentRight-->        
-				</div> <!--end commentItem-->
-			  </div><!--end commentlist-->
-			</div><!--end commentArea-->			
+				</div> <!--end commentItem-->				
+			  </div><!--end commentlist-->			  
+			</div><!--end commentArea-->		
+		  </div><!--end  commentBox-->		
 		</div><!--end #ActivityContextBox${activity.id}-->
 	</div> <!--end ContextBox${activity.id}-->	
   </div> <!-- #boxContainer-->	  
