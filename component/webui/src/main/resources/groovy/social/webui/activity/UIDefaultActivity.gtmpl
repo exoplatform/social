@@ -149,7 +149,7 @@
 		  <img rel="tooltip" data-placement="bottom" title="$ownerName" src="$ownerAvatar"/>
 		</a>
 	</div>
-	<div class="activityType"><a title="" href=""><i class="uiIconLink"></i></a></div><!--hackcode add class for icon example uiIcon... -->
+	
   </div><!--end activityTimeLine-->
   <div class="boxContainer" id="boxContainer">
 	<div id="ContextBox${activity.id}"class="contentBox">
@@ -162,26 +162,20 @@
 				<div class="author">
 					<a rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">$ownerName</a>                
 				</div>
-				<ul class="dataInfor">
-					<li><i class="uiIconClock"></i> 
-						<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {%>
-							<%
-							Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-									def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-									def spaceName = spaceSource.displayName;
-									activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
-						  %>
-						  <span class="dateTime">$activityPostedTimeInSpace <strong><a class="text" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
-						<%} else {%>
-						  <span class="dateTime">$activityPostedTime *</span>
-						<% } %>			  
-					</li>
-					<li><i class="uiIconGroup"></i> engineering</li>
-				</ul>
+				<div class="dataInfor">
+					<span class="dateTime"><i class="uiIconClock"></i>&nbsp;$activityPostedTime</span> 
+					<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
+						    Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
+								def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
+								def spaceName = spaceSource.displayName;
+					%>
+					<a class="spaceName" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI"><i class="uiIconGroup"></i>&nbsp;$spaceName</a>
+					<%} %>
+				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
 			<div class="statusBar clearfix ">
-				<ul class="pull-right">
+				<ul class="pull-right statusAction">
 					 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
 							  %> 
@@ -207,7 +201,11 @@
 					 <% }%>					
 				</ul>
 			</div><!--end statusBar-->
+			<% if (identityLikesNum == 0 && allComments.size() == 0) {%>
+			<div class="uiBox roundedBottom commentBox noneCommentOrLike">
+			<% } else { %>
 			<div class="uiBox roundedBottom commentBox">
+			<% } %>
 				<div class="listLikedBox $listPeopleBGClass">				
 					<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
 					  <div class="listPeopleContent">

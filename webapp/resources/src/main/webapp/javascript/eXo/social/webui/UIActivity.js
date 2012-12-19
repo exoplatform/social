@@ -155,33 +155,6 @@ var UIActivity = {
     } else {
       $("#" + UIActivity.commentFormBlockId).hide();
     }
-
-    if (UIActivity.deleteActivityButtonEl.length !== 0) {
-      var deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
-      UIActivity.activityContextBoxEl.on('mouseover focus', function(evt) {
-        deleteActivityButtonEl.attr('class', 'CloseContentBoxHilight');
-      });
-
-      UIActivity.activityContextBoxEl.on('mouseout blur', function(evt) {
-        deleteActivityButtonEl.attr('class', 'CloseContentBoxNormal');
-      });
-
-    }
-
-    if (UIActivity.allCommentSize > 0) {
-      $.each(UIActivity.deleteCommentButtonEls, function(idx, el) {
-        UIActivity.commentBlockEls[idx].on('mouseover focus', function(evt) {
-          el.attr('class','CloseContentBoxHilight');
-        });
-        
-        UIActivity.commentBlockEls[idx].on('mouseout blur', function(evt) {
-          el.attr('class','CloseContentBoxNormal');
-        });
-        
-      });
-      
-
-    }
   }
 }
 
