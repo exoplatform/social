@@ -161,8 +161,8 @@
 			</div>
 			<div class="pull-right">
 				<% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(identity)) { %>
-					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button>&nbsp;&nbsp;
 					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreTitle">$ignoreTitle</button>
+					<button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button>&nbsp;&nbsp;
 				<% } else if (contactStatus == Relationship.Type.PENDING) { %>
 					<button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
 				<% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>

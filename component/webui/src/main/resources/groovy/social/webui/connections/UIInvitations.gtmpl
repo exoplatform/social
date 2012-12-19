@@ -76,9 +76,8 @@
 	def selectedStartChar = uicomponent.getSelectedChar();
   
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
-    <div class="ContainerSpace">
-      <% uicomponent.renderChild(UIProfileUserSearch.class); %>
+<div class="uiInvitations" id="$uicomponent.id">
+    <% uicomponent.renderChild(UIProfileUserSearch.class); %>
 
 		<% if (uicomponent.isHasPeopleTab()) {%>
 		  <div class="uiTabNormal uiTabInPage">
@@ -120,12 +119,12 @@
     </div>
     
       <%if (myInvitations == null || myInvitations.size() == 0) {%>
-          <div class="NoneContentSpace">
+          <div class="noneContentSpace">
           </div>
       <%}%>
 
     <%if ((myInvitations != null) && (myInvitations.size() > 0)) {%>
-      <div class="ClearFix">
+      <div class="userList clearfix">
       <% for (identity in myInvitations) {
             profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
             fullName = identity.profile.fullName;
@@ -138,57 +137,42 @@
             if (!position) position = "";
             String imageSource = identity.profile.avatarUrl;
             if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-   %>
-    <% if (invitationRelationIdx % 2 == 0) { %>
-       <div class="ContentSpaceGray ClearFix">
-    <% } else {%>
-       <div class="ContentSpace ClearFix">
-    <% }%>
-        <a class="AvatarUser">
-          <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
-          <span class="BorderTop"></span>
-          <span class="BorderBottom"></span>
-        </a>
+      %>
+        <div class="spaceBox pull-left">
+          <a class="avatarXLarge pull-left">
+            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource" />
+          </a>
 
-		<div class="CommunityMane ClearFix">
-			<a class="CommunityName" href="${profileURL}">${fullName}</a>			
-                <%if ((position.length() + email.length()) == 0 ) {%>
-                  <span class="NonePositionAndEmail"></span>
-                <% } else {%>
-	                <% if(position.length() > 0) { %>
-	                <div class="Position">
-	                  ${position}
-	                </div>
-	                <%  } else {%>
-	                <span class="NonePosition"></span>
-	                <%  } %>
-	                <% if(email.length() > 0) { %>
-	                <div class="Email">
-	                  <a href="mailto:${email}">${email}</a>
-	                </div>
-	                <%  } else {%>
-	                <span class="NoneEmail"></span>
-	                <%  } %>
-                <% } %>
-		</div>
-      <% if (isEditable) {%>
-      <ul class="InviteTitle" ClearFix>
-              <li class="Status FL">$invitationReceivedLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmLabel">$confirmLabel</a></li>             
-              <li class="Line FL">&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreLabel">$ignoreLabel</a></li>    
-      </ul>
-      <% } %>
-    </div>
-  <% } %> 
-  </div>
-  <% } %>
-    
+		      <div class="contentBox">
+            <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>			
+	            <% if(position.length() > 0) { %>
+	            <div class="position">
+	              ${position}
+	            </div>
+	            <%  } %>
+	            <% if(email.length() > 0) { %>
+	            <div class="email">
+	              <a href="mailto:${email}">${email}</a>
+	            </div>
+	            <%  } %>
+		      </div>
+		
+		      <% if (isEditable) {%>
+		      <div class="pull-right">
+			      <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" data-placement="bottom" title="$ignoreLabel">$ignoreLabel</button>
+			      <button class="btn pull-right btn-primary" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" data-placement="bottom" title="$confirmLabel">$confirmLabel</button>    
+		      </div>
+		      <% } %>
       
-   <% if(uicomponent.isEnableLoadNext()) { %>
-      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
-        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+        </div>
+      <% } %> 
       </div>
+   <% } %> 
+   
+   <% if(uicomponent.isEnableLoadNext()) { %>
+      <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+      </button>
   <% } else { %>
       <script type="text/javascript">
         var loadMoreButton = document.getElementById("LoadMoreButton");
@@ -200,6 +184,5 @@
       </script>
   <%  }	%>
   
-  </div>
  </div>
 </div>

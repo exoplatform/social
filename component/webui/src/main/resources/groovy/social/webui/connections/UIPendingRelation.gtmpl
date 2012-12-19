@@ -65,9 +65,8 @@
 	def selectedStartChar = uicomponent.getSelectedChar();
 %>
 
-<div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
-	<div class="ContainerSpace">
-		<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+<div class="uiPendingRelation" id="$uicomponent.id">
+  	<% uicomponent.renderChild(UIProfileUserSearch.class); %>
   
 	  <% if (uicomponent.isHasPeopleTab()) {%>
 	  <div class="uiTabNormal uiTabInPage">
@@ -109,11 +108,11 @@
 	    </div>
 
       <%if ((list == null) || (list.size() == 0)) {%>
-		<div class="NoneContentSpace">
-			<% def peopleURL = Utils.getURI("people") %>
-		</div>
+		    <div class="noneContentSpace">		  
+   		  </div>
       <%}%>
-      <div class="ClearFix">
+      
+      <div class="userList clearfix">
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
@@ -126,54 +125,34 @@
           String imageSource = identity.profile.avatarUrl;
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
-        <% if (pendingRelationIdx % 2 == 0) { %>
-		<div class="ContentSpaceGray ClearFix">
-	<% } else {%>
-	    <div class="ContentSpace ClearFix">
-	<% }%>
-				
-            <a class="AvatarUser">
-              <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
-              <span class="BorderTop"></span>
-              <span class="BorderBottom"></span>
-            </a>
-			<div class="CommunityMane ClearFix">
-			 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-		      <%if ((position.length() + email.length()) == 0 ) {%>
-                  <span class="NonePositionAndEmail"></span>
-                <% } else {%>
+      
+		    <div class="spaceBox pull-left">
+          <a class="avatarXLarge pull-left">
+            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
+          </a>
+			    <div class="contentBox">
+            <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         
 	                <% if(position.length() > 0) { %>
-	                <div class="Position">
-	                  ${position}
-	                </div>
-	                <%  } else {%>
-	                <span class="NonePosition"></span>
+	                <div class="position">${position}</div>
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
-	                <div class="Email">
-	                  <a href="mailto:${email}">${email}</a>
-	                </div>
-	                <%  } else {%>
-	                <span class="NoneEmail"></span>
+	                <div class="email"><a href="mailto:${email}">${email}</a></div>
 	                <%  } %>
-                <% } %>
-
-			</div>
-       <% if (isEditable) {%>
-       <ul class="InviteTitle">
-              <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
-       </ul>
-      <% } %>
-		</div>
+			    </div>
+		       <% if (isEditable) {%>
+				        <div class="pull-right">
+				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
+				        </div>
+		      <% } %>
+		    </div>
   <% } %>
   
   </div>
     
   <% if(uicomponent.isEnableLoadNext()) { %>
-      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+      <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
         <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
-      </div>
+      </button>
   <% } else { %>
       <script type="text/javascript">
         var loadMoreButton = document.getElementById("LoadMoreButton");
@@ -185,5 +164,4 @@
       </script>
   <%  }	%>
   </div>
- </div>
 </div>
