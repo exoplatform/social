@@ -45,7 +45,7 @@
     
   </div>
   <div class="uiAction">
-      <button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelSave" onclick="$saveAction">$labelSave</button>
-      <button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
+      <button class="btn" type="button" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelSave" onclick="$saveAction">$labelSave</button>
+      <button class="btn" type="button" rel="tooltip" rel="tooltip" data-placement="bottom" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
     </div>
 </div>

@@ -33,7 +33,7 @@
 %>
 <div class="$uicomponent.id">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-	<button class="btn" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
+	<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
   <div class="ContainerSpace">
   <% for(app in applications) {

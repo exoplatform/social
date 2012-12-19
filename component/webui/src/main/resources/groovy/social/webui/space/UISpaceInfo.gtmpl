@@ -40,51 +40,12 @@
 %>
 <div class="uiSpaceInfo">
   <% uiform.begin() %>
- <!--   <div class="SpaceContainer">
-   
-      <table class="UIFormGrid">
-        <tbody>
-        	<tr>
-        		<td class="FieldLabel">&nbsp;</td>
-        		<td class="FieldComponent">
-        			<div class="SpaceInfoBound">
-								<div class="SpaceInfoLeft">
-									<a href="#" class="Image" onclick="$changeAvatar" rel="tooltip" data-placement="bottom" title="$clickChangeAvatar">
-										<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" height="64px" width="64px"/>
-									</a>
-									<div class="ChangeAvaButton">
-										<button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
-									</div>
-								</div>
-							</div>
-        		</td>
-        	</tr>
-          <tr>
-            <td class="FieldLabel">
-              <label for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
-            </td>
-            <td class="FieldComponent"><% uiform.renderField(childs.get(1))%></td>
-          </tr>
-          <tr>
-            <td class="FieldLabel">
-              <label for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
-            </td>
-            <td class="FieldComponent"><% uiform.renderField(childs.get(2)); %></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="uiAction">
-	      <button class="btn" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button>
-	    </div>
-      
-    </div>
-	-->
 	<div class="changeAccount clearfix">
 		<div class="changeAvatar pull-left">
-			<a href="#" class="avatarXLargeWithBorder" onclick="$changeAvatar" rel="tooltip" data-placement="bottom" title="$clickChangeAvatar">
+			<a href="#" class="avatarXLargeWithBorder" title="$clickChangeAvatar">
 				<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"/>
 			</a>
-			<button class="btn" rel="tooltip" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
+			<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
 		</div>
 		<div class="form-horizontal pull-left">
 			<div class="control-group">
@@ -97,7 +58,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="uiAction"><button class="btn" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
+	<div class="uiAction"><button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
   <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

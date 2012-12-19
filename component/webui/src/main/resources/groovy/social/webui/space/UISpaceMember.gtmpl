@@ -71,7 +71,7 @@
 			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser"></i></a>
 			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup"></i></a>	 			
 		</span>
-		<button class="btn" data-placement="bottom" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
+		<button class="btn" type="button" data-placement="bottom" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
 	</div>	
 	<%
     if ((invitedUserNames != null) && uicomponent.isHasErr()) {
