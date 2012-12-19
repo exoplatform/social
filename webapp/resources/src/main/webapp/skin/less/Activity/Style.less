@@ -10,7 +10,7 @@
 		resize: none;
 		height: 62px e('!important');
 	}
-	.blastInputPeople ,.uiComposerLink  {
+	.blastInputPeople ,.uiComposerLink ,.blastInputSpace  {
 		margin: 0 0 10px 0; 
 	}
 	.inputLink {
@@ -134,7 +134,7 @@
 		padding: 2px;
 		line-height: 26px;
 		.box-shadow(0px 2px 4px rgba(13px, 13px, 13px, 0.27));
-		a {
+		span{
 			.box-shadow(~"inset 0px 1px 1px  rgba(0,0,0,0.35) ,0px 1px 1px #fff");
 			display:block;
 			background: #4f72ac;
@@ -179,11 +179,16 @@
 }
 
 .activityStream{
-	.author {
-		a {
-			font-family : @sansBoldFontFamily; 
-			font-weight: bold;
+	.linkTitle ,.author a{
+		font-family : @sansBoldFontFamily; 
+		font-weight: bold;
+	}
+	.linkSources {
+		span {
+			color: @grayLight;
 		}
+	}
+	.author {		
 		span {				
 			color: @grayLight;
 			font-size: @fontSizeSmall;
@@ -305,10 +310,10 @@
 		.box-shadow(0px 2px 2px rgba(13,13,13,0.20));
 		.clearfix {
 			.pull-left  {
-				width: 55px;
+				width:75px;
 			}
 			.pull-left + .text {
-				margin-left: 75px;
+				margin-left: 90px;
 			}
 		}
 		&:before ,&:after{					 
@@ -407,4 +412,9 @@
 	}
 }
 
+/*=======activityTop==========*/
+
+.activityTop {
+	margin: 30px 0 0 0;
+}
 
