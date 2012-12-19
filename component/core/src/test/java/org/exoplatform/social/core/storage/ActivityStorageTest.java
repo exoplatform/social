@@ -583,7 +583,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> activities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 0", 0, activities.size());
+    assertEquals("activities.size() must return: 1", 1, activities.size());
     
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -593,7 +593,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getActivitiesOfConnections(rootIdentity, 0, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 1", 1, activities.size());
+    assertEquals("activities.size() must return: 3", 3, activities.size());
     
     Relationship rootMaryRelationship = relationshipManager.invite(rootIdentity, maryIdentity);
     relationshipManager.confirm(rootMaryRelationship);
@@ -601,7 +601,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getActivitiesOfConnections(rootIdentity, 0, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 4", 4, activities.size());
+    assertEquals("activities.size() must return: 6", 6, activities.size());
     
     Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
     relationshipManager.confirm(rootJohnRelationship);
@@ -609,7 +609,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getActivitiesOfConnections(rootIdentity, 0, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 6", 6, activities.size());
+    assertEquals("activities.size() must return: 8", 8, activities.size());
     
     for (Relationship rel : relationships) {
       relationshipManager.remove(rel);
@@ -654,7 +654,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> demoConnectionActivities = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 10);
     assertNotNull("demoConnectionActivities must not be null", demoConnectionActivities);
-    assertEquals("demoConnectionActivities.size() must return: 0", 0, demoConnectionActivities.size());
+    assertEquals("demoConnectionActivities.size() must return: 1", 1, demoConnectionActivities.size());
     
     List<ExoSocialActivity> maryConnectionActivities = activityStorage.getActivitiesOfConnections(maryIdentity, 0, 10);
     assertNotNull("maryConnectionActivities must not be null", maryConnectionActivities);
@@ -680,7 +680,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     this.createActivities(3, maryIdentity);
     
     int count = activityStorage.getNumberOfActivitiesOfConnections(demoIdentity);
-    assertEquals("count must be: 0", 0, count);
+    assertEquals("count must be: 1", 1, count);
     
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -689,21 +689,21 @@ public class ActivityStorageTest extends AbstractCoreTest {
     relationships.add(rootDemoRelationship);
     
     count = activityStorage.getNumberOfActivitiesOfConnections(rootIdentity);
-    assertEquals("count must be: 1", 1, count);
+    assertEquals("count must be: 3", 3, count);
     
     Relationship rootMaryRelationship = relationshipManager.invite(rootIdentity, maryIdentity);
     relationshipManager.confirm(rootMaryRelationship);
     relationships.add(rootMaryRelationship);
     
     count = activityStorage.getNumberOfActivitiesOfConnections(rootIdentity);
-    assertEquals("count must be: 4", 4, count);
+    assertEquals("count must be: 6", 6, count);
     
     Relationship rootJohnRelationship = relationshipManager.invite(rootIdentity, johnIdentity);
     relationshipManager.confirm(rootJohnRelationship);
     relationships.add(rootJohnRelationship);
     
     count = activityStorage.getNumberOfActivitiesOfConnections(rootIdentity);
-    assertEquals("count must be: 6", 6, count);
+    assertEquals("count must be: 8", 8, count);
     
     for (Relationship rel : relationships) {
       relationshipManager.remove(rel);
@@ -731,7 +731,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     ExoSocialActivity baseActivity = demoActivities.get(0);
     
     int count = activityStorage.getNumberOfNewerOnActivitiesOfConnections(johnIdentity, baseActivity);
-    assertEquals("count must be: 0", 0, count);
+    assertEquals("count must be: 2", 2, count);
     
     count = activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, baseActivity);
     assertEquals("count must be: 0", 0, count);
@@ -786,15 +786,15 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> activities = activityStorage.getNewerOnActivitiesOfConnections(johnIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 0", 0, activities.size());
+    assertEquals("activities.size() must return: 2", 2, activities.size());
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(demoIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 0", 0, activities.size());
+    assertEquals("activities.size() must return: 1", 1, activities.size());
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 0", 0, activities.size());
+    assertEquals("activities.size() must return: 2", 2, activities.size());
     
     RelationshipManager relationshipManager = this.getRelationshipManager();
     Relationship maryDemoRelationship = relationshipManager.invite(maryIdentity, demoIdentity);
@@ -803,11 +803,11 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 1", 1, activities.size());
+    assertEquals("activities.size() must return: 3", 3, activities.size());
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(demoIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 2", 2, activities.size());
+    assertEquals("activities.size() must return: 3", 3, activities.size());
     
     Relationship maryJohnRelationship = relationshipManager.invite(maryIdentity, johnIdentity);
     relationshipManager.confirm(maryJohnRelationship);
@@ -815,7 +815,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 3", 3, activities.size());
+    assertEquals("activities.size() must return: 5", 5, activities.size());
     
     Relationship maryRootRelationship = relationshipManager.invite(maryIdentity, rootIdentity);
     relationshipManager.confirm(maryRootRelationship);
@@ -823,7 +823,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getNewerOnActivitiesOfConnections(maryIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 5", 5, activities.size());
+    assertEquals("activities.size() must return: 7", 7, activities.size());
     
     for (Relationship rel : relationships) {
       relationshipManager.remove(rel);
@@ -854,7 +854,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("count must be: 0", 0, count);
     
     count = activityStorage.getNumberOfOlderOnActivitiesOfConnections(johnIdentity, baseActivity);
-    assertEquals("count must be: 0", 0, count);
+    assertEquals("count must be: 2", 2, count);
     
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -912,7 +912,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     activities = activityStorage.getOlderOnActivitiesOfConnections(johnIdentity, baseActivity, 10);
     assertNotNull("activities must not be null", activities);
-    assertEquals("activities.size() must return: 0", 0, activities.size());
+    assertEquals("activities.size() must return: 2", 2, activities.size());
     
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -1265,20 +1265,20 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
     Long sinceTime = maryActivities.get(2).getPostedTime();
 
-    assertEquals(0, activityStorage.getNumberOfNewerOnActivitiesOfConnections(johnIdentity,sinceTime));
+    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(johnIdentity,sinceTime));
 
-    assertEquals(0, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
+    assertEquals(1, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
 
-    assertEquals(0, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
+    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
 
     RelationshipManager relationshipManager = this.getRelationshipManager();
     Relationship maryDemoRelationship = relationshipManager.inviteToConnect(maryIdentity,demoIdentity);
     relationshipManager.confirm(maryIdentity, demoIdentity);
     relationships.add(maryDemoRelationship);
 
-    assertEquals(1, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
+    assertEquals(3, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
 
-    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
+    assertEquals(3, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
 
     // Delete the activity at this sinceTime will don't change the result
     String id = activityStorage.getUserActivities(maryIdentity, 0, 10).get(2).getId();
@@ -1289,19 +1289,19 @@ public class ActivityStorageTest extends AbstractCoreTest {
       }
     }
     activityStorage.deleteActivity(id);
-    assertEquals(2, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
+    assertEquals(3, activityStorage.getNumberOfNewerOnActivitiesOfConnections(demoIdentity, sinceTime));
 
     Relationship maryJohnRelationship = relationshipManager.inviteToConnect(maryIdentity,johnIdentity);
     relationshipManager.confirm(maryIdentity, johnIdentity);
     relationships.add(maryJohnRelationship);
 
-    assertEquals(3, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
+    assertEquals(5, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
 
     Relationship maryRootRelationship = relationshipManager.inviteToConnect(maryIdentity,rootIdentity);
     relationshipManager.confirm(maryIdentity, rootIdentity);
     relationships.add(maryRootRelationship);
 
-    assertEquals(5, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
+    assertEquals(7, activityStorage.getNumberOfNewerOnActivitiesOfConnections(maryIdentity, sinceTime));
 
     for (Relationship rel : relationships) {
       relationshipManager.delete(rel);

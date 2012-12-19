@@ -1486,7 +1486,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
             .OK.getStatusCode(), rsp1.getStatus());
     assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
         rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
-    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadNewer(baseSinceIdActivity, limit);
 
     compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
     compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);

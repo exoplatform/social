@@ -802,11 +802,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    //
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
@@ -922,7 +918,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
 
     List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
-    if (connections.size() == 0) return new ArrayList<ExoSocialActivity>();
+    connections.add(ownerIdentity);
+    
     //
     ActivityFilter filter = new ActivityFilter(){};
 
@@ -938,10 +935,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
 
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = new ActivityFilter(){};
@@ -969,11 +963,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    //
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
@@ -992,10 +982,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    //
-    if (connectionList.size() == 0) {
-      return Collections.emptyList();
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
@@ -1013,11 +1000,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    //
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
@@ -1036,11 +1019,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    
-    //
-    if (connectionList.size() == 0) {
-      return Collections.emptyList();
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;

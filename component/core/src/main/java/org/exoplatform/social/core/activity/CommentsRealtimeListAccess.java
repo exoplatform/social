@@ -114,5 +114,4 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   public int getNumberOfUpdated(Long sinceTime) {
     return 0;
   }
-
 }
