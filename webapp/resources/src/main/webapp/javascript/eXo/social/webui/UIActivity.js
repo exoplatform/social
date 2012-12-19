@@ -129,12 +129,12 @@ var UIActivity = {
           if ($(this).val() === UIActivity.inputWriteAComment) {
           $(this).val('');
         }
-        $("#" + UIActivity.commentButtonId).show();
+        $("#" + UIActivity.commentButtonId).removeAttr("disabled");
       });
 
       UIActivity.commentTextareaEl.on('blur', function(evt) {
         if ($(this).val() === '') {
-          $("#" + UIActivity.commentButtonId).hide();
+          $("#" + UIActivity.commentButtonId).attr("disabled", "disabled");
           $(this).val(UIActivity.inputWriteAComment);
 
           $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
@@ -143,17 +143,17 @@ var UIActivity = {
       });
 
       if (UIActivity.commentFormDisplayed) {
-        $("#" + UIActivity.commentFormBlockId).show();
+        $("#" + UIActivity.commentFormBlockId).removeAttr("disabled");
         UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
         if (UIActivity.commentFormFocused) {
           UIActivity.commentTextareaEl.focus();
         }
       } else {
-        $("#" + UIActivity.commentFormBlockId).hide();
+        $("#" + UIActivity.commentFormBlockId).attr("disabled", "disabled");
         UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
       }
     } else {
-      $("#" + UIActivity.commentFormBlockId).hide();
+      $("#" + UIActivity.commentFormBlockId).attr("disabled", "disabled");
     }
   }
 }

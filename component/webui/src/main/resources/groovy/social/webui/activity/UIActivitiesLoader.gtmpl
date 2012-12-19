@@ -25,7 +25,7 @@
   def labelMore = _ctx.appRes("UIActivitiesLoader.label.Show_More_Post");
 
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
+<div class="uiActivityStream" id="$uicomponent.id">
 <% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
@@ -41,7 +41,7 @@
        <%
      } else {
        %>
-        <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
+        <div class="noActivity">$labelNotAnyUpdatesPostedYet</div>
        <%
      }
    }
@@ -49,7 +49,7 @@
   <%
     if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
       %>
-      	<div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="UIActivitiesLoadButton">
+      	<div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="uiActivitiesLoadButton">
           $labelMore
         </div>
         

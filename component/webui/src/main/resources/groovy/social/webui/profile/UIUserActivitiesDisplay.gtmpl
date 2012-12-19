@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  import org.exoplatform.webui.core.UIDropDownControl;
 
   def labelAllUpdates = _ctx.appRes("${uicomponent.id}.label.All_Updates");
   def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
@@ -46,17 +47,14 @@
 
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
-  <h4 class="ActivityStreamTitle">$labelMyActivityStream</h4>
-<% if (uicomponent.isActivityStreamOwner()) { %>
-  <div class="UIAction">
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "ALL_UPDATES");%>" class="ActionButton $allUpdatesDisplayModeStyle">$labelAllUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "NETWORK_UPDATES");%>" class="ActionButton $connectionsDisplayModeStyle">$labelNetworkUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACE_UPDATES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaceUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
-  </div>
-<% } %>
+  <% if (uicomponent.isActivityStreamOwner()) { %>
+	<div class="clearfix activityTop">
+    <div class="pull-right">
+      <% uicomponent.renderChild(UIDropDownControl.class);%>
+    </div>
+    <div class="activityStreamStatus pull-left"><div class="arrow bottom"></div> 28 updateds</div>
+	</div>
+	<% } %>
+	
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
 </div>

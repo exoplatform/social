@@ -16,6 +16,10 @@
  */
 package org.exoplatform.social.webui.profile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.Validate;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -28,8 +32,12 @@ import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIDropDownControl;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
@@ -40,12 +48,20 @@ import org.exoplatform.webui.event.EventListener;
  * @since Jul 30, 2010
  * @copyright eXo SAS
  */
-@ComponentConfig(
-  template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
-  events = {
-    @EventConfig(listeners = UIUserActivitiesDisplay.ChangeDisplayModeActionListener.class)
-  }
-)
+@ComponentConfigs({
+  @ComponentConfig(
+                   lifecycle = UIFormLifecycle.class,
+                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
+                 ),
+  @ComponentConfig(
+    type = UIDropDownControl.class, 
+    id = "DisplayModesDropDown", 
+    template = "system:/groovy/webui/core/UIDropDownControl.gtmpl",
+    events = {
+      @EventConfig(listeners = UIUserActivitiesDisplay.ChangeOptionActionListener.class)
+    }
+  )
+})
 public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
@@ -67,9 +83,22 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   /**
    * constructor
+   * @throws Exception 
    */
-  public UIUserActivitiesDisplay() {
-
+  public UIUserActivitiesDisplay() throws Exception {
+    ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
+    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.NETWORK_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.SPACE_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_STATUS.toString()));
+    
+    UIDropDownControl uiDropDownControl = addChild(UIDropDownControl.class, "DisplayModesDropDown", null);
+    uiDropDownControl.setOptions(displayModes);
+    
+    setSelectedMode(uiDropDownControl);
+    
+    addChild(uiDropDownControl);
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
@@ -82,6 +111,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   public void setSelectedDisplayMode(DisplayMode displayMode) {
     selectedDisplayMode = displayMode;
+    
+    getChild(UIDropDownControl.class).setValue(selectedDisplayMode.toString());
+    
     try {
       init();
     } catch (Exception e) {
@@ -112,10 +144,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
     return ownerName;
   }
 
-  public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
-    @Override
-    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = event.getSource();
+  public static class ChangeOptionActionListener extends EventListener<UIDropDownControl> {
+
+     public void execute(Event<UIDropDownControl> event) throws Exception {
+      UIDropDownControl uiDropDown = event.getSource();
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = uiDropDown.getParent();
       WebuiRequestContext requestContext = event.getRequestContext();
       String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
 
@@ -128,9 +161,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
       } else {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.NETWORK_UPDATES);
       }
+      
       requestContext.addUIComponentToUpdateByAjax(uiUserActivitiesDisplay);
     }
-
   }
   /**
    * initialize
@@ -173,5 +206,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
    
     //
     activitiesLoader.init();
+  }
+  
+  private void setSelectedMode(UIDropDownControl uiDropDownControl) {
+    if (selectedDisplayMode != null) {
+      uiDropDownControl.setValue(selectedDisplayMode.toString());
+    }
   }
 }
