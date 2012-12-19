@@ -426,6 +426,13 @@
         <module>webui-ext</module>
         <as>webuiExt</as>
       </depends>
+      <depends>
+        <module>jquery</module>
+        <as>$</as>
+      </depends>
+      <depends>
+        <module>iphonePlugin</module>
+      </depends>
     </module>
   </portlet>
    

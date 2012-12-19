@@ -84,7 +84,8 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
        @EventConfig(listeners = UISpaceMember.ValidateUserActionListener.class, phase=Phase.DECODE),
        @EventConfig(listeners = UISpaceMember.RemoveUserActionListener.class, phase=Phase.DECODE),
        @EventConfig(listeners = UISpaceMember.RemoveLeaderActionListener.class, phase=Phase.DECODE),
-       @EventConfig(listeners = UISpaceMember.MakeLeaderActionListener.class, phase=Phase.DECODE)
+       @EventConfig(listeners = UISpaceMember.MakeLeaderActionListener.class, phase=Phase.DECODE),
+       @EventConfig(listeners = UISpaceMember.ToggleLeadershipActionListener.class, phase=Phase.DECODE)
        }
  ),
   @ComponentConfig(
@@ -614,6 +615,36 @@ public class UISpaceMember extends UIForm {
       spaceService.addMember(spaceService.getSpaceById(uiSpaceMember.spaceId), userName);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }
+  }
+
+  static public class ToggleLeadershipActionListener extends EventListener<UISpaceMember>
+  {
+     @Override
+     public void execute(Event<UISpaceMember> event) throws Exception
+     {
+        UISpaceMember uiSpaceMember = event.getSource();
+        WebuiRequestContext rcontext = event.getRequestContext();
+        String targetUser = rcontext.getRequestParameter(OBJECTID);
+        SpaceService spaceService = uiSpaceMember.getSpaceService();
+        Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+
+        boolean success = false;
+        if (spaceService.isManager(space, targetUser))
+        {
+           spaceService.setManager(space, targetUser, false);
+           success = true;
+        }
+        else if (spaceService.isMember(space, targetUser))
+        {
+           spaceService.setManager(space, targetUser, true);
+           success = true;
+        }
+
+        if (success)
+        {
+           ((WebuiRequestContext)rcontext.getParentAppRequestContext()).setResponseComplete(true);
+        }
+     }
   }
 
   /**

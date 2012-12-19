@@ -186,12 +186,15 @@
 		String makeLeader = uicomponent.event("MakeLeader", user) + "; return false;";
 		String removeAction = uicomponent.event("RemoveUser", user) + "; return false;";
 		String removeOwnerAction = uicomponent.url('RemoveUser');
+		String toggleLeadership = uicomponent.event("ToggleLeadership", user);
+
 		String rowClass = even? "EvenRow" : "OddRow portlet-table-alternate";
 		even = !even;
+
 		%>
-		<tr>
+		<tr id="existingUsersTable">
 			<td><%= uicomponent.getFullName(user) %></td>
-			<td class="center" width="15%"><% if(isLeader) { %>
+			<td class="center" width="15%"><!-- <% if(isLeader) { %>
 
 				<% if(uicomponent.isCurrentUser(user)) { %>
 				<a  onclick="$selfRemoveLeader" title="$labelRevokeManager"><span class="ManageMemButtonSub">$labelRevokeManager</span></a>
@@ -206,8 +209,16 @@
 					class="ManageMemButtonAdd label">$labelGrantManager</span></a>
 
 				<% } %>
+				-->
+				<div class="spaceRole" onclick="$toggleLeadership">
+				<% if(isLeader) { %>
+					<input type="checkbox" class="yesno" checked="checked" style="visibility: hidden;">
+				<% }else { %>
+					<input type="checkbox" class="yesno" style="visibility: hidden;">
+				<% } %>
+				</div>
 			</td>
-			<td class="center" width="15%">				
+			<td class="center" width="15%">
 				<% if(uicomponent.isCurrentUser(user)) { %>
 				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
 				<% } else { %>
@@ -224,7 +235,23 @@
 	uicomponent.renderUIComponent(iteratorExistingUsers);
 	}
 	%>
-	<% } %>
+  <script type="text/javascript">
+		require(["PORTLET/social-portlet/SpaceSettingPortlet","SHARED/jquery", "SHARED/iphonePlugin"], function (spaceSetting, gj)
+		{
+			gj('tr#existingUsersTable').find("div.spaceRole").children('input:checkbox').each(function()
+			{
+				gj(this).iphoneStyle({
+					checkedLabel:'YES',
+					uncheckedLabel:'NO'});
+
+				gj(this).change(function()
+				{
+					gj(this).closest("div.spaceRole").trigger("click");
+				});
+			});
+		});
+  </script>
+<% } %>
 
 
 	<% uiform.end(); %>

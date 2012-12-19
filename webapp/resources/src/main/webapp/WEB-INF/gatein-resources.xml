@@ -255,4 +255,16 @@
       <as>jQuery</as>
     </depends>
   </module>
+
+  <module>
+    <name>iphonePlugin</name>
+    <script>
+      <name>iphoneCheckbox</name>
+      <path>/javascript/iphone/checkbox/iphone-style-checkboxes.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
 </gatein-resources>
