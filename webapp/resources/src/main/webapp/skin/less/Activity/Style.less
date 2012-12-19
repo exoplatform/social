@@ -95,7 +95,7 @@
 /*==============ActivityStream====================*/
 /*uiActivityStream*/
 
-.uiActivityStream  {
+.uiActivityStream ,.uiActivitiesLoader {
 	background: url("/social-resources/skin/images/Activity/time-line-top.png") no-repeat scroll 16px 0 transparent;
 	margin-top: 3px;
 	padding-top: 31px;	
@@ -185,7 +185,7 @@
 			font-weight: bold;
 		}
 		span {				
-			color: #999999;
+			color: @grayLight;
 			font-size: @fontSizeSmall;
 		} 
 	}
@@ -212,6 +212,10 @@
 			position: absolute;
 			top: 5px;
 			right: 5px;
+			display: none;
+		}
+		&:hover  .uiIconClose{
+			display: block;
 		}
 		&+ .introBox {
 			margin-top: -1px;
@@ -220,11 +224,8 @@
 			border-top: none;
 		}
 		.dataInfor {
-			list-style: none;
-			margin: 0;
-			li {
-				display: inline;
-				margin: 0  5px 0 0;
+			span,a {
+				margin: 0 10px 0 0;
 				color: @grayLight;
 				font-size: @fontSizeSmall;
 			}
@@ -237,22 +238,31 @@
 	.contentBox {
 		position: relative;
 		margin: 0px ;
-		.heading ,.description,.statusBar{
+		.heading ,.description,.statusBar,.listLikedBox{
 			padding: 15px;
 			margin: 0 8px;
 		}		
-		.commentBox {
+		.commentBox { 
 			margin: 0 8px;
+			&.noneCommentOrLike {
+				border: none;
+				border-top: 1px solid @tableBorder;
+			}
 		}
-		.description,.statusBar  {				
-			border-left: 1px solid @tableBorder;
-			border-right: 1px solid @tableBorder;
+		.commentBlockBoundNone {
+			display: none;
+		}
+		.commentBlockBound  {
+			display: block;
+		}
+		.statusBar,.listLikedBox {				
+			border: 1px solid @tableBorder;
 		}		
 		.statusBar  {
 			background :#ececec;
 			padding: 8px 20px;
 			border-top: 1px solid @tableBorder;
-			.pull-right {
+			.statusAction {
 				list-style: none;
 				margin: 0;
 				li {
@@ -261,11 +271,16 @@
 				}
 			}
 		}
+		.statusBar  + .commentBox ,.statusBar  + .listLikedBox,.listLikedBox + .commentBox {
+			border-top: none;
+		}
 		.listLikedBox {
-			border-bottom: 1px solid @tableBorder;
-			padding: 15px;
-			.listLiked a + a{
+			.listLiked a + a {
 				margin-left: 8px;
+			}
+			p {
+				color: @grayLight;
+				margin: 0;
 			}
 		}	
 		.introBox  + .statusBar   {
@@ -325,13 +340,18 @@
 
 .activityStream {
 	.commentListInfo {
-		padding:10px 15px
+		padding:10px 15px;
+	} 
+	.commentListInfo  + .commentList {
+		padding-top: 0;
 	} 
 	.commentList {
-		padding: 0 15px ;
-		.commentItem {
-			margin: 15px 0;
+		padding:15px 15px 0 15px ;
+		.commentItem {			
 			position: relative;
+			&+ .commentItem {
+				margin: 15px 0 0 0;
+			}
 			.uiIconClose {
 				position: absolute;
 				top: 0px;
@@ -354,11 +374,24 @@
 					textarea {
 						 .size(21px,100%);
 						 resize: none;
+						 max-height: 21px;
 					}
 				}
 			}
-		}		
+		}
+		.commentItemFirst {
+			padding-top: 15px;
+		}
 	}
+	.inputContainer {
+		padding-top: 0;
+		.commentItem  {
+			padding-bottom: 15px;
+		}
+	}
+	.noCommentFormBox {
+		padding-top: 15px;
+	}	
 }
 
 .boxLoadMore {		

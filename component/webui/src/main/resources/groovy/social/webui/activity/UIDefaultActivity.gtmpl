@@ -200,38 +200,33 @@
 					  <% }%>
 					 <% }%>					
 				</ul>
-			</div><!--end statusBar-->
-			<% if (identityLikesNum == 0 && allComments.size() == 0) {%>
-			<div class="uiBox roundedBottom commentBox noneCommentOrLike">
-			<% } else { %>
-			<div class="uiBox roundedBottom commentBox">
-			<% } %>
-				<div class="listLikedBox $listPeopleBGClass">				
-					<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
-					  <div class="listPeopleContent">
-					  <% if (!labelLikes) labelLikes = ""; %>
-								<p>Liked by you, Thomas and Marry</p><!--hackcode-->
+			</div><!--end statusBar-->					
+			<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
+			<div class="listLikedBox $listPeopleBGClass">		
+				  <div class="listPeopleContent">
+				  <% if (!labelLikes) labelLikes = ""; %>
+							<p>Liked by you, Thomas and Marry</p><!--hackcode-->
 
-						<% if (identityLikesNum > 0) {%>
-						<div class="listLiked">
-						<%
-						displayedIdentityLikes.each({
-						  def id = Utils.getIdentityManager().getIdentity(it);
-						  personLikeFullName = id.profile.fullName;
-						  personLikeProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
-						  personLikeAvatarImageSource = id.profile.avatarUrl;
-						  if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-						  %>
-							<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
-							  <img src="$personLikeAvatarImageSource" rel="tooltip" data-placement="bottom" title="$personLikeFullName" />
-							</a>
-						 <% })%>
-						</div>
-						<% }%>
-					 </div>
-				<%}%>
-				</div><!--end list like people-->
-			<div id="CommentBlockBound${activity.id}" class="commentArea">    
+					<% if (identityLikesNum > 0) {%>
+					<div class="listLiked">
+					<%
+					displayedIdentityLikes.each({
+					  def id = Utils.getIdentityManager().getIdentity(it);
+					  personLikeFullName = id.profile.fullName;
+					  personLikeProfileUri = LinkProvider.getUserProfileUri(id.getRemoteId());
+					  personLikeAvatarImageSource = id.profile.avatarUrl;
+					  if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+					  %>
+						<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+						  <img src="$personLikeAvatarImageSource" rel="tooltip" data-placement="bottom" title="$personLikeFullName" />
+						</a>
+					 <% })%>
+					</div>
+					<% }%>
+				 </div>				
+			</div><!--end list like people--> 
+			<%}%>
+			<div id="CommentBlockBound${activity.id}" class="commentBox uiBox roundedBottom">    
 			  <% if (uicomponent.commentListToggleable()) {
 			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
@@ -267,11 +262,11 @@
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 			%>
-			  <% if (commentCounter == commentList.size()) {%>
+			  <% if(commentCounter == commentList.size()) { %>
 			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem commentItemLast">
 			  <% } else { %>
-			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem">
-			  <% } %>
+			    <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem ">
+			  <% }  %>			  
 				<div class="commmentLeft">
 					<a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarSmall">
 					  <img width="36px" height="36px" rel="tooltip" data-placement="bottom" title="$commenterFullName" src="$commenterAvatarImgSrc" />         
@@ -322,8 +317,7 @@
 					</div><!--end commentRight-->        
 				</div> <!--end commentItem-->				
 			  </div><!--end commentlist-->			  
-			</div><!--end commentArea-->		
-		  </div><!--end  commentBox-->		
+			</div><!--end commentBox-->	
 		</div><!--end #ActivityContextBox${activity.id}-->
 	</div> <!--end ContextBox${activity.id}-->	
   </div> <!-- #boxContainer-->	  

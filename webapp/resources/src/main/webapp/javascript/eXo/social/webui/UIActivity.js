@@ -20,10 +20,10 @@
  */
 
 var UIActivity = {
-  COMMENT_BLOCK_BOUND_CLASS_NAME : "CommentBlockBound",
-  COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "CommentBlockBoundNone",
-  DEFAULT_COMMENT_TEXT_AREA_HEIGHT : "30px",
-  FOCUS_COMMENT_TEXT_AREA_HEIGHT : "30px",
+  COMMENT_BLOCK_BOUND_CLASS_NAME : "uiBox roundedBottom commentBox commentBlockBound ",
+  COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "uiBox roundedBottom commentBox commentBlockBoundNone",
+  DEFAULT_COMMENT_TEXT_AREA_HEIGHT : "21px",
+  FOCUS_COMMENT_TEXT_AREA_HEIGHT : "21px",
   FOCUS_COMMENT_TEXT_AREA_COLOR : "#000000",
   DEFAULT_COMMENT_TEXT_AREA_COLOR : "#808080",
   onLoad: function (params) {
