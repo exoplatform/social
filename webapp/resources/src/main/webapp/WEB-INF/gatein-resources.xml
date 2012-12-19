@@ -60,7 +60,6 @@
   <module>
     <name>socialUtil</name>
     <script>
-       <name>eXo.social.SocialUtil</name>
        <path>/javascript/eXo/social/SocialUtil.js</path>
     </script>
   </module>
@@ -190,7 +189,6 @@
     </depends>
     <depends>
       <module>webui</module>
-      <as>webui</as>
     </depends>
   </module>
 
@@ -207,8 +205,11 @@
       <as>$</as>
     </depends>
     <depends>
+      <module>uiForm</module>
+      <as>uiForm</as>
+    </depends>
+    <depends>
       <module>webui</module>
-      <as>webui</as>
     </depends>
   </module>
   

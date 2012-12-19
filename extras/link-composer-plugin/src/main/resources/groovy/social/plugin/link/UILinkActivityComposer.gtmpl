@@ -94,7 +94,7 @@ link
                   "titleEditable: '$titleEditable'"+
                 "}";
 
-  jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.UIComposerLinkExtension.onLoad($params);");
+  jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.onLoad($params);");
 %>
 <div id="$uicomponentId">
 <% if (linkInfoDisplayed) {

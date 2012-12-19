@@ -34,7 +34,7 @@
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
 
-  def jsManager = requestContext.getJavascriptManager();
+  def jsManager = requestContext.getJavascriptManager().require("SHARED/uiForm");
   def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
   def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
@@ -65,7 +65,7 @@
     }
   """
 
-  jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.onLoad($params);");
+  jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.onLoad($params);");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
@@ -120,7 +120,7 @@
     %>
       <%
         def isReadyForPostingActivity = currentActivityComposer.isReadyForPostingActivity();
-        jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
+        jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.handleShareButton($isReadyForPostingActivity);");
       %>
           
       <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()" value="$shareLabel"></input>
