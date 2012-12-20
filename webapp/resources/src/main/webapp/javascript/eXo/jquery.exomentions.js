@@ -118,8 +118,8 @@
     },
     getSimpleValue : function(val) {
       return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
-                .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
-                .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+                .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '');
+//                .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
     },
     getCursorIndexOfText : function(before, after) {
       var t = 0;
@@ -914,7 +914,8 @@
     }
 
     function getTemplate() {
-      return $('<div contenteditable="true" g_editable="true" class="ReplaceTextArea editable"></div>');
+      var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
+      return $('<div contenteditable="' + editableType + '" g_editable="true" class="ReplaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -939,7 +940,7 @@
         }
       };
       displayInput.value = function() {
-        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' '); //.replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
         return val;
       };
       return displayInput;
@@ -991,7 +992,7 @@
         if (settings.idAction && settings.idAction.length > 0) {
           var actionLink = $('#' + settings.idAction).on('mousedown', function() {
             var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
-            value = value.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
+            value = value.replace(/<br\/?>/gi, '\n').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
             jElmTarget.val(value);
             $(this).click();
             clearCacheData();
