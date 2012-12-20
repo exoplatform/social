@@ -23,10 +23,15 @@
 <%
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
   def labelMore = _ctx.appRes("UIActivitiesLoader.label.Show_More_Post");
-
+  def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
 %>
+
+<% if ( hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
 <div class="uiActivityStream" id="$uicomponent.id">
-<% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
+<% } else { %>
+<div class="uiActivityStream clearBG" id="$uicomponent.id">
+<% } %>
+<% if ( hasActivities ) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
    } else {

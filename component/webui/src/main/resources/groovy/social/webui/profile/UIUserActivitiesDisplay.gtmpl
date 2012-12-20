@@ -24,27 +24,23 @@
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
   import org.exoplatform.webui.core.UIDropDownControl;
 
-  def labelAllUpdates = _ctx.appRes("${uicomponent.id}.label.All_Updates");
-  def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
-  def labelSpaceUpdates = _ctx.appRes("${uicomponent.id}.label.Space_Updates");
-  def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
-  def labelMyActivityStream = _ctx.appRes("${uicomponent.id}.label.My_Activity_Stream");
-
-  def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
-  def allUpdatesDisplayModeStyle = "LightBlueStyle";
-  def connectionsDisplayModeStyle = "LightBlueStyle";
-  def mySpacesDisplayModeStyle = "LightBlueStyle";
-  def myStatusDisplayModeStyle = "LightBlueStyle";
-  if (selectedDisplayMode.toString().equals("ALL_UPDATES")) {
-    allUpdatesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("NETWORK_UPDATES")) {
-    connectionsDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("SPACE_UPDATES")) {
-    mySpacesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("MY_STATUS") || selectedDisplayMode.toString().equals("OWNER_STATUS")) {
-    myStatusDisplayModeStyle = "DarkBlueStyle";
-  }
-
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  String script = "var dropDownBox = jq('#DisplayModesDropDown');" + 
+                  "var btn = dropDownBox.find('div.btn');" +
+                  "jq(btn).removeClass('btn-primary');" +
+                  "var options = jq(dropDownBox).find('ul>li');" +
+                  "jq.each(options, function(idx, el) { " + 
+                  "var selectedVal = jq(btn).find('span').text();" +
+                  "var elVal = jq(el).find('a').text();" +
+                  " if( jq.trim(elVal) === jq.trim(selectedVal) ) {" +
+                  "   jq(el).hide();" +
+                  " }" +
+                  "});"
+                  
+  jsManager.require("SHARED/jquery", "jq").addScripts(script);
+  
+  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
 %>
 <div id="$uicomponent.id" class="$uicomponent.id">
   <% if (uicomponent.isActivityStreamOwner()) { %>
@@ -52,7 +48,9 @@
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
-    <div class="activityStreamStatus pull-left"><div class="arrow bottom"></div> 28 updateds</div>
+    <% if ( hasActivities ) { %>
+    <div class="activityStreamStatus pull-left"><div class="arrow bottom"></div> 28 Updates</div>
+    <% } %>
 	</div>
 	<% } %>
 	

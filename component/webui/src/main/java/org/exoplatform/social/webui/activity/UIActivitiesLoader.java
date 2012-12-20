@@ -27,6 +27,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -132,6 +133,10 @@ public class UIActivitiesLoader extends UIContainer {
     this.ownerName = ownerName;
   }
 
+  protected boolean isUIUserActivityDisplay() {
+    return getParent() instanceof UIUserActivitiesDisplay;
+  }
+  
   public void init() {
     try {
       unableLoadNext = true;
