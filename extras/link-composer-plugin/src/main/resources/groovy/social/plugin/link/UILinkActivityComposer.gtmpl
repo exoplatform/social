@@ -114,7 +114,7 @@ link
       else {
         if (embedHtml == null) {
         %>
-		<div id="ThumbnailContainer" class="thumbnailContainer">
+		<div id="ThumbnailContainer" class="thumbnailContainer clearfix">
           <% if (images.size() > 0) { %>
 			<div id="UIThumbnailLeftBox" class="uiBox thumbnailLeft">
 				<div id="UIThumbnailDisplay" class="uiContentBox">

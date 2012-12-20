@@ -1,7 +1,9 @@
 
 /*=================uiComposer =================*/
 
-
+.uiComposer {
+	margin-right: 8px;
+}
 .uiComposer.uiGrayLightBox {
 	.box-shadow(0 1px 2px -1px rgba(13, 13, 13, 0.27));
 	.textarea {
@@ -37,10 +39,11 @@
 	background: @grayWhiteSmoke;
 	margin: 0 0 10px 0; 
 	padding: 10px;
-	.thumbnailContainer {
+	.thumbnailContainer {	
 		.thumbnailLeft { 
 			float: left;	
-			.size(140px,130px);		
+			.size(140px,130px);	
+			margin-bottom: 0;	
 		}
 		.thumbnailLeft + .contentRight  {			
 			margin-left: 140px;
@@ -192,7 +195,10 @@
 			color: @grayLight;
 		}
 	}
-	.author {		
+	.author {	
+		a + span {
+			margin-left: 10px;
+		}
 		span {				
 			color: @grayLight;
 			font-size: @fontSizeSmall;
@@ -284,8 +290,12 @@
 			border-top: none;
 		}
 		.listLikedBox {
-			.listLiked a + a {
-				margin-left: 8px;
+			background: @white;
+			.listLiked {
+				margin-top: 10px;
+				a + a {
+					margin-left: 8px;
+				}
 			}
 			p {
 				color: @grayLight;
@@ -298,6 +308,7 @@
 		.description {					
 			border-left: 1px solid @tableBorder;
 			border-right: 1px solid @tableBorder;
+			background: @white;
 		}
 	}	
 }
@@ -390,6 +401,7 @@
 			}
 			.commmentLeft {
 				float:left;
+				width: 36px;
 				&+ .commentRight{
 					margin-left: 45px;
 				}
@@ -437,6 +449,6 @@
 /*=======activityTop==========*/
 
 .activityTop {
-	margin: 30px 0 0 0;
+	padding: 30px 8px 0 0;
 }
 
