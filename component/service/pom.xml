@@ -149,6 +149,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <artifactId>exo.tool.framework.junit</artifactId>
+      <groupId>org.exoplatform.tool</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.identity</artifactId>
       <classifier>tests</classifier>
