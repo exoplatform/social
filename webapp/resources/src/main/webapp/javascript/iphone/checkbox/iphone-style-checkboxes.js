@@ -169,17 +169,17 @@
       this.offLabel.css({
         width: containerWidth - this.containerRadius
       });
-      offset = this.containerRadius + 1;
+      offset = this.containerRadius - 4;
       if ($.browser.msie && $.browser.version < 7) {
         offset -= 3;
       }
-      this.rightSide = containerWidth - this._getDimension(this.handle, "width") - offset;
+      this.rightSide = containerWidth - this._getDimension(this.handle, "width")  - offset;
       if (this.elem.is(':checked')) {
         this.handle.css({
           left: this.rightSide
         });
         this.onLabel.css({
-          width: this.rightSide + this.handleRadius
+          width: this.rightSide + this.handleRadius + 5
         });
         this.offSpan.css({
           marginRight: -this.rightSide
@@ -222,7 +222,7 @@
       duration: 200,
       checkedLabel: 'ON',
       uncheckedLabel: 'OFF',
-      resizeHandle: true,
+      resizeHandle: false,
       resizeContainer: true,
       disabledClass: 'iPhoneCheckDisabled',
       containerClass: 'iPhoneCheckContainer',

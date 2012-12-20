@@ -52,7 +52,6 @@ label.iPhoneCheckLabelOff {
 
 .iPhoneCheckHandle {
   display: block;
-  height: 27px;
   cursor: pointer;
   position: absolute;
   top: 0;
@@ -125,7 +124,6 @@ label.iOSCheckLabelOff {
 
 .iOSCheckHandle {
   display: block;
-  height: 27px;
   cursor: pointer;
   position: absolute;
   top: 0;
