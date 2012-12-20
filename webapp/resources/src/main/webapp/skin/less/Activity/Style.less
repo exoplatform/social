@@ -98,8 +98,12 @@
 .uiActivityStream ,.uiActivitiesLoader {
 	background: url("/social-resources/skin/images/Activity/time-line-top.png") no-repeat scroll 16px 0 transparent;
 	margin-top: 3px;
-	padding-top: 31px;	
+	padding-top: 31px;
+	&.clearBG {
+		background: none;
+	}
 }
+
 
 /*activityStreamStatus */
 
@@ -315,6 +319,24 @@
 			.pull-left + .text {
 				margin-left: 90px;
 			}
+		}
+		
+		.isPreviewable {
+			position: relative;
+			.pull-left  {
+				width:330px;
+			}
+			.pull-left + .text {
+				margin-left: 345px;
+			}
+			.versionFile {
+				left: 345px;
+				position: absolute;
+				bottom: 0;
+			}
+		}
+		.versionFile {
+			color: @grayLight;
 		}
 		&:before ,&:after{					 
 			.square(0px);
