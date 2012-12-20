@@ -16,42 +16,40 @@
 
 -->
 <% String fieldName; %>
-<div class="UIForm $uicomponent.id">
+<div class="uiSpacePermission form-horizontal">
 	<%uiform.begin()%>
-	<div class="HorizontalLayout">
-		<div class="FormContainer">
-			<table class="UIFormGrid">
-				<% 
-					for(field in uiform.getChildren()) { 
-						if(field.isRendered()) {
+		<% 
+			for(field in uiform.getChildren()) { 
+			  %>
+			  <div class="control-group">
+			  <%
+			
+				if(field.isRendered()) {
+					%>
+					<%fieldName = uicomponent.getLabel(field.getName());%>
+					<%
+						if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId()) && !fieldName.equals(field.getName())) {
+					%>												
+						<label class="control-label">
+							<%=uicomponent.getLabel(field.getName()) %>
+						</label>
+						<div class="controls"><% uiform.renderField(field) %></div>
+					<%} else {%>
+						<div class="controls"><% uiform.renderField(field) %></div>
+					<%}
+				}
 				%>
-							<tr>
-								<%fieldName = uicomponent.getLabel(field.getName());%>
-								<%
-									if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId()) && !fieldName.equals(field.getName())) {
-								%>												
-									<td class="FieldLabel">
-										<%=uicomponent.getLabel(field.getName()) %>
-									</td>
-									<td class="FieldComponent"><% uiform.renderField(field) %></td>
-								<%} else {%>
-									<td class="FieldComponent" colspan="2"><% uiform.renderField(field) %></td>
-								<%}%>
-							</tr>
+			    </div>
 				<%
-						}
-					}
-				%>
-			</table>
-			<div class="uiAction"> 
-				<% for(action in uicomponent.getActions()) { 
-						 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
-						 String link = uicomponent.event(action);
-				%>
-							<button class="btn" rel="tooltip" data-placement="bottom" title="$actionLabel" onclick="$link">$actionLabel</button>
-				<%}%>	
-			</div>
-		</div>
+			}
+		%>
+	<div class="control-group uiAction">
+		<% for(action in uicomponent.getActions()) { 
+				 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+				 String link = uicomponent.event(action);
+		%>
+			<button class="btn" rel="tooltip" data-placement="bottom" title="$actionLabel" onclick="$link">$actionLabel</button>
+		<%}%>
 	</div>
 	<%uiform.end()%>
 </div>

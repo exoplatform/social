@@ -24,9 +24,9 @@
    
   }
 %>
+
 	<div class="MiddleLeftContainerOptions" $popupMenu>
 			<div class="UISpaceNavigationNodeSelector">
-			  <%/*Begin PortalNodeSelectorContainer*/%>					
 						<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
 							<%
 								uicomponent.renderChild(UITree.class);
@@ -34,6 +34,59 @@
 						</div>
 			</div>
 	</div>
+<!-- 
+	<ul class="nodeGroup"> 
+	<li class="lastNode node">   
+		<div class="uiIconCollapse">    
+			<div class="page treeNodeType node node">        
+				<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfdg</a>   
+			</div>  
+		</div>
+		<ul class="nodeGroup"> 
+			<li class="">   
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+				<div class="uiIconExpand uiIconCollapse">    
+					<div class="page treeNodeType node node ">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+					</div>  
+				</div> 
+			</li> 
+			<li class="lastNode node">   
+				<div class="uiIconEmpty">    
+					<div class="page treeNodeType node selected">        
+						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdh</a>
+					</div>
+				</div>
+			</li>
+		</ul> 
+	</li>
+</ul>
+-->
+	
 </div>
 
 

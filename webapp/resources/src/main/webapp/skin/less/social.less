@@ -65,6 +65,7 @@
   width: 100%;
 }
 
+/***** space setting portlet ****/
 .uiSpaceSettingPortlet {
 	.changeAvatar {
 		text-align: center;
@@ -75,5 +76,27 @@
 	.uiAction {
 		border-top: 1px solid @borderColor;
 		padding: 20px 0 10px;
+	}
+}
+
+/******* space application portlet *****/
+.uiSpaceApplication .contentSpace {
+	border: 1px solid @borderColor;
+    .border-radius(4px);
+    padding: 5px;
+    .size(84px, 518px);
+    margin: 10px 10px 10px 0;
+	
+	&:hover {
+		background: @tableBackgroundAccent;
+	}
+	
+	img {
+		margin: 15px;
+		.size(51px, 64px);
+	}
+	
+	.communityContainer {
+		margin: 16px 0 0 105px;
 	}
 }

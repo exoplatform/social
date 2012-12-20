@@ -7,10 +7,19 @@
   def addNodeActionLabel = _ctx.appRes("${uicomponentId}.action.addNode")
   def saveActionLabel = _ctx.appRes("${uicomponentId}.action.Save")
 %>
-<div class="UISpaceNavigationManagement" id="$uicomponent.id">
-	<div class="TopTitleBar">
+<div class="uiSpaceNavigationManagement" id="$uicomponent.id">
+<!-- <div class="TopTitleBar">
 	    <%= uicomponent.getOwner();%>
-	</div>	
+	</div>
+	-->	
+	<ul class="breadcrumb">  
+		<li>
+			<a href="#">spaces</a>
+			<span class="uiIconMiniArrowRight">&nbsp;</span>
+		</li>
+		<li class="active">space_test</li>
+	</ul>
+		
   <%
   	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
   	uicomponent.renderChild(UIPopupWindow.class);
