@@ -141,7 +141,7 @@
   def currentTime = System.currentTimeMillis();
 %>
 
-<div class="activityStream">
+<div class="activityStream uiDefaultActivity">
   <% uiform.begin() %>
   <div class="activityTimeLine pull-left">
 	<div class="activityAvatar avatarCircle">
@@ -248,7 +248,7 @@
 			commentList.each({
 			  commentCounter++;
 			  if (first & !uicomponent.commentListToggleable()) {
-				commentContentClass = "CommentContent";
+				commentContentClass = "commentContent";
 				first = false;
 			  } else {
 				commentContentClass = "";
@@ -324,5 +324,5 @@
   <% uiform.end() %>
 </div><!--activityStream-->
 <% } else { %> <!-- activity deleted -->
-<div class="uiActivityBox deleted">$labelActivityHasBeenDeleted</div>
+<div class="activityStream deleted">$labelActivityHasBeenDeleted</div>
 <% }%>

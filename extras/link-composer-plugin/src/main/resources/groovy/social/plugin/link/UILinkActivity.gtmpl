@@ -136,7 +136,7 @@
   }
 %>
 
-<div class="activityStream">
+<div class="activityStream uiLinkActivity">
   <% uiform.begin() %>
 	<div class="activityTimeLine pull-left">
 		<div class="activityAvatar avatarCircle">
@@ -205,7 +205,7 @@
 						  </div>
 					</div>
 				</div><!--end introBox,linkShare-->	  
-				<div class="statusBar clearfix ">
+				<div class="statusBar clearfix linkActivityIcon">
 					<ul class="pull-right statusAction">
 						 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 									 def commentLink = "";
@@ -279,7 +279,7 @@
 				  commentList.each({
 					commentCounter++;
 					if (first & !uicomponent.commentListToggleable()) {
-					  commentContentClass = "CommentContent";
+					  commentContentClass = "commentContent";
 					  first = false;
 					} else {
 					  commentContentClass = "";
@@ -355,5 +355,5 @@
   <% uiform.end() %>
 </div>
 <% } else { %> <!-- activity deleted -->
-<div class="uiActivity deleted">$labelActivityHasBeenDeleted</div>
+<div class="activityStream deleted">$labelActivityHasBeenDeleted</div>
 <% }%>
