@@ -40,7 +40,7 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(app);
-         def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
+         def srcBG = app.getIconURL();
          def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
   %>
