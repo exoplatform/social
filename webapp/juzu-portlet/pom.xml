@@ -38,6 +38,11 @@
       <artifactId>portlet-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
@@ -67,19 +72,12 @@
     </dependency>
     <dependency>
       <groupId>org.juzu</groupId>
-      <artifactId>juzu-builder</artifactId>
-      <version>${org.juzu.version}</version>
+      <artifactId>juzu-bom-core</artifactId>
     </dependency>
     <!-- Application dependencies-->
     <dependency>
       <groupId>org.juzu</groupId>
-      <artifactId>juzu-core</artifactId>
-      <version>${org.juzu.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-portlet</artifactId>
-      <version>${org.juzu.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -103,32 +101,29 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>gatein</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.build.finalName}</finalName>
-              <descriptorRefs>
-                <descriptorRef>gatein</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-        </executions>
         <dependencies>
           <dependency>
             <groupId>org.juzu</groupId>
-            <artifactId>juzu-builder</artifactId>
-            <version>${org.juzu.version}</version>
+            <artifactId>juzu-bom-core</artifactId>
+            <version>0.6.0-beta2</version>
           </dependency>
         </dependencies>
         <configuration>
           <attach>true</attach>
-          <appendAssemblyId>false</appendAssemblyId>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>gatein-spring</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

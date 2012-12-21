@@ -11,7 +11,8 @@
   },
   stylesheets = {
     @Stylesheet(src = "css/gatein.less")
-  }
+  },
+  location = juzu.asset.AssetLocation.SERVER
 )
 package org.exoplatform.social.portlet.sample;
 

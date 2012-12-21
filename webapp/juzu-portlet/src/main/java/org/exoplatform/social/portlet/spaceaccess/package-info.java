@@ -13,9 +13,9 @@
   stylesheets = {
     @Stylesheet(src = "css/gatein.less"),
     @Stylesheet(src = "css/space-access/space-access.less")
-  }
+  },
+  location = juzu.asset.AssetLocation.SERVER
 )
-@Bindings(@Binding(value=SpaceService.class,implementation=GateInMetaProvider.class))
 package org.exoplatform.social.portlet.spaceaccess;
 
 import juzu.Application;
@@ -23,7 +23,3 @@ import juzu.plugin.asset.Assets;
 import juzu.plugin.asset.Script;
 import juzu.plugin.asset.Stylesheet;
 import juzu.plugin.portlet.Portlet;
-import juzu.plugin.binding.Binding;
-import juzu.plugin.binding.Bindings;
-import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.providers.GateInMetaProvider;

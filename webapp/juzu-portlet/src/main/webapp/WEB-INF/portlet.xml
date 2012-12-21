@@ -9,12 +9,8 @@
      <display-name xml:lang="EN">Hello World portlet</display-name>
      <portlet-class>org.exoplatform.social.portlet.sample.SamplePortlet</portlet-class>
      <init-param>
-       <name>juzu.run_mode</name>
-       <value>prod</value>
-     </init-param>
-     <init-param>
        <name>juzu.inject</name>
-       <value>weld</value>
+       <value>spring</value>
      </init-param>
      <supports>
        <mime-type>text/html</mime-type>
@@ -30,12 +26,8 @@
      <display-name xml:lang="EN">Space Access Portlet</display-name>
      <portlet-class>org.exoplatform.social.portlet.spaceaccess.SpaceaccessPortlet</portlet-class>
      <init-param>
-       <name>juzu.run_mode</name>
-       <value>prod</value>
-     </init-param>
-     <init-param>
        <name>juzu.inject</name>
-       <value>weld</value>
+       <value>spring</value>
      </init-param>
      <supports>
        <mime-type>text/html</mime-type>
