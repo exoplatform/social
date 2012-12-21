@@ -7,7 +7,7 @@
   UIRightClickPopupMenu uiPopupMenu = uicomponent.getChild(UIRightClickPopupMenu.class);
   String popupMenu = "";
 %>
-<div id="UISpaceNavigationNodeSelector">
+<div id="UISpaceNavigationNodeSelector" class="uiTreeExplorer">
 <%
   if(uiPopupMenu != null && uiPopupMenu.isRendered()) {
     String id = uicomponent.getParent().getId();
@@ -24,7 +24,7 @@
    
   }
 %>
-
+<!-- 
 	<div class="MiddleLeftContainerOptions" $popupMenu>
 			<div class="UISpaceNavigationNodeSelector">
 						<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
@@ -34,8 +34,9 @@
 						</div>
 			</div>
 	</div>
-<!-- 
-	<ul class="nodeGroup"> 
+-->
+	
+<ul class="nodeGroup"> 
 	<li class="lastNode node">   
 		<div class="uiIconCollapse">    
 			<div class="page treeNodeType node node">        
@@ -49,31 +50,50 @@
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+			</li>
+			<li class="">  
 				<div class="uiIconExpand uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+			</li>
+			<li class="">  
 				<div class="uiIconExpand uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+			</li>
+			<li class="">  
 				<div class="uiIconExpand uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+			</li>
+			<li class="">  
 				<div class="uiIconExpand uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+			</li>
+			<li class="">  
 				<div class="uiIconExpand uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
+				<ul class="nodeGroup"> 
+					<li class="">   
+						<div class="uiIconExpand uiIconCollapse">    
+							<div class="page treeNodeType node node ">        
+								<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
+							</div>  
+						</div> 
+					</li>
+				</ul>
 			</li> 
 			<li class="lastNode node">   
 				<div class="uiIconEmpty">    
@@ -85,8 +105,7 @@
 		</ul> 
 	</li>
 </ul>
--->
-	
+
 </div>
 
 

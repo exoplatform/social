@@ -58,7 +58,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="uiAction"><button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
+	<div class="uiAction uiActionBorder"><button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
   <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

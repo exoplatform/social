@@ -49,7 +49,7 @@ def selectedTab = uicomponent.getSelectedTabId();
 		{
 		String childID = child.getId();
 		%>
-		<div id="$childID-tab" class='tab-pane fade <%= selectedTab.equals(childID)? "in active" : "" %>' style="overflow: auto">
+		<div id="$childID-tab" class='tab-pane fade <%= selectedTab.equals(childID)? "in active" : "" %>'>
 			<% uicomponent.renderUIComponent(child); %>
 		</div>
 		<%
