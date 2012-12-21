@@ -14,12 +14,15 @@
       this.wrapCheckboxWithDivs();
       this.attachEvents();
       this.disableTextSelection();
+      
+      this.container.css({
+        width: this.containerWidth
+      });
+      
       if (this.resizeHandle) {
         this.optionallyResize('handle');
       }
-      if (this.resizeContainer) {
-        this.optionallyResize('container');
-      }
+      
       this.initialPosition();
     }
     iOSCheckbox.prototype.isDisabled = function() {
@@ -234,6 +237,7 @@
       dragThreshold: 5,
       handleMargin: 15,
       handleRadius: 4,
+      containerWidth: 60,
       containerRadius: 5,
       dataName: "iphoneStyle",
       onChange: function() {}
