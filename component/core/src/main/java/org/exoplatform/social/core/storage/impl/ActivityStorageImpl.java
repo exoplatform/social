@@ -1532,11 +1532,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   @Override
   public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
     //
+    List<Identity> spaceList = getSpacesId(owner);
+    
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+    
     JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList), filter).objects().size();
   }
   
   @Override

@@ -897,7 +897,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(10, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(rootIdentity, sinceTime);
-    assertEquals(10, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
     
     for (int i = 0; i < 5; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -916,7 +916,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(5, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
-    assertEquals(5, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
 
   }
 
