@@ -39,6 +39,7 @@
 })(window.eXo);
 
 var UIComposer = {
+	clickOn : null,
   onLoadI18n : function(i18n) {
     window.eXo.social.I18n.mentions = $.extend(true, {}, window.eXo.social.I18n.mentions, i18n);
   },
@@ -56,7 +57,7 @@ var UIComposer = {
 
     $(document).ready(function() {
       var actionLink = $('#actionLink');
-      if(actionLink.length > 0){
+      if(actionLink.length > 0 && (UIComposer.clickOn === null || $(UIComposer.clickOn).hasClass('UIDocActivityComposer') === false)){
         if($('#InputLink').length == 0) {
           actionLink.trigger('click');
         } else {
@@ -96,7 +97,8 @@ var UIComposer = {
   getValue: function() {
     return (UIComposer.currentValue) ? UIComposer.currentValue : '';
   },
-  setCurrentValue: function() {
+  setCurrentValue: function(elm) {
+		UIComposer.clickOn = elm;
     var uiInputText =$('textarea#'+UIComposer.textareaId);
     UIComposer.currentValue = uiInputText.val();
   },
