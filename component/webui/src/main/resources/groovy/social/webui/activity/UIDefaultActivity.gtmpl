@@ -95,7 +95,7 @@
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (!likesDisplayed) {
-    listPeopleLikeBlockClass = "DisplayNone";
+    listPeopleLikeBlockClass = "displayNone";
   }
 
   if (uicomponent.isLiked()) {
@@ -116,7 +116,7 @@
 
   if (!labelLikes) {
    //hides diplayPeopleBG
-   listPeopleBGClass = "DisplayNone";
+   listPeopleBGClass = "displayNone";
   }
 
   activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
@@ -175,11 +175,11 @@
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
 			<div class="statusBar clearfix ">
-				<ul class="pull-right statusAction">
 					 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
 							  %> 
-					 <% if (activityCommentAndLikable) { %>
+					 <% if (activityCommentAndLikable) { %>					 
+					<ul class="pull-right statusAction">
 						<li>
 							<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
 								<i class="uiIconComment"></i>&nbsp;2<!-- hackcode add dynamic later-->
@@ -197,9 +197,9 @@
 							  <i class="uiIconThumbDown"></i>&nbsp;3<!-- hackcode add dynamic later-->
 							</a>
 						</li>
-					  <% }%>
-					 <% }%>					
-				</ul>
+					  <% }%>					  			
+					</ul>
+					 <% }%>		
 			</div><!--end statusBar-->					
 			<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
 			<div class="listLikedBox $listPeopleBGClass">		
