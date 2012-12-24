@@ -94,7 +94,7 @@
   def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
   if (!likesDisplayed) {
-    listPeopleLikeBlockClass = "DisplayNone";
+    listPeopleLikeBlockClass = "displayNone";
   }
 
   if (uicomponent.isLiked()) {
@@ -115,7 +115,7 @@
 
   if (!labelLikes) {
    //hides diplayPeopleBG
-   listPeopleBGClass = "DisplayNone";
+   listPeopleBGClass = "displayNone";
   }
 
   activityContentTitle = activity.title;
@@ -186,8 +186,9 @@
 					  }
 					  def embedHtml = uicomponent.getEmbedHtml();
 					%>
-					
+				<% if (linkComment != null && linkComment.length() > 0) { %>	
 				<div class="description">$linkComment</div>
+				<% } %>
 				<div class="uiBox roundedBottom introBox linkShare">
 					<div class="clearfix">
 						<% if (embedHtml == null) { %>
@@ -206,11 +207,11 @@
 					</div>
 				</div><!--end introBox,linkShare-->	  
 				<div class="statusBar clearfix linkActivityIcon">
-					<ul class="pull-right statusAction">
 						 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 									 def commentLink = "";
 								  %> 
-						 <% if (activityCommentAndLikable) { %>
+						 <% if (activityCommentAndLikable) { %>						 
+						<ul class="pull-right statusAction">
 							<li>
 								<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
 									<i class="uiIconComment"></i>&nbsp;2<!-- hackcode add dynamic later-->
@@ -228,13 +229,13 @@
 								  <i class="uiIconThumbDown"></i>&nbsp;3<!-- hackcode add dynamic later-->
 								</a>
 							</li>
-						  <% }%>
-						 <% }%>					
-					</ul>
+						  <% }%>						  				
+						</ul>
+						 <% }%>	
 				</div><!--end statusBar-->		
 				<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
-				<div class="listLikedBox $listPeopleBGClass">		
-					  <div class="listPeopleContent">
+					  <div class="listLikedBox  $listPeopleBGClass">
+						  <div class="listPeopleContent">
 					  <% if (!labelLikes) labelLikes = ""; %>
 								<p>Liked by you, Thomas and Marry</p><!--hackcode-->
 

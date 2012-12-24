@@ -181,26 +181,26 @@
 	 }
 	.boxContainer{
 		margin: 0px 0px 0px 80px;
-	}		
-
+	}
+	.statusAction.pull-right a{
+		color: @grayDark;
+	}
+	.contentForum span ,.dataInfor a,.dataInfor span,.statusAction.pull-left a,.commentItem .viewComment
+	,.author span,.introBox .versionFile,.linkSources span,.listLikedBox  p {
+		color: @grayLight;
+	}
 }
 
 .activityStream{
-	.linkTitle ,.author a{
+	.linkTitle ,.author a,.titleForum a{
 		font-family : @sansBoldFontFamily; 
 		font-weight: bold;
-	}
-	.linkSources {
-		span {
-			color: @grayLight;
-		}
 	}
 	.author {	
 		a + span {
 			margin-left: 10px;
 		}
 		span {				
-			color: @grayLight;
 			font-size: @fontSizeSmall;
 		} 
 	}
@@ -214,6 +214,11 @@
 				bottom: -8px;
 			}	
 		}
+	}
+	.contentForum .text {
+		padding: 0 0 0 16px;
+		background: url("/social-resources/skin/images/Activity/text-forum.png") repeat-y left top;
+		margin-top: 10px;
 	}
 }
 
@@ -241,11 +246,11 @@
 		.dataInfor {
 			span,a {
 				margin: 0 10px 0 0;
-				color: @grayLight;
 				font-size: @fontSizeSmall;
 			}
 		}
 	}
+	
 }
 
 /*contentBox  activityStreams*/
@@ -298,7 +303,6 @@
 				}
 			}
 			p {
-				color: @grayLight;
 				margin: 0;
 			}
 		}	
@@ -346,9 +350,7 @@
 				bottom: 0;
 			}
 		}
-		.versionFile {
-			color: @grayLight;
-		}
+		
 		&:before ,&:after{					 
 			.square(0px);
 			position: absolute;
@@ -390,13 +392,16 @@
 			&+ .commentItem {
 				margin: 15px 0 0 0;
 			}
-			.uiIconClose {
+			.uiIconClose ,.viewComment{
 				position: absolute;
 				top: 0px;
 				right: 0px;
 				display:none;
 			}
-			&:hover  .uiIconClose{
+			.uiIconClose + .viewComment {
+				right: 25px;
+			}
+			&:hover  .uiIconClose,&:hover  .viewComment{
 				display: block;
 			}
 			.commmentLeft {
