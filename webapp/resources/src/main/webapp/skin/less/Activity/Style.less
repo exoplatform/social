@@ -168,10 +168,9 @@
 /*common  activityStreams*/
 
 .activityStream {
-	 background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 26px 0px;	
-	 padding:0 0 15px 0;
+	 background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 26px 0px;
 	 &+ .activityStream {
-		 padding: 15px 0 0 0;
+		 padding: 30px 0 0 0;
 	 }
 	 .uiBox {
 		.box-shadow(0 2px 2px rgba(0, 0, 0, 0.06));
@@ -186,13 +185,13 @@
 		color: @grayDark;
 	}
 	.contentForum span ,.dataInfor a,.dataInfor span,.statusAction.pull-left a,.commentItem .viewComment
-	,.author span,.introBox .versionFile,.linkSources span,.listLikedBox  p {
-		color: @grayLight;
+	,.author span,.introBox .text span,.linkSources span,.listLikedBox  p,.theContent a,.theContent span {
+		color: @grayLight;font-size: 12px;
 	}
 }
 
 .activityStream{
-	.linkTitle ,.author a,.titleForum a{
+	.linkTitle ,.author a,.sumaryPoint > div{
 		font-family : @sansBoldFontFamily; 
 		font-weight: bold;
 	}
@@ -233,6 +232,7 @@
 			top: 5px;
 			right: 5px;
 			display: none;
+			cursor: pointer;
 		}
 		&:hover  .uiIconClose{
 			display: block;
@@ -397,6 +397,7 @@
 				top: 0px;
 				right: 0px;
 				display:none;
+				cursor: pointer;
 			}
 			.uiIconClose + .viewComment {
 				right: 25px;
@@ -436,6 +437,54 @@
 	.noCommentFormBox {
 		padding-top: 15px;
 	}	
+}
+
+/*================uiAnswerActivity=======================*/
+
+.uiAnswerActivity {
+	.contentAnswer .clearfix {	
+		margin: 15px 0;
+	}
+	.sumaryPoint {
+		text-align: center;
+		.border-radius(@baseBorderRadius);
+		background: @grayWhiteSmoke;
+		padding: 5px 2px;
+	}
+}
+
+/*================uiCalendarActivity=======================*/
+
+.uiCalendarActivity {
+	.introBox .clearfix .calendarBox {		
+		width: 50px;
+	}
+	.introBox .clearfix .calendarBox + .text {
+		margin-left: 70px;
+		p {
+			margin-bottom: 5px;
+		}
+	}
+	.calendarBox {
+		text-align: center;
+		font-family : @sansBoldFontFamily; 
+		font-weight: bold;
+		.heading {
+			color : @white;
+			border: 1px solid #224886;
+			.border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+			#gradient > .vertical(#638acd, #426393);
+			padding: 2px 0;
+			margin: 0;
+		}
+		.content {
+			font-size: 24px;
+			color: #316399;
+			border: 1px solid #c3c3c3;
+			padding: 8px;
+			.border-radius( 0 0 @baseBorderRadius @baseBorderRadius);
+		}
+	}
 }
 
 .boxLoadMore {		
