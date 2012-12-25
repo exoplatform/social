@@ -84,7 +84,7 @@
 	margin: 10px -20px 0;
 }
 
-.uiSpaceApplication .contentSpace {
+.uiSpaceApp .contentSpace {
 	border: 1px solid @borderColor;
     .border-radius(4px);
     padding: 5px;
@@ -93,6 +93,7 @@
 	
 	&:hover {
 		background: @tableBackgroundAccent;
+		border: 1px solid #C7C7C7;
 	}
 	
 	img {
@@ -103,4 +104,63 @@
 	.communityContainer {
 		margin: 16px 0 0 105px;
 	}
+}
+
+/********* UISpaceApplicationInstaller *******/
+.uiSpaceAppInstaller {
+	padding: 10px;
+	
+	.itemListCont {
+		width: 229px;
+		.itemList {
+			height: 324px;
+			overflow: auto;
+			a {
+				color: @textColor;
+			    display: block;
+			    font-weight: normal;
+			    line-height: 20px;
+			    padding: 5px 20px 5px 9px;
+			    white-space: nowrap;
+			    
+			    &:hover {
+			    	color: @linkColorHover;
+				}
+			}
+		}
+	}
+	
+	.itemDetailList {
+		width: 343px;
+		.appList {
+			height: 304px;
+			overflow: auto;
+			padding: 10px;
+			.appDescription {
+				.size(57px, 274px);
+				border: 1px solid @borderColor;
+				.border-radius(4px);
+				padding: 8px;
+				margin: 10px;
+				background-color: @white;
+				img {
+					.size(38px, 48px);
+					margin: 8px 20px 8px 12px;
+				}
+				.appContent {
+					margin: 0 0 0 90px;
+					font-size: 12px;
+					
+					strong:first-child {
+						font-size: @baseFontSize;
+					}
+				}
+				
+				&:hover {
+					background-color: @tableBackgroundAccent;
+					border: 1px solid #C7C7C7;	
+				}
+			}
+		}
+	} 
 }

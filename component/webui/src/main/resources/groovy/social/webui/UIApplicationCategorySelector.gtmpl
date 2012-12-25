@@ -40,29 +40,24 @@ def params = """ {
 
 jsmanager.require("SHARED/social-category-selector", "categorySelector").addScripts("categorySelector.UIApplicationCategorySelector.init($params);");
 %>
-<div id="$uicomponent.id" class="ItemListContainer">
-  <div class="ItemListTitle ClearFix">
-    <div class="TitleIcon ItemListIcon"></div>
-    <div class="Title">$categoriesLabel</div>
-  </div>
-  <div class="ItemList">
+<div id="$uicomponent.id" class="itemListCont roundCornerBoxWithTitle pull-left">
+  <h6 class="titleBox">$categoriesLabel</h6>
+  <ul class="itemList">
   <%
     for (applicationCategory in categoryList) {
       def clickAction = uicomponent.event("Select", applicationCategory.name);
-      def itemClass = "Item";
+      def itemClass = "item";
       if (uicomponent.getSelectedApplicationCategory().equals(applicationCategory)) {
-        itemClass = "SelectedItem Item";
+        itemClass = "selectedItem item";
       }
   %>
-    <div id="$applicationCategory.displayName" rel="tooltip" data-placement="bottom" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
-	  <div class="ItemTitle" id="$applicationCategory.name">
-		<div class="CenterItemTitle">
-		  $applicationCategory.displayName
-		</div>
-	  </div>
-    </div>
+    <li id="$applicationCategory.displayName" rel="tooltip" data-placement="bottom" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
+	  <a href="#" id="$applicationCategory.name">
+		  <i class="uiIconArrowRight"></i>$applicationCategory.displayName
+	  </a>
+    </li>
     <%
     }
   %>
-  </div>
+  </ul>
 </div>

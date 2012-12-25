@@ -28,39 +28,28 @@ def installApplicationLabel = _ctx.appRes("${uicomponentId}.label.install_applic
 def applicationList = uicomponent.getApplicationList();
 
 %>
-<div id="$uicomponent.id" class="ItemDetailList">
-  <div class="ItemDetailTitle ClearFix">
-    <div class="TitleIcon ViewListIcon"></div>
-    <div class="Title">$selectApplicationsLabel</div>
-  </div>
-  <div class="ApplicationListContainer">
-    
+<div id="$uicomponent.id" class="itemDetailList roundCornerBoxWithTitle pull-right">
+  <h6 class="titleBox">$selectApplicationsLabel</h6>
+  <div class="appList clearfix">
     <%
       def srcErrorBG = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
       for (application in applicationList) {
         def addApplicationAction = uicomponent.event("InstallApplication", application.applicationName);
         def srcBG = application.getIconURL();
     %>
-      <div class="Application ApplicationDescription ClearFix">
-          <img class="PortletIcon" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG">
-          <div class="ApplicationContent">
-            <div class="TitleBarApplication ClearFix">
-              <div class="Title">$application.displayName</div>
-              <div class="AddButton" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction"></div>
-            </div>
-            <div class="ApplicationContentLabel">
-                $typeLabel:
-                <span class="RightLabel">$application.type.name</span>
-				<br/>
-                $descriptionLabel:
-                <span class="RightLabel">$application.description</span>
-            </div>
-
+      <div class="appDescription pull-left clearfix">
+          <img class="pull-left" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG" />
+		  <a class="btn-mini btn-primary pull-right" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction">Add</a>
+          <div class="appContent">
+              <strong>$application.displayName</strong>
+			  <br/>
+              <strong>$typeLabel:</strong>$application.type.name
+			  <br/>
+			  <strong>$descriptionLabel:</strong>$application.description
         </div>
       </div>
       <%
       }
     %>
-    
   </div>
 </div>

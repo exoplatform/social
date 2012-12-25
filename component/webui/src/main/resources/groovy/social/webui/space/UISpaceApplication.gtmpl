@@ -31,7 +31,7 @@
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
 %>
-<div class="uiSpaceApplication clearfix">
+<div class="uiSpaceApp clearfix">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
 	<button class="btn" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
