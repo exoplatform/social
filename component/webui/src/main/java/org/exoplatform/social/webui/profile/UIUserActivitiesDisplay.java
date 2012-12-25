@@ -237,13 +237,14 @@ public class UIUserActivitiesDisplay extends UIForm {
       //
       String selectedDisplayMode = uiUserActivities.getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).getValue();
       if (selectedDisplayMode != null) {
-        Utils.setCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, selectedDisplayMode, true);
+        Utils.setCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, selectedDisplayMode, false);
         uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
         UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
         long currentVisited = Calendar.getInstance().getTimeInMillis();
-        //Utils.setCookies(activitiesContainer.getCookiesKey(selectedDisplayMode), String.valueOf(currentVisited), true);
+        Utils.setCookies(activitiesContainer.getCookiesKey(selectedDisplayMode), String.valueOf(currentVisited), true);
+        Utils.setCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, selectedDisplayMode, true);
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
       
