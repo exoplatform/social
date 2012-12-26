@@ -46,7 +46,11 @@
   %>
     <div class="contentSpace pull-left clearfix">
 		<img class="pull-left" src="$srcBG" onError="src='$srcBGError'" />
-		<a class="uiIconClose pull-right" href="#"></a>
+		<% if (isRemovable) { 
+		     def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;";
+		%>
+		<a class="uiIconClose pull-right" href="#" onclick="$removeApplication"></a>
+		<% } %>
 		<div class="communityContainer">
 			<strong><%= appName %></strong>
 			<br/>
