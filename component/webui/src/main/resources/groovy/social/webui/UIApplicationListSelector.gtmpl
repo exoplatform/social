@@ -28,7 +28,7 @@ def installApplicationLabel = _ctx.appRes("${uicomponentId}.label.install_applic
 def applicationList = uicomponent.getApplicationList();
 
 %>
-<div id="$uicomponent.id" class="itemDetailList roundCornerBoxWithTitle pull-right">
+<div id="$uicomponent.id" class="itemDetailList roundCornerBoxWithTitle pull-left">
   <h6 class="titleBox">$selectApplicationsLabel</h6>
   <div class="appList clearfix">
     <%
