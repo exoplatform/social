@@ -443,7 +443,7 @@
         <module>webui</module>
       </depends>
       <depends>
-        <module>social-ui-space-app-name-edition</module>
+        <module>social-ui-space-nav</module>
       </depends>
     </module>
   </portlet>

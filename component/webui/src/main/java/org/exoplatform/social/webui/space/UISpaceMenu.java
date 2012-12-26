@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.exoplatform.application.registry.Application;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -88,12 +89,15 @@ public class UISpaceMenu extends UIContainer {
    */
   private Space space = null;
 
+  private List<Application> appList;
+  
   /**
    * Constructor.
    *
    * @throws Exception
    */
   public UISpaceMenu() throws Exception {
+    appList = SpaceUtils.getApplications(getSpace().getGroupId());
   }
 
   /**
@@ -142,6 +146,9 @@ public class UISpaceMenu extends UIContainer {
       Space space = spaceService.getSpaceByUrl(spaceUrl);
 
       UserNode selectedNode = uiPortal.getSelectedUserNode();
+      String pageRef = selectedNode.getPageRef();
+      String appName = pageRef.substring(pageRef.lastIndexOf("::") + 2);
+      
       UserNode homeNode = null;
 
       homeNode = SpaceUtils.getSpaceUserNode(space);
@@ -179,8 +186,8 @@ public class UISpaceMenu extends UIContainer {
       for (String app : apps) {
         if (app.length() != 0) {
           appParts = app.split(":");
-          if (appParts[1].equals(oldName)) {
-            editedApp = appParts[0] + ":" + newNodeName + ":" + appParts[2] + ":" + appParts[3];
+          if (appParts[0].equals(appName)) {
+            editedApp = appParts[0] + ":" + newSpaceAppName + ":" + appParts[2] + ":" + appParts[3];
             newInstalledApps = installedApps.replaceAll(app, editedApp);
             space.setApp(newInstalledApps);
             spaceService.updateSpace(space);
@@ -265,6 +272,30 @@ public class UISpaceMenu extends UIContainer {
     return spaceService.hasSettingPermission(space, userId);
   }
 
+  protected String getAppIcon(String pageRef) {
+    String spaceUrl = SpaceUtils.getSpaceUrl();
+    Space space = getSpaceService().getSpaceByUrl(spaceUrl);
+    String installedApps = space.getApp();
+    String[] apps = installedApps.split(",");
+    String[] appParts = null;
+    String appName = pageRef.substring(pageRef.lastIndexOf("::") + 2);
+    
+    for (String app : apps) {
+      if (app.length() != 0) {
+        appParts = app.split(":");
+        if (appParts[0].equals(appName) || appParts[1].equals(appName)) {
+          // get application icon by portlet name
+          for (Application application : appList) {
+            if (application.getApplicationName().equals(appParts[0])) {
+              return application.getIconURL();
+            }
+          }
+        }
+      }
+    }
+    
+    return null;
+  }
  
   /**
    * Gets spaceService.

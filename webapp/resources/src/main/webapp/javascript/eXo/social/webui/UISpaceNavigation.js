@@ -17,11 +17,59 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-var UISpaceAppNameEdition = {
+var UISpaceNavigation = {
 	addEditability: function(id) {
     var editedTab = $("#" + id);
 
-    editedTab.on("dblclick", ".SelectedTab span", function() {
+    //
+    var uiSpaceMenu = $('#UISpaceMenu');
+    var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
+    var tabs = tabContainer.find('li');
+    
+    var dropDownMenu = $('<ul/>', {
+      'class' : 'dropdown-menu'
+    });
+
+    var dropDownToggle = $('<a/>', {
+      'href' : '#',
+      'class' : 'dropdown-toggle',
+      'data-toggle' : 'dropdown'
+    }).append($('<b/>', {
+               'text' : '[  +  ]'
+             }));
+
+    var dropDown = $('<li/>', {
+      'class' : 'dropdown'
+    }).append(dropDownToggle).append(dropDownMenu);
+
+    // clear
+    tabContainer.empty();
+
+    // rebuild
+    $.each(tabs, function(idx, el) {
+      if (idx < 9) {
+        tabContainer.append(el);
+      } else {
+        dropDownMenu.append(el);
+      }
+    });
+    
+    tabContainer.append(dropDown);
+    
+    // swap position if needed
+    var swappedEl = $(dropDown).find('li.active');
+    if ( swappedEl.length > 0 ) {
+      var targetEl = $(dropDown).prevAll('li:first');
+      var copy_to = $(swappedEl).clone(true);
+      var copy_from = $(targetEl).clone(true);
+      $(swappedEl).replaceWith(copy_from);
+      $(targetEl).replaceWith(copy_to);
+    }
+    
+    $(tabContainer).css({"visibility":"visible"});
+    
+    
+    editedTab.on("dblclick", ".active span", function() {
       var span = $(this);
       showEditLabelInput(this, span.attr("id"), span.text()); 
     });
@@ -67,4 +115,4 @@ var UISpaceAppNameEdition = {
 	}
 };
 
-_module.UISpaceAppNameEdition = UISpaceAppNameEdition;
+_module.UISpaceNavigation = UISpaceNavigation;

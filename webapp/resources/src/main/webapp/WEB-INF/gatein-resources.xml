@@ -131,10 +131,10 @@
   </module>
   
   <module>
-    <name>social-ui-space-app-name-edition</name>
+    <name>social-ui-space-nav</name>
     <script>
-       <name>eXo.social.webui.UISpaceAppNameEdition</name>
-       <path>/javascript/eXo/social/webui/UISpaceAppNameEdition.js</path>
+       <name>eXo.social.webui.UISpaceNavigation</name>
+       <path>/javascript/eXo/social/webui/UISpaceNavigation.js</path>
     </script>
     <depends>
       <module>socialUtil</module>

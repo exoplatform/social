@@ -37,6 +37,7 @@
     imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
   def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
+  def srcDefaultAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
 
   public String getFitString(String nodeLabel, int maxLen) {
     def labelStr = "";
@@ -72,7 +73,8 @@
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
-  jsManager.require("SHARED/social-ui-space-app-name-edition", "editor").addScripts("editor.UISpaceAppNameEdition.addEditability('" + uicomponent.id + "');");
+  jsManager.require("SHARED/social-ui-space-nav", "editor").addScripts("editor.UISpaceNavigation.addEditability('" + uicomponent.id + "');");
+  def srcAppIcon;
 %>
 
 <div class="UISpaceMenu" id="UISpaceMenu">
@@ -91,56 +93,40 @@
           <div class="CenterHorizontalTabs">
             <div class="TabsContainer">
               <%
-                def homeTabClass = "NormalTab";
-                if(spaceUrl.equals(appSelected)) {
-                  homeTabClass = "SelectedTab";
-                }
                 def homeLabel = _ctx.appRes(uicomponent.getId() + ".label.Home");
+                srcAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"; // need change to Activity icon
               %>
-              <div class="UITab NormalTabStyle">
-                <div class="$homeTabClass">
-                  <div class="LeftTab">
-                    <div class="RightTab">
-                      <div class="MiddleTab">
-                        <a class="HomeSpace" rel="tooltip" data-placement="bottom" title="$homeLabel" href="$homeUrl">$homeLabel</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
+              <ul class="nav nav-tabs" id="spaceMenuTab" style="visibility: hidden;">
+                <% if (spaceUrl.equals(appSelected)) { %>
+                <li class="active"><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" />$homeLabel</a></li>
+                <% } else { %>
+                <li class=""><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /> $homeLabel</a></li>
+                <% } %>
+              
+              
               <%
               for(node in apps) {
-                def appTabClass = "NormalTab";
                 def nodeTitle = node.getResolvedLabel();
                 def nodeLabel = getFitString(nodeTitle, 15);
                 def nodeUri = node.getURI();
                 def uriParts = nodeUri.split("/");
                 def nodeName = uriParts[uriParts.length - 1];
                 def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
-                if(nodeName.equals(appSelected)) {
-                  appTabClass = "SelectedTab";
-                }
+                srcAppIcon = uicomponent.getAppIcon(node.getPageRef());
+                
                 if (!nodeName.equals("settings")) {
-              %>
-              <div class="UITab NormalTabStyle">
-                <div class="$appTabClass">
-                  <div class="LeftTab">
-                    <div class="RightTab">
-                      <div class="MiddleTab">
-                      <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
-                        <span id='$nodeName' class="ApplicationAdd">$nodeLabel</span>
-                      <% } else {%>
-                        <a class="ApplicationAdd" rel="tooltip" data-placement="bottom" title="$nodeTitle" href="$pageURI">$nodeLabel</a>
-                      <% }%>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+		              %>
+		              <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
+		                   <li class="active"><a data-toggle="tab" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName'>$nodeLabel</span></a></li>
+		              <% } else {%>
+		                   <li class=""><a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName'>$nodeLabel</span></a></li>
+		              <% }%>
               <%
                 }
               }
               %>
+              </ul>
             </div>
           </div>
         </div>

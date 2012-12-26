@@ -39,7 +39,7 @@
        if (app != null) {
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
-         def appName = uicomponent.getAppName(app);
+         def appName = uicomponent.getAppName(appId);
          def srcBG = app.getIconURL();
          def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
