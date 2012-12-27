@@ -930,7 +930,7 @@
       var parent = elmInputBox.parent();
       parent.find('div.placeholder:first').show();
       
-      var isLinked = ($('#LinkTitle').length > 0);
+      var isLinked = ($('#LinkTitle').length > 0 || $('.InputDoc').length > 0);
       var action = $('#' + settings.idAction);
       if(isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
         $('#' + settings.idAction).attr('disabled', 'disabled').removeAttr('onclick').addClass('DisableButton');
