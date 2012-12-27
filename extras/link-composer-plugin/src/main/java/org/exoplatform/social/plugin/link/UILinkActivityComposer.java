@@ -63,6 +63,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
   events = {
     @EventConfig(listeners = UILinkActivityComposer.AttachActionListener.class),
     @EventConfig(listeners = UILinkActivityComposer.ChangeLinkContentActionListener.class),
+    @EventConfig(listeners = UILinkActivityComposer.RemoveLinkActionListener.class),
     @EventConfig(listeners = UIActivityComposer.CloseActionListener.class),
     @EventConfig(listeners = UIActivityComposer.SubmitContentActionListener.class),
     @EventConfig(listeners = UIActivityComposer.ActivateActionListener.class)
@@ -224,6 +225,19 @@ public class UILinkActivityComposer extends UIActivityComposer {
     }
   }
 
+  public static class RemoveLinkActionListener extends EventListener<UILinkActivityComposer> {
+    @Override
+    public void execute(Event<UILinkActivityComposer> event) throws Exception {
+      UILinkActivityComposer uiComposerLinkExtension = event.getSource();
+      uiComposerLinkExtension.clearLinkShare();
+      uiComposerLinkExtension.setLinkInfoDisplayed(false);
+      uiComposerLinkExtension.setDisplayed(false);
+      uiComposerLinkExtension.setReadyForPostingActivity(false);
+      
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiComposerLinkExtension);
+    }
+  }
+  
   @Override
   protected void onActivate(Event<UIActivityComposer> arg0) {
   }

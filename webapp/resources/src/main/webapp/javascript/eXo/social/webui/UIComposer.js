@@ -107,17 +107,14 @@ var UIComposer = {
   	var container = $('#ComposerContainer')
   	var link = container.find('.LinkExtensionContainer');
   	if(link.length > 0) {
-  		if(link.data('isShow').isShow) {
+  		if(link.data('isShow') && link.data('isShow').isShow) {
   			link.hide().data('isShow', {isShow: false});
   		} else {
   			link.show().data('isShow', {isShow: true});
   		}
     } else {
-      var cmp = container.find('.UILinkShareDisplay');
-      if(cmp.length > 0) {
-        $('textarea#composerInput').exoMentions('clearLink', function() {});
-        $('#actionLink').trigger('click');
-      }
+      $('textarea#composerInput').exoMentions('clearLink', function() {});
+      $('#actionLink').trigger('click');
     }
   }
 };
