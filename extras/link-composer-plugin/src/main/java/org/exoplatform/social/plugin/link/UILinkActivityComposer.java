@@ -231,7 +231,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
       UILinkActivityComposer uiComposerLinkExtension = event.getSource();
       uiComposerLinkExtension.clearLinkShare();
       uiComposerLinkExtension.setLinkInfoDisplayed(false);
-      uiComposerLinkExtension.setDisplayed(false);
+      uiComposerLinkExtension.setDisplayed(true);
       uiComposerLinkExtension.setReadyForPostingActivity(false);
       
       event.getRequestContext().addUIComponentToUpdateByAjax(uiComposerLinkExtension);
