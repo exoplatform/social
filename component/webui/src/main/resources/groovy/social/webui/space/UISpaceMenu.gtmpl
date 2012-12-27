@@ -77,60 +77,52 @@
   def srcAppIcon;
 %>
 
-<div class="UISpaceMenu" id="UISpaceMenu">
-  <div class="SpaceMenuPortlet ClearFix">
-    <div class="UISpaceName FL ">
-      <a class="Avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
-      <a rel="tooltip" data-placement="bottom" title="$spaceName" href="$homeUrl" class="ProfTitle">$spaceNameDisplay</a>
-      <% if (uicomponent.hasSettingPermission()) { %>
-      <a class="SpaceSettingIcon" href='$homeUrl/settings' rel="tooltip" data-placement="bottom" title="$settingsLabel"><span>&nbsp</span></a>
-      <% }%>
-    </div>
+<div class="uiSpaceMenu clearfix" id="UISpaceMenu">
+ 
+	<div class="uiSpaceName pull-left">
+	  <a class="avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
+	  <a rel="tooltip" data-placement="bottom" title="$spaceName" href="$homeUrl" class="profileTitle">$spaceNameDisplay</a>
+	  <% if (uicomponent.hasSettingPermission()) { %>
+	  <a class="SpaceSettingIcon" href='$homeUrl/settings' rel="tooltip" data-placement="bottom" title="$settingsLabel"><span>&nbsp</span></a>
+	  <% }%>
+	</div>
 
-    <div class="UIHorizontalTabs">
-      <div class="LeftHorizontalTabs">
-        <div class="RightHorizontalTabs">
-          <div class="CenterHorizontalTabs">
-            <div class="TabsContainer">
-              <%
-                def homeLabel = _ctx.appRes(uicomponent.getId() + ".label.Home");
-                srcAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"; // need change to Activity icon
-              %>
-              
-              <ul class="nav nav-tabs" id="spaceMenuTab" style="visibility: hidden;">
-                <% if (spaceUrl.equals(appSelected)) { %>
-                <li class="active"><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" />$homeLabel</a></li>
-                <% } else { %>
-                <li class=""><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /> $homeLabel</a></li>
-                <% } %>
-              
-              
-              <%
-              for(node in apps) {
-                def nodeTitle = node.getResolvedLabel();
-                def nodeLabel = getFitString(nodeTitle, 15);
-                def nodeUri = node.getURI();
-                def uriParts = nodeUri.split("/");
-                def nodeName = uriParts[uriParts.length - 1];
-                def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
-                srcAppIcon = uicomponent.getAppIcon(node.getPageRef());
-                
-                if (!nodeName.equals("settings")) {
-		              %>
-		              <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
-		                   <li class="active"><a data-toggle="tab" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName'>$nodeLabel</span></a></li>
-		              <% } else {%>
-		                   <li class=""><a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName'>$nodeLabel</span></a></li>
-		              <% }%>
-              <%
-                }
-              }
-              %>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    
+  <%
+    def homeLabel = _ctx.appRes(uicomponent.getId() + ".label.Home");
+    srcAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"; // need change to Activity icon
+  %>
+  
+  <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
+    <% if (spaceUrl.equals(appSelected)) { %>
+    <li class="active"><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName">$homeLabel</span></a></li>
+    <% } else { %>
+    <li class=""><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName"> $homeLabel</span></a></li>
+    <% } %>
+  
+  
+  <%
+  for(node in apps) {
+    def nodeTitle = node.getResolvedLabel();
+    def nodeLabel = getFitString(nodeTitle, 15);
+    def nodeUri = node.getURI();
+    def uriParts = nodeUri.split("/");
+    def nodeName = uriParts[uriParts.length - 1];
+    def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
+    srcAppIcon = uicomponent.getAppIcon(node.getPageRef());
+    
+    if (!nodeName.equals("settings")) {
+  %>
+  <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
+       <li class="active"><a data-toggle="tab" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName' class="tabName">$nodeLabel</span></a></li>
+  <% } else {%>
+       <li class=""><a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName' class="tabName">$nodeLabel</span></a></li>
+  <% }%>
+  <%
+    }
+  }
+  %>
+  </ul>
+     
+
 </div>
