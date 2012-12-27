@@ -136,7 +136,8 @@
 				        <div class="content">
 				          $space.description
 				        </div>
-				        
+				        </div>
+				        </div>
 				        <button type="button" class="btn pull-right" onclick="<%= ignoreSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= ignoreSpaceActionLabel %>">$ignoreSpaceActionLabel</button>
 				        <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= acceptSpaceActionLabel %>">$acceptSpaceActionLabel</button>
 				      </div>

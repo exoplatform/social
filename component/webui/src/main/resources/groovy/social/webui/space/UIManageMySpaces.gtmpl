@@ -162,6 +162,8 @@
 			          <div class="content">
 			            $space.description<br/>
 			          </div>
+			          </div>
+			          <div>
                 <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionDeleteSpace %>">$labelActionDeleteSpace</button>							  
 								<% if (hasMembership) { %>
 							  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= labelActionLeaveSpace %>" style="display:block;">$labelActionLeaveSpace</button>

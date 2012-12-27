@@ -134,6 +134,8 @@
 			        <div class="content">
 			          $space.description
 			        </div>
+			        </div>
+			        <div>
 				      <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= cancelInvitationActionLabel %>">$cancelInvitationActionLabel</button>
 			      </div>
 			    </div>

@@ -76,10 +76,8 @@
 	          <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
 	          <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
 	     </ul>
-	  </div>
-	  <% } %>
-	  
-	  <div>
+		  <div class="tab-content">
+   <div class="tab-pane active">
 	    <div class="boxSpaceList">
 	        <h4 class="titleWithBorder">$contactsDirectory</h4>
 	        <!--div class="DirectoryNormalBox"-->
@@ -140,7 +138,7 @@
 	                <%  } %>
 			    </div>
 		       <% if (isEditable) {%>
-				        <div class="pull-right">
+				        <div>
 				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
 				        </div>
 		      <% } %>
@@ -164,4 +162,9 @@
       </script>
   <%  }	%>
   </div>
+  </div>
+	  </div>
+	  <% } %>
+	  
+	 
 </div>
