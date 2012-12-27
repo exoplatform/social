@@ -116,10 +116,26 @@
       }
       return "";
     },
+    removeLastBr : function(val) {
+      if (val) {
+        var l = val.length;
+        if (l > 0) {
+          val = val.replace(/<br\/?>$/gi, '');
+          if (l > val.length) {
+            return utils.removeLastBr(val);
+          }
+        }
+        return val;
+      }
+      return '';
+    },
     getSimpleValue : function(val) {
-      return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
-                .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '');
-//                .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+      if (val) {
+        val = val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+                 .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '');
+        return utils.removeLastBr(val);
+      }
+      return '';
     },
     getCursorIndexOfText : function(before, after) {
       var t = 0;
@@ -472,8 +488,10 @@
         }
 
         currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
+        // fix bug firefox auto added <br> last text.
+        currentDataQuery = utils.removeLastBr(currentDataQuery);
+        inputBuffer = String(settings.triggerChar+currentDataQuery).split('');
         doSearch(currentDataQuery);
-      //  _.defer(_.bind(doSearch, this, currentDataQuery));
       } else {
         hideAutoComplete();
       }
@@ -692,27 +710,11 @@
     }
     
     function autoSetKeyCode(elm) {
-      try {
-        if (utils.isIE && utils.brVersion < 9) {
-          resetBuffer();
-          inputBuffer[0] = settings.triggerChar;
-
-          //
-          onInputBoxInput();
-        } else {
-          var e = jQuery.Event("keypress", {
-            keyCode : KEY.MENTION,
-            charCode : settings.triggerChar
-          });
-          var e1 = jQuery.Event("keydown", {
-            keyCode : KEY.MENTION,
-            charCode : settings.triggerChar
-          });
-          elm.triggerHandler(e);
-          elm.trigger(e1);
-          inputBuffer[0] = settings.triggerChar;
-        }
-      } catch (err) {}
+      disabledPlaceholder();
+      resetBuffer();
+      inputBuffer[0] = settings.triggerChar;
+      //
+      onInputBoxInput();
     }
 
     function hideAutoComplete(isClear) {
