@@ -146,7 +146,7 @@
   <div class="activityTimeLine pull-left">
 	<div class="activityAvatar avatarCircle">
 		<a class="avatar" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
-		  <img rel="tooltip" data-placement="bottom" title="$ownerName" src="$ownerAvatar"/>
+		  <img  title="$ownerName" src="$ownerAvatar"/>
 		</a>
 	</div>
 	
@@ -218,7 +218,7 @@
 					  if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 					  %>
 						<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
-						  <img src="$personLikeAvatarImageSource" rel="tooltip" data-placement="bottom" title="$personLikeFullName" />
+						  <img src="$personLikeAvatarImageSource"  alt="$personLikeFullName" />
 						</a>
 					 <% })%>
 					</div>
@@ -269,7 +269,7 @@
 			  <% }  %>			  
 				<div class="commmentLeft">
 					<a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarSmall">
-					  <img width="36px" height="36px" rel="tooltip" data-placement="bottom" title="$commenterFullName" src="$commenterAvatarImgSrc" />         
+					  <img width="36px" height="36px"  title="$commenterFullName" src="$commenterAvatarImgSrc" />         
 					</a>
 				</div><!--end commentLeft-->        
 				<div class="commentRight">
@@ -306,7 +306,7 @@
 			<% } %>
 					<div class="commmentLeft">
 						<a rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri" class="avatarSmall">
-						   <img rel="tooltip" data-placement="bottom" title="$currentCommenterName" src="$currentCommenterAvatar"/>        
+						   <img  alt="$currentCommenterName" src="$currentCommenterAvatar"/>        
 						</a>
 					</div><!--end commentLeft--> 
 					<div class="commentRight">
