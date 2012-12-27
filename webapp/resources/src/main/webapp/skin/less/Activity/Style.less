@@ -99,7 +99,7 @@
 /*uiActivityStream*/
 
 .uiActivityStream ,.uiActivitiesLoader {
-	background: url("/social-resources/skin/images/Activity/time-line-top.png") no-repeat scroll 16px 0 transparent;
+	background: url("/social-resources/skin/images/Activity/time-line-top.png") no-repeat 16px 0;
 	margin-top: 3px;
 	padding-top: 31px;
 	&.clearBG {
@@ -188,6 +188,11 @@
 	,.author span,.introBox .text span,.linkSources span,.listLikedBox  p,.theContent a,.theContent span {
 		color: @grayLight;font-size: 12px;
 	}
+	.heading ,.description,.statusBar,.listLikedBox{
+		padding: 18px;
+		margin: 0 8px;
+		.box-shadow(0 2px 2px rgba(0, 0, 0, 0.06));
+	}		
 }
 
 .activityStream{
@@ -225,7 +230,7 @@
 
 .activityStream{
 	.heading  {
-		.box-shadow(0 0 0 transparent);
+		.box-shadow(0 0px 2px rgba(0, 0, 0, 0.06));
 		position: relative;
 		.uiIconClose {
 			position: absolute;
@@ -257,11 +262,7 @@
 .activityStream {
 	.contentBox {
 		position: relative;
-		margin: 0px ;
-		.heading ,.description,.statusBar,.listLikedBox{
-			padding: 15px;
-			margin: 0 8px;
-		}		
+		margin: 0px ;		
 		.commentBox { 
 			margin: 0 8px;
 			&.noneCommentOrLike {
@@ -323,10 +324,10 @@
 
 .activityStream {
 	.introBox {
-		padding: 15px;
+		padding: 18px;
 		margin-bottom: 0;
 		position: relative;
-		.box-shadow(0px 2px 2px rgba(13,13,13,0.20));
+		#gradient > .vertical-three-colors(@white,@white,94%,#f7f7f7);
 		.clearfix {
 			.pull-left  {
 				width:75px;
@@ -460,11 +461,40 @@
 		width: 50px;
 	}
 	.introBox .clearfix .calendarBox + .text {
-		margin-left: 70px;
-		p {
+		margin-left: 65px;
+		
+	}
+	p {
 			margin-bottom: 5px;
+	}
+	.statusTask {
+		i { 
+			.square(38px);
+			display: inline-block;
+			background: url("/social-resources/skin/images/Activity/status-task.png");
+			margin-top: 1px;
+			&.needs-actionIcon {
+				background-position: 0px 0px;
+			}
+			&.in-processIcon {
+				background-position: -60px 0px;
+			}
+			&.completedIcon {
+				background-position: -120px 0px;
+			}
+			&.canceledIcon {
+				background-position: -180px 0px;
+			}
+		}		
+		
+	}
+	.introBox .clearfix .statusTask {
+		width: 40px;
+		&+  .text {
+			margin-left: 55px;
 		}
 	}
+	
 	.calendarBox {
 		text-align: center;
 		font-family : @sansBoldFontFamily; 
@@ -486,6 +516,19 @@
 		}
 	}
 }
+
+/*================uiWikiActivity=======================*/
+.uiWikiActivity {
+	.headingContainer {
+		border-bottom: 1px dotted #c7c7c7;
+		margin: 0 0 10px;
+		padding: 0 0 10px;
+		.versionLabel { 
+			color: @grayLight;
+		}
+	}
+}
+
 
 .boxLoadMore {		
 	height: 30px;
