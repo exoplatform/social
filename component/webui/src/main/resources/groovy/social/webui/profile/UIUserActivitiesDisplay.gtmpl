@@ -49,7 +49,7 @@
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
     <% if ( hasActivities ) { %>
-    <div class="activityStreamStatus pull-left"><div class="arrow bottom"></div> 28 Updates</div>
+    <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div> 28 Updates</div>
     <% } %>
 	</div>
 	<% } %>

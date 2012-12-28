@@ -147,12 +147,12 @@
 		<div class="activityType"><span><i class="uiIconLink"></i></span></div>					
 	</div><!--end activityTimeLine-->	
 	  <div class="boxContainer" id="boxContainer">
-		<div id="ContextBox${activity.id}"class="contentBox">
+		<div id="ContextBox${activity.id}"class="uiBox contentBox">
 			<div id="ActivityContextBox${activity.id}">     
-				<div class="heading uiBox  roundedTop">
-					<span class="arrow left"></span>
-					  <% if (activityDeletable) {%>
-						  <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose" id="DeleteActivityButton${activity.id}"></span>
+				<div class="heading">
+					<span class="arrowLeft"></span>
+					 <% if (activityDeletable) {%>
+						  <a href="javascript:void(0)" onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose" id="DeleteActivityButton${activity.id}"></a>
 						<%}%>
 					<div class="author">
 						<a rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">$ownerName</a>                
@@ -206,7 +206,7 @@
 						  </div>
 					</div>
 				</div><!--end introBox,linkShare-->	  
-				<div class="statusBar clearfix linkActivityIcon">
+				<div class="actionBar clearfix linkActivityIcon">
 						 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 									 def commentLink = "";
 								  %> 
@@ -232,7 +232,7 @@
 						  <% }%>						  				
 						</ul>
 						 <% }%>	
-				</div><!--end statusBar-->		
+				</div><!--end actionBar-->		
 				<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
 					  <div class="listLikedBox  $listPeopleBGClass">
 						  <div class="listPeopleContent">
@@ -258,7 +258,7 @@
 					 </div>				
 				</div><!--end list like people--> 
 				<%}%>
-			<div id="CommentBlockBound${activity.id}" class="commentBox uiBox roundedBottom">    
+			<div id="CommentBlockBound${activity.id}" class="commentBox ">    
 			  <% if (uicomponent.commentListToggleable()) {
 			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
