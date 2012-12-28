@@ -80,7 +80,7 @@
 <div class="uiSpaceMenu clearfix" id="UISpaceMenu">
  
 	<div class="uiSpaceName pull-left">
-	  <a class="avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="35" height="35" /></a>
+	  <a class="avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="50" height="50" /></a>
 	  <a rel="tooltip" data-placement="bottom" title="$spaceName" href="$homeUrl" class="profileTitle">$spaceNameDisplay</a>
 	  <% if (uicomponent.hasSettingPermission()) { %>
 	  <a class="SpaceSettingIcon" href='$homeUrl/settings' rel="tooltip" data-placement="bottom" title="$settingsLabel"><span>&nbsp</span></a>
