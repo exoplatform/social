@@ -3,7 +3,7 @@
 
 
 .uiComposer.uiGrayLightBox {
-	.box-shadow(0 2px 4px rgba(13, 13, 13, 0.27));
+	.box-shadow(0 2px 4px -1px rgba(13, 13, 13, 0.27));
 	.textarea {
 		width: 100%;
 		resize: none;
@@ -311,26 +311,24 @@
 		padding: 18px;
 		margin:0 -8px 0 -8px;
 		position: relative;
+		.box-shadow(0px 2px 4px  -1px rgba(13,13,13,0.27));
 		#gradient > .vertical-three-colors(@white,@white,94%,#f7f7f7);
-		.clearfix {
-			.pull-left  {
-				width:75px;
-			}
-			.pull-left + .text {
-				margin-left: 90px;
-			}
+		.pull-left  {
+			width:75px;
+		}
+		.pull-left + .text {
+			margin-left: 90px;
 		}
 		
 		.isPreviewable {
 			position: relative;
 			.pull-left  {
-				width:330px;
+				width: 45%;
 			}
 			.pull-left + .text {
-				margin-left: 345px;
+				margin-left: 46%;
 			}
-			.versionFile {
-				left: 345px;
+			.versionFile {				
 				position: absolute;
 				bottom: 0;
 			}
@@ -513,6 +511,17 @@
 	}
 }
 
+/*================uiContentActivity=======================*/
+
+.uiContentActivity {
+	.introBox.contentShare  .pull-left {		
+		width: 50px;
+		&+ .text {
+			margin-left: 70px;
+			
+		}
+	}
+}
 
 .boxLoadMore {		
 	height: 30px;
@@ -520,7 +529,7 @@
 		text-align: center;
 		margin: 0 8px;
 		#gradient .vertical(#f2f2f2,@dropdownDividerTop);
-		.box-shadow(0px 1px 2px rgba(35,44,48,0.18));
+		.box-shadow(0px 2px 2px -1px rgba(35,44,48,0.18));
 		a {
 			color: @grayDark;
 		}
