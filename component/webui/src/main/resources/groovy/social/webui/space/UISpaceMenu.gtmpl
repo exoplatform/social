@@ -32,11 +32,6 @@
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def space = uicomponent.getSpace(spaceUrl);
   def appSelected = uicomponent.getAppSelected();
-  def imageSource = uicomponent.getImageSource();
-  if (imageSource == null) {
-    imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
-  }
-  def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
   def srcDefaultAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
 
   public String getFitString(String nodeLabel, int maxLen) {
@@ -67,27 +62,12 @@
     return fitStr;
   }
 
-  def spaceName = uicomponent.getSpaceName();
-  def spaceNameDisplay = spaceName;
-  def homeUrl = Utils.getSpaceHomeURL(space);
-  def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
-  def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
   jsManager.require("SHARED/social-ui-space-nav", "editor").addScripts("editor.UISpaceNavigation.addEditability('" + uicomponent.id + "');");
   def srcAppIcon;
 %>
 
 <div class="uiSpaceMenu clearfix" id="UISpaceMenu">
- 
-	<div class="uiSpaceName pull-left">
-	  <a class="avartar" href="$homeUrl"><img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" width="50" height="50" /></a>
-	  <a rel="tooltip" data-placement="bottom" title="$spaceName" href="$homeUrl" class="profileTitle">$spaceNameDisplay</a>
-	  <% if (uicomponent.hasSettingPermission()) { %>
-	  <a class="SpaceSettingIcon" href='$homeUrl/settings' rel="tooltip" data-placement="bottom" title="$settingsLabel"><span>&nbsp</span></a>
-	  <% }%>
-	</div>
-
-    
   <%
     def homeLabel = _ctx.appRes(uicomponent.getId() + ".label.Home");
     srcAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"; // need change to Activity icon
@@ -111,7 +91,6 @@
     def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
     srcAppIcon = uicomponent.getAppIcon(node.getPageRef());
     
-    if (!nodeName.equals("settings")) {
   %>
   <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
        <li class="active"><a data-toggle="tab" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName' class="tabName">$nodeLabel</span></a></li>
@@ -119,7 +98,6 @@
        <li class=""><a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span id='$nodeName' class="tabName">$nodeLabel</span></a></li>
   <% }%>
   <%
-    }
   }
   %>
   </ul>
