@@ -30,7 +30,6 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -74,11 +73,11 @@ public class UISpaceAccess extends UIContainer {
 
   /**
    * Inits at the first loading.
-   * @since 1.2.2
+   * @since 4.0
    */
   public void init() {
     try {
-      PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
+      PortalRequestContext pcontext = Util.getPortalRequestContext();
       Object statusObject = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
       Object spacePrettyNameObj = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
       
@@ -92,7 +91,7 @@ public class UISpaceAccess extends UIContainer {
         
       } 
       
-      String status = statusObject.toString();
+      this.status = statusObject.toString();
       
       //
       this.spacePrettyName = spacePrettyNameObj.toString();
@@ -151,14 +150,12 @@ public class UISpaceAccess extends UIContainer {
   
   @PreDestroy
   public void cleanSession() {
-    PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
     pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_SPACE_PRETTY_NAME_KEY);
     pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_TYPE_KEY);
   }
   
  
-  
-  
   /**
    * Listens event when user accept an invited to join the space
    * @author thanhvc
@@ -171,8 +168,8 @@ public class UISpaceAccess extends UIContainer {
       SpaceService s = Utils.getSpaceService();
       Space space = s.getSpaceByPrettyName(uiSpaceAccess.getSpacePrettyName());
       s.addMember(space, remoteId);
-      PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
-      pcontext.sendRedirect(Utils.getSpaceHomeURL(space));
+      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + Utils.getSpaceHomeURL(space) + "';})();");
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceAccess.getParent());
     }
   }
   
@@ -188,8 +185,9 @@ public class UISpaceAccess extends UIContainer {
       SpaceService s = Utils.getSpaceService();
       Space space = s.getSpaceByPrettyName(uiSpaceAccess.getSpacePrettyName());
       s.addPendingUser(space, remoteId);
-      PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
-      pcontext.sendRedirect(Utils.getSpaceHomeURL(space));
+      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + Utils.getSpaceHomeURL(space) + "';})();");
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceAccess.getParent());
+ 
     }
   }
   
@@ -207,8 +205,9 @@ public class UISpaceAccess extends UIContainer {
       SpaceService s = Utils.getSpaceService();
       Space space = s.getSpaceByPrettyName(uiSpaceAccess.getSpacePrettyName());
       s.removeInvitedUser(space, remoteId);
-      PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
-      pcontext.sendRedirect(Utils.getURI(ALL_SPACE_LINK));
+      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + Utils.getURI(ALL_SPACE_LINK) + "';})();");
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceAccess.getParent());
+
     }
 
   }
@@ -226,10 +225,12 @@ public class UISpaceAccess extends UIContainer {
       Space space = s.getSpaceByPrettyName(uiSpaceAccess.getSpacePrettyName());
       s.addMember(space, remoteId);
       //
-      PortalRequestContext pcontext = (PortalRequestContext)(WebuiRequestContext.getCurrentInstance());
+      PortalRequestContext pcontext = Util.getPortalRequestContext();
       String originalRequest = pcontext.getRequest().getSession().getAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY).toString();
       pcontext.getRequest().getSession().removeAttribute(SpaceAccessType.ACCESSED_SPACE_REQUEST_PATH_KEY);
-      pcontext.sendRedirect(originalRequest);
+
+      event.getRequestContext().getJavascriptManager().getRequireJS().addScripts("(function(){ window.location.href = '" + originalRequest + "';})();");
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceAccess.getParent());
     }
 
   }

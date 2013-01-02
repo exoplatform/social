@@ -23,17 +23,17 @@
 <%
   uicomponent.init();
   
-  def status = uicomponent.getStatus()
-  def spacePrettyName = uicomponent.getSpacePrettyName()
-  def spaceDisplayName = uicomponent.getSpaceDisplayName()
-  def redirectURI = uicomponent.getRedirectURI()
+  def status = uicomponent.getStatus();
+  def spacePrettyName = uicomponent.getSpacePrettyName();
+  def spaceDisplayName = uicomponent.getSpaceDisplayName();
+  def redirectURI = uicomponent.getRedirectURI();
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
   <div class="UISpaceAccessPortlet">
   <% if ("social.space.access.join-space".equals(status)) {%>
     <div class="SpaceAccessBlock SpaceAccessYellow">
       <strong>Restricted Area</strong>
-      </br>You must be a member of the space <b><%= spaceDisplayName %></b> to view this page. <a href="javascript:void(0)" onclick="<%= joinAction %>" title="Join" class="Action">Join</a>
+      </br>You must be a member of the space <b><%= spaceDisplayName %></b> to view this page. <a href="javascript:void(0)" onclick="<%= uicomponent.event("Join") %>" title="Join" class="Action">Join</a>
     </div>
   <% } else if ("social.space.access.closed-space".equals(status)) { %>
     <div class="SpaceAccessBlock SpaceAccessRed">
@@ -43,7 +43,7 @@
   <%}  else if ("social.space.access.request-join-space".equals(status)) {%>
     <div class="SpaceAccessBlock SpaceAccessYellow">
       <strong>Restricted Area</strong>
-      <br>You must be a member of the space <b>${spaceDisplayName}</b> to view this page. <a href="javascript:void(0)" onclick="<%= requestToJoinAction %>" title="Request to Join" class="Action">Request to Join</a> </br>
+      <br>You must be a member of the space <b>${spaceDisplayName}</b> to view this page. <a href="javascript:void(0)" onclick="<%= uicomponent.event("RequestToJoin") %>" title="Request to Join" class="Action">Request to Join</a> </br>
     </div>
   <% } else if ("social.space.access.requested-join-space".equals(status)) {%>
     <div class="SpaceAccessBlock SpaceAccessBlue">
@@ -55,7 +55,7 @@
     </div>
   <% } else if ("social.space.access.invited-space".equals(status)) {%>
     <div class="SpaceAccessBlock SpaceAccessYellow">
-      You are invited to join the space <b><%= spaceDisplayName %><b> by the administrator. <a href="javascript:void(0)" onclick="<%= acceptAction %>" title="Accept" class="Action">Accept</a> | <a href="javascript:void(0)" onclick="<%= refuseAction %>" title="Refuse" class="Action">Refuse</a></br>
+      You are invited to join the space <b><%= spaceDisplayName %><b> by the administrator. <a href="javascript:void(0)" onclick="<%= uicomponent.event("Accept") %>" title="Accept" class="Action">Accept</a> | <a href="javascript:void(0)" onclick="<%= uicomponent.event("Refuse") %>" title="Refuse" class="Action">Refuse</a></br>
     </div>
   <% } else if ("social.space.access.not-access-wiki-space".equals(status)) {%>
     <div class="SpaceAccessBlock PermanWikiLink">
