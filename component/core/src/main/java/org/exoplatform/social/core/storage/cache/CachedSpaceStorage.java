@@ -1142,5 +1142,15 @@ public class CachedSpaceStorage implements SpaceStorage {
     }
     
   }
+
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+    storage.updateSpaceAccessed(remoteId, space);
+  }
+
+  @Override
+  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException {
+    return storage.getSpaceLastedAccessed(remoteId, limit);
+  }
 }
 

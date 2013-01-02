@@ -20,8 +20,11 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.chromattic.api.ChromatticSession;
@@ -42,6 +45,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -1562,6 +1566,66 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       return null;
     }
 
+  }
+
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      Map<String, SpaceRef> sortMap = new LinkedHashMap<String, SpaceRef>();
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
+      if (mapRefs.containsKey(spaceEntity.getName())) {
+        SpaceRef ref = mapRefs.get(spaceEntity.getName());
+        mapRefs.remove(spaceEntity.getName());
+        sortMap.put(spaceEntity.getName(), ref);
+      }
+      
+      for(Map.Entry<String, SpaceRef> e : mapRefs.entrySet()) {
+        sortMap.put(e.getKey(), e.getValue());
+      }
+      
+      listRef.setRefs(sortMap);
+      getSession().save();
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+    
+  }
+
+  @Override
+  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException {
+    try {
+    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+    SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+    Map<String, SpaceRef> mapRefs = listRef.getRefs();
+    
+    //
+    int newLimit = Math.min(limit, mapRefs.size());
+    int i = 0;
+    
+    //
+    List<Space> spaces = new ArrayList<Space>();
+    Space space = new Space();
+    
+    //
+    for(Map.Entry<String, SpaceRef> e : mapRefs.entrySet()) {
+      SpaceRef ref = e.getValue();
+      space = new Space();
+      fillSpaceFromEntity(ref.getSpaceRef(), space);
+      spaces.add(space);
+      i++;
+      if (i == newLimit) {
+        break;
+      }
+    }
+
+    return spaces;
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+      return Collections.emptyList();
+    }
   }
 
 }

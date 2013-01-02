@@ -507,4 +507,20 @@ public interface SpaceStorage {
    * @throws SpaceStorageException
    */
   public Space getSpaceByUrl(String url) throws SpaceStorageException;
+  
+  /**
+   * Update accessed space to top of space members list of Identity model
+   *
+   * @param remoteId
+   * @param space
+   */
+  void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException;
+  
+  /**
+   * Gets list of spaces which user has been last visited.
+   *
+   * @param remoteId
+   * @param limit
+   */
+  List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException;
 }

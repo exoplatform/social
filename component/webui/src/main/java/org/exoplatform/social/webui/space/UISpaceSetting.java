@@ -74,6 +74,10 @@ public class UISpaceSetting extends UIContainer {
     Space space  = getApplicationComponent(SpaceService.class).getSpaceByUrl(spaceUrl);
     if (space != null) {
       setValues(space);
+      
+      //TODO
+      //move this space to first position in list of spaces inside IdentityNode
+      
     }
   }
 

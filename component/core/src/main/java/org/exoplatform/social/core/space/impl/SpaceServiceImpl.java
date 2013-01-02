@@ -1414,4 +1414,15 @@ public class SpaceServiceImpl implements SpaceService {
     
     return appId;  
   }
+
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceException {
+    
+  }
+
+  @Override
+  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceException {
+    
+    return null;
+  }
 }

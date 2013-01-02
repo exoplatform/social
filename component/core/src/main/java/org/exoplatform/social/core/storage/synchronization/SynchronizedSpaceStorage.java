@@ -773,4 +773,27 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
     }
 
   }
+  
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+    boolean created = startSynchronization();
+    try {
+      super.updateSpaceAccessed(remoteId, space);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceLastedAccessed(remoteId, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
+  }
 }

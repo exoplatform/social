@@ -44,6 +44,7 @@ public abstract class SpaceListEntity {
   @Owner
   @MappedBy("soc:refs")
   public abstract Map<String, SpaceRef> getRefs();
+  public abstract void setRefs(Map<String, SpaceRef> spaceRefs);
 
   @Create
   public abstract SpaceRef createRef();
