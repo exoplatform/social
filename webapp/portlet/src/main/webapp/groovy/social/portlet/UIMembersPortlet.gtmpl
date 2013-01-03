@@ -41,32 +41,11 @@
     def leaderIdx = memberIdx = 0;
     def adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 %>
-<div class="UIMembersPortlet UISocApplication" id="$uicomponentId">
-  <div class="UIProfileSpace">
-    <!-- Left section (Admin information) -->
-    <div class="LeftColumn">
-      <% if (managerList.size() > 0) {
-           def admin = managerList.get(0);
-           adminName = admin.getProfile().getFullName();
-           adminImageSource = admin.getProfile().getAvatarUrl();
-           adminProfileURL = LinkProvider.getUserProfileUri(admin.getRemoteId());
-           if (!adminImageSource) adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-       } %>
-				<img class="ImgAvatarRoot" src="$adminImageSource" rel="tooltip" data-placement="bottom" title="$adminName"/>
-        <a href="${adminProfileURL}" class="TitleAvatarRoot">($adminLabel $adminName)</a>
-    </div>
-    <!-- End left section -->
-    <!-- Right section (Member information) -->
-    <div class="ContainerSpace">
-      <div class="UIHeaderSection">
-        <h2>$spaceName</h2>
-        <span>$visibility</span>
-      </div>
-      <!-- Leaders section -->
-      <div class="UISocTitleBar">
-				<div class="TitleBar Bold">$administratorLabel</div>
-      </div>
-      <div class="ClearFix">
+<div class="uiMembersPortlet" id="$uicomponentId">
+	<h1 class="uiInputInfo">$spaceName</h1>
+	<span>$visibility</span>
+    <h4 class="titleWithBorder">$administratorLabel</h4>
+    <div class="memberList clearfix">
 	      <% if (managerList.size() > 0) {
 	        for(user in managerList) {
 	          def userName = user.getProfile().getFullName();
@@ -76,34 +55,36 @@
 	          def leaderImageSource = user.profile.avatarUrl;
 	          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 	          leaderIdx += 1;
-	          clzz = "ContentSpace";
-	          if (leaderIdx % 2 == 0) clzz = "ContentSpaceGray";
 	      	%>
-	        <div class="$clzz ClearFix">
-						<img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
-						<div class="CommunityMane ClearFix">
-							<a href="${profileURL}" class="CommunityName InviteTitle">$userName</a>
-						</div>
-						<% if(position.length() > 0) { %>
-						 <div class="CommunityContent">
-							 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-						 </div>
-						<% } %>
+	        <div class="spaceBox pull-left">
+				<a class="avatarXLarge pull-left">
+					<img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
+				</a>
+				<div class="contentBox">
+					<h4 class="spaceTitle"><a href="${profileURL}" class="CommunityName InviteTitle">$userName</a></h4>
+					<% if(position.length() > 0) { %>
+					 <div class="position">
+						 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+					 </div>
+					<% } %>
+				</div>
 	        </div>
 	      <% }%>
       </div>
       <%
       } else { %>
-				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>
+		<!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
+			<div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>-->
+		<div class="uiFilterList">
+			<div class="result"><span class="number">0</span>member in space</div>
+		</div>
       <% } %>
       
       <!-- End leaders section -->
       <!-- Members section -->
-      <div class="UISocTitleBar">
-				<div class="TitleBar Bold">$spaceMemberLabel</div>
-      </div>
+      <h4 class="titleWithBorder">$spaceMemberLabel</h4>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-      <div class="ClearFix">
+      <div class="memberList clearfix">
       <% if(memberList.size() > 0)  {
         for(user in memberList) {
           def memberUserName = user.getProfile().getFullName();
@@ -113,29 +94,33 @@
           def memberImageSource = user.getProfile().avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
-					cssClass = "ContentSpace"; 
-          if (memberIdx % 2 == 0) {
-					cssClass = "ContentSpaceGray";
-				  }
       %>
-        <div class="$cssClass ClearFix">
-					<img class="ImgAvatar" src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName"/>
-					<div class="CommunityMane ClearFix">
-							<a href="${profileURL}" class="CommunityName InviteTitle">$memberUserName</a>
-					</div>
-					<% if(position.length() > 0) { %>
-					 <div class="CommunityContent">
-						 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-					 </div>
-					 <% } %>
+        <div class="spaceBox pull-left">
+			<a class="avatarXLarge pull-left">
+				<img src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName" alt="#"/>
+			</a>
+			<div class="contentBox">
+				<h4 class="spaceTitle">
+					<a href="${profileURL}">$memberUserName</a>
+				</h4>
+				<% if(position.length() > 0) { %>
+				 <div class="position">
+					 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+				 </div>
+				 <% } %>
+			</div>
         </div>
         <% }
       } else { %>
-				<div class="NotYet"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>
+		<!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
+			<div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
+		<div class="uiFilterList">
+			<div class="result"><span class="number">0</span>member in space</div>
+		</div>
       <% } %>
        </div>
        <% if(uicomponent.isEnableLoadNext()) { %>
-         <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
+         <div id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMoreMember')%>" >
            <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
          </div>
      <% } else { %>
@@ -150,7 +135,3 @@
      <%  } %>
       <!-- End members section -->
      </div>
-    </div>
-    <!-- End Right section -->
-  </div>
-</div>
