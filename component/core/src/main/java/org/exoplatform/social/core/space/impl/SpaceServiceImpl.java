@@ -255,11 +255,7 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public SpaceListAccess getAccessibleSpacesWithListAccess(String userId) {
-    if (userId.equals(getUserACL().getSuperUser())) {
-      return new SpaceListAccess(this.spaceStorage, SpaceListAccess.Type.ALL);
-    } else {
-      return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.ACCESSIBLE);
-    }
+    return new SpaceListAccess(this.spaceStorage, userId, SpaceListAccess.Type.ACCESSIBLE);
   }
   
   /**
