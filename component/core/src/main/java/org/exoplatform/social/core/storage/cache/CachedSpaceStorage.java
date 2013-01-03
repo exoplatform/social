@@ -1149,8 +1149,8 @@ public class CachedSpaceStorage implements SpaceStorage {
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException {
-    return storage.getSpaceLastedAccessed(remoteId, limit);
+  public List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException {
+    return storage.getSpaceLastedAccessed(filter, limit);
   }
 }
 

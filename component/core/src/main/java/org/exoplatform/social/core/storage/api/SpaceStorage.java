@@ -522,5 +522,5 @@ public interface SpaceStorage {
    * @param remoteId
    * @param limit
    */
-  List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException;
+  List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException;
 }

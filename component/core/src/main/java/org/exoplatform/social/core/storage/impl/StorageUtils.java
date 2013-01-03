@@ -10,6 +10,8 @@ import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
@@ -151,5 +153,59 @@ public class StorageUtils {
                               append(chromatticSession.getJCRSession().getWorkspace().getName()).
                               append(path.replaceAll("%", "%25"));
     return encodedUrl.toString();
+  }
+  
+  public static void applyWhereFromSpaces(final WhereExpression whereExpression, final List<Space> spaces) {
+    //
+    whereExpression.startGroup();
+    int size = spaces.size();
+    for (int i = 0; size > i; ++i) {
+      Space current = spaces.get(i);
+      whereExpression.equals(JCRProperties.id, current.getId());
+      if (i + 1 < size) {
+        whereExpression.or();
+      }
+    }
+    whereExpression.endGroup();
+    
+  }
+  
+  public static void applySpaceFilter(final WhereExpression whereExpression, final SpaceFilter filter) {
+    //
+    String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
+    processUsernameSearchPattern(inputName.trim());
+    String position = addPositionSearchPattern(profileFilter.getPosition().trim()).replace(ASTERISK_STR, PERCENT_STR);
+    inputName = inputName.isEmpty() ? ASTERISK_STR : inputName;
+    String nameForSearch = inputName.replace(ASTERISK_STR, SPACE_STR);
+    char firstChar = profileFilter.getFirstCharacterOfName();
+    String skills = profileFilter.getSkills();
+
+    //
+    if (firstChar != '\u0000') {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
+          String.valueOf(firstChar).toLowerCase() + PERCENT_STR
+      );
+    }
+    else if (nameForSearch.trim().length() != 0) {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
+          PERCENT_STR + nameForSearch.toLowerCase() + PERCENT_STR
+      );
+    }
+
+    if (position.length() != 0) {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
+          PERCENT_STR + position.toLowerCase() + PERCENT_STR
+      );
+    }
+
+    if (skills.length() != 0) {
+      whereExpression.and().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
+          PERCENT_STR + skills.toLowerCase() + PERCENT_STR
+      );
+    }
   }
 }

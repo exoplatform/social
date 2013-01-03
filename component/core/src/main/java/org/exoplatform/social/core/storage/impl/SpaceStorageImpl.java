@@ -36,6 +36,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
@@ -44,6 +45,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
@@ -1595,18 +1597,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceStorageException {
+  public List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException {
     try {
-    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
     SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
     Map<String, SpaceRef> mapRefs = listRef.getRefs();
-    
     //
-    int newLimit = Math.min(limit, mapRefs.size());
-    int i = 0;
-    
-    //
-    List<Space> spaces = new ArrayList<Space>();
+    List<Space> spaces = new ArrayList<Space>(mapRefs.size());
     Space space = new Space();
     
     //
@@ -1615,17 +1612,47 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       space = new Space();
       fillSpaceFromEntity(ref.getSpaceRef(), space);
       spaces.add(space);
-      i++;
-      if (i == newLimit) {
-        break;
-      }
+      
     }
+    
+    filter.setIncludeSpaces(spaces);
+    //call method to filter in JCR here
 
     return spaces;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
       return Collections.emptyList();
     }
+  }
+  
+  private List<Space> getSpacesByFilterQuery(final SpaceFilter filter,
+                                                        final long offset, final long limit) {
+    
+    //
+    List<Space> found = new ArrayList<Space>();
+    if(filter.getIncludeSpaces().isEmpty()) return found ;
+    
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    StorageUtils.applyWhereFromSpaces(whereExpression, filter.getIncludeSpaces());
+
+    //
+    StorageUtils.applyFilter(whereExpression, filter);
+
+    //
+    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString())
+                                               .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
+                                               .get().objects(offset, limit);
+    while(result.hasNext()) {
+      IdentityEntity current = result.next().getIdentity();
+      Identity i = new Identity(current.getProviderId(), current.getRemoteId());
+      i.setId(current.getId());
+      found.add(i);
+    }
+
+    //
+    return found;
+
   }
 
 }
