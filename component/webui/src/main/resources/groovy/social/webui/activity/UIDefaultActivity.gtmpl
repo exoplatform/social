@@ -291,7 +291,7 @@
 			  </div>
 			<% }) %>
 			</div> <!--end commentlist-->
-			<div class="commentList inputContainer">
+			<div class="commentList inputContainer" id="InputContainer${activity.id}">
 			<%
 			  def currentCommenterIdentity = Utils.getOwnerIdentity();
 			  def currentCommenterUri = LinkProvider.getUserProfileUri(currentCommenterIdentity.getRemoteId());
