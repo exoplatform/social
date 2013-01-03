@@ -144,7 +144,7 @@
 			  <img alt="$ownerName" src="$ownerAvatar"/>
 			</a>
 		</div>
-		<div class="activityType"><span><i class="uiIconLink"></i></span></div>					
+		<div class="activityType"><span><i class="uiIconLink uiIconWhite"></i></span></div>					
 	</div><!--end activityTimeLine-->	
 	  <div class="boxContainer" id="boxContainer">
 		<div id="ContextBox${activity.id}"class="uiBox contentBox">
@@ -152,19 +152,19 @@
 				<div class="heading">
 					<span class="arrowLeft"></span>
 					 <% if (activityDeletable) {%>
-						  <a href="javascript:void(0)" onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose" id="DeleteActivityButton${activity.id}"></a>
+						  <a href="javascript:void(0)" onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose uiIconLightGrey" id="DeleteActivityButton${activity.id}"></a>
 						<%}%>
 					<div class="author">
 						<a rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">$ownerName</a>                
 					</div>
 					<div class="dataInfor">
-						<span class="dateTime"><i class="uiIconClock"></i>&nbsp;$activityPostedTime</span> 
+						<span class="dateTime"><i class="uiIconClock uiIconLightGrey"></i>&nbsp;$activityPostedTime</span> 
 						<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
 								Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
 									def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
 									def spaceName = spaceSource.displayName;
 						%>
-						<a class="spaceName" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI"><i class="uiIconGroup"></i>&nbsp;$spaceName</a>
+						<a class="spaceName" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI"><i class="uiIconGroup uiIconLightGrey"></i>&nbsp;$spaceName</a>
 						<%} %>
 					</div>
 				</div><!--end heading-->
@@ -214,19 +214,19 @@
 						<ul class="pull-right statusAction">
 							<li>
 								<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
-									<i class="uiIconComment"></i>&nbsp;2<!-- hackcode add dynamic later-->
+									<i class="uiIconComment uiIconLightGrey"></i>&nbsp;2<!-- hackcode add dynamic later-->
 								</a> 
 							</li>
 						  <% if (uicomponent.isLiked()) { %>
 							<li>
 								<a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
-								   <i class="uiIconThumbUp"></i>&nbsp;3<!-- hackcode add dynamic later-->
+								   <i class="uiIconThumbUp uiIconLightGrey"></i>&nbsp;3<!-- hackcode add dynamic later-->
 								</a> 
 							</li>
 						  <% } else { %>
 							<li>
 								<a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
-								  <i class="uiIconThumbDown"></i>&nbsp;3<!-- hackcode add dynamic later-->
+								  <i class="uiIconThumbDown uiIconLightGrey"></i>&nbsp;3<!-- hackcode add dynamic later-->
 								</a>
 							</li>
 						  <% }%>						  				
@@ -317,7 +317,7 @@
 					<%
 					  if (uicomponent.isCommentDeletable(it.userId)) {
 					%>
-						<a class="uiIconClose" href="javascript:void(0)" id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" ></a>	
+						<a class="uiIconClose uiIconLightGrey" href="javascript:void(0)" id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" ></a>	
 					  <% } %>
 					</div><!--end commentItem-->
 				  <% }) %>
