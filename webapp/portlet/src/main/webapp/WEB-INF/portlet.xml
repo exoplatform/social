@@ -284,6 +284,28 @@
       <keywords>social</keywords>
     </portlet-info>
   </portlet>
+  
+  <portlet>
+    <description xml:lang="EN">Space Access Portlet</description>
+    <portlet-name>SpaceAccessPortlet</portlet-name>
+    <display-name xml:lang="EN">Space Access Portlet</display-name>
+    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
+    <init-param>
+      <name>webui.configuration</name>
+      <value>/WEB-INF/conf/portlet/SpaceAccessPortlet/webui/configuration.xml</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.Portlets</resource-bundle>
+    <portlet-info>
+      <title>Space Access Portlet</title>
+      <short-title>Space Access</short-title>
+      <keywords>social</keywords>
+    </portlet-info>
+  </portlet>
 
   <portlet>
     <description xml:lang="EN">Invitation Spaces Portlet</description>
