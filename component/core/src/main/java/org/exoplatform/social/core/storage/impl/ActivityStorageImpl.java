@@ -356,6 +356,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
+      commentEntity.setType(comment.getType());
+      commentEntity.setTitleId(comment.getTitleId());
       commentEntity.setBody(comment.getBody());
       commentEntity.setIdentity(activityEntity.getIdentity());
       commentEntity.setPosterIdentity(_findById(IdentityEntity.class, comment.getUserId()));
@@ -364,6 +366,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setLastUpdated(commentMillis);
       comment.setId(commentEntity.getId());
 
+      Map<String, String> params = comment.getTemplateParams();
+      if (params != null) {
+        commentEntity.putParams(params);
+      }
+      
       //
       String[] ids = activity.getReplyToId();
       List<String> listIds;

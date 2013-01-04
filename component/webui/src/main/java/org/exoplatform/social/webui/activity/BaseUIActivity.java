@@ -400,6 +400,7 @@ public class BaseUIActivity extends UIForm {
     }
     RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
+    comments = getI18N(comments);
     identityLikes = activity.getLikeIdentityIds();
   }
 
@@ -656,5 +657,13 @@ public class BaseUIActivity extends UIForm {
       activity = i18NActivityProcessor.process(activity, userLocale);
     }
     return activity;
+  }
+  
+  private List<ExoSocialActivity> getI18N(List<ExoSocialActivity> comments) {
+    List<ExoSocialActivity> cmts = new ArrayList<ExoSocialActivity>();
+    for (ExoSocialActivity cmt : comments) {
+      cmts.add(getI18N(cmt));
+    }
+    return cmts;
   }
 }

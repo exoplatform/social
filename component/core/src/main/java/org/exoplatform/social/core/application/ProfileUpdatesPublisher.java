@@ -49,7 +49,8 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
   public static final String USER_NAME_PARAM = "USER_NAME_PARAM";
   
   public static final String USER_POSITION_PARAM = "USER_POSITION_PARAM";
-
+  public static final String POSITION_TITLE_ID = "position_updated";
+  
   private static final Log LOG = ExoLogger.getLogger(ProfileUpdatesPublisher.class);
   private ActivityManager activityManager;
   private IdentityManager identityManager;
@@ -101,19 +102,12 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
         activityId = null;
       }
     }
-    activity.setType("USER_PROFILE_ACTIVITY");
-    activity.setTitleId(titleId);
+    activity.setType(PeopleService.USER_PROFILE_ACTIVITY);
     activity.setTitle(activityMessage);
-    Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    if (titleId.equals("position_updated")) {
-      templateParams.put(USER_POSITION_PARAM, event.getProfile().getPosition());
-      templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_POSITION_PARAM);
-      activity.setTemplateParams(templateParams);
-    }
-    publish(event, activity, activityId);
+    publish(event, activity, activityId, titleId);
   }
 
-  private void publish(ProfileLifeCycleEvent event, ExoSocialActivity activity, String activityId) {
+  private void publish(ProfileLifeCycleEvent event, ExoSocialActivity activity, String activityId, String titleId) {
     Profile profile = event.getProfile();
     Identity identity = profile.getIdentity();
     try {
@@ -122,10 +116,17 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
         activityManager.saveActivityNoReturn(identity, activity);
         getStorage().updateProfileActivityId(identity, activity.getId(), Profile.AttachedActivityType.USER);
       } else { 
-        activityManager.updateActivity(activity);
         ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
         comment.setTitle(activity.getTitle());
         comment.setUserId(identity.getId());
+        if (POSITION_TITLE_ID.equals(titleId)) {
+          comment.setType(PeopleService.PEOPLE_APP_ID);
+          comment.setTitleId(titleId);
+          Map<String, String> templateParams = new LinkedHashMap<String, String>();
+          templateParams.put(USER_POSITION_PARAM, event.getProfile().getPosition());
+          templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_POSITION_PARAM);
+          comment.setTemplateParams(templateParams);
+        }
         activityManager.saveComment(activity, comment);
       }
     } catch (Exception e) {
