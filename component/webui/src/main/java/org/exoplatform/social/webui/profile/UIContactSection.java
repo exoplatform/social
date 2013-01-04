@@ -78,10 +78,10 @@ public class UIContactSection extends UIProfileSection {
   public static final String URL = "3url";
 
   /** MALE. */
-  public static final String VALUE_GENDER_MALE      = "male";
+  public static final String VALUE_GENDER_MALE      = "Male";
 
   /** FEMALE. */
-  public static final String VALUE_GENDER_FEMALE    = "female";
+  public static final String VALUE_GENDER_FEMALE    = "Female";
 
   /** PHONE_TYPES. */
   public static final String[] PHONE_TYPES = new String[] {"Work","Home","Other"};

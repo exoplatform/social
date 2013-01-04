@@ -624,6 +624,7 @@
 
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>

@@ -46,7 +46,7 @@ public class ProfileData implements CacheData<Profile> {
   private final String url;
 
   private final String avatarUrl;
-
+  
   public ProfileData(final Profile profile) {
     this.profileId = profile.getId();
     this.identityId = profile.getIdentity().getId();

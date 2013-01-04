@@ -22,6 +22,7 @@ import java.util.List;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -207,6 +208,24 @@ public interface IdentityStorage {
                                                                 Type type,
                                                                 long offset, long limit)
                                                                 throws IdentityStorageException;
-
-
+  
+  /**
+   * Updates profile activity id by type.
+   * 
+   * @param identity
+   * @param activityId
+   * @param type Type of activity id to get.
+   * @since 4.0.0.Alpha1
+   */
+  public void updateProfileActivityId(Identity identity, String activityId, AttachedActivityType type);
+  
+  /**
+   * Gets profile activity id by type.
+   * 
+   * @param profile
+   * @param type Type of activity id to get.
+   * @return Profile activity id.
+   * @since 4.0.0.Alpha1
+   */
+  public String getProfileActivityId(Profile profile, AttachedActivityType type);
 }

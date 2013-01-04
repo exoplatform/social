@@ -341,24 +341,8 @@
               <field name="activityKeyTypeMapping">
                 <map type="java.util.HashMap">
                   <entry>
-                    <key><string>avatar_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>basic_info_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>contact_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>experience_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>header_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.header_section_updated</string></value>
+                    <key><string>position_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.position_updated</string></value>
                   </entry>
                 </map>
               </field>
@@ -481,6 +465,7 @@
 
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>

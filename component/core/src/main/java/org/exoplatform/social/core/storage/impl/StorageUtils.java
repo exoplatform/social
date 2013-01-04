@@ -27,7 +27,9 @@ public class StorageUtils {
   public static final String SPACE_STR = " ";
   public static final String EMPTY_STR = "";
   public static final String SLASH_STR = "/";
-
+  public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
+  public static final String SOC_PREFIX = "soc:";
+  
   public static void applyFilter(final WhereExpression whereExpression, final ProfileFilter profileFilter) {
     //
     String inputName = profileFilter.getName().replace(ASTERISK_STR, PERCENT_STR);
@@ -152,4 +154,5 @@ public class StorageUtils {
                               append(path.replaceAll("%", "%25"));
     return encodedUrl.toString();
   }
+  
 }

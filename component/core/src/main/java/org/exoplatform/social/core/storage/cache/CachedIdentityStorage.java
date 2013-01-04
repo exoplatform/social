@@ -26,6 +26,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.profile.ProfileFilter;
@@ -474,4 +475,15 @@ public class CachedIdentityStorage implements IdentityStorage {
 
   }
 
+  public void updateProfileActivityId(Identity identity, String activityId, AttachedActivityType type) {
+    storage.updateProfileActivityId(identity, activityId, type);
+    //
+    IdentityKey key = new IdentityKey(new Identity(identity.getId()));
+    exoProfileCache.remove(key);
+    clearCache();
+  }
+
+  public String getProfileActivityId(Profile profile, AttachedActivityType type) {
+    return storage.getProfileActivityId(profile, type);
+  }
 }

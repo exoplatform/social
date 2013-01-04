@@ -60,6 +60,12 @@ public abstract class ProfileEntity {
   @OneToOne
   public abstract IdentityEntity getIdentity();
   public abstract void setIdentity(IdentityEntity identity);
+  
+  @MappedBy("soc:activityprofile")
+  @OneToOne
+  @Owner
+  public abstract ActivityProfileEntity getActivityProfile();
+  public abstract void setActivityProfile(ActivityProfileEntity entity);
 
   /**
    * The external URL of an identity who does not exist in the identities list of the Social providers,
@@ -80,7 +86,7 @@ public abstract class ProfileEntity {
   @Property(name = "soc:externalAvatarUrl")
   public abstract String getExternalAvatarUrl();
   public abstract void setExternalAvatarUrl(String avatarUrl);
-
+  
   /**
    * The parent Id is the identity Id. It is used for queries.
    * @return
@@ -127,6 +133,9 @@ public abstract class ProfileEntity {
 
   @Create
   public abstract ProfileXpEntity createXp();
+  
+  @Create
+  public abstract ActivityProfileEntity createActivityProfile();
 
   public List<String> getProperty(String key) {
     return getProperties().get(key);
@@ -135,7 +144,7 @@ public abstract class ProfileEntity {
   public void setProperty(String key, List<String> value) {
     getProperties().put(key, value);
   }
-
+  
   public String getPropertyFirst(String key) {
     List<String> value = getProperties().get(key);
     return (value.size() > 0 ? value.get(0) : null);
