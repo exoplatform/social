@@ -103,8 +103,9 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     //update header
     profile.setProperty(Profile.POSITION, "CEO");
     activity = updateProfile(profile);
+    List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
     assertNotNull(activity);
-    assertEquals("Position is now: "+profile.getPosition(), activity.getTitle());
+    assertEquals("Position is now: "+profile.getPosition(), comments.get(0).getTitle());
     
     //Number of comments must be 1
     assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
@@ -113,7 +114,8 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     profile.setProperty(Profile.EMAIL, "abc@gmail.com");
     activity = updateProfile(profile);
     assertNotNull(activity);
-    assertEquals("Basic informations has been updated.", activity.getTitle());
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Basic informations has been updated.", comments.get(1).getTitle());
     
     //Number of comments must be 2
     assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
@@ -122,7 +124,8 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     profile.setProperty(Profile.GENDER, "Male");
     activity = updateProfile(profile);
     assertNotNull(activity);
-    assertEquals("Contact informations has been updated.", activity.getTitle());
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Contact informations has been updated.", comments.get(2).getTitle());
     
     //Number of comments must be 3
     assertEquals(3, activityManager.getCommentsWithListAccess(activity).getSize());
@@ -131,7 +134,8 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     profile.setProperty(Profile.EXPERIENCES, new ArrayList<String>());
     activity = updateProfile(profile);
     assertNotNull(activity);
-    assertEquals("Experiences has been updated.", activity.getTitle());
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Experiences has been updated.", comments.get(3).getTitle());
     
     //Number of comments must be 4
     assertEquals(4, activityManager.getCommentsWithListAccess(activity).getSize());
@@ -143,7 +147,8 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     profile.setProperty(Profile.AVATAR, avatar);
     activity = updateProfile(profile);
     assertNotNull(activity);
-    assertEquals("Avatar has been updated.", activity.getTitle());
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Avatar has been updated.", comments.get(4).getTitle());
     
     //Number of comments must be 5
     assertEquals(5, activityManager.getCommentsWithListAccess(activity).getSize());
