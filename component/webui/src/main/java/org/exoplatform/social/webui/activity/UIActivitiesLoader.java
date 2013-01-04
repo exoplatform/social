@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.Random;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -144,10 +146,15 @@ public class UIActivitiesLoader extends UIContainer {
         activitiesContainer.setSpace(space);
       }
 
-      List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+      List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
       if (activityListAccess.getSize() > loadingCapacity) {
         setUnableLoadNext(false);
       }
+      
+      if (isShowActivities(space)) {
+        activities = loadActivities(currentLoadIndex, loadingCapacity);
+      }
+      
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -156,9 +163,13 @@ public class UIActivitiesLoader extends UIContainer {
 
   public void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
+    
+    if (isShowActivities(space)) {
+      activities = loadActivities(currentLoadIndex, loadingCapacity);
+    }
 
     if (activities.size()> 0) {
       if (activities.size() < loadingCapacity) {
@@ -186,6 +197,13 @@ public class UIActivitiesLoader extends UIContainer {
     if (activities == null)
       return null;
     return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+  }
+  
+  private boolean isShowActivities(Space space) {
+    if (space == null) return true;
+    
+    String remoteId = Util.getPortalRequestContext().getRemoteUser();
+    return Utils.getSpaceService().isMember(space, remoteId);
   }
 
 
