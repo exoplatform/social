@@ -102,7 +102,7 @@ blockquote {
 	float: right; /* orientation=lt */
 	float: left; /* orientation=rt */
 }
-
+/*
 .UIWorkingWorkspace .UIPageBody .VIEW-PAGEBODY {
 	padding: 0px;
 }
@@ -112,7 +112,7 @@ blockquote {
 	margin: auto;
 	width: 100%;
 }
-
+*/
 .UISocApplication .UISocTitleBar {
 	padding-bottom: 4px;
 	margin-top: 8px;
