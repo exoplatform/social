@@ -37,6 +37,9 @@
   def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar");
   def changePictureLabel = _ctx.appRes(uicomponent.getId() + ".label.ChangePicture");
   def saveLabel = _ctx.appRes(uicomponent.getId() + ".action.Save");
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiSpaceInfo">
   <% uiform.begin() %>

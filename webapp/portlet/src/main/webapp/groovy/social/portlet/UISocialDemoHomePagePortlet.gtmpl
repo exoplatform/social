@@ -33,6 +33,9 @@
   def titleTraining = _ctx.appRes("UISocialDemoHomePagePortlet.label.Training")
   def titleExoBlog = _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Blog")
   def titleExoWebsite = _ctx.appRes("UISocialDemoHomePagePortlet.label.eXo_Website")
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 
 <div class="UISocialHomepage ClearFix" id="$uicomponent.id">
