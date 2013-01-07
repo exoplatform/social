@@ -33,6 +33,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.UIAvatarUploadContent;
 import org.exoplatform.social.webui.UIAvatarUploader;
@@ -172,9 +173,9 @@ public class UISpaceInfo extends UIForm {
 
   public void saveAvatar(UIAvatarUploadContent uiAvatarUploadContent, Space space) throws Exception {
     SpaceService spaceService = getSpaceService();
-
     space.setAvatarAttachment(uiAvatarUploadContent.getAvatarAttachment());
     spaceService.updateSpace(space);
+    space.setEditor(Utils.getViewerRemoteId());
     spaceService.updateSpaceAvatar(space);
   }
 
@@ -248,8 +249,11 @@ public class UISpaceInfo extends UIForm {
 
       if (nameChanged) {
         space.setDisplayName(oldDisplayName);
+        space.setEditor(Utils.getViewerRemoteId());
         spaceService.renameSpace(space, name);
       } else {
+        space.setField(UpdatedField.DESCRIPTION);
+        space.setEditor(Utils.getViewerRemoteId());
         spaceService.updateSpace(space);
       }
       

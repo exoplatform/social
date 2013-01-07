@@ -21,7 +21,7 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-
+  
   <component>
    <key>org.exoplatform.portal.gadget.core.SecurityTokenGenerator</key>
    <type>org.exoplatform.social.opensocial.auth.ExoSocialSecurityTokenGenerator</type>
@@ -100,7 +100,7 @@
       <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
         <object-param>
-          <name>User Profile Activity</name>
+          <name>Space Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>SPACE_ACTIVITY</string></field>
@@ -116,11 +116,27 @@
       <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
         <object-param>
-          <name>User Profile Activity</name>
+          <name>Status Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
             <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
             <field name="name"><string>STATUS_ACTIVITY</string></field>
             <field name="component"><string>org.exoplatform.social.webui.activity.UIStatusActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>User Activities For Space</name>
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>USER_ACTIVITIES_FOR_SPACE</string></field>
+            <field name="component"><string>org.exoplatform.social.webui.activity.UIUserActivitiesForSpace</string></field>
             <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
           </object>
         </object-param>

@@ -133,10 +133,34 @@ public class Profile {
                                           return this.type;
                                         }
                                         public void setActivityId(ActivityProfileEntity entity, String activityId) {
-                                          entity.setUserProfileActivityId(activityId);
+                                          switch (this) {
+                                            case USER: {
+                                              entity.setUserProfileActivityId(activityId);
+                                            }
+                                            case SPACE: {
+                                              entity.setSpaceProfileActivityId(activityId);
+                                            }
+                                            case RELATION: {
+                                              entity.setRelationActivityId(activityId);
+                                            }
+                                            default :
+                                          }
                                         }
                                         public String getActivityId(ActivityProfileEntity entity) {
-                                          return entity.getUserProfileActivityId();
+                                          switch (this) {
+                                          case USER: {
+                                            return entity.getUserProfileActivityId();
+                                          }
+                                          case SPACE: {
+                                            return entity.getSpaceProfileActivityId();
+                                          }
+                                          case RELATION: {
+                                            return entity.getRelationActivityId();
+                                          }
+                                          default : {
+                                            return null;
+                                          }
+                                        }
                                         }
                                       };
   
