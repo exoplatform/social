@@ -1413,12 +1413,12 @@ public class SpaceServiceImpl implements SpaceService {
 
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceException {
-    
+    spaceStorage.updateSpaceAccessed(remoteId, space);
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(String remoteId, int limit) throws SpaceException {
-    
-    return null;
+  public List<Space> getSpaceLastedAccessed(String remoteId, String appId, int limit) throws SpaceException {
+    SpaceFilter filter = new SpaceFilter(remoteId, appId);
+    return spaceStorage.getSpaceLastedAccessed(filter, limit);
   }
 }

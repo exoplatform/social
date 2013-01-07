@@ -1604,55 +1604,29 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     Map<String, SpaceRef> mapRefs = listRef.getRefs();
     //
     List<Space> spaces = new ArrayList<Space>(mapRefs.size());
-    Space space = new Space();
+    Space space = null;
     
     //
+    int numberOfSpaces = 0;
     for(Map.Entry<String, SpaceRef> e : mapRefs.entrySet()) {
       SpaceRef ref = e.getValue();
       space = new Space();
       fillSpaceFromEntity(ref.getSpaceRef(), space);
-      spaces.add(space);
       
+      if (space.getApp().indexOf(filter.getAppId()) > 0) {
+        spaces.add(space);
+        numberOfSpaces++;
+      }
+      
+      //
+      if (numberOfSpaces == limit) {
+        break;
+      }
     }
-    
-    filter.setIncludeSpaces(spaces);
-    //call method to filter in JCR here
-
     return spaces;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
       return Collections.emptyList();
     }
   }
-  
-  private List<Space> getSpacesByFilterQuery(final SpaceFilter filter,
-                                                        final long offset, final long limit) {
-    
-    //
-    List<Space> found = new ArrayList<Space>();
-    if(filter.getIncludeSpaces().isEmpty()) return found ;
-    
-    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
-    WhereExpression whereExpression = new WhereExpression();
-    StorageUtils.applyWhereFromSpaces(whereExpression, filter.getIncludeSpaces());
-
-    //
-    StorageUtils.applyFilter(whereExpression, filter);
-
-    //
-    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString())
-                                               .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
-                                               .get().objects(offset, limit);
-    while(result.hasNext()) {
-      IdentityEntity current = result.next().getIdentity();
-      Identity i = new Identity(current.getProviderId(), current.getRemoteId());
-      i.setId(current.getId());
-      found.add(i);
-    }
-
-    //
-    return found;
-
-  }
-
 }
