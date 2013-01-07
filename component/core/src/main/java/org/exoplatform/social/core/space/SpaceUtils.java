@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.application.registry.ApplicationRegistryService;
+import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.chromattic.Synchronization;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -563,6 +565,18 @@ public class SpaceUtils {
     //Need to begin here for RequestLifeCycle.end(); if is not existing, an exception will be appeared. 
     RequestLifeCycle.begin(container);
   }
+  
+  /**
+   * end the request and push data to JCR.
+   */
+  public static void endSyn(boolean save) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);
+    Synchronization synchronization = manager.getSynchronization();
+    synchronization.setSaveOnClose(save);
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
+  }
   /**
    * Finds container by id
    *
@@ -899,9 +913,9 @@ public class SpaceUtils {
     NavigationService navService = (NavigationService) container.getComponentInstance(NavigationService.class);
     //14-june-2011 Apply UserNavigation
     //PageNavigation spaceNav;
-    NavigationContext navContext = null;
+    NavigationContext navContext = navService.loadNavigation(SiteKey.group(groupId));
     try {
-      if(navService.loadNavigation(SiteKey.group(groupId)) == null) {
+      if(navContext == null) {
         // creates new space navigation
         navContext = new NavigationContext(SiteKey.group(groupId), new NavigationState(1));
         navService.saveNavigation(navContext);

@@ -50,7 +50,6 @@ import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
-import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.portal.pom.spi.gadget.Gadget;
 import org.exoplatform.portal.pom.spi.portlet.Portlet;
@@ -413,10 +412,20 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     Page page = null;
     try {
       page = userPortalConfigService.createPageTemplate("space",
-              PortalConfig.GROUP_TYPE,
-              space.getGroupId());
+                                                        PortalConfig.GROUP_TYPE,
+                                                        space.getGroupId());
       page.setName(pageName);
       page.setTitle(pageTitle);
+      
+      //set permission for page
+      String visibility = space.getVisibility();
+      if (visibility.equals(Space.PUBLIC)) {
+        page.setAccessPermissions(new String[]{UserACL.EVERYONE});
+      } else {
+        page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
+      }
+      page.setEditPermission("manager:" + space.getGroupId());
+
       
       SiteKey siteKey = navContext.getKey();
       PageKey pageKey = new PageKey(siteKey, page.getName());
@@ -428,12 +437,16 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                                           page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions()) : null, 
                                           page.getEditPermission());
       
+      //setting some data to page.
+      setPage(space, app, gadgetApplication, portletApplication, page);
+      
       pageService.savePage(new PageContext(pageKey, pageState));
       dataStorage.save(page);
       page = dataStorage.getPage(page.getPageId());
-      //setting some data to page.
-      setPage(space, app, gadgetApplication, portletApplication, page);
-      dataStorage.save(page);
+      PageContext pageContext = pageService.loadPage(PageKey.parse(page.getPageId()));
+      pageContext.update(page);
+
+      addPortletPreferences(space, page);
     } catch (Exception e) {
       LOG.warn(e.getMessage(), e);
     }
@@ -499,16 +512,26 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
                        org.exoplatform.portal.config.model.Application<Gadget> gadgetApplication,
                        org.exoplatform.portal.config.model.Application<Portlet> portletApplication,
                        Page page) {
-    String visibility = space.getVisibility();
-    if (visibility.equals(Space.PUBLIC)) {
-      page.setAccessPermissions(new String[]{UserACL.EVERYONE});
-    } else {
-      page.setAccessPermissions(new String[]{"*:" + space.getGroupId()});
-    }
-    page.setEditPermission("manager:" + space.getGroupId());
-
+    
     ArrayList<ModelObject> pageChilds = page.getChildren();
 
+    //
+    Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
+    ArrayList<ModelObject> children = container.getChildren();
+    
+    if (app.getType() == ApplicationType.GADGET) {
+      children.add(gadgetApplication);
+    } else {
+      children.add(portletApplication);
+    }
+    container.setChildren(children);
+    pageChilds = setContainerById(pageChilds, container);
+    page.setChildren(pageChilds);
+    setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());
+  }
+  
+  private void addPortletPreferences(Space space, Page page) {
+    ArrayList<ModelObject> pageChilds = page.getChildren();
     Container menuContainer = SpaceUtils.findContainerById(pageChilds, SpaceUtils.MENU_CONTAINER);
     org.exoplatform.portal.config.model.Application<Portlet> menuPortlet =
             (org.exoplatform.portal.config.model.Application<Portlet>) menuContainer.getChildren()
@@ -526,18 +549,6 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     } catch (Exception e) {
       LOG.warn("Failed to setPage", e);
     }
-
-    Container container = SpaceUtils.findContainerById(pageChilds, SpaceUtils.APPLICATION_CONTAINER);
-    ArrayList<ModelObject> children = container.getChildren();
-    if (app.getType() == ApplicationType.GADGET) {
-      children.add(gadgetApplication);
-    } else {
-      children.add(portletApplication);
-    }
-    container.setChildren(children);
-    pageChilds = setContainerById(pageChilds, container);
-    page.setChildren(pageChilds);
-    setPermissionForPage(page.getChildren(), "*:" + space.getGroupId());
   }
 
   /**
