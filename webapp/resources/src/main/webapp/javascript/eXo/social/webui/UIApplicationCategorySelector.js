@@ -1,4 +1,4 @@
-(function($, webui) { 
+(function($, Selectors) { 
 var UIApplicationCategorySelector = {
   init: function(params) {
 	  var applicationCategoryIds = (params.applicationCategoryIds.replace('[','').replace(']','')).split(',');
@@ -7,11 +7,11 @@ var UIApplicationCategorySelector = {
     if(applicationCategoryIds != null) {
 	    for ( var i = 0; i < allApplicationCategorySize; i++ ) {
         $('#' + applicationCategoryIds[i]).on('mouseover', function(evt){
-	        webui.UIItemSelector.onOver(this, true);
+          Selectors.UIItemSelector.onOver(this, true);
         });
 
         $("#" + applicationCategoryIds[i]).on('mouseout', function(evt){
-          webui.UIItemSelector.onOver(this, false);
+          Selectors.UIUserSelector.onOver(this, false);
         });
 	    }
     }
@@ -19,4 +19,4 @@ var UIApplicationCategorySelector = {
 };
 
 return UIApplicationCategorySelector;
-})($, webui);
+})($, selector);

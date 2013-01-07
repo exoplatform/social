@@ -229,8 +229,8 @@
        <module>base</module>
     </depends>
     <depends>
-      <module>webui</module>
-      <as>webui</as>
+      <module>selectors</module>
+      <as>selector</as>
     </depends>
   </module>
   
