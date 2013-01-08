@@ -307,7 +307,7 @@ public class SpacesRestService implements ResourceContainer {
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest/social/spaces/spaceLastVisited/list.json?appId=Wiki&limit=10
+   * GET: http://localhost:8080/rest/private/social/spaces/spaceLastVisited/list.json?appId=Wiki&limit=10
    *{code}
    * @response
    *{code:json}
