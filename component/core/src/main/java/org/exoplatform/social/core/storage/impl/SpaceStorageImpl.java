@@ -22,7 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +37,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
@@ -45,9 +45,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -1576,24 +1574,24 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
       SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
       Map<String, SpaceRef> mapRefs = listRef.getRefs();
-      Map<String, SpaceRef> sortMap = new LinkedHashMap<String, SpaceRef>();
+      
       SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
+
       if (mapRefs.containsKey(spaceEntity.getName())) {
-        SpaceRef ref = mapRefs.get(spaceEntity.getName());
-        mapRefs.remove(spaceEntity.getName());
-        sortMap.put(spaceEntity.getName(), ref);
+        getSession().remove(mapRefs.get(spaceEntity.getName()));
       }
       
-      for(Map.Entry<String, SpaceRef> e : mapRefs.entrySet()) {
-        sortMap.put(e.getKey(), e.getValue());
+      SpaceRef ref = listRef.getRef(spaceEntity.getName());
+      if (!ref.getName().equals(spaceEntity.getName())) {
+        ref.setName(spaceEntity.getName());
       }
-      
-      listRef.setRefs(sortMap);
+      ref.setSpaceRef(spaceEntity);
+
       getSession().save();
+      
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
     }
-    
   }
 
   @Override
@@ -1603,18 +1601,25 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
     Map<String, SpaceRef> mapRefs = listRef.getRefs();
     //
-    List<Space> spaces = new ArrayList<Space>(mapRefs.size());
+    List<SpaceRef> spaces = new LinkedList<SpaceRef>();
     Space space = null;
     
     //
     int numberOfSpaces = 0;
-    for(Map.Entry<String, SpaceRef> e : mapRefs.entrySet()) {
-      SpaceRef ref = e.getValue();
+    Iterator<SpaceRef> it = mapRefs.values().iterator();
+    while(it.hasNext()) {
+      spaces.add(it.next());
+    }
+    
+    Collections.reverse(spaces);
+    
+    List<Space> got = new LinkedList<Space>();
+    for(SpaceRef ref : spaces) {
       space = new Space();
       fillSpaceFromEntity(ref.getSpaceRef(), space);
       
       if (space.getApp().indexOf(filter.getAppId()) > 0) {
-        spaces.add(space);
+        got.add(space);
         numberOfSpaces++;
       }
       
@@ -1623,7 +1628,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         break;
       }
     }
-    return spaces;
+    
+    return got;
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
       return Collections.emptyList();

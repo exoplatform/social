@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -170,6 +172,35 @@ public class SpacesRestService implements ResourceContainer {
     spaceList.setSpaces(mySpacesRest);
     return spaceList;
   }
+  
+  /**
+   * get my spaceList by userId which user is last visited
+   * 
+   * @param userId
+   * @param appId
+   * @param limit
+   * @return
+   */
+  private SpaceList getMySpacesLastVisited(String userId, String appId, int limit) {
+    SpaceList spaceList = new SpaceList();
+    _spaceService = getSpaceService();
+    List<Space> mySpaces = null;
+    
+    
+    try {
+      mySpaces = _spaceService.getSpaceLastedAccessed(userId, appId, limit);
+      SpaceRest spaceRest;
+      for (Space space : mySpaces) {
+        spaceRest = new SpaceRest(space);
+        spaceList.addSpace(spaceRest);
+      }
+    } catch (SpaceException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return spaceList;
+  }
 
   /**
    * shows pending spaceList by userId
@@ -258,6 +289,41 @@ public class SpacesRestService implements ResourceContainer {
     SpaceList mySpaceList = showMySpaceList(userId);
     
     this.fillUrlAllSpaces(mySpaceList, portalName);
+    return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  /**
+   * shows getMySpaceLastVisited by json/xml format
+   *
+   * @param uriInfo provided as {@link Context}
+   * @param userId
+   * @param format
+   * @return response
+   * @throws Exception
+   */
+  @GET
+  @Path("spaceLastVisited/list.{format}")
+  public Response getMySpaceLastVisited(@Context UriInfo uriInfo,
+                                  @PathParam("portalName") String portalName,
+                                  @PathParam("format") String format,
+                                  @QueryParam("appId") String appId,
+                                  @QueryParam("limit") int limit) throws Exception {
+    MediaType mediaType = Util.getMediaType(format, new String[]{format});
+    ConversationState state = ConversationState.getCurrent();
+    portalContainerName = portalName;
+    
+    String userId = null;
+    if (state != null) {
+      userId = state.getIdentity().getUserId();
+    } 
+    
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    if (identity == null) {
+      userId = Util.getViewerId(uriInfo);
+    }
+    
+    int newLimit = Math.min(limit, 10);
+    SpaceList mySpaceList = getMySpacesLastVisited(userId, appId, newLimit);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
@@ -370,7 +436,7 @@ public class SpacesRestService implements ResourceContainer {
      */
     public void addSpace(SpaceRest space) {
       if (_spaces == null) {
-        _spaces = new ArrayList<SpaceRest>();
+        _spaces = new LinkedList<SpaceRest>();
       }
       _spaces.add(space);
     }

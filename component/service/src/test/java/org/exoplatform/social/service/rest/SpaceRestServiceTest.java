@@ -14,27 +14,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.core.feature;
+package org.exoplatform.social.service.rest;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.test.AbstractCoreTest;
+import org.exoplatform.social.service.rest.SpacesRestService.SpaceList;
+import org.exoplatform.social.service.test.AbstractResourceTest;
 
 /**
  * Created by The eXo Platform SAS
  * Author : thanh_vucong
  *          thanh_vucong@exoplatform.com
- * Jan 7, 2013  
+ * Jan 8, 2013  
  */
-public class SpaceLastVisitedTest extends AbstractCoreTest {
-  private SpaceService spaceService;
+public class SpaceRestServiceTest extends AbstractResourceTest {
+  static private SpaceService spaceService;
+  
   private IdentityStorage identityStorage;
   
   private List<Space> tearDownSpaceList;
@@ -44,10 +47,9 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
   private Identity maryIdentity;
   private Identity demoIdentity;
 
-  @Override
-  protected void setUp() throws Exception {
+  public void setUp() throws Exception {
     super.setUp();
-
+    addResource(SpacesRestService.class, null);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     tearDownSpaceList = new ArrayList<Space>();
@@ -72,9 +74,7 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     assertNotNull(demoIdentity.getId());
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    
+  public void tearDown() throws Exception {
     for (Space space : tearDownSpaceList) {
       Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
       if (spaceIdentity != null) {
@@ -87,11 +87,14 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     identityStorage.deleteIdentity(johnIdentity);
     identityStorage.deleteIdentity(maryIdentity);
     identityStorage.deleteIdentity(demoIdentity);
-
+    
     super.tearDown();
+    removeResource(SpacesRestService.class);
   }
   
-  public void testGet10SpaceLastVisited() throws Exception {
+  //
+  private void populateData() throws Exception {
+    //make testdata
     int numberOfSpaces = 10;
     String apps = "";
     Space s = null;
@@ -101,17 +104,37 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
       tearDownSpaceList.add(s);
     }
     List<Space> spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
-    
     assertEquals(5, spaces.size());
+  }
+
+  public void testGetSpacesLastVisited() throws Exception {
+    //
+    startSessionAs("mary");
+    
+    populateData();
+    //
+    ContainerResponse response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    SpaceList list = (SpaceList) response.getEntity();
+    assertNotNull(list);
+    assertEquals(5, list.getSpaces().size());
     
     //
     Space space4 = spaceService.getSpaceByPrettyName("space_4");
     assertNotNull(space4);
     spaceService.updateSpaceAccessed("mary", space4);
-    spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
+    List<Space> spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
     assertEquals("space_4", got.getPrettyName());
+    
+    response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    SpaceList gotList = (SpaceList) response.getEntity();
+    assertNotNull(gotList);
+    List<SpaceRest> myList = gotList.getSpaces();
+    SpaceRest sRest = myList.get(0);
+    assertEquals("space_4", sRest.getName());
     
     //
     Space space2 = spaceService.getSpaceByPrettyName("space_2");
@@ -122,7 +145,16 @@ public class SpaceLastVisitedTest extends AbstractCoreTest {
     got = spaces.get(0);
     assertEquals("space_2", got.getPrettyName());
     
-    
+    response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    gotList = (SpaceList) response.getEntity();
+    assertNotNull(gotList);
+    myList = gotList.getSpaces();
+    sRest = myList.get(0);
+    assertEquals("space_2", sRest.getName());
+
+    //
+    endSession();
   }
   
   /**
