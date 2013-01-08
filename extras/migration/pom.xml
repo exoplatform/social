@@ -43,6 +43,11 @@
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-common</artifactId>
     </dependency>
+    <dependency>
+      <artifactId>exo.tool.framework.junit</artifactId>
+      <groupId>org.exoplatform.tool</groupId>
+      <scope>test</scope>
+    </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>

@@ -102,7 +102,7 @@
     <org.gatein.shindig.version>2.0.2-CP01</org.gatein.shindig.version>
     <org.gatein.wci.version>2.1.0-GA</org.gatein.wci.version>
     <!-- Juzu version is required to create the assembly -->
-    <org.juzu.version>0.5.1</org.juzu.version>
+    <org.juzu.version>0.6.0-beta2</org.juzu.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -121,6 +121,31 @@
         <version>${org.exoplatform.commons.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-testing</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-api</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-common</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-webui-ext</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-webui-component</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <!-- To be replaced by an import of core parent POM -->
       <dependency>
@@ -686,6 +711,20 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
+      <!--
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-juzu-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-juzu-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      -->
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extension-config</artifactId>
@@ -876,25 +915,18 @@
       </dependency>
       <dependency>
         <groupId>org.juzu</groupId>
-        <artifactId>juzu-builder</artifactId>
+        <artifactId>juzu-bom-core</artifactId>
         <version>${org.juzu.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.juzu</groupId>
         <artifactId>juzu-core</artifactId>
         <version>${org.juzu.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.juzu</groupId>
+        <artifactId>juzu-plugins-portlet</artifactId>
+        <version>${org.juzu.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
