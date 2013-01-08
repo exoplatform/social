@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.service.rest;
 
+import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticatedRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -292,14 +294,32 @@ public class SpacesRestService implements ResourceContainer {
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
   
+ 
   /**
-   * shows getMySpaceLastVisited by json/xml format
+   * Provides a way to get last n space ordered by last access and be able to filter on containing application
+   * of the authenticated user identity who makes this request.
    *
-   * @param uriInfo provided as {@link Context}
-   * @param userId
-   * @param format
-   * @return response
-   * @throws Exception
+   * @param uriInfo             The URI information.
+   * @param portalContainerName The portal container name.
+   * @param format              The response format type, for example: JSON, or XML.
+   * @param limit               Specify the number of spaces to retrieve. It must be less than or equal to 10.
+   * @param appId               AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   * @authenticated
+   * @request
+   *{code}
+   * GET: http://localhost:8080/rest/social/spaces/spaceLastVisited/list.json?appId=Wiki&limit=10
+   *{code}
+   * @response
+   *{code:json}
+   * {
+   * "spaces":[
+   *        {"groupId":"/spaces/space_2","spaceUrl":null,"name":"space_2","displayName":"space 2","url":"space_2"},
+   *        {"groupId":"/spaces/space_1","spaceUrl":null,"name":"space_1","displayName":"space 1","url":"space_1"}
+   *       ],
+   * "moreSpacesUrl":null
+   * }
+   *{code}
+   * @return the response
    */
   @GET
   @Path("spaceLastVisited/list.{format}")
@@ -308,6 +328,8 @@ public class SpacesRestService implements ResourceContainer {
                                   @PathParam("format") String format,
                                   @QueryParam("appId") String appId,
                                   @QueryParam("limit") int limit) throws Exception {
+    checkAuthenticatedRequest();
+    
     MediaType mediaType = Util.getMediaType(format, new String[]{format});
     ConversationState state = ConversationState.getCurrent();
     portalContainerName = portalName;

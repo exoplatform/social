@@ -1618,7 +1618,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       space = new Space();
       fillSpaceFromEntity(ref.getSpaceRef(), space);
       
-      if (space.getApp().indexOf(filter.getAppId()) > 0) {
+      if (space.getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
         got.add(space);
         numberOfSpaces++;
       }
