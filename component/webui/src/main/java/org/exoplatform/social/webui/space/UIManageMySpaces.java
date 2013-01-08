@@ -293,7 +293,7 @@ public class UIManageMySpaces extends UIContainer {
     String charSearch = uiSpaceSearch.getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
-      setMySpacesListAccess(getSpaceService().getAccessibleSpacesWithListAccess(getUserId()));
+      setMySpacesListAccess(getSpaceService().getMemberSpaces(getUserId()));
     } else {
       SpaceFilter spaceFilter = null;
       if (charSearch != null) {
@@ -301,7 +301,7 @@ public class UIManageMySpaces extends UIContainer {
       } else {
         spaceFilter = new SpaceFilter(searchCondition);
       }
-      setMySpacesListAccess(getSpaceService().getAccessibleSpacesByFilter(getUserId(), spaceFilter));
+      setMySpacesListAccess(getSpaceService().getMemberSpacesByFilter(getUserId(), spaceFilter));
 
     }
     

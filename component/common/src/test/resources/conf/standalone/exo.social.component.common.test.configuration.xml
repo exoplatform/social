@@ -145,5 +145,93 @@
         </value-param>
       </init-params>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.router.ExoRouter</key>
+    <type>org.exoplatform.social.common.router.ExoRouter</type>
+    <component-plugins>
+      <component-plugin>
+        <name>addRoutes</name>
+        <set-method>addRoutes</set-method>
+        <type>org.exoplatform.social.common.router.ExoRouterConfig</type>
+        <init-params>
+          <object-param>
+            <name>uri.configuration</name>
+            <description>defines action name which associate with uri pattern.</description>
+            <object type="org.exoplatform.social.common.router.ExoRouterConfig">
+              <field name="routeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>activity.show</string></key>
+                    <value><string>/activity/{activityID}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space.access</string></key>
+                    <value><string>{spacePrettyName}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space.app.access</string></key>
+                    <value><string>{spacePrettyName}/{appName}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space.app.page.access</string></key>
+                    <value><string><![CDATA[{spacePrettyName}/{appName}/{<.*>page}]]></string></value>
+                  </entry>
+                  <entry>
+                    <key><string>forum.home</string></key>
+                    <value><string>/{pageID}/ForumService</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>forum.search</string></key>
+                    <value><string>/{pageID}/SearchForum</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>forum.tag</string></key>
+                    <value><string>/{pageID}/Tag</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>forum.topic.show</string></key>
+                    <value><string>/{pageID}/topic/{topicID}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>forum.topic.reply</string></key>
+                    <value><string>/{pageID}/topic/{topicID}/reply</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.topic.reply</string></key>
+                    <value><string>/{pageID}/topic/{topicID}/reply</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.topic.quote</string></key>
+                    <value><string>/{pageID}/topic/{topicID}/quote</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.topic.post.show</string></key>
+                    <value><string>/{pageID}/topic/{topicID}/post/{postID}</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.topic.page</string></key>
+                    <value><string>/{pageID}/topic/{topicID}/page/{pageNo}</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.show</string></key>
+                    <value><string>/{pageID}/forum/{forumID}</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>forum.show.page</string></key>
+                    <value><string>/{pageID}/forum/{forumID}/page/{pageNo}</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>category.show</string></key>
+                    <value><string>/{pageID}/category/{categoryID}</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>    
+    </component-plugins>   
+  </component>
 
 </configuration>
