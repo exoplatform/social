@@ -617,6 +617,7 @@ public class UISpaceMember extends UIForm {
                                                 ApplicationMessage.WARNING));
         return;
       }
+      space.setEditor(Utils.getViewerRemoteId());
       spaceService.setManager(space, userName, false);
       if (!useAjax) { // self remove.
         prContext = Util.getPortalRequestContext();
@@ -646,6 +647,7 @@ public class UISpaceMember extends UIForm {
 
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      space.setEditor(Utils.getViewerRemoteId());
       spaceService.setManager(space, userName, true);
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
     }

@@ -35,6 +35,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
+import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
@@ -182,7 +183,8 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
-    recordActivity(event, activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
+    
+    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.GRANTED_LEAD), activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been promoted as space's manager " + space.getDisplayName());
   }
 
@@ -215,11 +217,12 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void revokedLead(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
     final String activityMessage = "@" + event.getTarget() + " has been revoked as space's manager.";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
-    recordActivity(event, activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
+    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.REVOKED_LEAD), activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been revoked as space's manage "
             + event.getSpace().getDisplayName());
   }

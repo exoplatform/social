@@ -123,6 +123,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
   */
  public void testSpaceUpdated() throws Exception {
    Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+   Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
 
    Space space = new Space();
    space.setDisplayName("Toto");
@@ -171,6 +172,32 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    ExoSocialActivity newActivity = activityManager.getActivity(activityId);
    //Number of comments must be 0
    assertEquals(0, activityManager.getCommentsWithListAccess(newActivity).getSize());
+   
+   { // test case for grant or revoke manage role of users
+     String[] spaceManagers = new String[] {"root"};
+     String[] spaceMembers = new String[] {"demo"};
+     space.setField(null);
+     space.setManagers(spaceManagers);
+     space.setMembers(spaceMembers);
+     space.setEditor("root");
+     
+     spaceService.setManager(space, "demo", true);
+     
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     
+     assertEquals(1, activityManager.getCommentsWithListAccess(newActivity).getSize());
+     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been promoted as space's manager.", comments.get(0).getTitle());
+     assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(0).getUserId());
+     
+     //
+     spaceService.setManager(space, "demo", false);
+     
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     
+     assertEquals(2, activityManager.getCommentsWithListAccess(newActivity).getSize());
+     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been revoked as space's manager.", comments.get(1).getTitle());
+     assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(1).getUserId());
+   }
    //clean up
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
