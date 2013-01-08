@@ -915,7 +915,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     accessibleSpaces = spaceService.getAccessibleSpaces("root");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
-    assertEquals("accessibleSpaces.size() must return: " + count, count, accessibleSpaces.size());
+    assertEquals("accessibleSpaces.size() must return: " + 0, 0, accessibleSpaces.size());
 
     accessibleSpaces = spaceService.getAccessibleSpaces("dragon");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
@@ -950,7 +950,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
 
     accessibleSpaces = spaceService.getAccessibleSpacesWithListAccess("root");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
-    assertEquals("accessibleSpaces.getSize() must return: " + count, count, accessibleSpaces.getSize());
+    assertEquals("accessibleSpaces.getSize() must return: " + 0, 0, accessibleSpaces.getSize());
 
     accessibleSpaces = spaceService.getAccessibleSpacesWithListAccess("dragon");
     assertNotNull("accessibleSpaces must not be null", accessibleSpaces);
