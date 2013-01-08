@@ -212,6 +212,8 @@ public class UISpaceInfo extends UIForm {
       String name = uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).getValue();
       Space space = spaceService.getSpaceById(id);
       String oldDisplayName = space.getDisplayName();
+      String existingDescription = space.getDescription();
+      
       if (space == null) {
         //redirect to spaces
         portalRequestContext.getResponse().sendRedirect(Utils.getURI("all-spaces"));
@@ -245,15 +247,17 @@ public class UISpaceInfo extends UIForm {
         uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(space.getDescription());
       } else {
         space.setDescription(StringEscapeUtils.escapeHtml(space.getDescription()));
+        if (!existingDescription.equals(spaceDescription)) {
+          space.setField(UpdatedField.DESCRIPTION);  
+        }
       }
 
+      space.setEditor(Utils.getViewerRemoteId());
+      
       if (nameChanged) {
         space.setDisplayName(oldDisplayName);
-        space.setEditor(Utils.getViewerRemoteId());
         spaceService.renameSpace(space, name);
       } else {
-        space.setField(UpdatedField.DESCRIPTION);
-        space.setEditor(Utils.getViewerRemoteId());
         spaceService.updateSpace(space);
       }
       

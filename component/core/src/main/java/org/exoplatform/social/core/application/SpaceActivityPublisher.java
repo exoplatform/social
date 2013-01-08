@@ -313,7 +313,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   private void recordActivityForUserSpace(SpaceLifeCycleEvent event, String userSpaceActivityMessage, String titleId,
                               Map<String, String> templateParams) {
-    Space space = event.getSpace();
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(identity.getProfile(), Profile.AttachedActivityType.RELATION);
     ExoSocialActivity activity = new ExoSocialActivityImpl();

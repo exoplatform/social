@@ -137,6 +137,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
    String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
    ExoSocialActivity activity = activityManager.getActivity(activityId);
+   tearDownActivityList.add(activity);
    //Number of comments must be 0
    assertEquals(0, activityManager.getCommentsWithListAccess(activity).getSize());
    space.setEditor(rootIdentity.getRemoteId());
@@ -167,9 +168,11 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    activityManager.deleteActivity(activityId);
    assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
    
+   space.setField(null);
    spaceService.renameSpace(space, "SocialTeam");
    activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
    ExoSocialActivity newActivity = activityManager.getActivity(activityId);
+   tearDownActivityList.add(newActivity);
    //Number of comments must be 0
    assertEquals(0, activityManager.getCommentsWithListAccess(newActivity).getSize());
    
@@ -198,6 +201,21 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been revoked as space's manager.", comments.get(1).getTitle());
      assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(1).getUserId());
    }
+   
+   {// update both name and description
+     assertEquals("social's team", space.getDescription());
+     
+     String newDescription = "new description";
+     space.setDescription(newDescription);
+     space.setField(UpdatedField.DESCRIPTION);
+     String newDisplayName = "newSpaceName";
+     spaceService.renameSpace(space, newDisplayName);
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     assertEquals(4, comments.size());
+     assertEquals("Description has been updated to: " + space.getDescription(), comments.get(2).getTitle());
+     assertEquals("Name has been updated to: " + space.getDisplayName(), comments.get(3).getTitle());
+   }
+   
    //clean up
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
