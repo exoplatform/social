@@ -268,6 +268,8 @@
       var strReg = settings.triggerChar + currentDataQuery;
       if(currentMessage.indexOf(strReg) === 0) {
         strReg = "\\"+strReg;
+      } else if(currentMessage.indexOf('>'+strReg) > 0) {
+        strReg = "\\>"+strReg;
       } else {
         strReg = "\\ "+strReg;
       }
@@ -480,13 +482,12 @@
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, after);
           if (indexChanged > 0) {
             var val = after.substring(indexChanged - 1, indexChanged);
-            var isRun = (val === ' ') || (val === '') || (val === '&nbsp;');
+            var isRun = (val === ' ') || (val === '') || (val === '&nbsp;') || (val === '>');
             if (!isRun) {
               return;
             }
           }
         }
-
         currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
         // fix bug firefox auto added <br> last text.
         currentDataQuery = utils.removeLastBr(currentDataQuery);
@@ -501,6 +502,10 @@
       var keyCode = (e.which || e.keyCode);
       if (keyCode !== KEY.BACKSPACE) {
         var typedValue = String.fromCharCode(keyCode);
+        if(keyCode === KEY.RETURN) {
+          inputBuffer = [];
+          typedValue = ' ';
+        }
         inputBuffer.push(typedValue);
         if (utils.isIE) {
           onInputBoxInput(e);
