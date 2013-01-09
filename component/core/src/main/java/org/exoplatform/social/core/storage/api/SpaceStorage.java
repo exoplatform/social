@@ -238,6 +238,16 @@ public interface SpaceStorage {
    * @since 1.2.0-GA
    */
   public int getPublicSpacesCount(String userId) throws SpaceStorageException;
+  
+  /**
+   * Gets the count of the spaces is not hidden which user is member.
+   *
+   * @param userId
+   * @return the count of the spaces in which the user can request to join
+   * @throws SpaceStorageException
+   * @since 4.0.0.Alpha1
+   */
+  public int getSpacesOfMemberCount(String userId) throws SpaceStorageException;
 
   /**
    * Gets the count of the public spaces of the user by space filter.

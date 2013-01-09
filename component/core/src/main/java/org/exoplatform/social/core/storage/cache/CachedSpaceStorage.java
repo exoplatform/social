@@ -1142,5 +1142,23 @@ public class CachedSpaceStorage implements SpaceStorage {
     }
     
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getSpacesOfMemberCount(final String userId) throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(userId, null, SpaceType.PUBLIC);
+
+    //
+    return spacesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getSpacesOfMemberCount(userId));
+          }
+        },
+        key)
+        .build();
+  }
 }
 

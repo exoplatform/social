@@ -129,6 +129,7 @@
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
     ownerName = profile.fullName;
+    ownerSpaces = Utils.getSpaceService().getMemberSpaces(ownerIdentity.getRemoteId());
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else if(uicomponent.isSpaceActivity()){
     Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
@@ -164,7 +165,7 @@
       <%}%>
       </h5>
       <div class="Content">
-        I now member of xXx spaces.
+        $activity.title
       </div>
       <div class="DefaultActivityIcon">
       <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
