@@ -438,9 +438,6 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void renameSpace(Space space, String newDisplayName) {
     spaceStorage.renameSpace(space, newDisplayName);
-    if (UpdatedField.DESCRIPTION.equals(space.getField())) {
-      spaceLifeCycle.spaceDescriptionEdited(space, space.getEditor());
-    }
     spaceLifeCycle.spaceRenamed(space, space.getEditor());
   }
   

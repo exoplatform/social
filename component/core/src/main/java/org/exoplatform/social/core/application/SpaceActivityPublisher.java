@@ -34,6 +34,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -255,6 +256,11 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DISPLAY_NAME_PARAM);
     recordActivity(event, activityMessage, SPACE_RENAMED_TITLE_ID, templateParams);
     LOG.debug("Name has been updated ");
+    
+    // Update description at the same time of rename space
+    if (UpdatedField.DESCRIPTION.equals(event.getSpace().getField())) {
+      spaceDescriptionEdited(event);
+    }
   }
 
   /**

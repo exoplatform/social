@@ -217,8 +217,8 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      spaceService.renameSpace(space, newDisplayName);
      comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
      assertEquals(4, comments.size());
-     assertEquals("Description has been updated to: " + space.getDescription(), comments.get(2).getTitle());
-     assertEquals("Name has been updated to: " + space.getDisplayName(), comments.get(3).getTitle());
+     assertEquals("Name has been updated to: " + space.getDisplayName(), comments.get(2).getTitle());
+     assertEquals("Description has been updated to: " + space.getDescription(), comments.get(3).getTitle());
    }
    
    //clean up
