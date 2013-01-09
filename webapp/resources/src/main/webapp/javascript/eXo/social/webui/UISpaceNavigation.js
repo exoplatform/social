@@ -35,7 +35,10 @@ var UISpaceNavigation = {
       'class' : 'dropdown-toggle',
       'data-toggle' : 'dropdown'
     }).append($('<b/>', {
-               'text' : '[  +  ]'
+               'text' : '+'
+             }))
+      .append($('<span/>', {
+               'text' : 'More'
              }));
 
     var dropDown = $('<li/>', {
