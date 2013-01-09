@@ -18,6 +18,7 @@
     UP : 38,
     RIGHT : 39,
     DOWN : 40,
+    DELETE : 46,
     MENTION : 64,
     COMMA : 188,
     SPACE : 32,
@@ -418,7 +419,6 @@
     }
 
     function onInputBoxPaste(e) {
-      log('onInputBoxPaste');
       var before = $.trim(elmInputBox.value());
       elmInputBox.animate({
         'cursor' : 'wait'
@@ -442,7 +442,6 @@
     }
 
     function onInputBoxClick(e) {
-      log('onInputBoxClick');
       if(elmAutocompleteList.find('li').length > 0) {
         setCaratPosition(elmInputBox);
         showDropdown();
@@ -452,7 +451,6 @@
     }
 
     function onInputBoxBlur(e) {
-      log('onInputBoxBlur');
       hideAutoComplete(false);
       if(elmAutocompleteList.find('li').length > 0) {
         elmInputBox.find('.cursorText').remove();
@@ -475,8 +473,7 @@
     }
 
     function onInputBoxInput(e) {
-      if(isInput) return;
-      log('onInputBoxInput');
+      if(isInput) {return;
       isInput = true;
       updateValues();
       updateMentionsCollection();
@@ -505,9 +502,8 @@
     }
 
     function onInputBoxKeyPress(e) {
-      log('onInputBoxKeyPress');
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT) {
+      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT&& keyCode !== KEY.DELETE) {
         var typedValue = String.fromCharCode(keyCode);
         if(keyCode === KEY.RETURN) {
           inputBuffer = [];
@@ -523,7 +519,6 @@
 
     function onInputBoxKeyDown(e) {
       isInput = false;
-      log('onInputBoxKeyDown');
       // Run without IE
       if (String.fromCharCode(e.which || e.keyCode) === settings.triggerChar) {
         //onInputBoxInput(e);
@@ -544,14 +539,8 @@
         return;
       }
 
-      if (e.keyCode == KEY.SPACE && 
-          ((elmAutocompleteList.find('li.msg').length > 0) || (isBlockMenu === false) || 
-             (inputBuffer[inputBuffer.length-1] === ' '))) {
-        inputBuffer = [];
-      }
-
       if (e.keyCode == KEY.BACKSPACE) {
-        inputBuffer.splice((inputBuffer.length - 1), 1);
+        //inputBuffer.splice((inputBuffer.length - 1), 1);
         if (utils.isIE) {
           if (inputBuffer.length > 1 || (inputBuffer.length == 1 && utils.brVersion < 9)) {
             onInputBoxInput();
@@ -614,31 +603,15 @@
       return true;
     }
 
-    function hasTriggerChar(val) {
-      //
-      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
-        var chs = [];
-        for ( var i = val.length - 1; i >= 0; --i) {
-          if (val[i] === ' ' || val[i] === '&nbsp;') {
-            return false;
-          } else if (val[i] == settings.triggerChar) {
-            if (i > 0 && (val[i - 1] === ' ' || val[i - 1] === '&nbsp;') || i === 0) {
-              chs.splice(0, 0, settings.triggerChar);
-              return chs;
-            }
-          } else {
-            chs.splice(0, 0, val[i]);
-          }
-        }
-      }
-      return false;
-    }
-
     function onInputBoxKeyUp(e) {
-
+      if(utils.isIE) {
+        isInput = false;
+      }
       checkRemoveMoreOneText(e);
 
       backspceBroswerFix(e);
+
+      onInputBoxInput();
 
       checkAutoAddLink(e);
 
@@ -649,59 +622,99 @@
       }
       //
     }
-    
+
     function checkRemoveMoreOneText(e) {
       var currentValue = elmInputBox.value();
       var delta = valueBeforMention.length - currentValue.length;
-      var isBackKey = (e.keyCode === KEY.BACKSPACE);
+      var isBackKey = (e.keyCode === KEY.BACKSPACE || e.keyCode === KEY.DELETE);
+      var isReset = true;
 
-      if(delta > 1 && (isBlockMenu === true) && isBackKey === false || (delta == 1 && isBackKey)) {
-          triggerOninputMention(valueBeforMention, currentValue);
-      } else if(isBackKey === true) {
-        
+      if (delta > 1 && (isBlockMenu === true) || (isBlockMenu === false && delta == 1 && isBackKey)) {
+        triggerOninputMention(valueBeforMention, currentValue);
+        isReset = false;
+      } else if (isBackKey === true) {
         var textSizeMention = 63;
         if (delta > textSizeMention && !utils.isFirefox) {
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
-          if (indexChanged >= 0 && $.trim(valueBeforMention.substr(indexChanged)).toLowerCase().indexOf('<span') === 0) {
+          if (indexChanged >= 0 && 
+                    $.trim(valueBeforMention.substr(indexChanged)).toLowerCase().indexOf('<span') === 0) {
             currentValue = insertCursorText(currentValue, indexChanged, true);
             elmInputBox.val(currentValue);
             autoSetKeyCode(elmInputBox);
             setCaratPosition(elmInputBox);
+            isReset = false;
           }
-        }
-        
-      } else if(delta === -1) {
-
-        if(isBlockMenu) {
+        } else if(delta == 1) {
           var buffer = inputBuffer.join('');
-          if(currentValue.indexOf(buffer) < 0) {
-            var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
-            var index = valueBeforMention.indexOf(buffer.substring(0, buffer.length-1));
-            index = indexChanged - index;
-            var char = inputBuffer[inputBuffer.length-1];
-            inputBuffer.splice(index, 0, char);
-            inputBuffer.pop();            
-          } else if(currentValue.indexOf(valueBeforMention) < 0) {
-            resetBuffer();
+          var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
+          index = (index <= 0) ? (inputBuffer.length - 1) : index;
+          inputBuffer.splice(index, 1);
+        }
+
+      } else if (delta === -1) {
+
+        if (isBlockMenu) {
+          var buffer = inputBuffer.join('');
+          if (currentValue.indexOf(buffer) < 0) {
+            var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
+            if (index > 0 && index < buffer.length) {
+              var char = inputBuffer[inputBuffer.length - 1];
+              inputBuffer.splice(index, 0, char);
+              inputBuffer.pop();
+              isReset = false;
+            } else {
+              resetBuffer();
+            }
           }
         }
 
       }
-      onInputBoxInput();
+      
+      if (e.keyCode === KEY.SPACE && 
+          ((isBlockMenu === false) || 
+              (isReset && (elmAutocompleteList.find('li.msg').length > 0 ||inputBuffer.join().indexOf('  ') >= 0)))) {
+        resetBuffer();
+      }
+    }
+    
+    function getIndexBufferChange(valueBeforMention, currentValue, buffer) {
+      var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
+      var index = valueBeforMention.indexOf(buffer.substring(0, buffer.length - 1));
+      return indexChanged - index;
     }
 
     function triggerOninputMention(before, after) {
       var indexChanged = utils.getCursorIndexOfText(before, after);
       var fVal = after.substring(0, indexChanged);
       var lVal = after.substring(indexChanged, after.length);
-      var t = lVal.indexOf(' ');
-      if (t < 0) t = lVal.length;
-      lVal = lVal.substring(0, t);
-      var hasTrigger = hasTriggerChar(fVal + lVal);
+      if(lVal.length > 0) {
+        var t = lVal.indexOf(' ');
+        var k = lVal.indexOf('<br>');
+        t = (t > 0 && t < k) ? t : k;
+        t = (t < 0) ? lVal.length : t;
+        lVal = lVal.substring(0, t);
+        
+        fVal += $.trim(lVal);
+      }
+
+      var hasTrigger = hasTriggerChar(fVal);
       if (hasTrigger != false) {
         inputBuffer = hasTrigger;
         onInputBoxInput();
+      } else {
+        resetBuffer();
       }
+    }
+    
+    function hasTriggerChar(val) {
+      //
+      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
+        val = val.substring(val.indexOf(settings.triggerChar));
+        if(val.indexOf(' ') < 0 && val.indexOf('&nbsp;') < 0 && val.indexOf('<') < 0) {
+          return val.split('');
+        }
+      }
+      return false;
     }
 
     function backspceBroswerFix(e) {
@@ -750,6 +763,7 @@
       resetBuffer();
       inputBuffer[0] = settings.triggerChar;
       //
+      isInput = false;
       onInputBoxInput();
     }
 
@@ -814,6 +828,7 @@
         if(inputBuffer[inputBuffer.length - 1] != ' ') {
           addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
         } else {
+          resetBuffer();
           hideDropdown();
         }
       }
@@ -988,7 +1003,7 @@
         }
       };
       displayInput.value = function() {
-        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' '); //.replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
         return val;
       };
       return displayInput;
