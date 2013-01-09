@@ -24,7 +24,7 @@
 <%
 def selectedTab = uicomponent.getSelectedTabId();
 %>
-<div class="uiTabPane uiTabNormal" id="$uicomponent.id">
+<div class="uiTabNormal uiTabInPage" id="$uicomponent.id">
 	<ul class="nav nav-tabs">
 		<%
 		for(child in uicomponent.getChildren())

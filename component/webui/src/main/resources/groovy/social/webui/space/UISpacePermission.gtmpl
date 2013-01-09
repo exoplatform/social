@@ -22,8 +22,9 @@
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 
 %>
-<div class="uiSpacePermission form-horizontal">
+<div class="uiSpacePermission">
 	<%uiform.begin()%>
+	<div class="form-horizontal">
 		<% 
 			for(field in uiform.getChildren()) { 
 			  %>
@@ -49,7 +50,8 @@
 				<%
 			}
 		%>
-	<div class="control-group uiAction uiActionBorder">
+	</div>
+	<div class="uiAction uiActionBorder">
 		<% for(action in uicomponent.getActions()) { 
 				 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
 				 String link = uicomponent.event(action);

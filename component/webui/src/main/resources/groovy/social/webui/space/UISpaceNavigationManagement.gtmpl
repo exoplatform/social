@@ -15,25 +15,27 @@
 	    <%= uicomponent.getOwner();%>
 	</div>
 	-->	
-	<ul class="breadcrumb">  
-		<li>
-			<a href="#">spaces</a>
-			<span class="uiIconMiniArrowRight">&nbsp;</span>
-		</li>
-		<li class="active">space_test</li>
-	</ul>
-		
-  <%
-  	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
-  	uicomponent.renderChild(UIPopupWindow.class);
-  %>
-  
-  <% 
-     def addNodeAction = uicomponent.event("AddNode") + "; return false;"
-     def saveAction = uicomponent.event("Save") + "; return false;"
-  %>
-  <button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
-  <div class="uiAction uiActionBorder">
-	  <button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
+	<div class="addNodeCont">
+		<ul class="breadcrumb">  
+			<li>
+				<a href="#">spaces</a>
+				<span class="uiIconMiniArrowRight">&nbsp;</span>
+			</li>
+			<li class="active">space_test</li>
+		</ul>
+			
+	  <%
+	  	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
+	  	uicomponent.renderChild(UIPopupWindow.class);
+	  %>
+	  
+	  <% 
+	     def addNodeAction = uicomponent.event("AddNode") + "; return false;"
+	     def saveAction = uicomponent.event("Save") + "; return false;"
+	  %>
+		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
+	</div>
+	<div class="uiAction uiActionBorder">
+		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
 	</div>
 </div>

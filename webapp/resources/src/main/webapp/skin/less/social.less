@@ -8,7 +8,7 @@
 /*=================UISpaceMember=================*/
 
 .addInvite {
-	margin: 0px 0px 20px 0px;
+	margin: 0px 0px 10px 0px;
 	input[type="text"] {
 		margin-top: 8px;
 	}
@@ -70,29 +70,30 @@
 
 /***** space setting portlet ****/
 .uiSpaceSettingPortlet {
-	.changeAvatar {
-		text-align: center;
-		a {
-			margin-bottom: 15px;
+	.tab-content {
+		padding: 20px 20px 10px;
+		.changeAccount {
+			margin: 0 0 20px;
+			.changeAvatar {
+				text-align: center;
+				a {
+					margin-bottom: 15px;
+				}
+			}
+		}
+		.uiActionBorder {
+			margin: 0 -20px;
 		}
 	}
 }
 
 /******* space application portlet *****/
-.uiSpaceSettingPortlet .tab-content {
-	padding: 20px;	
-}
-
-.uiSpaceSettingPortlet .uiActionBorder {
-	margin: 10px -20px 0;
-}
-
 .uiSpaceApp .contentSpace {
 	border: 1px solid @borderColor;
     .border-radius(4px);
     padding: 5px;
     .size(84px, 518px);
-    margin: 10px 10px 10px 0;
+    margin: 10px 20px 10px 0;
 	
 	&:hover {
 		background: @tableBackgroundAccent;
