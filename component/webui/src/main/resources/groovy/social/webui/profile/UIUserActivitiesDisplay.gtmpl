@@ -42,7 +42,7 @@
   
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
 %>
-<div id="$uicomponent.id" class="$uicomponent.id">
+<div id="$uicomponent.id" class="uiUserActivitiesDisplay">
   <% if (uicomponent.isActivityStreamOwner()) { %>
 	<div class="clearfix activityTop">
     <div class="pull-right">
