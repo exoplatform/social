@@ -18,7 +18,7 @@
  */
 
 var UISpaceNavigation = {
-	addEditability: function(id) {
+	addEditability: function(id, moreLabel) {
     var editedTab = $("#" + id);
 
     //
@@ -38,7 +38,7 @@ var UISpaceNavigation = {
                'text' : '+'
              }))
       .append($('<span/>', {
-               'text' : 'More'
+               'text' : moreLabel
              }));
 
     var dropDown = $('<li/>', {

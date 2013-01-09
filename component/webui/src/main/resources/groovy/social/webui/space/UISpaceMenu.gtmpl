@@ -62,22 +62,23 @@
     return fitStr;
   }
 
+  def moreLabel = _ctx.appRes("${uicomponentId}.label.More");
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
-  jsManager.require("SHARED/social-ui-space-nav", "editor").addScripts("editor.UISpaceNavigation.addEditability('" + uicomponent.id + "');");
+  jsManager.require("SHARED/social-ui-space-nav", "spacenav").addScripts("spacenav.UISpaceNavigation.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
   def srcAppIcon;
 %>
 
 <div class="uiSpaceMenu clearfix" id="UISpaceMenu">
   <%
-    def homeLabel = _ctx.appRes(uicomponent.getId() + ".label.Home");
+    def activityStreamLabel = _ctx.appRes(uicomponent.getId() + ".label.ActivityStream");
     srcAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png"; // need change to Activity icon
   %>
   
   <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
     <% if (spaceUrl.equals(appSelected)) { %>
-    <li class="active"><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName">$homeLabel</span></a></li>
+    <li class="active"><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName">$activityStreamLabel</span></a></li>
     <% } else { %>
-    <li class=""><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName"> $homeLabel</span></a></li>
+    <li class=""><a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#"><img src="$srcAppIcon" onError="src='$srcDefaultAppIcon'" /><span class="tabName"> $activityStreamLabel</span></a></li>
     <% } %>
   
   

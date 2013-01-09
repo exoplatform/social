@@ -22,8 +22,10 @@
 %>
 <%
   import org.exoplatform.social.webui.space.UISpaceSetting;
+  def uicomponentId = uicomponent.id;
 %>
 <div class="uiSpaceSettingPortlet" id="$uicomponent.id">
+  <%=_ctx.appRes("${uicomponentId}.label.SpaceConfiguration");%>
   <% 
   uicomponent.renderChild(UISpaceSetting.class);
   %>
