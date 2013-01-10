@@ -59,7 +59,7 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
 })
 
 public class UISpaceGroupBound extends UIContainer {
-  private final String USE_EXISTING_GROUP = "useExistingGroup";
+  private final String USE_EXISTING_GROUP = "UseExistingGroupCheckBox";
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
 

@@ -201,8 +201,8 @@
 		          <div class="content">
 		            $space.description<br/>
 		          </div>
-		          </div>
-		          <div>
+		        </div>
+		        <div>
 		          <% if ("INVITED".equals(typeOfSpace.toString())) { %>
 		              <button type="button" class="btn pull-right" onclick="<%= ignoreInvitationAction %>" title="<%= ignoreInvitationLabel %>">$ignoreInvitationLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptInvitationAction %>" title="<%= acceptInvitationLabel %>">$acceptInvitationLabel</button>
@@ -223,12 +223,11 @@
               <% } %>
 		          
 		        </div>
-		        
 		      </div>
 		      <%}%>
 		    </div>
 		    
-  	</div>
+      </div>
+    </div>
   </div>  
-    
 </div>

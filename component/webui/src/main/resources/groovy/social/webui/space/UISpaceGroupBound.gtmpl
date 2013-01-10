@@ -41,14 +41,14 @@
   
   <%if (hasGroupWithManagerRole) {
     uiCheckbox.setEnable(true); %>
-	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> <label for="useExistingGroup" class="UIGroupBoundLabel"><%= lblCheckbox %></label></div>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %></div>
 	  <div class="UIGroupBoundDescription">
 	    <%= lblDescription %>
  	    <%= lblDescription_hasGroupManagerRole %>
 	  </div>
   <% } else {
     uiCheckbox.setEnable(false); %>
-	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> <label for="useExistingGroup" class="UINoneGroupBoundLabel"><%= lblCheckbox %></label></div>
+	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> </div>
 	  <div class="UIGroupBoundDescription">
 	    <%= lblDescription %>
 	    <div class="InformationIcon">
