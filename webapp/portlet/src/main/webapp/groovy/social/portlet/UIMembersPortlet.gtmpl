@@ -88,30 +88,6 @@
       <h4 class="titleWithBorder">$spaceMemberLabel</h4>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="memberList clearfix">
-      	 <h4 class="titleWithBorder">$contactsDirectory</h4>
-		    <!--div class="DirectoryNormalBox"-->
-		    <div class="uiFilterList">
-		        <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
-		        <ul class="letterList"> 
-				     <li>
-				     <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
-				                <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				     <%} else {%>
-				                <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				     <% } %>
-				     </li>
-				     
-				     <% for (ch in alphabets) { %>
-				     <li>
-				     <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
-				            <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				     <%   } else {%>
-				            <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				     <%   } %>
-				     </li>
-				     <% } %>
-			   </ul>
-	      </div>
       <% if(memberList.size() > 0)  {
         for(user in memberList) {
           def memberUserName = user.getProfile().getFullName();
