@@ -22,6 +22,7 @@
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
+ 
   <component>
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
@@ -31,4 +32,45 @@
     <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
     <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.common.router.ExoRouter</key>
+    <type>org.exoplatform.social.common.router.ExoRouter</type>
+    <component-plugins>
+      <component-plugin>
+        <name>addRoutes</name>
+        <set-method>addRoutes</set-method>
+        <type>org.exoplatform.social.common.router.ExoRouterConfig</type>
+        <init-params>
+          <object-param>
+            <name>uri.configuration</name>
+            <description>defines action name which associate with uri pattern.</description>
+            <object type="org.exoplatform.social.common.router.ExoRouterConfig">
+              <field name="routeMapping">
+                <map type="java.util.HashMap">
+                 <entry>
+                    <key><string>activity.show</string></key>
+                    <value><string>/activity/{activityID}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space.access</string></key>
+                    <value><string>{spacePrettyName}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space.app.access</string></key>
+                    <value><string>{spacePrettyName}/{appName}</string></value>
+                  </entry>
+                   <entry>
+                    <key><string>space.app.page.access</string></key>
+                    <value><string><![CDATA[{spacePrettyName}/{appName}/{<.*>path}]]></string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>    
+    </component-plugins>   
+  </component>
+  
 </configuration>

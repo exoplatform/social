@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.Random;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -158,7 +160,12 @@ public class UIActivitiesLoader extends UIContainer {
         activitiesContainer.setSpace(space);
       }
 
-      List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
+      List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
+      
+      if (isShowActivities(space)) {
+        activities = loadActivities(currentLoadIndex, loadingCapacity);
+      }
+      
       activitiesContainer.setActivityList(activities);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -167,15 +174,18 @@ public class UIActivitiesLoader extends UIContainer {
 
   private void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
-    
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
     lastActivitiesLoader.setExtendLoader(true);
+    
+    if (isShowActivities(space)) {
+      activities = loadActivities(currentLoadIndex, loadingCapacity);
+    }
 
     UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
     lastActivitiesContainer.setPostContext(postContext);
     lastActivitiesContainer.setSpace(space);
     
-    List<ExoSocialActivity> activities = loadActivities(currentLoadIndex, loadingCapacity);
     lastActivitiesLoader.setActivities(activities);
     if(activityListAccess != null) {
       lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
@@ -197,6 +207,13 @@ public class UIActivitiesLoader extends UIContainer {
       }
     }
     return null;
+  }
+  
+  private boolean isShowActivities(Space space) {
+    if (space == null) return true;
+    
+    String remoteId = Util.getPortalRequestContext().getRemoteUser();
+    return Utils.getSpaceService().isMember(space, remoteId);
   }
 
 
