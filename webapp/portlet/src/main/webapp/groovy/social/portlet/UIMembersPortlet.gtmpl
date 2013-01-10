@@ -41,46 +41,51 @@
     def leaderIdx = memberIdx = 0;
     def adminImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
     def jsManager = _ctx.getRequestContext().getJavascriptManager();
+    def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+    def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactsDirectory")
+    def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
+    def selectedStartChar = uicomponent.getSelectedChar();
+    
     jsManager.require("SHARED/jquery", "jq")
              .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="uiMembersPortlet" id="$uicomponentId">
-	<h3 class="uiInputInfo">$spaceName</h3>
-	<span>$visibility</span>
+    <h3 class="uiInputInfo">$spaceName</h3>
+    <span>$visibility</span>
     <h4 class="titleWithBorder">$administratorLabel</h4>
     <div class="memberList clearfix">
-	      <% if (managerList.size() > 0) {
-	        for(user in managerList) {
-	          def userName = user.getProfile().getFullName();
-	          position = user.getProfile().getPosition();
-	          def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
-	          if (!position) position = "";
-	          def leaderImageSource = user.profile.avatarUrl;
-	          if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
-	          leaderIdx += 1;
-	      	%>
-	        <div class="spaceBox pull-left">
-				<a class="avatarXLarge pull-left">
-					<img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
-				</a>
-				<div class="contentBox">
-					<h4 class="spaceTitle"><a href="${profileURL}" class="CommunityName InviteTitle">$userName</a></h4>
-					<% if(position.length() > 0) { %>
-					 <div class="position">
-						 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-					 </div>
-					<% } %>
-				</div>
-	        </div>
-	      <% }%>
+          <% if (managerList.size() > 0) {
+            for(user in managerList) {
+              def userName = user.getProfile().getFullName();
+              position = user.getProfile().getPosition();
+              def profileURL = LinkProvider.getUserProfileUri(user.getRemoteId());
+              if (!position) position = "";
+              def leaderImageSource = user.profile.avatarUrl;
+              if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+              leaderIdx += 1;
+            %>
+            <div class="spaceBox pull-left">
+                <a class="avatarXLarge pull-left">
+                    <img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
+                </a>
+                <div class="contentBox">
+                    <h4 class="spaceTitle"><a href="${profileURL}" class="CommunityName InviteTitle">$userName</a></h4>
+                    <% if(position.length() > 0) { %>
+                     <div class="position">
+                         <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+                     </div>
+                    <% } %>
+                </div>
+            </div>
+          <% }%>
       </div>
       <%
       } else { %>
-		<!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
-			<div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>-->
-		<div class="uiFilterList">
-			<div class="result"><span class="number">0</span>member in space</div>
-		</div>
+        <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
+            <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>-->
+        <div class="uiFilterList">
+            <div class="result"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
+        </div>
       <% } %>
       
       <!-- End leaders section -->
@@ -88,6 +93,30 @@
       <h4 class="titleWithBorder">$spaceMemberLabel</h4>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="memberList clearfix">
+         <h4 class="titleWithBorder">$contactsDirectory</h4>
+            <!--div class="DirectoryNormalBox"-->
+            <div class="uiFilterList">
+                <div class="result"><span class="number"><%=uicomponent.memberNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+                <ul class="letterList"> 
+                     <li>
+                     <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+                                <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                     <%} else {%>
+                                <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+                     <% } %>
+                     </li>
+                     
+                     <% for (ch in alphabets) { %>
+                     <li>
+                     <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
+                            <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                     <%   } else {%>
+                            <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+                     <%   } %>
+                     </li>
+                     <% } %>
+               </ul>
+          </div>
       <% if(memberList.size() > 0)  {
         for(user in memberList) {
           def memberUserName = user.getProfile().getFullName();
@@ -99,27 +128,27 @@
           memberIdx += 1;
       %>
         <div class="spaceBox pull-left">
-			<a class="avatarXLarge pull-left">
-				<img src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName" alt="#"/>
-			</a>
-			<div class="contentBox">
-				<h4 class="spaceTitle">
-					<a href="${profileURL}">$memberUserName</a>
-				</h4>
-				<% if(position.length() > 0) { %>
-				 <div class="position">
-					 <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
-				 </div>
-				 <% } %>
-			</div>
+            <a class="avatarXLarge pull-left">
+                <img src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName" alt="#"/>
+            </a>
+            <div class="contentBox">
+                <h4 class="spaceTitle">
+                    <a href="${profileURL}">$memberUserName</a>
+                </h4>
+                <% if(position.length() > 0) { %>
+                 <div class="position">
+                     <%=_ctx.appRes(uicomponent.getId() + ".label.Position") + ": "%>${position}
+                 </div>
+                 <% } %>
+            </div>
         </div>
         <% }
       } else { %>
-		<!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
-			<div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
-		<div class="uiFilterList">
-			<div class="result"><span class="number">0</span>member in space</div>
-		</div>
+        <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
+            <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
+        <div class="uiFilterList">
+            <div class="result"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
+        </div>
       <% } %>
        </div>
        <% if(uicomponent.isEnableLoadNext()) { %>

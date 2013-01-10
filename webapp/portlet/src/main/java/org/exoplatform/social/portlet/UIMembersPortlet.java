@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 import org.exoplatform.commons.utils.ListAccess;
@@ -31,6 +32,7 @@ import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceException;
@@ -39,6 +41,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -47,6 +50,7 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * {@link UIMembersPortlet} used as a portlet displaying space members.<br />
@@ -62,7 +66,7 @@ import org.exoplatform.webui.event.Event.Phase;
     lifecycle = UIApplicationLifecycle.class,
     template = "app:/groovy/social/portlet/UIMembersPortlet.gtmpl",
     events = {
-      @EventConfig(listeners = UIMembersPortlet.SearchActionListener.class, phase = Phase.DECODE), 
+      @EventConfig(listeners = UIMembersPortlet.SearchActionListener.class), 
       @EventConfig(listeners = UIMembersPortlet.LoadMoreMemberActionListener.class)
     }
   )
@@ -82,6 +86,10 @@ public class UIMembersPortlet extends UIPortletApplication {
   
   private final int MEMBER_PER_PAGE = 45;
   private static final String SPACE_MEMBER = "member_of_space";
+  private static final String ALL_FILTER = "All";
+  public static final String SEARCH = "Search";
+  private static final char EMPTY_CHARACTER = '\u0000';
+  
   private int currentLoadIndex;
   private IdentityManager identityManager_ = null;
   private UIProfileUserSearch uiSearchMemberOfSpace = null;
@@ -89,7 +97,8 @@ public class UIMembersPortlet extends UIPortletApplication {
   
   boolean enableLoadNext;
   private boolean loadAtEnd;
-
+  private String selectedChar = null;
+  
 //  private static final int FIRST_PAGE = 1;
 
   public void setMemberListAccess(ListAccess<Identity> memberListAccess){
@@ -124,6 +133,23 @@ public class UIMembersPortlet extends UIPortletApplication {
     this.managerNum = managerNum;
   }
   
+  /**
+   * Gets selected character when search by alphabet.
+   *
+   * @return The selected character.
+   */
+  public final String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character to variable.
+   *
+   * @param selectedChar <code>char</code>
+   */
+  public final void setSelectedChar(final String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
 
   private List<Identity> loadPeople(int index, int length, Type type) throws Exception {
     Identity[] result = null;
@@ -295,7 +321,44 @@ public class UIMembersPortlet extends UIPortletApplication {
   public static class SearchActionListener extends EventListener<UIMembersPortlet> {
     @Override
     public void execute(Event<UIMembersPortlet> event) throws Exception {
+      WebuiRequestContext ctx = event.getRequestContext();
       UIMembersPortlet uiMembersPortlet = event.getSource();
+      
+      UIProfileUserSearch uiSearch = uiMembersPortlet.uiSearchMemberOfSpace;
+      
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+
+      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
+      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
+      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
+      
+      ProfileFilter filter = uiSearch.getProfileFilter();
+      
+      try {
+        uiMembersPortlet.setSelectedChar(charSearch);
+        if (charSearch != null) { // search by alphabet
+          ((UIFormStringInput) uiSearch.getChildById(SEARCH)).setValue(defaultNameVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
+          filter.setName(charSearch);
+          filter.setPosition("");
+          filter.setSkills("");
+          filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
+          if (ALL_FILTER.equals(charSearch)) {
+            filter.setFirstCharacterOfName(EMPTY_CHARACTER);
+            filter.setName("");
+          }
+          uiSearch.setRawSearchConditional("");
+        } 
+        
+        uiSearch.setProfileFilter(filter);
+        uiSearch.setNewSearch(true);
+      } catch (Exception e) {
+        uiSearch.setIdentityList(new ArrayList<Identity>());
+      }
+      
       uiMembersPortlet.loadSearch();
       uiMembersPortlet.setLoadAtEnd(false);
     }
