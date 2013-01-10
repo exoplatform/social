@@ -48,7 +48,7 @@
   def mySpaceIdx = 0
   def hasInvited = false
   def style="display:none;"
-  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More")
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
   }
@@ -91,7 +91,7 @@
 				    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
 				    <!--div class="DirectoryNormalBox"-->
 				    <div class="uiFilterList">
-				        <div class="result"><span class="number"><%=uicomponent.getMySpacesNum(); %></span>(Results display in order of alphabet)</div>
+				        <div class="result"><span class="number"><%=uicomponent.getMySpacesNum(); %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
 				        <ul class="letterList"> 
 				            <li>
 				            <% if ((selectedChar != null) && (selectedChar == "All")) { %>

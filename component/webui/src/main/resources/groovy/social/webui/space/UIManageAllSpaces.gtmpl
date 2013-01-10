@@ -45,7 +45,7 @@
   def openStatus = _ctx.appRes("${uicomponentId}.status.open")
   def validationStatus = _ctx.appRes("${uicomponentId}.status.validation")
   def closeStatus = _ctx.appRes("${uicomponentId}.status.close")
-  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More_Space")
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More")
   def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
   
   if (uicomponent.isLoadAtEnd()) {
@@ -92,7 +92,7 @@
 		        <h4 class="titleWithBorder">$spacesFoundLabel</h4>
 		        <!--div class="DirectoryNormalBox"-->
 		        <div class="uiFilterList">
-		            <div class="result"><span class="number"><%=uicomponent.spacesNum; %></span>(Results display in order of alphabet)</div>
+		            <div class="result"><span class="number"><%=uicomponent.spacesNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
 		            <ul class="letterList"> 
 		                <li>
 		                <% if ((selectedChar != null) && (selectedChar == "All")) { %>
@@ -213,7 +213,7 @@
               <% } else if ("MANAGER".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>">$deleteSpaceLabel</button>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>">$leaveSpaceLabel</button>
-                  <button type="button" class="btn btn-primary pull-right" onclick="location.href='<%= editSpaceLink %>'" title="<%= editSpaceLabel %>">$editSpaceLabel</button>                  
+                  <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'" title="<%= editSpaceLabel %>">$editSpaceLabel</button>                  
               <% } else {
                    if (Space.VALIDATION.equals(registration)) { %>
                      <button type="button" class="btn btn-primary pull-right" onclick="<%= requestToJoinSpaceAction %>" title="<%= requestToJoinSpaceLabel %>">$requestToJoinSpaceLabel</button>
@@ -227,6 +227,22 @@
 		      <%}%>
 		    </div>
 		    
+      <%
+       if(uicomponent.isEnableLoadNext()) {
+      %>
+		      <div id="LoadMoreMySpacesButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+		        $labelShowMoreSpace
+		      </div>
+      <%
+       } else {
+      %>
+			    <script type="text/javascript">
+			      try{document.getElementById("LoadMoreMySpacesButton").style.display = "none";}catch(e){};
+			    </script>
+      <%
+       }
+      %>
+                
       </div>
     </div>
   </div>  

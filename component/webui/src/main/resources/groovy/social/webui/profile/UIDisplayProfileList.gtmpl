@@ -69,7 +69,7 @@
         <h4 class="titleWithBorder">$contactsDirectory</h4>
         <!--div class="DirectoryNormalBox"-->
         <div class="uiFilterList">
-            <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(Results display in order of alphabet)</div>
+            <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
             <ul class="letterList"> 
                  <li>
                  <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
@@ -182,7 +182,7 @@
   </div>
   <% if(uicomponent.isEnableLoadNext()) { %>
 	    <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
-	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
+	      <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
 	    </button>
   <% } else { %>
 	      <script type="text/javascript">
