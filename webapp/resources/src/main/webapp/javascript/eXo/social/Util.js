@@ -210,6 +210,61 @@ eXo.social.Util.insertAfter = function(newNode, refNode) {
 	refNode.parentNode.insertBefore(newNode, refNode.nextSibling);
 }
 
+/**
+* Finds the absolute position of an element, returns {'x': number, 'y': number}.
+*
+* @param element the element
+*/
+eXo.social.Util.findPosition = function(element) {
+  if (typeof element === 'string') {
+    element = document.getElementById(element);
+  }
+  if (element) {
+    return {
+      'x': _findPosX(element),
+      'y': _findPosY(element)
+    };
+  } else {
+    return {
+      'x': null,
+      'y': null
+    };
+  }
+
+  function _findPosX(obj) {
+    var curLeft = 0;
+    if (obj.offsetParent) {
+      while (1) {
+        curLeft += obj.offsetLeft;
+        if (!obj.offsetParent) {
+          break;
+        }
+        obj = obj.offsetParent;
+      }
+    }
+    else if (obj.x) {
+      curLeft += obj.x;
+    }
+    return curLeft;
+  }
+
+  function _findPosY(obj) {
+    var curTop = 0;
+    if (obj.offsetParent) {
+      while (1) {
+        curTop += obj.offsetTop;
+        if (!obj.offsetParent) {
+          break;
+        }
+        obj = obj.offsetParent;
+      }
+    }
+    else if (obj.y) {
+      curTop += obj.y;
+    }
+    return curTop;
+  }
+};
 
 /**
  * checks if keyNum == ENTER key

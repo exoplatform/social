@@ -93,6 +93,20 @@ UISpaceAppNameEdition.prototype.showEditLabelInput = function(selectedElement, c
 		inputElement.focus();
 };
 
+/**
+ * Control the padding left of horizontal tabs. 
+ */
+UISpaceAppNameEdition.prototype.controlPaddingLeft = function(){
+		var spaceMenu = document.getElementById('UISpaceMenu');
+		if(spaceMenu) {
+			var spaceName = eXo.core.DOMUtil.findFirstDescendantByClass(spaceMenu, "div", "UISpaceName");
+			var horizontalTabs = eXo.core.DOMUtil.findFirstDescendantByClass(spaceMenu, "div", "UIHorizontalTabs");
+			if(spaceName && horizontalTabs) {
+				horizontalTabs.style.paddingLeft = (spaceName.offsetWidth + 5) + "px";
+			}
+		}
+};
+
 if(!eXo.social) eXo.social = {};
 if(!eXo.social.webui) eXo.social.webui = {};
 eXo.social.webui.UISpaceAppNameEdition = new UISpaceAppNameEdition();
