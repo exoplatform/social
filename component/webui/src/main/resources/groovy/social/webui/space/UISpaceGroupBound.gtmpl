@@ -34,27 +34,25 @@
   def checked = uiCheckbox.isChecked();
   def hasGroupWithManagerRole = uicomponent.hasGroupWithManagerRole();
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
+<div class="uiSpaceGroupBound" id="$uicomponent.id">
   <%if (checked) {%>
-  <div class="UIGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
+  <div class="uiGroupSelected"><%= lblSelectedGroup %>: <strong><% uicomponent.renderChild(UIFormInputInfo.class) %></strong></div>
   <%}%>
   
   <%if (hasGroupWithManagerRole) {
     uiCheckbox.setEnable(true); %>
-	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %></div>
-	  <div class="UIGroupBoundDescription">
+	  <div class="uiGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %></div>
+	  <div class="uiGroupBoundDescription">
 	    <%= lblDescription %>
  	    <%= lblDescription_hasGroupManagerRole %>
 	  </div>
   <% } else {
     uiCheckbox.setEnable(false); %>
-	  <div class="UIGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> </div>
-	  <div class="UIGroupBoundDescription">
+	  <div class="uiGroupBoundCheckBox"><% uicomponent.renderChild(UICheckBoxInput.class) %> </div>
 	    <%= lblDescription %>
-	    <div class="InformationIcon">
+	    <div class="informationIcon">
         <%= lblDescription_notHasGroupManagerRole %>
-      </div>
-	  </div>
+	 	</div>
   <% } %>
-  <div class="UIGroupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+  <div class="groupBoundPopup"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>
