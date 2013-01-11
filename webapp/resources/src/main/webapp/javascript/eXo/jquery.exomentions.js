@@ -473,14 +473,14 @@
     }
 
     function onInputBoxInput(e) {
-      if(isInput) {return;
+      if(isInput) return;
       isInput = true;
       updateValues();
       updateMentionsCollection();
       inputBuffer = utils.replaceFirst(inputBuffer.join(''), ' ').split('');
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
-        if (isBlockMenu === false && e && e.type === 'input') {
+        if (isBlockMenu === false) {
           var after = elmInputBox.value();
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, after);
           if (indexChanged > 0) {
@@ -503,7 +503,8 @@
 
     function onInputBoxKeyPress(e) {
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT&& keyCode !== KEY.DELETE) {
+      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT &&
+          keyCode !== KEY.DELETE && keyCode !== KEY.UP && keyCode !== KEY.DOWN) {
         var typedValue = String.fromCharCode(keyCode);
         if(keyCode === KEY.RETURN) {
           inputBuffer = [];
@@ -584,6 +585,7 @@
           if (elmCurrentAutoCompleteItem.length) {
             selectAutoCompleteElement(elmCurrentAutoCompleteItem);
           }
+          isInput = true;
           return false;
           
         case KEY.RETURN:
@@ -595,6 +597,7 @@
             $(this).trigger(eN);
           }
           e.stopPropagation();
+          isInput = true;
           return false;
         default: {
           return true;
@@ -658,8 +661,8 @@
           if (currentValue.indexOf(buffer) < 0) {
             var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
             if (index > 0 && index < buffer.length) {
-              var char = inputBuffer[inputBuffer.length - 1];
-              inputBuffer.splice(index, 0, char);
+              var char_ = inputBuffer[inputBuffer.length - 1];
+              inputBuffer.splice(index, 0, char_);
               inputBuffer.pop();
               isReset = false;
             } else {
