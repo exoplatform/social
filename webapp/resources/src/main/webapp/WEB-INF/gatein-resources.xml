@@ -146,6 +146,9 @@
       <module>jquery</module>
       <as>$</as>
     </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
   </module>
 
   <module>

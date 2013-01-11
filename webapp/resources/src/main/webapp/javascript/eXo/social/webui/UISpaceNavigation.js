@@ -34,12 +34,17 @@ var UISpaceNavigation = {
       'href' : '#',
       'class' : 'dropdown-toggle',
       'data-toggle' : 'dropdown'
-    }).append($('<b/>', {
-               'text' : '+'
-             }))
-      .append($('<span/>', {
-               'text' : moreLabel
-             }));
+    });
+    
+    // need re-define this value to match spec
+    if (tabs.length > 8) {
+		  dropDownToggle.append($('<b/>', {
+									           'text' : '+'
+									         }))
+									  .append($('<span/>', {
+									           'text' : moreLabel
+									         }));
+    };
 
     var dropDown = $('<li/>', {
       'class' : 'dropdown'
@@ -50,7 +55,7 @@ var UISpaceNavigation = {
 
     // rebuild
     $.each(tabs, function(idx, el) {
-      if (idx < 9) {
+      if (idx < 8) {
         tabContainer.append(el);
       } else {
         dropDownMenu.append(el);
