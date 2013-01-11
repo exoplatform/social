@@ -1595,7 +1595,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException {
+  public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
     try {
     IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
     SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
@@ -1605,29 +1605,40 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     Space space = null;
     
     //
-    int numberOfSpaces = 0;
     Iterator<SpaceRef> it = mapRefs.values().iterator();
     while(it.hasNext()) {
-      spaces.add(it.next());
+      if (filter.getAppId() == null) {
+        spaces.add(it.next());
+      } else {
+        SpaceRef ref = it.next();
+        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+          spaces.add(ref);
+        };
+      }
+      
     }
-    
+    //reserve order
     Collections.reverse(spaces);
     
     List<Space> got = new LinkedList<Space>();
-    for(SpaceRef ref : spaces) {
+    
+    //
+    Iterator<SpaceRef> it1 = spaces.iterator();   
+     _skip(it1, offset);
+     
+     
+    int numberOfSpaces = 0;
+    //
+    while (it1.hasNext()) {
       space = new Space();
-      fillSpaceFromEntity(ref.getSpaceRef(), space);
-      
-      if (space.getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
-        got.add(space);
-        numberOfSpaces++;
-      }
-      
+      fillSpaceFromEntity(it1.next().getSpaceRef(), space);
+      got.add(space);
       //
-      if (numberOfSpaces == limit) {
+      if (++numberOfSpaces == limit) {
         break;
       }
     }
+   
     
     return got;
     } catch (NodeNotFoundException e) {
@@ -1635,4 +1646,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       return Collections.emptyList();
     }
   }
+  
+  
 }

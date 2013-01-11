@@ -994,9 +994,11 @@ public interface SpaceService {
    *
    * @param remoteId
    * @param appId
+   * @param offset TODO
    * @param limit
    */
-  List<Space> getSpaceLastedAccessed(String remoteId, String appId, int limit) throws SpaceException;
+  List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException;
+  
 
   /**
    * Requests a user to join a space, adds that user to the pending list of the space.

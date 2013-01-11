@@ -518,9 +518,9 @@ public interface SpaceStorage {
   
   /**
    * Gets list of spaces which user has been last visited.
-   *
-   * @param remoteId
+   * @param offset TODO
    * @param limit
+   * @param remoteId
    */
-  List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException;
+  List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
 }

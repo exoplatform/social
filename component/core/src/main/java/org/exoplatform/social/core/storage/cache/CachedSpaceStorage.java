@@ -1146,11 +1146,27 @@ public class CachedSpaceStorage implements SpaceStorage {
   @Override
   public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
     storage.updateSpaceAccessed(remoteId, space);
+    clearSpaceCache();
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(SpaceFilter filter, int limit) throws SpaceStorageException {
-    return storage.getSpaceLastedAccessed(filter, limit);
+  public List<Space> getLastAccessedSpace(final SpaceFilter filter, final int offset, final int limit) throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(filter.getRemoteId(), filter, SpaceType.MEMBER);
+    ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+
+    //
+    ListSpacesData keys = spacesCache.get(
+        new ServiceContext<ListSpacesData>() {
+          public ListSpacesData execute() {
+            List<Space> got = storage.getLastAccessedSpace(filter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildSpaces(keys);
   }
 }
 

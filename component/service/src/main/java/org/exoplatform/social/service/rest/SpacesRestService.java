@@ -183,14 +183,14 @@ public class SpacesRestService implements ResourceContainer {
    * @param limit
    * @return
    */
-  private SpaceList getMySpacesLastVisited(String userId, String appId, int limit) {
+  private SpaceList getMySpacesLastVisited(String userId, String appId, int offset, int limit) {
     SpaceList spaceList = new SpaceList();
     _spaceService = getSpaceService();
     List<Space> mySpaces = null;
     
     
     try {
-      mySpaces = _spaceService.getSpaceLastedAccessed(userId, appId, limit);
+      mySpaces = _spaceService.getLastAccessedSpace(userId, appId, offset, limit);
       SpaceRest spaceRest;
       for (Space space : mySpaces) {
         spaceRest = new SpaceRest(space);
@@ -302,12 +302,13 @@ public class SpacesRestService implements ResourceContainer {
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
    * @param format              The response format type, for example: JSON, or XML.
+   * @param offset              Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
    * @param limit               Specify the number of spaces to retrieve. It must be less than or equal to 10.
    * @param appId               AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
    * @authenticated
    * @request
    *{code}
-   * GET: http://localhost:8080/rest/private/social/spaces/spaceLastVisited/list.json?appId=Wiki&limit=10
+   * GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
    *{code}
    * @response
    *{code:json}
@@ -322,11 +323,12 @@ public class SpacesRestService implements ResourceContainer {
    * @return the response
    */
   @GET
-  @Path("spaceLastVisited/list.{format}")
+  @Path("lastVisitedSpace/list.{format}")
   public Response getMySpaceLastVisited(@Context UriInfo uriInfo,
                                   @PathParam("portalName") String portalName,
                                   @PathParam("format") String format,
                                   @QueryParam("appId") String appId,
+                                  @QueryParam("offset") int offset,
                                   @QueryParam("limit") int limit) throws Exception {
     checkAuthenticatedRequest();
     
@@ -345,7 +347,14 @@ public class SpacesRestService implements ResourceContainer {
     }
     
     int newLimit = Math.min(limit, 10);
-    SpaceList mySpaceList = getMySpacesLastVisited(userId, appId, newLimit);
+    int newOffset = 0;
+    if (offset > 0) {
+      newOffset = Math.min(offset, newLimit);
+    } else {
+      newOffset = 0;
+    }
+    
+    SpaceList mySpaceList = getMySpacesLastVisited(userId, appId, newOffset, newLimit);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 

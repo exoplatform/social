@@ -1417,8 +1417,8 @@ public class SpaceServiceImpl implements SpaceService {
   }
 
   @Override
-  public List<Space> getSpaceLastedAccessed(String remoteId, String appId, int limit) throws SpaceException {
+  public List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException {
     SpaceFilter filter = new SpaceFilter(remoteId, appId);
-    return spaceStorage.getSpaceLastedAccessed(filter, limit);
+    return spaceStorage.getLastAccessedSpace(filter, offset, limit);
   }
 }

@@ -103,7 +103,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
       s = getSpaceInstance(i, apps);
       tearDownSpaceList.add(s);
     }
-    List<Space> spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
+    List<Space> spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
   }
 
@@ -113,7 +113,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     
     populateData();
     //
-    ContainerResponse response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    ContainerResponse response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
     SpaceList list = (SpaceList) response.getEntity();
     assertNotNull(list);
@@ -123,12 +123,12 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     Space space4 = spaceService.getSpaceByPrettyName("space_4");
     assertNotNull(space4);
     spaceService.updateSpaceAccessed("mary", space4);
-    List<Space> spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
+    List<Space> spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     Space got = spaces.get(0);
     assertEquals("space_4", got.getPrettyName());
     
-    response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
     SpaceList gotList = (SpaceList) response.getEntity();
     assertNotNull(gotList);
@@ -140,12 +140,12 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     Space space2 = spaceService.getSpaceByPrettyName("space_2");
     assertNotNull(space2);
     spaceService.updateSpaceAccessed("mary", space2);
-    spaces = spaceService.getSpaceLastedAccessed("mary", "app1", 5);
+    spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
     assertEquals(5, spaces.size());
     got = spaces.get(0);
     assertEquals("space_2", got.getPrettyName());
     
-    response = service("GET", "/portal/social/spaces/spaceLastVisited/list.json?appId=app1&limit=5", "", null, null);
+    response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
     assertEquals(200, response.getStatus());
     gotList = (SpaceList) response.getEntity();
     assertNotNull(gotList);
