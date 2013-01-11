@@ -104,7 +104,7 @@ link
      def embedHtml = uicomponent.getTemplateParams().get(uicomponent.HTML_PARAM);
                            %>
   <div class="uiLinkShareDisplay blastShare">
-	<a class="uiIconClose" href="javascript:void(0)" onclick="<%= uicomponent.event("Close")%>;" ></a>
+	<a class="uiIconClose uiIconLightGrey" href="javascript:void(0)" onclick="<%= uicomponent.event("Close")%>;" ></a>
     <%
       if(UILinkUtil.isImageLink(link)){
         %>
@@ -131,10 +131,10 @@ link
 				  </div>
 				  <div class="thumbnailAction clearfix">
 					<div class="actionIconSmall pull-left" id="BackThumbnail">
-					  <i class="uiIconArrowLeft"></i>
+					  <i class="uiIconArrowLeft uiIconLightGrey"></i>
 					</div>
 					<div class="actionIconSmall pull-right" id="NextThumbnail">
-					  <i class="uiIconArrowRight"></i>
+					  <i class="uiIconArrowRight uiIconLightGrey"></i>
 					</div>				   
 					<div id="Stats" class="stats">
 

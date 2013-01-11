@@ -71,8 +71,8 @@
 	<div class="addInvite">
 		<% uiform.renderField("user") %>
 		<span class="groupPermissionBox">
-			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser"></i></a>
-			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup"></i></a>	 			
+			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchUserAction" title="$labelSearchUserAction" class="actionIcon"><i class="uiIconUser uiIconLightGrey"></i></a>
+			<a rel="tooltip" type="button" data-placement="bottom" href="javascript:void(0);" onclick="$searchGroupAction" title="$labelSearchGroupAction" class="actionIcon"><i class="uiIconGroup uiIconLightGrey"></i></a>	 			
 		</span>
 		<button class="btn" type="button" data-placement="bottom" rel="tooltip" title="$labelInviteAction" onclick="$inviteAction">$labelInviteAction</button>
 	</div>	
@@ -111,8 +111,8 @@
 		<tr>
 			<td><%= uicomponent.getFullName(pendingUser) %></td>
 			<td class="center" width="30%">
-					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate"></i></a>
-					<a  onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove"></i></a>
+					<a  onclick="$validateAction" href="javascript:void(0);" title="$labelValidateInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconValidate uiIconLightGrey"></i></a>
+					<a  onclick="$declineAction" href="javascript:void(0);" title="$labelDeclineInvitation" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconRemove uiIconLightGrey"></i></a>
 			</td>
 		</tr>
 		<% }%>
@@ -148,7 +148,7 @@
 		<tr>
 			<td><%= uicomponent.getFullName(invitedUser) %></td>
 			<td class="center" width="15%">
-				<a  onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete"></i></a>
+				<a  onclick="$revokeAction" href="javascript:void(0);" title="$labelCancelRequest" class="actionIcon" data-placement="bottom" rel="tooltip"><i class="uiIconDelete uiIconLightGrey"></i></a>
 			</td>
 		</tr>
 		<% } /*end for*/%>
@@ -223,9 +223,9 @@
 			</td>
 			<td class="center" width="15%">
 				<% if(uicomponent.isCurrentUser(user)) { %>
-				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<a  onclick="$removeOwnerAction" title="$labelRemoveMember"  href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGrey"></i></a>
 				<% } else { %>
-				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete"></i></a>
+				<a  onclick="$removeAction" title="$labelRemoveMember" href="javascript:void(0);" class="actionIcon"  data-placement="bottom" rel="tooltip" ><i class="uiIconDelete uiIconLightGrey"></i></a>
 				<% } %>
 			</td>
 		</tr>

@@ -146,7 +146,7 @@
 			  <img alt="$ownerName" src="$ownerAvatar"/>
 			</a>
 		</div>
-		<div class="activityType"><span><i class="uiIconLink uiIconWhite"></i></span></div>					
+		<div class="activityType"><span><i class="uiIconSocLinkMini uiIconSocWhite"></i></span></div>					
 	</div><!--end activityTimeLine-->	
 	  <div class="boxContainer" id="boxContainer">
 		<div id="ContextBox${activity.id}"class="uiBox contentBox">

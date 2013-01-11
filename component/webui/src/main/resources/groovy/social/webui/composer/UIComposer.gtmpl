@@ -107,9 +107,9 @@
 			  }
 			  if (counter > 1) {
 		  %>
-			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" ><i class="uiIcon$simpleName"></i></a>
+			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" ><i class="uiIconSoc$simpleName"></i></a>
 		  <% } else { %>
-			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " ><i class="uiIcon$simpleName"></i></a>
+			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " ><i class="uiIconSoc$simpleName"></i></a>
 		  <%
 			 }
 			}

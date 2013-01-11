@@ -64,7 +64,7 @@ jsmanager.require("SHARED/jquery", "jq")
 <% uiform.begin() %>
     <!--search by name-->   
 	<div class="uiGrayLightBox ClearFix">
-		<button class="btn btn-primary pull-left" rel="tooltip" data-placement="bottom" title="$labelActionAddSpace" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconAdd"></i><%= labelActionAddSpace %></button>
+		<button class="btn btn-primary pull-left" rel="tooltip" data-placement="bottom" title="$labelActionAddSpace" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconSocSimplePlus uiIconSocWhite"></i><%= labelActionAddSpace %></button>
 		
 		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
 			$findSpaceLabel:&nbsp; 
@@ -76,5 +76,5 @@ jsmanager.require("SHARED/jquery", "jq")
 	</div>
  
 	<% uiform.end() %>
-	<div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+	<div class="uiPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

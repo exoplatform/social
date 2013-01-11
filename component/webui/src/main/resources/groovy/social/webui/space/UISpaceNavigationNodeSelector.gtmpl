@@ -41,56 +41,56 @@
 	
 <ul class="nodeGroup"> 
 	<li class="lastNode node">   
-		<div class="uiIconCollapse">    
+		<div class="uiIconExpand">    
 			<div class="page treeNodeType node node">        
 				<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfdg</a>   
 			</div>  
 		</div>
 		<ul class="nodeGroup"> 
 			<li class="">   
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconExpand">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 			</li>
 			<li class="">  
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 			</li>
 			<li class="">  
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconExpand">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 			</li>
 			<li class="">  
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 			</li>
 			<li class="">  
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconCollapse">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 			</li>
 			<li class="">  
-				<div class="uiIconExpand uiIconCollapse">    
+				<div class="uiIconExpand">    
 					<div class="page treeNodeType node node ">        
 						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 					</div>  
 				</div> 
 				<ul class="nodeGroup"> 
 					<li class="">   
-						<div class="uiIconExpand uiIconCollapse">    
+						<div class="uiIconCollapse">    
 							<div class="page treeNodeType node node ">        
 								<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
 							</div>  
