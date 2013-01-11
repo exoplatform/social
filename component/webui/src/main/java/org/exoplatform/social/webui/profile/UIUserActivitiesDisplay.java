@@ -18,7 +18,6 @@ package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -86,12 +85,11 @@ public class UIUserActivitiesDisplay extends UIContainer {
    * @throws Exception 
    */
   public UIUserActivitiesDisplay() throws Exception {
-    ResourceBundle resourceBundle = WebuiRequestContext.getCurrentInstance().getApplicationResourceBundle();
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.All_Updates"), DisplayMode.ALL_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Network_Updates"), DisplayMode.NETWORK_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.Space_Updates"), DisplayMode.SPACE_UPDATES.toString()));
-    displayModes.add(new SelectItemOption<String>(resourceBundle.getString("UIUserActivitiesDisplay.label.My_Status"), DisplayMode.MY_STATUS.toString()));
+    displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.NETWORK_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.SPACE_UPDATES.toString()));
+    displayModes.add(new SelectItemOption<String>("My_Status", DisplayMode.MY_STATUS.toString()));
     
     UIDropDownControl uiDropDownControl = addChild(UIDropDownControl.class, "DisplayModesDropDown", null);
     uiDropDownControl.setOptions(displayModes);
