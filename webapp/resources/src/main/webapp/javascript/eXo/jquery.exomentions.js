@@ -703,6 +703,8 @@
       var hasTrigger = hasTriggerChar(fVal);
       if (hasTrigger != false) {
         inputBuffer = hasTrigger;
+        isInput = false;
+        valueBeforMention = '';
         onInputBoxInput();
       } else {
         resetBuffer();
