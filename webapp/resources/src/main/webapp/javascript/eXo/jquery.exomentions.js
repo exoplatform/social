@@ -765,6 +765,7 @@
       disabledPlaceholder();
       resetBuffer();
       inputBuffer[0] = settings.triggerChar;
+      valueBeforMention = '';
       //
       isInput = false;
       onInputBoxInput();
