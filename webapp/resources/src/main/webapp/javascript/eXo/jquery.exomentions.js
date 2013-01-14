@@ -607,9 +607,7 @@
     }
 
     function onInputBoxKeyUp(e) {
-      if(utils.isIE) {
-        isInput = false;
-      }
+
       checkRemoveMoreOneText(e);
 
       backspceBroswerFix(e);
@@ -652,6 +650,7 @@
           var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
           index = (index <= 0) ? (inputBuffer.length - 1) : index;
           inputBuffer.splice(index, 1);
+          isInput = false;
         }
 
       } else if (delta === -1) {
@@ -664,6 +663,7 @@
               var char_ = inputBuffer[inputBuffer.length - 1];
               inputBuffer.splice(index, 0, char_);
               inputBuffer.pop();
+              isInput = false;
               isReset = false;
             } else {
               resetBuffer();
