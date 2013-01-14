@@ -152,6 +152,57 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     myList = gotList.getSpaces();
     sRest = myList.get(0);
     assertEquals("space_2", sRest.getName());
+    
+    //appIdNull
+    response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    gotList = (SpaceList) response.getEntity();
+    assertNotNull(gotList);
+    myList = gotList.getSpaces();
+    sRest = myList.get(0);
+    assertEquals("space_2", sRest.getName());
+
+    //
+    endSession();
+  }
+  
+  public void testGetSpacesLastVisitedAppIdNull() throws Exception {
+    //
+    startSessionAs("mary");
+    
+    populateData();
+    //
+    ContainerResponse response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    SpaceList list = (SpaceList) response.getEntity();
+    assertNotNull(list);
+    assertEquals(5, list.getSpaces().size());
+     
+    //
+    Space space2 = spaceService.getSpaceByPrettyName("space_2");
+    assertNotNull(space2);
+    spaceService.updateSpaceAccessed("mary", space2);
+    List<Space> spaces = spaceService.getLastAccessedSpace("mary", "app1", 0, 5);
+    assertEquals(5, spaces.size());
+    Space got = spaces.get(0);
+    assertEquals("space_2", got.getPrettyName());
+    
+    response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?appId=app1&limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    SpaceList gotList = (SpaceList) response.getEntity();
+    assertNotNull(gotList);
+    List<SpaceRest> myList = gotList.getSpaces();
+    SpaceRest sRest = myList.get(0);
+    assertEquals("space_2", sRest.getName());
+    
+    //appIdNull
+    response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?limit=5", "", null, null);
+    assertEquals(200, response.getStatus());
+    gotList = (SpaceList) response.getEntity();
+    assertNotNull(gotList);
+    myList = gotList.getSpaces();
+    sRest = myList.get(0);
+    assertEquals("space_2", sRest.getName());
 
     //
     endSession();

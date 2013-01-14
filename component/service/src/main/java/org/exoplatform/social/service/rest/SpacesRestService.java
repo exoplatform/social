@@ -183,7 +183,7 @@ public class SpacesRestService implements ResourceContainer {
    * @param limit
    * @return
    */
-  private SpaceList getMySpacesLastVisited(String userId, String appId, int offset, int limit) {
+  private SpaceList getLastVisitedSpace(String userId, String appId, int offset, int limit) {
     SpaceList spaceList = new SpaceList();
     _spaceService = getSpaceService();
     List<Space> mySpaces = null;
@@ -324,7 +324,7 @@ public class SpacesRestService implements ResourceContainer {
    */
   @GET
   @Path("lastVisitedSpace/list.{format}")
-  public Response getMySpaceLastVisited(@Context UriInfo uriInfo,
+  public Response getLastVisitedSpace(@Context UriInfo uriInfo,
                                   @PathParam("portalName") String portalName,
                                   @PathParam("format") String format,
                                   @QueryParam("appId") String appId,
@@ -346,6 +346,7 @@ public class SpacesRestService implements ResourceContainer {
       userId = Util.getViewerId(uriInfo);
     }
     
+    //
     int newLimit = Math.min(limit, 10);
     int newOffset = 0;
     if (offset > 0) {
@@ -354,7 +355,13 @@ public class SpacesRestService implements ResourceContainer {
       newOffset = 0;
     }
     
-    SpaceList mySpaceList = getMySpacesLastVisited(userId, appId, newOffset, newLimit);
+    //
+    String newAppId = null;
+    if (appId != null && appId.trim().length() > 0) {
+      newAppId = appId;
+    }
+    
+    SpaceList mySpaceList = getLastVisitedSpace(userId, newAppId, newOffset, newLimit);
     return Util.getResponse(mySpaceList, uriInfo, mediaType, Response.Status.OK);
   }
 
