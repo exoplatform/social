@@ -195,7 +195,7 @@ public class UISpaceMenu extends UIContainer {
       renamedNode.setLabel(newSpaceAppName);
       UserPortalConfigService configService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
       DataStorage dataService = spaceMenu.getApplicationComponent(DataStorage.class);
-      Page page = dataService.getPage(renamedNode.getPageRef().format());
+      Page page = dataService.getPage(renamedNode.getPageRef());
       if (page != null) {
         page.setTitle(newNodeName);
         dataService.save(page);

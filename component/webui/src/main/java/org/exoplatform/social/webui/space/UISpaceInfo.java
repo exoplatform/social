@@ -344,7 +344,7 @@ public class UISpaceInfo extends UIForm {
       renamedNode.setLabel(newNodeLabel);
       renamedNode.setName(newNodeName);
 
-      Page page = dataService.getPage(renamedNode.getPageRef().format());
+      Page page = dataService.getPage(renamedNode.getPageRef());
       if (page != null) {
         page.setTitle(newNodeLabel);
         dataService.save(page);
