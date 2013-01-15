@@ -127,6 +127,10 @@ public class UIUserActivitiesDisplay extends UIForm {
     }
   }
 
+  protected boolean isHomePage() {
+    return (Utils.getSelectedNode() == null || Utils.getSelectedNode().length() == 0);  
+  }
+  
   public UIActivitiesLoader getActivitiesLoader() {
     return activitiesLoader;
   }

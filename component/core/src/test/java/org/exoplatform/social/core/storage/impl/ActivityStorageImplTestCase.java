@@ -390,6 +390,11 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
     assertEquals("userId must be " + johnIdentity.getId(), johnIdentity.getId(), gotActivity.getUserId());
     
+    //
+    List<ExoSocialActivity> gotActivities = activityStorage.getUserActivities(johnIdentity, 0, 20);
+    assertEquals(1, gotActivities.size());
+    assertEquals(johnIdentity.getId(), gotActivities.get(0).getUserId());
+    
     identityStorage.deleteIdentity(spaceIdentity);
   }
 

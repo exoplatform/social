@@ -354,7 +354,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
+    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
     
   }
   
