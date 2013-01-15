@@ -43,6 +43,7 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
 public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();
+  Identity poster;
   Identity mentioner;
   Identity liker;
   Identity commenter;
@@ -79,10 +80,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   private void destroy(JCRFilterLiteral filter) {
     where.destroy();
     filter.destroy();
+    poster = null;
     mentioner = null;
     liker = null;
     commenter = null;
     identities = null;
+  }
+  
+  public ActivityBuilderWhere poster(Identity poster) {
+    this.poster = poster;
+    return this;
   }
   
   public ActivityBuilderWhere mentioner(Identity mentioner) {
@@ -251,6 +258,11 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
+        }
+        
+        if (poster != null) {
+          where.or();
+          where.equals(ActivityEntity.poster, poster.getId());
         }
         
         if (mentioner != null) {
