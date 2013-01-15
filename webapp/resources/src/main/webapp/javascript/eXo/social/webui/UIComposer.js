@@ -116,6 +116,11 @@ var UIComposer = {
       $('textarea#composerInput').exoMentions('clearLink', function() {});
       $('#actionLink').trigger('click');
     }
+  },
+  activeShareButton : function() {
+    try {
+      $('textarea#composerInput').exoMentions('showButton', function() {});
+    } catch (e) {}
   }
 };
 
