@@ -172,7 +172,7 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public String getPageRef() {
-    return node.getPageRef();
+    return node.getPageRef().format();
   }
 
   public String getId() {
@@ -251,7 +251,7 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public void setPageRef(String pageRef) {
-    node.setPageRef(pageRef);
+    node.setPageRef(PageKey.parse(pageRef));
   }
 
   public String getResolvedLabel() {
