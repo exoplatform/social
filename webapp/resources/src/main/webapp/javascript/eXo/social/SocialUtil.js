@@ -1,10 +1,27 @@
-(function () {
+(function (eXo) {
   
   if(!String.prototype.trim) {
     String.prototype.trim = function () {
       return this.replace(/^\s+|\s+$/g,'');
     };
   }
+  
+  var portal = eXo.env.portal
+  eXo.social = eXo.social || {};
+  eXo.social.portal = {
+    rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
+    portalName : (portal.portalName) ? portal.portalName : 'classic',
+    context : (portal.context) ? portal.context : '/socialdemo',
+    accessMode : (portal.accessMode) ? portal.accessMode : 'public',
+    userName : (portal.userName) ? portal.userName : ''
+  };
+  eXo.social.I18n = eXo.social.I18n || {};
+  eXo.social.I18n.mentions = eXo.social.I18n.mentions || {
+    helpSearch: 'Type to start searching for users.',
+    searching: 'Searching for ',
+    foundNoMatch : 'Found no matching users for '
+  };
+
   
   var SocialUtils = {
     /**
@@ -121,9 +138,8 @@
     	return browser;
     }
   };
-  window.eXo = eXo || {};
-  window.eXo.social = eXo.social || {};
-  window.eXo.social.SocialUtils = SocialUtils;
+
+  eXo.social.SocialUtils = SocialUtils;
   return SocialUtils;
 
-})();
+})(window.eXo);

@@ -156,6 +156,13 @@
       <module>jquery</module>
       <as>$</as>
     </depends>
+    <depends>
+       <module>mentionsPlugin</module>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
   </module>
 
   <module>
@@ -172,6 +179,13 @@
     <depends>
       <module>jquery</module>
       <as>$</as>
+    </depends>
+    <depends>
+       <module>mentionsPlugin</module>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
     </depends>
   </module>
 
@@ -243,5 +257,27 @@
       <module>jquery</module>
       <as>jQuery</as>
     </depends>
+  </module>
+  <module>
+    <name>mentionsPlugin</name>
+    <script>
+      <name>mentions-plugin</name>
+      <path>/javascript/eXo/jquery.exomentions.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
+    <depends>
+      <module>mentionsLib</module>
+      <as>mentions</as>
+    </depends>
+  </module>
+  <module>
+    <name>mentionsLib</name>
+    <script>
+      <name>underscore-lib</name>
+      <path>/javascript/eXo/underscore.js</path>
+    </script>
   </module>
 </gatein-resources>

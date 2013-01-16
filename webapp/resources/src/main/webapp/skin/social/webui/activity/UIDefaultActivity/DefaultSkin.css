@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
+@import url('/social-resources/skin/social/jquery.exomentions.css');
 
 .DisplayNone {
 	display: none;
@@ -22,6 +23,11 @@
 .UIActivity .AvatarPeopleBG img {
 	height: 47px;
 	width: 47px;
+}
+
+.UIActivity .CommentInputBox textarea {
+  height: 28px;
+  width: 80%;  
 }
 
 .UIActivity .Avatar {
@@ -70,10 +76,6 @@
 
 .UIActivity .CommentInputBox {
 	margin-left: 50px;
-	padding-right: 15px;
-	border: 1px solid #e1e1e1;
-	border-radius: 3px;
-	overflow: hidden;
 }
 
 .UIActivity .AvatarCM span {
@@ -100,25 +102,9 @@
 	margin-left: 1px;
 }
 
-.UIActivity .NormalBox .textarea {
-	border: 1px solid #e2ddc7;
-	background: white;
-}
-
-.UIActivity .NormalBox .CommentBox textarea {
-	width: 100%;
-	font-size: 11px;
-	padding: 5px;
-	border: 1px solid white;
-}
-
-*+html .UIActivity .NormalBox .CommentBox textarea {
-	margin-left: -50px;
-}
-
 .UIActivity .NormalBox .CommentBox .CommentButton {
 	border-radius: 3px;
-	background: #6C6C6C !important;
+	background: #6C6C6C;
 	border: 1px solid #7B7B7B;
 	color: #FFFFFF;
 	cursor: pointer;
@@ -127,6 +113,12 @@
 	font-weight: bold;
 	margin: 5px 0px 0px 0px;
 	padding: 3px 15px;
+}
+
+.UIActivity .NormalBox .CommentBox .DisableButton {
+	border: 1px solid #E7E7E7;
+	background: #E7E7E7;
+	cursor: auto;
 }
 
 .UIActivity .CommentBlockBound {
@@ -221,8 +213,12 @@
 
 .UIActivity .ContentBox h5 {
 	color: #f68a2f;
-	overflow: hidden;
+	overflow: visible;
 	margin: 0;
+}
+
+.UIActivity .ContentBox .TitleContent {
+	height: 14px;
 }
 
 .UIActivity .ContentBox .Content, .AnswerActivity .BoxGray p {

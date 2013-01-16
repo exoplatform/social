@@ -164,7 +164,7 @@ link
     %>
   </div>
 <% } else { %>
-  <div class="UIComposerExtensionContainer">
+  <div class="UIComposerExtensionContainer LinkExtensionContainer" style="display:<%=((uicomponent.isDisplayed)?"block":"none")%>">
   	<span class="TopInputLink"></span>
     <div class="UIComposerLinkExtension ClearFix">
       <a href="#" id="AttachButton" class="AttachButton" >&nbsp;</a>

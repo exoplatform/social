@@ -18,7 +18,6 @@ package org.exoplatform.social.webui.composer;
 
 
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -55,24 +54,21 @@ public class UIComposer extends UIForm {
 
   private UIContainer optionContainer;
   private PostContext postContext;
-  private UIFormTextAreaInput messageInput;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
   private boolean isActivityStreamOwner;
 
   private static final String HTML_ATTRIBUTE_TITLE = "title";
+  private static final String COMPOSER_TEXT_AREA_INPUT = "composerInput";
   
   /**
    * Constructor
    * @throws Exception
    */
   public UIComposer() throws Exception {
-    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
-    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    
+    if(this.getId() == null) this.setId("UIComposer");
     //add textbox for inputting message
-    messageInput = new UIFormTextAreaInput("composerInput", "composerInput", null);
-    messageInput.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIComposer.input.Write_Something"));
+    UIFormTextAreaInput messageInput = new UIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT, COMPOSER_TEXT_AREA_INPUT, null);
     addUIFormInput(messageInput);
 
     //add composer container
@@ -95,7 +91,12 @@ public class UIComposer extends UIForm {
     return isActivityStreamOwner;
   }
 
+  protected void changeTitleTextAreInput() throws Exception {
+    getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT).setHTMLAttribute(HTML_ATTRIBUTE_TITLE, getLabel("What_Are_You_Working_On"));
+  }
+
   private void initActivityComposerManager() throws Exception {
+
     UIExtensionManager uiExtensionManager = (UIExtensionManager) PortalContainer.getInstance().
                                                                   getComponentInstanceOfType(UIExtensionManager.class);
     final List<UIExtension> extensionList = uiExtensionManager.getUIExtensions(UIActivityComposer.class.getName());
@@ -143,7 +144,7 @@ public class UIComposer extends UIForm {
   }
 
   public String getMessage() {
-    return getChild(UIFormTextAreaInput.class).getValue();
+    return getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT).getValue();
   }
 
   public PostContext getPostContext() {
@@ -195,26 +196,16 @@ public class UIComposer extends UIForm {
       }
       
       //get posted message
-      String message = (uiComposer.getMessage() == null)?"":uiComposer.getMessage();
+      UIFormTextAreaInput textAreaInput = uiComposer.getUIFormTextAreaInput(COMPOSER_TEXT_AREA_INPUT);
+      String message = textAreaInput.getValue();
+      textAreaInput.setValue("");
+      //
+      message = (message == null || 
+                 uiComposer.getLabel("Write_Something").equals(message) || 
+                 uiComposer.getLabel("What_Are_You_Working_On").equals(message)) ? "" : message;
 
-      String defaultInput = "";
-      if (uiComposer.getPostContext() == PostContext.SPACE) {
-        defaultInput = event.getRequestContext().getApplicationResourceBundle().
-                getString(uiComposer.getId()+".input.Write_Something");
-      } else {
-        defaultInput = event.getRequestContext().getApplicationResourceBundle().
-                getString(uiComposer.getId()+".input.What_Are_You_Working_On");
-      }
-
-      if (message.equals(defaultInput)) {
-        message = "";
-      }
-      
-      UIFormTextAreaInput messageInput = uiComposer.getChild(UIFormTextAreaInput.class);
-      messageInput.setValue("");
       //post activity via the current activity composer
-      WebuiRequestContext requestContext = event.getRequestContext();
-      activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, requestContext, message);
+      activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, event.getRequestContext(), message);
     }
   }
 }

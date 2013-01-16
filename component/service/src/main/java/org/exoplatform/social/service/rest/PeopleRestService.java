@@ -160,6 +160,87 @@ public class PeopleRestService implements ResourceContainer{
     return Util.getResponse(nameList, uriInfo, mediaType, Response.Status.OK);
   }
   
+  /**
+   * Gets and returns list of user's name that match the input string for suggesting.
+   * 
+   * @param uriInfo
+   * @param name
+   * @param format
+   * @return list of user's name match the input string.
+   * @throws Exception
+   */
+  @GET
+  @Path("getprofile/data.json")
+  public Response suggestUsernames(@Context UriInfo uriInfo,
+                    @QueryParam("search") String query) throws Exception {
+    MediaType mediaType = Util.getMediaType("json", new String[]{"json"});
+    List<Identity> excludedIdentityList = new ArrayList<Identity>();
+    ProfileFilter filter = new ProfileFilter();
+    
+    filter.setName(query);
+    filter.setCompany("");
+    filter.setPosition("");
+    filter.setSkills("");
+    filter.setExcludedIdentityList(excludedIdentityList);
+    List<Identity> identities = Arrays.asList(getIdentityManager().getIdentitiesByProfileFilter(
+                                  OrganizationIdentityProvider.NAME, filter, false).load(0, (int)SUGGEST_LIMIT));
+    
+    List<UserInfo> userInfos = new ArrayList<PeopleRestService.UserInfo>(identities.size());
+    UserInfo userInfo;
+    for (Identity identity : identities) {
+      userInfo = new UserInfo(identity.getRemoteId());
+      userInfo.setName(identity.getProfile().getFullName());
+      userInfo.setAvatar(identity.getProfile().getAvatarUrl());
+      userInfo.setType("contact"); //hardcode for test
+      userInfos.add(userInfo);
+    }
+    
+    return Util.getResponse(userInfos, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  static public class UserInfo {
+    static private String AVATAR_URL = "/social-resources/skin/ShareImages/Avatar.gif";
+
+    String id;
+    String name;
+    String avatar;
+    String type;
+
+    public UserInfo(String name) {
+      this.name = name;
+      this.id = "@" + name;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setAvatar(String url) {
+      this.avatar = url;
+    }
+
+    public String getAvatar() {
+      if (avatar == null || avatar.length() == 0) return AVATAR_URL;
+      return avatar;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
+  }
+  
 
   /**
    * Gets and returns list people's information that have had connection with current viewer.
