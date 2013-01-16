@@ -28,45 +28,45 @@
   def spaceDisplayName = uicomponent.getSpaceDisplayName();
   def redirectURI = uicomponent.getRedirectURI();
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="UISpaceAccessPortlet">
   <% if ("social.space.access.join-space".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessYellow">
-      <strong>Restricted Area</strong>
-      </br>You must be a member of the space <b><%= spaceDisplayName %></b> to view this page. <a href="javascript:void(0)" onclick="<%= uicomponent.event("Join") %>" title="Join" class="Action">Join</a>
+    <div class="SpaceAccessBlock lockIcon">
+      <h3>Restricted Area</h3>
+      <div class="spaceAccessInfo">You must be a member of the space <b><%= spaceDisplayName %></b> to view this page. </div>
+      <a href="javascript:void(0)" onclick="<%= uicomponent.event("Join") %>" title="Join" class="btn btn-primary">Join</a>
     </div>
   <% } else if ("social.space.access.closed-space".equals(status)) { %>
-    <div class="SpaceAccessBlock SpaceAccessRed">
-      <strong>Access Denied.</strong>
-      <br/>You must be invited by an administrator to the <b><%= spaceDisplayName %></b> space  to access this page.
+    <div class="spaceAccessBlock denyIcon">
+      <h3>Access Denied.</h3>
+      <div class="spaceAccessInfo">You must be invited by an administrator to the <b><%= spaceDisplayName %></b> space  to access this page.</div>
     </div>
   <%}  else if ("social.space.access.request-join-space".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessYellow">
-      <strong>Restricted Area</strong>
-      <br>You must be a member of the space <b>${spaceDisplayName}</b> to view this page. <a href="javascript:void(0)" onclick="<%= uicomponent.event("RequestToJoin") %>" title="Request to Join" class="Action">Request to Join</a> </br>
+    <div class="spaceAccessBlock lockIcon">
+      <h3>Restricted Area</h3>
+      <div class="spaceAccessInfo">You must be a member of the space <b>${spaceDisplayName}</b> to view this page. </div>
+      <a href="javascript:void(0)" onclick="<%= uicomponent.event("RequestToJoin") %>" title="Request to Join" class="btn btn-primary">Request to Join</a>
     </div>
   <% } else if ("social.space.access.requested-join-space".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessBlue">
-      Your request to join <b><%= spaceDisplayName %></b> has been sent.
+    <div class="spaceAccessBlock">
+      <div class="spaceAccessInfo">Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
     </div>
   <% } else if ("social.space.access.requested.success".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessBlue">
-      Your request to join <b><%= spaceDisplayName %></b> has been sent.
+    <div class="spaceAccessBlock">
+      <div class="spaceAccessInfo">Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
     </div>
   <% } else if ("social.space.access.invited-space".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessYellow">
-      You are invited to join the space <b><%= spaceDisplayName %><b> by the administrator. <a href="javascript:void(0)" onclick="<%= uicomponent.event("Accept") %>" title="Accept" class="Action">Accept</a> | <a href="javascript:void(0)" onclick="<%= uicomponent.event("Refuse") %>" title="Refuse" class="Action">Refuse</a></br>
+    <div class="spaceAccessBlock">
+      <div class="spaceAccessInfo">You are invited to join the space <b><%= spaceDisplayName %></b> by the administrator.</div>
+      <a href="javascript:void(0)" onclick="<%= uicomponent.event("Accept") %>" title="Accept" class="btn btn-primary">Accept</a>
+      <a href="javascript:void(0)" onclick="<%= uicomponent.event("Refuse") %>" title="Refuse" class="btn">Refuse</a>
     </div>
   <% } else if ("social.space.access.not-access-wiki-space".equals(status)) {%>
-    <div class="SpaceAccessBlock PermanWikiLink">
+    <div class="spaceAccessBlock permanWikiLink">
       <a href="<%= redirectURI %>">Wiki Permalink</a>
     </div>
   <% } else if ("social.space.access.space-not-found".equals(status)) {%>
-    <div class="SpaceAccessBlock SpaceAccessRed">
-      <strong>Space Not Found</strong>
-      </br>No space is available at this URL. <a href="<%= redirectURI %>">Find Spaces</a>
+    <div class="spaceAccessBlock warningIcon">
+      <h3>Space Not Found</h3>
+      <div class="spaceAccessInfo">No space is available at this URL.</div>
+      <a href="<%= redirectURI %>" class="btn btn-primary">Find Spaces</a>
     </div>
   <% } %>
-  
-  </div>  
-</div>
