@@ -159,7 +159,7 @@
       };
       for ( var i = 0; i < before.length; ++i) {
         if (before[i] != after[i]) {
-          info.from = i - 1;
+          info.from = (i > 1) ? (i - 1) : 0;
           break;
         }
       }
@@ -422,9 +422,14 @@
       var before = $.trim(elmInputBox.value());
       elmInputBox.animate({
         'cursor' : 'wait'
-      }, 100, function() {
+      }, 50, function() {
         var after = $.trim(elmInputBox.value());
         var info = utils.getIndexChange(before, after);
+        if(after.indexOf('<img src="data:image/') >= 0) {
+          elmInputBox.val(before.substring(0, info.from) + '<div class="cursorText"></div>' + before.substring(info.from));
+          setCaratPosition(elmInputBox);
+          return;
+        }
         var text = after.substr(info.from, info.to);
         var nt = text.replace(new RegExp("(<[a-z0-9].*?>)(.*)(</[a-z0-9].*?>)", "gi"), "$2");
         if (nt.length < text.length) {
