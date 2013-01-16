@@ -212,6 +212,36 @@
       </childNodeDefinition>
     </childNodeDefinitions>
   </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.HidableEntity -->
+  <nodeType name="soc:hidable" isMixin="true" hasOrderableChildNodes="false">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:isHidden" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>false</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.LockableEntity -->
+  <nodeType name="soc:lockable" isMixin="true" hasOrderableChildNodes="false">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:isLocked" requiredType="Boolean" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>false</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityEntity -->
   <nodeType name="soc:activity" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>

@@ -48,7 +48,9 @@ import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityParameters;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.LockableEntity;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -123,6 +125,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setPostedTime(activityMillis);
     activityEntity.setLastUpdated(activityMillis);
     activityEntity.setPosterIdentity(posterIdentityEntity);
+    
 
     // Fill activity model
     activity.setId(activityEntity.getId());
@@ -158,6 +161,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setUrl(activity.getUrl());
     activityEntity.setPriority(activity.getPriority());
     activityEntity.setLastUpdated(activity.getUpdated().getTime());
+    
+    //
+    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, true);
+    hidable.setHidden(activity.isHidden());
+    LockableEntity lockable = _getMixin(activityEntity, LockableEntity.class, true);
+    lockable.setLocked(activity.isLocked());
 
     //
     Map<String, String> params = activity.getTemplateParams();
@@ -209,6 +218,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     else {
       activity.setTemplateParams(new HashMap<String, String>());
     }
+    
+    //
+    LockableEntity lockable = _getMixin(activityEntity, LockableEntity.class, false);
+    if (lockable != null) {
+      activity.isLocked(lockable.getLocked());
+    }
+    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+    if (hidable != null) {
+      activity.isHidden(hidable.getHidden());
+    }
+    
 
     //
     fillStream(activityEntity, activity);
@@ -621,35 +641,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, ExoSocialActivity baseActivity) {
 
-    int nb = 0;
-
-    try {
-
-      //
-      IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
-      ActivityEntity activity = _findById(ActivityEntity.class, baseActivity.getId());
-
-      //
-      Long targetTimestamp = activity.getPostedTime();
-
-      for (ActivityEntity current : new ActivityList(identity.getActivityList())) {
-        //
-        if (current.getPostedTime() <= targetTimestamp) {
-          return nb;
-        }
-
-        //
-        ++nb;
-      }
-
-      return nb;
-
+    if (ownerIdentity == null) {
+      return 0;
     }
-    catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT,
-          e.getMessage());
-    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(ownerIdentity), filter).objects().size();
 
   }
 

@@ -81,7 +81,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
   }
@@ -101,7 +101,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -125,7 +125,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:lastUpdated < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:lastUpdated < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -147,7 +147,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:postedTime > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -168,7 +168,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(demoIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:postedTime < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -190,7 +190,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime > " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:postedTime > " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     
@@ -212,7 +212,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
     identities.add(rootIdentity);
     where.owners(identities);
     
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND soc:postedTime < " + accessPoint + " ";
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) AND soc:postedTime < " + accessPoint + " ";
     String actualWhere =  where.build(filter);
     assertEquals(expectedWhere, actualWhere);
     

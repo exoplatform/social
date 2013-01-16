@@ -20,14 +20,12 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -35,8 +33,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.processor.MentionsProcessor;
-import org.exoplatform.social.core.processor.OSHtmlSanitizerProcessor;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -481,6 +477,90 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ++i;
     }
   }
+  
+  @MaxQueryNumber(200)
+  public void testActivityHidden() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    activity.isHidden(false);
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    got.isHidden(true);
+
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    assertEquals(true, updatedActivity.isHidden());
+  }
+  
+  @MaxQueryNumber(200)
+  public void testActivityUnHidden() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    activity.isHidden(true);
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    got.isHidden(false);
+
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    assertEquals(false, updatedActivity.isHidden());
+  }
+  
+  @MaxQueryNumber(200)
+  public void testActivityLock() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    activity.isLocked(false);
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    got.isLocked(true);
+
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    assertEquals(true, updatedActivity.isLocked());
+  }
+  
+  @MaxQueryNumber(200)
+  public void testActivityUnLock() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activity.setBody("body");
+    activity.isLocked(true);
+    activityStorage.saveActivity(rootIdentity, activity);
+    assertNotNull(activity.getId());
+
+    //
+    ExoSocialActivity got = activityStorage.getActivity(activity.getId());
+    got.isLocked(false);
+
+    activityStorage.updateActivity(got);
+
+    ExoSocialActivity updatedActivity = activityStorage.getActivity(activity.getId());
+    assertEquals(false, updatedActivity.isLocked());
+  }
 
   @MaxQueryNumber(4000)
   public void testCommentOrder() throws Exception {
@@ -635,7 +715,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(420)
+  @MaxQueryNumber(430)
   public void testManyDays() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -686,7 +766,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(250)
+  @MaxQueryNumber(270)
   public void testManyDaysNoActivityOnMonth() throws Exception {
 
     long timestamp11 = timestamp(2001, 1, 1);
@@ -709,7 +789,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(500)
+  @MaxQueryNumber(540)
   public void testManyDaysNoActivityOnYear() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);
@@ -744,7 +824,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(600)
+  @MaxQueryNumber(650)
   public void testManyDaysNoActivityOnAll() throws Exception {
 
     long timestamp111 = timestamp(2001, 1, 1);

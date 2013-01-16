@@ -229,7 +229,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link org.exoplatform.social.core.storage.ActivityStorage#deleteComment(String, String)}
    */
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(105)
   public void testDeleteComment() throws ActivityStorageException {
 
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -392,7 +392,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfNewerOnUserActivities(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(210)
   public void testGetNumberOfNewerOnUserActivities() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -544,7 +544,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfOlderOnActivityFeed(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(370)
   public void testGetNumberOfOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -565,7 +565,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getOlderOnActivityFeed(Identity, ExoSocialActivity, int)}.
    */
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(165)
   public void testGetOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     ExoSocialActivity demoBaseActivity = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(2);

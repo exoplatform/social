@@ -37,7 +37,7 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * Indicate if this is a comment to an activity.
    */
-  private transient boolean isAComment = false;
+  private boolean isAComment = false;
 
   /**
    * displaying and processing activity based on this type.
@@ -52,7 +52,12 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   /**
    * Boolean value to indicate if this is a hidden activity.
    */
-  private transient boolean isHiddenActivity;
+  private boolean isHiddenActivity = false;
+  
+  /**
+   * Boolean value to indicate if this is a locked activity.
+   */
+  private boolean isLockedActivity = false;
 
   /**
    * array of identity ids who like this activity.
@@ -231,6 +236,24 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    */
   public final void isHidden(final boolean isHiddenOrNot) {
     isHiddenActivity = isHiddenOrNot;
+  }
+  
+  /**
+   * {@inheritDoc}
+   *
+   * @return
+   */
+  public final boolean isLocked() {
+    return isLockedActivity;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param isLockedOrNot true or false
+   */
+  public final void isLocked(final boolean isLockedOrNot) {
+    isLockedActivity = isLockedOrNot;
   }
 
   /**

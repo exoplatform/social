@@ -100,6 +100,20 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param isHiddenOrNot true or false
    */
   void isHidden(boolean isHiddenOrNot);
+  
+  /**
+   * To know if this is a locked activity.
+   *
+   * @return true or false
+   */
+  boolean isLocked();
+
+  /**
+   * Sets to indicate if this is a locked activity or not.
+   *
+   * @param isLockedOrNot true or false
+   */
+  void isLocked(boolean isLockedOrNot);
 
   /**
    * Gets array of identityIds who like this activity.

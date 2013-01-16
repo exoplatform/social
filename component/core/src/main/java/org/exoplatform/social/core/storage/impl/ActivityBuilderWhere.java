@@ -18,7 +18,6 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +27,7 @@ import org.exoplatform.social.common.jcr.filter.FilterLiteral.DIRECTION;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.BuilderWhereExpression;
@@ -137,6 +137,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
       //
@@ -188,6 +198,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
       //
