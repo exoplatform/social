@@ -33,39 +33,24 @@
 
   //trick here, uiform does not keep submitAction for second render, portal bug?
   uicomponent.setSubmitAction("return false;");
+  uicomponent.changeTitleTextAreInput();
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
-  def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
-  def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
-  def blastInput = "BlastInputSpace";
-  def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
-  if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
-    blastInput = "BlastInputPeople";
-  }
-
-  def composerId = uicomponent.getChild(UIFormTextAreaInput.class).getId();
-
-  def params = """
-    {
-      composerId: '${composerId}',
-      defaultInput: '${defaultInput}',
-      focusColor: null,
-      blurColor: null,
-      minHeight: null,
-      maxHeight: null,
-      padding: '11px 0 11px 8px',
-      focusHeight: null,
-      focusCallback: null,
-      blurCallback: null,
-      keypressCallback: null,
-      postMessageCallback: null
-    }
-  """
-
-  jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.onLoad($params);");
+  String addLabel = _ctx.appRes("UIComposer.label.Add");
+  String shareLabel = _ctx.appRes("UIComposer.label.Share");
+  String blastInput = "BlastInputSpace";
+  String shareStatusLabel = _ctx.appRes("UIComposer.label.ShareStatus");
+  String foundNoMatch = _ctx.appRes("Mentions.msg.foundNoMatch");
+  foundNoMatch = foundNoMatch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+  String helpSearch = _ctx.appRes("Mentions.msg.helpSearch");
+  helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+  String searching = _ctx.appRes("Mentions.msg.searching");
+  searching = searching.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+  jsManager.require("SHARED/uiForm");
+  jsManager.require("SHARED/social-ui-activity-composer", "composer")
+           .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});")
+           .addScripts("UIComposer.onLoad({composerId:'$uicomponent.id', textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}'});");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
@@ -74,7 +59,7 @@
          <h4>$shareStatusLabel</h4>
     <% } %>
     <div class="$blastInput">
-      <% uicomponent.renderChild(UIFormTextAreaInput.class) %>
+      <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT) %>
     </div>
     <div class="BlastShare ClearFix">
       <div class="AttachMents">
@@ -86,25 +71,22 @@
           counter++;
           simpleName = acComposer.getClass().getSimpleName();
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-          if (acComposer.isDisplayed()) {
-            actionEvent = "Close";
-          } else {
-            actionEvent = "Activate";
-          }
-          if (counter > 1) {
+
+          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue()";
+	      if(simpleName.equals("UILinkActivityComposer")) {
+	      	print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
+	      	action = "UIComposer.showLink()";
+	      }
+          	
       %>
-        <a href="#" title="$labelSimpleName" class="$simpleName DottedLine" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" >$labelSimpleName</a>
-      <% } else { %>
-        <a href="#" title="$labelSimpleName" class="$simpleName" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " >$labelSimpleName</a>
+          <a href="javascript:void(0)" title="$labelSimpleName" class="$simpleName <%=((counter > 1) ? "DottedLine" : "")%>" onclick="$action">$labelSimpleName</a>
       <%
-         }
         }
       %>
       </div>
 
     <%
       def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
-      def isReady = currentActivityComposer.isReadyForPostingActivity();
 
       if (!(currentActivityComposer instanceof UIDefaultActivityComposer)) {
     %>
@@ -118,12 +100,7 @@
     <%
       }
     %>
-      <%
-        def isReadyForPostingActivity = currentActivityComposer.isReadyForPostingActivity();
-        jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
-      %>
-          
-      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()" value="$shareLabel"></input>
+      <input class="ShareButton" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>;" value="$shareLabel"></input>
     </div>
   </div>
   <% uiform.end()%>

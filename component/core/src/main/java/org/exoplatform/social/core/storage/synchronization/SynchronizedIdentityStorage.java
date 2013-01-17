@@ -212,6 +212,25 @@ public class SynchronizedIdentityStorage extends IdentityStorageImpl {
     }
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<Identity> getIdentitiesForMentions(
+      final String providerId, final ProfileFilter profileFilter, final long offset, final long limit,
+      final boolean forceLoadOrReloadProfile)
+      throws IdentityStorageException {
+
+    boolean created = startSynchronization();
+    try {
+       return super.getIdentitiesForMentions(providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
 
   /**
    * {@inheritDoc}

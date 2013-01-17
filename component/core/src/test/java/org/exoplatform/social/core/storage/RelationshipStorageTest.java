@@ -132,7 +132,7 @@ public class RelationshipStorageTest extends AbstractCoreTest {
    * Test for {@link org.exoplatform.social.core.storage.api.RelationshipStorage#getRelationship(String)}
    * @throws RelationshipStorageException
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(100)
   public void testGetRelationship() throws RelationshipStorageException {
     Relationship rootToJohnRelationship = new Relationship(rootIdentity, johnIdentity, Type.PENDING);
     rootToJohnRelationship = relationshipStorage.saveRelationship(rootToJohnRelationship);

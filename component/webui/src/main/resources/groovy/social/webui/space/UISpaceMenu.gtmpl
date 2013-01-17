@@ -72,7 +72,7 @@
   def settingsLabel = _ctx.appRes(uicomponent.getId() + ".label.Settings");
   def titleEditable = _ctx.appRes(uicomponent.getId() + ".label.Editable_Title_Element");
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
-  jsManager.require("SHARED/social-ui-space-app-name-edition", "editor").addScripts("editor.UISpaceAppNameEdition.addEditability('" + uicomponent.id + "');");
+  jsManager.require("SHARED/social-ui-space-app-name-edition", "editor").addScripts("editor.addEditability('" + uicomponent.id + "');");
 %>
 
 <div class="UISpaceMenu" id="UISpaceMenu">

@@ -34,7 +34,7 @@
           <description>save the monitor data periodically</description>
           <property name="jobName" value="JIRAFeedConsumer" />
           <property name="groupName" value="Feedmash" />
-          <property name="job" value="org.exoplatform.social.extras.samples.feedmash.JiraFeedConsumer" />
+          <property name="job" value="org.exoplatform.social.extras.feedmash.consumer.JiraFeedConsumer" />
           <property name="repeatCount" value="0" />
           <property name="period" value="60000" /> <!-- 1 mins-->
           <property name="startTime" value="+45" />
@@ -69,7 +69,7 @@
           <description>save the monitor data periodically</description>
           <property name="jobName" value="HudsonFeedConsumer" />
           <property name="groupName" value="Feedmash" />
-          <property name="job" value="org.exoplatform.social.extras.samples.feedmash.HudsonFeedConsumer" />
+          <property name="job" value="org.exoplatform.social.extras.feedmash.consumer.HudsonFeedConsumer" />
           <property name="repeatCount" value="0" />
           <property name="period" value="60000" /> <!-- 1 mins-->
           <property name="startTime" value="+10000" />

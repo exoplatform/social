@@ -62,7 +62,8 @@
     spaceURL: '$spaceURL'
 	} """
 
-  jsmanager.require("SHARED/social-ui-user-search", "search").addScripts("search.UIProfileUserSearch.init($params);");
+	jsmanager.require("SHARED/uiForm");
+  jsmanager.require("SHARED/social-ui-user-search", "search").addScripts("search.init($params);");
 	
 	def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
     def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")

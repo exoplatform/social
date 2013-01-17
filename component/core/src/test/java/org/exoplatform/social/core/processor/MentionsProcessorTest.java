@@ -79,6 +79,14 @@ public class MentionsProcessorTest extends AbstractCoreTest {
     processor.processActivity(activity);
     assertEquals("Multiple substitution : ",activity.getTitle(), rootLink + " and " + johnLink + " title");
     assertEquals(activity.getBody(), "body with " + rootLink + " and " + johnLink);
+    
+    { // test case wrong user name is mentioned 
+      activity.setTitle("@root and @wrong_username title");
+      activity.setBody("body with @root and @wrong_username");
+      processor.processActivity(activity);
+      assertEquals(activity.getTitle(), rootLink + " and @wrong_username title");
+      assertEquals(activity.getBody(), "body with " + rootLink + " and @wrong_username");
+    }
   }
   
   public void testProcessActivityWithTemplateParam() throws Exception {

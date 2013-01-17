@@ -364,6 +364,32 @@ public class CachedIdentityStorage implements IdentityStorage {
     return buildIdentities(keys);
     
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getIdentitiesForMentions(final String providerId, final ProfileFilter profileFilter,
+      final long offset, final long limit, final boolean forceLoadOrReloadProfile) throws IdentityStorageException {
+
+    //
+    IdentityFilterKey key = new IdentityFilterKey(providerId, profileFilter);
+    ListIdentitiesKey listKey = new ListIdentitiesKey(key, offset, limit);
+
+    //
+    ListIdentitiesData keys = identitiesCache.get(
+        new ServiceContext<ListIdentitiesData>() {
+          public ListIdentitiesData execute() {
+            List<Identity> got = storage.getIdentitiesForMentions(
+                providerId, profileFilter, offset, limit, forceLoadOrReloadProfile);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildIdentities(keys);
+    
+  }
 
   /**
    * {@inheritDoc}
