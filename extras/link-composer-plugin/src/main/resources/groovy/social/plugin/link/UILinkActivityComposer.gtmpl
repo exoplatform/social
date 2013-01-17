@@ -94,7 +94,7 @@ link
                   "titleEditable: '$titleEditable'"+
                 "}";
 
-  jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.UIComposerLinkExtension.onLoad($params);");
+  jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.onLoad($params);");
 %>
 <div id="$uicomponentId">
 <% if (linkInfoDisplayed) {
@@ -164,7 +164,7 @@ link
     %>
   </div>
 <% } else { %>
-  <div class="UIComposerExtensionContainer">
+  <div class="UIComposerExtensionContainer LinkExtensionContainer" style="display:<%=((uicomponent.isDisplayed)?"block":"none")%>">
   	<span class="TopInputLink"></span>
     <div class="UIComposerLinkExtension ClearFix">
       <a href="#" id="AttachButton" class="AttachButton" >&nbsp;</a>

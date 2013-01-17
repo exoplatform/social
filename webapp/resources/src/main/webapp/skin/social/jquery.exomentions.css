@@ -1,0 +1,136 @@
+
+.exo-mentions {
+  position: relative;
+  background: #fff;
+}
+
+.exo-mentions textarea {
+  display: none;
+}
+
+.exo-mentions .autocomplete-menu {
+  display: none;
+  background: #fff;
+  border: 1px solid #b2b2b2;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  margin-top: -2px;
+
+  border-radius:5px;
+  border-top-right-radius:0;
+  border-top-left-radius:0;
+
+  -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+     -moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.148438);
+}
+
+.exo-mentions .autocomplete-menu ul {
+  margin: 0;
+  padding: 0;
+}
+
+.exo-mentions .autocomplete-menu li {
+  background-color: #fff;
+  padding: 0 5px;
+  margin: 0;
+  width: auto;
+  border-bottom: 1px solid #eee;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.exo-mentions .autocomplete-menu li:last-child {
+  border-radius:0px 0px 5px 5px;
+}
+
+.exo-mentions .autocomplete-menu li > img,
+.exo-mentions .autocomplete-menu .icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin-top:5px;
+  margin-right: 5px;
+  -moz-background-origin:3px;
+
+  border-radius:3px;
+}
+
+.exo-mentions .autocomplete-menu li em {
+  font-weight: normal;
+  font-style: none;
+}
+
+.exo-mentions .autocomplete-menu li.active {
+  background-color: #649EED;
+}
+
+.exo-mentions .autocomplete-menu li.msg {
+  background-color: #fff;
+	cursor: inherit;
+}
+
+.exo-mentions .autocomplete-menu li strong {
+  font-weight: bold;
+}
+
+.exo-mentions .mentions {
+  display: none;
+}
+
+.exo-mentions .ReplaceTextArea {
+  margin:0;
+  width:auto;
+  height: 28px;
+  font:normal 13px/1.4 Lucida, arial, tahoma ,sans-serif;
+  border: solid 1px gray;
+  padding: 5px;
+  cursor: text;
+  outline:0;
+  position:relative;
+  resize:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+  word-wrap:break-word;
+  border-radius: 5px;
+}
+
+.exo-mentions .ReplaceTextArea span {
+  background: #6495ED;
+  border-radius: 3px;
+  color: #036;
+  padding: 0px 3px;
+  display: inline-block;
+}
+
+.exo-mentions .ReplaceTextArea .icon {
+  background: url('/social-resources/skin/ShareImages/mention-remove.png') no-repeat center right;
+  font-weight: bold;
+  color: transparent;
+  text-indent: -9999px;
+  cursor: pointer;
+  width: 13px;
+  height: 11px;
+  display: inline-block;
+  padding: 0px;
+	font-size:10.5px;
+}
+
+.exo-mentions .ReplaceTextArea .cursorText {
+  display: inline;
+  width: 0px;
+}
+
+.exo-mentions .placeholder {
+  color: gray;
+  opacity: 0.85;
+  position: absolute;
+  top: 5px;
+  left: 8px;
+}

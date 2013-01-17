@@ -15,6 +15,7 @@
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
+(function($) {
 var UISpaceMemberSuggest = {
 	DEFAULT_REST_INFO : {
 	  CONTEXT_NAME : 'rest-socialdemo',
@@ -49,4 +50,5 @@ var UISpaceMemberSuggest = {
 	}
 };	
 
-_module.UISpaceMemberSuggest = UISpaceMemberSuggest;
+return UISpaceMemberSuggest;
+})($);

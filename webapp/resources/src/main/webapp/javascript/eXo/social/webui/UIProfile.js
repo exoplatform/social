@@ -1,3 +1,4 @@
+(function($) { 
 var UIProfile = {
   KEYS : {
     ENTER : 13
@@ -21,4 +22,5 @@ var UIProfile = {
   }
 };
 
-_module.UIProfile = UIProfile;
+return UIProfile;
+})($);

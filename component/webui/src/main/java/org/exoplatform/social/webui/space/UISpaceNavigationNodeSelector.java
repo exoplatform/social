@@ -399,11 +399,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         return;
       }
 
-      UserPortalConfigService userService = uiNodeSelector.getApplicationComponent(UserPortalConfigService.class);
-
+      DataStorage dataService = uiNodeSelector.getApplicationComponent(DataStorage.class);
       // get selected page
       String pageId = selectedPageNode.getPageRef();
-      Page selectPage = (pageId != null) ? userService.getPage(pageId) : null;
+      Page selectPage = (pageId != null) ? dataService.getPage(pageId) : null;
       if (selectPage != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
         if (!userACL.hasEditPermission(selectPage)) {
@@ -464,9 +463,9 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       }
 
       UIApplication uiApp = context.getUIApplication();
-      UserPortalConfigService service = uiApp.getApplicationComponent(UserPortalConfigService.class);
+      DataStorage dataService = uiNodeSelector.getApplicationComponent(DataStorage.class);
       String pageId = node.getPageRef();
-      Page page = (pageId != null) ? service.getPage(pageId) : null;
+      Page page = (pageId != null) ? dataService.getPage(pageId) : null;
       if (page != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
         if (!userACL.hasPermission(page)) {
@@ -660,7 +659,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
     private String clonePageFromNode(TreeNode node, String pageName, SiteKey siteKey) throws Exception {
       String pageId = node.getPageRef();
       if (pageId != null) {
-        Page page = service.getPage(pageId);
+        Page page = dataStorage.getPage(pageId);
         if (page != null) {
           page = dataStorage.clonePage(pageId, siteKey.getTypeName(), siteKey.getName(), pageName);
           return page.getPageId();

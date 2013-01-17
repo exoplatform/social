@@ -27,7 +27,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 def uicomponentId = uicomponent.id;
 def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def rcontext = _ctx.getRequestContext() ;
-def jsmanager = rcontext.getJavascriptManager();
+def jsmanager = rcontext.getJavascriptManager().require("SHARED/uiForm");
 
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
@@ -76,7 +76,7 @@ def params = """ {
 	typeOfSuggest: 'space'
 } """
 
-jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.UISpaceSearch.init($params);");
+jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.init($params);");
 
 if (selectedNode.equals("all-spaces")) {
   allSpacesDisplayModeStyle = "SelectedTab";

@@ -526,7 +526,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, ExoSocialActivity, int)}.
    */
-  @MaxQueryNumber(550)
+  @MaxQueryNumber(500)
   public void testGetNewerOnActivityFeed() {
     createActivities(3, demoIdentity);
     ExoSocialActivity demoBaseActivity = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(0);
@@ -575,7 +575,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getActivitiesOfConnections(Identity, int, int)}
    */
-  @MaxQueryNumber(850)
+  @MaxQueryNumber(800)
   public void testGetActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     
@@ -673,7 +673,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(850)
+  @MaxQueryNumber(800)
   public void testGetNumberOfActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     
@@ -718,7 +718,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(850)
+  @MaxQueryNumber(800)
   public void testGetNumberOfNewerOnActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     
@@ -838,7 +838,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(850)
+  @MaxQueryNumber(800)
   public void testGetNumberOfOlderOnActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     
@@ -892,7 +892,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(850)
+  @MaxQueryNumber(800)
   public void testGetOlderOnActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     
@@ -954,7 +954,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1600)
+  @MaxQueryNumber(1800)
   public void testGetUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1019,7 +1019,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1700)
   public void testGetNumberOfUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1074,7 +1074,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1700)
   public void testGetNumberOfNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1134,7 +1134,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1700)
   public void testGetNewerOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1196,7 +1196,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1700)
   public void testGetNumberOfOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1259,7 +1259,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1700)
   public void testGetOlderOnUserSpacesActivities() throws Exception {
     SpaceService spaceService = this.getSpaceService();
     Space space = this.getSpaceInstance(spaceService, 0);
@@ -1802,4 +1802,4 @@ public class ActivityStorageTest extends AbstractCoreTest {
     spaceService.saveSpace(space, true);
     return space;
   }
- }
+}

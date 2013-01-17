@@ -29,7 +29,7 @@
   import org.exoplatform.social.plugin.link.UILinkUtil;
 
   def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
+  def jsManager = pcontext.getJavascriptManager().require("SHARED/uiForm");
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
   def activityDeletable = uicomponent.isActivityDeletable();
@@ -86,7 +86,7 @@
 	  commentFormFocused: '${uicomponent.isCommentFormFocused()}'
   }"""
 
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.UIActivity.onLoad($params);");
+  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
   
   //make sure commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);

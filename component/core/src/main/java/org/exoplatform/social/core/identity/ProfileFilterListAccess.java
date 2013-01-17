@@ -90,7 +90,7 @@ public class ProfileFilterListAccess implements ListAccess<Identity> {
       identities = identityStorage.getIdentitiesByFirstCharacterOfName(providerId, profileFilter, offset,
                                                                        limit, forceLoadProfile);
     } else {
-      identities = identityStorage.getIdentitiesByProfileFilter(providerId, profileFilter, offset,
+      identities = identityStorage.getIdentitiesForMentions(providerId, profileFilter, offset,
                                                                 limit, forceLoadProfile);
     }
     

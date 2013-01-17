@@ -38,7 +38,7 @@
 
 <% if (activity) { //process if not null
 
-  def jsManager = pcontext.getJavascriptManager();
+  def jsManager = pcontext.getJavascriptManager().require("SHARED/uiForm");
 
   def labelComment = _ctx.appRes("UIActivity.label.Comment");
   def labelLike = _ctx.appRes("UIActivity.label.Like");
@@ -87,7 +87,7 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
 	} """
   
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.UIActivity.onLoad($params);");
+  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);

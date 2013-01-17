@@ -19,6 +19,7 @@
  * UIComposerLinkExtension.js
  */
 
+(function($) { 
 var UIComposerLinkExtension = {
   HTTP: "http://",
   GRAY_COLOR: "gray",
@@ -133,16 +134,9 @@ var UIComposerLinkExtension = {
     function doStats() {
       this.stats.innerHTML = (this.shownThumbnailIndex + 1) + ' / ' + this.images.length;
     }
-    
-    var shareButton = $('#ShareButton');
-    shareButton.attr('class','ShareButton');
+
     UIComposerLinkExtension = this;
     if (this.linkInfoDisplayed) {
-      //trick: enable share button
-      if (shareButton) {
-        shareButton.removeAttr('disabled');
-        shareButton.attr('class', 'ShareButton');
-      }
       
       this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
       this.thumbnails = $('#' + this.thumbnailsId);
@@ -206,10 +200,6 @@ var UIComposerLinkExtension = {
 
     } else {
 
-      if (shareButton) {
-        shareButton.attr('disabled',"disabled");
-        shareButton.attr('class','ShareButtonDisable');
-      }
       this.inputLink = $('#' + this.inputLinkId);
       this.attachButton = $('#' + this.attachButtonId);
       this.inputLink.val(UIComposerLinkExtension.HTTP);
@@ -239,11 +229,16 @@ var UIComposerLinkExtension = {
           return;
         }
         var url = UIComposerLinkExtension.attachUrl.replace(/&amp;/g, "&") + '&objectId='+ encodeURIComponent(inputLink.val()) + '&ajaxRequest=true';
-        ajaxGet(url);
+        ajaxGet(url, function(){
+          try {
+            $('textarea#composerInput').exoMentions('showButton', function() {});
+          } catch (e) {}
+        });
       });
       
     }
   }
 };
  
-_module.UIComposerLinkExtension = UIComposerLinkExtension;
+return UIComposerLinkExtension;
+})($);

@@ -109,13 +109,13 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(50)
   public void testSaveActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
@@ -299,7 +299,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(80)
+  @MaxQueryNumber(100)
   public void testSaveComment() throws Exception {
 
     //
@@ -334,7 +334,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(800)
+  @MaxQueryNumber(900)
   public void testActivityCount() throws Exception {
 
     // fill 10 activities
@@ -342,7 +342,6 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activityStorage.saveActivity(rootIdentity, activity);
-      
     }
 
     //
@@ -410,7 +409,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(10)
+  @MaxQueryNumber(600)
   public void testActivityOrderByPostedTime() throws Exception {
     // fill 10 activities
     Calendar cal = Calendar.getInstance();
@@ -423,7 +422,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activity.setPostedTime(i> 5 ? today + i : yesterday + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
     }
 
     int i = 9;
@@ -569,7 +568,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       Thread.sleep(10);
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
-      activityStorage._createActivity(rootIdentity, activity);
+      activityStorage.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
 
       // fill 10 comments for each activity
@@ -925,7 +924,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
-    activityStorage._createActivity(rootIdentity, activity);
+    activityStorage.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
 
     //
