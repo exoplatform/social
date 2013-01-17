@@ -482,7 +482,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(4526)
+  @MaxQueryNumber(4562)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {

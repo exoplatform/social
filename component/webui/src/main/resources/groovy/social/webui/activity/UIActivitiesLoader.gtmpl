@@ -31,7 +31,7 @@
   if(uicomponent.id.equals("UIActivitiesLoader")) {
 	  boolean hasMore = uicomponent.isHasMore();
 	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
-	    .addScripts("activitiesLoader.UIActivityLoader.init('$uicomponent.id', $hasMore);");
+	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
   }
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">

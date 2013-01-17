@@ -192,7 +192,6 @@
   <module>
     <name>social-ui-activities-loader</name>
     <script>
-      <name>eXo.social.webui.UIActivityLoader</name>
       <path>/javascript/eXo/social/webui/UIActivityLoader.js</path>
     </script>
     <depends>
