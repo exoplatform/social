@@ -183,7 +183,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   }
 
   @Override
-  public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) throws Exception {
+  public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) {
     
   }
 

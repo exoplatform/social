@@ -7,7 +7,7 @@ def uicomponentId = uicomponent.id;
 
 def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
-jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addScripts('customizeControl.UICustomizeControl.onLoad("' + uicomponentId + '");');
+jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addScripts('customizeControl.onLoad("' + uicomponentId + '");');
 %>
 <div class="$uicomponentId" id="$uicomponentId">
 	 <div class="UIFormInputSet">

@@ -504,8 +504,8 @@ public class UIPageNodeForm extends UIFormTabPane {
       if (pageSelector.getPage() == null) {
         pageSelector.setValue(null);
       } else {
-        Page page = pageSelector.getPage();
         DataStorage storage = uiPageNodeForm.getApplicationComponent(DataStorage.class);
+        Page page = storage.getPage(pageSelector.getPage().getKey().format());
         if (storage.getPage(page.getPageId()) == null) {
           storage.create(page);
           pageSelector.setValue(page.getPageId());
@@ -692,7 +692,7 @@ public class UIPageNodeForm extends UIFormTabPane {
         return;
       }
 
-      pageSelector.setPage(page);
+      pageSelector.setValue(page.getId());
     }
   }
 

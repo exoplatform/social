@@ -132,6 +132,24 @@ public interface IdentityStorage {
       final String providerId, final ProfileFilter profileFilter, long offset, long limit,
       boolean forceLoadOrReloadProfile)
       throws IdentityStorageException;
+  
+  /**
+   * Gets the identities by profile filter.
+   *
+   * @param providerId Id of provider.
+   * @param profileFilter    Information of profile that used in filtering.
+   * @param offset           Start index of list to be get.
+   * @param limit            End index of list to be get.
+   * @param forceLoadOrReloadProfile Load profile or not.
+   * @return the identities by profile filter.
+   * @throws IdentityStorageException
+   * @since 4.0.0-Alpha1
+   */
+  public List<Identity> getIdentitiesForMentions(final String providerId,
+                                                 final ProfileFilter profileFilter,
+                                                 long offset,
+                                                 long limit,
+                                                 boolean forceLoadOrReloadProfile) throws IdentityStorageException;
 
   /**
    * Counts the number of identity by profile filter.

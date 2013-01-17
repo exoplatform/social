@@ -17,6 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+(function($) {
 var UISpaceAppNameEdition = {
 	addEditability: function(id) {
     var editedTab = $("#" + id);
@@ -67,4 +68,5 @@ var UISpaceAppNameEdition = {
 	}
 };
 
-_module.UISpaceAppNameEdition = UISpaceAppNameEdition;
+return UISpaceAppNameEdition;
+})($);

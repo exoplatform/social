@@ -18,7 +18,7 @@
 /**
  * UIActivity.js
  */
-
+(function ($, _) {  
 var UIActivity = {
   COMMENT_BLOCK_BOUND_CLASS_NAME : "CommentBlockBound",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "CommentBlockBoundNone",
@@ -65,7 +65,7 @@ var UIActivity = {
     UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
     UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
     UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
-    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId);
+    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId).show();
     UIActivity.deleteCommentButtonEls = [];
     UIActivity.contentBoxEl = $(UIActivity.contentBoxId);
     UIActivity.deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
@@ -111,35 +111,16 @@ var UIActivity = {
         $.each(commentForms, function(idx, el) {
           if ( $(el).attr('id') !== thiscommentBlockId ) {
             if (UIActivity.allCommentSize == 0) {
-			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
-			      } else {
-			        $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
-			      }
-			      
-			      $(el).hide();
+              $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
+            } else {
+              $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
+            }
+            
+            $(el).hide();
           } else {
             $(el).show();
           }
         });
-      });
-
-      UIActivity.commentTextareaEl.on('focus', function(evt) {
-        $(this).css('height', UIActivity.FOCUS_COMMENT_TEXT_AREA_HEIGHT);
-        $(this).css('color', UIActivity.FOCUS_COMMENT_TEXT_AREA_COLOR);
-          if ($(this).val() === UIActivity.inputWriteAComment) {
-          $(this).val('');
-        }
-        $("#" + UIActivity.commentButtonId).show();
-      });
-
-      UIActivity.commentTextareaEl.on('blur', function(evt) {
-        if ($(this).val() === '') {
-          $("#" + UIActivity.commentButtonId).hide();
-          $(this).val(UIActivity.inputWriteAComment);
-
-          $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-          $(this).css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
-        }
       });
 
       if (UIActivity.commentFormDisplayed) {
@@ -153,7 +134,7 @@ var UIActivity = {
         UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
       }
     } else {
-      $("#" + UIActivity.commentFormBlockId).hide();
+     // $("#" + UIActivity.commentFormBlockId).hide();
     }
 
     if (UIActivity.deleteActivityButtonEl.length !== 0) {
@@ -179,10 +160,29 @@ var UIActivity = {
         });
         
       });
-      
 
     }
+    
+	//
+    $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
+        onDataRequest:function (mode, query, callback) {
+          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+          $.getJSON(url, function(responseData) {
+            responseData = _.filter(responseData, function(item) { 
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+            });
+            callback.call(this, responseData);
+          });
+        },
+        idAction : ('CommentButton'+UIActivity.activityId),
+        elasticStyle : {
+          maxHeight : '35px',
+          minHeight : '22px'
+        },
+        messages : window.eXo.social.I18n.mentions
+      });
   }
-}
+};
 
- _module.UIActivity = UIActivity;
+return UIActivity;
+})($, mentions._);

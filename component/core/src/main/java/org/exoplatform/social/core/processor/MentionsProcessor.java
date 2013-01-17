@@ -23,10 +23,14 @@ import java.util.regex.Pattern;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
 
 /**
@@ -36,7 +40,7 @@ import org.exoplatform.social.core.service.LinkProvider;
  */
 public class MentionsProcessor extends BaseActivityProcessorPlugin {
 
-
+  private static final Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
 
   public MentionsProcessor(InitParams params) {
     super(params);
@@ -63,8 +67,7 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
     if (message == null) {
       return null;
     }
-
-    Pattern pattern = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+    
     Matcher matcher = pattern.matcher(message);
 
     // Replace all occurrences of pattern in input
@@ -84,6 +87,13 @@ public class MentionsProcessor extends BaseActivityProcessorPlugin {
       // Convert to uppercase
       ExoContainer container = ExoContainerContext.getCurrentContainer();
       LinkProvider lp = (LinkProvider) container.getComponentInstanceOfType(LinkProvider.class);
+      IdentityManager identityManager = (IdentityManager) PortalContainer.getInstance()
+          .getComponentInstanceOfType(IdentityManager.class);
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, replaceStr, false);
+      if (identity == null) {
+        continue;
+      }
+      
       replaceStr = lp.getProfileLink(replaceStr, portalOwner);
 
       // Insert replacement

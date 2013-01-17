@@ -27,7 +27,7 @@
 *Social jQuery plugin
 */ 
 // Placeholder plugin for HTML 5
-;(function($) {
+(function($) {
     
 	function Placeholder(input) {
     this.input = input;
@@ -75,11 +75,8 @@
             placeholder.show(false);
         });
     });
-	}
-})(jQuery);
+	};
 
-// Autosuggestion plugin.
-;(function($) {
 
     $.fn.autosuggest = function(url, options) {
       var KEYS = {
@@ -312,12 +309,8 @@
             posY = e.pageY;
           });
 	    });
-    }
-})(jQuery);
+    };
 
-
-// Tooltip plugin
-;(function($) {
     $.fn.toolTip = function(url, settings) {
 
         var defaultSettings = {
