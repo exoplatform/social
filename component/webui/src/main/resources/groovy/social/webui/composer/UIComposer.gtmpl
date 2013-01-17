@@ -47,7 +47,7 @@
   helpSearch = helpSearch.replaceAll("'","&#39;").replaceAll('"',"&#34;");
   String searching = _ctx.appRes("Mentions.msg.searching");
   searching = searching.replaceAll("'","&#39;").replaceAll('"',"&#34;");
-   
+  jsManager.require("SHARED/uiForm");
   jsManager.require("SHARED/social-ui-activity-composer", "composer")
            .addScripts("UIComposer.onLoadI18n({ helpSearch: \"$helpSearch\", searching: \"searching\", foundNoMatch: \"$foundNoMatch\"});") 
            .addScripts("UIComposer.onLoad({composerId:'$uicomponent.id', textareaId:'${uicomponent.COMPOSER_TEXT_AREA_INPUT}'});");
