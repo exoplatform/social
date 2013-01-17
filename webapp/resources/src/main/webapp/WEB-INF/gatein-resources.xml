@@ -288,7 +288,6 @@
   <module>
     <name>mentionsPlugin</name>
     <script>
-      <name>mentions-plugin</name>
       <path>/javascript/eXo/jquery.exomentions.js</path>
     </script>
     <depends>
@@ -303,7 +302,6 @@
   <module>
     <name>mentionsLib</name>
     <script>
-      <name>underscore-lib</name>
       <path>/javascript/eXo/underscore.js</path>
     </script>
   </module>
