@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.component</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.12-SNAPSHOT</version>
+    <version>1.2.12</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.component.service</artifactId>
-  <version>1.2.12-SNAPSHOT</version>
+  <version>1.2.12</version>
   <name>eXo Social Service Component</name>
   <description>eXo Social Service Component</description>
 
