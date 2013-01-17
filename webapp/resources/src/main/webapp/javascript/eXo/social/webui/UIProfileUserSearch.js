@@ -15,6 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+(function($) {
 var UIProfileUserSearch = { 
 		COLOR : {
 		  FOCUS : "#000000",
@@ -135,4 +136,5 @@ var UIProfileUserSearch = {
 		}
 };
 
-_module.UIProfileUserSearch = UIProfileUserSearch;
+return UIProfileUserSearch;
+})($);

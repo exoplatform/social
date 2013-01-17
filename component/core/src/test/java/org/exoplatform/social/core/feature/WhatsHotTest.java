@@ -174,7 +174,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getActivityFeed(rootIdentity, 0, 15);
     int i = 0;
-    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;

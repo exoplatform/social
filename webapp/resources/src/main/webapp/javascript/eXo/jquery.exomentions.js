@@ -18,6 +18,7 @@
     UP : 38,
     RIGHT : 39,
     DOWN : 40,
+    DELETE : 46,
     MENTION : 64,
     COMMA : 188,
     SPACE : 32,
@@ -93,6 +94,12 @@
     rtrim : function(string) {
       return string.replace(/\s+$/, "");
     },
+    replaceFirst : function(string, by){
+      while(string.indexOf(by) === 0) {
+        string = string.substring(1);
+      }
+      return string;
+    },
     validateWWWURL : function(url) {
       if (url.indexOf('www.') > 0) {
         return /(https?:\/\/)?(www\.[\w+]+\.[\w+]+\.?(:\d+)?)/.test(url);
@@ -110,10 +117,26 @@
       }
       return "";
     },
+    removeLastBr : function(val) {
+      if (val) {
+        var l = val.length;
+        if (l > 0) {
+          val = val.replace(/<br\/?>$/gi, '');
+          if (l > val.length) {
+            return utils.removeLastBr(val);
+          }
+        }
+        return val;
+      }
+      return '';
+    },
     getSimpleValue : function(val) {
-      return val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
-                .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '')
-                .replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+      if (val) {
+        val = val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+                 .replace(/<span.*?>/gi, '').replace(/<\/span>/gi, '');
+        return utils.removeLastBr(val);
+      }
+      return '';
     },
     getCursorIndexOfText : function(before, after) {
       var t = 0;
@@ -160,12 +183,14 @@
   var eXoMentions = function(settings) {
 
     var jElmTarget, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmActiveAutoCompleteItem;
-    var valueBeforMention;
+    var valueBeforMention = '';
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery = '';
     var cursor = '<div class="cursorText"></div>&nbsp;';
+    var isBlockMenu = false;
+    var isInput = false;
     // action add link
     var ActionLink = {
       isRun : false,
@@ -196,7 +221,7 @@
       elmInputBox.on('keydown', onInputBoxKeyDown);
       elmInputBox.on('keypress', onInputBoxKeyPress);
       elmInputBox.on('keyup', onInputBoxKeyUp);
-      elmInputBox.on('input', onInputBoxInput);
+      //elmInputBox.on('input', onInputBoxInput);
       elmInputBox.on('click', onInputBoxClick);
       elmInputBox.on('paste', onInputBoxPaste);
       elmInputBox.on('blur', onInputBoxBlur);
@@ -246,12 +271,14 @@
       var strReg = settings.triggerChar + currentDataQuery;
       if(currentMessage.indexOf(strReg) === 0) {
         strReg = "\\"+strReg;
+      } else if(currentMessage.indexOf('>'+strReg) > 0) {
+        strReg = "\\>"+strReg;
       } else {
         strReg = "\\ "+strReg;
       }
       var regex = new RegExp(strReg, "gi");
       regex.exec(currentMessage);
-
+      
       var startCaretPosition = regex.lastIndex - currentDataQuery.length - 1;
       var currentCaretPosition = regex.lastIndex;
 
@@ -303,6 +330,7 @@
             var t = $(this).data('indexMS').indexMS;
             mentionsCollection.splice(t, 1);
             var parent = $(this).parent();
+            elmInputBox.find('.cursorText').remove();
             $('<div class="cursorText"></div>').insertAfter(parent);
             var tx = document.createTextNode(settings.triggerChar);
             $(tx).insertAfter(parent);
@@ -416,7 +444,7 @@
     function onInputBoxClick(e) {
       if(elmAutocompleteList.find('li').length > 0) {
         setCaratPosition(elmInputBox);
-        elmAutocompleteList.show();
+        showDropdown();
       } else {
         resetBuffer();
       }
@@ -425,12 +453,17 @@
     function onInputBoxBlur(e) {
       hideAutoComplete(false);
       if(elmAutocompleteList.find('li').length > 0) {
+        elmInputBox.find('.cursorText').remove();
         var value = elmInputBox.value();
-        var type = inputBuffer.join('');
-        if(value.indexOf(type) > 0) {
-          type = ' ' + type;
+        var typed = inputBuffer.join('');
+        var reBy = $.trim(typed);
+        currentDataQuery = reBy.replace(settings.triggerChar, '');
+        inputBuffer = reBy.split('');
+        if(value.indexOf(typed) > 0) {
+          typed = ' ' + typed;
+          reBy = ' ' + reBy;
         }
-        value = $.trim(value.replace(type, type+'<div class="cursorText"></div>'));
+        value = value.replace(typed, reBy+'<div class="cursorText"></div>');
         elmInputBox.val(value);
       }
       saveCacheData();
@@ -440,73 +473,75 @@
     }
 
     function onInputBoxInput(e) {
-      var isBlockMenu = (elmAutocompleteList.css('display') === 'block');
+      if(isInput) return;
+      isInput = true;
       updateValues();
       updateMentionsCollection();
-      hideAutoComplete();
-
+      inputBuffer = utils.replaceFirst(inputBuffer.join(''), ' ').split('');
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
-        if (!isBlockMenu && e && e.type === 'input') {
+        if (isBlockMenu === false) {
           var after = elmInputBox.value();
           var indexChanged = utils.getCursorIndexOfText(valueBeforMention, after);
           if (indexChanged > 0) {
             var val = after.substring(indexChanged - 1, indexChanged);
-            var isRun = (val === ' ') || (val === '') || (val === '&nbsp;');
+            var isRun = (val === ' ') || (val === '') || (val === '&nbsp;') || (val === '>');
             if (!isRun) {
               return;
             }
           }
         }
-
         currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
-        currentDataQuery = utils.rtrim(currentDataQuery);
-
-        _.defer(_.bind(doSearch, this, currentDataQuery));
+        // fix bug firefox auto added <br> last text.
+        currentDataQuery = utils.removeLastBr(currentDataQuery);
+        inputBuffer = String(settings.triggerChar+currentDataQuery).split('');
+        doSearch(currentDataQuery);
+      } else {
+        hideAutoComplete();
       }
     }
 
     function onInputBoxKeyPress(e) {
       var keyCode = (e.which || e.keyCode);
-      if (keyCode !== KEY.BACKSPACE) {
+      if (keyCode !== KEY.BACKSPACE && keyCode !== KEY.LEFT && keyCode !== KEY.RIGHT &&
+          keyCode !== KEY.DELETE && keyCode !== KEY.UP && keyCode !== KEY.DOWN) {
         var typedValue = String.fromCharCode(keyCode);
+        if(keyCode === KEY.RETURN) {
+          inputBuffer = [];
+          typedValue = ' ';
+        }
         inputBuffer.push(typedValue);
         if (utils.isIE) {
-          onInputBoxInput(e);
+          //onInputBoxInput(e);
         }
       }
       disabledPlaceholder();
     }
 
     function onInputBoxKeyDown(e) {
+      isInput = false;
       // Run without IE
       if (String.fromCharCode(e.which || e.keyCode) === settings.triggerChar) {
-        onInputBoxInput(e);
+        //onInputBoxInput(e);
       }
 
+      // 
       valueBeforMention = elmInputBox.value();
+
       // This also matches HOME/END on OSX which is CMD+LEFT, CMD+RIGHT
-      if (e.keyCode == KEY.LEFT || e.keyCode == KEY.RIGHT || e.keyCode == KEY.HOME || e.keyCode == KEY.END) {
+      if (((e.keyCode == KEY.LEFT || e.keyCode == KEY.RIGHT) && isBlockMenu === false) 
+                                           || e.keyCode == KEY.HOME || e.keyCode == KEY.END) {
         // Defer execution to ensure carat pos has changed after HOME/END keys
         _.defer(resetBuffer);
         
-        // IE9 doesn't fire the oninput event when backspace or delete is
-        // pressed. This causes the highlighting
-        // to stay on the screen whenever backspace is pressed after a
-        // highlighed word. This is simply a hack
-        // to force updateValues() to fire when backspace/delete is pressed in
-        // IE9.
         if (navigator.userAgent.indexOf("MSIE 9") > -1) {
           _.defer(updateValues);
         }
         return;
       }
 
-      if (e.keyCode == KEY.SPACE && (elmAutocompleteList.find('li.msg').length > 0) || elmAutocompleteList.css('display') === 'none') {
-        inputBuffer = [];
-      }
       if (e.keyCode == KEY.BACKSPACE) {
-        inputBuffer.splice((inputBuffer.length - 1), 1);
+        //inputBuffer.splice((inputBuffer.length - 1), 1);
         if (utils.isIE) {
           if (inputBuffer.length > 1 || (inputBuffer.length == 1 && utils.brVersion < 9)) {
             onInputBoxInput();
@@ -515,38 +550,6 @@
           }
         }
         
-        if (elmInputBox.val().length > 1) {
-          var before = elmInputBox.value();
-          elmInputBox.animate({
-            'cursor' : 'wait'
-          }, 150, function() {
-            var after = elmInputBox.value();
-            var delta = before.length - after.length;
-            var textSizeMention = 63;
-            if (delta > textSizeMention && !utils.isFirefox) {
-              var indexChanged = utils.getCursorIndexOfText(before, after);
-              if (indexChanged >= 0 && $.trim(before.substr(indexChanged)).toLowerCase().indexOf('<span') === 0) {
-                after = insertCursorText(after, indexChanged, true);
-                elmInputBox.val(after);
-                autoSetKeyCode(elmInputBox);
-                setCaratPosition(elmInputBox);
-              }
-            } else if (delta == 1) {
-              var indexChanged = utils.getCursorIndexOfText(before, after);
-              var fVal = after.substring(0, indexChanged);
-              var lVal = after.substring(indexChanged, after.length);
-              var t = lVal.indexOf(' ');
-              if (t < 0) t = lVal.length;
-              lVal = lVal.substring(0, t);
-              var hasTrigger = hasTriggerChar(fVal + lVal);
-              if (hasTrigger != false) {
-                inputBuffer = hasTrigger;
-                onInputBoxInput();
-              }
-            }
-            elmInputBox.css('cursor', 'text');
-          });
-        }
         return;
       }
       
@@ -582,6 +585,7 @@
           if (elmCurrentAutoCompleteItem.length) {
             selectAutoCompleteElement(elmCurrentAutoCompleteItem);
           }
+          isInput = true;
           return false;
           
         case KEY.RETURN:
@@ -593,6 +597,7 @@
             $(this).trigger(eN);
           }
           e.stopPropagation();
+          isInput = true;
           return false;
         default: {
           return true;
@@ -601,29 +606,14 @@
       return true;
     }
 
-    function hasTriggerChar(val) {
-      //
-      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
-        var chs = [];
-        for ( var i = val.length - 1; i >= 0; --i) {
-          if (val[i] === ' ' || val[i] === '&nbsp;') {
-            return false;
-          } else if (val[i] == settings.triggerChar) {
-            if (i > 0 && (val[i - 1] === ' ' || val[i - 1] === '&nbsp;') || i === 0) {
-              chs.splice(0, 0, settings.triggerChar);
-              return chs;
-            }
-          } else {
-            chs.splice(0, 0, val[i]);
-          }
-        }
-      }
-      return false;
-    }
-
     function onInputBoxKeyUp(e) {
+
+      checkRemoveMoreOneText(e);
+
       backspceBroswerFix(e);
-      
+
+      onInputBoxInput();
+
       checkAutoAddLink(e);
 
       if(getInputBoxValue().length === 0) {
@@ -633,7 +623,105 @@
       }
       //
     }
+
+    function checkRemoveMoreOneText(e) {
+      var currentValue = elmInputBox.value();
+      var delta = valueBeforMention.length - currentValue.length;
+      var isBackKey = (e.keyCode === KEY.BACKSPACE || e.keyCode === KEY.DELETE);
+      var isReset = true;
+
+      if (delta > 1 && (isBlockMenu === true) || (isBlockMenu === false && delta == 1 && isBackKey)) {
+        triggerOninputMention(valueBeforMention, currentValue);
+        isReset = false;
+      } else if (isBackKey === true) {
+        var textSizeMention = 63;
+        if (delta > textSizeMention && !utils.isFirefox) {
+          var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
+          if (indexChanged >= 0 && 
+                    $.trim(valueBeforMention.substr(indexChanged)).toLowerCase().indexOf('<span') === 0) {
+            currentValue = insertCursorText(currentValue, indexChanged, true);
+            elmInputBox.val(currentValue);
+            autoSetKeyCode(elmInputBox);
+            setCaratPosition(elmInputBox);
+            isReset = false;
+          }
+        } else if(delta == 1) {
+          var buffer = inputBuffer.join('');
+          var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
+          index = (index <= 0) ? (inputBuffer.length - 1) : index;
+          inputBuffer.splice(index, 1);
+          isInput = false;
+        }
+
+      } else if (delta === -1) {
+
+        if (isBlockMenu) {
+          var buffer = inputBuffer.join('');
+          if (currentValue.indexOf(buffer) < 0) {
+            var index = getIndexBufferChange(valueBeforMention, currentValue, buffer);
+            if (index > 0 && index < buffer.length) {
+              var char_ = inputBuffer[inputBuffer.length - 1];
+              inputBuffer.splice(index, 0, char_);
+              inputBuffer.pop();
+              isInput = false;
+              isReset = false;
+            } else {
+              resetBuffer();
+            }
+          }
+        }
+
+      }
+      
+      if (e.keyCode === KEY.SPACE && 
+          ((isBlockMenu === false) || 
+              (isReset && (elmAutocompleteList.find('li.msg').length > 0 ||inputBuffer.join().indexOf('  ') >= 0)))) {
+        resetBuffer();
+      }
+    }
     
+    function getIndexBufferChange(valueBeforMention, currentValue, buffer) {
+      var indexChanged = utils.getCursorIndexOfText(valueBeforMention, currentValue);
+      var index = valueBeforMention.indexOf(buffer.substring(0, buffer.length - 1));
+      return indexChanged - index;
+    }
+
+    function triggerOninputMention(before, after) {
+      var indexChanged = utils.getCursorIndexOfText(before, after);
+      var fVal = after.substring(0, indexChanged);
+      var lVal = after.substring(indexChanged, after.length);
+      if(lVal.length > 0) {
+        var t = lVal.indexOf(' ');
+        var k = lVal.indexOf('<br>');
+        t = (t > 0 && t < k) ? t : k;
+        t = (t < 0) ? lVal.length : t;
+        lVal = lVal.substring(0, t);
+        
+        fVal += $.trim(lVal);
+      }
+
+      var hasTrigger = hasTriggerChar(fVal);
+      if (hasTrigger != false) {
+        inputBuffer = hasTrigger;
+        isInput = false;
+        valueBeforMention = '';
+        onInputBoxInput();
+      } else {
+        resetBuffer();
+      }
+    }
+    
+    function hasTriggerChar(val) {
+      //
+      if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
+        val = val.substring(val.indexOf(settings.triggerChar));
+        if(val.indexOf(' ') < 0 && val.indexOf('&nbsp;') < 0 && val.indexOf('<') < 0) {
+          return val.split('');
+        }
+      }
+      return false;
+    }
+
     function backspceBroswerFix(e) {
       var selection = getSelection();
       if (utils.isFirefox) {
@@ -676,35 +764,21 @@
     }
     
     function autoSetKeyCode(elm) {
-      try {
-        if (utils.isIE && utils.brVersion < 9) {
-          resetBuffer();
-          inputBuffer[0] = settings.triggerChar;
-
-          //
-          onInputBoxInput();
-        } else {
-          var e = jQuery.Event("keypress", {
-            keyCode : KEY.MENTION,
-            charCode : settings.triggerChar
-          });
-          var e1 = jQuery.Event("keydown", {
-            keyCode : KEY.MENTION,
-            charCode : settings.triggerChar
-          });
-          elm.triggerHandler(e);
-          elm.trigger(e1);
-          inputBuffer[0] = settings.triggerChar;
-        }
-      } catch (err) {}
+      disabledPlaceholder();
+      resetBuffer();
+      inputBuffer[0] = settings.triggerChar;
+      valueBeforMention = '';
+      //
+      isInput = false;
+      onInputBoxInput();
     }
 
     function hideAutoComplete(isClear) {
       if(isClear || isClear == null || isClear == undefined) {
         elmActiveAutoCompleteItem = null;
-        elmAutocompleteList.empty().hide();
+        hideDropdown().empty();
       } else {
-        elmAutocompleteList.hide();
+        hideDropdown();
       }
     }
 
@@ -730,11 +804,21 @@
           });
     }
 
+    function showDropdown() {
+      isBlockMenu = true;
+      return elmAutocompleteList.show();
+    }
+
+    function hideDropdown() {
+      isBlockMenu = false;
+      return elmAutocompleteList.hide();
+    }
+
     function populateDropdown(query, results) {
-      elmAutocompleteList.show();
+      showDropdown();
       elmAutocompleteList.empty();
       var elmDropDownList = $("<ul>").appendTo(elmAutocompleteList).hide();
-
+      var isShow = true;
       //
       if(query === '' && !settings.firstShowAll) {
         addMessageMenu(elmDropDownList, settings.messages.helpSearch);
@@ -747,7 +831,12 @@
 
       //
       if ((results === null || results === undefined || results.length === 0) && query != '') {
-        addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
+        if(inputBuffer[inputBuffer.length - 1] != ' ') {
+          addMessageMenu(elmDropDownList, (settings.messages.foundNoMatch + ' <strong>' + query + '</strong>.'));
+        } else {
+          resetBuffer();
+          hideDropdown();
+        }
       }
       
       
@@ -787,8 +876,7 @@
           elmListItem = elmListItem.appendTo(elmDropDownList);
         });
       }
-
-      elmAutocompleteList.show();
+      
       elmDropDownList.show();
     }
 
@@ -895,7 +983,8 @@
     }
 
     function getTemplate() {
-      return $('<div contenteditable="true" g_editable="true" class="ReplaceTextArea editable"></div>');
+      var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
+      return $('<div contenteditable="' + editableType + '" g_editable="true" class="ReplaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -920,7 +1009,7 @@
         }
       };
       displayInput.value = function() {
-        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/<br.*?>/g, '').replace(/\n/g, '<br />');
+        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
         return val;
       };
       return displayInput;
@@ -930,7 +1019,7 @@
       var parent = elmInputBox.parent();
       parent.find('div.placeholder:first').show();
       
-      var isLinked = ($('#LinkTitle').length > 0 || $('.InputDoc').length > 0);
+      var isLinked = ($('#LinkTitle').length > 0);
       var action = $('#' + settings.idAction);
       if(isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
         $('#' + settings.idAction).attr('disabled', 'disabled').removeAttr('onclick').addClass('DisableButton');
@@ -972,7 +1061,7 @@
         if (settings.idAction && settings.idAction.length > 0) {
           var actionLink = $('#' + settings.idAction).on('mousedown', function() {
             var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
-            value = value.replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
+            value = value.replace(/<br\/?>/gi, '\n').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
             jElmTarget.val(value);
             $(this).click();
             clearCacheData();
@@ -1091,4 +1180,4 @@
     });
   };
 
-})(jQuery, mentions.underscore);
+})(jQuery, mentions._);

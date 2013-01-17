@@ -38,7 +38,7 @@ def params = """ {
     allApplicationCategorySize: '$applicationCategoryIds.size'
 } """
 
-jsmanager.require("SHARED/social-category-selector", "categorySelector").addScripts("categorySelector.UIApplicationCategorySelector.init($params);");
+jsmanager.require("SHARED/social-category-selector", "categorySelector").addScripts("categorySelector.init($params);");
 %>
 <div id="$uicomponent.id" class="ItemListContainer">
   <div class="ItemListTitle ClearFix">

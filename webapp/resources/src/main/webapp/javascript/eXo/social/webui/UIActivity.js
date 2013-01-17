@@ -18,7 +18,7 @@
 /**
  * UIActivity.js
  */
-
+(function ($, _) {  
 var UIActivity = {
   COMMENT_BLOCK_BOUND_CLASS_NAME : "CommentBlockBound",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : "CommentBlockBoundNone",
@@ -168,7 +168,7 @@ var UIActivity = {
         onDataRequest:function (mode, query, callback) {
           var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
           $.getJSON(url, function(responseData) {
-            responseData = mentions.underscore.filter(responseData, function(item) { 
+            responseData = _.filter(responseData, function(item) { 
               return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
             });
             callback.call(this, responseData);
@@ -184,4 +184,5 @@ var UIActivity = {
   }
 };
 
- _module.UIActivity = UIActivity;
+return UIActivity;
+})($, mentions._);
