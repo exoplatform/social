@@ -292,6 +292,10 @@ public class Utils {
       if (hasCookies(key)) return;
     }
     
+    if (hasCookies(key)) {
+      eraseCookie(key);
+    }
+
     PortalRequestContext request = Util.getPortalRequestContext() ;
     Cookie cookie = new Cookie(key, value);
     cookie.setPath(request.getRequest().getContextPath());
@@ -299,6 +303,21 @@ public class Utils {
     request.getResponse().addCookie(cookie);
   }
   
+  public static void eraseCookie(String key) {
+    PortalRequestContext request = Util.getPortalRequestContext();
+    Cookie[] cookies = request.getRequest().getCookies();
+    if (cookies != null) {
+      for (int i = 0; i < cookies.length; i++) {
+        if (key.equals(cookies[i].getName())) {
+          cookies[i].setValue("");
+          cookies[i].setPath("/");
+          cookies[i].setMaxAge(0);
+          request.getResponse().addCookie(cookies[i]);
+        }
+      }
+    }
+  }
+
   /**
    * 
    * @param value
