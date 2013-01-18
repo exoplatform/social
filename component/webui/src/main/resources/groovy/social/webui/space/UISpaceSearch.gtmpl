@@ -76,7 +76,7 @@ def params = """ {
 	typeOfSuggest: 'space'
 } """
 
-jsmanager.require("SHARED/social-ui-space-search", "search").addScripts("search.init($params);");
+jsmanager.require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);");
 
 if (selectedNode.equals("all-spaces")) {
   allSpacesDisplayModeStyle = "SelectedTab";
