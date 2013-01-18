@@ -54,7 +54,8 @@
   
   def rcontext = _ctx.getRequestContext();
   def jsmanager = rcontext.getJavascriptManager();
-  
+
+  jsmanager.require("SHARED/uiForm");
   jsmanager.require("SHARED/social-ui-space-member-suggestion", "memberSuggestion").addScripts("memberSuggestion.onLoad($params);");
   
   def pendingIdx = 0;

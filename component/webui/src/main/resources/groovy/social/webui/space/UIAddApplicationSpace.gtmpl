@@ -26,6 +26,7 @@
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
   def labelClose = _ctx.appRes("${uicomponent.id}.label.Close");
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>

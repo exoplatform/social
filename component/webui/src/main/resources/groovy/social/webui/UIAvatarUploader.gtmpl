@@ -22,6 +22,7 @@
 %>
 <% 
   def fieldName
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="UIForm $uicomponent.id">
   <div class="HorizontalLayout">

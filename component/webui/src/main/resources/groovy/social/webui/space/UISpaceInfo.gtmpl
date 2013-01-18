@@ -35,6 +35,7 @@
   def saveAction = uicomponent.url('Save');
   def childs = uicomponent.getChildren();
   def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar");
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="$uicomponent.id">
   <% uiform.begin() %>
