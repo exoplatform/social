@@ -30,6 +30,7 @@
   
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="$uicomponent.id">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>

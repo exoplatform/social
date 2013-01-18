@@ -37,6 +37,7 @@
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
   def addExperience = uicomponent.event("Add") + "; return false";
   def expCounter = 0;
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="experience">
 <%uiform.begin()%>
