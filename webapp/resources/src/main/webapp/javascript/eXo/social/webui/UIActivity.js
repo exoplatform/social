@@ -37,13 +37,13 @@
 	    UIActivity.commentMaxCharactersAllowed = params.commentMaxCharactersAllowed || 0;
 	    UIActivity.commentFormDisplayed = params.commentFormDisplayed == "true" ? true : false || false;
 	    UIActivity.allCommentsDisplayed = params.allCommentsDisplayed = "true" ? true : false || false;
-	    UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false  || false;
+	    UIActivity.commentFormFocused = params.commentFormFocused = "true" ? true : false || false;
 	    if (UIActivity.activityId == null) {
 	      alert('err: activityId is null!');
 	      return;
 	    }
 	    UIActivity.commentLinkId = 'CommentLink' + UIActivity.activityId;
-	    //UIActivity.likeLinkId = 'LikeLink'  + UIActivity.activityId;
+	    //UIActivity.likeLinkId = 'LikeLink' + UIActivity.activityId;
 	    UIActivity.commentFormBlockId = 'CommentFormBlock' + UIActivity.activityId;
 	    UIActivity.commentTextareId = 'CommentTextarea' + UIActivity.activityId;
 	    UIActivity.commentButtonId = 'CommentButton' + UIActivity.activityId;
@@ -163,12 +163,12 @@
 	
 	    }
 	    
-	    //
+	//
 	    $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
 	        onDataRequest:function (mode, query, callback) {
 	          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
 	          $.getJSON(url, function(responseData) {
-	            responseData = _.filter(responseData, function(item) { 
+	            responseData = _.filter(responseData, function(item) {
 	              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
 	            });
 	            callback.call(this, responseData);

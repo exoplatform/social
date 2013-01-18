@@ -431,13 +431,15 @@
           return;
         }
         var text = after.substr(info.from, info.to);
+        log(text);
         var nt = text.replace(new RegExp("(<[a-z0-9].*?>)(.*)(</[a-z0-9].*?>)", "gi"), "$2");
         if (nt.length < text.length) {
           after = after.substr(0, info.from) + $('<div/>').html(text).text() + ' ' + cursor + after.substr(info.to);
+          text = after;
           elmInputBox.val(after);
           setCaratPosition(elmInputBox);
-          autoAddLink(text);
         }
+        autoAddLink(text);
         elmInputBox.css('cursor', 'text');
         disabledPlaceholder();
       });
