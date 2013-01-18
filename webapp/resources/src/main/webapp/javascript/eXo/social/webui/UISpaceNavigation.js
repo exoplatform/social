@@ -17,8 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+(function($) {
 var UISpaceNavigation = {
-	addEditability: function(id, moreLabel) {
+    addEditability: function(id, moreLabel) {
     var editedTab = $("#" + id);
 
     //
@@ -123,4 +124,5 @@ var UISpaceNavigation = {
 	}
 };
 
-_module.UISpaceNavigation = UISpaceNavigation;
+return UISpaceNavigation;
+})($);

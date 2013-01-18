@@ -32,6 +32,7 @@
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
   def children = uicomponent.getChilds();
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
 <div class="UIBasicInfoSection">
   <% uiform.begin() %>

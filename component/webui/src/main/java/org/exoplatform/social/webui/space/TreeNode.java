@@ -22,6 +22,7 @@ import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.mop.navigation.NodeChangeListener;
 import org.exoplatform.portal.mop.navigation.NodeState;
+import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
@@ -171,7 +172,7 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public String getPageRef() {
-    return node.getPageRef();
+    return node.getPageRef().format();
   }
 
   public String getId() {
@@ -250,7 +251,7 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public void setPageRef(String pageRef) {
-    node.setPageRef(pageRef);
+    node.setPageRef(PageKey.parse(pageRef));
   }
 
   public String getResolvedLabel() {

@@ -64,7 +64,7 @@
 
   def moreLabel = _ctx.appRes("${uicomponentId}.label.More");
   def jsManager = _ctx.getRequestContext().getJavascriptManager();
-  jsManager.require("SHARED/social-ui-space-nav", "spacenav").addScripts("spacenav.UISpaceNavigation.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
+  jsManager.require("SHARED/social-ui-space-nav", "spacenav").addScripts("spacenav.addEditability('" + uicomponent.id + "','" + moreLabel + "');");
   def srcAppIcon;
 %>
 

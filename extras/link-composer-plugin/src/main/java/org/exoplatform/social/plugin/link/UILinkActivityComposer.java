@@ -81,6 +81,7 @@ public class UILinkActivityComposer extends UIActivityComposer {
   private LinkShare linkShare_;
   private boolean linkInfoDisplayed_ = false;
   private Map<String, String> templateParams;
+  private boolean isDisplayed;
   
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
@@ -95,6 +96,26 @@ public class UILinkActivityComposer extends UIActivityComposer {
     UIFormStringInput inputLink = new UIFormStringInput("InputLink", "InputLink", null);
     inputLink.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UILinkComposerPlugin.label.InputLink"));
     addChild(inputLink);
+  }
+
+  /**
+   * Gets displayed information of component.
+   * 
+   * @return the isDisplayed
+   */
+  @Override
+  public boolean isDisplayed() {
+    return isDisplayed;
+  }
+
+  /**
+   * Sets displayed information of component.
+   * 
+   * @param isDisplayed the isDisplayed to set
+   */
+  @Override
+  public void setDisplayed(boolean isDisplayed) {
+    this.isDisplayed = isDisplayed;
   }
 
   public void setLinkInfoDisplayed(boolean displayed) {

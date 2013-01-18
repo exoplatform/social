@@ -1,5 +1,6 @@
 /*UILinkComposerPlugin style*/
 @import url('/social-resources/skin/social/webui/UILinkComposerPlugin/DefaultSkin.css');
+@import url('/social-resources/skin/social/jquery.exomentions.css');
 
 .UIComposer .BlastContainer {
 	background: #f8f8f8;
@@ -14,18 +15,13 @@
     font-weight: normal;
 }
 
-.UIComposer .BlastContainer .BlastInputSpace {
-	margin-bottom: 4px;
+.UIComposer textarea {
+  height: 28px;
+  width: 90%;  
 }
 
-.UIComposer .BlastContainer textarea {
-	width: 99% !important;
-	border: 1px solid #e1e1e1;
-	font-size: 14px;
-	border-radius: 2px;
-	margin: 0 0 7px;
-	line-height: 20px;
-	padding: 0 0 0 8px;
+.UIComposer .BlastContainer .BlastInputSpace {
+	margin-bottom: 4px;
 }
 
 .UIComposer .BlastContainer .BlastShare {
@@ -82,17 +78,10 @@
 	color: #fff;
 }
 
-.UIComposer .BlastContainer .BlastShare .ShareButtonDisable {
+.UIComposer .BlastContainer .BlastShare .DisableButton {
 	border: 1px solid #E7E7E7;
-	border-radius: 3px;
 	background: #E7E7E7;
-	padding: 3px 15px;
-	float: right;
-	cursor: pointer;
-	margin-right: 0px;
-	font-size: 12px;
-	font-weight: bold;
-	color: #fff;
+	cursor: auto;
 }
 
 .UIComposer .BlastContainer .LinkForm {

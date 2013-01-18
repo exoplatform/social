@@ -18,7 +18,7 @@
 /**
  * UIActivity.js
  */
-
+(function ($, _) {  
 var UIActivity = {
   COMMENT_BLOCK_BOUND_CLASS_NAME : "commentBox commentBlockBound ",
   COMMENT_BLOCK_BOUND_NONE_CLASS_NAME : " commentBox commentBlockBoundNone",
@@ -65,7 +65,7 @@ var UIActivity = {
     UIActivity.commentLinkEl = $("#"+UIActivity.commentLinkId);
     UIActivity.commentFormBlockEl = $("#" + UIActivity.commentFormBlockId);
     UIActivity.commentTextareaEl = $("#" + UIActivity.commentTextareId);
-    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId);
+    UIActivity.commentButtonEl = $("#" + UIActivity.commentButtonId).show();
     UIActivity.deleteCommentButtonEls = [];
     UIActivity.contentBoxEl = $(UIActivity.contentBoxId);
     UIActivity.deleteActivityButtonEl = $("#" + UIActivity.deleteActivityButtonId);
@@ -117,7 +117,6 @@ var UIActivity = {
         });
       });
 
-      
       //
       var commentTextareas = $("[id^='CommentTextarea']");
       $.each(commentTextareas, function(idx, el) {
@@ -155,7 +154,27 @@ var UIActivity = {
     } else {
       $("#" + UIActivity.commentFormBlockId).attr("disabled", "disabled");
     }
+    
+	//
+    $('textarea#CommentTextarea' + UIActivity.activityId).exoMentions({
+        onDataRequest:function (mode, query, callback) {
+          var url = window.location.protocol + '//' + window.location.host + '/' + eXo.social.portal.rest + '/social/people/getprofile/data.json?search='+query;
+          $.getJSON(url, function(responseData) {
+            responseData = _.filter(responseData, function(item) { 
+              return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+            });
+            callback.call(this, responseData);
+          });
+        },
+        idAction : ('CommentButton'+UIActivity.activityId),
+        elasticStyle : {
+          maxHeight : '35px',
+          minHeight : '22px'
+        },
+        messages : window.eXo.social.I18n.mentions
+      });
   }
-}
+};
 
- _module.UIActivity = UIActivity;
+return UIActivity;
+})($, mentions._);

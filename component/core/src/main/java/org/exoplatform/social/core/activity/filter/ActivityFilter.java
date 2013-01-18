@@ -106,8 +106,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         super.start();
         //
-        this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
+        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }

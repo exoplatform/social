@@ -59,11 +59,11 @@
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.web.api</artifactId>
     </dependency>
     <dependency>
@@ -90,18 +90,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.identity</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.test.jcr</artifactId>
       <scope>test</scope>
     </dependency>

@@ -101,7 +101,7 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
    * @throws Exception
    */
   @Override
-  public void activate() throws Exception {
+  public void activate() {
 
   }
 
@@ -111,7 +111,7 @@ public class UISpaceApplicationInstaller extends UIContainer implements UIPopupC
    * @throws Exception
    */
   @Override
-  public void deActivate() throws Exception {
+  public void deActivate() {
 
   }
 

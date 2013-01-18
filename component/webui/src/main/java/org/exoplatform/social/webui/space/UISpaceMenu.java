@@ -146,7 +146,7 @@ public class UISpaceMenu extends UIContainer {
       Space space = spaceService.getSpaceByUrl(spaceUrl);
 
       UserNode selectedNode = uiPortal.getSelectedUserNode();
-      String pageRef = selectedNode.getPageRef();
+      String pageRef = selectedNode.getPageRef().format();
       String appName = pageRef.substring(pageRef.lastIndexOf("::") + 2);
       
       UserNode homeNode = null;
@@ -202,7 +202,7 @@ public class UISpaceMenu extends UIContainer {
       renamedNode.setLabel(newSpaceAppName);
       UserPortalConfigService configService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
       DataStorage dataService = spaceMenu.getApplicationComponent(DataStorage.class);
-      Page page = configService.getPage(renamedNode.getPageRef());
+      Page page = dataService.getPage(renamedNode.getPageRef().format());
       if (page != null) {
         page.setTitle(newNodeName);
         dataService.save(page);

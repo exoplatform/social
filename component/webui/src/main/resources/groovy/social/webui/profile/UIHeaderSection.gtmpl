@@ -33,8 +33,9 @@
     saveButtonId: 'savePosition'
   } """
   
-  jsmanager.require("SHARED/social-ui-profile", "profile").addScripts("profile.UIProfile.init($params);");
-  
+  jsmanager.require("SHARED/uiForm");
+  jsmanager.require("SHARED/social-ui-profile", "profile").addScripts("profile.init($params);");
+
   def ownerIdentity = Utils.getOwnerIdentity(true);
   def viewerIdentity = Utils.getViewerIdentity();
 

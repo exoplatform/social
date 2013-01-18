@@ -37,6 +37,8 @@
   def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
   
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+
   def profile = uicomponent.getProfile();
   def isEdit = uicomponent.isEditMode();
   def isEditable = uicomponent.isEditable();
