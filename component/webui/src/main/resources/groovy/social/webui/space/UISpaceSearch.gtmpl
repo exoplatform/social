@@ -57,7 +57,7 @@ def params = """ {
 
 jsmanager.require("SHARED/jquery", "jq")
          .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-         .require("SHARED/social-ui-space-search", "search").addScripts("search.init($params);");
+         .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);");
 
 %>
 <div class="uiSpaceSearch">
