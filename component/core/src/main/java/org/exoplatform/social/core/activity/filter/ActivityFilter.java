@@ -80,8 +80,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       .append(COMMENTERS_FIELD.clone())
       .append(LIKES_FIELD.clone())
       .with(IS_COMMENT_FIELD).value(Boolean.FALSE)
-      .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
-      .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
+      .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+      .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
     } catch (Exception ex) {
       LOG.warn(ex);
     }
@@ -105,8 +105,8 @@ public class ActivityFilter extends JCRFilterLiteral {
 
         //
         this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }
@@ -155,8 +155,9 @@ public class ActivityFilter extends JCRFilterLiteral {
     protected void start() {
       try {
         super.start();
-        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC).
-        with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
+        this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
+        
       } catch (Exception ex) {
         LOG.warn(ex);
       }
@@ -170,8 +171,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         super.start();
         //
-        this.with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC).
-        with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
+        this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }
@@ -185,8 +186,8 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         //
         this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC)
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
       } catch (Exception ex) {
         LOG.warn(ex);
       }
