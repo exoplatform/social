@@ -66,6 +66,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
   private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
+  private static final String   HOME = "home";
   private Object locker = new Object();
   private Locale currentLocale = null;
 
@@ -128,7 +129,8 @@ public class UIUserActivitiesDisplay extends UIForm {
   }
 
   protected boolean isHomePage() {
-    return (Utils.getSelectedNode() == null || Utils.getSelectedNode().length() == 0);  
+    String selectedNode = Utils.getSelectedNode(); 
+    return ( selectedNode == null || selectedNode.length() == 0 || HOME.equals(selectedNode));  
   }
   
   public UIActivitiesLoader getActivitiesLoader() {
