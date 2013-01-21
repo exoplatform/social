@@ -98,14 +98,10 @@ public class ActivitiesRestService implements ResourceContainer {
    */
   private ExoSocialActivity destroyActivity(String activityId) {
     _activityManager = getActivityManager();
-    ExoSocialActivity activity = null;
-    try {
-      activity = _activityManager.getActivity(activityId);
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
+    ExoSocialActivity activity = _activityManager.getActivity(activityId);
+
     if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     try {
       _activityManager.deleteActivity(activityId);

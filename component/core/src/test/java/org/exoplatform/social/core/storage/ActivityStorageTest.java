@@ -172,8 +172,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
       activityStorage.deleteActivity(activity.getId());
       try {
-        activityStorage.getActivity(activity.getId());
-        fail();
+        assertEquals(null, activityStorage.getActivity(activity.getId()));
       } catch (Exception ase) {
         // ok
       }

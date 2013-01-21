@@ -34,6 +34,8 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
  */
 public class ActivityData implements CacheData<ExoSocialActivity> {
 
+  public final static ActivityData NULL = new ActivityData(new ExoSocialActivityImpl());
+  
   private final String id;
   private final String title;
   private final String body;
@@ -98,6 +100,11 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
 
   public ExoSocialActivity build() {
 
+    //
+    if (this == NULL) {
+      return null;
+    }
+    
     ExoSocialActivity activity = new ExoSocialActivityImpl();
 
     activity.setId(id);

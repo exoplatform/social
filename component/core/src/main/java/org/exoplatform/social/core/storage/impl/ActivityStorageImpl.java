@@ -329,7 +329,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     }
     catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
+      //throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
+      return null;
     }
   }
 
