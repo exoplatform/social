@@ -43,7 +43,6 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -468,32 +467,18 @@ public class BaseUIActivity extends UIForm {
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
+    
+    if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
+      return true;
+    }
+    
     if (postContext == PostContext.SPACE) {
       Space space = uiActivitiesContainer.getSpace();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
 
-      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
-        return true;
-      }
-
-      return spaceService.isLeader(space, Utils.getOwnerRemoteId());
-    } else if (postContext == PostContext.USER) {
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
-        return true;
-      }
-      if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_ACTIVITIES) {
-          return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
-          //currently displays only
-          return false;
-        } else {
-          //connections
-          return false;
-        }
-      }
+      return spaceService.isManager(space, Utils.getOwnerRemoteId());
     }
+    
     return false;
   }
 
@@ -527,19 +512,7 @@ public class BaseUIActivity extends UIForm {
       if (postContext == PostContext.SPACE) {
         Space space = uiActivitiesContainer.getSpace();
         SpaceService spaceService = getApplicationComponent(SpaceService.class);
-        return spaceService.isLeader(space, Utils.getOwnerRemoteId());
-      } else if (postContext == PostContext.USER) {
-        UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-        if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_ACTIVITIES) {
-            return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
-            return false;
-          } else {
-            //connections
-            return false;
-          }
-        }
+        return spaceService.isManager(space, Utils.getOwnerRemoteId());
       }
     } catch (Exception e) {
       LOG.warn("can't not get remoteUserIdentity: remoteUser = " + Utils.getViewerRemoteId());
