@@ -70,5 +70,14 @@ public class DOMParserTest extends TestCase {
     assertEquals("<h>", rootNode.getChildNodes().get(3).getContent());
     assertEquals("</i>", rootNode.getChildNodes().get(4).getContent());
   }
+  
+  public void testSpecialCase() {
+    String input = "<b></b>";
+    List<String> xmlTokens = Tokenizer.tokenize(input);
+
+    Node rootNode =  DOMParser.createDOMTree(xmlTokens);
+    assertEquals("<b></b>", rootNode.toString());
+
+  }
 
 }
