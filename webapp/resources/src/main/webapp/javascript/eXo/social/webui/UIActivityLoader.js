@@ -9,7 +9,7 @@
 	  return $(document).height() - $(window).scrollTop() - $(window).height();  
 	  },
 	  init: function (parentId, hasMore) {
-	    UIActivityLoader.hasMore = hasMore;
+	    UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
 	    UIActivityLoader.initIndicator();
 	
 	    $(document).ready(function() {
@@ -23,7 +23,7 @@
 	        loadAnimation.stop();
 	        var isLoading = loadAnimation.css('display') != 'none';
 	        if (distanceToBottom <= UIActivityLoader.delta && !isLoading) {
-	          if (UIActivityLoader.hasMore) {
+	          if (UIActivityLoader.hasMore === true) {
 	            loadAnimation
 	              .animate({'display': 'block'}, 
 	                500, function() {
@@ -41,7 +41,7 @@
 	    if(UIActivityLoader.scrollBottom() <= UIActivityLoader.delta) {
 	      $(window).scrollTop($(window).scrollTop()-5);
 	    }
-	    UIActivityLoader.hasMore = hasMore;
+      UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
 	    UIActivityLoader.initIndicator();
 	  },
 	  initIndicator : function() {
