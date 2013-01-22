@@ -77,6 +77,17 @@ public class DOMParserTest extends TestCase {
 
     Node rootNode =  DOMParser.createDOMTree(xmlTokens);
     assertEquals("<b></b>", rootNode.toString());
+    
+
+  }
+  
+  public void testBrCase() {
+    String input = "<br></br>";
+    List<String> xmlTokens = Tokenizer.tokenize(input);
+
+    Node rootNode =  DOMParser.createDOMTree(xmlTokens);
+    assertEquals("<br />", rootNode.toString());
+    
 
   }
 

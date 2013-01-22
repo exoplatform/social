@@ -119,8 +119,8 @@ public class XMLProcessorTest extends AbstractCommonTest {
             xmlProcessor.process("hello 1<> hello2"));
     assertEquals("<a>hello 1</a>", xmlProcessor.process("<a>hello 1"));
     assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process("hello 1</a>"));
-    assertEquals("<a>Hello 2<a><b /></a></a>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
-
+    assertEquals("<a>Hello 2<a><b></b></a></a>", xmlProcessor.process("<a<b>Hello 2<a><b>"));
+                   
   }
 
   /**
@@ -193,8 +193,8 @@ public class XMLProcessorTest extends AbstractCommonTest {
     assertEquals("hello 1&lt;/a&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("hello 1</a>"))).toString());
     assertEquals("&lt;a&lt;b&gt;Hello 2&lt;a&gt;&lt;b&gt;", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a<b>Hello 2<a><b>"))).toString());
     assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
-    assertEquals("<a>Hello 2<b /></a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2<b /></a>"))).toString());
-    assertEquals("<a href=\"abc\">Hello 2<b /></a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2<b /></a>"))).toString());
+    assertEquals("<a>Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a>Hello 2</a>"))).toString());
+    assertEquals("<a href=\"abc\">Hello 2</a>", xmlProcessor.process(DOMParser.createDOMTree(Tokenizer.tokenize("<a href='abc' id='def'>Hello 2</a>"))).toString());
   }
 
 

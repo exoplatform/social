@@ -40,7 +40,7 @@ public class XMLBalancerFilterPluginTest extends TestCase {
     assertEquals("<b> hello 5 <br /></b>",
             balancer.doFilter("<b> hello 5 <br   /></b>"));
 
-    assertEquals("<b> hello 6 <br /><b /></b>",
+    assertEquals("<b> hello 6 <br /><b></b></b>",
             balancer.doFilter("<b> hello 6 <br /><b>"));
 
     assertEquals("3 &lt; 5 &gt;",
