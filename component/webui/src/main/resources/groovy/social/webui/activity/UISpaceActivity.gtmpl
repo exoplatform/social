@@ -88,7 +88,7 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
   } """
   
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.UIActivity.onLoad($params);");
+  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
@@ -157,7 +157,7 @@
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent ClearFix">
-        <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a><br>
+        <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a>
         <span class="DateTime">$activityPostedTime</span>
       <% if (activityDeletable) {%>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
