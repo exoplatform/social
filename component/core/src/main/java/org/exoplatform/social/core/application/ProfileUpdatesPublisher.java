@@ -93,14 +93,10 @@ public class ProfileUpdatesPublisher extends ProfileListenerPlugin {
 
   private void publishActivity(ProfileLifeCycleEvent event, String activityMessage, String titleId) {
     String activityId = getStorage().getProfileActivityId(event.getProfile(), Profile.AttachedActivityType.USER);
-    ExoSocialActivityImpl activity = new ExoSocialActivityImpl();
-    if (activityId != null) {
-      try {
-        activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-      } catch (Exception e) {
-        LOG.debug("Run in case of activity deleted and reupdate");
-        activityId = null;
-      }
+    ExoSocialActivityImpl activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+    if (activity == null) {
+      activity = new ExoSocialActivityImpl();
+      activityId = null;
     }
     activity.setType(PeopleService.USER_PROFILE_ACTIVITY);
     activity.setTitle(activityMessage);

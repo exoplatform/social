@@ -300,9 +300,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     String activityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setType(SPACE_PROFILE_ACTIVITY);
-    activity.setTitle(activityMessage);
     if (activityId != null) {
       try {
         ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
@@ -312,7 +309,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
         comment.setUserId(identity.getId());
         comment.setType(SPACE_APP_ID);
         comment.setTemplateParams(templateParams);
-        activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+        ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
         activityManager.updateActivity(activity);
         activityManager.saveComment(activity, comment);
       } catch (Exception e) {
@@ -321,6 +318,9 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       }
     }
     if (activityId == null) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setType(SPACE_PROFILE_ACTIVITY);
+      activity.setTitle(activityMessage);
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
       getStorage().updateProfileActivityId(spaceIdentity, activity.getId(), Profile.AttachedActivityType.SPACE);
     }
