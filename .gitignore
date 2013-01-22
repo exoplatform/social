@@ -40,3 +40,4 @@ target/
 
 # Misc
 *.swp
+*.log

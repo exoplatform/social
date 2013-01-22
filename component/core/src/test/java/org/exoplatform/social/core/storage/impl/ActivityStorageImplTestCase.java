@@ -51,7 +51,7 @@ import org.junit.runners.MethodSorters;
 // TODO :
 // * Fix tests to not have to specify the order of execution like this
 // * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @QueryNumberTest
 public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
