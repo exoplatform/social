@@ -85,30 +85,7 @@
     <div class="$blastInput">
       <% uiform.renderField(uicomponent.COMPOSER_TEXT_AREA_INPUT) %>
     </div>
-    <div class="blastShare clearFix">
-      <div class="AttachMents">
-      $addLabel:
-      <%
-        def simpleName, labelSimpleName, actionEvent;
-        def counter = 0;
-        for(acComposer in uicomponent.getActivityComposers()) {
-          counter++;
-          simpleName = acComposer.getClass().getSimpleName();
-          labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-
-          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue()";
-	      if(simpleName.equals("UILinkActivityComposer")) {
-	      	print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
-	      	action = "UIComposer.showLink()";
-	      }
-          	
-      %>
-          <a href="javascript:void(0)" title="$labelSimpleName" class="$simpleName <%=((counter > 1) ? "DottedLine" : "")%>" onclick="$action">$labelSimpleName</a>
-      <%
-        }
-      %>
-      </div>
-
+    
     <%
       def currentActivityComposer = uicomponent.getActivityComposerManager().getCurrentActivityComposer();
 
@@ -122,39 +99,32 @@
     <%
       }
     %>
+    
 		<div  class="clearfix">
 		 <button class="pull-right btn btn-primary" rel="tooltip" data-placement="bottom" title="$shareLabel" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 		  <div id="ActivityComposerExt" class="attachMents pull-left">
 		  <%
-			def simpleName, labelSimpleName, actionEvent;
-			def counter = 0;
-			for(acComposer in uicomponent.getActivityComposers()) {
-			  counter++;
-			  simpleName = acComposer.getClass().getSimpleName();
-			  labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
-			  if (acComposer.isDisplayed()) {
-				actionEvent = "Close";
-			  } else {
-				actionEvent = "Activate";
-			  }
-			  if (counter > 1) {
-		  %>
-			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue();" ><i class="uiIconSoc$simpleName"></i></a>
-		  <% } else { %>
-			<a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="<%= acComposer.event("$actionEvent")%>; UIComposer.setCurrentValue(); " ><i class="uiIconSoc$simpleName"></i></a>
-		  <%
-			 }
-			}
-		  %>
-		  </div>
+			  def simpleName, labelSimpleName, actionEvent;
+        def counter = 0;
+        for(acComposer in uicomponent.getActivityComposers()) {
+          counter++;
+          simpleName = acComposer.getClass().getSimpleName();
+          labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+
+          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue()";
+          if(simpleName.equals("UILinkActivityComposer")) {
+            print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
+            action = "UIComposer.showLink()";
+          }
 		
-		  <%
-			def isReadyForPostingActivity = currentActivityComposer.isReadyForPostingActivity();
-			jsManager.require("SHARED/social-ui-activity-composer", "composer").addScripts("composer.UIComposer.handleShareButton($isReadyForPostingActivity);");
-		  %>	  
-			
+		      %>
+          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="$action"><i class="uiIconSoc$simpleName"></i></a>
+      <%
+        }
+      %>
+      </div>
+      
 		</div>
 	</div>
- </div>
   <% uiform.end()%>
 </div>

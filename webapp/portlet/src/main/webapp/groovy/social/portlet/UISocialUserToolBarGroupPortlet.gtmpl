@@ -86,7 +86,7 @@
       <li class="MenuItem $clazz $tabStyleNavigation">
     """
 
-    if(node.getPageRef() != null) {
+    if(node.getPageRef().format() != null) {
       print """<a class="ItemIcon $icon" href="$href" $title>$label</a>""";
     } else {
       print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
