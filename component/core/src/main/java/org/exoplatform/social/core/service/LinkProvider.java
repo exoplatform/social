@@ -39,8 +39,8 @@ import org.exoplatform.web.url.navigation.NodeURL;
 public class LinkProvider {
   public static final String RESOURCE_URL = "/social-resources";
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript/";
-  public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/Avatar.gif";
-  public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/ShareImages/SpaceImages/SpaceLogoDefault_61x61.gif";
+  public static final String PROFILE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/images/ShareImages/UserAvtDefault.png";
+  public static final String SPACE_DEFAULT_AVATAR_URL = RESOURCE_URL + "/skin/images/ShareImages/SpaceAvtDefault.png";
   public static final String HAS_CONNECTION_ICON =
           RESOURCE_URL + "/skin/social/webui/UIManageUsers/DefaultSkin/background/StatusIcon.png";
   public static final String WAITING_CONFIRMATION_ICON =
