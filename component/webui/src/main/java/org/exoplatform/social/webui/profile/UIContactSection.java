@@ -196,7 +196,10 @@ public class UIContactSection extends UIProfileSection {
    * @return All children in order.
    */
   public final List<UIComponent> getChilds() {
-    List<UIComponent> listChild = getChildren();
+    List<UIComponent> listChild = new ArrayList<UIComponent>();
+    for (UIComponent ui : getChildren()) {
+      listChild.add(ui);
+    }
     return sort(listChild);
   }
 
