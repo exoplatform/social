@@ -44,8 +44,8 @@
             actionLink.trigger('click');
           } else {
             var container = $('#ComposerContainer');
-            if (container.find('.LinkExtensionContainer').length > 0) {
-              container.find('.LinkExtensionContainer').hide().data('isShow', {
+            if (container.find('#LinkExtensionContainer').length > 0) {
+              container.find('#LinkExtensionContainer').hide().data('isShow', {
                 isShow : false
               });
             }
@@ -87,7 +87,7 @@
 
     showLink : function() {
       var container = $('#ComposerContainer')
-      var link = container.find('.LinkExtensionContainer');
+      var link = container.find('#LinkExtensionContainer');
       if (link.length > 0) {
         if (link.data('isShow').isShow) {
           link.hide().data('isShow', {

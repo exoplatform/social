@@ -173,7 +173,7 @@ link
     %>
   </div>
 <% } else { %>
-    <div class="uiComposerLink clearfix" style="display:<%=((uicomponent.isDisplayed)?"block":"none")%>">
+    <div id="LinkExtensionContainer" class="uiComposerLink clearfix" style="display:<%=((uicomponent.isDisplayed)?"block":"none")%>">
       <button id="AttachButton" class="btn pull-right" >Attach</button>
       <div class="inputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
     </div>
