@@ -99,7 +99,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     // TODO: init() run two time when initiation this form.
     String remoteId = Utils.getOwnerRemoteId();
     this.setOwnerName(remoteId);
-    String selectedDisplayMode = Utils.getCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED);
+    String selectedDisplayMode = Utils.getCookies(String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()));
     selectedDisplayMode = (selectedDisplayMode != null) ? selectedDisplayMode : DisplayMode.ALL_ACTIVITIES.name();
 
     //
@@ -251,7 +251,7 @@ public class UIUserActivitiesDisplay extends UIForm {
         event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + activitiesContainer.getCookiesKey(selectedDisplayMode) + "');");
 
-        Utils.setCookies(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, selectedDisplayMode, true);
+        Utils.setCookies(String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()), selectedDisplayMode, true);
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
       

@@ -44,7 +44,7 @@ import org.exoplatform.webui.core.UIPopupWindow;
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
   
-  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited";
+  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
 
 
   private List<ExoSocialActivity> activityList;
@@ -177,6 +177,6 @@ public class UIActivitiesContainer extends UIContainer {
   }
   
   public String getCookiesKey(String displayMode) {
-    return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode);
+    return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
   }
 }

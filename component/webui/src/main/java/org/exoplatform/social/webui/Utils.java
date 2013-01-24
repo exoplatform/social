@@ -47,7 +47,7 @@ import org.exoplatform.web.url.navigation.NodeURL;
  */
 public class Utils {
   /** . */
-  public static final String ACTIVITY_STREAM_TAB_SELECTED_COOKIED = "exo_social_activity_stream_tab_selected";
+  public static final String ACTIVITY_STREAM_TAB_SELECTED_COOKIED = "exo_social_activity_stream_tab_selected_%s";
   
   
   /**
