@@ -455,6 +455,35 @@ public class BaseUIActivity extends UIForm {
   public boolean isActivityCommentAndLikable() throws Exception {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
+    
+    //
+    if (postContext == PostContext.USER) {
+      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+      if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
+        String ownerName = uiUserActivitiesDisplay.getOwnerName();
+        Identity ownerIdentity = Utils.getIdentityManager().
+                getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+        Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, Utils.getViewerIdentity());
+        if (relationship == null) {
+          return false;
+        } else if (!(relationship.getStatus() == Type.CONFIRMED)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  
+  public boolean isActivityCommentable() throws Exception {
+    UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
+    PostContext postContext = uiActivitiesContainer.getPostContext();
+    
+    //
+    if (getActivity().isLocked()) {
+      return false;
+    }
+    
+    //
     if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
       if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
