@@ -302,16 +302,18 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     String activityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     if (activityId != null) {
       try {
-        ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
-        comment.setTitle(activityMessage);
-        comment.setTitleId(titleId);
-        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
-        comment.setUserId(identity.getId());
-        comment.setType(SPACE_APP_ID);
-        comment.setTemplateParams(templateParams);
-        ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-        activityManager.updateActivity(activity);
-        activityManager.saveComment(activity, comment);
+        if (! "Has left the space.".equals(activityMessage)) {
+          ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
+          comment.setTitle(activityMessage);
+          comment.setTitleId(titleId);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
+          comment.setUserId(identity.getId());
+          comment.setType(SPACE_APP_ID);
+          comment.setTemplateParams(templateParams);
+          ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+          activityManager.updateActivity(activity);
+          activityManager.saveComment(activity, comment);
+        }
       } catch (Exception e) {
         LOG.debug("Run in case of activity deleted and reupdate");
         activityId = null;
@@ -367,17 +369,18 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
     activity.setTemplateParams(templateParams);
     
+    ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
+    comment.setTitle(userSpaceActivityMessage);
+    comment.setTitleId(titleId);
+    comment.setUserId(identity.getId());
+    comment.setType(SPACE_APP_ID);
+    templateParams.put(SPACE_DISPLAY_NAME_PARAM, event.getSpace().getDisplayName());
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DISPLAY_NAME_PARAM);
+    comment.setTemplateParams(templateParams);
+    
     if (activityId != null) {
       if (isJoined) {
         try {
-          ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
-          comment.setTitle(userSpaceActivityMessage);
-          comment.setTitleId(titleId);
-          comment.setUserId(identity.getId());
-          comment.setType(SPACE_APP_ID);
-          templateParams.put(SPACE_DISPLAY_NAME_PARAM, event.getSpace().getDisplayName());
-          templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DISPLAY_NAME_PARAM);
-          comment.setTemplateParams(templateParams);
           activityManager.updateActivity(activity);
           activityManager.saveComment(activity, comment);
         } catch (Exception e) {
@@ -394,6 +397,8 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId == null) {
       activityManager.saveActivityNoReturn(identity, activity);
       getStorage().updateProfileActivityId(identity, activity.getId(), Profile.AttachedActivityType.RELATION);
+      activity = (ExoSocialActivityImpl) activityManager.getActivity(activity.getId());
+      activityManager.saveComment(activity, comment);
     }
   }
   

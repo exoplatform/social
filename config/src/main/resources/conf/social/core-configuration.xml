@@ -335,10 +335,6 @@
                     <key><string>space_avatar_edited</string></key>
                     <value><string>SpaceActivityPublisher.space_avatar_edited</string></value>
                   </entry>
-                  <entry>
-                    <key><string>user_space_joined</string></key>
-                    <value><string>SpaceActivityPublisher.user_space_joined</string></value>
-                  </entry>
                 </map>
               </field>
             </object>
@@ -363,6 +359,10 @@
                   <entry>
                     <key><string>user_joined_public_spaces</string></key>
                     <value><string>SpaceActivityPublisher.member_of_number_public_spaces</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>user_space_joined</string></key>
+                    <value><string>SpaceActivityPublisher.user_space_joined</string></value>
                   </entry>
                 </map>
               </field>
