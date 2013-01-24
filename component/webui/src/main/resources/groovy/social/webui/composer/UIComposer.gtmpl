@@ -104,21 +104,22 @@
 		 <button class="pull-right btn btn-primary" rel="tooltip" data-placement="bottom" title="$shareLabel" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 		  <div id="ActivityComposerExt" class="attachMents pull-left">
 		  <%
-			  def simpleName, labelSimpleName, actionEvent;
+			  def simpleName, labelSimpleName, actionEvent, clazz;
         def counter = 0;
         for(acComposer in uicomponent.getActivityComposers()) {
           counter++;
           simpleName = acComposer.getClass().getSimpleName();
           labelSimpleName = _ctx.appRes("UIActivityComposer.label.${simpleName}");
+          clazz = simpleName.toLowerCase();
 
-          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue()";
+          String action = acComposer.event((acComposer.isDisplayed()) ? "Close" : "Activate") + "; UIComposer.setCurrentValue(this)";
           if(simpleName.equals("UILinkActivityComposer")) {
             print("<a id=\"actionLink\" onclick=\"$action\"><span></span></a>");
             action = "UIComposer.showLink()";
           }
 		
 		      %>
-          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon" onclick="$action"><i class="uiIconSoc$simpleName"></i></a>
+          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName"></i></a>
       <%
         }
       %>
