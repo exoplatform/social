@@ -31,6 +31,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -201,6 +202,18 @@ public class Utils {
    */
   public static final RelationshipManager getRelationshipManager() {
     return (RelationshipManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RelationshipManager.class);
+  }
+  
+  /**
+   * @param identity
+   * @return
+   * @throws Exception
+   */
+  public static final Relationship getRelationship(Identity identity) throws Exception {
+    if (identity.equals(getViewerIdentity())) {
+      return null;
+    }
+    return getRelationshipManager().get(identity, getViewerIdentity());
   }
 
   /**

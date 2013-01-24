@@ -17,6 +17,8 @@
 
 -->
 <%
+    import org.exoplatform.social.webui.Utils;
+    import org.exoplatform.social.core.relationship.model.Relationship;
     import org.exoplatform.services.organization.User
     import org.exoplatform.webui.core.UIPageIterator
     import org.exoplatform.services.organization.User;
@@ -63,8 +65,19 @@
               def leaderImageSource = user.profile.avatarUrl;
               if (!leaderImageSource) leaderImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               leaderIdx += 1;
+		          //
+		          def connectAction = uicomponent.event("Connect", user.getId());
+		          def relationship = Utils.getRelationship(user);
+		          def contactStatus = null;
+		          if (relationship != null) {
+		            contactStatus = relationship.status;
+		          }
             %>
+            <% if (contactStatus == Relationship.Type.CONFIRMED) { %>
+            <div class="checkedBox spaceBox pull-left">
+            <% } else { %>
             <div class="spaceBox pull-left">
+            <% } %>
                 <a class="avatarXLarge pull-left">
                     <img class="ImgAvatar" src="$leaderImageSource" rel="tooltip" data-placement="bottom" title="$userName"/>
                 </a>
@@ -76,6 +89,29 @@
                      </div>
                     <% } %>
                 </div>
+                
+              <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+                <%
+                  def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
+                  def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
+                  def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
+                  def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
+                  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+                  def cancelRequestTitle = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
+		            %>
+		            <div class="connectionBtn clearfix">
+		            <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
+		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreTitle">$ignoreTitle</button>
+		                <button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",user.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button>
+		            <% } else if (contactStatus == Relationship.Type.PENDING) { %>
+		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestTitle">$cancelRequestTitle</button>
+		            <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</button>
+		            <% } else if (contactStatus == null) { %>
+		                <button class="btn pull-right" rel="tooltip" onclick="$connectAction" rel="tooltip" data-placement="bottom" title="$connectTitle">$connectTitle</button>
+		            <% } %>
+		            </div>
+		          <% } %>
             </div>
           <% }%>
       </div>
@@ -94,6 +130,7 @@
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
       <div class="memberList clearfix">
          <h4 class="titleWithBorder">$contactsDirectory</h4>
+          <% if(memberList.size() > 0)  { %>
             <!--div class="DirectoryNormalBox"-->
             <div class="uiFilterList">
                 <div class="result"><span class="number"><%=uicomponent.memberNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
@@ -117,7 +154,7 @@
                      <% } %>
                </ul>
           </div>
-      <% if(memberList.size() > 0)  {
+      <% 
         for(user in memberList) {
           def memberUserName = user.getProfile().getFullName();
           position = user.getProfile().position;
@@ -126,8 +163,20 @@
           def memberImageSource = user.getProfile().avatarUrl;
           if (!memberImageSource) memberImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
           memberIdx += 1;
+          //
+          def connectAction = uicomponent.event("Connect", user.getId());
+          def relationship = Utils.getRelationship(user);
+          def contactStatus = null;
+          if (relationship != null) {
+            contactStatus = relationship.status;
+          }
+          
       %>
-        <div class="spaceBox pull-left">
+	        <% if (contactStatus == Relationship.Type.CONFIRMED) { %>
+	        <div class="checkedBox spaceBox pull-left">
+	        <% } else { %>
+	        <div class="spaceBox pull-left">
+	        <% } %>
             <a class="avatarXLarge pull-left">
                 <img src="$memberImageSource" rel="tooltip" data-placement="bottom" title="$memberUserName" alt="#"/>
             </a>
@@ -141,13 +190,35 @@
                  </div>
                  <% } %>
             </div>
+          <% if (user.getRemoteId() != Utils.getViewerRemoteId()) { %>
+            <%
+              def connectTitle = _ctx.appRes(uicomponent.getId() + ".label.Connect")
+						  def ignoreTitle = _ctx.appRes(uicomponent.getId() + ".label.Ignore")
+						  def confirmTitle = _ctx.appRes(uicomponent.getId() + ".label.Confirm")
+						  def pendingTitle = _ctx.appRes(uicomponent.getId() + ".label.Pending")
+						  def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
+						  def cancelRequestTitle = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
+            %>
+            <div class="connectionBtn clearfix">
+            <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
+                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$ignoreTitle">$ignoreTitle</button>
+                <button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",user.getId())%>" rel="tooltip" data-placement="bottom" title="$confirmTitle">$confirmTitle</button>
+            <% } else if (contactStatus == Relationship.Type.PENDING) { %>
+                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestTitle">$cancelRequestTitle</button>
+            <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
+                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</button>
+            <% } else if (contactStatus == null) { %>
+                <button class="btn pull-right" rel="tooltip" onclick="$connectAction" rel="tooltip" data-placement="bottom" title="$connectTitle">$connectTitle</button>
+            <% } %>
+            </div>
+          <% } %>
         </div>
         <% }
       } else { %>
         <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
             <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
         <div class="uiFilterList">
-            <div class="result"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
+            <div class="result"><span class="number">0 </span><%=_ctx.appRes(uicomponent.getId() + ".label.NoneResultFound")%></div>
         </div>
       <% } %>
        </div>

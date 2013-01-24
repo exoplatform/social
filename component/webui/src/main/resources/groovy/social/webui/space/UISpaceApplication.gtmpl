@@ -37,7 +37,7 @@
 %>
 <div class="uiSpaceApp clearfix">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-	<button class="addApp btn" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
+	<button class="addApp btn btn-primary" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
   <% for(app in applications) {
        if (app != null) {

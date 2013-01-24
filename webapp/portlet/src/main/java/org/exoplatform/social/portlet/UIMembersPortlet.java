@@ -35,21 +35,23 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
@@ -66,6 +68,9 @@ import org.exoplatform.webui.form.UIFormStringInput;
     lifecycle = UIApplicationLifecycle.class,
     template = "app:/groovy/social/portlet/UIMembersPortlet.gtmpl",
     events = {
+      @EventConfig(listeners = UIMembersPortlet.ConnectActionListener.class),
+      @EventConfig(listeners = UIMembersPortlet.ConfirmActionListener.class),
+      @EventConfig(listeners = UIMembersPortlet.IgnoreActionListener.class),
       @EventConfig(listeners = UIMembersPortlet.SearchActionListener.class), 
       @EventConfig(listeners = UIMembersPortlet.LoadMoreMemberActionListener.class)
     }
@@ -89,6 +94,8 @@ public class UIMembersPortlet extends UIPortletApplication {
   private static final String ALL_FILTER = "All";
   public static final String SEARCH = "Search";
   private static final char EMPTY_CHARACTER = '\u0000';
+  private static final String INVITATION_REVOKED_INFO = "UIMembersPortlet.label.RevokedInfo";
+  private static final String INVITATION_ESTABLISHED_INFO = "UIMembersPortlet.label.InvitationEstablishedInfo";
   
   private int currentLoadIndex;
   private IdentityManager identityManager_ = null;
@@ -315,6 +322,87 @@ public class UIMembersPortlet extends UIPortletApplication {
     return memberShip;
   }
 
+  /**
+   * Listens to add action then make request to invite person to make connection.<br> - Gets
+   * information of user is invited.<br> - Checks the relationship to confirm that there have not
+   * got connection yet.<br> - Saves the new connection.<br>
+   */
+  public static class ConnectActionListener extends EventListener<UIMembersPortlet> {
+    public void execute(Event<UIMembersPortlet> event) throws Exception {
+      UIMembersPortlet uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
+
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      uiAllPeople.setLoadAtEnd(false);
+      
+      if (relationship != null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_ESTABLISHED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+    }
+  }
+
+  /**
+   * Listens to accept actions then make connection to accepted person.<br> - Gets information of
+   * user who made request.<br> - Checks the relationship to confirm that there still got invited
+   * connection.<br> - Makes and Save the new relationship.<br>
+   */
+  public static class ConfirmActionListener extends EventListener<UIMembersPortlet> {
+    public void execute(Event<UIMembersPortlet> event) throws Exception {
+      UIMembersPortlet uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity invitedIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
+
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, invitedIdentity);
+      uiAllPeople.setLoadAtEnd(false);
+      
+      if (relationship == null || relationship.getStatus() != Relationship.Type.PENDING) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
+    }
+  }
+
+  /**
+   * Listens to deny action then delete the invitation.<br> - Gets information of user is invited or
+   * made request.<br> - Checks the relation to confirm that there have not got relation yet.<br> -
+   * Removes the current relation and save the new relation.<br>
+   */
+  public static class IgnoreActionListener extends EventListener<UIMembersPortlet> {
+    public void execute(Event<UIMembersPortlet> event) throws Exception {
+      UIMembersPortlet   uiAllPeople = event.getSource();
+      String userId = event.getRequestContext().getRequestParameter(OBJECTID);
+      Identity inviIdentityIdentity = Utils.getIdentityManager().getIdentity(userId, true);
+      Identity invitingIdentity = Utils.getViewerIdentity();
+
+      Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, inviIdentityIdentity);
+      
+      uiAllPeople.setLoadAtEnd(false);
+      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
+        Utils.getRelationshipManager().delete(relationship);
+        return;
+      }
+      
+      if (relationship == null) {
+        UIApplication uiApplication = event.getRequestContext().getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
+        return;
+      }
+      
+      Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
+    }
+  }
+  
   /**
    * triggers this action when user clicks on search button
    */
