@@ -922,6 +922,9 @@ public class CachedActivityStorage implements ActivityStorage {
     //
     ActivityKey key = new ActivityKey(existingActivity.getId());
     exoActivityCache.remove(key);
+    
+    //
+    clearCache();
 
   }
   
