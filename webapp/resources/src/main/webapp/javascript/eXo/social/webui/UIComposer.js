@@ -22,6 +22,7 @@
 
 (function($, _) {
   var UIComposer = {
+    clickOn : null,
     onLoadI18n : function(i18n) {
       window.eXo.social.I18n.mentions = $.extend(true, {}, window.eXo.social.I18n.mentions, i18n);
     },
@@ -39,7 +40,7 @@
 
       $(document).ready(function() {
         var actionLink = $('#actionLink');
-        if (actionLink.length > 0) {
+        if(actionLink.length > 0 && (UIComposer.clickOn === null || $(UIComposer.clickOn).hasClass('UIDocActivityComposer') === false)) {
           if ($('#InputLink').length == 0) {
             actionLink.trigger('click');
           } else {
@@ -80,8 +81,9 @@
     getValue : function() {
       return (UIComposer.currentValue) ? UIComposer.currentValue : '';
     },
-    setCurrentValue : function() {
+    setCurrentValue : function(elm) {
       var uiInputText = $('textarea#' + UIComposer.textareaId);
+      UIComposer.clickOn = elm;
       UIComposer.currentValue = uiInputText.val();
     },
 
@@ -103,10 +105,16 @@
         if (cmp.length > 0) {
           $('textarea#composerInput').exoMentions('clearLink', function() {
           });
+        } else {
           $('#actionLink').trigger('click');
         }
       }
-    }
+    },
+    activeShareButton : function() {
+      try {
+        $('textarea#composerInput').exoMentions('showButton', function() {});
+      } catch (e) {}
+     }
   };
 
   window.UIComposer = UIComposer;
