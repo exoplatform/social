@@ -678,7 +678,12 @@ public class BaseUIActivity extends UIForm {
     }
   }
 
-  private ExoSocialActivity getI18N(ExoSocialActivity activity) {
+  /**
+   * Allow child can be override this method to process I18N
+   * @param activity
+   * @return
+   */
+  protected ExoSocialActivity getI18N(ExoSocialActivity activity) {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     I18NActivityProcessor i18NActivityProcessor = getApplicationComponent(I18NActivityProcessor.class);
     if (activity.getTitleId() != null) {

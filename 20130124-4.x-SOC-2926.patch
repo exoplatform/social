@@ -1,0 +1,514 @@
+From 81293481744bf90e97771a64230226c357c44460 Mon Sep 17 00:00:00 2001
+From: thanhvc <thanhvc@exoplatform.com>
+Date: Thu, 24 Jan 2013 18:52:24 +0700
+Subject: [PATCH] SOC-2926 | Activity type improvement - implements
+ ResouceBundle with multi keys in activity
+
+---
+ .../core/processor/I18NActivityProcessor.java      | 116 +++++++++++++++++
+ .../social/core/processor/I18NActivityUtils.java   | 143 +++++++++++++++++++++
+ .../core/processor/I18NActivityProcessorTest.java  |  30 +++++
+ .../core/processor/I18NActivityUtilsTest.java      | 113 ++++++++++++++++
+ .../test/resources/FakeResourceBundle.properties   |   2 +
+ .../resources/FakeResourceBundle_fr.properties     |   2 +
+ 6 files changed, 406 insertions(+)
+ create mode 100644 component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityUtils.java
+ create mode 100644 component/core/src/test/java/org/exoplatform/social/core/processor/FakeResourceBundle.properties
+ create mode 100644 component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityUtilsTest.java
+
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityProcessor.java b/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityProcessor.java
+index e1c0a37..3bf1889 100644
+--- a/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityProcessor.java
++++ b/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityProcessor.java
+@@ -17,6 +17,8 @@
+ package org.exoplatform.social.core.processor;
+ 
+ import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Locale;
+@@ -153,6 +155,68 @@ public final class I18NActivityProcessor {
+     }
+     return i18nActivity;
+   }
++  
++  /**
++   * Processes the I18N activity which means that activity.getTitleId() != null.
++   *
++   * @param i18nActivity the I18N activity
++   * @param selectedLocale the selected locale
++   *
++   * @return the new activity with I18N title
++   */
++  public ExoSocialActivity processKeys(ExoSocialActivity i18nActivity, Locale selectedLocale) {
++    //only processes I18N activity type
++    if (i18nActivity.getTitleId() != null) {
++      if (activityTypeRegistered(i18nActivity)) {
++        ResourceBundle resourceBundle = getResourceBundle(i18nActivity, selectedLocale);
++        if (resourceBundle == null) {
++          LOG.warn("no resource bundle key found registered for: " + getResourceBundleKeyFile(i18nActivity));
++          return i18nActivity;
++        }
++        if (getMessageBundleKeys(i18nActivity) == false) {
++          LOG.warn("Failed to find registered message bundle key for titleId: " + i18nActivity.getTitleId());
++          return i18nActivity;
++        }
++        
++        String[] resourceKeys =I18NActivityUtils.getResourceKeys(i18nActivity);
++        String[] resourceParamValues =I18NActivityUtils.getResourceValues(i18nActivity);
++        String type = i18nActivity.getType();
++        
++        int keyPos = 0;
++        int count = 0;
++        StringBuilder sb = new StringBuilder();
++        String[] valuesOfParam = null;
++        
++        //
++        int i = resourceKeys.length - 1;
++        String key = null;
++        for(;i >= 0; i--) {
++          //
++          key = resourceKeys[i];
++          
++          //
++          if (resourceParamValues.length > keyPos) {
++            valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[keyPos]);
++            keyPos++;
++          }
++          
++          String title = appRes(resourceBundle, getMessageBundleKey(type, key), valuesOfParam);
++          sb.append(title);
++          
++          if (++count < resourceKeys.length) {
++            sb.append("\n");
++          }
++        }
++        
++        //
++        String newTitle = sb.toString();
++        if(newTitle.length() > 0) {
++          i18nActivity.setTitle(newTitle);
++        }
++      }
++    }
++    return i18nActivity;
++  }
+ 
+   /**
+    * Sets the external resource bundle service.
+@@ -186,6 +250,36 @@ public final class I18NActivityProcessor {
+     ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(i18nActivity.getType());
+     return resourceBundlePlugin.getMessageBundleKey(i18nActivity.getTitleId());
+   }
++  
++  /**
++   * Gets the associated registered message bundle keys for this i18n activity's titleId.
++   *
++   * @param i18nActivity the i18n activity.
++   * @return the found registered message bundle key.
++   */
++  private boolean getMessageBundleKeys(ExoSocialActivity i18nActivity) {
++    ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(i18nActivity.getType());
++    String[] keys = I18NActivityUtils.getResourceKeys(i18nActivity);
++    
++    for(String key : keys) {
++      if (resourceBundlePlugin.getMessageBundleKey(key) != null) {
++        return true;
++      }
++    }
++    
++    return false;
++  }
++  
++  /**
++   * Gets the associated registered message bundle key for this i18n activity's titleId.
++   *
++   * @param i18nActivity the i18n activity.
++   * @return the found registered message bundle key.
++   */
++  private String getMessageBundleKey(String activityType, String resourceBundleKey) {
++    ActivityResourceBundlePlugin resourceBundlePlugin = resourceBundlePluginMap.get(activityType);
++    return resourceBundlePlugin.getMessageBundleKey(resourceBundleKey);
++  }
+ 
+   /**
+    * Gets the associated resource bundle key file registered with this type of activity.
+@@ -218,6 +312,28 @@ public final class I18NActivityProcessor {
+     }
+     return value;
+   }
++  
++  /**
++   * Gets the associated message bundle value from a specific message bundle key. If templateParams is not null, try to resolve
++   * the detected compound message bundle.
++   *
++   * @param resourceBundle the registered resource bundle from resource bundle key file
++   * @param msgKey         the message key
++   * @param templateParams the possible template params for resolving compound message bundle.
++   * @return the found message bundle value or null if not found.
++   */
++  private String appRes(ResourceBundle resourceBundle, String msgKey, String[] values) {
++
++    String value = appRes(resourceBundle, msgKey);
++    List<String> arguments = null;
++    if (values != null) {
++      arguments = Arrays.asList(values);
++    }
++    if (arguments != null && arguments.size() > 0) {
++      value = ResourceBundleUtil.replaceArguments(value, arguments);
++    }
++    return value;
++  }
+ 
+   /**
+    * Finds the message bundle value from message bundle key.
+diff --git a/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityUtils.java b/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityUtils.java
+new file mode 100644
+index 0000000..4a14827
+--- /dev/null
++++ b/component/core/src/main/java/org/exoplatform/social/core/processor/I18NActivityUtils.java
+@@ -0,0 +1,143 @@
++/*
++ * Copyright (C) 2003-2013 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.core.processor;
++
++import java.util.LinkedHashMap;
++import java.util.Map;
++
++import org.exoplatform.social.core.activity.model.ExoSocialActivity;
++
++/**
++ * Created by The eXo Platform SAS
++ * Author : thanh_vucong
++ *          thanh_vucong@exoplatform.com
++ * Jan 24, 2013  
++ */
++public class I18NActivityUtils {
++
++  /** */
++  private final static String RESOURCE_BUNDLE_VALUES_PARAM = "RESOURCE_BUNDLE_VALUES_PARAM";
++  
++  /** */
++  private final static String RESOURCE_BUNDLE_VALUES_CHARACTER = "#";
++  
++  /** */
++  private final static String RESOURCE_BUNDLE_KEYS_CHARACTER = ",";
++  
++  /**
++   * Gets list of values in template params
++   * @param activity
++   * @return
++   */
++  public static String[] getParamValues(String valueParam) {
++    if (valueParam == null) {
++      return null;
++    }
++    String[] got = valueParam.split(RESOURCE_BUNDLE_VALUES_CHARACTER);
++    return got;
++  }
++  
++  /**
++   * Gets list of resource bundle keys
++   * @param activity
++   * @return
++   */
++  public static String[] getResourceKeys(ExoSocialActivity activity) {
++    String resourceKeys = activity.getTitleId();
++    String[] got = resourceKeys.split(RESOURCE_BUNDLE_KEYS_CHARACTER);
++    return got;
++  }
++  
++  /**
++   * Gets list of resource bundle keys
++   * @param activity
++   * @return
++   */
++  public static String[] getResourceValues(ExoSocialActivity activity) {
++    
++    Map<String, String> params = activity.getTemplateParams();
++    if (params == null) {
++      return null;
++    }
++    
++    //
++    String v = params.get(RESOURCE_BUNDLE_VALUES_PARAM);
++    String[] got = v.split(RESOURCE_BUNDLE_KEYS_CHARACTER);
++    
++    //
++    return got;
++  }
++  
++  /**
++   * Adds ResouceBundle key into existing ExoSocialActivity.
++   * 
++   * @param activity
++   * @param key
++   * @param values
++   */
++  public static void addResourceKey(ExoSocialActivity activity, String key, String...values) {
++    if (activity == null) {
++      return;
++    }
++    
++    //
++    Map<String, String> params = activity.getTemplateParams();
++    if (params == null) {
++      params = new LinkedHashMap<String, String>();
++    }
++    
++    //
++    String titleId = activity.getTitleId();
++    if (titleId != null && titleId.length() > 0) {
++      activity.setTitleId(String.format("%s,%s", titleId, key));
++    } else {
++      activity.setTitleId(key);
++    }
++    
++    //
++    String newValue = transformValuesToString(values);
++    String oldValue = params.get(RESOURCE_BUNDLE_VALUES_PARAM);
++    if (oldValue != null && oldValue.length() > 0) {
++      String s = String.format("%s,%s",oldValue, newValue);
++      params.put(RESOURCE_BUNDLE_VALUES_PARAM, s);
++    } else {
++      params.put(RESOURCE_BUNDLE_VALUES_PARAM, newValue);
++    }
++    
++    activity.setTemplateParams(params);
++  }
++  
++  /**
++   * 
++   * @param values
++   * @return
++   */
++  private static String transformValuesToString(String...values) {
++    StringBuilder sb = new StringBuilder();
++    int count = 0;
++    for(String s : values) {
++      sb.append(s);
++      
++      if (++count < values.length) {
++        sb.append(RESOURCE_BUNDLE_VALUES_CHARACTER);
++      }
++    }
++    
++    return sb.toString();
++  }
++  
++}
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/processor/FakeResourceBundle.properties b/component/core/src/test/java/org/exoplatform/social/core/processor/FakeResourceBundle.properties
+new file mode 100644
+index 0000000..e69de29
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityProcessorTest.java b/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityProcessorTest.java
+index a3eb348..8c2d719 100644
+--- a/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityProcessorTest.java
++++ b/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityProcessorTest.java
+@@ -17,6 +17,8 @@
+ package org.exoplatform.social.core.processor;
+ 
+ import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Enumeration;
+ import java.util.HashMap;
+ import java.util.LinkedHashMap;
+ import java.util.List;
+@@ -139,6 +141,27 @@ public class I18NActivityProcessorTest extends TestCase {
+     assertEquals("At 02:00 PM on Feb 6, 2012, we detected 10 spaceships on the planet Mars (EN).", newActivity.getTitle());
+ 
+   }
++  
++  public void testCompoundMessagesWithMultiKeys() throws Exception {
++    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
++    activityKeyTypeMapping.put("add_topic", "add_topic");
++    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
++    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
++    initActivityResourceBundlePlugin(activityKeyTypeMapping);
++    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
++
++    final String title = "Title has been updated: edited topic title\nContent has been updated: edited topic content";
++    ExoSocialActivity activity = createActivity(title);
++    I18NActivityUtils.addResourceKey(activity, "update_topic_title", "edited topic title");
++    I18NActivityUtils.addResourceKey(activity, "update_topic_content", "edited topic content");
++    
++    Locale enLocale = new Locale("en");
++
++    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
++
++    assertEquals("Title has been updated: edited topic title\nContent has been updated: edited topic content", newActivity.getTitle());
++
++  }
+ 
+   public void testNoRegisteredActivityKeyType() throws Exception {
+     Map<String, String> activityKeyTypeMapping = new HashMap<String, String>();
+@@ -195,6 +218,13 @@ public class I18NActivityProcessorTest extends TestCase {
+     activity.setTitle(title);
+     return activity;
+   }
++  
++  private ExoSocialActivity createActivity(String title) {
++    ExoSocialActivity activity = new ExoSocialActivityImpl();
++    activity.setType("fake-type");
++    activity.setTitle(title);
++    return activity;
++  }
+ 
+   private void initActivityResourceBundlePlugin(Map<String, String> activityKeyTypeMapping) {
+     InitParams initParams = new InitParams();
+diff --git a/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityUtilsTest.java b/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityUtilsTest.java
+new file mode 100644
+index 0000000..1f61619
+--- /dev/null
++++ b/component/core/src/test/java/org/exoplatform/social/core/processor/I18NActivityUtilsTest.java
+@@ -0,0 +1,113 @@
++/*
++ * Copyright (C) 2003-2013 eXo Platform SAS.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU Affero General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Affero General Public License for more details.
++ *
++ * You should have received a copy of the GNU Affero General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++package org.exoplatform.social.core.processor;
++
++import junit.framework.TestCase;
++
++import org.exoplatform.social.core.activity.model.ExoSocialActivity;
++import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
++
++/**
++ * Created by The eXo Platform SAS
++ * Author : thanh_vucong
++ *          thanh_vucong@exoplatform.com
++ * Jan 24, 2013  
++ */
++public class I18NActivityUtilsTest extends TestCase {
++
++  @Override
++  public void setUp() throws Exception {
++    super.setUp();
++  }
++
++
++  @Override
++  public void tearDown() throws Exception {
++    super.tearDown();
++  }
++  
++  public void testGetParamValues() throws Exception {
++    String input = "v1#v2#v3";
++    
++    String[] got = I18NActivityUtils.getParamValues(input);
++    
++    assertEquals(3, got.length);
++    
++    input = "#v2#v3";
++    
++    got = I18NActivityUtils.getParamValues(input);
++    
++    assertEquals(3, got.length);
++    
++  }
++  
++  public void testGetParamValuesWithNULL() throws Exception {
++    String input = null;
++    String[] got = I18NActivityUtils.getParamValues(input);
++    assertNull(got);
++  }
++  
++  public void testAddResourceKey() throws Exception {
++    ExoSocialActivity a = createActivity();
++    I18NActivityUtils.addResourceKey(a, "key1", "val1");
++    
++    assertNotNull(a.getTemplateParams());
++    
++    String[] values = I18NActivityUtils.getResourceValues(a);
++    assertEquals(1, values.length);
++    assertEquals("key1", a.getTitleId());
++    String[] keys = I18NActivityUtils.getResourceKeys(a);
++    assertEquals(1, keys.length);
++    assertEquals("key1", keys[0]);
++    
++    //
++    I18NActivityUtils.addResourceKey(a, "key2", "val1");
++    
++    values = I18NActivityUtils.getResourceValues(a);
++    assertEquals(2, values.length);
++    assertEquals(a.getTitleId(), "key1,key2");
++    
++    keys = I18NActivityUtils.getResourceKeys(a);
++    assertEquals(2, keys.length);
++    assertEquals("key1", keys[0]);
++    assertEquals("key2", keys[1]);
++    
++    //
++    I18NActivityUtils.addResourceKey(a, "key3", "val1", "val2");
++    
++    values = I18NActivityUtils.getResourceValues(a);
++    assertEquals(3, values.length);
++    assertEquals("val1#val2", values[2]);
++    assertEquals(a.getTitleId(), "key1,key2,key3");
++    
++    keys = I18NActivityUtils.getResourceKeys(a);
++    assertEquals(3, keys.length);
++    assertEquals("key1", keys[0]);
++    assertEquals("key2", keys[1]);
++    assertEquals("key3", keys[2]);
++  }
++  
++  private ExoSocialActivity createActivity() {
++    ExoSocialActivity activity = new ExoSocialActivityImpl();
++    activity.setTitle("title value");
++    activity.setBody("body value");
++    activity.isComment(false);
++    activity.setType("ks-forum:spaces");
++    
++    return activity;
++  }
++}
+diff --git a/component/core/src/test/resources/FakeResourceBundle.properties b/component/core/src/test/resources/FakeResourceBundle.properties
+index 4d04369..3a2e6d8 100644
+--- a/component/core/src/test/resources/FakeResourceBundle.properties
++++ b/component/core/src/test/resources/FakeResourceBundle.properties
+@@ -1,2 +1,4 @@
+ FakeResourceBundle.hello=Hello from resource bundle (EN).
+ FakeResourceBundle.time_day_number_detected_spaceships_on_planet=At {2} on {3}, we detected {1} spaceships on the planet {0} (EN).
++FakeResourceBundle.update_topic_content=Title has been updated: {0}
++FakeResourceBundle.update_topic_title=Content has been updated: {0}
+\ No newline at end of file
+diff --git a/component/core/src/test/resources/FakeResourceBundle_fr.properties b/component/core/src/test/resources/FakeResourceBundle_fr.properties
+index c82c73b..2af8fdc 100644
+--- a/component/core/src/test/resources/FakeResourceBundle_fr.properties
++++ b/component/core/src/test/resources/FakeResourceBundle_fr.properties
+@@ -1,2 +1,4 @@
+ FakeResourceBundle.hello=Hello from resource bundle (FR).
+ FakeResourceBundle.time_day_number_detected_spaceships_on_planet=At {2} on {3}, we detected {1} spaceships on the planet {0} (FR).
++FakeResourceBundle.update_topic_content=Title has been updated: {0}
++FakeResourceBundle.update_topic_title=Content has been updated: {0}
+-- 
+1.7.11.3
+

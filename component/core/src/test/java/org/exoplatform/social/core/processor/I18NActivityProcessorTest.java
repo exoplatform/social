@@ -17,6 +17,8 @@
 package org.exoplatform.social.core.processor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -139,6 +141,87 @@ public class I18NActivityProcessorTest extends TestCase {
     assertEquals("At 02:00 PM on Feb 6, 2012, we detected 10 spaceships on the planet Mars (EN).", newActivity.getTitle());
 
   }
+  
+  public void testCompoundMessagesWithMultiKeys() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("add_topic", "add_topic");
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Title has been updated: edited topic title\nContent has been updated: edited topic content";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title", "edited topic title");
+    I18NActivityUtils.addResourceKey(activity, "update_topic_content", "edited topic content");
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Title has been updated: edited topic title\nContent has been updated: edited topic content", newActivity.getTitle());
+
+  }
+  
+  public void testCompoundMessagesNew() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("add_topic", "add_topic");
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Title has been updated: edited topic title";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title", "edited topic title");
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Title has been updated: edited topic title", newActivity.getTitle());
+
+  }
+  
+  public void testCompoundMessagesNewWithNull() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("add_topic", "add_topic");
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Title has been updated: ";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title", null);
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Title has been updated: ", newActivity.getTitle());
+
+  }
+  
+  public void testCompoundMessagesNewWithEmpty() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("add_topic", "add_topic");
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Content has been updated: ";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_content", "");
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Content has been updated: ", newActivity.getTitle());
+
+  }
 
   public void testNoRegisteredActivityKeyType() throws Exception {
     Map<String, String> activityKeyTypeMapping = new HashMap<String, String>();
@@ -192,6 +275,13 @@ public class I18NActivityProcessorTest extends TestCase {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setType("fake-type");
     activity.setTitleId(titleId);
+    activity.setTitle(title);
+    return activity;
+  }
+  
+  private ExoSocialActivity createActivity(String title) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setType("fake-type");
     activity.setTitle(title);
     return activity;
   }
