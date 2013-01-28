@@ -246,17 +246,17 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
    assertNotNull(activityId);
    ExoSocialActivity activity = activityManager.getActivity(activityId);
-   // Number of comments must be 0
-   assertEquals(0, activityManager.getCommentsWithListAccess(activity).getSize());
+   // Number of comments must be 1
+   assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
    assertEquals("I now member of 1 space",activity.getTitle());
    
    Space space3 = createOpenSpace(3);
    spaceService.addPendingUser(space3, "demo");
    activity = activityManager.getActivity(activityId);
-   // Number of comments must be 1
-   assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
+   // Number of comments must be 2
+   assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
    assertEquals("I now member of 2 spaces", activity.getTitle());
-   assertEquals("I joined Toto3 space",activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20).get(0).getTitle());
+   assertEquals("I joined Toto3 space",activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20).get(1).getTitle());
    
    {// leave space
      spaceService.removeMember(space2, "demo");
@@ -279,7 +279,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
      assertNotNull(activityId);
      activity = activityManager.getActivity(activityId);
-     assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
+     assertEquals(3, activityManager.getCommentsWithListAccess(activity).getSize());
      assertEquals("I now member of 1 space", activity.getTitle());
    }
  }
