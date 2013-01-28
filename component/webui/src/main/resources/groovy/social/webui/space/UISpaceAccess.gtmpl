@@ -46,13 +46,9 @@
       <a href="javascript:void(0)" onclick="<%= uicomponent.event("RequestToJoin") %>" title="Request to Join" class="btn btn-primary">Request to Join</a>
     </div>
   <% } else if ("social.space.access.requested-join-space".equals(status)) {%>
-    <div class="spaceAccessBlock">
-      <div class="spaceAccessInfo">Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
-    </div>
+      <div class="alert alert-success"><i class="uiIconSuccess"></i>Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
   <% } else if ("social.space.access.requested.success".equals(status)) {%>
-    <div class="spaceAccessBlock">
-      <div class="spaceAccessInfo">Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
-    </div>
+      <div class="alert alert-success"><i class="uiIconSuccess"></i>Your request to join <b><%= spaceDisplayName %></b> has been sent.</div>
   <% } else if ("social.space.access.invited-space".equals(status)) {%>
     <div class="spaceAccessBlock">
       <div class="spaceAccessInfo">You are invited to join the space <b><%= spaceDisplayName %></b> by the administrator.</div>
