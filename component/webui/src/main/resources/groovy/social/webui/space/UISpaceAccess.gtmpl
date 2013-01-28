@@ -29,7 +29,7 @@
   def redirectURI = uicomponent.getRedirectURI();
 %>
   <% if ("social.space.access.join-space".equals(status)) {%>
-    <div class="SpaceAccessBlock lockIcon">
+    <div class="spaceAccessBlock lockIcon">
       <h3>Restricted Area</h3>
       <div class="spaceAccessInfo">You must be a member of the space <b><%= spaceDisplayName %></b> to view this page. </div>
       <a href="javascript:void(0)" onclick="<%= uicomponent.event("Join") %>" title="Join" class="btn btn-primary">Join</a>
