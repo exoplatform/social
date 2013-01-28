@@ -190,29 +190,24 @@ public final class I18NActivityProcessor {
     String[] resourceParamValues = I18NActivityUtils.getResourceValues(i18nActivity);
     String type = i18nActivity.getType();
 
-    int keyPos = 0;
     int count = 0;
     StringBuilder sb = new StringBuilder();
     String[] valuesOfParam = null;
 
     //
-    int i = resourceKeys.length - 1;
     String key = null;
-    for (; i >= 0; i--) {
+    for (int i = 0; i < resourceKeys.length; i++) {
       //
       key = resourceKeys[i];
 
       //
-      if (resourceParamValues.length > keyPos) {
-        valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[keyPos]);
-        keyPos++;
-      }
+      valuesOfParam = I18NActivityUtils.getParamValues(resourceParamValues[i]);
 
       String title = appRes(resourceBundle, getMessageBundleKey(type, key), valuesOfParam);
       sb.append(title);
 
       if (++count < resourceKeys.length) {
-        sb.append("\n");
+        sb.append("<br/>");
       }
     }
 

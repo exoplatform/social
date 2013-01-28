@@ -159,7 +159,7 @@ public class I18NActivityProcessorTest extends TestCase {
 
     ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
 
-    assertEquals("Title has been updated: edited topic title\nContent has been updated: edited topic content", newActivity.getTitle());
+    assertEquals("Title has been updated: edited topic title<br/>Content has been updated: edited topic content", newActivity.getTitle());
 
   }
   
