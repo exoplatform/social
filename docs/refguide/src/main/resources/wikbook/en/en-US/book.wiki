@@ -13,7 +13,7 @@ h2. External Component Plugin {anchor:id=SOCref.Configuration.External_component
 {include:document="Configuration/Plugin.wiki"}
 
 
-h1. Developers References {anchor:id=SOCref.Developers_References}
+h1. Developer Reference {anchor:id=SOCref.Developers_References}
 {include:document="DeveloperReference/Developer_References.wiki"}
 h2. UI Extensions {anchor:id=SOCref.DevelopersReferences.UIExtensions}
 {include:document="DeveloperReference/Developer_Documentation_Activity_Plugin.wiki"}
