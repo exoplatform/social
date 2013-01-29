@@ -81,7 +81,7 @@
   <% if (uicomponent.isHasPeopleTab()) {%>
   <div class="uiTabNormal uiTabInPage">
      <ul class="nav nav-tabs">
-          <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
+          <li class='<%= ( selectedNode.equals("connections") || selectedNode.equals("all-people") )? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
           <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
           <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
           <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>

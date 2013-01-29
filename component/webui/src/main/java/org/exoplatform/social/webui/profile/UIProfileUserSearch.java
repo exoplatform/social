@@ -350,7 +350,7 @@ public class UIProfileUserSearch extends UIForm {
    */
   public String getSelectedNode() {
     PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path")).trim();
     if (currentPath.split("/").length >= 2) {
       return  currentPath.split("/")[1];
     }
