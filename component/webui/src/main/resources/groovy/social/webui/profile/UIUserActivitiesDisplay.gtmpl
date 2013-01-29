@@ -42,7 +42,7 @@
   
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
 %>
-<div id="$uicomponent.id" class="uiUserActivitiesDisplay">
+<div id="$uicomponent.id" class="uiUserActivitiesDisplay"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
   <% if (uicomponent.isActivityStreamOwner()) { %>
 	<div class="clearfix activityTop">
     <div class="pull-right">
@@ -55,4 +55,5 @@
 	<% } %>
 	
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+  <div class="activityBottom"><span></span></div>
 </div>
