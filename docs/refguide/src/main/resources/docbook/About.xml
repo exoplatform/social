@@ -18,7 +18,7 @@
 </listitem>
 <listitem>
 <para>
-<emphasis role="bold"><link linkend="SOCref.Developers_References">Developer References</link></emphasis></para>
+<emphasis role="bold"><link linkend="SOCref.Developers_References">Developer Reference</link></emphasis></para>
 <para>Many useful information for developers to refer, including: UI extensions, overridable components, public Java APIs,  Java APIs sample code/tutorial, Public REST APIs, Rest Service APIs, Public Javascript APIs, Social JCR Structure, Spaces Template configuration, and steps to configure the 2-legged OAuth scenario.
 </para>
 </listitem>
