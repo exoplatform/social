@@ -1509,7 +1509,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(owner));
     identities.addAll(getSpacesId(owner));
-    identities.add(owner);
+    //identities.add(owner);
+    
+    if ( identities.size() == 0 ) {
+      return 0;
+    }
     
     //
     JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1526,7 +1530,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner).owners(owner), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner), filter).objects().size();
   }
   
   @Override

@@ -190,8 +190,10 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
     @Override
     public String make(JCRFilterLiteral filter) {
       
+      boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
+      
       //has relationship
-      if (identities != null && identities.size() > 0) {
+      if ( hasIndentitiesCondition ) {
         boolean first = true;
         where.startGroup();
         for (Identity currentIdentity : identities) {
@@ -214,6 +216,10 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
         where.endGroup();
         
+      } else {
+        if (mentioner != null) {
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
       }
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();

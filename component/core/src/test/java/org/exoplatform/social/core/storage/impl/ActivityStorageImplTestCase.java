@@ -33,11 +33,13 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
@@ -56,8 +58,10 @@ import org.junit.runners.MethodSorters;
 public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityStorageImpl activityStorage;
-  private RelationshipStorage relationshipStorage;
+  private RelationshipStorageImpl relationshipStorage;
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space>  tearDownSpaceList;
+  private SpaceStorage spaceStorage;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -70,8 +74,9 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
-    relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
-
+    relationshipStorage = (RelationshipStorageImpl) getContainer().getComponentInstanceOfType(RelationshipStorageImpl.class);
+    spaceStorage = (SpaceStorage) this.getContainer().getComponentInstanceOfType(SpaceStorage.class);
+    
     assertNotNull(identityStorage);
     assertNotNull(activityStorage);
     assertNotNull(relationshipStorage);
@@ -92,6 +97,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(demoIdentity.getId());
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   @Override
@@ -99,6 +105,10 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
     for (ExoSocialActivity activity : tearDownActivityList) {
       activityStorage.deleteActivity(activity.getId());
+    }
+
+    for (Space sp : tearDownSpaceList) {
+      spaceStorage.deleteSpace(sp.getId());
     }
 
     identityStorage.deleteIdentity(rootIdentity);
@@ -877,28 +887,28 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
   
-  @MaxQueryNumber(600)
+  @MaxQueryNumber(814)
   public void testNumberNetworkUpdated() throws Exception {
     Calendar cal = Calendar.getInstance();
     cal.roll(Calendar.MINUTE, -5);
     long sinceTime = cal.getTimeInMillis();
+    
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activityStorage.saveActivity(rootIdentity, activity);
-      
+      tearDownActivityList.add(activity);
     }
 
-    // remove 10 activities
     int numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(rootIdentity, sinceTime);
-    assertEquals(10, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(rootIdentity, sinceTime);
     assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserActivities(rootIdentity, sinceTime);
-    assertEquals(10, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(rootIdentity, sinceTime);
     assertEquals(0, numberOfActivitiesUpdated);
@@ -907,21 +917,70 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("title " + i);
       activityStorage.saveActivity(demoIdentity, activity);
-      
+      tearDownActivityList.add(activity);
     }
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(demoIdentity, sinceTime);
-    assertEquals(5, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(demoIdentity, sinceTime);
     assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserActivities(demoIdentity, sinceTime);
-    assertEquals(5, numberOfActivitiesUpdated);
+    assertEquals(0, numberOfActivitiesUpdated);
     
     numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
     assertEquals(0, numberOfActivitiesUpdated);
 
+    // make root become friend of demo
+    {
+      Relationship newRelationship = new Relationship(rootIdentity, demoIdentity, Relationship.Type.PENDING);
+  
+      //
+      relationshipStorage._createRelationship(newRelationship);
+      assertNotNull(newRelationship.getId());
+  
+      //
+      newRelationship.setStatus(Relationship.Type.CONFIRMED);
+      relationshipStorage._saveRelationship(newRelationship);
+      
+      numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(demoIdentity, sinceTime);
+      assertEquals(10, numberOfActivitiesUpdated);
+
+      numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnActivityFeed(rootIdentity, sinceTime);
+      assertEquals(5, numberOfActivitiesUpdated);
+    }
+    
+    // in space
+    {
+      cal = Calendar.getInstance();
+      cal.roll(Calendar.MINUTE, -5);
+      sinceTime = cal.getTimeInMillis();
+      
+      Space space = getSpaceInstance(1);
+      spaceStorage.saveSpace(space, true);
+      tearDownSpaceList.add(space);
+      
+      //
+      SpaceIdentityProvider spaceIdentityProvider = (SpaceIdentityProvider) getContainer().getComponentInstanceOfType(SpaceIdentityProvider.class);
+      Identity spaceIdentity = spaceIdentityProvider.createIdentity(space);
+      identityStorage.saveIdentity(spaceIdentity);
+      
+      numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
+      assertEquals(0, numberOfActivitiesUpdated);
+      
+      // demo post 5 activity on space
+      for (int i = 0; i < 5; ++i) {
+        ExoSocialActivity activity = new ExoSocialActivityImpl();
+        activity.setTitle("post on space " + i);
+        activityStorage.saveActivity(spaceIdentity, activity);
+        tearDownActivityList.add(activity);
+      }
+      
+      //
+      numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
+      assertEquals(5, numberOfActivitiesUpdated);
+    }
   }
 
   /**
@@ -931,7 +990,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    */
   private Space getSpaceInstance() {
     Space space = new Space();
-    space.setDisplayName("my space");
+    space.setDisplayName("myspace");
     space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space");
@@ -976,4 +1035,32 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  private Space getSpaceInstance(int number) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("myspace " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {"demo", "tom"};
+    String[] members = new String[] {"raul", "ghost", "dragon"};
+    String[] invitedUsers = new String[] {"register1", "mary"};
+    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    return space;
+  }
+  
+  private long getSinceTime() {
+    Calendar cal = Calendar.getInstance();
+    cal.roll(Calendar.MINUTE, -5);
+    return cal.getTimeInMillis();
+  }
 }
