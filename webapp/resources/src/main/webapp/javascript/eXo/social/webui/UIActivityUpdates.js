@@ -6,9 +6,15 @@
 	  numberOfUpdatedActivities: 0,
 	  cookieName: '',
 	  noUpdates: '',
-	  resetCookie: function(cookieKey) {
+	  currentRemoteId : '',
+	  ALL : 'ALL_ACTIVITIES',
+	  CONNECTIONS : 'CONNECTIONS',
+	  MY_SPACES : 'MY_SPACE',
+	  MY_ACTIVITIES : 'MY_ACTIVITIES',
+	  resetCookie: function(cookieKey, value) {
+	    cookieKey = $.trim(cookieKey); 
 	    eraseCookies(cookieKey)
-		  eXo.core.Browser.setCookie(cookieKey, (new Date().getTime()), 365);
+		  eXo.core.Browser.setCookie(cookieKey, value, 365);
 		  
 		  function eraseCookies(key) {
 		   var cookies = document.cookie.split(";");
@@ -27,10 +33,14 @@
 		  };
 		},
 			  
-	  init: function (numberOfUpdatedActivities, cookieName, noUpdates) {
+	  init: function (numberOfUpdatedActivities, cookieName, noUpdates,currentRemoteId) {
+	    //
+	    var form = UIActivityUpdates;
+	    
 	    //
 	    UIActivityUpdates.numberOfUpdatedActivities = numberOfUpdatedActivities;
 	    UIActivityUpdates.cookieName = cookieName;
+	    UIActivityUpdates.currentRemoteId = currentRemoteId;
 	
 	    //
 	    $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
@@ -55,7 +65,9 @@
 	      if (isScrolledIntoView()) {
 	        $('#UIActivitiesLoader').find('.UpdatedActivity').removeClass('UpdatedActivity');
 	        $('#numberInfo').html(noUpdates);
-	        UIActivityUpdates.resetCookie(UIActivityUpdates.cookieName);
+	        
+	        form.resetCookiesOnTabs();
+        
 	        $(window).off('scroll', runOnScroll);
 	      }
 	    }
@@ -84,7 +96,7 @@
 			    //
 			    $('#UIActivitiesLoader').find('.UpdatedActivity').removeClass('UpdatedActivity');
 			    $('#numberInfo').html(noUpdates);
-			    UIActivityUpdates.resetCookie(UIActivityUpdates.cookieName);
+			    form.resetCookiesOnTabs();
 			    //refresh_prepare = 0; 
 	       }   
 			 };
@@ -111,7 +123,57 @@
 			   checkRefresh();
 			 });
 	  
-	  }
+	  },
+	  resetCookiesOnTabs : function() {
+	    var form = UIActivityUpdates;
+	    var slected_tab_tmpl = "exo_social_activity_stream_tab_selected_%REMOTE_ID%";
+	    var replaced_id = "%REMOTE_ID%";
+	    var userId = UIActivityUpdates.currentRemoteId;
+	    var onSelectedTabCookieName = slected_tab_tmpl.replace(replaced_id, userId);
+      var selectedTab = form.getCookie(onSelectedTabCookieName);
+      if ( selectedTab == null || $.trim(selectedTab).length === 0 ) {
+        selectedTab = form.ALL;
+        form.resetCookie(onSelectedTabCookieName, form.ALL);
+      }
+      
+      //
+      form.applyChanges([selectedTab]);
+      
+	    // [All Activities] is current Selected tab then reset all other tabs on visited time
+	    if ( selectedTab === form.ALL ) {
+	      form.applyChanges([form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
+	    } else { // others
+	      // [Connections]
+	      
+	      // [Space Activities]
+	      
+	      // [My Activities]
+	    }
+	  },
+	  applyChanges : function( affectedFields ) { // FIELDS
+	    if ( affectedFields.length === 0 ) return;
+	    
+	    var src_str = "exo_social_activity_stream_%FIELD%_visited_%REMOTE_ID%";
+	    var replaced_field = "%FIELD%";
+	    var replaced_id = "%REMOTE_ID%";
+	    var userId = UIActivityUpdates.currentRemoteId;
+	    $.each( affectedFields, function( index, field ) {
+			  var changed_field = src_str.replace(replaced_field, field).replace(replaced_id, userId);
+			  UIActivityUpdates.resetCookie(changed_field, (new Date().getTime()));
+			});
+	  },
+	  getCookie : function(name) {
+      if (document.cookie.length > 0) {
+        var start = document.cookie.indexOf(name + "=")
+        if (start != -1) {
+          start = start + name.length + 1 ;
+          var end = document.cookie.indexOf(";",start) ;
+          if (end == -1) end = document.cookie.length ;
+            return unescape(document.cookie.substring(start,end)) ;
+        } 
+      }
+      return "" ;
+    }
 	};
 
   return UIActivityUpdates;

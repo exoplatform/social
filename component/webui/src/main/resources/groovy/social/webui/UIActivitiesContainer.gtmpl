@@ -20,6 +20,7 @@
 -->
 */
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.social.webui.Utils;
 
 def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
 def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
@@ -32,7 +33,8 @@ def pcontext = Util.getPortalRequestContext();
 def jsManager = pcontext.getJavascriptManager();
 
 noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates');");
+def currentRemoteId = Utils.getViewerRemoteId();
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId');");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>

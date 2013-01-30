@@ -25,6 +25,7 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 /**
@@ -664,5 +665,44 @@ public interface ActivityStorage {
    * @since 4.0 Alpha01
    */
   public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime);
-  
+
+  /**
+   * Gets the number of updated that is summarize of all others.
+   * 
+   * @param owner
+   * @param sinceTimes
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes);
+
+  /**
+   * Gets activities of an user base on since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime);
+
+  /**
+   * Gets activities of an user on spaces base on since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime);
+
+  /**
+   * Gets connections' activities of an user base on since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime);
 }

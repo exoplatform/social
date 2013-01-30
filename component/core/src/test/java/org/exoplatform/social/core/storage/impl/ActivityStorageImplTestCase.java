@@ -38,7 +38,6 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
@@ -887,11 +886,12 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
   
-  @MaxQueryNumber(814)
+  @MaxQueryNumber(1114)
   public void testNumberNetworkUpdated() throws Exception {
     Calendar cal = Calendar.getInstance();
     cal.roll(Calendar.MINUTE, -5);
     long sinceTime = cal.getTimeInMillis();
+    long checkedSinceTime = getSinceTime();
     
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -951,6 +951,19 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       assertEquals(5, numberOfActivitiesUpdated);
     }
     
+    //
+    { // activities on [Connections] are seen
+      Map<String, Long> sinceTimes = new HashMap<String, Long>();
+      sinceTimes.put("CONNECTIONS", sinceTime);
+      assertEquals(10, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes));
+      
+      //
+      checkedSinceTime = getSinceTime();
+      sinceTimes.clear();
+      sinceTimes.put("CONNECTIONS", checkedSinceTime);
+      assertEquals(0, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes)); 
+    }
+    
     // in space
     {
       cal = Calendar.getInstance();
@@ -969,10 +982,11 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
       assertEquals(0, numberOfActivitiesUpdated);
       
-      // demo post 5 activity on space
+      // demo post 5 activities on space
       for (int i = 0; i < 5; ++i) {
         ExoSocialActivity activity = new ExoSocialActivityImpl();
         activity.setTitle("post on space " + i);
+        activity.setUserId(demoIdentity.getId());
         activityStorage.saveActivity(spaceIdentity, activity);
         tearDownActivityList.add(activity);
       }
@@ -980,6 +994,43 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
       //
       numberOfActivitiesUpdated = activityStorage.getNumberOfUpdatedOnUserSpacesActivities(demoIdentity, sinceTime);
       assertEquals(5, numberOfActivitiesUpdated);
+    }
+    
+    //
+    { // activities on [My Space] are seen
+      Map<String, Long> sinceTimes = new HashMap<String, Long>();
+      
+      sinceTimes.put("MY_SPACE", sinceTime);
+      assertEquals(5, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes));
+      
+      sinceTimes.clear();
+      sinceTimes.put("MY_SPACE", checkedSinceTime);
+      assertEquals(5, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes));
+      
+      //
+      sinceTimes.clear();
+      sinceTimes.put("MY_SPACE", getSinceTime());
+      assertEquals(0, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes)); 
+    }
+    
+    //
+    { // integration checking all types. [All Activities]
+      Map<String, Long> sinceTimes = new HashMap<String, Long>();
+      
+      //
+      sinceTimes.put("CONNECTIONS", sinceTime);
+      sinceTimes.put("MY_SPACE", sinceTime);
+      sinceTimes.put("MY_ACTIVITIES", sinceTime);
+      // not count my activities
+      assertEquals(15, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes)); 
+      
+      //
+      sinceTimes.clear();
+      sinceTimes.put("CONNECTIONS", getSinceTime());
+      sinceTimes.put("MY_SPACE", sinceTime);
+      sinceTimes.put("MY_ACTIVITIES", sinceTime);
+      assertEquals(5, activityStorage.getNumberOfMultiUpdated(demoIdentity, sinceTimes));
+      
     }
   }
 
@@ -1060,7 +1111,6 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   
   private long getSinceTime() {
     Calendar cal = Calendar.getInstance();
-    cal.roll(Calendar.MINUTE, -5);
     return cal.getTimeInMillis();
   }
 }

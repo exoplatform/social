@@ -18,7 +18,9 @@ package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
@@ -45,8 +47,11 @@ public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
   
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
-
-
+  private static final String ALL_ACTIVITIES = "ALL_ACTIVITIES";
+  private static final String CONNECTIONS = "CONNECTIONS";
+  private static final String MY_SPACE = "MY_SPACE";
+  private static final String MY_ACTIVITIES = "MY_ACTIVITIES";
+  
   private List<ExoSocialActivity> activityList;
   private PostContext postContext;
   //hold activities for user or space
@@ -136,7 +141,7 @@ public class UIActivitiesContainer extends UIContainer {
       factory.addChild(activity, this);
     }
 
-    lastVisited = getLastVisited();
+    lastVisited = getLastVisited(this.selectedDisplayMode);
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
@@ -156,19 +161,34 @@ public class UIActivitiesContainer extends UIContainer {
     }
   }
 
+  @SuppressWarnings("unchecked")
   protected int getNumberOfUpdatedActivities() {
     try {
       UIActivitiesLoader uiActivitiesLoader = this.getAncestorOfType(UIActivitiesLoader.class);
       ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) uiActivitiesLoader.getActivityListAccess();
+      
+      /**
+       *  [All Activities]
+       */
+      if ( ALL_ACTIVITIES.equals(this.selectedDisplayMode) ) {
+        // get last visit since time of each tab
+        Map<String, Long> lastVisitedTabs = new HashMap<String, Long>();
+        lastVisitedTabs.put(CONNECTIONS, getLastVisited(CONNECTIONS));
+        lastVisitedTabs.put(MY_SPACE, getLastVisited(MY_SPACE));
+        lastVisitedTabs.put(MY_ACTIVITIES, getLastVisited(MY_ACTIVITIES));
+        
+        return activitiesListAccess.getNumberOfMultiUpdated(lastVisitedTabs);
+      }
+      
       return activitiesListAccess.getNumberOfUpdated(lastVisited);
     } catch(Exception e) {
       return 0;
     }
   }
   
-  private long getLastVisited() {
+  private long getLastVisited(String mode) {
     long currentVisited = Calendar.getInstance().getTimeInMillis();
-    String strValue = Utils.getCookies(getCookiesKey(this.selectedDisplayMode));
+    String strValue = Utils.getCookies(getCookiesKey(mode));
     if(strValue == null) {
       return currentVisited;
     }

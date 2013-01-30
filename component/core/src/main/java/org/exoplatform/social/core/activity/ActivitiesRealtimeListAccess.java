@@ -18,6 +18,7 @@ package org.exoplatform.social.core.activity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
@@ -249,7 +250,18 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     return 0;
   }
 
-
+  @Override
+  public int getNumberOfMultiUpdated(Map<String, Long> sinceTimes) {
+//    int numUpdatedOfConnections = activityStorage
+//        .getNumberOfUpdatedOnActivitiesOfConnections(ownerIdentity, sinceTimes.get("CONNECTIONS"));
+//    int numUpdatedOfMySpace = activityStorage
+//        .getNumberOfUpdatedOnUserSpacesActivities(ownerIdentity, sinceTimes.get("MY_SPACE"));
+//    int numUpdatedOfMyActivities = activityStorage
+//        .getNumberOfUpdatedOnUserActivities(ownerIdentity, sinceTimes.get("MY_ACTIVITIES"));
+    
+    return activityStorage.getNumberOfMultiUpdated(ownerIdentity, sinceTimes);
+  }
+  
   @Override
   public int getNumberOfUpdated(Long sinceTime) {
     switch (activityType) {

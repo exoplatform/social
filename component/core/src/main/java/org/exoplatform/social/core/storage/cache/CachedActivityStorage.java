@@ -43,6 +43,7 @@ import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 /**
@@ -1139,6 +1140,26 @@ public class CachedActivityStorage implements ActivityStorage {
     return storage.getNumberOfUpdatedOnActivityFeed(owner, sinceTime);
   }
 
+  @Override
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes) {
+    return storage.getNumberOfMultiUpdated(owner, sinceTimes);
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+    return storage.getUserActivities(owner, sinceTime);
+  }
+
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+    return storage.getUserSpacesActivities(owner, sinceTime);
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+    return storage.getActivitiesOfConnections(owner, sinceTime);
+  }
+  
   @Override
   public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
     return storage.getNumberOfUpdatedOnUserActivities(owner, sinceTime);

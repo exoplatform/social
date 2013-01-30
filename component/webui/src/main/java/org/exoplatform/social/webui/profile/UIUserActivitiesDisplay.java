@@ -246,12 +246,10 @@ public class UIUserActivitiesDisplay extends UIForm {
         uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
         //
         event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + activitiesContainer.getCookiesKey(selectedDisplayMode) + "');");
+        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
 
-        Utils.setCookies(String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()), selectedDisplayMode, true);
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
       

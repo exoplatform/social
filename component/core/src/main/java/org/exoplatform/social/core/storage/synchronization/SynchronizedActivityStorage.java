@@ -18,6 +18,7 @@
 package org.exoplatform.social.core.storage.synchronization;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 import org.exoplatform.social.core.ActivityProcessor;
@@ -908,6 +909,51 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
   }
   
+  @Override
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfMultiUpdated(owner, sinceTimes);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserSpacesActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getActivitiesOfConnections(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
   @Override
   public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
     boolean created = startSynchronization();

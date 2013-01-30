@@ -41,6 +41,7 @@ import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.mail.impl.ExoAuthenticator;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.model.ActivityStream;
@@ -1500,6 +1501,100 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
   }
+  
+  @Override
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes) {
+    //
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+    List<String> activityIds = new ArrayList<String>();
+    
+    if ( sinceTimes.get("CONNECTIONS") != null ) {
+      List<ExoSocialActivity> connectionsActivities =  getActivitiesOfConnections(owner, sinceTimes.get("CONNECTIONS"));
+      activities.addAll(connectionsActivities);
+      for ( ExoSocialActivity connectionsActivity : connectionsActivities ) {
+        activityIds.add(connectionsActivity.getId());
+      }
+    }
+    
+    if ( sinceTimes.get("MY_SPACE") != null ) {
+      List<ExoSocialActivity> mySpaceActivities = getUserSpacesActivities(owner, sinceTimes.get("MY_SPACE"));  
+      for ( ExoSocialActivity mySpaceActivity : mySpaceActivities ) {
+        if ( !activityIds.contains(mySpaceActivity.getId()) ) {
+          activities.add(mySpaceActivity);
+          activityIds.add(mySpaceActivity.getId());
+        }
+      }
+    }
+    
+    if ( sinceTimes.get("MY_ACTIVITIES") != null ) {
+      List<ExoSocialActivity> myActivities = getUserActivities(owner, sinceTimes.get("MY_ACTIVITIES"));
+      for ( ExoSocialActivity myActivity : myActivities ) {
+        if ( !activityIds.contains(myActivity.getId()) ) {
+          activities.add(myActivity);
+          activityIds.add(myActivity.getId());
+        }
+      }
+    }
+    
+    return activities.size();
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner), filter).objects((long)0, (long)100));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+    //
+    List<Identity> spaceList = getSpacesId(owner);
+    
+    if (spaceList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList), filter).objects((long)0, (long)100));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+
+    if (connectionList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList), filter).objects((long)0, (long)100));
+  }
+  
+  private List<ExoSocialActivity> getActivitiesFromQueryResults(QueryResult<ActivityEntity> results) {
+    List<ExoSocialActivity> activities =  new ArrayList<ExoSocialActivity>();
+
+    while(results.hasNext()) {
+      activities.add(getStorage().getActivity(results.next().getId()));
+    }
+
+    return activities;
+  }
+  //
+  
   
   @Override
   public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
