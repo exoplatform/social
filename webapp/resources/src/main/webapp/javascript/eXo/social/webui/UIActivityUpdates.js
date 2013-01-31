@@ -11,26 +11,17 @@
 	  CONNECTIONS : 'CONNECTIONS',
 	  MY_SPACES : 'MY_SPACE',
 	  MY_ACTIVITIES : 'MY_ACTIVITIES',
+    setCookies : function(name, value, expiredays) {
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + expiredays);
+      expiredays = ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+      var path = ';path=/portal';
+      document.cookie = name + "=" + escape(value) + expiredays + path;
+    },
 	  resetCookie: function(cookieKey, value) {
 	    cookieKey = $.trim(cookieKey); 
-	    eraseCookies(cookieKey)
-		  eXo.core.Browser.setCookie(cookieKey, value, 365);
-		  
-		  function eraseCookies(key) {
-		   var cookies = document.cookie.split(";");
-		
-	     for (var i = 0; i < cookies.length; i++) {
-		     var cookie = cookies[i];
-		     var eqPos = cookie.indexOf("=");
-		     var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-		     name = $.trim(name);
-		     key = $.trim(key);
-		     
-		     if (name == key) {
-		       document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-		     }
-	     }
-		  };
+	    UIActivityUpdates.setCookies(cookieKey, '', -365);
+	    UIActivityUpdates.setCookies(cookieKey, value, 365);
 		},
 			  
 	  init: function (numberOfUpdatedActivities, cookieName, noUpdates,currentRemoteId) {
@@ -82,21 +73,22 @@
 	       var cookie = document.cookie;
 	       var cookies = cookie.split('; ');
 	   
-	       for(var loop=0; loop < cookies.length; loop++) {
-				    var name = cookies[loop].split('=');
-				    if( name[0].toString() == 'SHTS' ) {
-				      var cookieTime = parseInt( name[1] );
-				    }
-				    else if( name[0].toString() == 'SHTSP' ) {
-				      var cookieName = name[1];
-				    }
+	       
+	       var result = {};
+	       for (var i = 0; i < cookies.length; i++) {
+	           var cur = cookies[i].split('=');
+	           result[cur[0]] = cur[1];
 	       }
+	       
+	       var cookieTime = parseInt( result.SHTS );
+	       var cookieName = result.SHTSP;
 	   
 	       if( cookieName && cookieTime && cookieName == escape(location.href) &&  Math.abs(now - cookieTime) <= 5 ) {
 			    //
 			    $('#UIActivitiesLoader').find('.UpdatedActivity').removeClass('UpdatedActivity');
 			    $('#numberInfo').html(noUpdates);
 			    form.resetCookiesOnTabs();
+			    
 			    //refresh_prepare = 0; 
 	       }   
 			 };
@@ -105,11 +97,11 @@
 			   if( refresh_prepare > 0 ) {
 					 var today = new Date();
 					 var now = today.getUTCSeconds();
-					 document.cookie = 'SHTS=' + now + ';';
-				   document.cookie = 'SHTSP=' + escape(location.href) + ';';
+					 form.setCookies('SHTS', now);
+					 form.setCookies('SHTSP', window.location.href);
 				 } else {
-				   document.cookie = 'SHTS=;';
-				   document.cookie = 'SHTSP=;';
+           form.setCookies('SHTS', '0');
+           form.setCookies('SHTSP', ' ');
 				 }
        };
 			           
@@ -130,7 +122,7 @@
 	    var replaced_id = "%REMOTE_ID%";
 	    var userId = UIActivityUpdates.currentRemoteId;
 	    var onSelectedTabCookieName = slected_tab_tmpl.replace(replaced_id, userId);
-      var selectedTab = form.getCookie(onSelectedTabCookieName);
+      var selectedTab = eXo.core.Browser.getCookie(onSelectedTabCookieName);
       if ( selectedTab == null || $.trim(selectedTab).length === 0 ) {
         selectedTab = form.ALL;
         form.resetCookie(onSelectedTabCookieName, form.ALL);
@@ -161,19 +153,7 @@
 			  var changed_field = src_str.replace(replaced_field, field).replace(replaced_id, userId);
 			  UIActivityUpdates.resetCookie(changed_field, (new Date().getTime()));
 			});
-	  },
-	  getCookie : function(name) {
-      if (document.cookie.length > 0) {
-        var start = document.cookie.indexOf(name + "=")
-        if (start != -1) {
-          start = start + name.length + 1 ;
-          var end = document.cookie.indexOf(";",start) ;
-          if (end == -1) end = document.cookie.length ;
-            return unescape(document.cookie.substring(start,end)) ;
-        } 
-      }
-      return "" ;
-    }
+	  }
 	};
 
   return UIActivityUpdates;
