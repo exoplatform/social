@@ -1179,5 +1179,47 @@ public class CachedActivityStorage implements ActivityStorage {
   public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
     return storage.getNumberOfUpdatedOnSpaceActivities(owner, sinceTime);
   }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(final Identity owner,
+                                               final Identity viewer,
+                                               final long offset,
+                                               final long limit) throws ActivityStorageException {
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), new IdentityKey(viewer), ActivityType.VIEWER);
+    ListActivitiesKey listKey = new ListActivitiesKey(key, offset, limit);
+
+    //
+    ListActivitiesData keys = activitiesCache.get(
+        new ServiceContext<ListActivitiesData>() {
+          public ListActivitiesData execute() {
+            List<ExoSocialActivity> got = storage.getActivities(owner, viewer, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildActivities(keys);
+    
+  }
+
+  @Override
+  public int getNumberOfActivities(final Identity owner, final Identity viewer) throws ActivityStorageException {
+    
+    //
+    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), new IdentityKey(viewer), ActivityType.VIEWER);
+
+    //
+    return activitiesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getNumberOfActivities(owner, viewer));
+          }
+        },
+        key)
+        .build();
+    
+  }
   
 }

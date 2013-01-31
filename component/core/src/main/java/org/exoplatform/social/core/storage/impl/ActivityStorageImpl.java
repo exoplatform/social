@@ -275,6 +275,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return identitiesId;
 
   }
+  
+  private Map<String, Identity> getSpacesIdOfIdentity(Identity identity) {
+
+    Map<String, Identity> identitiesId = new HashMap<String, Identity>();
+    List<Space> spaces = spaceStorage.getAccessibleSpaces(identity.getRemoteId());
+    for (Space space : spaces) {
+      identitiesId.put(space.getPrettyName(), identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
+    }
+
+    return identitiesId;
+
+  }
 
   private static Comparator<ActivityProcessor> processorComparator() {
     return new Comparator<ActivityProcessor>() {
@@ -1668,6 +1680,55 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(Identity owner,
+                                               Identity viewer,
+                                               long offset,
+                                               long limit) throws ActivityStorageException {
+    
+    List<Identity> queryIdentities = new ArrayList<Identity>();
+    queryIdentities.add(owner);
+    queryIdentities.add(viewer);
+    
+    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
+    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
+    for(Identity identity : spaceIdentityOfOwner) {
+      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
+        queryIdentities.add(identity);
+      }
+    }
+    
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(queryIdentities), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfActivities(Identity owner, Identity viewer) throws ActivityStorageException {
+    //
+
+    List<Identity> queryIdentities = new ArrayList<Identity>();
+    queryIdentities.add(owner);
+    queryIdentities.add(viewer);
+    
+    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
+    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
+    for(Identity identity : spaceIdentityOfOwner) {
+      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
+        queryIdentities.add(identity);
+      }
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(queryIdentities),
+                                          filter).objects().size();
   }
   
 }

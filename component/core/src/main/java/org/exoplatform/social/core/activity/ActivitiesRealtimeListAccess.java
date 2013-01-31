@@ -37,6 +37,7 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
   public static enum ActivityType {
     ACTIVITY_FEED,
     USER_ACTIVITIES,
+    VIEW_USER_ACTIVITIES,
     CONNECTIONS_ACTIVITIES,
     USER_SPACE_ACTIVITIES,
     SPACE_ACTIVITIES
@@ -57,6 +58,11 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
    * The chosen identity.
    */
   private Identity ownerIdentity;
+  
+  /**
+   * The viewer identity.
+   */
+  private Identity viewerIdentity;
 
 
   /**
@@ -73,6 +79,24 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.activityType = chosenActivityType;
     this.ownerIdentity = chosenOwnerIdentity;
   }
+  
+  /**
+   * Constructor.
+   *
+   * @param existingActivityStorage
+   * @param chosenActivityType
+   * @param chosenOwnerIdentity
+   * @param viewerIndentity viewer gets and show other owner stream
+   */
+  public ActivitiesRealtimeListAccess(final ActivityStorage existingActivityStorage,
+                                      final ActivityType chosenActivityType,
+                                      final Identity chosenOwnerIdentity,
+                                      final Identity viewerIndentity) {
+    this.activityStorage = existingActivityStorage;
+    this.activityType = chosenActivityType;
+    this.ownerIdentity = chosenOwnerIdentity;
+    this.viewerIdentity = viewerIndentity;
+  }
 
 
   /**
@@ -85,6 +109,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case USER_ACTIVITIES: {
         return activityStorage.getUserActivities(ownerIdentity, index, limit);
+      }
+      case VIEW_USER_ACTIVITIES: {
+        return activityStorage.getActivities(ownerIdentity, viewerIdentity, index, limit);
       }
       case CONNECTIONS_ACTIVITIES: {
         return activityStorage.getActivitiesOfConnections(ownerIdentity, index, limit);
@@ -116,6 +143,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case USER_ACTIVITIES: {
         return activityStorage.getNumberOfUserActivities(ownerIdentity);
+      }
+      case VIEW_USER_ACTIVITIES: {
+        return activityStorage.getNumberOfActivities(ownerIdentity, viewerIdentity);
       }
       case CONNECTIONS_ACTIVITIES: {
         return activityStorage.getNumberOfActivitiesOfConnections(ownerIdentity);

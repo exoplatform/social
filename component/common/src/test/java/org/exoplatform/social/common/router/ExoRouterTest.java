@@ -61,6 +61,15 @@ public class ExoRouterTest extends AbstractCommonTest {
     
   }
   
+  public void testRouterForActivityOwnerShow() throws Exception {
+    Route route = ExoRouter.route("/activities/mary");
+    
+    assertRouter(route, "activity.stream.owner.show", new HashMap<String,String>(){{
+      put("streamOwnerId","mary");
+    }});
+    
+  }
+  
   public void testRouterForSpaceAccess() throws Exception {
     Route route = ExoRouter.route("mary-space");
     

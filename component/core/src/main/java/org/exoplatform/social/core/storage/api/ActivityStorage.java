@@ -81,6 +81,23 @@ public interface ActivityStorage {
       Identity owner, long offset, long limit) throws ActivityStorageException;
 
   /**
+   * Gets the activities by identity owner but it's viewed by viewer.
+   * Example: If there is relationship between Mary and Demo, 
+   *          signed in Demo, and then watch Mary's activity stream
+   *          
+   *          Expectation: Only show user's activities and space activity if both of them is member.
+   *
+   * Access a user's activity stream by specifying the offset and limit.
+   *
+   * @param owner the identity
+   * @param viewer the identity
+   * @param offset
+   * @param limit
+   * @return the activities
+   */
+  public List<ExoSocialActivity> getActivities(Identity owner, Identity viewer, long offset, long limit) throws ActivityStorageException;
+  
+  /**
    * Save comment to an activity.
    * activity's ownerstream has to be the same as ownerStream param here.
    *
@@ -160,6 +177,15 @@ public interface ActivityStorage {
    * @return the number of activities
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException;
+  
+  /**
+   * Count the number of activities from an ownerIdentity bt it's viewed by viewer identity
+   *
+   * @param owner
+   * @param viewer
+   * @return the number of activities
+   */
+  public int getNumberOfActivities(Identity owner, Identity viewer) throws ActivityStorageException;
 
   /**
    * Gets the number of newer activities based on an existing activity.

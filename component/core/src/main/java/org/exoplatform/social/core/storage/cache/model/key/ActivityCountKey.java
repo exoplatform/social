@@ -27,6 +27,8 @@ package org.exoplatform.social.core.storage.cache.model.key;
 public class ActivityCountKey extends ScopeCacheKey {
 
   private IdentityKey key;
+  
+  private IdentityKey viewerKey;
 
   private String baseId;
 
@@ -37,6 +39,12 @@ public class ActivityCountKey extends ScopeCacheKey {
   public ActivityCountKey(final IdentityKey key, final ActivityType type) {
     this.key = key;
     this.type = type;
+  }
+  
+  public ActivityCountKey(final IdentityKey key, final IdentityKey viewerKey, final ActivityType type) {
+    this.key = key;
+    this.type = type;
+    this.viewerKey = viewerKey;
   }
 
   public ActivityCountKey(final IdentityKey key, final String baseId, final ActivityType type) {
@@ -75,6 +83,9 @@ public class ActivityCountKey extends ScopeCacheKey {
     if (key != null ? !key.equals(that.key) : that.key != null) {
       return false;
     }
+    if (viewerKey != null ? !viewerKey.equals(that.viewerKey) : that.viewerKey != null) {
+      return false;
+    }
     if (type != that.type) {
       return false;
     }
@@ -89,6 +100,7 @@ public class ActivityCountKey extends ScopeCacheKey {
   public int hashCode() {
     int result = super.hashCode();
     result = 31 * result + (key != null ? key.hashCode() : 0);
+    result = 31 * result + (viewerKey != null ? viewerKey.hashCode() : 0);
     result = 31 * result + (baseId != null ? baseId.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);
     result = 31 * result + (time != null ? time.hashCode() : 0);

@@ -205,6 +205,20 @@ public interface ActivityManager {
    * @since 1.2.0-GA
    */
   RealtimeListAccess<ExoSocialActivity> getActivitiesWithListAccess(Identity ownerIdentity);
+  
+  /**
+   * Gets the activities posted on the provided activity stream owner via {@link RealtimeListAccess} by viewer
+   * Example: If there is relationship between Mary and Demo, 
+   *          signed in Demo, and then watch Mary's activity stream
+   *          
+   *          Expectation: Only show user's activities and space activity if both of them is member.
+   *
+   * @param ownerIdentity the provided activity stream owner
+   * @param viewerIdentity who views other stream
+   * @return the real time list access for activities on the provided activity stream owner
+   * @since 4.0
+   */
+  RealtimeListAccess<ExoSocialActivity> getActivitiesWithListAccess(Identity ownerIdentity, Identity viewerIdentity);
 
   /**
    * Gets the activities posted by all connections with an existing identity via {@link RealtimeListAccess}

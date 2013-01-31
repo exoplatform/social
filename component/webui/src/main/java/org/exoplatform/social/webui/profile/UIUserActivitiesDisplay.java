@@ -204,6 +204,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     
     //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+    
     ActivityManager activityManager = Utils.getActivityManager();
     ListAccess<ExoSocialActivity> activitiesListAccess = null;
     
@@ -213,8 +214,15 @@ public class UIUserActivitiesDisplay extends UIForm {
      activitiesLoader.setActivityListAccess(activitiesListAccess);
      break;
     case OWNER_STATUS :
-      activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
-      activitiesLoader.setActivityListAccess(activitiesListAccess);
+    	if (isActivityStreamOwner == false) {
+    	  Identity viewerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
+        activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
+    	  activitiesLoader.setActivityListAccess(activitiesListAccess);
+    	} else {
+    	  activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
+    	  activitiesLoader.setActivityListAccess(activitiesListAccess);
+    	}
+      
       break;
     case CONNECTIONS :
       activitiesListAccess = activityManager.getActivitiesOfConnectionsWithListAccess(ownerIdentity);
