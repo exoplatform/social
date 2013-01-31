@@ -267,6 +267,11 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     }
     return ArrayUtils.EMPTY_STRING_ARRAY;
   }
+  
+  @Override
+  public int getNumberOfLikes() {
+    return likeIdentityIds == null ? 0 : likeIdentityIds.length;
+  }
 
   /**
    * {@inheritDoc}

@@ -121,6 +121,13 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @return array of identityIds
    */
   String[] getLikeIdentityIds();
+  
+  /**
+   * Gets number of Liker who like this activity.
+   *
+   * @return number of liker
+   */
+  int getNumberOfLikes();
 
   /**
    * Sets array of identityIds who like this activity.
