@@ -147,8 +147,8 @@
   <% uiform.begin() %>
   <div class="activityTimeLine pull-left">
 	<div class="activityAvatar avatarCircle">
-		<a class="avatar" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
-		  <img  title="$ownerName" src="$ownerAvatar"/>
+		<a rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
+		  <img alt="$ownerName" src="$ownerAvatar"/>
 		</a>
 	</div>
 	
@@ -219,8 +219,8 @@
 					  personLikeAvatarImageSource = id.profile.avatarUrl;
 					  if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 					  %>
-						<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
-						  <img src="$personLikeAvatarImageSource"  alt="$personLikeFullName" />
+						<a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+						  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
 						</a>
 					 <% })%>
 					</div>
@@ -270,8 +270,8 @@
 			    <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem ">
 			  <% }  %>			  
 				<div class="commmentLeft">
-					<a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarSmall">
-					  <img width="36px" height="36px"  title="$commenterFullName" src="$commenterAvatarImgSrc" />         
+					<a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarXSmall">
+					  <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />         
 					</a>
 				</div><!--end commentLeft-->        
 				<div class="commentRight">
@@ -307,8 +307,8 @@
 			  <div class="commentItem commentFormBox" id="CommentFormBlock${activity.id}">
 			<% } %>
 					<div class="commmentLeft">
-						<a rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri" class="avatarSmall">
-						   <img  alt="$currentCommenterName" src="$currentCommenterAvatar"/>        
+						<a rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri" class="avatarXSmall">
+						   <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>        
 						</a>
 					</div><!--end commentLeft--> 
 					<div class="commentRight">

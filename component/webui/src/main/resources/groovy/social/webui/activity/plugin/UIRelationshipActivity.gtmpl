@@ -156,8 +156,8 @@
 <div class="UIActivity">
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
-    <a class="Avatar" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
-      <img rel="tooltip" data-placement="bottom" title="$ownerName" src="$ownerAvatar"/>
+    <a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
+      <img alt="$ownerName" src="$ownerAvatar"/>
       <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
@@ -228,8 +228,8 @@
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               %>
-                <a class="AvatarPeopleBG"  rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
-                  <img src="$personLikeAvatarImageSource"  rel="tooltip" data-placement="bottom" title="$personLikeFullName" />
+                <a class="avatarXSmall"  rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+                  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
                 </a>
              <% })%>
             </div>
@@ -284,8 +284,8 @@
       <% } else { %>
       <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
       <% } %>
-        <a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="AvatarCM">
-          <img width="38px" height="36px" rel="tooltip" data-placement="bottom" title="$commenterFullName" src="$commenterAvatarImgSrc" />
+        <a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarXSmall">
+          <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>
@@ -318,8 +318,8 @@
     <% } else { %>
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
-        <a class="AvatarCM"  rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
-          <img rel="tooltip" data-placement="bottom" title="$currentCommenterName" src="$currentCommenterAvatar"/>
+        <a class="avatarXSmall"  rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
+          <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>
 		      <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
 		    </a>

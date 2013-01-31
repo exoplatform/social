@@ -119,7 +119,7 @@
           }
 		
 		      %>
-          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName"></i></a>
+          <a href="javascript:void(0)" rel="tooltip" data-placement="bottom" title="$labelSimpleName" class="actionIcon $clazz" onclick="$action"><i class="uiIconSoc$simpleName uiIconSocLightGray"></i></a>
       <%
         }
       %>

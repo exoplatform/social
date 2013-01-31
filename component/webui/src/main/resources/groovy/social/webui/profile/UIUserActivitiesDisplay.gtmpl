@@ -55,5 +55,7 @@
 	<% } %>
 	
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
-  <div class="activityBottom"><span></span></div>
+  <% if ( hasActivities ) { %>
+  	<div class="activityBottom"><span></span></div>
+  <% } %>
 </div>

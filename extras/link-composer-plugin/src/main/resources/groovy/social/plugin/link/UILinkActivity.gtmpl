@@ -142,7 +142,7 @@
   <% uiform.begin() %>
 	<div class="activityTimeLine pull-left">
 		<div class="activityAvatar avatarCircle">
-			<a class="avatar" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
+			<a rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
 			  <img alt="$ownerName" src="$ownerAvatar"/>
 			</a>
 		</div>
@@ -251,7 +251,7 @@
 						  personLikeAvatarImageSource = id.profile.avatarUrl;
 						  if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 						  %>
-							<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+							<a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
 							  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
 							</a>
 						 <% })%>
@@ -301,7 +301,7 @@
 					<div id="CommentBlock${activity.id}${commentCounter}" class="commentItem">
 				  <% } %>
 						<div class="commmentLeft">
-						  <a class="avatarSmall" href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" >
+						  <a class="avatarXSmall" href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" >
 							<img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
 						  </a>
 						</div><!--end commentLeft-->     
@@ -339,7 +339,7 @@
 					  <div class="commentItem commentFormBox" id="CommentFormBlock${activity.id}">
 					<% } %>
 						<div class="commmentLeft">
-							<a class="avatarSmall" rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
+							<a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
 								<img src="$currentCommenterAvatar" alt="$currentCommenterName"/>
 							</a>
 						</div><!--end commentLeft--> 
