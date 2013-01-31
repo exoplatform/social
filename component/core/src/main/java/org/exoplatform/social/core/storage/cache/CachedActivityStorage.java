@@ -1145,6 +1145,14 @@ public class CachedActivityStorage implements ActivityStorage {
     return storage.getNumberOfMultiUpdated(owner, sinceTimes);
   }
   
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+    return storage.getFeedActivities(owner, sinceTime);
+  }
+  
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+    return storage.getSpaceActivities(owner, sinceTime);
+  }
+
   @Override
   public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
     return storage.getUserActivities(owner, sinceTime);

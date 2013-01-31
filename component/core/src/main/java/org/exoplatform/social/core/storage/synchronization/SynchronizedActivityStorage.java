@@ -954,6 +954,27 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
   }
+  
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getFeedActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
   @Override
   public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
     boolean created = startSynchronization();

@@ -17,12 +17,10 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
@@ -30,6 +28,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -239,6 +238,11 @@ public class UIUserActivitiesDisplay extends UIForm {
   }
    
     //
+    UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+    
+    activitiesContainer.setNumberOfUpdatedActivities(getUpdatedActsNum(this.selectedDisplayMode.toString()));
+    
+    //
     activitiesLoader.init();
   }
 
@@ -254,6 +258,9 @@ public class UIUserActivitiesDisplay extends UIForm {
         uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
+        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+        
+        activitiesContainer.setNumberOfUpdatedActivities(uiUserActivities.getUpdatedActsNum(selectedDisplayMode));
         //
         event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
@@ -264,5 +271,80 @@ public class UIUserActivitiesDisplay extends UIForm {
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
     }
+
+//    private int getUpdatedActivitiesNum(Event<UIUserActivitiesDisplay> event, String selectedDisplayMode) {
+//      UIUserActivitiesDisplay uiUserActivities = event.getSource();
+//      UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
+//      ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
+//      
+//     List<ExoSocialActivity> updatedActivities = activitiesListAccess
+//         .getUpadtedActivities(uiUserActivities.getLastVisited(selectedDisplayMode));
+//     
+//     // get from cookies to use in check
+//     String seenCookieKey = String.format(Utils.SEEN_ACTIVITIES_COOKIES, Utils.getViewerRemoteId());
+//     String seenActivitiesOnCookie = Utils.getCookies(seenCookieKey);
+//     List<String> seenActivities = new ArrayList<String>();
+//     if ( seenActivitiesOnCookie != null ) { 
+//       seenActivities = Arrays.asList(seenActivitiesOnCookie.split("_")); // activityIds
+//     }
+//     
+//     int numberOfUpdatedActivities = 0;
+//     
+//     for ( ExoSocialActivity activity : updatedActivities ) {
+//       if ( seenActivities.contains(activity.getId()) ) {
+//         continue;
+//       } else {
+//         numberOfUpdatedActivities += 1;
+//       }
+//     }
+//     
+//     // check and reset to cookies
+//     event.getRequestContext().getJavascriptManager()
+//         .require("SHARED/social-ui-activity-updates", "activityUpdates")
+//         .addScripts("activityUpdates.resetCookie('" + String.format(Utils.SEEN_ACTIVITIES_COOKIES,
+//             Utils.getViewerRemoteId()) + "','" + Utils.listToString(seenActivities, "_") + "');");
+//
+//     return numberOfUpdatedActivities;
+//    }
+  }
+  
+  private int getUpdatedActsNum(String selectedDisplayMode) {
+    UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
+    ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
+    
+    List<ExoSocialActivity> updatedActivities = activitiesListAccess
+       .getUpadtedActivities(getLastVisited(selectedDisplayMode));
+   
+    // get from cookies to use in check
+    String seenCookieKey = String.format(Utils.SEEN_ACTIVITIES_COOKIES, Utils.getViewerRemoteId());
+    String seenActivitiesOnCookie = Utils.getCookies(seenCookieKey);
+    List<String> seenActivities = new ArrayList<String>();
+    if ( seenActivitiesOnCookie != null ) { 
+      seenActivities = Arrays.asList(seenActivitiesOnCookie.split("_")); // activityIds
+    }
+   
+    int numberOfUpdatedActivities = 0;
+   
+    for ( ExoSocialActivity activity : updatedActivities ) {
+      if ( seenActivities.contains(activity.getId()) ) {
+        continue;
+      } else {
+        numberOfUpdatedActivities += 1;
+      }
+    }
+  
+    return numberOfUpdatedActivities;
+  }
+  
+  private long getLastVisited(String mode) {
+    long currentVisited = Calendar.getInstance().getTimeInMillis();
+    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, 
+        Utils.getViewerRemoteId());
+    String strValue = Utils.getCookies(cookieKey);
+    if(strValue == null) {
+      return currentVisited;
+    }
+    
+    return Long.parseLong(strValue);
   }
 }

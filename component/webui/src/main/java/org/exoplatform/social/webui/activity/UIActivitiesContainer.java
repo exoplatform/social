@@ -18,15 +18,12 @@ package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
@@ -47,10 +44,6 @@ public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
   
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
-  private static final String ALL_ACTIVITIES = "ALL_ACTIVITIES";
-  private static final String CONNECTIONS = "CONNECTIONS";
-  private static final String MY_SPACE = "MY_SPACE";
-  private static final String MY_ACTIVITIES = "MY_ACTIVITIES";
   
   private List<ExoSocialActivity> activityList;
   private PostContext postContext;
@@ -60,7 +53,7 @@ public class UIActivitiesContainer extends UIContainer {
   private String selectedDisplayMode;
   private UIPopupWindow popupWindow;
   private long lastVisited = 0;
-
+  private int numberOfUpdatedActivities;
   /**
    * constructor
    */
@@ -119,6 +112,13 @@ public class UIActivitiesContainer extends UIContainer {
     this.selectedDisplayMode = selectedDisplayMode;
   }
 
+  public void setNumberOfUpdatedActivities(int numberOfUpdatedActivities) {
+    this.numberOfUpdatedActivities = numberOfUpdatedActivities;
+  }
+
+  public int getNumberOfUpdatedActivities() {
+    return numberOfUpdatedActivities;
+  }
 
   /**
    * Initializes ui component child
@@ -161,31 +161,6 @@ public class UIActivitiesContainer extends UIContainer {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  protected int getNumberOfUpdatedActivities() {
-    try {
-      UIActivitiesLoader uiActivitiesLoader = this.getAncestorOfType(UIActivitiesLoader.class);
-      ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) uiActivitiesLoader.getActivityListAccess();
-      
-      /**
-       *  [All Activities]
-       */
-      if ( ALL_ACTIVITIES.equals(this.selectedDisplayMode) ) {
-        // get last visit since time of each tab
-        Map<String, Long> lastVisitedTabs = new HashMap<String, Long>();
-        lastVisitedTabs.put(CONNECTIONS, getLastVisited(CONNECTIONS));
-        lastVisitedTabs.put(MY_SPACE, getLastVisited(MY_SPACE));
-        lastVisitedTabs.put(MY_ACTIVITIES, getLastVisited(MY_ACTIVITIES));
-        
-        return activitiesListAccess.getNumberOfMultiUpdated(lastVisitedTabs);
-      }
-      
-      return activitiesListAccess.getNumberOfUpdated(lastVisited);
-    } catch(Exception e) {
-      return 0;
-    }
-  }
-  
   private long getLastVisited(String mode) {
     long currentVisited = Calendar.getInstance().getTimeInMillis();
     String strValue = Utils.getCookies(getCookiesKey(mode));

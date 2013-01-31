@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.activity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -120,4 +121,10 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   public int getNumberOfUpdated(Long sinceTime) {
     return 0;
   }
+  
+  @Override
+  public List<ExoSocialActivity> getUpadtedActivities(Long sinceTime) {
+    return Collections.emptyList();
+  }
+  
 }

@@ -1553,6 +1553,27 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   //
   @Override
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(owner));
+    identities.addAll(getSpacesId(owner));
+    
+    if ( identities.size() == 0 ) {
+      return Collections.emptyList();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .ACTIVITY_UPDATED_BUILDER.owners(identities), filter).objects());
+  }
+  
+  //
+  @Override
   public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
     //
     JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1594,6 +1615,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
       ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList), filter).objects((long)0, (long)100));
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects());
   }
   
   private List<ExoSocialActivity> getActivitiesFromQueryResults(QueryResult<ActivityEntity> results) {

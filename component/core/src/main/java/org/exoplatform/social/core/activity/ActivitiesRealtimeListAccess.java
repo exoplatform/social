@@ -98,7 +98,6 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.viewerIdentity = viewerIndentity;
   }
 
-
   /**
    * {@inheritDoc}
    */
@@ -282,14 +281,28 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
 
   @Override
   public int getNumberOfMultiUpdated(Map<String, Long> sinceTimes) {
-//    int numUpdatedOfConnections = activityStorage
-//        .getNumberOfUpdatedOnActivitiesOfConnections(ownerIdentity, sinceTimes.get("CONNECTIONS"));
-//    int numUpdatedOfMySpace = activityStorage
-//        .getNumberOfUpdatedOnUserSpacesActivities(ownerIdentity, sinceTimes.get("MY_SPACE"));
-//    int numUpdatedOfMyActivities = activityStorage
-//        .getNumberOfUpdatedOnUserActivities(ownerIdentity, sinceTimes.get("MY_ACTIVITIES"));
-    
     return activityStorage.getNumberOfMultiUpdated(ownerIdentity, sinceTimes);
+  }
+  
+  public List<ExoSocialActivity> getUpadtedActivities(Long sinceTime) {
+    switch (activityType) {
+      case ACTIVITY_FEED: {
+        return activityStorage.getFeedActivities(ownerIdentity, sinceTime);
+      }
+      case USER_ACTIVITIES: {
+        return activityStorage.getUserActivities(ownerIdentity, sinceTime);
+      }
+      case CONNECTIONS_ACTIVITIES: {
+        return activityStorage.getActivitiesOfConnections(ownerIdentity, sinceTime);
+      }
+      case USER_SPACE_ACTIVITIES: {
+        return activityStorage.getUserSpacesActivities(ownerIdentity, sinceTime);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getSpaceActivities(ownerIdentity, sinceTime);
+      }
+    }
+    return Collections.emptyList();
   }
   
   @Override

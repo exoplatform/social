@@ -48,7 +48,11 @@ import org.exoplatform.web.url.navigation.NodeURL;
 public class Utils {
   /** . */
   public static final String ACTIVITY_STREAM_TAB_SELECTED_COOKIED = "exo_social_activity_stream_tab_selected_%s";
+  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   
+  /** . */
+  public static final String NOT_SEEN_ACTIVITIES_COOKIES = "exo_social_not_seen_activities_%s";
+  public static final String SEEN_ACTIVITIES_COOKIES = "exo_social_seen_activities_%s";
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -340,4 +344,19 @@ public class Utils {
     return (getCookies(key) != null);
   }
   
+  public static String listToString(List<String> list, String separator) {
+    StringBuilder sb = new StringBuilder();
+    int lastIdx = 0;
+    for (String s : list) {
+        if ( s == null || s.length() == 0 ) {
+          continue;
+        }
+        lastIdx += 1;
+        sb.append(s);
+        if ( lastIdx < list.size() ) {
+          sb.append(separator);
+        }
+    }
+    return sb.toString();
+  }
 }

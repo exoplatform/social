@@ -703,6 +703,16 @@ public interface ActivityStorage {
   public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes);
 
   /**
+   * Gets feed activities base on since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime);
+  
+  /**
    * Gets activities of an user base on since time.
    * 
    * @param owner
@@ -731,4 +741,14 @@ public interface ActivityStorage {
    * @since 4.0 Alpha01
    */
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime);
+  
+  /**
+   * Gets space activities base on since time.
+   * 
+   * @param owner
+   * @param sinceTime
+   * @return
+   * @since 4.0 Alpha01
+   */
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime);
 }
