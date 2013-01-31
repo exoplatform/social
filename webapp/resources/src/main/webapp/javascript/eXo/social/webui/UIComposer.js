@@ -89,7 +89,6 @@
 	    var uiInputText =$('textarea#'+UIComposer.textareaId);
 	    UIComposer.currentValue = uiInputText.val();
 	  },
-	 
 	  showLink : function() {
 	  	var container = $('#ComposerContainer')
 	  	var link = container.find('.LinkExtensionContainer');
