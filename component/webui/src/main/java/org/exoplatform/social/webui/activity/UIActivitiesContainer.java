@@ -63,7 +63,7 @@ public class UIActivitiesContainer extends UIContainer {
       popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
-    }
+    } 
   }
 
   public UIPopupWindow getPopupWindow() {
@@ -120,6 +120,10 @@ public class UIActivitiesContainer extends UIContainer {
     return numberOfUpdatedActivities;
   }
 
+  protected long getCurrentServerTime() {
+    return Calendar.getInstance().getTimeInMillis();
+  }
+  
   /**
    * Initializes ui component child
    *

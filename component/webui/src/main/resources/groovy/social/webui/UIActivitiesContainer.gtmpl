@@ -34,7 +34,8 @@ def jsManager = pcontext.getJavascriptManager();
 def selectedTab = uicomponent.getSelectedDisplayMode();
 noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
 def currentRemoteId = Utils.getViewerRemoteId();
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId', '$selectedTab');");
+def currentServerTime = uicomponent.getCurrentServerTime();
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId', '$selectedTab', '$currentServerTime');");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>
