@@ -82,8 +82,8 @@
         idAction : 'ShareButton',
         actionLink : 'AttachButton',
         elasticStyle : {
-          maxHeight : '38px',
-          minHeight : '24px'
+          maxHeight : '64px',
+          minHeight : '64px'
         },
         messages : window.eXo.social.I18n.mentions
       });

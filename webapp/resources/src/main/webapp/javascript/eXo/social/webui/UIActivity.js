@@ -168,7 +168,7 @@ var UIActivity = {
         },
         idAction : ('CommentButton'+UIActivity.activityId),
         elasticStyle : {
-          maxHeight : '35px',
+          maxHeight : '52px',
           minHeight : '22px'
         },
         messages : window.eXo.social.I18n.mentions
