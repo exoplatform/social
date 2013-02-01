@@ -27,11 +27,12 @@
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;
   def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.displayName);
+  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
  %>
 
-<div class="UIDisplaySpaceActivities" id="$uicomponent.id">
+<div class="uiDisplaySpaceActivities" id="$uicomponent.id">
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+    <% if ( hasActivities ) { %>
+  	<div class="activityBottom"><span></span></div>
+  <% } %>
 </div>
-<% if (!uicomponent.hasChildren()) {%>
-  <div class="EmptyList">labelEmptyActivityList</div>
-<%}%>

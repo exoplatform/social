@@ -9,37 +9,31 @@ def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager();
 jsmanager.require("SHARED/social-ui-customize-control", "customizeControl").addScripts('customizeControl.onLoad("' + uicomponentId + '");');
 %>
-<div class="$uicomponentId" id="$uicomponentId">
-	 <div class="UIFormInputSet">
-	  <div class="FormContainer">
-     <table class="UIFormGrid">
+<div class="uiSpaceVisibility" id="$uicomponentId">
+    <div class="form-horizontal">
 		    <%
 		      for(inputEntry in uicomponent.getChildren()) {
 		        if(inputEntry.isRendered()) {
 		    %>
-          <tr >
+        <div class="control-group">
            <%
             String label = _ctx.appRes(uicomponent.getName() + ".label." + inputEntry.getId()) ;
             if(!label.equals(inputEntry.getId()) && (inputEntry instanceof UIFormRadioBoxInput)) {
            %>
-             <td class="FieldLabel"><%=label%></td>
+            <label class="control-label"><%=label%></label>
            <%} %>
-            <td class="FieldComponent">
+            <div class="controls">
 	                <%
 	              if(inputEntry instanceof UIFormRadioBoxInput) {
-	                println "<div class=\"MultiRadioInput\">" ;
 	                  uicomponent.renderUIComponent(inputEntry) ;
-	                println "</div>" ;
 	              } else if (!(inputEntry instanceof UIFormInputInfo)) {
 	                uicomponent.renderUIComponent(inputEntry) ;
 	              }
 	              %>
-              </td>
-             </tr>
+            </div>
+        </div>
 	              <% }
 	      } %>
-       </table>
-       <table><tr><td align='center'><span><% uicomponent.renderChild(UIFormInputInfo.class); %></span></td></tr></table>
-      </div>
     </div>
+    <div class="center"><% uicomponent.renderChild(UIFormInputInfo.class); %></div>
 </div>
