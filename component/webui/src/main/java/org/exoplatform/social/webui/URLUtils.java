@@ -44,7 +44,7 @@ public class URLUtils {
    */
   public static String getCurrentUser() {
     PortalRequestContext pcontext = Util.getPortalRequestContext() ;
-    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    String requestPath = "/" + pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
     if (route == null) { 
       return null;

@@ -83,9 +83,7 @@ public class ActivityCountKey extends ScopeCacheKey {
     if (key != null ? !key.equals(that.key) : that.key != null) {
       return false;
     }
-    if (viewerKey != null ? !viewerKey.equals(that.viewerKey) : that.viewerKey != null) {
-      return false;
-    }
+    
     if (type != that.type) {
       return false;
     }

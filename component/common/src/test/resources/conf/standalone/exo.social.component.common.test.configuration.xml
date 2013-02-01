@@ -170,6 +170,14 @@
                     <value><string>/activities/{streamOwnerId}</string></value>
                   </entry>
                   <entry>
+                    <key><string>profile.owner.show</string></key>
+                    <value><string>/profile/{streamOwnerId}</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>connections.network.show</string></key>
+                    <value><string>/connections/network/{streamOwnerId}</string></value>
+                  </entry>
+                  <entry>
                     <key><string>space.access</string></key>
                     <value><string>{spacePrettyName}</string></value>
                   </entry>

@@ -215,7 +215,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     case OWNER_STATUS :
     	if (isActivityStreamOwner == false) {
     	  Identity viewerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
-        activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
+        activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity, viewerIdentity);
     	  activitiesLoader.setActivityListAccess(activitiesListAccess);
     	} else {
     	  activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
