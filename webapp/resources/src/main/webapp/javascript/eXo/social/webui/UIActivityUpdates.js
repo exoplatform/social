@@ -9,6 +9,8 @@
 	  currentRemoteId : '',
 	  seenCookieKey : '',
 	  notSeenCookieKey : '',
+	  lastUpdatedActivitiesNumKey : '',
+	  hasUpdated : false,
 	  ALL : 'ALL_ACTIVITIES',
 	  CONNECTIONS : 'CONNECTIONS',
 	  MY_SPACES : 'MY_SPACE',
@@ -16,7 +18,9 @@
     NOT_SEEN_ACTIVITIES_KEY : "exo_social_not_seen_activities_%remoteId%",
     SEEN_ACTIVITIES_KEY : "exo_social_seen_activities_%remoteId%",
     CURRENT_SELECTED_TAB_KEY : "exo_social_activity_stream_tab_selected_%remoteId%",
+    LAST_UPDATED_ACTIVITIES_NUM : "exo_social_last_updated_activities_num_on_%tab%_of_%remoteId%",
     REMOTE_ID_PART: "%remoteId%",
+    TAB_PART: "%tab%",
     setCookies : function(name, value, expiredays) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + expiredays);
@@ -30,23 +34,34 @@
 	    UIActivityUpdates.setCookies(cookieKey, value, 365);
 		},
 			  
-	  init: function (numberOfUpdatedActivities, cookieName, noUpdates, currentRemoteId) {
+	  init: function (numberOfUpdatedActivities, cookieName, noUpdates, currentRemoteId, selectedMode) {
 	    //
 	    var form = UIActivityUpdates;
 	    
 	    //
-	    UIActivityUpdates.numberOfUpdatedActivities = numberOfUpdatedActivities;
-	    UIActivityUpdates.cookieName = cookieName;
-	    UIActivityUpdates.currentRemoteId = currentRemoteId;
-	    UIActivityUpdates.noUpdates = noUpdates;
+	    form.numberOfUpdatedActivities = numberOfUpdatedActivities;
+	    form.cookieName = cookieName;
+	    form.currentRemoteId = currentRemoteId;
+	    form.noUpdates = noUpdates;
 	    
-	    UIActivityUpdates.seenCookieKey =  form.SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
-	    UIActivityUpdates.notSeenCookieKey =  form.NOT_SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
-      UIActivityUpdates.currentSelectedTabCookieKey =  form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
-
-      //
-      form.initCookiesForFirstRun();
+	    form.seenCookieKey =  form.SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
+	    form.notSeenCookieKey =  form.NOT_SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
+      form.currentSelectedTabCookieKey =  form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
       
+      
+      //
+      if ( selectedMode ) {
+        selectedMode = form.ALL;
+      }
+      
+      var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, selectedMode);
+      lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, currentRemoteId);
+      
+      //
+      var lastUpdate= eXo.core.Browser.getCookie(lastUpdatedActivitiesNumKey);
+      form.hasUpdated = (lastUpdate*1 !== numberOfUpdatedActivities*1);
+      form.resetCookie(lastUpdatedActivitiesNumKey, numberOfUpdatedActivities);
+
 	    //
 	    $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
 	      if(i < numberOfUpdatedActivities) {
@@ -96,7 +111,9 @@
 	   
 	       if( cookieName && cookieTime && cookieName == escape(location.href) &&  Math.abs(now - cookieTime) <= 5 ) {
 			    //
-			    form.unMarkedAsUpdate();
+			    if (form.hasUpdated === false ) {
+			      form.unMarkedAsUpdate();
+			    }
 			    
 			    //refresh_prepare = 0; 
 	       }   
@@ -185,34 +202,41 @@
 	      form.applyChanges([form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
 	    }
 	  },
-	  initCookiesForFirstRun : function() {
+	  initCookiesForFirstRun : function(userId) {
+	    UIActivityUpdates.currentRemoteId = userId;
 	    var form = UIActivityUpdates;
-	    var allTabs = [form.ALL, form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES];
       var src_str = "exo_social_activity_stream_%FIELD%_visited_%REMOTE_ID%";
 			var replaced_field = "%FIELD%";
 			var replaced_id = "%REMOTE_ID%";
-			var userId = UIActivityUpdates.currentRemoteId;
 			var checked_tab_key = src_str.replace(replaced_field, form.ALL).replace(replaced_id, userId);
 			var checked_tab_cookie = eXo.core.Browser.getCookie(checked_tab_key);
-			if ( checked_tab_cookie || checked_tab_cookie.length > 0 ) {
+			
+			if ( checked_tab_cookie && checked_tab_cookie.length > 0 ) {
 			  return;
 			}
 			
-			form.applyChanges(allTabs);
+			form.applyChanges([form.ALL, form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
 			
 			//
-			form.resetCookie(form.currentSelectedTabCookieKey, form.ALL);
+			var currentSelectedTabCookieKey = form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, userId);
+			form.resetCookie(currentSelectedTabCookieKey, form.ALL);
 	  },
 	  applyChanges : function( affectedFields ) { // FIELDS
 	    if ( affectedFields.length === 0 ) return;
 	    
+	    var form = UIActivityUpdates;
 	    var src_str = "exo_social_activity_stream_%FIELD%_visited_%REMOTE_ID%";
 	    var replaced_field = "%FIELD%";
 	    var replaced_id = "%REMOTE_ID%";
-	    var userId = UIActivityUpdates.currentRemoteId;
+	    var userId = form.currentRemoteId;
 	    $.each( affectedFields, function( index, field ) {
 			  var changed_field = src_str.replace(replaced_field, field).replace(replaced_id, userId);
-			  UIActivityUpdates.resetCookie(changed_field, (new Date().getTime()));
+			  form.resetCookie(changed_field, (new Date().getTime()));
+			  
+			  //
+			  var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, field);
+        lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART,form.currentRemoteId);
+        form.resetCookie(lastUpdatedActivitiesNumKey, 0);
 			});
 	  }
 	};

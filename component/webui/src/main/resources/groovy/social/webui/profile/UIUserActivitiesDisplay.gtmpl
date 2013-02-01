@@ -22,12 +22,15 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  import org.exoplatform.social.webui.Utils;
   
+  def currentRemoteId = Utils.getViewerRemoteId();
   def rcontext = _ctx.getRequestContext() ;
   def jsManager = rcontext.getJavascriptManager();
   String script = "var slbox = jq('select[name="+uiform.SELECT_BOX_DISPLAY_MODE+"]');" + 
                   "slbox.find('option[value='+ slbox.val() +']').hide();";
-  jsManager.require("SHARED/jquery", "jq").addScripts(script);
+  jsManager.require("SHARED/jquery", "jq").addScripts(script)
+           .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId');");
 
   uicomponent.changeLocale();
 %>

@@ -31,10 +31,10 @@ def cookieName = uicomponent.getCookiesKey(uicomponent.getSelectedDisplayMode())
 
 def pcontext = Util.getPortalRequestContext();
 def jsManager = pcontext.getJavascriptManager();
-
+def selectedTab = uicomponent.getSelectedDisplayMode();
 noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
 def currentRemoteId = Utils.getViewerRemoteId();
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId');");
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId', '$selectedTab');");
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>
