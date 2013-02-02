@@ -118,11 +118,6 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   }
   
   @Override
-  public int getNumberOfUpdated(Long sinceTime) {
-    return 0;
-  }
-  
-  @Override
   public List<ExoSocialActivity> getUpadtedActivities(Long sinceTime) {
     return Collections.emptyList();
   }

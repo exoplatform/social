@@ -35,7 +35,17 @@ def selectedTab = uicomponent.getSelectedDisplayMode();
 noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
 def currentRemoteId = Utils.getViewerRemoteId();
 def currentServerTime = uicomponent.getCurrentServerTime();
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($numberOfUpdatedActivities, '$cookieName', '$noUpdates', '$currentRemoteId', '$selectedTab', '$currentServerTime');");
+
+def inputs = """ {
+        numberOfUpdatedActivities: $numberOfUpdatedActivities,
+        cookieName: '$cookieName',
+        noUpdates: '$noUpdates', 
+        currentRemoteId: '$currentRemoteId',
+        selectedTab: '$selectedTab',
+        currentServerTime: $currentServerTime
+} """;
+
+jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");    
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (!uicomponent.getParent().isExtendLoader()) { %>

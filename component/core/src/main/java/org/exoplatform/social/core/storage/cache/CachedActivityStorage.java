@@ -22,6 +22,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -1136,8 +1137,8 @@ public class CachedActivityStorage implements ActivityStorage {
   }
 
   @Override
-  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
-    return storage.getNumberOfUpdatedOnActivityFeed(owner, sinceTime);
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {
+    return storage.getNumberOfUpdatedOnActivityFeed(owner, filter);
   }
 
   @Override
@@ -1169,23 +1170,23 @@ public class CachedActivityStorage implements ActivityStorage {
   }
   
   @Override
-  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
-    return storage.getNumberOfUpdatedOnUserActivities(owner, sinceTime);
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
+    return storage.getNumberOfUpdatedOnUserActivities(owner, filter);
   }
 
   @Override
-  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime) {
-    return storage.getNumberOfUpdatedOnActivitiesOfConnections(owner, sinceTime);
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
+    return storage.getNumberOfUpdatedOnActivitiesOfConnections(owner, filter);
   }
 
   @Override
-  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
-    return storage.getNumberOfUpdatedOnUserSpacesActivities(owner, sinceTime);
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter) {
+    return storage.getNumberOfUpdatedOnUserSpacesActivities(owner, filter);
   }
 
   @Override
-  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
-    return storage.getNumberOfUpdatedOnSpaceActivities(owner, sinceTime);
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter) {
+    return storage.getNumberOfUpdatedOnSpaceActivities(owner, filter);
   }
 
   @Override

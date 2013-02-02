@@ -44,6 +44,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.mail.impl.ExoAuthenticator;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter.ActivityFilterType;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ActivityStreamImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -1642,7 +1644,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   
   @Override
-  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {
     
     //
     List<Identity> identities = new ArrayList<Identity>();
@@ -1654,27 +1656,57 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if ( identities.size() == 0 ) {
       return 0;
     }
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
     
     //
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.activityFeedType().toSinceTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
+                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
   }
   
   @Override
-  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
+    
     //
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
-
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner), filter).objects().size();
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.userActivitiesType().toSinceTime()));
+    
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
+                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
   }
   
   @Override
-  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter) {
     //
     List<Identity> spaceList = getSpacesId(owner);
     
@@ -1682,15 +1714,29 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       return 0;
     }
     
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.userSpaceActivitiesType().toSinceTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList)
+                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
   }
   
   @Override
-  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
     List<Identity> connectionList = relationshipStorage.getConnections(owner);
 
     if (connectionList.size() == 0) {
@@ -1698,21 +1744,72 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.connectionType().toSinceTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList)
+                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
   }
   
   @Override
-  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter) {
+    
     //
-    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.spaceActivitiesType().toSinceTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner)
+                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+  }
+  
+  
+  private String[] getNumberOfViewedOfActivities(Identity owner, ActivityFilterType type) {
+    
+    if (type.fromSinceTime() == type.toSinceTime()) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_VIEWED_RANGE_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(type.fromSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(type.toSinceTime()));
+
+    //
+    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER.owners(owner), jcrfilter).objects();
+    String[] excludedActivities = new String[0];
+    
+    //
+    while(result.hasNext()) {
+      ArrayUtils.add(excludedActivities, result.next().getId());
+    }
+    
+    return excludedActivities;
   }
 
   @Override

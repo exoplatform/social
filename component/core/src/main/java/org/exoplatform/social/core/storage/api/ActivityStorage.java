@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.api;
 
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -646,7 +647,7 @@ public interface ActivityStorage {
    * @return
    * @since 4.0 Alpha01
    */
-  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime);
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter);
   
   /**
    * Gets the number of updated user activities where the identity can
@@ -657,7 +658,7 @@ public interface ActivityStorage {
    * @return
    * @since 4.0 Alpha01
    */
-  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime);
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter);
   
   /**
    * Gets the number of updated activities where the identity can
@@ -668,7 +669,7 @@ public interface ActivityStorage {
    * @return
    * @since 4.0 Alpha01
    */
-  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime);
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter);
   
   /**
    * Gets the number of updated spaces activities where the identity can
@@ -679,7 +680,7 @@ public interface ActivityStorage {
    * @return
    * @since 4.0 Alpha01
    */
-  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime);
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter);
   
   /**
    * Gets the number of updated space activities where the identity can
@@ -690,7 +691,7 @@ public interface ActivityStorage {
    * @return
    * @since 4.0 Alpha01
    */
-  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime);
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter);
 
   /**
    * Gets the number of updated that is summarize of all others.

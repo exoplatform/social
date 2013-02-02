@@ -31,6 +31,7 @@ import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.BuilderWhereExpression;
+import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
@@ -48,6 +49,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   Identity liker;
   Identity commenter;
   List<Identity> identities;
+  String[] activityIds;
   
   public String build(JCRFilterLiteral filter) {
     init();
@@ -129,6 +131,15 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   
   public List<Identity> getOwners() {
     return this.identities == null ? new ArrayList<Identity>() : this.identities;
+  }
+  
+  public ActivityBuilderWhere excludedActivities(String...activityIds) {
+    this.activityIds = activityIds;
+    return this;
+  }
+  
+  public String[] excludedActivityIds() {
+    return this.activityIds;
   }
   
   public static ActivityBuilderWhere ACTIVITY_SPACE_BUILDER = new ActivityBuilderWhere() {
@@ -228,6 +239,91 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         TimestampType type = null;
         if (objFilter instanceof TimestampType) {
           type = (TimestampType) objFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
+        }
+      }
+      
+      //
+      String[] excludedActivityIds = this.activityIds;
+      for(String id : excludedActivityIds) {
+        where.and().not().equals(JCRProperties.id, id);
+      }
+      
+      return where.toString();
+    }
+  };
+  
+  public static ActivityBuilderWhere ACTIVITY_VIEWED_RANGE_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      
+      boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
+      
+      //has relationship
+      if ( hasIndentitiesCondition ) {
+        boolean first = true;
+        where.startGroup();
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        where.endGroup();
+        
+      } else {
+        if (mentioner != null) {
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+      }
+
+      Object fromFilter = filter.get(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).getValue();
+      //
+      if (fromFilter != null) {
+        TimestampType type = null;
+        if (fromFilter instanceof TimestampType) {
+          type = (TimestampType) fromFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
+        }
+      }
+      
+      Object toFilter = filter.get(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).getValue();
+      //
+      if (toFilter != null) {
+        TimestampType type = null;
+        if (toFilter instanceof TimestampType) {
+          type = (TimestampType) toFilter;
           if (type != null) {
             switch (type) {
             case NEWER:

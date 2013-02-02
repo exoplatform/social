@@ -65,6 +65,8 @@ public class ActivityFilter extends JCRFilterLiteral {
   };
   
   public static JCRFilterOption ACTIVITY_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
+  public static JCRFilterOption ACTIVITY_FROM_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
+  public static JCRFilterOption ACTIVITY_TO_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
   //public static JCRFilterOption ACTIVITY_POSTED_POINT_FIELD = new JCRFilterOption(ACTIVITY_POSTED_POINT);
   
 
@@ -186,6 +188,27 @@ public class ActivityFilter extends JCRFilterLiteral {
       try {
         //
         this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
+        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
+      } catch (Exception ex) {
+        LOG.warn(ex);
+      }
+    }
+
+    @Override
+    public void destroy() {
+      
+    }
+  };
+  
+public static JCRFilterLiteral ACTIVITY_VIEWED_RANGE_FILTER = new JCRFilterLiteral() {
+    
+    @Override
+    protected void start() {
+      try {
+        //
+        this.append(ACTIVITY_FROM_UPDATED_POINT_FIELD.clone())
+        .append(ACTIVITY_TO_UPDATED_POINT_FIELD.clone())
         .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
         .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
       } catch (Exception ex) {

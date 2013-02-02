@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -305,24 +306,23 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     return Collections.emptyList();
   }
   
-  @Override
-  public int getNumberOfUpdated(Long sinceTime) {
+  public int getNumberOfUpdated(ActivityUpdateFilter filter) {
     switch (activityType) {
-    case ACTIVITY_FEED: {
-      return activityStorage.getNumberOfUpdatedOnActivityFeed(ownerIdentity, sinceTime);
-    }
-    case USER_ACTIVITIES: {
-      return activityStorage.getNumberOfUpdatedOnUserActivities(ownerIdentity, sinceTime);
-    }
-    case CONNECTIONS_ACTIVITIES: {
-      return activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(ownerIdentity, sinceTime);
-    }
-    case USER_SPACE_ACTIVITIES: {
-      return activityStorage.getNumberOfUpdatedOnUserSpacesActivities(ownerIdentity, sinceTime);
-    }
-    case SPACE_ACTIVITIES: {
-      return activityStorage.getNumberOfUpdatedOnSpaceActivities(ownerIdentity, sinceTime);
-    }
+      case ACTIVITY_FEED: {
+        return activityStorage.getNumberOfUpdatedOnActivityFeed(ownerIdentity, filter);
+      }
+      case USER_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnUserActivities(ownerIdentity, filter);
+      }
+      case CONNECTIONS_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(ownerIdentity, filter);
+      }
+      case USER_SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnUserSpacesActivities(ownerIdentity, filter);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnSpaceActivities(ownerIdentity, filter);
+      }
     }
     return 0;
   }

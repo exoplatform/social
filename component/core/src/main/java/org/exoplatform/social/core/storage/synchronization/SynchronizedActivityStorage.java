@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -899,10 +900,10 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   }
   
   @Override
-  public int getNumberOfUpdatedOnActivityFeed(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfUpdatedOnActivityFeed(owner, sinceTime);
+      return super.getNumberOfUpdatedOnActivityFeed(owner, filter);
     }
     finally {
       stopSynchronization(created);
@@ -976,10 +977,10 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   }
   
   @Override
-  public int getNumberOfUpdatedOnUserActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfUpdatedOnUserActivities(owner, sinceTime);
+      return super.getNumberOfUpdatedOnUserActivities(owner, filter);
     }
     finally {
       stopSynchronization(created);
@@ -987,10 +988,10 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   }
   
   @Override
-  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfUpdatedOnSpaceActivities(owner, sinceTime);
+      return super.getNumberOfUpdatedOnSpaceActivities(owner, filter);
     }
     finally {
       stopSynchronization(created);
@@ -998,10 +999,10 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   }
   
   @Override
-  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfUpdatedOnActivitiesOfConnections(owner, sinceTime);
+      return super.getNumberOfUpdatedOnActivitiesOfConnections(owner, filter);
     }
     finally {
       stopSynchronization(created);
@@ -1009,10 +1010,10 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   }
   
   @Override
-  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, Long sinceTime) {
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfUpdatedOnUserSpacesActivities(owner, sinceTime);
+      return super.getNumberOfUpdatedOnUserSpacesActivities(owner, filter);
     }
     finally {
       stopSynchronization(created);

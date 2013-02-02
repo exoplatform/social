@@ -7,8 +7,6 @@
 	  cookieName: '',
 	  noUpdates: '',
 	  currentRemoteId : '',
-	  seenCookieKey : '',
-	  notSeenCookieKey : '',
 	  lastUpdatedActivitiesNumKey : '',
 	  hasUpdated : false,
 	  clientTimerAtStart: 0,
@@ -17,9 +15,9 @@
 	  CONNECTIONS : 'CONNECTIONS',
 	  MY_SPACES : 'MY_SPACE',
 	  MY_ACTIVITIES : 'MY_ACTIVITIES',
-    NOT_SEEN_ACTIVITIES_KEY : "exo_social_not_seen_activities_%remoteId%",
-    SEEN_ACTIVITIES_KEY : "exo_social_seen_activities_%remoteId%",
     CURRENT_SELECTED_TAB_KEY : "exo_social_activity_stream_tab_selected_%remoteId%",
+    LAST_VISTED_TIME_FROM: "exo_social_activity_stream_%tab%_visited_%remoteId%_from",
+    LAST_VISTED_TIME_TO: "exo_social_activity_stream_%tab%_visited_%remoteId%_to",
     LAST_UPDATED_ACTIVITIES_NUM : "exo_social_last_updated_activities_num_on_%tab%_of_%remoteId%",
     REMOTE_ID_PART: "%remoteId%",
     TAB_PART: "%tab%",
@@ -36,39 +34,38 @@
 	    UIActivityUpdates.setCookies(cookieKey, value, 365);
 		},
 			  
-	  init: function (numberOfUpdatedActivities, cookieName, noUpdates, currentRemoteId, selectedMode, currentServerTime) {
+	  init: function (inputs) {
 	    //
 	    var form = UIActivityUpdates;
-	    form.clientTimerAtStart = new Date().getTime();
-	    form.currentServerTime = currentServerTime*1;
 	    
 	    //
-	    form.numberOfUpdatedActivities = numberOfUpdatedActivities;
-	    form.cookieName = cookieName;
-	    form.currentRemoteId = currentRemoteId;
-	    form.noUpdates = noUpdates;
+	    form.currentServerTime = inputs.currentServerTime*1 || 0;
+	    form.numberOfUpdatedActivities = inputs.numberOfUpdatedActivities*1 || 0;
+	    form.cookieName = inputs.cookieName || "";
+	    form.currentRemoteId = inputs.currentRemoteId || "";
+	    form.noUpdates = inputs.noUpdates || "";
+	    form.selectedMode = inputs.selectedMode || "";
 	    
-	    form.seenCookieKey =  form.SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
-	    form.notSeenCookieKey =  form.NOT_SEEN_ACTIVITIES_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
-      form.currentSelectedTabCookieKey =  form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, currentRemoteId);
+      form.currentSelectedTabCookieKey =  form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, form.currentRemoteId);
       
+      form.clientTimerAtStart = new Date().getTime();
       
       //
-      if ( !selectedMode ) {
-        selectedMode = form.ALL;
+      if ( !form.selectedMode ) {
+        form.selectedMode = form.ALL;
       }
       
-      var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, selectedMode);
-      lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, currentRemoteId);
+      var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
+      lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
       
       //
       var lastUpdate= eXo.core.Browser.getCookie(lastUpdatedActivitiesNumKey);
-      form.hasUpdated = (lastUpdate*1 !== numberOfUpdatedActivities*1);
-      form.resetCookie(lastUpdatedActivitiesNumKey, numberOfUpdatedActivities);
+      form.hasUpdated = (lastUpdate*1 !== form.numberOfUpdatedActivities*1);
+      form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
 
 	    //
 	    $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
-	      if(i < numberOfUpdatedActivities) {
+	      if(i < form.numberOfUpdatedActivities) {
 	        $(item).addClass('UpdatedActivity');
 	      }
 	    });
@@ -118,8 +115,6 @@
 			    if (form.hasUpdated === false ) {
 			      form.unMarkedAsUpdate();
 			    }
-			    
-			    //refresh_prepare = 0; 
 	       }   
 			 };
 			           
@@ -150,36 +145,6 @@
 	    var form = UIActivityUpdates;
 	    var updatedEls = $('#UIActivitiesLoader').find('.UpdatedActivity');
 	    
-	    /* * ====== add ids to have been seen ============================================= */
-	    
-	    // reset to empty in case of action taken on [All Activities]
-	    var currentSelectedTabOnCookies = eXo.core.Browser.getCookie(form.currentSelectedTabCookieKey);
-	    if ( currentSelectedTabOnCookies == form.ALL ) {
-	      form.resetCookie(form.seenCookieKey, '');
-	      form.resetCookie(form.notSeenCookieKey, '');
-	    } else {
-	        // get seen activity list from cookies
-	        var seenActivitiesOnCookies = eXo.core.Browser.getCookie(form.seenCookieKey);
-	        var seenActivities = [];
-	        if ( seenActivitiesOnCookies && seenActivitiesOnCookies.length > 0 ) {
-	          seenActivities = seenActivitiesOnCookies.split('_');
-	        }
-	        
-	        // get activity ids
-	        var activityContextBoxes = $(updatedEls).find("[id^='ActivityContextBox']");
-	        
-	        $.each( activityContextBoxes, function(idx, el) {
-	          var id = $(el).attr("id").replace('ActivityContextBox', '');
-	          if ( $.inArray(id, seenActivities) ) {
-	            (seenActivities.length == 0) ? seenActivities.push(id) : seenActivities.push(id);
-	          } 
-	        });
-	        
-	        // reset cookies value
-	        form.resetCookie(form.seenCookieKey, seenActivities.join('_'));
-	    }
-	    /* * =============================================================================== */
-	    
 	    updatedEls.removeClass('UpdatedActivity');
 	    
 	    $('#numberInfo').html(form.noUpdates);
@@ -188,10 +153,8 @@
 	  },
 	  resetCookiesOnTabs : function() {
 	    var form = UIActivityUpdates;
-	    var slected_tab_tmpl = "exo_social_activity_stream_tab_selected_%REMOTE_ID%";
-	    var replaced_id = "%REMOTE_ID%";
 	    var userId = UIActivityUpdates.currentRemoteId;
-	    var onSelectedTabCookieName = slected_tab_tmpl.replace(replaced_id, userId);
+	    var onSelectedTabCookieName = form.CURRENT_SELECTED_TAB_KEY.replace(form.REMOTE_ID_PART, userId);
       var selectedTab = eXo.core.Browser.getCookie(onSelectedTabCookieName);
       if ( selectedTab == null || $.trim(selectedTab).length === 0 ) {
         selectedTab = form.ALL;
@@ -206,18 +169,21 @@
 	      form.applyChanges([form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
 	    }
 	  },
-	  initCookiesForFirstRun : function(userId) {
-	    UIActivityUpdates.currentRemoteId = userId;
-	    var form = UIActivityUpdates;
-      var src_str = "exo_social_activity_stream_%FIELD%_visited_%REMOTE_ID%";
-			var replaced_field = "%FIELD%";
-			var replaced_id = "%REMOTE_ID%";
-			var checked_tab_key = src_str.replace(replaced_field, form.ALL).replace(replaced_id, userId);
-			var checked_tab_cookie = eXo.core.Browser.getCookie(checked_tab_key);
-			if ( checked_tab_cookie && checked_tab_cookie.length > 0 ) {
+	  initCookiesForFirstRun : function(userId, currentServerTime) {
+      var form = UIActivityUpdates;
+	    form.currentRemoteId = userId;
+			var checked_tab_key_from = form.LAST_VISTED_TIME_FROM.replace(form.TAB_PART, form.ALL).replace(form.REMOTE_ID_PART, userId);
+			var checked_tab_cookie_from = eXo.core.Browser.getCookie(checked_tab_key_from);
+			
+			// check if the first run or not, if not then quit
+			if ( checked_tab_cookie_from && checked_tab_cookie_from.length > 0 ) {
 			  return;
 			}
 			
+			// init timer
+			form.clientTimerAtStart = new Date().getTime();
+      form.currentServerTime = currentServerTime*1;
+        
 			form.applyChanges([form.ALL, form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
 			
 			//
@@ -229,13 +195,12 @@
 	    if ( affectedFields.length === 0 ) return;
 	    
 	    var form = UIActivityUpdates;
-	    var src_str = "exo_social_activity_stream_%FIELD%_visited_%REMOTE_ID%";
-	    var replaced_field = "%FIELD%";
-	    var replaced_id = "%REMOTE_ID%";
 	    var userId = form.currentRemoteId;
 	    $.each( affectedFields, function( index, field ) {
-			  var changed_field = src_str.replace(replaced_field, field).replace(replaced_id, userId);
-			  form.resetCookie(changed_field, form.calculateServerTime());
+			  var checked_tab_key_from = form.LAST_VISTED_TIME_FROM.replace(form.TAB_PART, form.ALL).replace(form.REMOTE_ID_PART, userId);
+			  var checked_tab_key_to = form.LAST_VISTED_TIME_TO.replace(form.TAB_PART, form.ALL).replace(form.REMOTE_ID_PART, userId);
+			  form.resetCookie(checked_tab_key_from, form.calculateServerTime());
+			  form.resetCookie(checked_tab_key_to, form.calculateServerTime());
 			  
 			  //
 			  var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, field);

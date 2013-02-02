@@ -105,14 +105,6 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
   int getNumberOfMultiUpdated(Map<String, Long> sinceTimes);
   
   /**
-   * Gets the number of updated elements based on the postedTime.
-   * 
-   * @param sinceTime the postedTime
-   * @return number of newer elements if any
-   */
-  int getNumberOfUpdated(Long sinceTime);
-  
-  /**
    * Gets get updated activities base on since time.
    * 
    * @param sinceTime the sinceTime
