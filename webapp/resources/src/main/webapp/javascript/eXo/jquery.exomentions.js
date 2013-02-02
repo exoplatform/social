@@ -997,7 +997,7 @@
       displayInput.val = function(v) {
         if (v === null || typeof v === "undefined") {
           var temp = $(this).clone();
-          temp.find('.icon').remove();
+          temp.find('span').find('i').remove();
           return utils.getSimpleValue(temp.html());
         } else {
           if (typeof v === 'object') {

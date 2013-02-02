@@ -126,7 +126,8 @@
   left: 6px;
 }
 
-.activityStream .commentList .commentItem .exo-mentions .uiIconClose  {
-	display: inline-block;
-	position: static;
+. exo-mentions  .uiIconClose  {
+  display:inline-block !important;
+  position:static !important;
+  cursor:pointer;
 }
