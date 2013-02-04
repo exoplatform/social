@@ -1849,7 +1849,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER.owners(owner), jcrfilter).objects();
-    String[] excludedActivities = new String[0];
+    String[] excludedActivities = new String[result.size()];
     
     //
     while(result.hasNext()) {

@@ -290,19 +290,19 @@ public class UIUserActivitiesDisplay extends UIForm {
     
     switch (this.selectedDisplayMode) {
     case ALL_ACTIVITIES:
-      ActivityFilterType.ACTIVITY_FEED.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
+      ActivityFilterType.ACTIVITY_FEED.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
       break;
     case CONNECTIONS:
-      ActivityFilterType.CONNECTIONS_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
+      ActivityFilterType.CONNECTIONS_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
       break;
     case MY_ACTIVITIES:
-      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
+      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
       break;
     case MY_SPACE:
-      ActivityFilterType.USER_SPACE_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
+      ActivityFilterType.USER_SPACE_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
       break;
     case OWNER_STATUS:
-      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)); // Need to checked
+      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum()); // Need to checked
       break;
     default:
       break;
@@ -320,6 +320,17 @@ public class UIUserActivitiesDisplay extends UIForm {
     String strValue = Utils.getCookies(cookieKey);
     if(strValue == null) {
       return currentVisited;
+    }
+    
+    return Long.parseLong(strValue);
+  }
+  
+  private long getLastUpdatedNum() {
+    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, this
+       .selectedDisplayMode.toString(), Utils.getViewerRemoteId());
+    String strValue = Utils.getCookies(cookieKey);
+    if(strValue == null) {
+      return 0;
     }
     
     return Long.parseLong(strValue);

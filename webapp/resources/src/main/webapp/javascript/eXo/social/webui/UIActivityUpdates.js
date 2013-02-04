@@ -17,6 +17,7 @@
     CURRENT_SELECTED_TAB_KEY : "exo_social_activity_stream_tab_selected_%remoteId%",
     LAST_VISTED_TIME_FROM: "exo_social_activity_stream_%tab%_visited_%remoteId%_from",
     LAST_VISTED_TIME_TO: "exo_social_activity_stream_%tab%_visited_%remoteId%_to",
+    LAST_UPDATED_ACTIVITIES_NUM : "exo_social_last_updated_activities_num_on_%tab%_of_%remoteId%",
     REMOTE_ID_PART: "%remoteId%",
     TAB_PART: "%tab%",
     setCookies : function(name, value, expiredays) {
@@ -101,6 +102,11 @@
 	       var cookieName = result.SHTSP;
 	   
 	       if( cookieName && cookieTime && cookieName == escape(location.href) &&  Math.abs(now - cookieTime) <= 5 ) {
+	         // set last Updated Number onto cookie
+		       var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
+		       lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
+		       form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
+           
            // reset cookies
            form.resetCookiesOnTabs();
 	       }   
@@ -149,12 +155,11 @@
         form.resetCookie(onSelectedTabCookieName, form.ALL);
       }
       
+      form.applyChanges([selectedTab]);
+      
 	    // [All Activities] is current Selected tab then reset all other tabs on visited time
 	    if ( selectedTab === form.ALL ) {
-	      form.applyChanges([form.ALL, form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
-	    } else {
-	      //
-        form.applyChanges([selectedTab]);
+	      form.applyChanges([form.CONNECTIONS, form.MY_SPACES, form.MY_ACTIVITIES]);
 	    }
 	  },
 	  initCookiesForFirstRun : function(userId, currentServerTime) {
