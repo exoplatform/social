@@ -71,6 +71,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   private static final String   TO = "to";
   private Object locker = new Object();
   private Locale currentLocale = null;
+  private boolean isRefreshed;
 
   public enum DisplayMode {
     OWNER_STATUS,
@@ -241,6 +242,13 @@ public class UIUserActivitiesDisplay extends UIForm {
   }
    
     //
+    String lastVisitedModeCookieKey = String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED,
+                                                    Utils.getViewerRemoteId());
+    String lastVisitedMode = Utils.getCookies(lastVisitedModeCookieKey);
+    
+    this.isRefreshed = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
+    
+    //
     UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
     
     activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum());
@@ -274,41 +282,6 @@ public class UIUserActivitiesDisplay extends UIForm {
       //
       event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
     }
-
-//    private int getUpdatedActivitiesNum(Event<UIUserActivitiesDisplay> event, String selectedDisplayMode) {
-//      UIUserActivitiesDisplay uiUserActivities = event.getSource();
-//      UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-//      ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
-//      
-//     List<ExoSocialActivity> updatedActivities = activitiesListAccess
-//         .getUpadtedActivities(uiUserActivities.getLastVisited(selectedDisplayMode));
-//     
-//     // get from cookies to use in check
-//     String seenCookieKey = String.format(Utils.SEEN_ACTIVITIES_COOKIES, Utils.getViewerRemoteId());
-//     String seenActivitiesOnCookie = Utils.getCookies(seenCookieKey);
-//     List<String> seenActivities = new ArrayList<String>();
-//     if ( seenActivitiesOnCookie != null ) { 
-//       seenActivities = Arrays.asList(seenActivitiesOnCookie.split("_")); // activityIds
-//     }
-//     
-//     int numberOfUpdatedActivities = 0;
-//     
-//     for ( ExoSocialActivity activity : updatedActivities ) {
-//       if ( seenActivities.contains(activity.getId()) ) {
-//         continue;
-//       } else {
-//         numberOfUpdatedActivities += 1;
-//       }
-//     }
-//     
-//     // check and reset to cookies
-//     event.getRequestContext().getJavascriptManager()
-//         .require("SHARED/social-ui-activity-updates", "activityUpdates")
-//         .addScripts("activityUpdates.resetCookie('" + String.format(Utils.SEEN_ACTIVITIES_COOKIES,
-//             Utils.getViewerRemoteId()) + "','" + Utils.listToString(seenActivities, "_") + "');");
-//
-//     return numberOfUpdatedActivities;
-//    }
   }
   
   private int getActivitiesUpdatedNum() {
@@ -324,19 +297,18 @@ public class UIUserActivitiesDisplay extends UIForm {
       break;
     case MY_ACTIVITIES:
       ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
-        break;
+      break;
     case MY_SPACE:
       ActivityFilterType.USER_SPACE_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO));
-          break;
+      break;
     case OWNER_STATUS:
       ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)); // Need to checked
       break;
-          
     default:
       break;
     }
     
-    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter();
+    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(this.isRefreshed);
    
     return activitiesListAccess.getNumberOfUpdated(updatedFilter);
   }

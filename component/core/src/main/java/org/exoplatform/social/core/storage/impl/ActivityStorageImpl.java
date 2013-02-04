@@ -1673,7 +1673,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserActivities);
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1734,7 +1734,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.isRefreshTab() ? filter.userSpaceActivitiesType().fromSinceTime() : filter.userSpaceActivitiesType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1767,7 +1767,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1794,7 +1794,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserSpaceActivities);
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.isRefreshTab() ? filter.spaceActivitiesType().fromSinceTime() : filter.spaceActivitiesType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
