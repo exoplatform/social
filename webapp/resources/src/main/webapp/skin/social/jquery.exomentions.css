@@ -121,12 +121,12 @@
   left: 10px;
 }
 
-.activityStream  .exo-mentions .placeholder {
+.activityStream .exo-mentions .placeholder {
   top: 3px;
   left: 6px;
 }
 
-. exo-mentions  .uiIconClose  {
+.exo-mentions .uiIconClose  {
   display:inline-block !important;
   position:static !important;
   cursor:pointer;
