@@ -1673,8 +1673,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserActivities);
     
     //
+    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    
+    //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.activityFeedType().toSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
@@ -1697,8 +1700,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedConnections);
     
     //
+    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    
+    //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.userActivitiesType().toSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
     
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
@@ -1727,8 +1733,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedConnections);
     
     
+    //
+    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    
+    //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.userSpaceActivitiesType().toSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList)
@@ -1757,8 +1767,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
+    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    
+    //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.connectionType().toSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList)
@@ -1781,8 +1794,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserSpaceActivities);
     
     //
+    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    
+    //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(filter.spaceActivitiesType().toSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner)

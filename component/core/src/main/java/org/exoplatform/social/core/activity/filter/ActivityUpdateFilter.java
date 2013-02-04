@@ -27,6 +27,8 @@ import org.apache.commons.lang.ArrayUtils;
 public class ActivityUpdateFilter {
 
   private String[] excludedActivities = new String[0];
+  /**User only refresh current tab, doesn't switch other tab. */
+  private boolean refreshTab = false;
   
   public enum ActivityFilterType {
     
@@ -57,6 +59,14 @@ public class ActivityUpdateFilter {
     public Long fromSinceTime() {
       return fromSinceTime;
     }
+  }
+  
+  public ActivityUpdateFilter() {
+    this.refreshTab = false;
+  }
+  
+  public ActivityUpdateFilter(boolean refreshTab) {
+    this.refreshTab = refreshTab;
   }
   
   public ActivityFilterType connectionType() {
@@ -94,8 +104,13 @@ public class ActivityUpdateFilter {
     }
     
   }
-  
-  
-  
+
+  /**
+   * User only refresh current tab, doesn't switch other tab. 
+   * @return TRUE: Refreshed, FALSE : switched new tab
+   */
+  public boolean isRefreshTab() {
+    return refreshTab;
+  }
   
 }
