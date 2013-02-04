@@ -41,6 +41,7 @@ public class ActivityUpdateFilter {
     
     private Long fromSinceTime;
     private Long toSinceTime;
+    private long lastNumberOfUpdated;
     
     public ActivityFilterType fromSinceTime(Long fromSinceTime) {
       this.fromSinceTime = fromSinceTime;
@@ -50,6 +51,15 @@ public class ActivityUpdateFilter {
     public ActivityFilterType toSinceTime(Long toSinceTime) {
       this.toSinceTime = toSinceTime;
       return this;
+    }
+    
+    public ActivityFilterType lastNumberOfUpdated(Long lastNumberOfUpdated) {
+      this.lastNumberOfUpdated = lastNumberOfUpdated;
+      return this;
+    }
+    
+    public Long lastNumberOfUpdated() {
+      return lastNumberOfUpdated;
     }
     
     public Long toSinceTime() {

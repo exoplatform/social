@@ -1680,8 +1680,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
                                           .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
   }
   
   @Override
@@ -1707,8 +1713,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
     
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
                                           .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
   }
   
   @Override
@@ -1741,8 +1753,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList)
                                           .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.userSpaceActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
   }
   
   @Override
@@ -1774,8 +1792,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList)
                                                               .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+    
   }
   
   @Override
@@ -1801,8 +1826,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner)
                                                               .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.spaceActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
   }
   
   
