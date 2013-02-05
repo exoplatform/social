@@ -222,6 +222,18 @@ public class ActivityUpdateFilterTest extends AbstractCoreTest {
     assertEquals(toSinceTime, ActivityFilterType.SPACE_ACTIVITIES.toSinceTime());
   }
   
+  public void testAddExcludedActivities() throws Exception {
+    ActivityUpdateFilter filter = new ActivityUpdateFilter(false);
+    
+    filter.addExcludedActivities("1", "2", "3");
+    
+    assertEquals(3, filter.excludedActivities().length);
+    filter.addExcludedActivities("1", "2", "3");
+    assertEquals(3, filter.excludedActivities().length);
+    filter.addExcludedActivities("1", "2", "4");
+    assertEquals(4, filter.excludedActivities().length);
+  }
+  
   /**
    * Gets an instance of Space.
    *
@@ -242,4 +254,6 @@ public class ActivityUpdateFilterTest extends AbstractCoreTest {
     space.setManagers(managers);
     return space;
   }
+  
+  
 }

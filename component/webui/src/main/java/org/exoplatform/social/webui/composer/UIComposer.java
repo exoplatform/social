@@ -204,6 +204,9 @@ public class UIComposer extends UIForm {
                  uiComposer.getLabel("Write_Something").equals(message) || 
                  uiComposer.getLabel("What_Are_You_Working_On").equals(message)) ? "" : message;
 
+      //
+      event.getRequestContext().getJavascriptManager().require("SHARED/social-ui-activity-updates", "activityUpdates")
+                                                                   .addScripts("activityUpdates.resetCookiesOnTabs();");
       //post activity via the current activity composer
       activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, event.getRequestContext(), message);
     }

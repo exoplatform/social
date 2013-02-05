@@ -39,12 +39,18 @@ public class ActivityUpdateFilter {
     SPACE_ACTIVITIES;
     
     
+    private Long oldFromSinceTime;
     private Long fromSinceTime;
     private Long toSinceTime;
     private long lastNumberOfUpdated;
     
     public ActivityFilterType fromSinceTime(Long fromSinceTime) {
       this.fromSinceTime = fromSinceTime;
+      return this;
+    }
+    
+    public ActivityFilterType oldFromSinceTime(Long oldFromSinceTime) {
+      this.oldFromSinceTime = oldFromSinceTime;
       return this;
     }
     
@@ -68,6 +74,10 @@ public class ActivityUpdateFilter {
     
     public Long fromSinceTime() {
       return fromSinceTime;
+    }
+    
+    public Long oldFromSinceTime() {
+      return oldFromSinceTime;
     }
   }
   
@@ -109,7 +119,7 @@ public class ActivityUpdateFilter {
     //
     for(String id : activityIds) {
       if (ArrayUtils.contains(excludedActivities, id) == false) {
-        ArrayUtils.add(excludedActivities, id);
+        excludedActivities = (String[])ArrayUtils.add(excludedActivities, id);
       }
     }
     

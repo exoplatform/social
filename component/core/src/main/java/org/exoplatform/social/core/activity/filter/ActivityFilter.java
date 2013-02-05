@@ -41,6 +41,8 @@ public class ActivityFilter extends JCRFilterLiteral {
   //
   private static PropertyLiteralExpression<String> MENTION_TITLE = new PropertyLiteralExpression<String>(String.class, "soc:title");
   private static PropertyLiteralExpression<TimestampType> ACTIVITY_UPDATED_POINT = new PropertyLiteralExpression<TimestampType>(TimestampType.class, ActivityEntity.lastUpdated.toString());
+  private static PropertyLiteralExpression<TimestampType> ACTIVITY_FROM_UPDATED_POINT = new PropertyLiteralExpression<TimestampType>(TimestampType.class, "From_Last_Updated");
+  private static PropertyLiteralExpression<TimestampType> ACTIVITY_TO_UPDATED_POINT = new PropertyLiteralExpression<TimestampType>(TimestampType.class, "To_Last_Updated");
 
   //
   public static JCRFilterOption IS_COMMENT_FIELD = new JCRFilterOption(ActivityEntity.isComment);
@@ -65,8 +67,8 @@ public class ActivityFilter extends JCRFilterLiteral {
   };
   
   public static JCRFilterOption ACTIVITY_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
-  public static JCRFilterOption ACTIVITY_FROM_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
-  public static JCRFilterOption ACTIVITY_TO_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_UPDATED_POINT);
+  public static JCRFilterOption ACTIVITY_FROM_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_FROM_UPDATED_POINT);
+  public static JCRFilterOption ACTIVITY_TO_UPDATED_POINT_FIELD = new JCRFilterOption(ACTIVITY_TO_UPDATED_POINT);
   //public static JCRFilterOption ACTIVITY_POSTED_POINT_FIELD = new JCRFilterOption(ACTIVITY_POSTED_POINT);
   
 

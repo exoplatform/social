@@ -68,6 +68,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
   private static final String   HOME = "home";
   private static final String   FROM = "from";
+  private static final String   OLD_FROM = "old_from";
   private static final String   TO = "to";
   private Object locker = new Object();
   private Locale currentLocale = null;
@@ -275,6 +276,9 @@ public class UIUserActivitiesDisplay extends UIForm {
         //
         event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
+        
+        event.getRequestContext().getJavascriptManager()
+        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + uiUserActivities.getActivitiesUpdatedNum() + "');");
 
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
@@ -288,35 +292,48 @@ public class UIUserActivitiesDisplay extends UIForm {
     UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
     ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
     
-    switch (this.selectedDisplayMode) {
-    case ALL_ACTIVITIES:
-      ActivityFilterType.ACTIVITY_FEED.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
-      break;
-    case CONNECTIONS:
-      ActivityFilterType.CONNECTIONS_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
-      break;
-    case MY_ACTIVITIES:
-      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
-      break;
-    case MY_SPACE:
-      ActivityFilterType.USER_SPACE_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum());
-      break;
-    case OWNER_STATUS:
-      ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum()); // Need to checked
-      break;
-    default:
-      break;
-    }
+    String mode = DisplayMode.ALL_ACTIVITIES.toString();
+    ActivityFilterType.ACTIVITY_FEED
+                    .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
+                    .fromSinceTime(getLastVisited(FROM, mode))
+                    .toSinceTime(getLastVisited(TO, mode)).lastNumberOfUpdated(getLastUpdatedNum(mode));
+    
+    //
+    mode = DisplayMode.CONNECTIONS.toString();
+    ActivityFilterType.CONNECTIONS_ACTIVITIES
+                   .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
+                   .fromSinceTime(getLastVisited(FROM, mode))
+                   .toSinceTime(getLastVisited(TO, mode))
+                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
+    
+    //
+    mode = DisplayMode.MY_ACTIVITIES.toString();
+    ActivityFilterType.USER_ACTIVITIES
+                   .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
+                   .fromSinceTime(getLastVisited(FROM, mode))
+                   .toSinceTime(getLastVisited(TO, mode))
+                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
+    
+    //
+    mode = DisplayMode.MY_SPACE.toString();
+    ActivityFilterType.USER_SPACE_ACTIVITIES
+                  .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
+                  .fromSinceTime(getLastVisited(FROM, mode))
+                  .toSinceTime(getLastVisited(TO, mode))
+                  .lastNumberOfUpdated(getLastUpdatedNum(mode));
+    
+    //TODO
+    //mode = DisplayMode.OWNER_STATUS.toString();
+    //ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum()); // Need to checked
     
     ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(this.isRefreshed);
    
     return activitiesListAccess.getNumberOfUpdated(updatedFilter);
   }
   
-  private long getLastVisited(String key) {
+  private long getLastVisited(String key, String mode) {
     long currentVisited = Calendar.getInstance().getTimeInMillis();
-    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, this
-       .selectedDisplayMode.toString(), Utils.getViewerRemoteId(), key);
+    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, Utils.getViewerRemoteId(), key);
     String strValue = Utils.getCookies(cookieKey);
     if(strValue == null) {
       return currentVisited;
@@ -325,9 +342,8 @@ public class UIUserActivitiesDisplay extends UIForm {
     return Long.parseLong(strValue);
   }
   
-  private long getLastUpdatedNum() {
-    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, this
-       .selectedDisplayMode.toString(), Utils.getViewerRemoteId());
+  private long getLastUpdatedNum(String mode) {
+    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     String strValue = Utils.getCookies(cookieKey);
     if(strValue == null) {
       return 0;

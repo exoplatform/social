@@ -49,7 +49,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   Identity liker;
   Identity commenter;
   List<Identity> identities;
-  String[] activityIds;
+  List<Identity> posters;
+  String[] activityIds = new String[0];
   
   public String build(JCRFilterLiteral filter) {
     init();
@@ -82,6 +83,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   private void destroy(JCRFilterLiteral filter) {
     where.destroy();
     filter.destroy();
+    activityIds = new String[0];
+    posters = null;
     poster = null;
     mentioner = null;
     liker = null;
@@ -91,6 +94,14 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   
   public ActivityBuilderWhere poster(Identity poster) {
     this.poster = poster;
+    return this;
+  }
+  
+  public ActivityBuilderWhere posters(List<Identity> posters) {
+    if (this.posters == null) {
+      this.posters = new ArrayList<Identity>();
+    }
+    this.posters.addAll(posters);
     return this;
   }
   
@@ -131,6 +142,10 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   
   public List<Identity> getOwners() {
     return this.identities == null ? new ArrayList<Identity>() : this.identities;
+  }
+  
+  public List<Identity> getPosters() {
+    return this.posters == null ? new ArrayList<Identity>() : this.posters;
   }
   
   public ActivityBuilderWhere excludedActivities(String...activityIds) {
@@ -203,10 +218,11 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       
       boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
       
+      boolean first = true;
       //has relationship
+      where.startGroup();
       if ( hasIndentitiesCondition ) {
-        boolean first = true;
-        where.startGroup();
+        
         for (Identity currentIdentity : identities) {
 
           if (first) {
@@ -219,20 +235,42 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
         }
-        
-        if (mentioner != null) {
-          where.or();
-          where.contains(ActivityEntity.mentioners, mentioner.getId());
-        }
-        
-        where.endGroup();
-        
-      } else {
-        if (mentioner != null) {
-          where.contains(ActivityEntity.mentioners, mentioner.getId());
-        }
       }
+        
+      //
+      if (mentioner != null) {
+        
+        if (first) {
+          first = false;
+        }
+        else {
+          where.or();
+        }
+          
+        where.contains(ActivityEntity.mentioners, mentioner.getId());
+        
+      }
+        
+      //
+      if (posters != null) {
+        for (Identity currentIdentity : posters) {
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+          where.startGroup();
+          where.equals(ActivityEntity.poster, currentIdentity.getId());
+          where.and().equals(ActivityEntity.isComment, true);
+          where.endGroup();
 
+          }
+        }
+        
+        
+      where.endGroup();
+        
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {

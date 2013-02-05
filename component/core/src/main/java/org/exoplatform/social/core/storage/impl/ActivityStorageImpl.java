@@ -1648,8 +1648,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     List<Identity> identities = new ArrayList<Identity>();
+    
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
 
-    identities.addAll(relationshipStorage.getConnections(owner));
+    identities.addAll(relationships);
     identities.addAll(getSpacesId(owner));
     //identities.add(owner);
     
@@ -1673,7 +1675,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserActivities);
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
+    //long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
+    long compareTime = filter.activityFeedType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1681,11 +1684,28 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
-                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+                                          .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
     
-    if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
+    if (filter.isRefreshTab() && gotNumber == filter.activityFeedType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
+    
+    
+    LOG.info(String.format("--------------------------------ActivityFeed Updated :%s -------------------------------",owner.getRemoteId()));
+    LOG.info(String.format("\nActivityFeed OldFrom: %s From: %s to: %s ", filter.activityFeedType().oldFromSinceTime(),filter.activityFeedType().fromSinceTime(), filter.activityFeedType().toSinceTime()));
+    LOG.info(String.format("\nSpaceActivity OldFrom: %s From: %s to: %s ", filter.spaceActivitiesType().oldFromSinceTime(), filter.spaceActivitiesType().fromSinceTime(), filter.spaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedSpaceActivities));
+    LOG.info(String.format("\nUserSpace OldFrom: %s From: %s to: %s ", filter.userSpaceActivitiesType().oldFromSinceTime(), filter.userSpaceActivitiesType().fromSinceTime(), filter.userSpaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserSpaceActivities));
+    LOG.info(String.format("\nConnection OldFrom: %s From: %s to: %s ", filter.connectionType().oldFromSinceTime(), filter.connectionType().fromSinceTime(), filter.connectionType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedConnections));
+    LOG.info(String.format("\nUserActivity OldFrom: %s From: %s to: %s ", filter.userActivitiesType().oldFromSinceTime() ,filter.userActivitiesType().fromSinceTime(), filter.userActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserActivities));
+    
+    LOG.info("CompareTime : " + compareTime);
+    LOG.info("filter.excludedActivities() : " + Arrays.toString(filter.excludedActivities()));
+    LOG.info("Last Updated Number: " + filter.activityFeedType().lastNumberOfUpdated());
+    LOG.info("ActivityFeed Updated : " + gotNumber);
     
     return gotNumber;
   }
@@ -1693,6 +1713,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   @Override
   public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
     
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
     //
     String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
     filter.addExcludedActivities(excludedSpaceActivities);
@@ -1706,19 +1727,35 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedConnections);
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
-    
+    //long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.userActivitiesType().toSinceTime();
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
     
     //
     int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
-                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+                                           .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
     
     if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
+    
+    LOG.info(String.format("--------------------------------UserActivities Updated :%s -------------------------------",owner.getRemoteId()));
+    LOG.info(String.format("\nActivityFeed OldFrom: %s From: %s to: %s ", filter.activityFeedType().oldFromSinceTime(), filter.activityFeedType().fromSinceTime(), filter.activityFeedType().toSinceTime()));
+    LOG.info(String.format("\nSpaceActivity OldFrom: %s From: %s to: %s ", filter.spaceActivitiesType().oldFromSinceTime(), filter.spaceActivitiesType().fromSinceTime(), filter.spaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedSpaceActivities));
+    LOG.info(String.format("\nUserSpace OldFrom: %s From: %s to: %s ", filter.userSpaceActivitiesType().oldFromSinceTime(), filter.userSpaceActivitiesType().fromSinceTime(), filter.userSpaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserSpaceActivities));
+    LOG.info(String.format("\nConnection OldFrom: %s From: %s to: %s ", filter.connectionType().oldFromSinceTime(), filter.connectionType().fromSinceTime(), filter.connectionType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedConnections));
+    LOG.info(String.format("\nUserActivity OldFrom: %s From: %s to: %s ", filter.userActivitiesType().oldFromSinceTime(), filter.userActivitiesType().fromSinceTime(), filter.userActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : N/A");
+    
+    LOG.info("CompareTime : " + compareTime);
+    LOG.info("filter.excludedActivities() : " + Arrays.toString(filter.excludedActivities()));
+    LOG.info("Last Updated Number: " + filter.userActivitiesType().lastNumberOfUpdated());
+    LOG.info("UserActivities Updated : " + gotNumber);
     
     return gotNumber;
   }
@@ -1746,7 +1783,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.userSpaceActivitiesType().fromSinceTime() : filter.userSpaceActivitiesType().toSinceTime();
+    //long compareTime = filter.isRefreshTab() ? filter.userSpaceActivitiesType().fromSinceTime() : filter.userSpaceActivitiesType().toSinceTime();
+    long compareTime = filter.userSpaceActivitiesType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1759,6 +1797,22 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (filter.isRefreshTab() && gotNumber == filter.userSpaceActivitiesType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
+    
+    LOG.info(String.format("--------------------------------UserSpaceActivities Updated :%s -------------------------------",owner.getRemoteId()));
+    LOG.info(String.format("\nActivityFeed OldFrom: %s From: %s to: %s ", filter.activityFeedType().oldFromSinceTime(), filter.activityFeedType().fromSinceTime(), filter.activityFeedType().toSinceTime()));
+    LOG.info(String.format("\nSpaceActivity OldFrom: %s From: %s to: %s ", filter.spaceActivitiesType().oldFromSinceTime(), filter.spaceActivitiesType().fromSinceTime(), filter.spaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedSpaceActivities));
+    LOG.info(String.format("\nUserSpace OldFrom: %s From: %s to: %s ", filter.userSpaceActivitiesType().oldFromSinceTime(), filter.userSpaceActivitiesType().fromSinceTime(), filter.userSpaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : N/A");
+    LOG.info(String.format("\nConnection OldFrom: %s From: %s to: %s ", filter.connectionType().oldFromSinceTime(), filter.connectionType().fromSinceTime(), filter.connectionType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedConnections));
+    LOG.info(String.format("\nUserActivity OldFrom: %s From: %s to: %s ", filter.userActivitiesType().oldFromSinceTime(), filter.userActivitiesType().fromSinceTime(), filter.userActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserActivities));
+    
+    LOG.info("CompareTime : " + compareTime);
+    LOG.info("filter.excludedActivities() : " + Arrays.toString(filter.excludedActivities()));
+    LOG.info("Last Updated Number: " + filter.userSpaceActivitiesType().lastNumberOfUpdated());
+    LOG.info("UserSpaceActivities Updated : " + gotNumber);
     
     return gotNumber;
   }
@@ -1785,20 +1839,35 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
+    //long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
+    long compareTime = filter.connectionType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList).posters(connectionList)
                                                               .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
     
     if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
+    LOG.info(String.format("--------------------------------Connection Updated :%s -------------------------------",owner.getRemoteId()));
+    LOG.info(String.format("\nActivityFeed OldFrom: %s From: %s to: %s ", filter.activityFeedType().oldFromSinceTime(), filter.activityFeedType().fromSinceTime(), filter.activityFeedType().toSinceTime()));
+    LOG.info(String.format("\nSpaceActivity OldFrom: %s From: %s to: %s ", filter.spaceActivitiesType().oldFromSinceTime(), filter.spaceActivitiesType().fromSinceTime(), filter.spaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedSpaceActivities));
+    LOG.info(String.format("\nUserSpace OldFrom: %s From: %s to: %s ", filter.userSpaceActivitiesType().oldFromSinceTime(), filter.userSpaceActivitiesType().fromSinceTime(), filter.userSpaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserSpaceActivities));
+    LOG.info(String.format("\nConnection OldFrom: %s From: %s to: %s ", filter.connectionType().oldFromSinceTime(), filter.connectionType().fromSinceTime(), filter.connectionType().toSinceTime()));
+    LOG.info("excludedActivities() : N/A");
+    LOG.info(String.format("\nUserActivity OldFrom: %s From: %s to: %s ", filter.userActivitiesType().oldFromSinceTime(), filter.userActivitiesType().fromSinceTime(), filter.userActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserActivities));
     
+    LOG.info("CompareTime : " + compareTime);
+    LOG.info("filter.excludedActivities() : " + Arrays.toString(filter.excludedActivities()));
+    LOG.info("Last Updated Number: " + filter.connectionType().lastNumberOfUpdated());
+    LOG.info("Connection Updated : " + gotNumber);
     return gotNumber;
     
   }
@@ -1819,7 +1888,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserSpaceActivities);
     
     //
-    long compareTime = filter.isRefreshTab() ? filter.spaceActivitiesType().fromSinceTime() : filter.spaceActivitiesType().toSinceTime();
+    //long compareTime = filter.isRefreshTab() ? filter.spaceActivitiesType().fromSinceTime() : filter.spaceActivitiesType().toSinceTime();
+    long compareTime = filter.spaceActivitiesType().toSinceTime();
     
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
@@ -1832,6 +1902,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (filter.isRefreshTab() && gotNumber == filter.spaceActivitiesType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
+    LOG.info(String.format("--------------------------------SpaceActivities Updated :%s -------------------------------",owner.getRemoteId()));
+    LOG.info(String.format("\nActivityFeed From: %s to: %s ", filter.activityFeedType().fromSinceTime(), filter.activityFeedType().toSinceTime()));
+    LOG.info(String.format("\nSpaceActivity From: %s to: %s ", filter.spaceActivitiesType().fromSinceTime(), filter.spaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : N/A");
+    LOG.info(String.format("\nUserSpace From: %s to: %s ", filter.userSpaceActivitiesType().fromSinceTime(), filter.userSpaceActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserSpaceActivities));
+    LOG.info(String.format("\nConnection From: %s to: %s ", filter.connectionType().fromSinceTime(), filter.connectionType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedConnections));
+    LOG.info(String.format("\nUserActivity From: %s to: %s ", filter.userActivitiesType().fromSinceTime(), filter.userActivitiesType().toSinceTime()));
+    LOG.info("excludedActivities() : " + Arrays.toString(excludedUserActivities));
+    LOG.info("CompareTime : " + compareTime);
+    LOG.info("filter.excludedActivities() : " + Arrays.toString(filter.excludedActivities()));
+    LOG.info("Last Updated Number: " + filter.spaceActivitiesType().lastNumberOfUpdated());
+    LOG.info("SpaceActivities Updated Number: " + gotNumber);
     
     return gotNumber;
   }
@@ -1842,18 +1926,36 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (type.fromSinceTime() == type.toSinceTime()) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
     }
+    
+    List<Identity> identities = new ArrayList<Identity>();
+    identities.add(owner);
+    
+    switch(type) {
+    case CONNECTIONS_ACTIVITIES :
+      identities.addAll(relationshipStorage.getConnections(owner));
+      break;
+    case USER_ACTIVITIES :
+      //identities.addAll(relationshipStorage.getConnections(owner));
+      break;
+    case USER_SPACE_ACTIVITIES :
+      identities.addAll(getSpacesId(owner));
+      break;
+    case SPACE_ACTIVITIES :
+      break;
+    }
+    
     //
     JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_VIEWED_RANGE_FILTER;
-    jcrfilter.with(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(type.fromSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(type.oldFromSinceTime()));
     jcrfilter.with(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(type.toSinceTime()));
 
     //
-    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER.owners(owner), jcrfilter).objects();
-    String[] excludedActivities = new String[result.size()];
+    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER.owners(identities).mentioner(owner), jcrfilter).objects();
+    String[] excludedActivities = new String[0];
     
     //
     while(result.hasNext()) {
-      ArrayUtils.add(excludedActivities, result.next().getId());
+      excludedActivities = (String[]) ArrayUtils.add(excludedActivities, result.next().getId());
     }
     
     return excludedActivities;
