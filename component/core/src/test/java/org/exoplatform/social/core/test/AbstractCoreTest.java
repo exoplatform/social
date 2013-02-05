@@ -29,6 +29,9 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.component.test.ConfigurationUnit;
 import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -39,6 +42,9 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.jboss.byteman.contrib.bmunit.BMUnit;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  *
@@ -63,10 +69,13 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   private final Log LOG = ExoLogger.getLogger(AbstractCoreTest.class);
 
   protected SpaceService spaceService;
+  protected Session session;
+  
   
   @Override
   protected void setUp() throws Exception {
     begin();
+    session = getSession();
 
     // If is query number test, init byteman
     if (getClass().isAnnotationPresent(QueryNumberTest.class)) {
@@ -83,6 +92,7 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   @Override
   protected void tearDown() throws Exception {
     wantCount = false;
+    session = null;
     end();
   }
   
@@ -137,6 +147,13 @@ public abstract class AbstractCoreTest extends BaseExoTestCase {
   public static void count() {
     ++count;
    }
+
+  private Session getSession() throws RepositoryException {
+    PortalContainer container = PortalContainer.getInstance();
+    RepositoryService repositoryService = (RepositoryService) container.getComponentInstance(RepositoryService.class);
+    ManageableRepository repository = repositoryService.getCurrentRepository();
+    return repository.getSystemSession("portal-test");
+  }
 
   /**
    * Creates new space with out init apps.

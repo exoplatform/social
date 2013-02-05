@@ -87,6 +87,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-upgrade</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- To be replaced by an import of core parent POM -->
       <dependency>
         <groupId>org.exoplatform.core</groupId>
@@ -669,11 +676,6 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extras-link-composer-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-migration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

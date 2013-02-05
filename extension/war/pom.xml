@@ -96,11 +96,6 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-extras-migration</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.gatein.wci</groupId>
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
