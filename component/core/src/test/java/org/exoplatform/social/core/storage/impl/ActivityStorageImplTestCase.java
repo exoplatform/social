@@ -369,7 +369,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
   /**
    * Test {@link org.exoplatform.social.core.storage.impl.ActivityStorageImpl#getActivity(String)}
    */
-  @MaxQueryNumber(300)
+  @MaxQueryNumber(350)
   public void testUserPostActivityToSpace() throws ActivityStorageException {
     // Create new Space and its Identity
     Space space = getSpaceInstance();

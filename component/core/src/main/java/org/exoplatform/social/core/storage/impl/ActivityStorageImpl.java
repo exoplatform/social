@@ -239,8 +239,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityStream stream = new ActivityStreamImpl();
-    IdentityEntity identityEntity = activityEntity.getIdentity();
+    
+    IdentityEntity identityEntity = null;
 
+    //update new stream owner
+    try {
+      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
+      IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
+      identityEntity = streamOwnerEntity;
+      activityEntity.setIdentity(streamOwnerEntity);
+    } catch (Exception e) {
+      identityEntity = activityEntity.getIdentity();
+    }
     //
     stream.setId(identityEntity.getId());
     stream.setPrettyId(identityEntity.getRemoteId());
@@ -1195,7 +1205,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
-
+      
       _saveActivity(changedActivity);
       
     }
