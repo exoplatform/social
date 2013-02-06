@@ -207,6 +207,15 @@ public class UIUserActivitiesDisplay extends UIForm {
     activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
     
     //
+    UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+    
+    //
+    if (activitiesContainer.isOnMyActivities()) {
+      this.selectedDisplayMode = DisplayMode.MY_ACTIVITIES;
+      activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
+    }
+    
+    //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
     
     ActivityManager activityManager = Utils.getActivityManager();
@@ -250,7 +259,6 @@ public class UIUserActivitiesDisplay extends UIForm {
     this.isRefreshed = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
     
     //
-    UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
     
     activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum());
     

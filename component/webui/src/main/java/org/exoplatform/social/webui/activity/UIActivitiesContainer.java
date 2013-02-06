@@ -44,6 +44,7 @@ public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
   
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
+  private static final String ACTIVITIES_NODE = "activities";
   
   private List<ExoSocialActivity> activityList;
   private PostContext postContext;
@@ -122,6 +123,10 @@ public class UIActivitiesContainer extends UIContainer {
 
   protected long getCurrentServerTime() {
     return Calendar.getInstance().getTimeInMillis();
+  }
+  
+  public boolean isOnMyActivities() {
+    return (Utils.getSelectedNode() != null && Utils.getSelectedNode().startsWith(ACTIVITIES_NODE));
   }
   
   /**
