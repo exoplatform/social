@@ -57,7 +57,7 @@
     <!-- **************************************** -->
     <org.exoplatform.commons.version>4.0.0.Alpha1-unified-search-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
-    <org.exoplatform.doc.doc-style.version>1.0.9-SNAPSHOT</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.doc.doc-style.version>4.0.0-Alpha1-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
     <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
     <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
@@ -66,8 +66,6 @@
     <org.gatein.pc.version>2.4.0.Final</org.gatein.pc.version>
     <org.gatein.shindig.version>2.0.2.Final-gatein-3</org.gatein.shindig.version>
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
-    <!-- Juzu version is required to create the assembly -->
-    <org.juzu.version>0.6.0-beta2</org.juzu.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -661,20 +659,6 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <!--
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-juzu-portlet</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-juzu-portlet</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      -->
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extension-config</artifactId>
@@ -862,21 +846,6 @@
         <groupId>org.gatein.wci</groupId>
         <artifactId>wci-wci</artifactId>
         <version>${org.gatein.wci.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-bom-core</artifactId>
-        <version>${org.juzu.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-core</artifactId>
-        <version>${org.juzu.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-plugins-portlet</artifactId>
-        <version>${org.juzu.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
