@@ -123,7 +123,8 @@ public class Profile {
                                       {
                                         USER("userProfileActivityId"),
                                         SPACE("spaceProfileActivityId"),
-                                        RELATION("relationActivityId");
+                                        RELATION("relationActivityId"),
+                                        RELATIONSHIP("relationShipActivityId");
                                         
                                         private String type;
                                         private AttachedActivityType(String type) {
@@ -143,6 +144,9 @@ public class Profile {
                                             case RELATION: {
                                               entity.setRelationActivityId(activityId);
                                             }
+                                            case RELATIONSHIP: {
+                                              entity.setRelationShipActivityId(activityId);
+                                            }
                                             default :
                                           }
                                         }
@@ -156,6 +160,9 @@ public class Profile {
                                           }
                                           case RELATION: {
                                             return entity.getRelationActivityId();
+                                          }
+                                          case RELATIONSHIP: {
+                                            return entity.getRelationShipActivityId();
                                           }
                                           default : {
                                             return null;

@@ -21,4 +21,8 @@ public abstract class ActivityProfileEntity {
   @Property(name = "soc:relationProfileActivityId")
   public abstract String getRelationActivityId();
   public abstract void setRelationActivityId(String relationActivityId);
+  
+  @Property(name = "soc:relationShipActivityId")
+  public abstract String getRelationShipActivityId();
+  public abstract void setRelationShipActivityId(String relationShipActivityId);
 }

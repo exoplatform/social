@@ -371,6 +371,48 @@
         </init-params>
       </component-plugin>
       <component-plugin>
+        <name>USER_ACTIVITIES_FOR_RELATIONSHIP</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for relation's activities</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>user_relations</string></key>
+                    <value><string>RelationshipPublisher.user_relations</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
+        <name>USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for relation's activities</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>user_relation_confirmed</string></key>
+                    <value><string>RelationshipPublisher.user_relation_confirmed</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
         <name>exosocial:people</name>
         <set-method>addActivityResourceBundlePlugin</set-method>
         <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>

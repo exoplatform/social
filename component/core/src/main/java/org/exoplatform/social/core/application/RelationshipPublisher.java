@@ -19,17 +19,23 @@ package org.exoplatform.social.core.application;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.processor.I18NActivityUtils;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * Publish a status update in activity streams of 2 confirmed relations.
@@ -47,6 +53,10 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   public static final String RECEIVER_PARAM = "RECEIVER";
   public static final String RELATIONSHIP_UUID_PARAM = "RELATIONSHIP_UUID";
   public static final String RELATIONSHIP_ACTIVITY_TYPE = "exosocial:relationship";
+  public static final String NUMBER_OF_CONNECTIONS = "NUMBER_OF_CONNECTIONS";
+  public static final String USER_ACTIVITIES_FOR_RELATIONSHIP = "USER_ACTIVITIES_FOR_RELATIONSHIP";
+  public static final String USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP = "USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP";
+  public static final String USER_DISPLAY_NAME_PARAM = "USER_DISPLAY_NAME_PARAM";
 
   private static final Log LOG = ExoLogger.getLogger(RelationshipPublisher.class);
   private ActivityManager  activityManager;
@@ -58,27 +68,85 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     this.identityManager = identityManager;
   }
 
+  private ExoSocialActivity createNewActivity(Identity identity, int nbOfConnections) {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setType(USER_ACTIVITIES_FOR_RELATIONSHIP);
+    activity.setTitle("I'm now connected with "+nbOfConnections+" users");
+    activity.setUserId(identity.getId());
+    I18NActivityUtils.addResourceKey(activity, "user_relations", ""+nbOfConnections);
+    return activity;
+  }
+  
+  private ExoSocialActivity createNewComment(Identity userIdenity, String fullName) {
+    ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
+    comment.setType(USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP);
+    String message = "I'm now connected with "+fullName;
+    comment.setTitle(message);
+    comment.setUserId(userIdenity.getId());
+    I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
+    return comment;
+  }
 
   /**
-   * Publish an activity on both user's steam to indicate their new connection
+   * Publish an activity on both user's stream to indicate their new connection
    */
   public void confirmed(RelationshipEvent event) {
     Relationship relationship = event.getPayload();
     try {
-      Map<String,String> params = this.getParams(relationship);
-
-      ExoSocialActivity activity1 = new ExoSocialActivityImpl(relationship.getSender().getId(), RELATIONSHIP_ACTIVITY_TYPE,
-              "I am now connected with @" + relationship.getReceiver().getRemoteId(), null);
-      activity1.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
-      activity1.setTemplateParams(params);
-      activityManager.saveActivityNoReturn(relationship.getSender(), activity1);
-
-      ExoSocialActivity activity2 = new ExoSocialActivityImpl(relationship.getReceiver().getId(), RELATIONSHIP_ACTIVITY_TYPE,
-              "I am now connected with @" +  relationship.getSender().getRemoteId(), null);
-      activity2.setTitleId(TitleId.CONNECTION_CONFIRMED.toString());
-      activity2.setTemplateParams(params);
-      activityManager.saveActivityNoReturn(relationship.getReceiver(), activity2);
-
+      Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, relationship.getSender().getRemoteId(), true); 
+      Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, relationship.getReceiver().getRemoteId(), true);
+      
+      String activityIdSender = getIdentityStorage().getProfileActivityId(sender.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+      int nbOfSenderConnections = getRelationShipManager().getConnections(sender).getSize();
+      String activityIdReceiver = getIdentityStorage().getProfileActivityId(receiver.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+      int nbOfReceiverConnections = getRelationShipManager().getConnections(receiver).getSize();
+      
+      String fullNameReceiver = receiver.getProfile().getFullName();
+      ExoSocialActivity senderComment = createNewComment(sender, fullNameReceiver);
+      String fullNameSender = sender.getProfile().getFullName();
+      ExoSocialActivity receiverComment = createNewComment(receiver, fullNameSender);
+      Map<String,String> params = new HashMap<String,String>();
+      
+      if (activityIdSender != null) {
+        ExoSocialActivity activitySender = activityManager.getActivity(activityIdSender);
+        if (activitySender != null) {
+          activitySender.setTitle("I'm now connected with "+nbOfSenderConnections+" users");
+          activitySender.setTemplateParams(params);
+          activitySender.setTitleId(null);
+          I18NActivityUtils.addResourceKey(activitySender, "user_relations", ""+nbOfSenderConnections);
+          activityManager.updateActivity(activitySender);
+          activityManager.saveComment(activitySender, senderComment);
+        } else {
+          activityIdSender = null;
+        }
+      }
+      if (activityIdSender == null) {
+        ExoSocialActivity newActivitySender = createNewActivity(sender, nbOfSenderConnections);
+        activityManager.saveActivityNoReturn(sender, newActivitySender);
+        getIdentityStorage().updateProfileActivityId(sender, newActivitySender.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        activityManager.saveComment(newActivitySender, senderComment);
+      }
+      
+      if (activityIdReceiver != null) {
+        ExoSocialActivity activityReceiver = activityManager.getActivity(activityIdReceiver);
+        if (activityReceiver != null) {
+          activityReceiver.setTitle("I'm now connected with "+nbOfReceiverConnections+" users");
+          activityReceiver.setTemplateParams(params);
+          activityReceiver.setTitleId(null);
+          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", ""+nbOfReceiverConnections);
+          activityManager.updateActivity(activityReceiver);
+          activityManager.saveComment(activityReceiver, receiverComment);
+        } else {
+          activityIdSender = null;
+        }
+      }
+      if (activityIdReceiver == null) {
+        ExoSocialActivity newActivityReceiver = createNewActivity(receiver, nbOfReceiverConnections);
+        activityManager.saveActivityNoReturn(receiver, newActivityReceiver);
+        getIdentityStorage().updateProfileActivityId(receiver, newActivityReceiver.getId(), Profile.AttachedActivityType.RELATIONSHIP);
+        activityManager.saveComment(newActivityReceiver, receiverComment);
+      }
+      
     } catch (Exception e) {
       LOG.warn("Failed to publish event " + event + ": " + e.getMessage());
     }
@@ -153,5 +221,13 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
     params.put(RECEIVER_PARAM, receiverRemoteId);
     params.put(RELATIONSHIP_UUID_PARAM, relationship.getId());
     return params;
+  }
+  
+  private IdentityStorage getIdentityStorage() {
+    return (IdentityStorage) PortalContainer.getInstance().getComponentInstanceOfType(IdentityStorage.class);
+  }
+  
+  private RelationshipManager getRelationShipManager() {
+    return (RelationshipManager) PortalContainer.getInstance().getComponentInstanceOfType(RelationshipManager.class);
   }
 }
