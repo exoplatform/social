@@ -71,6 +71,11 @@
 	    form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
       
       //
+      if (form.numberOfUpdatedActivities == 0) {
+        form.initValueOnTabs([form.selectedMode]);      
+      }
+      
+      //
       $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
         if(i < form.numberOfUpdatedActivities) {
           $(item).addClass('UpdatedActivity');

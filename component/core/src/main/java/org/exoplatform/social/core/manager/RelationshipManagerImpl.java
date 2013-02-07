@@ -455,7 +455,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
     if (relationship != null && relationship.getStatus() == Relationship.Type.PENDING) {
       relationship.setStatus(Relationship.Type.CONFIRMED);
       this.update(relationship);
-      //lifeCycle.relationshipConfirmed(this, relationship);
+      lifeCycle.relationshipConfirmed(this, relationship);
     }
   }
 
@@ -525,7 +525,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
       relationship = new Relationship(invitingIdentity, invitedIdentity);
       relationship.setStatus(Type.PENDING);
       this.update(relationship);
-      //lifeCycle.relationshipRequested(this, relationship);
+      lifeCycle.relationshipRequested(this, relationship);
     }
     return relationship;
   }

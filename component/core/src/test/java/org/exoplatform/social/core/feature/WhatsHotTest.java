@@ -261,13 +261,6 @@ public class WhatsHotTest extends AbstractCoreTest {
     relationshipManager.addListenerPlugin(publisher);
     connectIdentities(demoIdentity, johnIdentity, true);
 
-    // john post 2 activities
-    for (int i = 0; i < 2; ++i) {
-      ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setTitle("title " + i);
-      activityStorage.saveActivity(johnIdentity, activity);
-    }
-    
     List<ExoSocialActivity> list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
     
     assertEquals(2, list.size());
