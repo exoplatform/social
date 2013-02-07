@@ -21,58 +21,47 @@
 var UISpaceNavigation = {
     addEditability: function(id, moreLabel) {
     var editedTab = $("#" + id);
+  
+    function autoMoveApps(){
+	    var ul = $('#spaceMenuTab');
+	    
+	    var maxWith = ul.outerWidth();
+	    var liElements = ul.find('li.item');
+	    var w = 0, index = 0;
+	    for (var i = 0; i < liElements.length; ++i) {
+	        var wElm = liElements.eq(i).outerWidth();
+	        if((w + wElm) < maxWith) {
+	            w += wElm;
+	            index++;
+	        } else {
+	            break;
+	        }
+	    }
 
-    //
-    var uiSpaceMenu = $('#UISpaceMenu');
-    var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
-    var tabs = tabContainer.find('li');
-    
-    var dropDownMenu = $('<ul/>', {
-      'class' : 'dropdown-menu'
-    });
-
-    var dropDownToggle = $('<a/>', {
-      'href' : '#',
-      'class' : 'dropdown-toggle',
-      'data-toggle' : 'dropdown'
-    }).append($('<i/>', {
-                          'class' : 'uiIconAppMoreButton'
-                        }))
-			.append($('<span/>', {
-									           'text' : moreLabel
-									         }));
-
-    // clear
-    tabContainer.empty();
-
-    // rebuild
-    $.each(tabs, function(idx, el) {
-      if (idx < 8) {
-        tabContainer.append(el);
-      } else {
-        dropDownMenu.append(el);
-      }
-    });
-    
-    var dropDown = $('<li/>', {
-      'class' : 'dropdown'
-    }).append(dropDownToggle).append(dropDownMenu);
-    
-    if (tabs.length >= 9) {
-      tabContainer.append(dropDown);
+	    UISpaceNavigation.initNavigation(index - 1, moreLabel);
+    };
+  
+    function reset() {
+	    var ul = $('#spaceMenuTab');
+	    var liElements = ul.find('li.item');
+	
+	    var temp = $('<ul></ul>');
+	    temp.append(liElements);
+	    ul.empty().append(temp.find('li.item'));
     };
     
-    // swap position if needed
-    var swappedEl = $(dropDown).find('li.active');
-    if ( swappedEl.length > 0 ) {
-      var targetEl = $(dropDown).prevAll('li:first');
-      var copy_to = $(swappedEl).clone(true);
-      var copy_from = $(targetEl).clone(true);
-      $(swappedEl).replaceWith(copy_from);
-      $(targetEl).replaceWith(copy_to);
-    }
+    $(document).ready(function(){
+	    var ul = $('#spaceMenuTab');
+	    var liElements = ul.find('> li');
+	    liElements.addClass('item');
+	    autoMoveApps(); 
+    });
+
+    $(window).resize(function(){
+        reset();
+        autoMoveApps(); 
+    });
     
-    $(tabContainer).css({"visibility":"visible"});
     
     
     editedTab.on("dblclick", ".active span", function() {
@@ -118,6 +107,59 @@ var UISpaceNavigation = {
 	      window.location = href;
 	    }
 	  };
+	},
+	initNavigation : function(index, moreLabel) {
+	  //
+    var uiSpaceMenu = $('#UISpaceMenu');
+    var tabContainer = uiSpaceMenu.find('ul#spaceMenuTab');
+    var tabs = tabContainer.find('li.item');
+    
+    var dropDownMenu = $('<ul/>', {
+      'class' : 'dropdown-menu'
+    });
+
+    var dropDownToggle = $('<a/>', {
+      'href' : '#',
+      'class' : 'dropdown-toggle',
+      'data-toggle' : 'dropdown'
+    }).append($('<i/>', {
+                          'class' : 'uiIconAppMoreButton'
+                        }))
+            .append($('<span/>', {
+                                               'text' : moreLabel
+                                             }));
+
+    // clear
+    tabContainer.empty();
+
+    // rebuild
+    $.each(tabs, function(idx, el) {
+      if (idx < index) {
+        tabContainer.append(el);
+      } else {
+        dropDownMenu.append(el);
+      }
+    });
+    
+    var dropDown = $('<li/>', {
+      'class' : 'dropdown'
+    }).append(dropDownToggle).append(dropDownMenu);
+    
+    if (tabs.length >= (index + 1)) {
+      tabContainer.append(dropDown);
+    };
+    
+    // swap position if needed
+    var swappedEl = $(dropDown).find('li.active');
+    if ( swappedEl.length > 0 ) {
+      var targetEl = $(dropDown).prevAll('li:first');
+      var copy_to = $(swappedEl).clone(true);
+      var copy_from = $(targetEl).clone(true);
+      $(swappedEl).replaceWith(copy_from);
+      $(targetEl).replaceWith(copy_to);
+    }
+    
+    $(tabContainer).css({"visibility":"visible"});
 	}
 };
 
