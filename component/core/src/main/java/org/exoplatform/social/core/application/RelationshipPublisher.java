@@ -71,16 +71,16 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   private ExoSocialActivity createNewActivity(Identity identity, int nbOfConnections) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setType(USER_ACTIVITIES_FOR_RELATIONSHIP);
-    activity.setTitle("I'm now connected with "+nbOfConnections+" users");
+    activity.setTitle("I'm now connected with " + nbOfConnections + " users");
     activity.setUserId(identity.getId());
-    I18NActivityUtils.addResourceKey(activity, "user_relations", ""+nbOfConnections);
+    I18NActivityUtils.addResourceKey(activity, "user_relations", "" + nbOfConnections);
     return activity;
   }
   
   private ExoSocialActivity createNewComment(Identity userIdenity, String fullName) {
     ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
     comment.setType(USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP);
-    String message = "I'm now connected with "+fullName;
+    String message = "I'm now connected with " + fullName;
     comment.setTitle(message);
     comment.setUserId(userIdenity.getId());
     I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
@@ -110,10 +110,10 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdSender != null) {
         ExoSocialActivity activitySender = activityManager.getActivity(activityIdSender);
         if (activitySender != null) {
-          activitySender.setTitle("I'm now connected with "+nbOfSenderConnections+" users");
+          activitySender.setTitle("I'm now connected with " + nbOfSenderConnections + " users");
           activitySender.setTemplateParams(params);
           activitySender.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activitySender, "user_relations", ""+nbOfSenderConnections);
+          I18NActivityUtils.addResourceKey(activitySender, "user_relations", "" + nbOfSenderConnections);
           activityManager.updateActivity(activitySender);
           activityManager.saveComment(activitySender, senderComment);
         } else {
@@ -130,10 +130,10 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdReceiver != null) {
         ExoSocialActivity activityReceiver = activityManager.getActivity(activityIdReceiver);
         if (activityReceiver != null) {
-          activityReceiver.setTitle("I'm now connected with "+nbOfReceiverConnections+" users");
+          activityReceiver.setTitle("I'm now connected with " + nbOfReceiverConnections + " users");
           activityReceiver.setTemplateParams(params);
           activityReceiver.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", ""+nbOfReceiverConnections);
+          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", "" + nbOfReceiverConnections);
           activityManager.updateActivity(activityReceiver);
           activityManager.saveComment(activityReceiver, receiverComment);
         } else {
@@ -165,7 +165,42 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
 
   @Override
   public void removed(RelationshipEvent event) {
-    ;// void on purpose
+    Relationship relationship = event.getPayload();
+    try {
+      Identity sender = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, relationship.getSender().getRemoteId(), true); 
+      Identity receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, relationship.getReceiver().getRemoteId(), true);
+      
+      String activityIdSender = getIdentityStorage().getProfileActivityId(sender.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+      int nbOfSenderConnections = getRelationShipManager().getConnections(sender).getSize();
+      String activityIdReceiver = getIdentityStorage().getProfileActivityId(receiver.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
+      int nbOfReceiverConnections = getRelationShipManager().getConnections(receiver).getSize();
+      Map<String,String> params = new HashMap<String,String>();
+      
+      if (activityIdSender != null) {
+        ExoSocialActivity activitySender = activityManager.getActivity(activityIdSender);
+        if (activitySender != null) {
+          activitySender.setTitle("I'm now connected with " + nbOfSenderConnections + " users");
+          activitySender.setTemplateParams(params);
+          activitySender.setTitleId(null);
+          I18NActivityUtils.addResourceKey(activitySender, "user_relations", "" + nbOfSenderConnections);
+          activityManager.updateActivity(activitySender);
+        }
+      }
+      
+      if (activityIdReceiver != null) {
+        ExoSocialActivity activityReceiver = activityManager.getActivity(activityIdReceiver);
+        if (activityReceiver != null) {
+          activityReceiver.setTitle("I'm now connected with " + nbOfReceiverConnections + " users");
+          activityReceiver.setTemplateParams(params);
+          activityReceiver.setTitleId(null);
+          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", "" + nbOfReceiverConnections);
+          activityManager.updateActivity(activityReceiver);
+        }
+      }
+
+    } catch (Exception e) {
+      LOG.debug("Failed to update relationship activity when remove connection : " + e.getMessage());
+    }
   }
 
   public void denied(RelationshipEvent event) {

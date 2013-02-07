@@ -125,5 +125,20 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     assertEquals(1, johnComments.size());
     assertEquals("I'm now connected with 1 users",johnActivity.getTitle());
     assertEquals("I'm now connected with Root Root",johnComments.get(0).getTitle());
+    
+    //remove a connection will re-updated activity's title
+    relationshipManager.delete(rootToJohnRelationship);
+    relationshipPublisher.removed(new RelationshipEvent(Type.REMOVE, relationshipManager, rootToJohnRelationship));
+    
+    rootActivity = activityManager.getActivity(rootActivityId);
+    assertEquals("I'm now connected with 1 users",rootActivity.getTitle());
+    
+    johnActivity = activityManager.getActivity(johnActivityId);
+    assertEquals("I'm now connected with 0 users",johnActivity.getTitle());
+    
+    activityManager.deleteActivity(johnActivity);
+    activityManager.deleteActivity(rootActivity);
+    activityManager.deleteActivity(demoActivity);
+    
   }
 }
