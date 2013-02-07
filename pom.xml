@@ -875,15 +875,8 @@
               <org.apache.commons.logging.simplelog.log.net.hibernate>warn</org.apache.commons.logging.simplelog.log.net.hibernate>
               <java.naming.factory.initial>org.exoplatform.services.naming.SimpleContextFactory</java.naming.factory.initial>
               <java.util.logging.config.class>org.exoplatform.component.test.logging.LogConfigurator</java.util.logging.config.class>
-              <com.arjuna.ats.arjuna.objectstore.objectStoreDir>${project.build.directory}</com.arjuna.ats.arjuna.objectstore.objectStoreDir>
               <exo.profiles>hsqldb</exo.profiles>
             </systemPropertyVariables>
-            <systemProperties>
-              <property>
-                <name>gatein.test.output.path</name>
-                <value>${project.build.directory}</value>
-              </property>
-            </systemProperties>
           </configuration>
         </plugin>
         <plugin>
