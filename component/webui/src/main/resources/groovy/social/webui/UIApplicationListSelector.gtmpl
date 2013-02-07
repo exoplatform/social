@@ -41,7 +41,8 @@ jsManager.require("SHARED/jquery", "jq")
         def srcBG = application.getIconURL();
     %>
       <div class="appDescription pull-left clearfix">
-          <img class="pull-left" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG" />
+          <!-- <img class="pull-left" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG" />-->
+          <i class="uiIconApp"></i>
 		  <a class="btn-mini btn-primary pull-right" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction">Add</a>
           <div class="appContent">
               <strong>$application.displayName</strong>

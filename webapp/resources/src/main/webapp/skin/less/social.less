@@ -92,7 +92,7 @@
 	border: 1px solid @borderColor;
     .border-radius(4px);
     padding: 5px;
-    .size(84px, 518px);
+    .size(60px, 514px);
     margin: 10px 20px 10px 0;
 	
 	&:hover {
@@ -100,13 +100,13 @@
 		border: 1px solid #C7C7C7;
 	}
 	
-	img {
-		margin: 15px;
-		.size(51px, 64px);
+	[class^="uiIconApp"] {
+		margin: 13px;
+		float: left;
 	}
 	
 	.communityContainer {
-		margin: 16px 0 0 105px;
+		margin: 8px 0 0 70px;
 	}
 }
 
@@ -127,7 +127,7 @@
 			    padding: 5px 20px 5px 9px;
 			    white-space: nowrap;
 			    
-			    &:hover {
+			    &:hover, &:active, &:focus {
 			    	color: @linkColorHover;
 				}
 			}
@@ -150,11 +150,11 @@
 				margin: 10px;
 				background-color: @white;
 				img {
-					.size(38px, 48px);
-					margin: 8px 20px 8px 12px;
+					margin: 13px;
+					float: left;
 				}
 				.appContent {
-					margin: 0 0 0 90px;
+					margin: 0 0 0 65px;
 					font-size: 12px;
 					
 					strong:first-child {
