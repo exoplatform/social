@@ -48,7 +48,7 @@ var UISpaceNavigation = {
     };
 
     var dropDown = $('<li/>', {
-      'class' : 'dropdown'
+      'class' : 'dropdown moreButton'
     }).append(dropDownToggle).append(dropDownMenu);
 
     // clear
