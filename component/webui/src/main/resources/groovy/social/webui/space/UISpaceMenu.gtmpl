@@ -79,14 +79,14 @@
     <% if (spaceUrl.equals(appSelected)) { %>
     <li class="active">
       <a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#">
-        <div class="uiIconDefaultApp uiIconAppSpaceActivityStreamPortlet"></div>
+        <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
         <span class="tabName">$activityStreamLabel</span>
       </a>
     </li>
     <% } else { %>
     <li class="">
       <a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="#">
-        <div class="uiIconDefaultApp uiIconAppSpaceActivityStreamPortlet"></div>
+        <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
         <span class="tabName"> $activityStreamLabel</span>
       </a>
     </li>
@@ -107,14 +107,14 @@
   <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
        <li class="active">
          <a data-toggle="tab" href="#">
-           <div class="uiIconDefaultApp uiIconApp<%=appName%>"></div>
+           <i class="uiIconApp<%=appName%> uiIconDefaultApp"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
   <% } else {%>
        <li class="">
          <a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="#">
-           <div class="uiIconDefaultApp uiIconApp<%=appName%>"></div>
+           <i class="uiIconApp<%=appName%> uiIconDefaultApp"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>

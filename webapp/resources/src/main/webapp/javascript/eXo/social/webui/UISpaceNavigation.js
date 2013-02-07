@@ -35,25 +35,12 @@ var UISpaceNavigation = {
       'href' : '#',
       'class' : 'dropdown-toggle',
       'data-toggle' : 'dropdown'
-    });
-    
-    // need re-define this value to match spec
-    if (tabs.length > 8) {
-      dropDownToggle.append($('<i/>', {
-	                           'class' : 'uiIconAppMoreButton'
-	                         }));
-                                             
-		  dropDownToggle.append($('<b/>', {
-									           'text' : '+'
-									         }))
-									  .append($('<span/>', {
+    }).append($('<i/>', {
+                          'class' : 'uiIconAppMoreButton'
+                        }))
+			.append($('<span/>', {
 									           'text' : moreLabel
 									         }));
-    };
-
-    var dropDown = $('<li/>', {
-      'class' : 'dropdown'
-    }).append(dropDownToggle).append(dropDownMenu);
 
     // clear
     tabContainer.empty();
@@ -67,7 +54,13 @@ var UISpaceNavigation = {
       }
     });
     
-    tabContainer.append(dropDown);
+    var dropDown = $('<li/>', {
+      'class' : 'dropdown'
+    }).append(dropDownToggle).append(dropDownMenu);
+    
+    if (tabs.length >= 9) {
+      tabContainer.append(dropDown);
+    };
     
     // swap position if needed
     var swappedEl = $(dropDown).find('li.active');
