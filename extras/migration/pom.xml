@@ -4,7 +4,7 @@
   <parent>
     <artifactId>social-extras</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0-Alpha1</version>
   </parent>
   <artifactId>social-extras-migration</artifactId>
   <name>eXo Social Migration Tool</name>
