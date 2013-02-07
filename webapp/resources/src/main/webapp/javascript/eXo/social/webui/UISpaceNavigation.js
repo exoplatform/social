@@ -39,6 +39,10 @@ var UISpaceNavigation = {
     
     // need re-define this value to match spec
     if (tabs.length > 8) {
+      dropDownToggle.append($('<i/>', {
+	                           'class' : 'uiIconAppMoreButton'
+	                         }));
+                                             
 		  dropDownToggle.append($('<b/>', {
 									           'text' : '+'
 									         }))
@@ -48,7 +52,7 @@ var UISpaceNavigation = {
     };
 
     var dropDown = $('<li/>', {
-      'class' : 'dropdown moreButton'
+      'class' : 'dropdown'
     }).append(dropDownToggle).append(dropDownMenu);
 
     // clear
