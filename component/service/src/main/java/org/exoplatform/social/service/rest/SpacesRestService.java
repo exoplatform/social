@@ -347,7 +347,7 @@ public class SpacesRestService implements ResourceContainer {
     }
     
     //
-    int newLimit = Math.min(limit, 10);
+    int newLimit = Math.max(limit, 10);
     int newOffset = 0;
     if (offset > 0) {
       newOffset = Math.min(offset, newLimit);
