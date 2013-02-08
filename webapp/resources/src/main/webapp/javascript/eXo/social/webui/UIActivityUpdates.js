@@ -72,7 +72,7 @@
       
       //
       if (form.numberOfUpdatedActivities == 0) {
-        form.initValueOnTabs([form.selectedMode]);      
+        form.applyChanges([form.selectedMode]);      
       }
       
       //
@@ -231,7 +231,7 @@
 			  
 			  form.setToCookie(checked_tab_key_to, form.calculateServerTime());
 			  form.setFromCookie(checked_tab_key_from, checked_tab_key_to);
-			  form.setFromCookie(checked_tab_key_old_from, checked_tab_key_to);
+			  form.setFromCookie(checked_tab_key_old_from, checked_tab_key_from);
 			  
 			  //			  			
 			  var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, field);
