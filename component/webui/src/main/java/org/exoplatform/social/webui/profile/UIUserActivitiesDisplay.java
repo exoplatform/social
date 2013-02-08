@@ -210,12 +210,6 @@ public class UIUserActivitiesDisplay extends UIForm {
     UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
     
     //
-    if (activitiesContainer.isOnMyActivities()) {
-      this.selectedDisplayMode = DisplayMode.MY_ACTIVITIES;
-      activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
-    }
-    
-    //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
     
     ActivityManager activityManager = Utils.getActivityManager();
@@ -260,7 +254,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     
     //
     
-    activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum());
+    activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isRefreshed));
     
     //
     activitiesLoader.init();
@@ -280,13 +274,14 @@ public class UIUserActivitiesDisplay extends UIForm {
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
         UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
         
-        activitiesContainer.setNumberOfUpdatedActivities(uiUserActivities.getActivitiesUpdatedNum());
+        int numberOfUpdates = uiUserActivities.getActivitiesUpdatedNum(false);
+        activitiesContainer.setNumberOfUpdatedActivities(numberOfUpdates);
         //
         event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
         
         event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + uiUserActivities.getActivitiesUpdatedNum() + "');");
+        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
 
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
       }
@@ -296,7 +291,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     }
   }
   
-  private int getActivitiesUpdatedNum() {
+  private int getActivitiesUpdatedNum(boolean hasRefresh) {
     UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
     ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
     
@@ -334,7 +329,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     //mode = DisplayMode.OWNER_STATUS.toString();
     //ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum()); // Need to checked
     
-    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(this.isRefreshed);
+    ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(hasRefresh);
    
     return activitiesListAccess.getNumberOfUpdated(updatedFilter);
   }

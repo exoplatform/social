@@ -57,23 +57,11 @@
 	      form.selectedMode = form.ALL;
 	    }
     
-      // in case of space activity
-      if (form.selectedMode == 'null') { 
-        form.removeUpdateInfo();
-        return;
-      } else if (form.isOnMyActivities) { // in case of my activity stream
-        form.selectedMode = form.MY_ACTIVITIES;
-      }
-
       //
       var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
 	    lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
 	    form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
-      
-      //
-      if (form.numberOfUpdatedActivities == 0) {
-        form.applyChanges([form.selectedMode]);      
-      }
+
       
       //
       $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
@@ -97,7 +85,10 @@
 	    function runOnScroll() {
 	      if (isScrolledIntoView()) {
 	        form.unMarkedAsUpdate();
-        
+	        if (form.numberOfUpdatedActivities > 0) {
+              form.resetCookiesOnTabs();
+	        }
+            
 	        $(window).off('scroll', runOnScroll);
 	      }
 	    }
@@ -165,7 +156,7 @@
 	    
 	    $('#numberInfo').html(form.noUpdates);
 	    
-	    form.resetCookiesOnTabs();
+	    
 	  },
 	  resetCookiesOnTabs : function() {
 	    var form = UIActivityUpdates;
@@ -177,6 +168,7 @@
         form.resetCookie(onSelectedTabCookieName, form.ALL);
       }
       
+      console.log('resetCookiesOnTabs');
       form.applyChanges([selectedTab]);
       
 	    // [All Activities] is current Selected tab then reset all other tabs on visited time
@@ -195,6 +187,7 @@
 			  return;
 			}
 			
+			console.log('run again');
 			// init timer
 			form.clientTimerAtStart = new Date().getTime();
       form.currentServerTime = currentServerTime*1;
@@ -241,7 +234,7 @@
 	  },
 	  applyChanges : function( affectedFields ) { // FIELDS
 	    if ( affectedFields.length === 0 ) return;
-	    
+	    console.log('applyChanges');
 	    var form = UIActivityUpdates;
 	    var userId = form.currentRemoteId;
 	    $.each( affectedFields, function( index, field ) {

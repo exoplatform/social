@@ -1682,7 +1682,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities)
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
                                           .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
     
     if (filter.isRefreshTab() && gotNumber == filter.activityFeedType().lastNumberOfUpdated()) {
@@ -1852,11 +1852,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<Identity> identities = new ArrayList<Identity>();
     identities.add(owner);
     
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER;
+    
     switch(type) {
     case CONNECTIONS_ACTIVITIES :
       identities.addAll(relationshipStorage.getConnections(owner));
       break;
     case USER_ACTIVITIES :
+      where.mentioner(owner);
       //identities.addAll(relationshipStorage.getConnections(owner));
       break;
     case USER_SPACE_ACTIVITIES :
@@ -1872,7 +1875,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(type.toSinceTime()));
 
     //
-    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER.owners(identities).mentioner(owner), jcrfilter).objects();
+    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(where.owners(identities), jcrfilter).objects();
     String[] excludedActivities = new String[0];
     
     //
