@@ -57,9 +57,9 @@
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
     <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
-    <org.exoplatform.commons.version>4.0.0-Alpha1</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0-Beta1-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
-    <org.exoplatform.doc.doc-style.version>4.0.0-Alpha1</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.doc.doc-style.version>4.0.0-Beta1-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
     <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
     <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
