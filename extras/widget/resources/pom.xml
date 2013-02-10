@@ -22,11 +22,10 @@
   <parent>
     <artifactId>social-extras-widget</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
+    <version>4.0.0-relooking-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget-resources</artifactId>
-  <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>eXo Social Widget (Resources)</name>
   <description>eXo Social Widget (Resources)</description>

@@ -22,11 +22,10 @@
   <parent>
     <artifactId>social-component</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
+    <version>4.0.0-relooking-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-component-core</artifactId>
-  <version>4.0.0.Alpha1-relooking-SNAPSHOT</version>
   <name>eXo Social Core Component</name>
   <description>eXo Social Core Component: People and Space</description>
   <dependencies>
