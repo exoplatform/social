@@ -24,7 +24,7 @@
   <parent>
     <artifactId>social-extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.0.0.Alpha1-unified-search-SNAPSHOT</version>
+    <version>4.0.0-unified-search-SNAPSHOT</version>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extension-jar</artifactId>

@@ -23,11 +23,11 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.0.0.Alpha1-unified-search-SNAPSHOT</version>
+  <version>4.0.0-unified-search-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -42,6 +42,7 @@
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
     <url>http://fisheye.exoplatform.org/browse/social</url>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <!-- **************************************** -->
@@ -56,9 +57,9 @@
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
     <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
-    <org.exoplatform.commons.version>4.0.0.Alpha1-unified-search-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0-unified-search-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
-    <org.exoplatform.doc.doc-style.version>4.0.0-Alpha1-SNAPSHOT</org.exoplatform.doc.doc-style.version>
+    <org.exoplatform.doc.doc-style.version>4.0.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
     <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
     <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
