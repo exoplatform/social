@@ -65,6 +65,38 @@ public class StorageUtils {
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
     }
+
+    if (profileFilter.getAll().length() != 0) {
+      String value = profileFilter.getAll();
+      whereExpression.and().startGroup();
+      whereExpression.like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.or().like(
+          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.jobsDescription),
+          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
+      whereExpression.endGroup();
+
+    }
+
   }
 
   public static void applyExcludes(final WhereExpression whereExpression, final List<Identity> excludedIdentityList) {
@@ -136,7 +168,7 @@ public class StorageUtils {
    * Encodes Url to conform to the generated Url of WEBDAV.
    * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
    * This method replace any percent character (%) by (%25) to solve this problem. 
-   * @param avatar 
+   * @param avatar
    * @return
    */
   public static String encodeUrl(String path) {

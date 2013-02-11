@@ -41,6 +41,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
   private final String skills;
   private final char firstChar;
   private final List<IdentityKey> excluded;
+  private final String all;
   
   /**
    * Constructor for case using remoteId as key.
@@ -63,6 +64,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     }
 
     this.excluded = Collections.unmodifiableList(keys);
+    this.all = filter.getAll();
     
   }
   
@@ -82,6 +84,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     }
 
     this.excluded = Collections.unmodifiableList(keys);
+    this.all = filter.getAll();
 
   }
 
@@ -114,43 +117,22 @@ public class IdentityFilterKey extends ScopeCacheKey {
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof IdentityFilterKey)) {
-      return false;
-    }
-    if (!super.equals(o)) {
-      return false;
-    }
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof IdentityFilterKey)) return false;
+    if (!super.equals(o)) return false;
 
     IdentityFilterKey that = (IdentityFilterKey) o;
 
-    if (firstChar != that.firstChar) {
-      return false;
-    }
-    if (company != null ? !company.equals(that.company) : that.company != null) {
-      return false;
-    }
-    if (excluded != null ? !excluded.equals(that.excluded) : that.excluded != null) {
-      return false;
-    }
-    if (name != null ? !name.equals(that.name) : that.name != null) {
-      return false;
-    }
-    if (position != null ? !position.equals(that.position) : that.position != null) {
-      return false;
-    }
-    if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) {
-      return false;
-    }
-    if (skills != null ? !skills.equals(that.skills) : that.skills != null) {
-      return false;
-    }
-    if (remoteId != null ? !remoteId.equals(that.remoteId) : that.remoteId != null) {
-      return false;
-    }
+    if (firstChar != that.firstChar) return false;
+    if (all != null ? !all.equals(that.all) : that.all != null) return false;
+    if (company != null ? !company.equals(that.company) : that.company != null) return false;
+    if (excluded != null ? !excluded.equals(that.excluded) : that.excluded != null) return false;
+    if (name != null ? !name.equals(that.name) : that.name != null) return false;
+    if (position != null ? !position.equals(that.position) : that.position != null) return false;
+    if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) return false;
+    if (remoteId != null ? !remoteId.equals(that.remoteId) : that.remoteId != null) return false;
+    if (skills != null ? !skills.equals(that.skills) : that.skills != null) return false;
 
     return true;
   }
@@ -158,15 +140,15 @@ public class IdentityFilterKey extends ScopeCacheKey {
   @Override
   public int hashCode() {
     int result = super.hashCode();
-    result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     result = 31 * result + (providerId != null ? providerId.hashCode() : 0);
+    result = 31 * result + (remoteId != null ? remoteId.hashCode() : 0);
     result = 31 * result + (name != null ? name.hashCode() : 0);
     result = 31 * result + (position != null ? position.hashCode() : 0);
     result = 31 * result + (company != null ? company.hashCode() : 0);
     result = 31 * result + (skills != null ? skills.hashCode() : 0);
     result = 31 * result + (int) firstChar;
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
-    
+    result = 31 * result + (all != null ? all.hashCode() : 0);
     return result;
   }
 

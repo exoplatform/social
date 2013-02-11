@@ -45,6 +45,9 @@ public class ProfileFilter {
   /** The skills. */
   private String skills;
 
+  /** Used for unified search */
+  private String all;
+
   /** the list of identity to be excluded from profile filter **/
   private List<Identity> excludedIdentityList;
 
@@ -58,6 +61,7 @@ public class ProfileFilter {
     this.skills = "";
     this.firstCharacterOfName = '\u0000';
     this.excludedIdentityList = new ArrayList<Identity>();
+    this.all = "";
   }
   /**
    * Gets the position.
@@ -149,6 +153,13 @@ public class ProfileFilter {
    * @since 1.2.0-GA
    */
   public void setFirstCharacterOfName(char firstCharacterOfName) { this.firstCharacterOfName = firstCharacterOfName; }
-  
-  
+
+  public String getAll() {
+    return all;
+  }
+
+  public void setAll(String all) {
+    this.all = all;
+  }
+
 }

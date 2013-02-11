@@ -122,6 +122,15 @@ public abstract class ProfileEntity {
   public static final PropertyLiteralExpression<String> skills =
       new PropertyLiteralExpression<String>(String.class, "index-skills");
 
+  public static final PropertyLiteralExpression<String> positions =
+      new PropertyLiteralExpression<String>(String.class, "index-position");
+
+  public static final PropertyLiteralExpression<String> organizations =
+      new PropertyLiteralExpression<String>(String.class, "index-company");
+
+  public static final PropertyLiteralExpression<String> jobsDescription =
+      new PropertyLiteralExpression<String>(String.class, "index-description");
+
   @Create
   public abstract NTFile createAvatar();
 

@@ -517,6 +517,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
           // create
           List<String> skills = new ArrayList<String>();
+          List<String> positions = new ArrayList<String>();
+          List<String> organizations = new ArrayList<String>();
+          List<String> jobsDescription = new ArrayList<String>();
           for (Map<String, String> currentXp : (List<Map<String, String>>) value) {
 
             ProfileXpEntity xpEntity = profileEntity.createXp();
@@ -532,9 +535,24 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
             if (xpEntity.getSkills() != null) {
               skills.add(xpEntity.getSkills());
             }
+            //
+            if (xpEntity.getPosition() != null) {
+              positions.add(xpEntity.getPosition());
+            }
+            //
+            if (xpEntity.getCompany() != null) {
+              organizations.add(xpEntity.getCompany());
+            }
+            //
+            if (xpEntity.getDescription() != null) {
+              jobsDescription.add(xpEntity.getDescription());
+            }
 
           }
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_SKILLS), skills);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_POSITION), positions);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_COMPANY), organizations);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_DESCRIPTION), jobsDescription);
 
         }
         else if (Profile.AVATAR.equals(key)) {
