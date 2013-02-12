@@ -78,7 +78,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     lifeCycleCompletionService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
     tearDownSpaceList = new ArrayList<Space>();
@@ -1824,58 +1823,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
    */
   public void testDeInitApps() throws Exception {
     //TODO Complete this
-  }
-
-  /**
-   * Creates new space with out init apps.
-   *
-   * @param space
-   * @param creator
-   * @param invitedGroupId
-   * @return
-   * @since 1.2.0-GA
-   */
-  private Space createSpaceNonInitApps(Space space, String creator, String invitedGroupId) {
-    // Creates new space by creating new group
-    String groupId = null;
-    try {
-      groupId = SpaceUtils.createGroup(space.getDisplayName(), creator);
-    } catch (SpaceException e) {
-      LOG.error("Error while creating group", e);
-    }
-
-    if (invitedGroupId != null) {
-      // Invites user in group join to new created space.
-      // Gets users in group and then invites user to join into space.
-      OrganizationService org = (OrganizationService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(OrganizationService.class);
-      try {
-        PageList<User> groupMembersAccess = org.getUserHandler().findUsersByGroup(invitedGroupId);
-        List<User> users = groupMembersAccess.getAll();
-
-        for (User user : users) {
-          String userId = user.getUserName();
-          if (!userId.equals(creator)) {
-            String[] invitedUsers = space.getInvitedUsers();
-            if (!ArrayUtils.contains(invitedUsers, userId)) {
-              invitedUsers = (String[]) ArrayUtils.add(invitedUsers, userId);
-              space.setInvitedUsers(invitedUsers);
-            }
-          }
-        }
-      } catch (Exception e) {
-        LOG.error("Failed to invite users from group " + invitedGroupId, e);
-      }
-    }
-    String[] managers = new String[] { creator };
-    space.setManagers(managers);
-    space.setGroupId(groupId);
-    space.setUrl(space.getPrettyName());
-    try {
-      spaceService.saveSpace(space, true);
-    } catch (SpaceException e) {
-      LOG.warn("Error while saving space", e);
-    }
-    return space;
   }
 
   /**

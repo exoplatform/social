@@ -7,9 +7,11 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -66,6 +68,10 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     xBar.put(Profile.EXPERIENCES_DESCRIPTION, "job description");
     xBars.add(xBar);
     pBar.setProperty(Profile.EXPERIENCES, xBars);
+
+    InputStream inputStream = getClass().getResourceAsStream("/eXo-Social.png");
+    AvatarAttachment avatarAttachment = new AvatarAttachment(null, "avatar", "png", inputStream, null, System.currentTimeMillis());
+    pBar.setProperty(Profile.AVATAR, avatarAttachment);
     identityManager.saveIdentity(iBar);
     identityManager.saveProfile(pBar);
     tearDown.add(iBar.getId());
@@ -102,15 +108,20 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
   }
 
   public void testData() throws Exception {
-    Collection<SearchResult> c = peopleSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
-    SearchResult r = c.iterator().next();
-    assertEquals("foo", r.getTitle());
-    assertEquals("foo position", r.getExcerpt());
-    assertEquals("foo@mail.com - +17889989 - Male", r.getDetail());
+    Collection<SearchResult> cFoo = peopleSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    SearchResult rFoo = cFoo.iterator().next();
+    assertEquals("foo", rFoo.getTitle());
+    assertEquals("foo position", rFoo.getExcerpt());
+    assertEquals("foo@mail.com - +17889989 - Male", rFoo.getDetail());
 
-    Profile p = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "foo"));
-    assertEquals(p.getUrl(), r.getUrl());
-    assertEquals(LinkProvider.PROFILE_DEFAULT_AVATAR_URL, r.getImageUrl());
+    Profile pFoo = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "foo"));
+    assertEquals(pFoo.getUrl(), rFoo.getUrl());
+    assertEquals(LinkProvider.PROFILE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
+
+    Collection<SearchResult> cBar = peopleSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    SearchResult rBar = cBar.iterator().next();
+    Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "bar"));
+    assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
   }
 
 }

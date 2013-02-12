@@ -24,7 +24,6 @@ import java.util.Map;
 public class PeopleSearchConnector extends SearchServiceConnector {
 
   private IdentityManager identityManager;
-
   private static final Log LOG = ExoLogger.getLogger(PeopleSearchConnector.class);
 
   public PeopleSearchConnector(InitParams initParams, IdentityManager identityManager) {
@@ -73,7 +72,7 @@ public class PeopleSearchConnector extends SearchServiceConnector {
             sb.toString(),
             p.getAvatarUrl() != null ? p.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL,
             0,
-            0); // implment sort / order
+            0); // implement sort / order
         results.add(result);
       }
     } catch (Exception e) {
