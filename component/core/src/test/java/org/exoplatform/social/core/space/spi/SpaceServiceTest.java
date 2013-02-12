@@ -23,13 +23,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.social.common.lifecycle.LifeCycleCompletionService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -38,7 +33,6 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
@@ -47,9 +41,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 public class SpaceServiceTest extends AbstractCoreTest {
-  private SpaceService spaceService;
   private IdentityStorage identityStorage;
-  private LifeCycleCompletionService lifeCycleCompletionService;
   private List<Space> tearDownSpaceList;
   private List<Identity> tearDownUserList;
 
@@ -79,7 +71,6 @@ public class SpaceServiceTest extends AbstractCoreTest {
   public void setUp() throws Exception {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
-    lifeCycleCompletionService = (LifeCycleCompletionService) getContainer().getComponentInstanceOfType(LifeCycleCompletionService.class);
     tearDownSpaceList = new ArrayList<Space>();
     tearDownUserList = new ArrayList<Identity>();
     

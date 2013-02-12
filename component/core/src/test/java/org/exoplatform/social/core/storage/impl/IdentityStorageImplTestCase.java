@@ -719,7 +719,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals("b2", storage.getIdentitiesByFirstCharacterOfName("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(210)
   public void testFindIdentityWithFilterCount() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
@@ -760,7 +760,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", filterB2Skills));
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(210)
   public void testFindIdentityWithFilter() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
