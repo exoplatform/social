@@ -546,7 +546,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     tearDownIdentityList.add(tmp5.getId());
   }
 
-  @MaxQueryNumber(300)
+  @MaxQueryNumber(310)
   public void testGetConnections() throws Exception {
 
     //
