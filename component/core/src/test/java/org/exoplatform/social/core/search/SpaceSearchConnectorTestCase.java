@@ -1,11 +1,11 @@
 package org.exoplatform.social.core.search;
 
 import org.exoplatform.commons.api.search.data.SearchResult;
-import org.exoplatform.commons.testing.mock.MockParentRequestContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -16,7 +16,6 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
-import org.exoplatform.web.application.RequestContext;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -148,11 +147,6 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
   }
 
   private void setCurrentUser(final String name) {
-    RequestContext.setCurrentInstance(new MockParentRequestContext(null, null) {
-      @Override
-      public String getRemoteUser() {
-        return name;
-      }
-    });
+    ConversationState.setCurrent(new ConversationState(new org.exoplatform.services.security.Identity(name)));
   }
 }

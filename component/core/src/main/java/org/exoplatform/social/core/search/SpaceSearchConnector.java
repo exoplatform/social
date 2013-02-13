@@ -1,26 +1,31 @@
 package org.exoplatform.social.core.search;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.web.controller.router.Router;
+import org.exoplatform.web.controller.router.URIWriter;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -81,27 +86,33 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
   }
 
   protected String getSpaceUrl(Space space) {
-    String groupId = space.getGroupId();
-    String permanentSpaceName = groupId.split("/")[2];
 
-    RequestContext ctx = RequestContext.getCurrentInstance();
-    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = null;
-    if (permanentSpaceName.equals(space.getPrettyName())) {
-      //work-around for SOC-2366 when delete space after that create new space with the same name
-      resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
-                                        + permanentSpaceName, permanentSpaceName);
-    } else {
-      resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
-                                        + permanentSpaceName, space.getPrettyName());
+    try {
+      String groupId = space.getGroupId();
+      String permanentSpaceName = groupId.split("/")[2];
+
+      RequestContext ctx = RequestContext.getCurrentInstance();
+      NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+      NavigationResource resource = null;
+      if (permanentSpaceName.equals(space.getPrettyName())) {
+        //work-around for SOC-2366 when delete space after that create new space with the same name
+        resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
+                                          + permanentSpaceName, permanentSpaceName);
+      } else {
+        resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
+                                          + permanentSpaceName, space.getPrettyName());
+      }
+
+      return nodeURL.setResource(resource).toString();
+    } catch (Exception e) {
+      LOG.error("Cannot compute space url for " + space.getDisplayName(), e);
+      return "";
     }
 
-    return nodeURL.setResource(resource).toString();
   }
 
   public String getCurrentUserName() {
-    RequestContext context = RequestContext.getCurrentInstance();
-    return context.getRemoteUser();
+    return ConversationState.getCurrent().getIdentity().getUserId();
   }
 
 }
