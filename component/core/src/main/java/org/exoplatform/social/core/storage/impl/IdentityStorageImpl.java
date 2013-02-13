@@ -235,7 +235,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
 
     builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter.getSorting());
+    applyOrder(builder, profileFilter);
 
     if(count){
      return builder.where(whereExpression.toString()).get().objects();
@@ -245,7 +245,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   }
 
-  private void applyOrder(QueryBuilder builder, Sorting sorting) {
+  private void applyOrder(QueryBuilder builder, ProfileFilter profileFilter) {
+
+    //
+    Sorting sorting;
+    if (profileFilter == null) {
+      sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    } else {
+      sorting = profileFilter.getSorting();
+    }
+
+    //
     Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
     switch (sorting.sortBy) {
       case DATE:
@@ -956,7 +966,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter.getSorting());
+    applyOrder(builder, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -1003,7 +1013,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter.getSorting());
+    applyOrder(builder, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -1097,7 +1107,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    applyOrder(builder, profileFilter.getSorting());
+    applyOrder(builder, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {

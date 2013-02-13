@@ -157,7 +157,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   }
 
-  private void applyOrder(QueryBuilder builder, Sorting sorting) {
+  private void applyOrder(QueryBuilder builder, SpaceFilter spaceFilter) {
+
+    //
+    Sorting sorting;
+    if (spaceFilter == null) {
+      sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    } else {
+      sorting = spaceFilter.getSorting();
+    }
+
+    //
     Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
     switch (sorting.sortBy) {
       case DATE:
@@ -471,7 +481,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -491,7 +501,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
     
@@ -519,7 +529,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -551,7 +561,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -576,7 +586,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -601,7 +611,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -626,7 +636,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
     
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -1257,7 +1267,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
 
     builder.where(whereExpression.toString());
-    applyOrder(builder, spaceFilter.getSorting());
+    applyOrder(builder, spaceFilter);
     
     return builder.get();
 
