@@ -122,7 +122,29 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     Collection<SearchResult> cBar = spaceSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
+    Space sBar = spaceService.getSpaceByDisplayName("bar");
     assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
+    assertTrue(rBar.getDate() != 0);
+    assertEquals(sBar.getCreatedTime(), rBar.getDate());
+  }
+
+  public void testOrder() throws Exception {
+    setCurrentUser("demo");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals("bar", rTitleAsc.get(0).getTitle());
+    assertEquals("foo", rTitleAsc.get(1).getTitle());
+
+    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
+    assertEquals("foo", rTitleDesc.get(0).getTitle());
+    assertEquals("bar", rTitleDesc.get(1).getTitle());
+
+    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
+    assertEquals("foo", rDateAsc.get(0).getTitle());
+    assertEquals("bar", rDateAsc.get(1).getTitle());
+
+    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
+    assertEquals("bar", rDateDesc.get(0).getTitle());
+    assertEquals("foo", rDateDesc.get(1).getTitle());
   }
 
   private void setCurrentUser(final String name) {

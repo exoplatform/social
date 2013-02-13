@@ -1,12 +1,14 @@
 package org.exoplatform.social.core.search;
 
-import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -40,6 +42,7 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
     SpaceFilter filter = new SpaceFilter();
     filter.setSpaceNameSearchCondition(query);
+    filter.setSorting(sorting);
 
     ListAccess<Space> la = spaceService.getVisibleSpacesWithListAccess(getCurrentUserName(), filter);
     try {
@@ -65,8 +68,8 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
             s.getDescription(),
             sb.toString(),
             s.getAvatarUrl() != null ? s.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL,
-            0,
-            0); // implement sort / order
+            s.getCreatedTime(),
+            0); // TODO : implement relevancy
         results.add(result);
       }
     } catch (Exception e) {

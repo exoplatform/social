@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.cache.model.key;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.search.Sorting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
   private final char firstChar;
   private final List<IdentityKey> excluded;
   private final String all;
+  private final Sorting sorting;
   
   /**
    * Constructor for case using remoteId as key.
@@ -65,6 +67,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
 
     this.excluded = Collections.unmodifiableList(keys);
     this.all = filter.getAll();
+    this.sorting = filter.getSorting();
     
   }
   
@@ -85,6 +88,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
 
     this.excluded = Collections.unmodifiableList(keys);
     this.all = filter.getAll();
+    this.sorting = filter.getSorting();
 
   }
 
@@ -133,6 +137,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     if (providerId != null ? !providerId.equals(that.providerId) : that.providerId != null) return false;
     if (remoteId != null ? !remoteId.equals(that.remoteId) : that.remoteId != null) return false;
     if (skills != null ? !skills.equals(that.skills) : that.skills != null) return false;
+    if (sorting != null ? !sorting.equals(that.sorting) : that.sorting != null) return false;
 
     return true;
   }
@@ -149,6 +154,7 @@ public class IdentityFilterKey extends ScopeCacheKey {
     result = 31 * result + (int) firstChar;
     result = 31 * result + (excluded != null ? excluded.hashCode() : 0);
     result = 31 * result + (all != null ? all.hashCode() : 0);
+    result = 31 * result + (sorting != null ? sorting.hashCode() : 0);
     return result;
   }
 

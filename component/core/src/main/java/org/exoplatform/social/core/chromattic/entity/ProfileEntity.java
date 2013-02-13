@@ -93,6 +93,15 @@ public abstract class ProfileEntity {
       new PropertyLiteralExpression<String>(String.class, "soc:parentId");
 
   /**
+   * The created time
+   */
+  @Property(name = "soc:createdTime")
+  public abstract Long getCreatedTime();
+  public abstract void setCreatedTime(Long createdTime);
+  public static final PropertyLiteralExpression<Long> createdTime =
+      new PropertyLiteralExpression<Long>(Long.class, "soc:createdTime");
+
+  /**
    * All the experiences stored in the profile.
    */
   @OneToMany

@@ -117,6 +117,8 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     Profile pFoo = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "foo"));
     assertEquals(pFoo.getUrl(), rFoo.getUrl());
     assertEquals(LinkProvider.PROFILE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
+    assertTrue(rFoo.getDate() != 0);
+    assertEquals(pFoo.getCreatedTime(), rFoo.getDate());
 
     Collection<SearchResult> cBar = peopleSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rBar = cBar.iterator().next();
@@ -124,4 +126,21 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
   }
 
+  public void testOrder() throws Exception {
+    List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search("position", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals("bar", rTitleAsc.get(0).getTitle());
+    assertEquals("foo", rTitleAsc.get(1).getTitle());
+
+    List<SearchResult> rTitleDesc = (List<SearchResult>) peopleSearchConnector.search("position", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
+    assertEquals("foo", rTitleDesc.get(0).getTitle());
+    assertEquals("bar", rTitleDesc.get(1).getTitle());
+
+    List<SearchResult> rDateAsc = (List<SearchResult>) peopleSearchConnector.search("position", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
+    assertEquals("foo", rDateAsc.get(0).getTitle());
+    assertEquals("bar", rDateAsc.get(1).getTitle());
+
+    List<SearchResult> rDateDesc = (List<SearchResult>) peopleSearchConnector.search("position", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
+    assertEquals("bar", rDateDesc.get(0).getTitle());
+    assertEquals("foo", rDateDesc.get(1).getTitle());
+  }
 }

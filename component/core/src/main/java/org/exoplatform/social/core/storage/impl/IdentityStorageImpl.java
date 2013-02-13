@@ -249,12 +249,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
     switch (sorting.sortBy) {
       case DATE:
-        builder.orderBy(ProfileEntity.lastName.getName(), ordering);
+        builder.orderBy(ProfileEntity.createdTime.getName(), ordering);
         break;
       case RELEVANCY:
         // TODO : implement relevancy order, let's do the same as title for now
       case TITLE:
-        builder.orderBy(ProfileEntity.lastName.getName(), ordering);
+        builder.orderBy(ProfileEntity.fullName.getName(), ordering);
         break;
     }
   }
@@ -448,6 +448,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     ProfileEntity profileEntity = identityEntity.createProfile();
     identityEntity.setProfile(profileEntity);
     profile.setId(profileEntity.getId());
+    profile.setCreatedTime(System.currentTimeMillis());
 
     //
     getSession().save();
@@ -596,6 +597,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     // TODO : find better
     profileEntity.setParentId(profile.getIdentity().getId());
+    profileEntity.setCreatedTime(profile.getCreatedTime());
 
     // External profile
     if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
@@ -678,6 +680,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     String remoteId = identity.getRemoteId();
 
     profile.setId(profileEntity.getId());
+    profile.setCreatedTime(profileEntity.getCreatedTime());
 
     List<Map<String, String>> phones = new ArrayList<Map<String,String>>();
     List<Map<String, String>> ims = new ArrayList<Map<String,String>>();

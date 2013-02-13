@@ -39,6 +39,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
     ProfileFilter filter = new ProfileFilter();
     filter.setAll(query);
+    filter.setSorting(sorting);
     ListAccess<Identity> la = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, true);
     try {
       for (Identity i : la.load(range.offset, range.limit)) {
@@ -67,8 +68,8 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
             p.getPosition(),
             sb.toString(),
             p.getAvatarUrl() != null ? p.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL,
-            0,
-            0); // implement sort / order
+            p.getCreatedTime(),
+            0); // TODO : implement relevancy
         results.add(result);
       }
     } catch (Exception e) {

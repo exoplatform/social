@@ -94,6 +94,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     space.setUrl(entity.getURL());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
+    space.setCreatedTime(entity.getCreatedTime());
 
     //
     String[] members = entity.getMembersId();
@@ -152,6 +153,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setPendingMembersId(space.getPendingUsers());
     entity.setInvitedMembersId(space.getInvitedUsers());
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
+    entity.setCreatedTime(space.getCreatedTime() != 0 ? space.getCreatedTime() : System.currentTimeMillis());
 
   }
 
@@ -159,7 +161,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
     switch (sorting.sortBy) {
       case DATE:
-        builder.orderBy(SpaceEntity.name.getName(), ordering);
+        builder.orderBy(SpaceEntity.createdTime.getName(), ordering);
         break;
       case RELEVANCY:
         // TODO : implement relevancy order, let's do the same as title for now

@@ -151,6 +151,9 @@ public class Profile {
   /** Profile url, this will never be stored */
   private String                    avatarUrl;
 
+  /** Profile created time **/
+  private long                      createdTime;
+
   /**
    * Instantiates a new profile.
    *
@@ -444,10 +447,18 @@ public class Profile {
     return (String) getProperty(Profile.POSITION);
   }
 
+  public long getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(long createdTime) {
+    this.createdTime = createdTime;
+  }
+
   /*
-   * Get uuid, identity, properties of profile
-   * @see java.lang.Object#toString()
-   */
+     * Get uuid, identity, properties of profile
+     * @see java.lang.Object#toString()
+     */
   @Override
   public final String toString() {
     return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;
