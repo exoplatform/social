@@ -40,9 +40,9 @@ public class SpaceFilterKey extends ScopeCacheKey {
     if (filter != null) {
       this.firstCharacterOfSpaceName = filter.getFirstCharacterOfSpaceName();
       this.spaceNameSearchCondition = filter.getSpaceNameSearchCondition();
+      this.sorting = filter.getSorting();
     }
     this.type = type;
-    this.sorting = filter.getSorting();
   }
 
   @Override
