@@ -1,6 +1,5 @@
 package org.exoplatform.social.core.search;
 
-import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  */
-public class PeopleSearchConnector extends SearchServiceConnector {
+public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
   private IdentityManager identityManager;
   private static final Log LOG = ExoLogger.getLogger(PeopleSearchConnector.class);
@@ -31,13 +30,10 @@ public class PeopleSearchConnector extends SearchServiceConnector {
     this.identityManager = identityManager;
   }
 
-  @Override
-  public Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
 
-    if ("relevancy".equals(sort)) {
-    } else if ("date".equals(sort)) {
-    } else if ("title".equals(sort)) {
-    }
+
+  @Override
+  public Collection<SearchResult> search(String query, Range range, Sorting sorting) {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
@@ -45,7 +41,7 @@ public class PeopleSearchConnector extends SearchServiceConnector {
     filter.setAll(query);
     ListAccess<Identity> la = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, true);
     try {
-      for (Identity i : la.load(offset, limit)) {
+      for (Identity i : la.load(range.offset, range.limit)) {
         Profile p = i.getProfile();
         StringBuilder sb = new StringBuilder();
 

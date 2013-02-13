@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
  */
-public class SpaceSearchConnector extends SearchServiceConnector {
+public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
   private SpaceService spaceService;
   private static final Log LOG = ExoLogger.getLogger(SpaceSearchConnector.class);
@@ -34,12 +34,7 @@ public class SpaceSearchConnector extends SearchServiceConnector {
   }
 
   @Override
-  public Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
-
-    if ("relevancy".equals(sort)) {
-    } else if ("date".equals(sort)) {
-    } else if ("title".equals(sort)) {
-    }
+  public Collection<SearchResult> search(String query, Range range, Sorting sorting) {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
@@ -48,7 +43,7 @@ public class SpaceSearchConnector extends SearchServiceConnector {
 
     ListAccess<Space> la = spaceService.getVisibleSpacesWithListAccess(getCurrentUserName(), filter);
     try {
-      for (Space s : la.load(offset, limit)) {
+      for (Space s : la.load(range.offset, range.limit)) {
 
         //
         StringBuilder sb = new StringBuilder(s.getDisplayName());

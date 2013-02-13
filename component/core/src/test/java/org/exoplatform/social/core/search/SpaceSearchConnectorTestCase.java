@@ -103,15 +103,15 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testFilter() throws Exception {
     setCurrentUser("demo");
-    assertEquals(1, spaceSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, spaceSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, spaceSearchConnector.search("foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, spaceSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search("foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(2, spaceSearchConnector.search("description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
   }
 
   public void testData() throws Exception {
     setCurrentUser("demo");
-    Collection<SearchResult> cFoo = spaceSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cFoo = spaceSearchConnector.search("foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertEquals("foo description", rFoo.getExcerpt());
@@ -119,7 +119,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
     assertEquals("foo - 1 Member(s) - Free to Join", rFoo.getDetail());
 
-    Collection<SearchResult> cBar = spaceSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cBar = spaceSearchConnector.search("bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
     assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
