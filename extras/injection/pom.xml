@@ -18,16 +18,11 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-component-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-api</artifactId>
     </dependency>
     <dependency>
-      <artifactId>exo.tool.framework.junit</artifactId>
-      <groupId>org.exoplatform.tool</groupId>
-      <scope>test</scope>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-component-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>
@@ -41,10 +36,6 @@
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.gatein.portal</groupId>
-      <artifactId>exo.portal.component.common</artifactId>
-    </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
@@ -54,6 +45,10 @@
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.portal</groupId>
+      <artifactId>exo.portal.component.common</artifactId>
     </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
@@ -68,6 +63,16 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.tool</groupId>
+      <artifactId>exo.tool.framework.junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -100,11 +105,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-testing</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

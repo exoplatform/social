@@ -23,7 +23,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath />
+    <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
@@ -41,8 +41,8 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/social</url>
     <tag>HEAD</tag>
+    <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
   <properties>
     <!-- **************************************** -->
@@ -355,6 +355,193 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!-- Our own project modules -->
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-opensocial</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-component-webui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-demo-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-demo-jar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-demo-rest</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-demo-war</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extension-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extension-jar</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extension-war</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extension-war</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-feedmash</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-link-composer-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-migration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-widget-resources</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-extras-widget-rest</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-opensocial</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-opensocial</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-portlet</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-resources</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social-webapp-resources</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <!-- To be replaced by an import of WS parent POM -->
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.frameworks.json</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.core</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.testframework</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      <!-- To be replaced by an import of GateIn commons parent POM -->
+      <dependency>
+        <groupId>org.gatein.common</groupId>
+        <artifactId>common-common</artifactId>
+        <version>${org.gatein.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gatein.common</groupId>
+        <artifactId>common-logging</artifactId>
+        <version>${org.gatein.common.version}</version>
+      </dependency>
+      <!-- To be replaced by an import of GateIn PC parent POM -->
+      <dependency>
+        <groupId>org.gatein.pc</groupId>
+        <artifactId>pc-api</artifactId>
+        <version>${org.gatein.pc.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+          </exclusion>
+          <exclusion>
+            <!-- To be fixed in the original project -->
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <!-- To be replaced by an import of GateIn Portal parent POM -->
       <dependency>
         <groupId>org.gatein.portal</groupId>
@@ -607,193 +794,6 @@
         <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.portlet</artifactId>
         <version>${org.gatein.portal.version}</version>
-      </dependency>
-      <!-- Our own project modules -->
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-component-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-component-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-component-opensocial</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-component-service</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-component-webui</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-config</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-config</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-jar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-rest</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extension-config</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extension-jar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extension-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extension-war</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-feedmash</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-link-composer-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-migration</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-widget-resources</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-widget-rest</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-opensocial</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-opensocial</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-portlet</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-portlet</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-resources</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-webapp-resources</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <!-- To be replaced by an import of WS parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.frameworks.json</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.rest.core</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.testframework</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <!-- To be replaced by an import of GateIn commons parent POM -->
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-common</artifactId>
-        <version>${org.gatein.common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
-        <version>${org.gatein.common.version}</version>
-      </dependency>
-      <!-- To be replaced by an import of GateIn PC parent POM -->
-      <dependency>
-        <groupId>org.gatein.pc</groupId>
-        <artifactId>pc-api</artifactId>
-        <version>${org.gatein.pc.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-          <exclusion>
-            <!-- To be fixed in the original project -->
-            <artifactId>junit</artifactId>
-            <groupId>junit</groupId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <!-- To be replaced by an import of GateIn Shinding parent POM -->
       <dependency>
