@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.search.Sorting;
 
 /**
  * This class using for filter profile of identity
@@ -53,6 +54,8 @@ public class ProfileFilter {
 
   /** Filter by first character of name. */
   private char firstCharacterOfName;
+
+  private Sorting sorting;
 
   public ProfileFilter() {
     this.name = "";
@@ -160,6 +163,17 @@ public class ProfileFilter {
 
   public void setAll(String all) {
     this.all = all;
+  }
+
+  public Sorting getSorting() {
+    if (sorting == null) {
+      return sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    }
+    return sorting;
+  }
+
+  public void setSorting(Sorting sorting) {
+    this.sorting = sorting;
   }
 
 }

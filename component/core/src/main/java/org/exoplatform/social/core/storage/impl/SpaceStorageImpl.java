@@ -32,15 +32,12 @@ import org.chromattic.api.query.QueryResult;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceRef;
-import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.chromattic.entity.*;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -156,6 +153,20 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setInvitedMembersId(space.getInvitedUsers());
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
 
+  }
+
+  private void applyOrder(QueryBuilder builder, Sorting sorting) {
+    Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
+    switch (sorting.sortBy) {
+      case DATE:
+        builder.orderBy(SpaceEntity.name.getName(), ordering);
+        break;
+      case RELEVANCY:
+        // TODO : implement relevancy order, let's do the same as title for now
+      case TITLE:
+        builder.orderBy(SpaceEntity.name.getName(), ordering);
+        break;
+    }
   }
 
   /**
@@ -458,7 +469,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -478,7 +489,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
     
@@ -506,7 +517,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -538,7 +549,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -563,7 +574,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -588,7 +599,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -613,7 +624,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
     
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
 
     return builder.get();
 
@@ -1244,7 +1255,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
 
     builder.where(whereExpression.toString());
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter.getSorting());
     
     return builder.get();
 

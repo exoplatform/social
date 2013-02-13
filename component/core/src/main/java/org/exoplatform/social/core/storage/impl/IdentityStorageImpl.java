@@ -54,6 +54,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -234,7 +235,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter.getSorting());
 
     if(count){
      return builder.where(whereExpression.toString()).get().objects();
@@ -242,6 +243,20 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
      return builder.where(whereExpression.toString()).get().objects(offset, limit);
     }
 
+  }
+
+  private void applyOrder(QueryBuilder builder, Sorting sorting) {
+    Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
+    switch (sorting.sortBy) {
+      case DATE:
+        builder.orderBy(ProfileEntity.lastName.getName(), ordering);
+        break;
+      case RELEVANCY:
+        // TODO : implement relevancy order, let's do the same as title for now
+      case TITLE:
+        builder.orderBy(ProfileEntity.lastName.getName(), ordering);
+        break;
+    }
   }
 
   /*
@@ -938,7 +953,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter.getSorting());
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -985,7 +1000,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter.getSorting());
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -1078,9 +1093,10 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.where(whereExpression.toString())
-                                                .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
-                                                .get().objects(offset, limit);
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter.getSorting());
+
+    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();

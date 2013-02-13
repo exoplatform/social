@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.space;
 
+import org.exoplatform.social.core.search.Sorting;
+
 /**
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * @since 1.2.0-GA
@@ -29,6 +31,8 @@ public class SpaceFilter {
   
   /** The default value for char type. */
   private static char CHAR_DEFAULT_VALUE = '\u0000';
+
+  private Sorting sorting;
   
   /**
    * The constructor.
@@ -104,4 +108,16 @@ public class SpaceFilter {
   public void setSpaceNameSearchCondition(String spaceNameSearchCondition) {
     this.spaceNameSearchCondition = SpaceUtils.removeSpecialCharacterInSpaceFilter(spaceNameSearchCondition);
   }
+
+  public Sorting getSorting() {
+     if (sorting == null) {
+       return sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+     }
+     return sorting;
+   }
+
+   public void setSorting(Sorting sorting) {
+     this.sorting = sorting;
+   }
+
 }
