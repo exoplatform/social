@@ -68,33 +68,17 @@ public class StorageUtils {
 
     if (profileFilter.getAll().length() != 0) {
       String value = profileFilter.getAll();
-      whereExpression.and().startGroup();
-      whereExpression.like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.fullName),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.firstName),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.lastName),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.position),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.skills),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.positions),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.organizations),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.or().like(
-          whereExpression.callFunction(QueryFunction.LOWER, ProfileEntity.jobsDescription),
-          PERCENT_STR + value.toLowerCase() + PERCENT_STR);
-      whereExpression.endGroup();
 
+      whereExpression.and().startGroup()
+          .contains(ProfileEntity.fullName, value.toLowerCase())
+          .or().contains(ProfileEntity.firstName, value.toLowerCase())
+          .or().contains(ProfileEntity.lastName, value.toLowerCase())
+          .or().contains(ProfileEntity.position, value.toLowerCase())
+          .or().contains(ProfileEntity.skills, value.toLowerCase())
+          .or().contains(ProfileEntity.positions, value.toLowerCase())
+          .or().contains(ProfileEntity.organizations, value.toLowerCase())
+          .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
+          .endGroup();
     }
 
   }
