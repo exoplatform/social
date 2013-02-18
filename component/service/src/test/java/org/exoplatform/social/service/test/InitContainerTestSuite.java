@@ -44,7 +44,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-  SpaceRestServiceTest.class,
+  //SpaceRestServiceTest.class,
   ActivityResourcesTest.class,
   ActivityStreamResourcesTest.class,
   IdentityResourcesTest.class,
