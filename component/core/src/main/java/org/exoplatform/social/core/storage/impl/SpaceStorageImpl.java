@@ -20,8 +20,12 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.chromattic.api.ChromatticSession;
@@ -1564,4 +1568,84 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   }
 
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
+
+      if (mapRefs.containsKey(spaceEntity.getName())) {
+        getSession().remove(mapRefs.get(spaceEntity.getName()));
+      }
+      
+      SpaceRef ref = listRef.getRef(spaceEntity.getName());
+      if (!ref.getName().equals(spaceEntity.getName())) {
+        ref.setName(spaceEntity.getName());
+      }
+      ref.setSpaceRef(spaceEntity);
+
+      getSession().save();
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
+    try {
+    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+    SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+    Map<String, SpaceRef> mapRefs = listRef.getRefs();
+    //
+    List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+    Space space = null;
+    
+    //
+    Iterator<SpaceRef> it = mapRefs.values().iterator();
+    while(it.hasNext()) {
+      if (filter.getAppId() == null) {
+        spaces.add(it.next());
+      } else {
+        SpaceRef ref = it.next();
+        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+          spaces.add(ref);
+        };
+      }
+      
+    }
+    //reserve order
+    Collections.reverse(spaces);
+    
+    List<Space> got = new LinkedList<Space>();
+    
+    //
+    Iterator<SpaceRef> it1 = spaces.iterator();   
+     _skip(it1, offset);
+     
+     
+    int numberOfSpaces = 0;
+    //
+    while (it1.hasNext()) {
+      space = new Space();
+      fillSpaceFromEntity(it1.next().getSpaceRef(), space);
+      got.add(space);
+      //
+      if (++numberOfSpaces == limit) {
+        break;
+      }
+    }
+   
+    
+    return got;
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+      return Collections.emptyList();
+    }
+  }
+  
+  
 }
