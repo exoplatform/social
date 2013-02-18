@@ -1803,7 +1803,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
-
+    
     return gotNumber;
     
   }

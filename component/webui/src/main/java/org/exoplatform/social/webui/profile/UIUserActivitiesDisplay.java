@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,12 +66,11 @@ public class UIUserActivitiesDisplay extends UIForm {
   private static final int      ACTIVITY_PER_PAGE = 20;
   private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
   private static final String   HOME = "home";
-  private static final String   FROM = "from";
-  private static final String   OLD_FROM = "old_from";
-  private static final String   TO = "to";
+
   private Object locker = new Object();
   private Locale currentLocale = null;
-  private boolean isRefreshed;
+  private boolean isChangedMode;
+  private boolean postActivity;
 
   public enum DisplayMode {
     OWNER_STATUS,
@@ -149,7 +147,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     selectedDisplayMode = displayMode;
     getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setValue(displayMode.name());
     try {
-      init();
+      //init();
     } catch (Exception e) {
       LOG.error("Failed to init()");
     }
@@ -250,14 +248,20 @@ public class UIUserActivitiesDisplay extends UIForm {
                                                     Utils.getViewerRemoteId());
     String lastVisitedMode = Utils.getCookies(lastVisitedModeCookieKey);
     
-    this.isRefreshed = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
+    this.isChangedMode = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
+    boolean refreshPage = Utils.isRefreshPage();
     
+    this.isChangedMode = refreshPage && this.isChangedMode;
     //
     
-    activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isRefreshed));
+    activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isChangedMode));
     
     //
     activitiesLoader.init();
+  }
+
+  public void setChangedMode(boolean changedMode) {
+    this.isChangedMode = changedMode;
   }
 
   public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
@@ -265,17 +269,23 @@ public class UIUserActivitiesDisplay extends UIForm {
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
       //
       UIUserActivitiesDisplay uiUserActivities = event.getSource();
-
+ 
       //
       String selectedDisplayMode = uiUserActivities.getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).getValue();
       if (selectedDisplayMode != null) {
         uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
+        uiUserActivities.init();
+        
+        uiUserActivities.setChangedMode(false);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
         UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
         
-        int numberOfUpdates = uiUserActivities.getActivitiesUpdatedNum(false);
-        activitiesContainer.setNumberOfUpdatedActivities(numberOfUpdates);
+        //int numberOfUpdates = uiUserActivities.getActivitiesUpdatedNum(false);
+        //activitiesContainer.setNumberOfUpdatedActivities(numberOfUpdates);
+        
+        int numberOfUpdates = activitiesContainer.getNumberOfUpdatedActivities();
+        
         //
         event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
@@ -292,37 +302,45 @@ public class UIUserActivitiesDisplay extends UIForm {
   }
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {
+    if (this.postActivity) {
+      resetCookies();
+      this.postActivity = false;
+      
+      return 0;
+    }
+
+    //
     UIActivitiesLoader activitiesLoader = getChild(UIActivitiesLoader.class);
     ActivitiesRealtimeListAccess activitiesListAccess = (ActivitiesRealtimeListAccess) activitiesLoader.getActivityListAccess();
     
     String mode = DisplayMode.ALL_ACTIVITIES.toString();
     ActivityFilterType.ACTIVITY_FEED
-                    .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
-                    .fromSinceTime(getLastVisited(FROM, mode))
-                    .toSinceTime(getLastVisited(TO, mode)).lastNumberOfUpdated(getLastUpdatedNum(mode));
+                    .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
+                    .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
+                    .toSinceTime(Utils.getLastVisited(Utils.TO, mode)).lastNumberOfUpdated(getLastUpdatedNum(mode));
     
     //
     mode = DisplayMode.CONNECTIONS.toString();
     ActivityFilterType.CONNECTIONS_ACTIVITIES
-                   .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
-                   .fromSinceTime(getLastVisited(FROM, mode))
-                   .toSinceTime(getLastVisited(TO, mode))
+                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
+                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
+                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
                    .lastNumberOfUpdated(getLastUpdatedNum(mode));
     
     //
     mode = DisplayMode.MY_ACTIVITIES.toString();
     ActivityFilterType.USER_ACTIVITIES
-                   .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
-                   .fromSinceTime(getLastVisited(FROM, mode))
-                   .toSinceTime(getLastVisited(TO, mode))
+                   .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
+                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
+                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
                    .lastNumberOfUpdated(getLastUpdatedNum(mode));
     
     //
     mode = DisplayMode.MY_SPACE.toString();
     ActivityFilterType.USER_SPACE_ACTIVITIES
-                  .oldFromSinceTime(getLastVisited(OLD_FROM, mode))
-                  .fromSinceTime(getLastVisited(FROM, mode))
-                  .toSinceTime(getLastVisited(TO, mode))
+                  .oldFromSinceTime(Utils.getLastVisited(Utils.OLD_FROM, mode))
+                  .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
+                  .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
     
     //TODO
@@ -331,20 +349,44 @@ public class UIUserActivitiesDisplay extends UIForm {
     
     ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(hasRefresh);
    
-    return activitiesListAccess.getNumberOfUpdated(updatedFilter);
-  }
-  
-  private long getLastVisited(String key, String mode) {
-    long currentVisited = Calendar.getInstance().getTimeInMillis();
-    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, Utils.getViewerRemoteId(), key);
-    String strValue = Utils.getCookies(cookieKey);
-    if(strValue == null) {
-      return currentVisited;
+    int gotNumber = activitiesListAccess.getNumberOfUpdated(updatedFilter);
+    
+    
+    //
+    if (gotNumber == 0 && hasRefresh) {
+      //only in case lastUpdatedNumber > 0 then reset cookies
+      long lastNumber = getLastUpdatedNum(selectedDisplayMode.toString());
+      if (lastNumber > 0) {
+        resetCookies();
+      }
+      
     }
     
-    return Long.parseLong(strValue);
+    
+    return gotNumber;
   }
   
+  public void resetCookies() {
+    Utils.setLastVisited(this.selectedDisplayMode.toString());
+    
+    //
+    if (this.selectedDisplayMode == DisplayMode.ALL_ACTIVITIES) {
+      Utils.setLastVisited(DisplayMode.CONNECTIONS.toString());
+      
+      //
+      Utils.setLastVisited(DisplayMode.MY_ACTIVITIES.toString());
+      
+      //
+      Utils.setLastVisited(DisplayMode.MY_SPACE.toString());
+    }
+  }
+  
+  
+  
+  public void setPostActivity(boolean postActivity) {
+    this.postActivity = postActivity;
+  }
+
   private long getLastUpdatedNum(String mode) {
     String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     String strValue = Utils.getCookies(cookieKey);

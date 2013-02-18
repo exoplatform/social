@@ -58,9 +58,9 @@
 	    }
     
       //
-      var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
-	    lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
-	    form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
+      //var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
+	  //  lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
+	  //  form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
 
       
       //
@@ -115,13 +115,13 @@
 	   
 	       if( cookieName && cookieTime && cookieName == escape(location.href) &&  Math.abs(now - cookieTime) <= 5 ) {
 	         // set last Updated Number onto cookie
-	         var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
-			     lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
-			     form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
+	         //var lastUpdatedActivitiesNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, form.selectedMode);
+			 //    lastUpdatedActivitiesNumKey = lastUpdatedActivitiesNumKey.replace(form.REMOTE_ID_PART, form.currentRemoteId);
+			 //    form.resetCookie(lastUpdatedActivitiesNumKey, form.numberOfUpdatedActivities);
 			     
-		       if (form.numberOfUpdatedActivities == 0) {
-	           form.resetCookiesOnTabs();
-			     }
+		     //  if (form.numberOfUpdatedActivities == 0) {
+	         //  form.resetCookiesOnTabs();
+			 //    }
 	       }   
 			 };
 			           
@@ -140,7 +140,7 @@
 			 var refresh_prepare = 1;
 			
 		   $(window).unload(function(){
-		     prepareForRefresh();
+		     //prepareForRefresh();
 		   }); 
 			           
 			 $(window).load(function() {
@@ -168,7 +168,6 @@
         form.resetCookie(onSelectedTabCookieName, form.ALL);
       }
       
-      console.log('resetCookiesOnTabs');
       form.applyChanges([selectedTab]);
       
 	    // [All Activities] is current Selected tab then reset all other tabs on visited time
@@ -187,7 +186,6 @@
 			  return;
 			}
 			
-			console.log('run again');
 			// init timer
 			form.clientTimerAtStart = new Date().getTime();
       form.currentServerTime = currentServerTime*1;
@@ -234,7 +232,6 @@
 	  },
 	  applyChanges : function( affectedFields ) { // FIELDS
 	    if ( affectedFields.length === 0 ) return;
-	    console.log('applyChanges');
 	    var form = UIActivityUpdates;
 	    var userId = form.currentRemoteId;
 	    $.each( affectedFields, function( index, field ) {

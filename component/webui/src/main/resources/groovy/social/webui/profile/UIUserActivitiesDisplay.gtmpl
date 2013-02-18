@@ -31,9 +31,7 @@
   def currentServerTime = Calendar.getInstance().getTimeInMillis();
   String script = "var slbox = jq('select[name="+uiform.SELECT_BOX_DISPLAY_MODE+"]');" + 
                   "slbox.find('option[value='+ slbox.val() +']').hide();";
-  jsManager.require("SHARED/jquery", "jq").addScripts(script)
-           .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId',$currentServerTime);");
-
+  
   uicomponent.changeLocale();
 %>
 <div class="$uiform.id ClearFix">
