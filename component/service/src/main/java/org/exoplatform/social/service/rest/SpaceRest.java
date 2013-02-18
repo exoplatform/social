@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.service.rest;
 
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
@@ -53,6 +54,11 @@ public class SpaceRest {
    * The url of the space.
    */
   private String url;
+  
+  /**
+   * The url of the space's avatar.
+   */
+  private String avatarUrl;
 
   /**
    * The constructor.
@@ -65,6 +71,8 @@ public class SpaceRest {
     this.groupId = space.getGroupId();
     this.name = space.getName();
     this.displayName = space.getDisplayName();
+    
+    this.avatarUrl = space.getAvatarUrl() == null ? LinkProvider.SPACE_DEFAULT_AVATAR_URL : space.getAvatarUrl();
   }
   
   /**
@@ -75,6 +83,14 @@ public class SpaceRest {
    */
   public String getSpaceUrl() {
     return spaceUrl;
+  }
+  
+  /**
+   * Gets the space's avatar url
+   * @return
+   */
+  public String getAvatarUrl() {
+    return avatarUrl;
   }
 
   /**
