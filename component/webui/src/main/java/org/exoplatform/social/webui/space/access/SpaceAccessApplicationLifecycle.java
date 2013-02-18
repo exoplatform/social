@@ -42,6 +42,8 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
 
   private static final Log LOG = ExoLogger.getLogger(SpaceAccessApplicationLifecycle.class);
+  
+  
   @Override
   public void onInit(Application app) throws Exception {
     
@@ -55,10 +57,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     //SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
     
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-    
-    LOG.info("RequestNavigationData::siteType =" + pcontext.getSiteType());
-    LOG.info("RequestNavigationData::siteName =" + pcontext.getSiteName());
-    LOG.info("RequestNavigationData::requestPath =" + requestPath);
     
     Route route = ExoRouter.route(requestPath);
     if (route == null) { 
@@ -189,8 +187,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
 
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    
-    
+    PortalRequestContext pcontext = (PortalRequestContext)context;
+    Utils.setCurrentNavigationData(pcontext.getNavigationData());
   }
 
   @Override

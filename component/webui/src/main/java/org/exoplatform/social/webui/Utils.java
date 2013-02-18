@@ -16,12 +16,15 @@
  */
 package org.exoplatform.social.webui;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
@@ -50,10 +53,19 @@ public class Utils {
   public static final String ACTIVITY_STREAM_TAB_SELECTED_COOKIED = "exo_social_activity_stream_tab_selected_%s";
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s_%s";
   public static final String LAST_UPDATED_ACTIVITIES_NUM = "exo_social_last_updated_activities_num_on_%s_of_%s";
+  public static final String FROM = "from";
+  public static final String OLD_FROM = "old_from";
+  public static final String TO = "to";
   
   /** . */
   public static final String NOT_SEEN_ACTIVITIES_COOKIES = "exo_social_not_seen_activities_%s";
   public static final String SEEN_ACTIVITIES_COOKIES = "exo_social_seen_activities_%s";
+  
+  /** */
+  private static RequestNavigationData lastRequestNavData = null;
+  
+  /** */
+  private static RequestNavigationData currentRequestNavData = null;
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -292,15 +304,11 @@ public class Utils {
    * 
    * @param value
    */
-  public static void setCookies(String key, String value, boolean override) {
-    if (override == false) {
-      if (hasCookies(key)) return;
-    }
-    
-    if (hasCookies(key)) {
-      eraseCookie(key);
-    }
+  public static void setCookies(String key, String value) {
+    //
+    removeCookie(key);
 
+    //
     PortalRequestContext request = Util.getPortalRequestContext() ;
     Cookie cookie = new Cookie(key, value);
     cookie.setPath(request.getRequest().getContextPath());
@@ -308,19 +316,23 @@ public class Utils {
     request.getResponse().addCookie(cookie);
   }
   
-  public static void eraseCookie(String key) {
+  private static Cookie[] removeCookie(String key) {
     PortalRequestContext request = Util.getPortalRequestContext();
     Cookie[] cookies = request.getRequest().getCookies();
     if (cookies != null) {
+      int found = -1;
       for (int i = 0; i < cookies.length; i++) {
         if (key.equals(cookies[i].getName())) {
-          cookies[i].setValue("");
-          cookies[i].setPath("/");
-          cookies[i].setMaxAge(0);
-          request.getResponse().addCookie(cookies[i]);
+          found = i;
+          break;
         }
       }
+      if (found > -1) {
+        ArrayUtils.remove(cookies, found);
+      }
+      
     }
+    return cookies;
   }
 
   /**
@@ -345,6 +357,49 @@ public class Utils {
     return (getCookies(key) != null);
   }
   
+  public static long getLastVisited(String key, String mode) {
+    long currentVisited = Calendar.getInstance().getTimeInMillis();
+    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, Utils.getViewerRemoteId(), key);
+    String strValue = Utils.getCookies(cookieKey);
+    if(strValue == null) {
+      return currentVisited;
+    }
+    
+    return Long.parseLong(strValue);
+  }
+  
+  private static String getCookieValue(String key, String mode) {
+    long currentVisited = Calendar.getInstance().getTimeInMillis();
+    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, Utils.getViewerRemoteId(), key);
+    String strValue = Utils.getCookies(cookieKey);
+    if(strValue == null) {
+      return "" + currentVisited;
+    }
+    
+    return strValue;
+  }
+  
+  
+  public static void setLastVisited(String mode) {
+    String gotTo = getCookieValue(TO, mode);
+    String gotFrom = getCookieValue(FROM, mode);
+    
+    //
+    setCookie(OLD_FROM, mode, gotFrom);
+    
+    //
+    setCookie(FROM, mode, gotTo);
+    
+    //
+    long nextTo = Calendar.getInstance().getTimeInMillis();
+    setCookie(TO, mode, "" + nextTo);
+  }
+  
+  private static void setCookie(String key, String mode, String value) {
+    String cookieKey = String.format(Utils.ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, mode, Utils.getViewerRemoteId(), key);
+    Utils.setCookies(cookieKey, value);
+  }
+  
   public static String listToString(List<String> list, String separator) {
     StringBuilder sb = new StringBuilder();
     int lastIdx = 0;
@@ -359,5 +414,29 @@ public class Utils {
         }
     }
     return sb.toString();
+  }
+  
+  /**
+   * 
+   * @param requestNavData
+   */
+  public static void setCurrentNavigationData(RequestNavigationData requestNavData) {
+    lastRequestNavData = currentRequestNavData;
+    currentRequestNavData = requestNavData;
+  }
+
+  /**
+   * Checks the page in refresh context or switch from other one to it.
+   * 
+   * @return IF refresh TRUE; Otherwise FALSE
+   * 
+   */
+  public static boolean isRefreshPage() {
+    
+    if (lastRequestNavData == null && currentRequestNavData == null) {
+      return false;
+    }
+    
+    return lastRequestNavData.equals(currentRequestNavData);
   }
 }
