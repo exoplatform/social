@@ -487,7 +487,7 @@
     </childNodeDefinitions>
   </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.SpaceListEntity -->
-  <nodeType name="soc:spaceslist" isMixin="false" hasOrderableChildNodes="false">
+  <nodeType name="soc:spaceslist" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>

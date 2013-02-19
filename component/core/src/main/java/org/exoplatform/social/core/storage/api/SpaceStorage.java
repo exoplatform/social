@@ -240,16 +240,6 @@ public interface SpaceStorage {
   public int getPublicSpacesCount(String userId) throws SpaceStorageException;
   
   /**
-   * Gets the count of the spaces is not hidden which user is member.
-   *
-   * @param userId
-   * @return the count of the spaces in which the user can request to join
-   * @throws SpaceStorageException
-   * @since 4.0.0.Alpha1
-   */
-  public int getSpacesOfMemberCount(String userId) throws SpaceStorageException;
-
-  /**
    * Gets the count of the public spaces of the user by space filter.
    *
    * @param userId
@@ -517,4 +507,20 @@ public interface SpaceStorage {
    * @throws SpaceStorageException
    */
   public Space getSpaceByUrl(String url) throws SpaceStorageException;
+  
+  /**
+   * Update accessed space to top of space members list of Identity model
+   *
+   * @param remoteId
+   * @param space
+   */
+  void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException;
+  
+  /**
+   * Gets list of spaces which user has been last visited.
+   * @param offset TODO
+   * @param limit
+   * @param remoteId
+   */
+  List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
 }

@@ -353,7 +353,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       activity = new ExoSocialActivityImpl();  
     }
     
-    int numberOfSpacesOfMember = getSpaceStorage().getSpacesOfMemberCount(identity.getRemoteId());
+    int numberOfSpacesOfMember = getSpaceStorage().getMemberSpacesCount(identity.getRemoteId());
     
     activity.setTitleId(USER_JOINED_PUBLIC_SPACE_TITLE_ID);
     

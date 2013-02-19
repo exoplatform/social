@@ -21,6 +21,7 @@ import org.exoplatform.commons.testing.ConfigTestCase;
 import org.exoplatform.social.core.application.ProfileUpdatesPublisherTest;
 import org.exoplatform.social.core.application.RelationshipPublisherTest;
 import org.exoplatform.social.core.application.SpaceActivityPublisherTest;
+import org.exoplatform.social.core.feature.SpaceLastVisitedTest;
 import org.exoplatform.social.core.feature.WhatsHotTest;
 import org.exoplatform.social.core.listeners.SocialUserProfileEventListenerImplTest;
 import org.exoplatform.social.core.manager.ActivityManagerTest;
@@ -55,6 +56,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * Nov 8, 2012  
  */
 @SuiteClasses({
+  SpaceLastVisitedTest.class,
   WhatsHotTest.class,
   ActivityManagerTest.class,
   ActivityStorageTest.class,
