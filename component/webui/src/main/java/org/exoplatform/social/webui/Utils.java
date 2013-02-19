@@ -56,6 +56,7 @@ public class Utils {
   public static final String FROM = "from";
   public static final String OLD_FROM = "old_from";
   public static final String TO = "to";
+  private static final String   HOME = "home";
   
   /** . */
   public static final String NOT_SEEN_ACTIVITIES_COOKIES = "exo_social_not_seen_activities_%s";
@@ -433,10 +434,20 @@ public class Utils {
    */
   public static boolean isRefreshPage() {
     
-    if (lastRequestNavData == null && currentRequestNavData == null) {
+    if (lastRequestNavData == null || currentRequestNavData == null) {
       return false;
     }
     
     return lastRequestNavData.equals(currentRequestNavData);
+  }
+  
+  /**
+   * Determines current displayed page is Home or not base on selected node.
+   * 
+   * @return
+   */
+  public static boolean isHomePage() {
+    String selectedNode = Utils.getSelectedNode(); 
+    return ( selectedNode == null || selectedNode.length() == 0 || HOME.equals(selectedNode));  
   }
 }

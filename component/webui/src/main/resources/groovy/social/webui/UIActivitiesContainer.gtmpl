@@ -37,20 +37,23 @@ def currentRemoteId = Utils.getViewerRemoteId();
 def currentServerTime = uicomponent.getCurrentServerTime();
 def isOnMyActivities = uicomponent.isOnMyActivities();
 
-def inputs = """ {
-        numberOfUpdatedActivities: $numberOfUpdatedActivities,
-        cookieName: '$cookieName',
-        noUpdates: '$noUpdates', 
-        currentRemoteId: '$currentRemoteId',
-        selectedTab: '$selectedTab',
-        currentServerTime: $currentServerTime,
-        isOnMyActivities: $isOnMyActivities
-} """;
-
-jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");    
+if ( Utils.isHomePage() ) 
+{
+	def inputs = """ {
+	        numberOfUpdatedActivities: $numberOfUpdatedActivities,
+	        cookieName: '$cookieName',
+	        noUpdates: '$noUpdates', 
+	        currentRemoteId: '$currentRemoteId',
+	        selectedTab: '$selectedTab',
+	        currentServerTime: $currentServerTime,
+	        isOnMyActivities: $isOnMyActivities
+	} """;
+	
+  jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
+}    
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<% if (!uicomponent.getParent().isExtendLoader()) { %>
+<% if (!uicomponent.getParent().isExtendLoader() && Utils.isHomePage()) { %>
   <div class="UpdateInfo">
   	<% if(numberOfUpdatedActivities > 0) { %>
   	<span id="numberInfo"><%=String.valueOf(numberOfUpdatedActivities) + " " + updates%></span>

@@ -38,7 +38,7 @@
   <% uiform.begin() %>
   <div class="UISelectDisplayMode">
     <%
-       if (uiform.isActivityStreamOwner() && uiform.isHomePage()) {
+       if (uiform.isActivityStreamOwner() && Utils.isHomePage()) {
          uiform.renderField(uiform.SELECT_BOX_DISPLAY_MODE);
        }
     %>
