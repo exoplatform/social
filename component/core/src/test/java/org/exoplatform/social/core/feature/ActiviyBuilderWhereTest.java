@@ -148,6 +148,47 @@ public class ActiviyBuilderWhereTest extends TestCase {
     assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
   }
   
+  private class InvokeBuildMethods implements Runnable {
+    ActivityBuilderWhere where = null;
+    ActivityFilter filter = null;
+    
+    public InvokeBuildMethods(ActivityBuilderWhere where, ActivityFilter filter) {
+      this.where = where;
+      this.filter = filter;
+    }
+    
+    public void run() {
+      where.build(filter);
+    }
+  }
+  
+  public void testFeedWithMultiThread() throws Exception {
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER;
+    long accessPoint = Calendar.getInstance().getTime().getTime();
+    //
+    List<Identity> identities = null;
+    
+    for( int i = 0; i < 10; i++ ) {
+
+      filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(accessPoint));
+      identities = new ArrayList<Identity>();
+      identities.add(demoIdentity);
+      identities.add(rootIdentity);
+      where.owners(identities);
+      
+      new Thread(new InvokeBuildMethods(where, filter)).start();
+    }
+    
+    for ( int idx = 0; idx < 50; idx++ ) {
+      identities = new ArrayList<Identity>();
+      Identity identity = new Identity("id" + idx);
+      identity.setRemoteId("" + idx);
+      identities.add(identity);
+      where.owners(identities);
+    }
+  }
+  
   public void testUserNewerOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
     ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;

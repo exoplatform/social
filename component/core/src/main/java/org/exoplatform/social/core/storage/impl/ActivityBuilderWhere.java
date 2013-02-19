@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.DIRECTION;
+import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
@@ -89,7 +91,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
     mentioner = null;
     liker = null;
     commenter = null;
-    identities = null;
+    identities = new ArrayList<Identity>();
   }
   
   public ActivityBuilderWhere poster(Identity poster) {
@@ -141,11 +143,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   }
   
   public List<Identity> getOwners() {
-    return this.identities == null ? new ArrayList<Identity>() : this.identities;
+    return this.identities == null ? new CopyOnWriteArrayList<Identity>() 
+                                   : new CopyOnWriteArrayList<Identity>(this.identities);
   }
   
   public List<Identity> getPosters() {
-    return this.posters == null ? new ArrayList<Identity>() : this.posters;
+    return this.posters == null ? new CopyOnWriteArrayList<Identity>() 
+                                : new CopyOnWriteArrayList<Identity>(this.posters);
   }
   
   public ActivityBuilderWhere excludedActivities(String...activityIds) {
@@ -161,6 +165,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
     @Override
     public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       //has relationship
       if (identities != null && identities.size() > 0) {
@@ -215,6 +220,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
     @Override
     public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
       
@@ -253,6 +259,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       //
       if (posters != null) {
+        List<Identity> posters = getPosters();
         for (Identity currentIdentity : posters) {
           if (first) {
             first = false;
@@ -304,6 +311,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
     @Override
     public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
       
@@ -311,6 +319,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       if ( hasIndentitiesCondition ) {
         boolean first = true;
         where.startGroup();
+
         for (Identity currentIdentity : identities) {
 
           if (first) {
@@ -336,8 +345,12 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
           where.contains(ActivityEntity.mentioners, mentioner.getId());
         }
       }
-
-      Object fromFilter = filter.get(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).getValue();
+      Object fromFilter = null;
+      FilterOption<PropertyLiteralExpression<?>> frFilter = filter.get(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD);
+      if (frFilter != null) {
+        fromFilter = frFilter.getValue();
+      }
+      
       //
       if (fromFilter != null) {
         TimestampType type = null;
@@ -356,7 +369,11 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         }
       }
       
-      Object toFilter = filter.get(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).getValue();
+      Object toFilter = null;
+      FilterOption<PropertyLiteralExpression<?>> tFilter = filter.get(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD);
+      if (tFilter != null) {
+        toFilter = tFilter.getValue();
+      }
       //
       if (toFilter != null) {
         TimestampType type = null;
@@ -382,6 +399,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
 
     @Override
     public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       //has relationship
       if (identities != null && identities.size() > 0) {
