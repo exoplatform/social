@@ -57,7 +57,7 @@
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
     <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
-    <org.exoplatform.commons.version>4.0.0-unified-search-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
     <org.exoplatform.doc.doc-style.version>4.0.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
