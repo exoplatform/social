@@ -135,6 +135,8 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     List<SpaceRest> myList = gotList.getSpaces();
     SpaceRest sRest = myList.get(0);
     assertEquals("space_4", sRest.getName());
+    assertTrue(sRest.getAvatarUrl().length() > 0);
+    
     
     //
     Space space2 = spaceService.getSpaceByPrettyName("space_2");
@@ -152,6 +154,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     myList = gotList.getSpaces();
     sRest = myList.get(0);
     assertEquals("space_2", sRest.getName());
+    assertTrue(sRest.getAvatarUrl().length() > 0);
     
     //appIdNull
     response = service("GET", "/portal/social/spaces/lastVisitedSpace/list.json?limit=5", "", null, null);
@@ -161,6 +164,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     myList = gotList.getSpaces();
     sRest = myList.get(0);
     assertEquals("space_2", sRest.getName());
+    assertTrue(sRest.getAvatarUrl().length() > 0);
 
     //
     endSession();
@@ -234,6 +238,7 @@ public class SpaceRestServiceTest extends AbstractResourceTest {
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
+    space.setAvatarUrl("/profile/my_avatar_" + number);
     this.spaceService.saveSpace(space, true);
     return space;
   }
