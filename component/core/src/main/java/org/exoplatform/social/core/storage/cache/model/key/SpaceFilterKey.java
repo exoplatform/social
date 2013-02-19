@@ -32,6 +32,7 @@ public class SpaceFilterKey extends ScopeCacheKey {
   private String userId;
   private char firstCharacterOfSpaceName;
   private String spaceNameSearchCondition;
+  private String appId;
   private SpaceType type;
   private Sorting sorting;
 
@@ -41,6 +42,7 @@ public class SpaceFilterKey extends ScopeCacheKey {
       this.firstCharacterOfSpaceName = filter.getFirstCharacterOfSpaceName();
       this.spaceNameSearchCondition = filter.getSpaceNameSearchCondition();
       this.sorting = filter.getSorting();
+      this.appId = filter.getAppId();
     }
     this.type = type;
   }
@@ -52,6 +54,10 @@ public class SpaceFilterKey extends ScopeCacheKey {
     if (!super.equals(o)) return false;
 
     SpaceFilterKey that = (SpaceFilterKey) o;
+    
+    if (appId != that.appId) {
+      return false;
+    }
 
     if (firstCharacterOfSpaceName != that.firstCharacterOfSpaceName) return false;
     if (sorting != null ? !sorting.equals(that.sorting) : that.sorting != null) return false;
@@ -67,6 +73,7 @@ public class SpaceFilterKey extends ScopeCacheKey {
   public int hashCode() {
     int result = super.hashCode();
     result = 31 * result + (userId != null ? userId.hashCode() : 0);
+    result = 31 * result + (appId != null ? appId.hashCode() : 0);
     result = 31 * result + (int) firstCharacterOfSpaceName;
     result = 31 * result + (spaceNameSearchCondition != null ? spaceNameSearchCondition.hashCode() : 0);
     result = 31 * result + (type != null ? type.hashCode() : 0);

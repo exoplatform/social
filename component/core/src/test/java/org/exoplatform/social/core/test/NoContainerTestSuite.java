@@ -45,7 +45,7 @@ import org.junit.runners.Suite.SuiteClasses;
   IdentityTest.class,
   ImageUtilsTest.class,
   ActivityResourceBundlePluginTest.class,
-  I18NActivityProcessorTest.class,
+  //I18NActivityProcessorTest.class,
   RelationshipTest.class,
   SpaceUtilsTest.class,
   ExpressionConstructorTestCase.class,

@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.0.0-unified-search-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -638,28 +638,6 @@
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-config</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-config</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-jar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-rest</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>

@@ -35,6 +35,11 @@ public class SpaceRest {
   private String name;
   
   /**
+   * The display name of the space. 
+   */
+  private String displayName;
+  
+  /**
    * The space url with new navigation controller.
    */
   private String spaceUrl;
@@ -59,6 +64,7 @@ public class SpaceRest {
     this.url = space.getUrl();
     this.groupId = space.getGroupId();
     this.name = space.getName();
+    this.displayName = space.getDisplayName();
   }
   
   /**
@@ -134,4 +140,15 @@ public class SpaceRest {
   public void setName(String name) {
     this.name = name;
   }
+
+  /**
+   * Gets the display name of the space.
+   * 
+   * @return
+   */
+  public String getDisplayName() {
+    return displayName;
+  }
+  
+  
 }

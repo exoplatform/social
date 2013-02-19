@@ -24,6 +24,7 @@ import org.exoplatform.social.service.rest.LinkShareRestServiceTest;
 import org.exoplatform.social.service.rest.PeopleRestServiceTest;
 import org.exoplatform.social.service.rest.RestCheckerTest;
 import org.exoplatform.social.service.rest.SecurityManagerTest;
+import org.exoplatform.social.service.rest.SpaceRestServiceTest;
 import org.exoplatform.social.service.rest.UtilTest;
 import org.exoplatform.social.service.rest.api.ActivityResourcesTest;
 import org.exoplatform.social.service.rest.api.ActivityStreamResourcesTest;
@@ -43,6 +44,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+  //SpaceRestServiceTest.class,
   ActivityResourcesTest.class,
   ActivityStreamResourcesTest.class,
   IdentityResourcesTest.class,

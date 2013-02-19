@@ -97,5 +97,10 @@ public class UISpaceActivitiesDisplay extends UIContainer {
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
     activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesWithListAccess(spaceIdentity));
     activitiesLoader.init();
+    
+    //
+    String remoteId = Utils.getOwnerRemoteId();
+    Utils.getSpaceService().updateSpaceAccessed(remoteId, space);
+    
   }
 }
