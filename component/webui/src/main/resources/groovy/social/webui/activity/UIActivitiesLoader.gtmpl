@@ -27,7 +27,7 @@
 %>
 
 <% if ( hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
-<div class="uiActivityStream" id="$uicomponent.id">
+<div class="uiActivityStream clearfix" id="$uicomponent.id">
 <% } else { %>
 <div class="uiActivityStream clearBG" id="$uicomponent.id">
 <% } %>
@@ -54,9 +54,9 @@
   <%
     if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
       %>
-      	<div id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="uiActivitiesLoadButton">
+      	<button id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="btn showMore">
           $labelMore
-        </div>
+        </button>
         
       <%
     }

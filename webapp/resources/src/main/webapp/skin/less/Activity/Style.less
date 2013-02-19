@@ -99,8 +99,16 @@
 	background: url("/social-resources/skin/images/Activity/time-line-top.png") no-repeat 14px 0;
 	margin-top: 3px;
 	padding-top: 31px;
+	position: relative;
 	&.clearBG {
 		background: none;
+	}
+	
+	.showMore {
+		bottom: -17px;
+	    left: 65px;
+	    position: absolute;
+	    width: 91%;
 	}
 }
 
@@ -168,13 +176,9 @@
 
 /* activitiBottom */
 .activityBottom {
-	background: url("/social-resources/skin/images/Activity/time-line-bottom.png") no-repeat 20px 0px;
+	background: url("/social-resources/skin/images/Activity/time-line-bottom.png") no-repeat 13px -2px;
 	display: block;
-	height: 13px; 
-}
-
-.uiUserActivitiesDisplay.notSeen .activityBottom {
-	background: url("/social-resources/skin/images/Activity/time-line-bottom-active.png") no-repeat 20px 0px;
+	height: 27px; 
 }
 
 /*common  activityStreams*/
@@ -182,7 +186,11 @@
 .activityStream {
 	 background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 24px 0px;
 	 &+ .activityStream {
-		 padding: 30px 0 0 0;
+		 padding: 30px 0 0;
+	 }
+	 
+	 &+ .activityStream:last-child {
+		 padding: 30px 0 50px;
 	 }
 	 
 	 &.boxLoadMore {
