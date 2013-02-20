@@ -649,28 +649,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-config</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-jar</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-rest</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-demo-war</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extension-config</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -980,6 +980,25 @@ public interface SpaceService {
    * @param appId
    */
   void removeApplication(String spaceId, String appId, String appName) throws SpaceException;
+  
+  /**
+   * Update accessed space to top of space members list of Identity model
+   *
+   * @param remoteId
+   * @param space
+   */
+  void updateSpaceAccessed(String remoteId, Space space) throws SpaceException;
+  
+  /**
+   * Gets list of spaces which user has been last visited.
+   *
+   * @param remoteId
+   * @param appId
+   * @param offset TODO
+   * @param limit
+   */
+  List<Space> getLastAccessedSpace(String remoteId, String appId, int offset, int limit) throws SpaceException;
+  
 
   /**
    * Requests a user to join a space, adds that user to the pending list of the space.

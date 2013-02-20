@@ -272,7 +272,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(360)
   public void testHardDeleteSpace() throws Exception {
 
     Identity user1 = new Identity("organization", "user1");
@@ -677,7 +677,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(1, storage.getIdentitiesByFirstCharacterOfNameCount("o", filterB2Skills));
   }
 
-  @MaxQueryNumber(500)
+  @MaxQueryNumber(510)
   public void testFindIdentityByFirstChar() throws Exception {
 
     addIdentity("o", "a1", "", "");
@@ -719,7 +719,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals("b2", storage.getIdentitiesByFirstCharacterOfName("o", filterB2Skills, 0, 10, false).get(0).getRemoteId());
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(210)
   public void testFindIdentityWithFilterCount() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");
@@ -760,7 +760,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(1, storage.getIdentitiesByProfileFilterCount("o", filterB2Skills));
   }
 
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(220)
   public void testFindIdentityWithFilter() throws Exception {
 
     addIdentity("o", "toto", "male", "cadre");

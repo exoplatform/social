@@ -41,3 +41,4 @@ pom.xml.versionsBackup
 
 # Misc
 *.swp
+*.log
