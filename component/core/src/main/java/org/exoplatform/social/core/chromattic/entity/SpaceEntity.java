@@ -163,5 +163,14 @@ public abstract class SpaceEntity {
   public abstract void setManagerMembersId(String[] managerMembersId);
   public static final PropertyLiteralExpression<String> managerMembersId =
       new PropertyLiteralExpression<String>(String.class, "soc:managerMembersId");
-  
+
+  /**
+   * The created time
+   */
+  @Property(name = "soc:createdTime")
+  public abstract Long getCreatedTime();
+  public abstract void setCreatedTime(Long createdTime);
+  public static final PropertyLiteralExpression<Long> createdTime =
+      new PropertyLiteralExpression<Long>(Long.class, "soc:createdTime");
+
 }

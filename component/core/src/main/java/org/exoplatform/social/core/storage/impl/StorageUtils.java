@@ -10,6 +10,8 @@ import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
@@ -65,6 +67,22 @@ public class StorageUtils {
           PERCENT_STR + skills.toLowerCase() + PERCENT_STR
       );
     }
+
+    if (profileFilter.getAll().length() != 0) {
+      String value = profileFilter.getAll();
+
+      whereExpression.and().startGroup()
+          .contains(ProfileEntity.fullName, value.toLowerCase())
+          .or().contains(ProfileEntity.firstName, value.toLowerCase())
+          .or().contains(ProfileEntity.lastName, value.toLowerCase())
+          .or().contains(ProfileEntity.position, value.toLowerCase())
+          .or().contains(ProfileEntity.skills, value.toLowerCase())
+          .or().contains(ProfileEntity.positions, value.toLowerCase())
+          .or().contains(ProfileEntity.organizations, value.toLowerCase())
+          .or().contains(ProfileEntity.jobsDescription, value.toLowerCase())
+          .endGroup();
+    }
+
   }
 
   public static void applyExcludes(final WhereExpression whereExpression, final List<Identity> excludedIdentityList) {
@@ -136,7 +154,7 @@ public class StorageUtils {
    * Encodes Url to conform to the generated Url of WEBDAV.
    * Currently, Could not load data from generated url that contain dot character (.) cause by not consist with WEBDAV.
    * This method replace any percent character (%) by (%25) to solve this problem. 
-   * @param avatar 
+   * @param avatar
    * @return
    */
   public static String encodeUrl(String path) {

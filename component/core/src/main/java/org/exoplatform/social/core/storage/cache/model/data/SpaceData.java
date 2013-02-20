@@ -40,6 +40,7 @@ public class SpaceData implements CacheData<Space> {
   private final String groupId;
   private final String url;
   private final Long avatarLastUpdated;
+  private final Long createdTime;
 
   private final String[] members;
   private final String[] managers;
@@ -66,6 +67,7 @@ public class SpaceData implements CacheData<Space> {
     managers = space.getManagers();
     pendingUser = space.getPendingUsers();
     invitedUser = space.getInvitedUsers();
+    createdTime = space.getCreatedTime();
 
   }
 
@@ -90,6 +92,7 @@ public class SpaceData implements CacheData<Space> {
     space.setManagers(managers);
     space.setPendingUsers(pendingUser);
     space.setInvitedUsers(invitedUser);
+    space.setCreatedTime(createdTime);
 
     return space;
 

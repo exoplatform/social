@@ -20,8 +20,12 @@ package org.exoplatform.social.core.storage.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.chromattic.api.ChromatticSession;
@@ -32,15 +36,12 @@ import org.chromattic.api.query.QueryResult;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceListEntity;
-import org.exoplatform.social.core.chromattic.entity.SpaceRef;
-import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.chromattic.entity.*;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -97,6 +98,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     space.setUrl(entity.getURL());
     space.setPendingUsers(entity.getPendingMembersId());
     space.setInvitedUsers(entity.getInvitedMembersId());
+    space.setCreatedTime(entity.getCreatedTime());
 
     //
     String[] members = entity.getMembersId();
@@ -155,7 +157,32 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     entity.setPendingMembersId(space.getPendingUsers());
     entity.setInvitedMembersId(space.getInvitedUsers());
     entity.setAvatarLastUpdated(space.getAvatarLastUpdated());
+    entity.setCreatedTime(space.getCreatedTime() != 0 ? space.getCreatedTime() : System.currentTimeMillis());
 
+  }
+
+  private void applyOrder(QueryBuilder builder, SpaceFilter spaceFilter) {
+
+    //
+    Sorting sorting;
+    if (spaceFilter == null) {
+      sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    } else {
+      sorting = spaceFilter.getSorting();
+    }
+
+    //
+    Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
+    switch (sorting.sortBy) {
+      case DATE:
+        builder.orderBy(SpaceEntity.createdTime.getName(), ordering);
+        break;
+      case RELEVANCY:
+        // TODO : implement relevancy order, let's do the same as title for now
+      case TITLE:
+        builder.orderBy(SpaceEntity.name.getName(), ordering);
+        break;
+    }
   }
 
   /**
@@ -458,7 +485,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -478,7 +505,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
     
@@ -506,7 +533,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -538,7 +565,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -563,7 +590,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -588,7 +615,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
 
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -613,7 +640,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       builder.where(whereExpression.toString());
     }
     
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
 
     return builder.get();
 
@@ -1244,7 +1271,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
 
     builder.where(whereExpression.toString());
-    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+    applyOrder(builder, spaceFilter);
     
     return builder.get();
 
@@ -1564,4 +1591,84 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
   }
 
+  @Override
+  public void updateSpaceAccessed(String remoteId, Space space) throws SpaceStorageException {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+      SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+      Map<String, SpaceRef> mapRefs = listRef.getRefs();
+      
+      SpaceEntity spaceEntity = _findById(SpaceEntity.class, space.getId());
+
+      if (mapRefs.containsKey(spaceEntity.getName())) {
+        getSession().remove(mapRefs.get(spaceEntity.getName()));
+      }
+      
+      SpaceRef ref = listRef.getRef(spaceEntity.getName());
+      if (!ref.getName().equals(spaceEntity.getName())) {
+        ref.setName(spaceEntity.getName());
+      }
+      ref.setSpaceRef(spaceEntity);
+
+      getSession().save();
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException {
+    try {
+    IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, filter.getRemoteId());
+    SpaceListEntity listRef = RefType.MEMBER.refsOf(identityEntity);
+    Map<String, SpaceRef> mapRefs = listRef.getRefs();
+    //
+    List<SpaceRef> spaces = new LinkedList<SpaceRef>();
+    Space space = null;
+    
+    //
+    Iterator<SpaceRef> it = mapRefs.values().iterator();
+    while(it.hasNext()) {
+      if (filter.getAppId() == null) {
+        spaces.add(it.next());
+      } else {
+        SpaceRef ref = it.next();
+        if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
+          spaces.add(ref);
+        };
+      }
+      
+    }
+    //reserve order
+    Collections.reverse(spaces);
+    
+    List<Space> got = new LinkedList<Space>();
+    
+    //
+    Iterator<SpaceRef> it1 = spaces.iterator();   
+     _skip(it1, offset);
+     
+     
+    int numberOfSpaces = 0;
+    //
+    while (it1.hasNext()) {
+      space = new Space();
+      fillSpaceFromEntity(it1.next().getSpaceRef(), space);
+      got.add(space);
+      //
+      if (++numberOfSpaces == limit) {
+        break;
+      }
+    }
+   
+    
+    return got;
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+      return Collections.emptyList();
+    }
+  }
+  
+  
 }
