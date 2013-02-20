@@ -56,6 +56,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
@@ -236,7 +237,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyWhereFromIdentity(whereExpression, relations);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter);
 
     if(count){
      return builder.where(whereExpression.toString()).get().objects();
@@ -244,6 +245,30 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
      return builder.where(whereExpression.toString()).get().objects(offset, limit);
     }
 
+  }
+
+  private void applyOrder(QueryBuilder builder, ProfileFilter profileFilter) {
+
+    //
+    Sorting sorting;
+    if (profileFilter == null) {
+      sorting = new Sorting(Sorting.SortBy.TITLE, Sorting.OrderBy.ASC);
+    } else {
+      sorting = profileFilter.getSorting();
+    }
+
+    //
+    Ordering ordering = Ordering.valueOf(sorting.orderBy.toString());
+    switch (sorting.sortBy) {
+      case DATE:
+        builder.orderBy(ProfileEntity.createdTime.getName(), ordering);
+        break;
+      case RELEVANCY:
+        // TODO : implement relevancy order, let's do the same as title for now
+      case TITLE:
+        builder.orderBy(ProfileEntity.fullName.getName(), ordering);
+        break;
+    }
   }
 
   /*
@@ -442,7 +467,8 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     ActivityProfileEntity activityPEntity = profileEntity.createActivityProfile();
     profileEntity.setActivityProfile(activityPEntity);
     
-    
+    profile.setCreatedTime(System.currentTimeMillis());
+
     //
     getSession().save();
 
@@ -526,6 +552,9 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
           // create
           List<String> skills = new ArrayList<String>();
+          List<String> positions = new ArrayList<String>();
+          List<String> organizations = new ArrayList<String>();
+          List<String> jobsDescription = new ArrayList<String>();
           for (Map<String, String> currentXp : (List<Map<String, String>>) value) {
 
             ProfileXpEntity xpEntity = profileEntity.createXp();
@@ -541,9 +570,24 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
             if (xpEntity.getSkills() != null) {
               skills.add(xpEntity.getSkills());
             }
+            //
+            if (xpEntity.getPosition() != null) {
+              positions.add(xpEntity.getPosition());
+            }
+            //
+            if (xpEntity.getCompany() != null) {
+              organizations.add(xpEntity.getCompany());
+            }
+            //
+            if (xpEntity.getDescription() != null) {
+              jobsDescription.add(xpEntity.getDescription());
+            }
 
           }
           profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_SKILLS), skills);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_POSITION), positions);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_COMPANY), organizations);
+          profileEntity.setProperty(PropNs.INDEX.nameOf(Profile.EXPERIENCES_DESCRIPTION), jobsDescription);
 
         }
         else if (Profile.AVATAR.equals(key)) {
@@ -572,6 +616,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     
     // TODO : find better
     profileEntity.setParentId(profile.getIdentity().getId());
+    profileEntity.setCreatedTime(profile.getCreatedTime());
 
     // External profile
     if (!OrganizationIdentityProvider.NAME.equals(providerId) && !SpaceIdentityProvider.NAME.equals(providerId)) {
@@ -654,6 +699,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     String remoteId = identity.getRemoteId();
 
     profile.setId(profileEntity.getId());
+    profile.setCreatedTime(profileEntity.getCreatedTime());
 
     List<Map<String, String>> phones = new ArrayList<Map<String,String>>();
     List<Map<String, String>> ims = new ArrayList<Map<String,String>>();
@@ -929,7 +975,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -976,7 +1022,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
-    builder.orderBy(ProfileEntity.lastName.getName(), Ordering.ASC);
+    applyOrder(builder, profileFilter);
 
     QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
@@ -1069,9 +1115,10 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.where(whereExpression.toString())
-                                                .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
-                                                .get().objects(offset, limit);
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter);
+
+    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();

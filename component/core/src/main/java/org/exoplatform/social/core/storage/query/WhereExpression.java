@@ -100,16 +100,31 @@ public class WhereExpression {
   public <T> WhereExpression like(CallExpression<T> call, T value) {
     checkParam(call.getProperty(), value);
 
-    getStringBuilder().append(String.format("%s(%s) LIKE %s ", call.getFunction(), call.getProperty().getName(), espace(call.getProperty(),
-                                 value)));
+    getStringBuilder().append(
+        String.format(
+            "%s(%s) LIKE %s ",
+            call.getFunction(),
+            call.getProperty().getName(),
+            espace(call.getProperty(), value)));
     return this;
   }
 
   public <T> WhereExpression contains(PropertyLiteralExpression<T> property, T value) {
-
     checkParam(property, value);
 
     getStringBuilder().append(String.format("CONTAINS (%s, '%s') ", property.getName(), value));
+    return this;
+  }
+
+  public <T> WhereExpression contains(CallExpression<T> call, T value) {
+    checkParam(call.getProperty(), value);
+
+    getStringBuilder().append(
+        String.format(
+            "CONTAINS (%s(%s), %s) ",
+            call.getFunction(),
+            call.getProperty().getName(),
+            espace(call.getProperty(), value)));
     return this;
   }
 

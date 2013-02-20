@@ -207,6 +207,9 @@ public class Profile {
 
   private AttachedActivityType      attachedActivityType;
   
+  /** Profile created time **/
+  private long                      createdTime;
+
   /**
    * Instantiates a new profile.
    *
@@ -417,9 +420,10 @@ public class Profile {
   public final String getFullName() {
     String first = (String) getProperty(FIRST_NAME);
     String last = (String) getProperty(LAST_NAME);
+    String fullName = getProperty(FULL_NAME) != null ? (String) getProperty(FULL_NAME) : "";
     String all = (first != null) ? first : "";
     all += (last != null) ? " " + last : "";
-    return all;
+    return all.length() > 0 ? all : fullName;
   }
 
   /**
@@ -527,10 +531,18 @@ public class Profile {
     return (List<Map<String, String>>) getProperty(Profile.CONTACT_PHONES);
   }
 
+  public long getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(long createdTime) {
+    this.createdTime = createdTime;
+  }
+
   /*
-   * Get uuid, identity, properties of profile
-   * @see java.lang.Object#toString()
-   */
+     * Get uuid, identity, properties of profile
+     * @see java.lang.Object#toString()
+     */
   @Override
   public final String toString() {
     return "[uuid : " + id + " identity : " + identity.getId() + " properties: " + properties;

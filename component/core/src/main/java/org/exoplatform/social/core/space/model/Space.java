@@ -71,6 +71,9 @@ public class Space {
   /** The space attachment. */
   private AvatarAttachment avatarAttachment;
 
+  /** Created time. */
+  private long createdTime;
+
   /**
    * The pretty name of space.
    *
@@ -625,4 +628,13 @@ public class Space {
   public void setAvatarLastUpdated(Long avatarLastUpdatedTime) {
     this.avatarLastUpdated = avatarLastUpdatedTime;
   }
+
+  public long getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(long createdTime) {
+    this.createdTime = createdTime;
+  }
+
 }
