@@ -1212,23 +1212,5 @@ public class CachedActivityStorage implements ActivityStorage {
     return buildActivities(keys);
     
   }
-
-  @Override
-  public int getNumberOfActivities(final Identity owner, final Identity viewer) throws ActivityStorageException {
-    
-    //
-    ActivityCountKey key = new ActivityCountKey(new IdentityKey(owner), new IdentityKey(viewer), ActivityType.VIEWER);
-
-    //
-    return activitiesCountCache.get(
-        new ServiceContext<IntegerData>() {
-          public IntegerData execute() {
-            return new IntegerData(storage.getNumberOfActivities(owner, viewer));
-          }
-        },
-        key)
-        .build();
-    
-  }
   
 }

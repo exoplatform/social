@@ -43,6 +43,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
+import org.exoplatform.social.core.activity.filter.ActivityIterator;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter.ActivityFilterType;
 import org.exoplatform.social.core.activity.model.ActivityStream;
@@ -1894,8 +1895,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     List<Identity> queryIdentities = new ArrayList<Identity>();
     queryIdentities.add(owner);
-    queryIdentities.add(viewer);
     
+    //
+    if (viewer != null 
+              && owner.getId().equals(viewer.getId()) == false) {
+      //
+      boolean hasRelationship = relationshipStorage.getRelationship(owner, viewer) != null;
+      
+      //
+      if (hasRelationship) {
+        queryIdentities.add(viewer);
+      }
+    }
+    
+    //
     List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
     Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
     for(Identity identity : spaceIdentityOfOwner) {
@@ -1908,31 +1921,43 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     ActivityFilter filter = new ActivityFilter(){};
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(queryIdentities), filter, offset, limit);
+    return getOwnerActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_OWNER_BUILDER.owners(queryIdentities).mentioner(owner).poster(owner), filter, offset, limit);
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> getOwnerActivitiesOfIdentities(ActivityBuilderWhere where, ActivityFilter filter,
+                                                           long offset, long limit) throws ActivityStorageException {
 
-  @Override
-  public int getNumberOfActivities(Identity owner, Identity viewer) throws ActivityStorageException {
-    //
-
-    List<Identity> queryIdentities = new ArrayList<Identity>();
-    queryIdentities.add(owner);
-    queryIdentities.add(viewer);
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(where, filter);
     
-    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
-    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
-    for(Identity identity : spaceIdentityOfOwner) {
-      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
-        queryIdentities.add(identity);
+    QueryResult<ActivityEntity> results = query.objects();
+    
+    ActivityEntity entity = null;
+    long totalSize = results.size();
+    
+    ActivityIterator activityIt = new ActivityIterator(offset, limit, totalSize);
+      
+    //
+    while (results.hasNext()) {
+      entity = results.next();
+
+      //
+      if (entity.isComment()) {
+        entity = entity.getParentActivity();
+      }
+
+      activityIt.add(getStorage().getActivity(entity.getId()));
+
+      //
+      if (activityIt.addMore() == false) {
+        break;
       }
     }
-
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(queryIdentities),
-                                          filter).objects().size();
+    
+    return activityIt.result();
   }
+  
   
 }

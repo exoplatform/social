@@ -180,15 +180,6 @@ public interface ActivityStorage {
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException;
   
   /**
-   * Count the number of activities from an ownerIdentity bt it's viewed by viewer identity
-   *
-   * @param owner
-   * @param viewer
-   * @return the number of activities
-   */
-  public int getNumberOfActivities(Identity owner, Identity viewer) throws ActivityStorageException;
-
-  /**
    * Gets the number of newer activities based on an existing activity.
    *
    * @param ownerIdentity

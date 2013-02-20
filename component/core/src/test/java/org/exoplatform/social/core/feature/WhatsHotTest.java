@@ -283,6 +283,106 @@ public class WhatsHotTest extends AbstractCoreTest {
     relationshipManager.unregisterListener(publisher);
   }
   
+  @MaxQueryNumber(500)
+  public void testViewerOwnerActivities() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 2);
+    
+    assertEquals(2, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerActivitiesSpecialCase() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(4, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerMentionerActivities() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(5, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerPosterActivities() throws Exception {
+
+    //
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    //owner poster comment
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("john title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    
+    createComment(activity2, demoIdentity, 2);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(2, list.size());
+    
+    tearDownActivityList.addAll(list);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerAllCases() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    //
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    //
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("john title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    
+    //owner poster comment
+    createComment(activity2, demoIdentity, 2);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(6, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
   /**
    * Creates a comment to an existing activity.
    *

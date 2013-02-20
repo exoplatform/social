@@ -144,9 +144,6 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case USER_ACTIVITIES: {
         return activityStorage.getNumberOfUserActivities(ownerIdentity);
       }
-      case VIEW_USER_ACTIVITIES: {
-        return activityStorage.getNumberOfActivities(ownerIdentity, viewerIdentity);
-      }
       case CONNECTIONS_ACTIVITIES: {
         return activityStorage.getNumberOfActivitiesOfConnections(ownerIdentity);
       }

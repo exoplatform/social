@@ -464,5 +464,56 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       return where.toString();
     }
   };
+  
+  public static ActivityBuilderWhere ACTIVITY_OWNER_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
+      
+      //has relationship
+      if (identities != null && identities.size() > 0) {
+        boolean first = true;
+        where.startGroup();
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+        
+        //
+        if (mentioner != null) {
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+            
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        //
+        if (poster != null) {
+          where.or();
+          where.startGroup();
+          where.equals(ActivityEntity.poster, poster.getId());
+          where.and().equals(ActivityEntity.isComment, true);
+          where.endGroup();
+        }
+        where.endGroup();
+        
+      }
+      
+      return where.toString();
+    }
+  };
 }
 
