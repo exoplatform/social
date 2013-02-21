@@ -72,7 +72,7 @@ public class UIActivitiesLoader extends UIContainer {
   private int loadingCapacity;
   private Space space;
   private int activitiesCounter;
-
+  
   public UIActivitiesLoader() {
     try {
       activitiesContainer = addChild(UIActivitiesContainer.class, null, "UIActivitiesContainer_" + hashCode());
@@ -144,6 +144,10 @@ public class UIActivitiesLoader extends UIContainer {
   
   public void setSelectedDisplayMode(String selectedDisplayMode) {
     this.selectedDisplayMode = selectedDisplayMode;
+  }
+
+  public String getSelectedDisplayMode() {
+    return selectedDisplayMode;
   }
 
   public void init() {
@@ -231,6 +235,12 @@ public class UIActivitiesLoader extends UIContainer {
       RequireJS require = context.getJavascriptManager()
                                  .require("SHARED/social-ui-activities-loader", "activitiesLoader");
       require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
+      
+      
+      //
+      event.getRequestContext().getJavascriptManager()
+      .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.markActivitiesOnPageLoad();");
+
     }
   }
 }

@@ -54,7 +54,7 @@ public class UIActivitiesContainer extends UIContainer {
   private String selectedDisplayMode;
   private UIPopupWindow popupWindow;
   private long lastVisited = 0;
-  private int numberOfUpdatedActivities;
+
   /**
    * constructor
    */
@@ -111,14 +111,6 @@ public class UIActivitiesContainer extends UIContainer {
 
   public void setSelectedDisplayMode(String selectedDisplayMode) {
     this.selectedDisplayMode = selectedDisplayMode;
-  }
-
-  public void setNumberOfUpdatedActivities(int numberOfUpdatedActivities) {
-    this.numberOfUpdatedActivities = numberOfUpdatedActivities;
-  }
-
-  public int getNumberOfUpdatedActivities() {
-    return numberOfUpdatedActivities;
   }
 
   protected long getCurrentServerTime() {

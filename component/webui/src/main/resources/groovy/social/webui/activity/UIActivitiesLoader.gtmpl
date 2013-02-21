@@ -33,6 +33,7 @@
 	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
 	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
   }
+  
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
 <% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {

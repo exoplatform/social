@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.profile;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,12 +66,14 @@ public class UIUserActivitiesDisplay extends UIForm {
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
   private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
-
+  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
+  
   private Object locker = new Object();
   private Locale currentLocale = null;
   private boolean isChangedMode;
   private boolean postActivity;
-
+  private int numberOfUpdatedActivities;
+  
   public enum DisplayMode {
     OWNER_STATUS,
     ALL_ACTIVITIES,
@@ -137,6 +140,14 @@ public class UIUserActivitiesDisplay extends UIForm {
     return isActivityStreamOwner;
   }
 
+  public void setNumberOfUpdatedActivities(int numberOfUpdatedActivities) {
+    this.numberOfUpdatedActivities = numberOfUpdatedActivities;
+  }
+
+  public int getNumberOfUpdatedActivities() {
+    return numberOfUpdatedActivities;
+  }
+  
   public void setSelectedDisplayMode(DisplayMode displayMode) {
     selectedDisplayMode = displayMode;
     getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setValue(displayMode.name());
@@ -160,6 +171,11 @@ public class UIUserActivitiesDisplay extends UIForm {
   public DisplayMode getSelectedDisplayMode() {
     return selectedDisplayMode;
   }
+  
+  public String getCookiesKey(String displayMode) {
+    return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
+  }
+  
   /**
    * sets activity stream owner (user remote Id)
    *
@@ -199,7 +215,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     activitiesLoader.setSelectedDisplayMode(selectedDisplayMode.toString());
     
     //
-    UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+//    UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
     
     //
     Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
@@ -248,7 +264,7 @@ public class UIUserActivitiesDisplay extends UIForm {
     this.isChangedMode = refreshPage && this.isChangedMode;
     //
     
-    activitiesContainer.setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isChangedMode));
+    setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isChangedMode));
     
     //
     activitiesLoader.init();
@@ -258,6 +274,16 @@ public class UIUserActivitiesDisplay extends UIForm {
     this.isChangedMode = changedMode;
   }
 
+  protected long getCurrentServerTime() {
+    return Calendar.getInstance().getTimeInMillis();
+  }
+  
+  protected boolean hasActivities() {
+    UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
+    UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
+    return activitiesContainer.getChildren().size() > 1; 
+  }
+  
   public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
     @Override
     public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
@@ -273,12 +299,12 @@ public class UIUserActivitiesDisplay extends UIForm {
         uiUserActivities.setChangedMode(false);
         
         UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
+//        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
         
         //int numberOfUpdates = uiUserActivities.getActivitiesUpdatedNum(false);
         //activitiesContainer.setNumberOfUpdatedActivities(numberOfUpdates);
         
-        int numberOfUpdates = activitiesContainer.getNumberOfUpdatedActivities();
+        int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
         
         //
         event.getRequestContext().getJavascriptManager()
