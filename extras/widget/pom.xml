@@ -24,7 +24,6 @@
     <groupId>org.exoplatform.social</groupId>
     <version>4.0.0-stabilization-SNAPSHOT</version>
   </parent>
-  <groupId>org.exoplatform.social</groupId>
   <artifactId>social-extras-widget</artifactId>
   <version>4.0.0-stabilization-SNAPSHOT</version>
   <packaging>pom</packaging>
