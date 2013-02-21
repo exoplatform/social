@@ -100,6 +100,17 @@
 	      }
 	    };
 	
+	    //
+	    var commentForms = $("[id^='CommentFormBlock']");
+	    var commentLinks = $("[id^='CommentLink']");
+	    $.each(commentForms, function(idx, el) {
+        var commentLinkId = $(el).attr('id').replace('CommentFormBlock', 'CommentLink');
+        var commentLink = $("#" + commentLinkId);
+        if ( commentLink.length <= 0 ) {
+         $(el).remove();
+        }
+	    });
+	    
 	    var commentLinkEl = $("#"+UIActivity.commentLinkId);
 	    if (commentLinkEl.length > 0) {
 	      
