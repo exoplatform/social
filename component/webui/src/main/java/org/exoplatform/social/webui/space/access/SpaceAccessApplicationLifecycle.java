@@ -52,6 +52,7 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)context;
+    Utils.setCurrentNavigationData(pcontext.getNavigationData());
     
 
     //SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
@@ -187,8 +188,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
 
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    PortalRequestContext pcontext = (PortalRequestContext)context;
-    Utils.setCurrentNavigationData(pcontext.getNavigationData());
   }
 
   @Override

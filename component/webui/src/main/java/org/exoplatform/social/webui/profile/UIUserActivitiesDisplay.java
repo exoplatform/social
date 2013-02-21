@@ -70,7 +70,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   
   private Object locker = new Object();
   private Locale currentLocale = null;
-  private boolean isChangedMode;
+  private boolean notChangedMode;
   private boolean postActivity;
   private int numberOfUpdatedActivities;
   
@@ -108,6 +108,8 @@ public class UIUserActivitiesDisplay extends UIForm {
 
     //
     setSelectedDisplayMode(selectedDisplayMode);
+    //int numberOfUpdates = this.getNumberOfUpdatedActivities();
+    //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
     
     this.currentLocale = Util.getPortalRequestContext().getLocale();
   }
@@ -258,20 +260,17 @@ public class UIUserActivitiesDisplay extends UIForm {
                                                     Utils.getViewerRemoteId());
     String lastVisitedMode = Utils.getCookies(lastVisitedModeCookieKey);
     
-    this.isChangedMode = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
-    boolean refreshPage = Utils.isRefreshPage();
-    
-    this.isChangedMode = refreshPage && this.isChangedMode;
-    //
-    
-    setNumberOfUpdatedActivities(getActivitiesUpdatedNum(this.isChangedMode));
+    this.notChangedMode = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
+
+    //setNumberOfUpdatedActivities(getActivitiesUpdatedNum(refresh));
+    setNumberOfUpdatedActivities(getActivitiesUpdatedNum(notChangedMode));
     
     //
     activitiesLoader.init();
   }
 
   public void setChangedMode(boolean changedMode) {
-    this.isChangedMode = changedMode;
+    this.notChangedMode = changedMode;
   }
 
   protected long getCurrentServerTime() {
@@ -410,10 +409,13 @@ public class UIUserActivitiesDisplay extends UIForm {
   private long getLastUpdatedNum(String mode) {
     String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     String strValue = Utils.getCookies(cookieKey);
-    if(strValue == null) {
+    boolean refreshPage = Utils.isRefreshPage();
+    
+    if(strValue == null || (refreshPage == false && mode.equals(selectedDisplayMode.toString()))) {
       return 0;
     }
     
     return Long.parseLong(strValue);
   }
+  
 }
