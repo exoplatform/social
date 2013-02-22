@@ -304,6 +304,10 @@
 	      var checked_tab_key_from = form.LAST_VISTED_TIME_FROM.replace(form.TAB_PART, field).replace(form.REMOTE_ID_PART, userId);
 	      var checked_tab_key_old_from = form.LAST_VISTED_TIME_OLD_FROM.replace(form.TAB_PART, field).replace(form.REMOTE_ID_PART, userId);
 	      var checked_tab_key_to = form.LAST_VISTED_TIME_TO.replace(form.TAB_PART, field).replace(form.REMOTE_ID_PART, userId);
+	      var lastUpdatedNumKey = form.LAST_UPDATED_ACTIVITIES_NUM.replace(form.TAB_PART, field).replace(form.REMOTE_ID_PART, userId);
+	      
+	      //
+	      form.resetCookie(lastUpdatedNumKey, 0);
 	      
 	      form.setFromCookie(checked_tab_key_old_from, checked_tab_key_from);
 	      form.setFromCookie(checked_tab_key_from, checked_tab_key_to);
