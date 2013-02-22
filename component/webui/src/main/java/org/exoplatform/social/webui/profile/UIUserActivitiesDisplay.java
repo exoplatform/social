@@ -108,8 +108,10 @@ public class UIUserActivitiesDisplay extends UIForm {
 
     //
     setSelectedDisplayMode(selectedDisplayMode);
-    //int numberOfUpdates = this.getNumberOfUpdatedActivities();
-    //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
+    
+    // set lastUpdatedNumber after init() method invoked inside setSelectedDisplayMode() method
+    int numberOfUpdates = this.getNumberOfUpdatedActivities();
+    setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
     
     this.currentLocale = Util.getPortalRequestContext().getLocale();
   }
@@ -192,6 +194,10 @@ public class UIUserActivitiesDisplay extends UIForm {
       selectedDisplayMode = DisplayMode.OWNER_STATUS;
     }
     init();
+    
+    //
+    int numberOfUpdates = this.getNumberOfUpdatedActivities();
+    setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
   }
 
   public String getOwnerName() {
@@ -416,6 +422,11 @@ public class UIUserActivitiesDisplay extends UIForm {
     }
     
     return Long.parseLong(strValue);
+  }
+  
+  private void setLastUpdatedNum(String mode, String value) {
+    String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
+    Utils.setCookies(cookieKey, value);
   }
   
 }

@@ -63,10 +63,10 @@ public class Utils {
   public static final String SEEN_ACTIVITIES_COOKIES = "exo_social_seen_activities_%s";
   
   /** */
-  private static RequestNavigationData lastRequestNavData = null;
+  private static RequestNavInfo lastRequestNavData = null;
   
   /** */
-  private static RequestNavigationData currentRequestNavData = null;
+  private static RequestNavInfo currentRequestNavData = null;
   
   /**
    * Gets remote id of owner user (depends on URL: .../remoteId). If owner user is null, return viewer remote id
@@ -421,9 +421,10 @@ public class Utils {
    * 
    * @param requestNavData
    */
-  public static void setCurrentNavigationData(RequestNavigationData requestNavData) {
+  public static void setCurrentNavigationData(String siteType, String siteName, String path) {
     lastRequestNavData = currentRequestNavData;
-    currentRequestNavData = requestNavData;
+    currentRequestNavData = new RequestNavInfo(siteType, siteName, path);
+    
   }
 
   /**

@@ -52,13 +52,13 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)context;
-    Utils.setCurrentNavigationData(pcontext.getNavigationData());
-    
-
-    //SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
-    
+    //
+    String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+    String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Utils.setCurrentNavigationData(siteType, siteName, requestPath);
     
+    //
     Route route = ExoRouter.route(requestPath);
     if (route == null) { 
       return;
