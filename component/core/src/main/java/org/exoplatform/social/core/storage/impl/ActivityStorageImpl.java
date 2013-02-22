@@ -395,6 +395,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setComment(Boolean.TRUE);
       commentEntity.setPostedTime(commentMillis);
       commentEntity.setLastUpdated(commentMillis);
+      
+      HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
+      hidable.setHidden(comment.isHidden());
+      
       comment.setId(commentEntity.getId());
 
       Map<String, String> params = comment.getTemplateParams();
@@ -1105,7 +1109,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
     limit = (limit > commentIds.size() ? commentIds.size() : limit);
     for(String commentId : commentIds.subList(offset, limit)) {
-      activities.add(getStorage().getActivity(commentId));
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
@@ -1116,7 +1122,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
-    return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
+    //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+
+    //
+    for(String commentId : commentIds) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
   }
 
   /**
@@ -1124,9 +1144,27 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfNewerComments(ExoSocialActivity existingActivity, ExoSocialActivity baseComment) {
 
-    List<String> commentId = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
-    return commentId.indexOf(baseComment.getId());
+    //List<String> commentId = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    //return commentId.indexOf(baseComment.getId());
 
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int baseIndex = commentIds.indexOf(baseComment.getId());
+    if (baseIndex > commentIds.size()) {
+      baseIndex = commentIds.size();
+    }
+
+    //
+    for(String commentId : commentIds.subList(0, baseIndex)) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
   }
 
   /**
@@ -1146,7 +1184,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     for(String commentId : commentIds.subList(0, baseIndex)) {
-      activities.add(getStorage().getActivity(commentId));
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
@@ -1159,10 +1199,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfOlderComments(ExoSocialActivity existingActivity, ExoSocialActivity baseComment) {
 
-    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    /*List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
     int index = commentIds.indexOf(baseComment.getId());
 
-    return (commentIds.size() - index - 1);
+    return (commentIds.size() - index - 1);*/
+    
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int baseIndex = commentIds.indexOf(baseComment.getId());
+
+    //
+    for(String commentId : commentIds.subList(baseIndex + 1, commentIds.size())) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
 
   }
 
@@ -1180,7 +1236,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     for(String commentId : commentIds.subList(baseIndex + 1, limit)) {
-      activities.add(getStorage().getActivity(commentId));
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
