@@ -27,18 +27,18 @@
    
   }
 %>
-<!-- 
-	<div class="MiddleLeftContainerOptions" $popupMenu>
-			<div class="UISpaceNavigationNodeSelector">
-						<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
-							<%
-								uicomponent.renderChild(UITree.class);
-							%>
-						</div>
-			</div>
-	</div>
--->
-	
+
+<div class="MiddleLeftContainerOptions" $popupMenu>
+		<div class="UISpaceNavigationNodeSelector">
+					<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
+						<%
+							uicomponent.renderChild(UITree.class);
+						%>
+					</div>
+		</div>
+</div>
+
+<!-- 	
 <ul class="nodeGroup"> 
 	<li class="lastNode node">   
 		<div class="uiIconExpand">    
@@ -108,7 +108,7 @@
 		</ul> 
 	</li>
 </ul>
-
+-->
 </div>
 
 

@@ -101,7 +101,9 @@
     def uriParts = nodeUri.split("/");
     def nodeName = uriParts[uriParts.length - 1];
     def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
-    appName = node.getPageRef().getName();
+    if ( node.getPageRef() != null ) {
+      appName = node.getPageRef().getName();
+    }
     
   %>
   <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>

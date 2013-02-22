@@ -18,10 +18,10 @@
 	<div class="addNodeCont">
 		<ul class="breadcrumb">  
 			<li>
-				<a href="#">spaces</a>
+				<a href="#">Space</a>
 				<span class="uiIconMiniArrowRight">&nbsp;</span>
 			</li>
-			<li class="active">space_test</li>
+			<li class="active"><%=uicomponent.getSpace().getDisplayName(); %></li>
 		</ul>
 			
 	  <%
