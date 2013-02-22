@@ -423,32 +423,28 @@ public class BaseUIActivity extends UIForm {
   public boolean isActivityDeletable() throws SpaceException {
     UIActivitiesContainer uiActivitiesContainer = getAncestorOfType(UIActivitiesContainer.class);
     PostContext postContext = uiActivitiesContainer.getPostContext();
+    SpaceService spaceService = getApplicationComponent(SpaceService.class);
+    
+    if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
+      return true;
+    }
+    
+    Space space = null;
+        
     if (postContext == PostContext.SPACE) {
-      Space space = uiActivitiesContainer.getSpace();
-      SpaceService spaceService = getApplicationComponent(SpaceService.class);
-
-      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
-        return true;
-      }
-
-      return spaceService.isLeader(space, Utils.getOwnerRemoteId());
-    } else if (postContext == PostContext.USER) {
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (Utils.getViewerIdentity().equals(getOwnerIdentity())) {
-        return true;
-      }
-      if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
-          return true;
-        } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
-          //currently displays only
-          return false;
-        } else {
-          //connections
-          return false;
-        }
+      space = uiActivitiesContainer.getSpace();
+    } else {
+      Identity identityStreamOwner = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, 
+                                                                                    this.getActivity().getStreamOwner(), false);
+      if ( identityStreamOwner != null ) {
+        space = spaceService.getSpaceByPrettyName(identityStreamOwner.getRemoteId());        
       }
     }
+    
+    if ( space != null ){ 
+      return spaceService.isManager(space, Utils.getOwnerRemoteId());
+    }
+    
     return false;
   }
 
