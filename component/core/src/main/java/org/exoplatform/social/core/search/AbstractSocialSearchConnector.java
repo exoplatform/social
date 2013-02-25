@@ -1,6 +1,7 @@
 package org.exoplatform.social.core.search;
 
 import org.exoplatform.commons.api.search.SearchServiceConnector;
+import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.container.xml.InitParams;
 
@@ -38,7 +39,7 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
   }
 
   @Override
-  public final Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+  public final Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
 
     //
     SortBy sortBy = null;
