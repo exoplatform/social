@@ -137,7 +137,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
           activityManager.updateActivity(activityReceiver);
           activityManager.saveComment(activityReceiver, receiverComment);
         } else {
-          activityIdSender = null;
+          activityIdReceiver = null;
         }
       }
       if (activityIdReceiver == null) {

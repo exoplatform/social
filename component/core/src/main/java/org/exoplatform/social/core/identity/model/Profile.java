@@ -137,17 +137,22 @@ public class Profile {
                                           switch (this) {
                                             case USER: {
                                               entity.setUserProfileActivityId(activityId);
+                                              break;
                                             }
                                             case SPACE: {
                                               entity.setSpaceProfileActivityId(activityId);
+                                              break;
                                             }
                                             case RELATION: {
                                               entity.setRelationActivityId(activityId);
+                                              break;
                                             }
                                             case RELATIONSHIP: {
                                               entity.setRelationShipActivityId(activityId);
+                                              break;
                                             }
                                             default :
+                                              break;
                                           }
                                         }
                                         public String getActivityId(ActivityProfileEntity entity) {
