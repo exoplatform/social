@@ -128,7 +128,7 @@
       <!-- Members section -->
       <h4 class="titleWithBorder">$spaceMemberLabel</h4>
       <% uicomponent.renderChild(UIProfileUserSearch.class); %>
-      <div class="memberList clearfix">
+      <div class="memberList spaceMemberListBox clearfix">
          <h4 class="titleWithBorder">$contactsDirectory</h4>
           <% if(memberList.size() > 0)  { %>
             <!--div class="DirectoryNormalBox"-->

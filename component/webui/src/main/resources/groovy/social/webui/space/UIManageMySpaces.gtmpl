@@ -159,7 +159,7 @@
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">
 			            <a href="<%= spaceUrl %>"><%= space.displayName %></a>
-			            ($iconImgLabel)
+			            <span class="subTxt">($iconImgLabel)</span>
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 			          <div class="content">
@@ -184,7 +184,7 @@
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">
 			            <a href="<%= spaceUrl %>">$space.displayName</a> 
-			            ($iconImgLabel)
+			            <span class="subTxt">($iconImgLabel)</span>
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 			          <div class="content">

@@ -24,7 +24,7 @@
 	.size(165px,330px);
 	.uiGrayLightBox();
 	padding: 10px;
-	margin: 10px;
+	margin: 0 10px 10px 0;
 	.avatarXLarge img {
 		border: 1px solid @borderColor;
 	}
@@ -35,6 +35,10 @@
 		.spaceTitle {
 			max-height: 42px;
 			overflow: hidden;
+			.subTxt {
+				font-size: @baseFontSize;
+    			font-weight: normal;
+			}
 		}
 		.content {
 			height: 63px;
@@ -189,7 +193,7 @@
 		margin: 0 auto;
 		text-align: center;
 		h3 {
-			color: @grayLight;
+			color: @gray;
 		}
 		.spaceAccessInfo {
 			font-size: 18px;
