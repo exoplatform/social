@@ -523,4 +523,13 @@ public interface SpaceStorage {
    * @param remoteId
    */
   List<Space> getLastAccessedSpace(SpaceFilter filter, int offset, int limit) throws SpaceStorageException;
+  
+  /**
+   * Gets the count of the public spaces of the userId.
+   *
+   * @param userId
+   * @return number of public space of a user where he is member
+   * @since 4.0.0.Beta01
+   */
+  int getNumberOfMemberPublicSpaces(String userId);
 }

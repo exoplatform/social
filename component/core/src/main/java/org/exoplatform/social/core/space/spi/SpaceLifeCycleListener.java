@@ -122,5 +122,12 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    * @param event the space lifecycle event
    */
   void spaceAvatarEdited(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user update the space access.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceAccessEdited(SpaceLifeCycleEvent event);
 
 }

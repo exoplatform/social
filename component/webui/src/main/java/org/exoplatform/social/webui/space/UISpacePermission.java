@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -100,6 +101,7 @@ public class UISpacePermission extends UIForm {
       Space space = spaceSrc.getSpaceById(uiSpacePermission.spaceId);
       space.setVisibility(visibility);
       space.setRegistration(registration);
+      space.setEditor(Utils.getViewerRemoteId());
       spaceSrc.saveSpace(space, false);
       UIApplication uiApp = requestContext.getUIApplication();
       uiApp.addMessage(new ApplicationMessage("UISpacePermission.msg.update-success", null, ApplicationMessage.INFO));

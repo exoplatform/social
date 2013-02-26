@@ -286,6 +286,56 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     recordActivity(event, activityMessage, SPACE_AVATAR_EDITED_TITLE_ID, templateParams);
     LOG.debug("Space has a new avatar.");
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void spaceAccessEdited(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
+    
+    //Update space's activity
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    String spaceActivityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
+    if (spaceActivityId != null) {
+      ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(spaceActivityId);
+      if (activity != null) {
+        if (Space.HIDDEN.equals(space.getVisibility())) {
+          activity.isHidden(true);
+        }
+        if (Space.PRIVATE.equals(space.getVisibility())) {
+          activity.isHidden(false);
+        }
+        activityManager.updateActivity(activity);
+      }
+    }
+    
+    //Update user space activity of all member of space
+    String[] members = space.getMembers();
+    for (String member : members) {
+      Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, member, false);
+      String userSpaceActivityId = getStorage().getProfileActivityId(identity.getProfile(), Profile.AttachedActivityType.RELATION);
+      if (userSpaceActivityId != null) {
+        ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(userSpaceActivityId);
+        if (activity != null) {
+          int numberOfSpacesOfMember = getSpaceStorage().getNumberOfMemberPublicSpaces(identity.getRemoteId());
+          Map<String, String> templateParams = activity.getTemplateParams();
+          templateParams.put(NUMBER_OF_PUBLIC_SPACE, String.valueOf(numberOfSpacesOfMember));
+          templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
+          activity.setTemplateParams(templateParams);
+          
+          if (numberOfSpacesOfMember > 1) {
+            activity.setTitle("I now member of " + numberOfSpacesOfMember + " spaces");
+            activity.setTitleId(USER_JOINED_PUBLIC_SPACES_TITLE_ID);
+          } else {
+            activity.setTitle("I now member of " + numberOfSpacesOfMember + " space");
+            activity.setTitleId(USER_JOINED_PUBLIC_SPACE_TITLE_ID);
+          }
+          activityManager.updateActivity(activity);
+        }
+      }
+    }
+  }
 
   /**
    * Records an activity based on space lifecyle event and the activity object.
@@ -317,6 +367,9 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setType(SPACE_PROFILE_ACTIVITY);
       activity.setTitle(space.getDisplayName() + " was created by @" + event.getTarget() + " .");
+      if (Space.HIDDEN.equals(space.getVisibility())) {
+        activity.isHidden(true);
+      }
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
       getStorage().updateProfileActivityId(spaceIdentity, activity.getId(), Profile.AttachedActivityType.SPACE);
       if (SPACE_CREATED_TITLE_ID.equals(titleId))
@@ -342,7 +395,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     }
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(identity.getProfile(), Profile.AttachedActivityType.RELATION);
-    int numberOfSpacesOfMember = getSpaceStorage().getMemberSpacesCount(identity.getRemoteId());
+    int numberOfSpacesOfMember = getSpaceStorage().getNumberOfMemberPublicSpaces(identity.getRemoteId());
     
     //
     ExoSocialActivity activity = null;
@@ -363,7 +416,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     } else {
       activity.setTitle("I now member of " + numberOfSpacesOfMember + " space");
       activity.setTitleId(USER_JOINED_PUBLIC_SPACE_TITLE_ID);
-    } 
+    }
 
     if (activityId != null) {
       if (isJoined) {

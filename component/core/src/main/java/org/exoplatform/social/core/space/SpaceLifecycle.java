@@ -78,6 +78,9 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case SPACE_AVATAR_EDITED:
       listener.spaceAvatarEdited(event);
       break;
+    case SPACE_HIDDEN:
+      listener.spaceAccessEdited(event);
+      break;
     default:
       break;
     }
@@ -138,6 +141,10 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
   
   public void spaceAvatarEdited(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_AVATAR_EDITED));
+  }
+  
+  public void spaceAccessEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_HIDDEN));
   }
 
 }

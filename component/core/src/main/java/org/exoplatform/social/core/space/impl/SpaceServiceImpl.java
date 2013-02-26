@@ -430,7 +430,11 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void saveSpace(Space space, boolean isNew) {
+    Space oldSpace = getSpaceById(space.getId());
     spaceStorage.saveSpace(space, isNew);
+    if (! isNew && ! oldSpace.getVisibility().equals(space.getVisibility())) {
+      spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+    }
   }
 
   /**

@@ -1717,6 +1717,10 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       return Collections.emptyList();
     }
   }
+
+  public int getNumberOfMemberPublicSpaces(String userId) {
+    return getSpacesOfMemberQuery(userId).objects().size();
+  }
   
 
 }
