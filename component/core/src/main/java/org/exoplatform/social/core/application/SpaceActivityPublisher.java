@@ -128,7 +128,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   @Override
   public void spaceCreated(SpaceLifeCycleEvent event) {
     Space space = event.getSpace();
-    final String activityMessage = space.getDisplayName() + " was created by @" + event.getTarget() + " .";
+    final String activityMessage = "Has joined the space.";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
@@ -299,19 +299,13 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
                               Map<String, String> templateParams) {
     Space space = event.getSpace();
     Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
     if (activityId != null) {
       try {
         if (! "Has left the space.".equals(activityMessage)) {
-          ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
-          comment.setTitle(activityMessage);
-          comment.setTitleId(titleId);
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
-          comment.setUserId(identity.getId());
-          comment.setType(SPACE_APP_ID);
-          comment.setTemplateParams(templateParams);
+          ExoSocialActivity comment = createComment(activityMessage, titleId, null, SPACE_APP_ID, identity, templateParams);
           ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-          activityManager.updateActivity(activity);
           activityManager.saveComment(activity, comment);
         }
       } catch (Exception e) {
@@ -322,9 +316,13 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId == null) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setType(SPACE_PROFILE_ACTIVITY);
-      activity.setTitle(activityMessage);
+      activity.setTitle(space.getDisplayName() + " was created by @" + event.getTarget() + " .");
       activityManager.saveActivityNoReturn(spaceIdentity, activity);
       getStorage().updateProfileActivityId(spaceIdentity, activity.getId(), Profile.AttachedActivityType.SPACE);
+      if (SPACE_CREATED_TITLE_ID.equals(titleId))
+        titleId = USER_JOINED_TITLE_ID;
+      ExoSocialActivity comment = createComment(activityMessage, titleId, null, SPACE_APP_ID, identity, templateParams);
+      activityManager.saveComment(activity, comment);
     }
   }
   
@@ -344,43 +342,34 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     }
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(identity.getProfile(), Profile.AttachedActivityType.RELATION);
+    int numberOfSpacesOfMember = getSpaceStorage().getMemberSpacesCount(identity.getRemoteId());
     
     //
     ExoSocialActivity activity = null;
     if (activityId != null) {
       activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-    } else {
+    } 
+    if (activity == null) {
       activity = new ExoSocialActivityImpl();  
+      activity.setType(USER_ACTIVITIES_FOR_SPACE);
     }
-    
-    int numberOfSpacesOfMember = getSpaceStorage().getMemberSpacesCount(identity.getRemoteId());
-    
-    activity.setTitleId(USER_JOINED_PUBLIC_SPACE_TITLE_ID);
+    templateParams.put(NUMBER_OF_PUBLIC_SPACE, String.valueOf(numberOfSpacesOfMember));
+    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
+    activity.setTemplateParams(templateParams);
     
     if (numberOfSpacesOfMember > 1) {
       activity.setTitle("I now member of " + numberOfSpacesOfMember + " spaces");
       activity.setTitleId(USER_JOINED_PUBLIC_SPACES_TITLE_ID);
     } else {
       activity.setTitle("I now member of " + numberOfSpacesOfMember + " space");
+      activity.setTitleId(USER_JOINED_PUBLIC_SPACE_TITLE_ID);
     } 
 
-    activity.setType(USER_ACTIVITIES_FOR_SPACE);
-    templateParams.put(NUMBER_OF_PUBLIC_SPACE, String.valueOf(numberOfSpacesOfMember));
-    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
-    activity.setTemplateParams(templateParams);
-    
-    ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
-    comment.setTitle(userSpaceActivityMessage);
-    comment.setTitleId(titleId);
-    comment.setUserId(identity.getId());
-    comment.setType(SPACE_APP_ID);
-    templateParams.put(SPACE_DISPLAY_NAME_PARAM, event.getSpace().getDisplayName());
-    templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DISPLAY_NAME_PARAM);
-    comment.setTemplateParams(templateParams);
-    
     if (activityId != null) {
       if (isJoined) {
         try {
+          //Create comment when user join space
+          ExoSocialActivity comment = createComment(userSpaceActivityMessage, titleId, event.getSpace().getDisplayName(), USER_ACTIVITIES_FOR_SPACE, identity, new LinkedHashMap<String, String>());
           activityManager.updateActivity(activity);
           activityManager.saveComment(activity, comment);
         } catch (Exception e) {
@@ -398,8 +387,23 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
       activityManager.saveActivityNoReturn(identity, activity);
       getStorage().updateProfileActivityId(identity, activity.getId(), Profile.AttachedActivityType.RELATION);
       activity = (ExoSocialActivityImpl) activityManager.getActivity(activity.getId());
+      ExoSocialActivity comment = createComment(userSpaceActivityMessage, titleId, event.getSpace().getDisplayName(), USER_ACTIVITIES_FOR_SPACE, identity, new LinkedHashMap<String, String>());
       activityManager.saveComment(activity, comment);
     }
+  }
+  
+  private ExoSocialActivity createComment(String title, String titleId, String spacePrettyName, String type, Identity identity, Map<String, String> templateParams) {
+    ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
+    comment.setTitle(title);
+    comment.setTitleId(titleId);
+    comment.setUserId(identity.getId());
+    comment.setType(type);
+    if (spacePrettyName != null) {
+      templateParams.put(SPACE_DISPLAY_NAME_PARAM, spacePrettyName);
+      templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DISPLAY_NAME_PARAM);
+    }
+    comment.setTemplateParams(templateParams);
+    return comment;
   }
   
   private IdentityStorage getStorage() {
