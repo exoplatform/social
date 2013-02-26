@@ -97,18 +97,18 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
   }
 
   public void testFilter() throws Exception {
-    assertEquals(1, peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, peopleSearchConnector.search(null, "bar position", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, peopleSearchConnector.search(null, "doSomething", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, peopleSearchConnector.search(null, "dev", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, peopleSearchConnector.search(null, "bar position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "doSomething", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "dev", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "exo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, peopleSearchConnector.search(null, "job description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {
-    Collection<SearchResult> cFoo = peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cFoo = peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertEquals("foo position", rFoo.getExcerpt());
@@ -120,26 +120,26 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     assertTrue(rFoo.getDate() != 0);
     assertEquals(pFoo.getCreatedTime(), rFoo.getDate());
 
-    Collection<SearchResult> cBar = peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cBar = peopleSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "bar"));
     assertEquals(pBar.getAvatarUrl(), rBar.getImageUrl());
   }
 
   public void testOrder() throws Exception {
-    List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "asc");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());
 
-    List<SearchResult> rTitleDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
+    List<SearchResult> rTitleDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "title", "desc");
     assertEquals("foo", rTitleDesc.get(0).getTitle());
     assertEquals("bar", rTitleDesc.get(1).getTitle());
 
-    List<SearchResult> rDateAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
+    List<SearchResult> rDateAsc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "asc");
     assertEquals("foo", rDateAsc.get(0).getTitle());
     assertEquals("bar", rDateAsc.get(1).getTitle());
 
-    List<SearchResult> rDateDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
+    List<SearchResult> rDateDesc = (List<SearchResult>) peopleSearchConnector.search(null, "position", Collections.EMPTY_LIST, 0, 10, "date", "desc");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
   }

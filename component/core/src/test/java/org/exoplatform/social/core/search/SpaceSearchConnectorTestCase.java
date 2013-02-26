@@ -102,15 +102,15 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testFilter() throws Exception {
     setCurrentUser("demo");
-    assertEquals(1, spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(1, spaceSearchConnector.search(null, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
-    assertEquals(2, spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, spaceSearchConnector.search(null, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(2, spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
   }
 
   public void testData() throws Exception {
     setCurrentUser("demo");
-    Collection<SearchResult> cFoo = spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cFoo = spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertEquals("foo description", rFoo.getExcerpt());
@@ -118,7 +118,7 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
     assertEquals("foo - 1 Member(s) - Free to Join", rFoo.getDetail());
 
-    Collection<SearchResult> cBar = spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
+    Collection<SearchResult> cBar = spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
     Space sBar = spaceService.getSpaceByDisplayName("bar");
@@ -129,19 +129,19 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testOrder() throws Exception {
     setCurrentUser("demo");
-    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "asc");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());
 
-    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
+    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "desc");
     assertEquals("foo", rTitleDesc.get(0).getTitle());
     assertEquals("bar", rTitleDesc.get(1).getTitle());
 
-    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
+    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "asc");
     assertEquals("foo", rDateAsc.get(0).getTitle());
     assertEquals("bar", rDateAsc.get(1).getTitle());
 
-    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
+    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "desc");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
   }
