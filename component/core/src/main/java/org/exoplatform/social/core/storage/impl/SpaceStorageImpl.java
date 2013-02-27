@@ -603,7 +603,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     builder.where(whereExpression
         .equals(SpaceEntity.membersId, userId)
         .and().not().equals(SpaceEntity.visibility, Space.HIDDEN)
-        .and().not().equals(SpaceEntity.managerMembersId, userId)
         .and().not().equals(SpaceEntity.invitedMembersId, userId)
         .and().not().equals(SpaceEntity.pendingMembersId, userId)
         .toString()
