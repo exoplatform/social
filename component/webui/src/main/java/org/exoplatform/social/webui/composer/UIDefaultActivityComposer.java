@@ -74,6 +74,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
                                    null);
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(spaceIdentity, activity);
+      uiDisplaySpaceActivities.init();
     } else if (postContext == PostContext.USER) {
       UIUserActivitiesDisplay uiUserActivitiesDisplay = (UIUserActivitiesDisplay) getActivityDisplay();
       Identity ownerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,
@@ -85,9 +86,11 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
       Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
-      if ((uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.NETWORK_UPDATES)
-          || (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES)) {
-        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.MY_STATUS);
+      //
+      uiUserActivitiesDisplay.setPostActivity(true);
+
+      if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
+        uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
       }
     }
   }

@@ -23,10 +23,17 @@
 
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  import org.exoplatform.social.webui.Utils;
   
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;
   def labelEmptyActivityList = _ctx.appRes("${uicomponentId}.label.Empty_Activity_List").replace("{0}", space.displayName);
+  
+  def currentRemoteId = Utils.getViewerRemoteId();
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId');");
+           
  %>
 
 <div class="UIDisplaySpaceActivities" id="$uicomponent.id">

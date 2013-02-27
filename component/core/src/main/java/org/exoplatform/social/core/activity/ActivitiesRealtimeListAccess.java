@@ -18,9 +18,11 @@ package org.exoplatform.social.core.activity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -36,8 +38,10 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
   public static enum ActivityType {
     ACTIVITY_FEED,
     USER_ACTIVITIES,
+    VIEW_USER_ACTIVITIES,
     CONNECTIONS_ACTIVITIES,
-    USER_SPACE_ACTIVITIES
+    USER_SPACE_ACTIVITIES,
+    SPACE_ACTIVITIES
   }
 
   /**
@@ -55,6 +59,11 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
    * The chosen identity.
    */
   private Identity ownerIdentity;
+  
+  /**
+   * The viewer identity.
+   */
+  private Identity viewerIdentity;
 
 
   /**
@@ -71,7 +80,24 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     this.activityType = chosenActivityType;
     this.ownerIdentity = chosenOwnerIdentity;
   }
-
+  
+  /**
+   * Constructor.
+   *
+   * @param existingActivityStorage
+   * @param chosenActivityType
+   * @param chosenOwnerIdentity
+   * @param viewerIndentity viewer gets and show other owner stream
+   */
+  public ActivitiesRealtimeListAccess(final ActivityStorage existingActivityStorage,
+                                      final ActivityType chosenActivityType,
+                                      final Identity chosenOwnerIdentity,
+                                      final Identity viewerIndentity) {
+    this.activityStorage = existingActivityStorage;
+    this.activityType = chosenActivityType;
+    this.ownerIdentity = chosenOwnerIdentity;
+    this.viewerIdentity = viewerIndentity;
+  }
 
   /**
    * {@inheritDoc}
@@ -84,11 +110,17 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case USER_ACTIVITIES: {
         return activityStorage.getUserActivities(ownerIdentity, index, limit);
       }
+      case VIEW_USER_ACTIVITIES: {
+        return activityStorage.getActivities(ownerIdentity, viewerIdentity, index, limit);
+      }
       case CONNECTIONS_ACTIVITIES: {
         return activityStorage.getActivitiesOfConnections(ownerIdentity, index, limit);
       }
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getUserSpacesActivities(ownerIdentity, index, limit);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getSpaceActivities(ownerIdentity, index, limit);
       }
     }
     return Collections.emptyList();
@@ -118,6 +150,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getNumberOfUserSpacesActivities(ownerIdentity);
       }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfSpaceActivities(ownerIdentity);
+      }
     }
     return 0;
   }
@@ -138,6 +173,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getNewerOnUserSpacesActivities(ownerIdentity, baseActivity, length);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNewerOnSpaceActivities(ownerIdentity, baseActivity, length);
       }
     }
     return Collections.emptyList();
@@ -160,6 +198,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getNumberOfNewerOnUserSpacesActivities(ownerIdentity, baseActivity);
       }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfNewerOnSpaceActivities(ownerIdentity, baseActivity);
+      }
     }
     return 0;
   }
@@ -180,6 +221,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getOlderOnUserSpacesActivities(ownerIdentity, baseActivity, length);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getOlderOnSpaceActivities(ownerIdentity, baseActivity, length);
       }
     }
     return Collections.emptyList();
@@ -202,7 +246,84 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case USER_SPACE_ACTIVITIES: {
         return activityStorage.getNumberOfOlderOnUserSpacesActivities(ownerIdentity, baseActivity);
       }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfOlderOnSpaceActivities(ownerIdentity, baseActivity);
+      }
     }
     return 0;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int getNumberOfNewer(Long sinceTime) {
+    switch (activityType) {
+    case ACTIVITY_FEED: {
+      return activityStorage.getNumberOfNewerOnActivityFeed(ownerIdentity, sinceTime);
+    }
+    case USER_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnUserActivities(ownerIdentity, sinceTime);
+    }
+    case CONNECTIONS_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnActivitiesOfConnections(ownerIdentity, sinceTime);
+    }
+    case USER_SPACE_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnUserSpacesActivities(ownerIdentity, sinceTime);
+    }
+    case SPACE_ACTIVITIES: {
+      return activityStorage.getNumberOfNewerOnSpaceActivities(ownerIdentity, sinceTime);
+    }
+    }
+    return 0;
+  }
+
+  @Override
+  public int getNumberOfMultiUpdated(Map<String, Long> sinceTimes) {
+    return activityStorage.getNumberOfMultiUpdated(ownerIdentity, sinceTimes);
+  }
+  
+  public List<ExoSocialActivity> getUpadtedActivities(Long sinceTime) {
+    switch (activityType) {
+      case ACTIVITY_FEED: {
+        return activityStorage.getFeedActivities(ownerIdentity, sinceTime);
+      }
+      case USER_ACTIVITIES: {
+        return activityStorage.getUserActivities(ownerIdentity, sinceTime);
+      }
+      case CONNECTIONS_ACTIVITIES: {
+        return activityStorage.getActivitiesOfConnections(ownerIdentity, sinceTime);
+      }
+      case USER_SPACE_ACTIVITIES: {
+        return activityStorage.getUserSpacesActivities(ownerIdentity, sinceTime);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getSpaceActivities(ownerIdentity, sinceTime);
+      }
+    }
+    return Collections.emptyList();
+  }
+  
+  public int getNumberOfUpdated(ActivityUpdateFilter filter) {
+    switch (activityType) {
+      case ACTIVITY_FEED: {
+        return activityStorage.getNumberOfUpdatedOnActivityFeed(ownerIdentity, filter);
+      }
+      case USER_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnUserActivities(ownerIdentity, filter);
+      }
+      case CONNECTIONS_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnActivitiesOfConnections(ownerIdentity, filter);
+      }
+      case USER_SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnUserSpacesActivities(ownerIdentity, filter);
+      }
+      case SPACE_ACTIVITIES: {
+        return activityStorage.getNumberOfUpdatedOnSpaceActivities(ownerIdentity, filter);
+      }
+    }
+    return 0;
+  }
+  
+  
+
 }

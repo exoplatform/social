@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.Query;
@@ -40,6 +43,9 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
+import org.exoplatform.social.core.activity.filter.ActivityIterator;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter.ActivityFilterType;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ActivityStreamImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -49,8 +55,10 @@ import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityParameters;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -70,7 +78,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   /** Logger */
   private static final Log LOG = ExoLogger.getLogger(ActivityStorageImpl.class);
-
+  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
   private ActivityStorage activityStorage;
 
   private final SortedSet<ActivityProcessor> activityProcessors;
@@ -130,6 +138,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
     activity.setUpdated(new Date(activityMillis));
+    activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), true));
+      
     //
     fillActivityEntityFromActivity(activity, activityEntity);
   }
@@ -158,6 +168,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setUrl(activity.getUrl());
     activityEntity.setPriority(activity.getPriority());
     activityEntity.setLastUpdated(activity.getUpdated().getTime());
+    activityEntity.setMentioners(activity.getMentionedIds());
+    activityEntity.setCommenters(activity.getCommentedIds());
 
     //
     Map<String, String> params = activity.getTemplateParams();
@@ -200,7 +212,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (likes != null) {
       activity.setLikeIdentityIds(activityEntity.getLikes());
     }
+    
+    String[] mentioners = activityEntity.getMentioners();
+    if (mentioners != null) {
+      activity.setMentionedIds(activityEntity.getMentioners());
+    }
 
+    String[] commenters = activityEntity.getCommenters();
+    if (commenters != null) {
+      activity.setCommentedIds(activityEntity.getCommenters());
+    }
+    
     //
     ActivityParameters params = activityEntity.getParams();
     if (params != null) {
@@ -244,12 +266,24 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   }
 
-    private List<Identity> getSpacesId(Identity ownerIdentity) {
+  private List<Identity> getSpacesId(Identity ownerIdentity) {
 
     List<Identity> identitiesId = new ArrayList<Identity>();
     List<Space> spaces = spaceStorage.getAccessibleSpaces(ownerIdentity.getRemoteId());
     for (Space space : spaces) {
       identitiesId.add(identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
+    }
+
+    return identitiesId;
+
+  }
+  
+  private Map<String, Identity> getSpacesIdOfIdentity(Identity identity) {
+
+    Map<String, Identity> identitiesId = new HashMap<String, Identity>();
+    List<Space> spaces = spaceStorage.getAccessibleSpaces(identity.getRemoteId());
+    for (Space space : spaces) {
+      identitiesId.put(space.getPrettyName(), identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
     }
 
     return identitiesId;
@@ -335,7 +369,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.owners(owner), filter, offset, limit);
+    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
     
   }
   
@@ -352,6 +386,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
 
+      activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), true));
+      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), true));
+      
       //
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
@@ -473,6 +510,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activity.setUserId(activityEntity.getIdentity().getId());
       activity.setId(activityEntity.getId());
 
+      // remove mentions information
+      if (activityEntity.isComment()) {
+        ActivityEntity activityEntityOfComment = activityEntity.getParentActivity();
+        activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), false));
+        
+        //
+        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), false));
+      } else {
+        activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), false));
+      }
+      
       //
       _removeById(ActivityEntity.class, activityId);
 
@@ -595,17 +643,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException {
 
-    try {
-
-      IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
-      return identityEntity.getActivityList().getNumber();
-
+    if (owner == null) {
+      return 0;
     }
-    catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT,
-          e.getMessage(), e);
-    }
+    
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(owner).owners(owner), filter, 0, 0).size();
 
   }
 
@@ -658,10 +702,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
     
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(ownerIdentity), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter, 0, limit);
   }
 
   /**
@@ -676,10 +720,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(ownerIdentity), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
   }
 
   /**
@@ -694,10 +738,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(ownerIdentity), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter, 0, limit);
   }
 
   /**
@@ -710,10 +754,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    //identities.add(ownerIdentity);
+    identities.add(ownerIdentity);
     
+    ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(ownerIdentity).owners(identities), ActivityFilter.ACTIVITY_FEED_OLDER_FILTER, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   /**
@@ -726,12 +771,81 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    //identities.add(ownerIdentity);
+    identities.add(ownerIdentity);
+    
+    ActivityFilter filter = new ActivityFilter(){};
 
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(ownerIdentity).owners(identities), ActivityFilter.ACTIVITY_FEED_OLDER_FILTER).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
 
   }
 
+  @Override
+  public int getNumberOfNewerOnActivityFeed(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
+
+  }
+  
+  @Override
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    if (ownerIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery (ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
+                                      
+  }
+
+  @Override
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+    connectionList.add(ownerIdentity);
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
+  }
+
+  @Override
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+
+    //
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceList), filter).objects().size();
+
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -742,14 +856,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    //identities.add(ownerIdentity);
+    identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(ownerIdentity).owners(identities), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
 
   }
 
@@ -765,11 +879,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
+    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(identities), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, 0, limit);
 
   }
 
@@ -783,14 +897,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    //identities.add(ownerIdentity);
+    identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(ownerIdentity).owners(identities), filter).objects().size();
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter).objects().size();
   }
 
   /**
@@ -803,14 +917,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     identities.addAll(relationshipStorage.getConnections(ownerIdentity));
     identities.addAll(getSpacesId(ownerIdentity));
-    //identities.add(ownerIdentity);
+    identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_FEED_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_FEED_BUILDER.owners(ownerIdentity).owners(identities), filter, 0, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.mentioner(ownerIdentity).owners(identities), filter, 0, limit);
   }
 
   /**
@@ -819,9 +933,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
 
     List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
-    if (connections.size() == 0) return new ArrayList<ExoSocialActivity>();
+    connections.add(ownerIdentity);
+    
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = new ActivityFilter(){};
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connections), filter, offset, limit);
@@ -835,13 +950,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
 
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = new ActivityFilter(){};
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList),
@@ -866,15 +978,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    //
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
@@ -889,14 +997,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    //
-    if (connectionList.size() == 0) {
-      return Collections.emptyList();
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter, 0, limit);
@@ -910,15 +1015,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-
-    //
-    if (connectionList.size() == 0) {
-      return 0;
-    }
+    connectionList.add(ownerIdentity);
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter).objects().size();
@@ -933,15 +1034,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    
-    //
-    if (connectionList.size() == 0) {
-      return Collections.emptyList();
-    }
+    connectionList.add(ownerIdentity);
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(connectionList), filter, 0, limit);
@@ -961,7 +1058,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = new ActivityFilter() {};
+    ActivityFilter filter = new ActivityFilter(){};
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter, 0, limit);
@@ -981,7 +1078,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = new ActivityFilter() {};
+    ActivityFilter filter = new ActivityFilter(){};
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
@@ -1002,7 +1099,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
@@ -1024,7 +1121,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter, 0, limit);
@@ -1045,7 +1142,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter).objects().size();
@@ -1067,7 +1164,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    filter.with(ActivityFilter.ACTIVITY_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getPostedTime()));
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(spaceList), filter, 0, limit);
@@ -1085,7 +1182,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     limit = (limit > commentIds.size() ? commentIds.size() : limit);
-    for(String commentId : commentIds.subList(offset, limit)) {
+    int toIndex = (limit+offset >= commentIds.size() ? commentIds.size() : limit+offset);
+    for(String commentId : commentIds.subList(offset, toIndex)) {
       activities.add(getStorage().getActivity(commentId));
     }
 
@@ -1189,6 +1287,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       _saveActivity(changedActivity);
       
+      getSession().save();
+      
     }
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(
@@ -1220,7 +1320,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   private Query<ActivityEntity> getActivitiesOfIdentitiesQuery(ActivityBuilderWhere whereBuilder,
-                                                               ActivityFilter filter) throws ActivityStorageException {
+                                                               JCRFilterLiteral filter) throws ActivityStorageException {
 
     QueryBuilder<ActivityEntity> builder = getSession().createQueryBuilder(ActivityEntity.class);
 
@@ -1229,6 +1329,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     return builder.get();
   }
+  
+  
 
   /**
    * {@inheritDoc}
@@ -1237,4 +1339,625 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     this.activityStorage = storage;
   }
 
+  //
+  private String[] processMentions(String[] mentionerIds, String title, boolean isAdded) {
+    if (title == null || title.length() == 0) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    
+    Matcher matcher = MENTION_PATTERN.matcher(title);
+    
+    while (matcher.find()) {
+      String remoteId = matcher.group().substring(1);
+      Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
+      // if not the right mention then ignore
+      if (identity != null) { 
+        String mentionStr = identity.getId() + MENTION_CHAR; // identityId@
+        mentionerIds = isAdded ? add(mentionerIds, mentionStr) : remove(mentionerIds, mentionStr);
+      }
+    }
+    return mentionerIds;
+  }
+  
+  private String[] processCommenters(String[] commenters, String commenter, boolean isAdded) {
+    if (commenter == null || commenter.length() == 0) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    
+    commenter += MENTION_CHAR; 
+    commenters = isAdded ? add(commenters, commenter) : remove(commenters, commenter);
+    
+    return commenters;
+  }
+
+  private String[] add(String[] mentionerIds, String mentionStr) {
+    if (ArrayUtils.toString(mentionerIds).indexOf(mentionStr) == -1) { // the first mention
+      return (String[]) ArrayUtils.add(mentionerIds, mentionStr + 1);
+    }
+    
+    String storedId = null;
+    for (String mentionerId : mentionerIds) {
+      if (mentionerId.indexOf(mentionStr) != -1) {
+        mentionerIds = (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
+        storedId = mentionStr + (Integer.parseInt(mentionerId.split(MENTION_CHAR)[1]) + 1);
+        break;
+      }
+    }
+    
+    mentionerIds = (String[]) ArrayUtils.add(mentionerIds, storedId);
+    return mentionerIds;
+  }
+
+  private String[] remove(String[] mentionerIds, String mentionStr) {
+    for (String mentionerId : mentionerIds) {
+      if (mentionerId.indexOf(mentionStr) != -1) {
+        int numStored = Integer.parseInt(mentionerId.split(MENTION_CHAR)[1]) - 1;
+        
+        if (numStored == 0) {
+          return (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
+        }
+
+        mentionerIds = (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
+        mentionerIds = (String[]) ArrayUtils.add(mentionerIds, mentionStr + numStored);
+        break;
+      }
+    }
+    return mentionerIds;
+  }
+
+  @Override
+  public int getNumberOfSpaceActivities(Identity spaceIdentity) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
+    //
+    if (spaceIdentity == null) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter, 0, limit);
+  }
+
+  @Override
+  public List<ExoSocialActivity> getNewerOnSpaceActivities(Identity spaceIdentity,
+                                                           ExoSocialActivity baseActivity,
+                                                           int limit) {
+    if (spaceIdentity == null) {
+      return Collections.emptyList();
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter, 0, limit);
+  }
+
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getOlderOnSpaceActivities(Identity spaceIdentity,
+                                                            ExoSocialActivity baseActivity,
+                                                            int limit) {
+    //
+    List<Identity> spaceList = getSpacesId(spaceIdentity);
+    
+    //
+    if (spaceList.size() == 0) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceList), filter, 0, limit);
+  }
+
+  @Override
+  public int getNumberOfOlderOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
+  }
+
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity, Long sinceTime) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_SPACE_BUILDER.owners(spaceIdentity), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes) {
+    //
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+    List<String> activityIds = new ArrayList<String>();
+    
+    if ( sinceTimes.get("CONNECTIONS") != null ) {
+      List<ExoSocialActivity> connectionsActivities =  getActivitiesOfConnections(owner, sinceTimes.get("CONNECTIONS"));
+      activities.addAll(connectionsActivities);
+      for ( ExoSocialActivity connectionsActivity : connectionsActivities ) {
+        activityIds.add(connectionsActivity.getId());
+      }
+    }
+    
+    if ( sinceTimes.get("MY_SPACE") != null ) {
+      List<ExoSocialActivity> mySpaceActivities = getUserSpacesActivities(owner, sinceTimes.get("MY_SPACE"));  
+      for ( ExoSocialActivity mySpaceActivity : mySpaceActivities ) {
+        if ( !activityIds.contains(mySpaceActivity.getId()) ) {
+          activities.add(mySpaceActivity);
+          activityIds.add(mySpaceActivity.getId());
+        }
+      }
+    }
+    
+    if ( sinceTimes.get("MY_ACTIVITIES") != null ) {
+      List<ExoSocialActivity> myActivities = getUserActivities(owner, sinceTimes.get("MY_ACTIVITIES"));
+      for ( ExoSocialActivity myActivity : myActivities ) {
+        if ( !activityIds.contains(myActivity.getId()) ) {
+          activities.add(myActivity);
+          activityIds.add(myActivity.getId());
+        }
+      }
+    }
+    
+    return activities.size();
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(owner));
+    identities.addAll(getSpacesId(owner));
+    
+    if ( identities.size() == 0 ) {
+      return Collections.emptyList();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+    
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .ACTIVITY_UPDATED_BUILDER.owners(identities), filter).objects());
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner), filter).objects((long)0, (long)100));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+    //
+    List<Identity> spaceList = getSpacesId(owner);
+    
+    if (spaceList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList), filter).objects((long)0, (long)100));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+
+    if (connectionList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList), filter).objects((long)0, (long)100));
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .ACTIVITY_UPDATED_BUILDER.owners(owner), filter).objects());
+  }
+  
+  private List<ExoSocialActivity> getActivitiesFromQueryResults(QueryResult<ActivityEntity> results) {
+    List<ExoSocialActivity> activities =  new ArrayList<ExoSocialActivity>();
+
+    while(results.hasNext()) {
+      activities.add(getStorage().getActivity(results.next().getId()));
+    }
+
+    return activities;
+  }
+  //
+  
+  
+  @Override
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {
+    
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+    
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
+
+    identities.addAll(relationships);
+    identities.addAll(getSpacesId(owner));
+    //identities.add(owner);
+    
+    if ( identities.size() == 0 ) {
+      return 0;
+    }
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    //long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
+    long compareTime = filter.activityFeedType().toSinceTime();
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
+
+    //
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
+                                          .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.activityFeedType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
+    
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    //long compareTime = filter.isRefreshTab() ? filter.userActivitiesType().fromSinceTime() : filter.userActivitiesType().toSinceTime();
+    long compareTime = filter.userActivitiesType().toSinceTime();
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
+    
+    //
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
+                                           .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter) {
+    //
+    List<Identity> spaceList = getSpacesId(owner);
+    
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    
+    //
+    //long compareTime = filter.isRefreshTab() ? filter.userSpaceActivitiesType().fromSinceTime() : filter.userSpaceActivitiesType().toSinceTime();
+    long compareTime = filter.userSpaceActivitiesType().toSinceTime();
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
+
+    //
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(spaceList)
+                                          .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.userSpaceActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
+    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+
+    if (connectionList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    String[] excludedSpaceActivities = getNumberOfViewedOfActivities(owner, filter.spaceActivitiesType());
+    filter.addExcludedActivities(excludedSpaceActivities);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    
+    //
+    //long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
+    long compareTime = filter.connectionType().toSinceTime();
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
+
+    //
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList).posters(connectionList)
+                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+    
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter) {
+    
+    //
+    String[] excludedConnections = getNumberOfViewedOfActivities(owner, filter.connectionType());
+    filter.addExcludedActivities(excludedConnections);
+    
+    //
+    String[] excludedUserActivities = getNumberOfViewedOfActivities(owner, filter.userActivitiesType());
+    filter.addExcludedActivities(excludedUserActivities);
+    
+    //
+    String[] excludedUserSpaceActivities = getNumberOfViewedOfActivities(owner, filter.userSpaceActivitiesType());
+    filter.addExcludedActivities(excludedUserSpaceActivities);
+    
+    //
+    //long compareTime = filter.isRefreshTab() ? filter.spaceActivitiesType().fromSinceTime() : filter.spaceActivitiesType().toSinceTime();
+    long compareTime = filter.spaceActivitiesType().toSinceTime();
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
+
+    //
+    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(owner)
+                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    
+    if (filter.isRefreshTab() && gotNumber == filter.spaceActivitiesType().lastNumberOfUpdated()) {
+      gotNumber = 0;
+    }
+    
+    return gotNumber;
+  }
+  
+  
+  private String[] getNumberOfViewedOfActivities(Identity owner, ActivityFilterType type) {
+    
+    if (type.fromSinceTime() == type.toSinceTime()) {
+      return ArrayUtils.EMPTY_STRING_ARRAY;
+    }
+    
+    List<Identity> identities = new ArrayList<Identity>();
+    identities.add(owner);
+    
+    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER;
+    
+    switch(type) {
+    case CONNECTIONS_ACTIVITIES :
+      identities.addAll(relationshipStorage.getConnections(owner));
+      break;
+    case USER_ACTIVITIES :
+      where.mentioner(owner);
+      //identities.addAll(relationshipStorage.getConnections(owner));
+      break;
+    case USER_SPACE_ACTIVITIES :
+      identities.addAll(getSpacesId(owner));
+      break;
+    case SPACE_ACTIVITIES :
+      break;
+    }
+    
+    //
+    JCRFilterLiteral jcrfilter = ActivityFilter.ACTIVITY_VIEWED_RANGE_FILTER;
+    jcrfilter.with(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(type.oldFromSinceTime()));
+    jcrfilter.with(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(type.toSinceTime()));
+
+    //
+    QueryResult<ActivityEntity> result = getActivitiesOfIdentitiesQuery(where.owners(identities), jcrfilter).objects();
+    String[] excludedActivities = new String[0];
+    
+    //
+    while(result.hasNext()) {
+      excludedActivities = (String[]) ArrayUtils.add(excludedActivities, result.next().getId());
+    }
+    
+    return excludedActivities;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivities(Identity owner,
+                                               Identity viewer,
+                                               long offset,
+                                               long limit) throws ActivityStorageException {
+    
+    List<Identity> queryIdentities = new ArrayList<Identity>();
+    queryIdentities.add(owner);
+    
+    //
+    if (viewer != null 
+              && owner.getId().equals(viewer.getId()) == false) {
+      //
+      boolean hasRelationship = relationshipStorage.getRelationship(owner, viewer) != null;
+      
+      //
+      if (hasRelationship) {
+        queryIdentities.add(viewer);
+      }
+    }
+    
+    //
+    List<Identity> spaceIdentityOfOwner = getSpacesId(owner);
+    Map<String, Identity> spaceIdentityOfViewer = getSpacesIdOfIdentity(viewer);
+    for(Identity identity : spaceIdentityOfOwner) {
+      if (spaceIdentityOfViewer.containsKey(identity.getRemoteId())) {
+        queryIdentities.add(identity);
+      }
+    }
+    
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getOwnerActivitiesOfIdentities(ActivityBuilderWhere.ACTIVITY_OWNER_BUILDER.owners(queryIdentities).mentioner(owner).poster(owner), filter, offset, limit);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<ExoSocialActivity> getOwnerActivitiesOfIdentities(ActivityBuilderWhere where, ActivityFilter filter,
+                                                           long offset, long limit) throws ActivityStorageException {
+
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(where, filter);
+    
+    QueryResult<ActivityEntity> results = query.objects();
+    
+    ActivityEntity entity = null;
+    long totalSize = results.size();
+    
+    ActivityIterator activityIt = new ActivityIterator(offset, limit, totalSize);
+      
+    //
+    while (results.hasNext()) {
+      entity = results.next();
+
+      //
+      if (entity.isComment()) {
+        entity = entity.getParentActivity();
+      }
+
+      activityIt.add(getStorage().getActivity(entity.getId()));
+
+      //
+      if (activityIt.addMore() == false) {
+        break;
+      }
+    }
+    
+    return activityIt.result();
+  }
+  
+  
 }

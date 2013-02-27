@@ -190,4 +190,32 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param permaLink the permalink link
    */
   void setPermanLink(String permaLink);
+  
+  /**
+   * Gets array of identityIds who like this activity.
+   *
+   * @return array of identityIds
+   */
+  String[] getMentionedIds();
+
+  /**
+   * Sets array of identityIds who like this activity.
+   *
+   * @param identityIds array of identity Ids
+   */
+  void setMentionedIds(String[] identityIds);
+  
+  /**
+   * Gets array of identityIds who comment this activity.
+   *
+   * @return array of identityIds
+   */
+  String[] getCommentedIds();
+
+  /**
+   * Sets array of identityIds who comment this activity.
+   *
+   * @param identityIds array of identity Ids
+   */
+  void setCommentedIds(String[] identityIds);
 }

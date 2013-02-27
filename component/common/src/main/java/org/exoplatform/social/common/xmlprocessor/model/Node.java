@@ -163,7 +163,7 @@ public class Node {
    * @since 1.2.2
    */
   public boolean isSelfClosedNode(){
-    return childNodes.size() == 0 && content.isEmpty();
+    return childNodes.size() == 0 && content.isEmpty() &&("br".equals(title.toLowerCase()) | "img".equals(title.toLowerCase()));
   }
   
   /**

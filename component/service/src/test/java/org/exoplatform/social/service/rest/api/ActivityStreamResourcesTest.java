@@ -453,6 +453,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      
+      //need to query with new order base on What's hot pattern.
+      demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfComments);
     }
@@ -489,6 +492,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse4.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      
+      //need to query with new order base on What's hot pattern.
+      spaceActivities = activityManager.getActivitiesWithListAccess(spaceIdentity).loadAsList(0, 20);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
       compareNumberOfComments(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity(), numberOfComments);
     }
@@ -572,6 +578,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      
+      //need to query with new order base on What's hot pattern.
+      demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, limit);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfComments);
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
@@ -617,6 +626,8 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      //need to query with new order base on What's hot pattern.
+      demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfComments(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), 0);
@@ -1475,7 +1486,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
             .OK.getStatusCode(), rsp1.getStatus());
     assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
         rsp1.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
-    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadAsList(0, limit);
+    demoActivities = activityManager.getActivitiesOfConnectionsWithListAccess(demoIdentity).loadNewer(baseSinceIdActivity, limit);
 
     compareActivities(demoActivities, (ActivityRestListOut) rsp1.getEntity());
     compareNumberOfComments(demoActivities, (ActivityRestListOut) rsp1.getEntity(), numberOfComments);
@@ -1726,6 +1737,9 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse4.getStatus() must return 200", 200, containerResponse4.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse3.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      
+      //need to query with new order base on What's hot pattern.
+      spaceActivities = activityManager.getActivitiesOfUserSpacesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity());
       compareNumberOfComments(spaceActivities, (ActivityRestListOut) containerResponse4.getEntity(), numberOfComments);
     }

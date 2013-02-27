@@ -17,6 +17,7 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
@@ -25,6 +26,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
@@ -40,13 +42,18 @@ import org.exoplatform.webui.core.UIPopupWindow;
 )
 public class UIActivitiesContainer extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesContainer.class);
-
+  
+  public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
+  private static final String ACTIVITIES_NODE = "activities";
+  
   private List<ExoSocialActivity> activityList;
   private PostContext postContext;
   //hold activities for user or space
   private Space space;
   private String ownerName;
+  private String selectedDisplayMode;
   private UIPopupWindow popupWindow;
+  private long lastVisited = 0;
 
   /**
    * constructor
@@ -57,11 +64,15 @@ public class UIActivitiesContainer extends UIContainer {
       popupWindow.setShow(false);
     } catch (Exception e) {
       LOG.error(e);
-    }
+    } 
   }
 
   public UIPopupWindow getPopupWindow() {
     return popupWindow;
+  }
+
+  public List<ExoSocialActivity> getActivityList() {
+    return activityList;
   }
 
   public UIActivitiesContainer setActivityList(List<ExoSocialActivity> activityList) throws Exception {
@@ -93,8 +104,23 @@ public class UIActivitiesContainer extends UIContainer {
   public void setOwnerName(String ownerName) {
     this.ownerName = ownerName;
   }
+  
+  public String getSelectedDisplayMode() {
+    return selectedDisplayMode;
+  }
 
+  public void setSelectedDisplayMode(String selectedDisplayMode) {
+    this.selectedDisplayMode = selectedDisplayMode;
+  }
 
+  protected long getCurrentServerTime() {
+    return Calendar.getInstance().getTimeInMillis();
+  }
+  
+  public boolean isOnMyActivities() {
+    return (Utils.getSelectedNode() != null && Utils.getSelectedNode().startsWith(ACTIVITIES_NODE));
+  }
+  
   /**
    * Initializes ui component child
    *
@@ -108,13 +134,15 @@ public class UIActivitiesContainer extends UIContainer {
     if (activityList == null) {
       return;
     }
-    
+
     PortalContainer portalContainer = PortalContainer.getInstance();
     UIActivityFactory factory = (UIActivityFactory) portalContainer.getComponentInstanceOfType(UIActivityFactory.class);
-    
+
     for (ExoSocialActivity activity : activityList) {
       factory.addChild(activity, this);
     }
+
+    lastVisited = getLastVisited(this.selectedDisplayMode);
   }
 
   public void addActivity(ExoSocialActivity activity) throws Exception {
@@ -132,5 +160,19 @@ public class UIActivitiesContainer extends UIContainer {
         break;
       }
     }
+  }
+
+  private long getLastVisited(String mode) {
+    long currentVisited = Calendar.getInstance().getTimeInMillis();
+    String strValue = Utils.getCookies(getCookiesKey(mode));
+    if(strValue == null) {
+      return currentVisited;
+    }
+    
+    return Long.parseLong(strValue);
+  }
+  
+  public String getCookiesKey(String displayMode) {
+    return String.format(ACTIVITY_STREAM_VISITED_PREFIX_COOKIED, displayMode, Utils.getViewerRemoteId());
   }
 }

@@ -38,6 +38,7 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     _skip(it, offset);
 
+    Identity identity = null;
     while (it.hasNext()) {
 
       RelationshipEntity relationshipEntity = it.next();
@@ -132,11 +134,21 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       switch (origin) {
 
         case FROM:
-          identities.add(createIdentityFromEntity(relationshipEntity.getFrom()));
+          identity = createIdentityFromEntity(relationshipEntity.getFrom());
+          
+          //remove duplicated
+          if (identities.indexOf(identity) == -1) {
+            identities.add(identity);
+          }
           break;
 
         case TO:
-          identities.add(createIdentityFromEntity(relationshipEntity.getTo()));
+          identity = createIdentityFromEntity(relationshipEntity.getTo());
+          //remove duplicated
+          if (identities.indexOf(identity) == -1) {
+            identities.add(identity);
+          }
+
           break;
       }
 

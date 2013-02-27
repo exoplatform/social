@@ -17,6 +17,7 @@
 package org.exoplatform.social.common;
 
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
 
@@ -86,4 +87,28 @@ public interface RealtimeListAccess<E> extends ListAccess<E> {
    * @return number of older elements if any
    */
   int getNumberOfOlder(E e);
+
+  /**
+   * Gets the number of newer elements based on the postedTime.
+   * 
+   * @param sinceTime the postedTime
+   * @return number of newer elements if any
+   */
+  int getNumberOfNewer(Long sinceTime);
+  
+  /**
+   * Gets the number of updated elements based on the of multi-value since time.
+   * 
+   * @param sinceTime the postedTime
+   * @return number of newer elements if any
+   */
+  int getNumberOfMultiUpdated(Map<String, Long> sinceTimes);
+  
+  /**
+   * Gets get updated activities base on since time.
+   * 
+   * @param sinceTime the sinceTime
+   * @return number of newer elements if any
+   */
+  List<E> getUpadtedActivities(Long sinceTime);
 }

@@ -146,6 +146,7 @@ link
           </div>
           <% } %>
           <div class="ContentRight">
+            <span class="FR" style="cursor: pointer;" onclick="<%=uicomponent.event("RemoveLink")%>">(x)&nbsp;</span>
             <div id="LinkTitle" class="Title Editable">
               $title
             </div>
