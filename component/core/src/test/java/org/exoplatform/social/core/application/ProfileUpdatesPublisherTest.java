@@ -95,50 +95,50 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     String activityId = getActivityId(profile);
     ExoSocialActivity activity = activityManager.getActivity(activityId);
     
-    //Number of comments must be 0
-    assertEquals(0, activityManager.getCommentsWithListAccess(activity).getSize());
-    
-    //from the second update, we will have a comment that is a message activity appropriate to each section updated
+    List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    //Number of comments must be 1
+    assertEquals(1, comments.size());
+    assertEquals("Position is now: developer", comments.get(0).getTitle());
     
     //update header
     profile.setProperty(Profile.POSITION, "CEO");
     activity = updateProfile(profile);
-    List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
     assertNotNull(activity);
-    assertEquals("Position is now: "+profile.getPosition(), comments.get(0).getTitle());
+    assertEquals("Position is now: CEO", comments.get(1).getTitle());
     
-    //Number of comments must be 1
-    assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
+    //Number of comments must be 2
+    assertEquals(2, comments.size());
     
     //update basic info
     profile.setProperty(Profile.EMAIL, "abc@gmail.com");
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
-    assertEquals("Basic informations has been updated.", comments.get(1).getTitle());
+    assertEquals("Basic informations has been updated.", comments.get(2).getTitle());
     
-    //Number of comments must be 2
-    assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
+    //Number of comments must be 3
+    assertEquals(3, comments.size());
     
     //update contact info
     profile.setProperty(Profile.GENDER, "Male");
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
-    assertEquals("Contact informations has been updated.", comments.get(2).getTitle());
+    assertEquals("Contact informations has been updated.", comments.get(3).getTitle());
     
-    //Number of comments must be 3
-    assertEquals(3, activityManager.getCommentsWithListAccess(activity).getSize());
+    //Number of comments must be 4
+    assertEquals(4, comments.size());
     
     //update experience
     profile.setProperty(Profile.EXPERIENCES, new ArrayList<String>());
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
-    assertEquals("Experiences has been updated.", comments.get(3).getTitle());
+    assertEquals("Experiences has been updated.", comments.get(4).getTitle());
     
-    //Number of comments must be 4
-    assertEquals(4, activityManager.getCommentsWithListAccess(activity).getSize());
+    //Number of comments must be 5
+    assertEquals(5, comments.size());
     
     //update avatar
     AvatarAttachment avatar = new AvatarAttachment();
@@ -148,10 +148,10 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     activity = updateProfile(profile);
     assertNotNull(activity);
     comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
-    assertEquals("Avatar has been updated.", comments.get(4).getTitle());
+    assertEquals("Avatar has been updated.", comments.get(5).getTitle());
     
-    //Number of comments must be 5
-    assertEquals(5, activityManager.getCommentsWithListAccess(activity).getSize());
+    //Number of comments must be 6
+    assertEquals(6, comments.size());
     
     // make sure just only one activity existing
     assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
@@ -160,11 +160,14 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     activityManager.deleteActivity(activityId);
     assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
     
-    //re-updated profile will create new activity without comment 
+    //re-updated profile will create new activity with a comment 
     profile.setProperty(Profile.POSITION, "worker");
     ExoSocialActivity newActivity = updateProfile(profile);
-    //Number of comments must be 0
-    assertEquals(0, activityManager.getCommentsWithListAccess(newActivity).getSize());
+    //Number of comments must be 1
+    assertEquals(1, activityManager.getCommentsWithListAccess(newActivity).getSize());
+    
+    activityId = getActivityId(profile);
+    activityManager.deleteActivity(activityId);
   }
   
   private String getActivityId(Profile profile) {

@@ -431,6 +431,22 @@
                     <key><string>position_updated</string></key>
                     <value><string>ProfileUpdatesPublisher.position_updated</string></value>
                   </entry>
+                  <entry>
+                    <key><string>avatar_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>basic_info_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.basic_info_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>contact_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.contact_section_updated</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>experience_section_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
+                  </entry>
                 </map>
               </field>
             </object>
