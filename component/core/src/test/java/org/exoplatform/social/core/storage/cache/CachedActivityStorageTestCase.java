@@ -17,6 +17,7 @@
 
 package org.exoplatform.social.core.storage.cache;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -180,7 +181,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(80)
+  @MaxQueryNumber(86)
   public void testSaveComment() throws Exception {
 
     //
@@ -213,7 +214,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(114)
   public void testRemoveComment() throws Exception {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -247,11 +248,56 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
     activityStorage.deleteComment(activity.getId(), comment.getId());
 
     //
-    assertEquals(1, cacheService.getActivityCache().getCacheSize());
-    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+    assertEquals(0, cacheService.getActivityCache().getCacheSize());
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
     assertEquals(activity.getId(), activityStorage.getActivityFeed(identity, 0, 20).get(0).getId());
     assertEquals(0, activityStorage.getActivityFeed(identity, 0, 20).get(0).getReplyToId().length);
 
+  }
+  
+  @MaxQueryNumber(120)
+  public void testUpdateActivity() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("hello");
+    activity.setUserId(identity.getId());
+    activityStorage.saveActivity(identity, activity);
+    
+    //
+    assertEquals(1, cacheService.getActivityCache().getCacheSize());
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+
+    //
+    activityStorage.getActivityFeed(identity, 0, 20);
+
+    //
+    assertEquals(1, cacheService.getActivityCache().getCacheSize());
+    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+    
+    //
+    List<ExoSocialActivity> idActivities = activityStorage.getUserActivities(identity, 0, 5);
+    assertEquals(1, idActivities.size());
+    
+    List<ExoSocialActivity> id2Activities = activityStorage.getUserActivities(identity2, 0, 5);
+    assertEquals(0, id2Activities.size());
+    
+    // identity2 like activity of identity1
+    ExoSocialActivity gotActivity = activityStorage.getUserActivities(identity, 0, 5).get(0);
+    String[] likeIdentityIds = gotActivity.getLikeIdentityIds();
+    likeIdentityIds = (String[]) ArrayUtils.add(likeIdentityIds, identity2.getId());
+    gotActivity.setLikeIdentityIds(likeIdentityIds);
+    activityStorage.updateActivity(gotActivity);
+    
+    assertEquals(0, cacheService.getActivityCache().getCacheSize());
+    assertEquals(0, cacheService.getActivitiesCache().getCacheSize());
+    
+    id2Activities = activityStorage.getUserActivities(identity2, 0, 5);
+    assertEquals(1, id2Activities.size());
+    
+    assertEquals(1, cacheService.getActivityCache().getCacheSize());
+    assertEquals(1, cacheService.getActivitiesCache().getCacheSize());
+    
+    //
+    activityStorage.deleteActivity(activity.getId());
   }
 
 }

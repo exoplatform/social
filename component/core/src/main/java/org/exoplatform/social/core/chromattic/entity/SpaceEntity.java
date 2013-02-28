@@ -43,6 +43,8 @@ public abstract class SpaceEntity {
   @Property(name = "soc:app")
   public abstract String getApp();
   public abstract void setApp(String app);
+  public static final PropertyLiteralExpression<String> app =
+      new PropertyLiteralExpression<String>(String.class, "soc:app");
 
   /**
    * The space name.

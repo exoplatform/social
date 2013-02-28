@@ -23,7 +23,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath />
+    <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
@@ -41,8 +41,8 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
-    <url>http://fisheye.exoplatform.org/browse/social</url>
     <tag>HEAD</tag>
+    <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
   <properties>
     <!-- **************************************** -->
@@ -56,17 +56,17 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>3-SNAPSHOT</org.exoplatform.depmgt.version>
     <org.exoplatform.commons.version>4.0.0-relooking-SNAPSHOT</org.exoplatform.commons.version>
-    <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
     <org.exoplatform.doc.doc-style.version>4.0.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
-    <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
-    <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
-    <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
-    <org.exoplatform.ws.version>2.3.0-GA</org.exoplatform.ws.version>
+    <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.5.2-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.3.2-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.2-GA</org.exoplatform.jcr.version>
     <org.gatein.common.version>2.1.0.Final</org.gatein.common.version>
     <org.gatein.pc.version>2.4.0.Final</org.gatein.pc.version>
-    <org.gatein.shindig.version>2.0.2.Final-gatein-3</org.gatein.shindig.version>
+    <org.gatein.shindig.version>2.0.2.Final-gatein-4</org.gatein.shindig.version>
+    <org.gatein.portal.version>3.5.2.Final</org.gatein.portal.version>
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
     <platform-ui.version>1.0.0-SNAPSHOT</platform-ui.version>
 
@@ -85,6 +85,13 @@
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-upgrade</artifactId>
         <version>${org.exoplatform.commons.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -363,6 +370,7 @@
         <version>${platform-ui.version}</version>
         <type>war</type>
       </dependency>
+
       <!-- To be replaced by an import of GateIn Portal parent POM -->
       <dependency>
         <groupId>org.gatein.portal</groupId>
@@ -677,11 +685,6 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-extras-link-composer-plugin</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-extras-migration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

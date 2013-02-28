@@ -21,9 +21,21 @@
 */
 %>
 <%
+  import org.exoplatform.portal.webui.util.Util;
+
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
   def labelMore = _ctx.appRes("UIActivitiesLoader.label.Show_More_Post");
   def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
+
+  def pcontext = Util.getPortalRequestContext();
+  def jsManager = pcontext.getJavascriptManager();
+
+  if(uicomponent.id.equals("UIActivitiesLoader")) {
+	  boolean hasMore = uicomponent.isHasMore();
+	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
+	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
+  }
+  
 %>
 
 <% if ( hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
@@ -35,41 +47,23 @@
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
    } else {
-     if (uicomponent.isExtendLoader()) {
-       %>
-        <script type="text/javascript">
-          try{
-            var uiActivitiesLoadButton = document.getElementById("uiActivitiesLoadButton");
-            if (uiActivitiesLoadButton) uiActivitiesLoadButton.style.display = "none";
-          }catch(e){};
-        </script>
-       <%
-     } else {
+     if (!uicomponent.isExtendLoader()) {
        %>
         <div class="noActivity">$labelNotAnyUpdatesPostedYet</div>
        <%
      }
    }
-%>
+   
+  if(uicomponent.id.equals("UIActivitiesLoader")) {
+  %>
   <%
-    if(!uicomponent.isExtendLoader() && !uicomponent.isUnableLoadNext()){
+    if(!uicomponent.isExtendLoader()){
       %>
-      	<button id="UIActivitiesLoadButton" onclick="<%=uicomponent.event('LoadMore')%>" class="btn showMore">
-          $labelMore
-        </button>
+      	<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>"></div>
         
       <%
     }
-
-    if(uicomponent.isUnableLoadNext() || uicomponent.getActivitiesContainer().getChildren().size()<=1){
-      %>
-        <script type="text/javascript">
-          try{
-            var uiActivitiesLoadButton = document.getElementById("uiActivitiesLoadButton");
-            if (uiActivitiesLoadButton) uiActivitiesLoadButton.style.display = "none";
-          }catch(e){};
-        </script>
-      <%
-    }
   %>
+<%} %>
+<div class="bottomContainer"></div>
 </div>

@@ -133,7 +133,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    */
   private Space getSpaceInstance(int number) {
     Space space = new Space();
-    space.setApp("app");
+    space.setApp("app1,app2");
     space.setDisplayName("my space " + number);
     space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
@@ -427,6 +427,19 @@ public class SpaceStorageTest extends AbstractCoreTest {
     accessibleSpacesByFilter = spaceStorage.getAccessibleSpacesByFilter("newperson", new SpaceFilter("my space"), 0, 10);
     assertNotNull("accessibleSpacesByFilter must not be null", accessibleSpacesByFilter);
     assertEquals("accessibleSpacesByFilter.size() must return: ", 0, accessibleSpacesByFilter.size());
+  }
+  
+  @MaxQueryNumber(800)
+  public void testGetAccessibleSpacesByFilterApp() throws Exception {
+    Space space = this.getSpaceInstance(1);
+    spaceStorage.saveSpace(space, true);
+    tearDownSpaceList.add(space);
+    
+    SpaceFilter filter = new SpaceFilter("my space");
+    filter.setAppId("app2");
+    
+    List<Space> accessibleSpacesByFilter = spaceStorage.getAccessibleSpacesByFilter("demo", new SpaceFilter("my space"), 0, 10);
+    assertEquals(1, accessibleSpacesByFilter.size());
   }
 
   /**

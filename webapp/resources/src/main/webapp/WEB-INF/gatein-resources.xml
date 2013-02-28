@@ -191,6 +191,17 @@
       <as>mentions</as>
     </depends>
   </module>
+  
+  <module>
+    <name>social-ui-activities-loader</name>
+    <script>
+      <path>/javascript/eXo/social/webui/UIActivityLoader.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
 
   <module>
     <name>social-ui-link-activity-composer</name>
@@ -206,6 +217,22 @@
     </depends>
     <depends>
       <module>webui</module>
+    </depends>
+  </module>
+
+  <module>
+    <name>social-ui-activity-updates</name>
+    <script>
+      <name>eXo.social.webui.UIComposerLinkExtension</name>
+      <path>/javascript/eXo/social/webui/UIActivityUpdates.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>webui</module>
+      <as>webui</as>
     </depends>
   </module>
 

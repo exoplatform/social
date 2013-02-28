@@ -25,9 +25,17 @@
   import org.exoplatform.social.webui.composer.UIComposer;
   import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
   import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
+  import java.util.Calendar;
   
-  def pcontext = Util.getPortalRequestContext();
-  def jsManager = pcontext.getJavascriptManager();
+  def currentRemoteId = Utils.getViewerRemoteId();
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  def currentServerTime = Calendar.getInstance().getTimeInMillis();
+  
+  jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates")
+           .addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId',$currentServerTime);");
+  
   jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
 
   uicomponent.refresh();

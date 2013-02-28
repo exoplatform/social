@@ -30,6 +30,8 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
+import org.exoplatform.web.application.RequireJS;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -53,10 +55,11 @@ public class UIActivitiesLoader extends UIContainer {
   private static final Log LOG = ExoLogger.getLogger(UIActivitiesLoader.class);
 
   private int currentLoadIndex;
-  private boolean unableLoadNext;
+  private boolean hasMore;
   private UIActivitiesLoader lastActivitiesLoader;
   private ListAccess<ExoSocialActivity> activityListAccess;
   private String ownerName;
+  private String selectedDisplayMode;
 
   public static String genereateId() {
     Random random = new Random();
@@ -69,7 +72,8 @@ public class UIActivitiesLoader extends UIContainer {
   private UIContainer extendContainer;
   private int loadingCapacity;
   private Space space;
-
+  private int activitiesCounter;
+  
   public UIActivitiesLoader() {
     try {
       activitiesContainer = addChild(UIActivitiesContainer.class, null, "UIActivitiesContainer_" + hashCode());
@@ -77,6 +81,10 @@ public class UIActivitiesLoader extends UIContainer {
     } catch (Exception e) {
       LOG.error(e);
     }
+  }
+
+  public ListAccess<ExoSocialActivity> getActivityListAccess() {
+    return activityListAccess;
   }
 
   public void setActivityListAccess(ListAccess<ExoSocialActivity> activityListAccess) {
@@ -115,12 +123,12 @@ public class UIActivitiesLoader extends UIContainer {
     this.loadingCapacity = loadingCapacity;
   }
 
-  public void setUnableLoadNext(boolean unableLoadNext) {
-    this.unableLoadNext = unableLoadNext;
+  public boolean isHasMore() {
+    return hasMore;
   }
 
-  public boolean isUnableLoadNext() {
-    return unableLoadNext;
+  public void setHasMore(boolean hasMore) {
+    this.hasMore = hasMore;
   }
 
   public UIActivitiesLoader getLastActivitiesLoader() {
@@ -134,6 +142,14 @@ public class UIActivitiesLoader extends UIContainer {
   public void setOwnerName(String ownerName) {
     this.ownerName = ownerName;
   }
+  
+  public void setSelectedDisplayMode(String selectedDisplayMode) {
+    this.selectedDisplayMode = selectedDisplayMode;
+  }
+
+  public String getSelectedDisplayMode() {
+    return selectedDisplayMode;
+  }
 
   protected boolean isUIUserActivityDisplay() {
     return getParent() instanceof UIUserActivitiesDisplay;
@@ -141,20 +157,19 @@ public class UIActivitiesLoader extends UIContainer {
   
   public void init() {
     try {
-      unableLoadNext = true;
+      hasMore = false;
       currentLoadIndex = 0;
+      activitiesCounter = 0;
       isExtendLoader = false;
-
+      
       activitiesContainer.setPostContext(postContext);
       activitiesContainer.setOwnerName(ownerName);
+      activitiesContainer.setSelectedDisplayMode(selectedDisplayMode);
       if (space != null) {
         activitiesContainer.setSpace(space);
       }
 
       List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
-      if (activityListAccess.getSize() > loadingCapacity) {
-        setUnableLoadNext(false);
-      }
       
       if (isShowActivities(space)) {
         activities = loadActivities(currentLoadIndex, loadingCapacity);
@@ -166,7 +181,7 @@ public class UIActivitiesLoader extends UIContainer {
     }
   }
 
-  public void loadNext() throws Exception {
+  private void loadNext() throws Exception {
     currentLoadIndex += loadingCapacity;
     List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>(0);
     lastActivitiesLoader = extendContainer.addChild(UIActivitiesLoader.class, null, UIActivitiesLoader.genereateId());
@@ -176,20 +191,13 @@ public class UIActivitiesLoader extends UIContainer {
       activities = loadActivities(currentLoadIndex, loadingCapacity);
     }
 
-    if (activities.size()> 0) {
-      if (activities.size() < loadingCapacity) {
-        setUnableLoadNext(true);
-        lastActivitiesLoader.setUnableLoadNext(true);
-      }
-
-      UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
-      lastActivitiesContainer.setPostContext(postContext);
-      lastActivitiesContainer.setSpace(space);
-
-      lastActivitiesLoader.setActivities(activities);
-    } else {
-      setUnableLoadNext(true);
-      lastActivitiesLoader.setUnableLoadNext(true);
+    UIActivitiesContainer lastActivitiesContainer = lastActivitiesLoader.getActivitiesContainer();
+    lastActivitiesContainer.setPostContext(postContext);
+    lastActivitiesContainer.setSpace(space);
+    
+    lastActivitiesLoader.setActivities(activities);
+    if(activityListAccess != null) {
+      lastActivitiesLoader.setHasMore(activityListAccess.getSize() > activitiesCounter);
     }
   }
 
@@ -198,10 +206,16 @@ public class UIActivitiesLoader extends UIContainer {
   }
 
   private List<ExoSocialActivity> loadActivities(int index, int length) throws Exception {
-    ExoSocialActivity[] activities = activityListAccess.load(index, length);
-    if (activities == null)
-      return null;
-    return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+    if (activityListAccess != null) {
+      ExoSocialActivity[] activities = activityListAccess.load(index, length);
+      if (activities != null) {
+        activitiesCounter += activities.length;
+        setHasMore(activityListAccess.getSize() > activitiesCounter);
+
+        return new ArrayList<ExoSocialActivity>(Arrays.asList(activities));
+      }
+    }
+    return null;
   }
   
   private boolean isShowActivities(Space space) {
@@ -217,9 +231,21 @@ public class UIActivitiesLoader extends UIContainer {
     public void execute(Event<UIActivitiesLoader> event) throws Exception {
       UIActivitiesLoader uiActivitiesLoader = event.getSource();
       uiActivitiesLoader.loadNext();
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivitiesLoader.getExtendContainer());
+      WebuiRequestContext context = event.getRequestContext();
+      context.addUIComponentToUpdateByAjax(uiActivitiesLoader.getExtendContainer());
+      
       UIActivitiesLoader lastLoader = uiActivitiesLoader.getLastActivitiesLoader();
       uiActivitiesLoader.setExtendContainer(lastLoader.getExtendContainer());
+
+      RequireJS require = context.getJavascriptManager()
+                                 .require("SHARED/social-ui-activities-loader", "activitiesLoader");
+      require.addScripts("activitiesLoader.setStatus('" + uiActivitiesLoader.isHasMore() + "');");
+      
+      
+      //
+      event.getRequestContext().getJavascriptManager()
+      .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.markActivitiesOnPageLoad();");
+
     }
   }
 }

@@ -136,6 +136,12 @@
             </object>
           </object-param>
           <object-param>
+            <name>underline tag</name>
+            <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
+              <field name="tagName"><string>u</string></field>
+            </object>
+          </object-param>
+          <object-param>
             <name>p tag</name>
             <object type="org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy$AllowedTag">
               <field name="tagName"><string>p</string></field>

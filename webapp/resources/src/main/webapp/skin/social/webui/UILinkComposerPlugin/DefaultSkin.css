@@ -120,6 +120,21 @@
 	background: none;
 }
 
+.UILinkShareDisplay .RemoveLinkIcon {
+	background: url('/social-resources/skin/ShareImages/activity/SOCIntranetBG.png') no-repeat -67px -204px; /* orientation=lt */
+	width:16px; height:16px;
+	display:block;
+	position:absolute;
+	top:5px;right:20px;
+	opacity:0.5;
+	filter: alpha(opacity=50);
+}
+
+.UILinkShareDisplay .RemoveLinkIcon :hover {
+	opacity: 1;
+	filter: alpha(opacity=1);
+}
+
 .UILinkShareDisplay .ThumbnailLeft .ThumbnailAction .NextIcon {
 	width: 9px;
 	height: 12px;

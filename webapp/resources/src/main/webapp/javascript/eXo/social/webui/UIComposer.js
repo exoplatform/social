@@ -43,7 +43,8 @@
 				'rel':'tooltip',
 				'data-placement':'bottom',
 				'title':'Mention',
-				'class':'actionIcon'
+				'class':'actionIcon',
+				'id': 'mentionButton'
 			}
 			).append($('<i />',{
 			'class':'uiIconSocMention'
@@ -81,6 +82,7 @@
         },
         idAction : 'ShareButton',
         actionLink : 'AttachButton',
+        actionMention : 'mentionButton',
         elasticStyle : {
           maxHeight : '64px',
           minHeight : '64px'

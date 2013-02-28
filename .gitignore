@@ -42,3 +42,4 @@ pom.xml.versionsBackup
 # Misc
 *.swp
 *.log
+rebel.xml

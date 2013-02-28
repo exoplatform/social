@@ -23,6 +23,8 @@
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
   import org.exoplatform.webui.core.UIDropDownControl;
+  import org.exoplatform.social.webui.Utils;
+  import java.util.Calendar;
 
   def rcontext = _ctx.getRequestContext() ;
   def jsManager = rcontext.getJavascriptManager();
@@ -40,6 +42,33 @@
                   
   jsManager.require("SHARED/jquery", "jq").addScripts(script);
   
+    //
+    def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
+    def noUpdates = _ctx.appRes("UIUserActivitiesDisplay.label.No_Updates");
+    def updates = _ctx.appRes("UIUserActivitiesDisplay.label.Updates");
+    def selectedTab = uicomponent.getSelectedDisplayMode().toString();
+    def cookieName = uicomponent.getCookiesKey(selectedTab);
+    
+    noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+    def currentRemoteId = Utils.getViewerRemoteId();
+    def currentServerTime = uicomponent.getCurrentServerTime();
+    //def isOnMyActivities = uicomponent.isOnMyActivities();
+
+  if ( Utils.isHomePage() ) 
+  {
+    def inputs = """ {
+            numberOfUpdatedActivities: $numberOfUpdatedActivities,
+            cookieName: '$cookieName',
+            updates: '$updates',
+            noUpdates: '$noUpdates', 
+            currentRemoteId: '$currentRemoteId',
+            selectedTab: '$selectedTab',
+            currentServerTime: $currentServerTime
+    } """;
+    
+    jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
+  } 
+  
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
 %>
 <div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
@@ -48,8 +77,12 @@
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
-    <% if ( hasActivities ) { %>
-    <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div> 28 Updates</div>
+      <% if (Utils.isHomePage() && uicomponent.hasActivities()) { %>
+		    <% if(numberOfUpdatedActivities > 0) { %>
+		     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="numberInfo"><% updates.replace("{0}", numberOfUpdatedActivities + ""); %></span></div>
+		    <% } else {%>
+		     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
+        <% } %>
     <% } %>
 	</div>
 	<% } %>

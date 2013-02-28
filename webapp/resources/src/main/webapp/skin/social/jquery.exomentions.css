@@ -108,6 +108,28 @@
     text-indent: -1000px;
 }
 
+.exo-mentions .ReplaceTextArea span.none {
+  background: none transparent;
+  border-radius: 0px;
+  color: #fff;
+  padding: 0px;
+  display: inline;
+	width: 0px;
+}
+
+.exo-mentions .ReplaceTextArea .icon {
+  background: url('/social-resources/skin/ShareImages/mention-remove.png') no-repeat center right;
+  font-weight: bold;
+  color: transparent;
+  text-indent: -9999px;
+  cursor: pointer;
+  width: 13px;
+  height: 11px;
+  display: inline-block;
+  padding: 0px;
+	font-size:10.5px;
+}
+
 .exo-mentions .replaceTextArea .cursorText {
   display: inline;
   width: 0px;

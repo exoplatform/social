@@ -23,6 +23,7 @@
 
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  import org.exoplatform.social.webui.Utils;
   
   def space = uicomponent.getSpace();
   def uicomponentId = uicomponent.id;

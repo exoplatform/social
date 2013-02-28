@@ -25,6 +25,7 @@
     <version>4.0.0-relooking-SNAPSHOT</version>
   </parent>
   <artifactId>social-extras</artifactId>
+  <version>4.0.0-relooking-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social Extras</name>
   <description>eXo Social Extras</description>
@@ -34,6 +35,5 @@
     <module>samples</module>
     <module>widget</module>
     <module>link-composer-plugin</module>
-    <module>migration</module>
   </modules>
 </project>
