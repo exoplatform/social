@@ -67,6 +67,21 @@
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-common</artifactId>
+    </dependency>
+    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+    </dependency>
+    <!-- added for dependency-analyze -->
+    <dependency>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-common</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.application-registry</artifactId>
@@ -114,21 +129,6 @@
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portlet</artifactId>
-    </dependency>
-    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-component-common</artifactId>
-    </dependency>
-    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-component-core</artifactId>
-    </dependency>
-    <!-- added for dependency-analyze -->
-    <dependency>
-      <groupId>org.gatein.common</groupId>
-      <artifactId>common-common</artifactId>
     </dependency>
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>

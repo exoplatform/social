@@ -22,3 +22,25 @@
 .MoreActivitiesLoader .ButtonMiddle a {
   color: #222240;
 }
+
+.UIActivitiesLoader .UpdatedActivity {
+  background-color: #F8F8F8;
+}
+
+.UIActivitiesLoader .UpdateInfo {
+  background: none repeat scroll 0 0 #F8F8F8;
+  border-radius: 4px 4px 4px 4px;
+  color: #115EAE;
+  line-height: 32px;
+  padding: 0 12px;
+  font-size: 16px;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  margin: 6px 0 6px 0;
+}
+
+.UIActivitiesLoader #StoreCookieButton {
+  display: none;
+}

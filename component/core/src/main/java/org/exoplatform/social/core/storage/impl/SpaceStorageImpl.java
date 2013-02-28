@@ -519,6 +519,14 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     if (validateFilter(spaceFilter)) {
       _applyFilter(whereExpression, spaceFilter);
       whereExpression.and();
+      
+      //
+      if (spaceFilter.getAppId() != null) {
+        whereExpression.contains(SpaceEntity.app, StorageUtils.PERCENT_STR + spaceFilter.getAppId() + StorageUtils.PERCENT_STR);
+        whereExpression.and();
+      }
+      
+      //
       whereExpression.startGroup();
     }
 

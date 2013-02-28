@@ -258,6 +258,9 @@
           <defaultValue>false</defaultValue>
         </defaultValues>
       </propertyDefinition>
+      <propertyDefinition name="soc:commenters" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
+        <valueConstraints/>
+      </propertyDefinition>
       <propertyDefinition name="soc:likes" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
         <valueConstraints/>
       </propertyDefinition>
@@ -302,6 +305,9 @@
         </valueConstraints>
       </propertyDefinition>
       <propertyDefinition name="soc:lastUpdated" requiredType="Long" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="soc:mentioners" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
         <valueConstraints/>
       </propertyDefinition>
     </propertyDefinitions>

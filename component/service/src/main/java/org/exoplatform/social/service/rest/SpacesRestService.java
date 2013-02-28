@@ -72,7 +72,7 @@ import org.exoplatform.web.controller.router.URIWriter;
  * <p/>
  * GET: /restContextName/social/spaces/{userId}/mySpaces/show.{format} <br /> GET:
  * /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br /> Example:<br /> GET:
- * http://localhost:8080/rest/social/spaces/root/mySpaces/show.json
+ * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
  *
  * @author hoatle <hoatlevan at gmail dot com>
  * @since Jan 6, 2010

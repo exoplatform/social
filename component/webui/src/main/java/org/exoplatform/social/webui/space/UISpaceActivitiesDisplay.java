@@ -81,7 +81,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
    * initialize
    * @throws Exception
    */
-  private void init() throws Exception {
+  public void init() throws Exception {
     if (space == null) {
       LOG.warn("space is null! Can not display spaceActivites");
       return;
@@ -95,7 +95,7 @@ public class UISpaceActivitiesDisplay extends UIContainer {
     activitiesLoader.setSpace(space);
     activitiesLoader.setPostContext(PostContext.SPACE);
     activitiesLoader.setLoadingCapacity(ACTIVITY_PER_PAGE);
-    activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesWithListAccess(spaceIdentity));
+    activitiesLoader.setActivityListAccess(Utils.getActivityManager().getActivitiesOfSpaceWithListAccess(spaceIdentity));
     activitiesLoader.init();
     
     //

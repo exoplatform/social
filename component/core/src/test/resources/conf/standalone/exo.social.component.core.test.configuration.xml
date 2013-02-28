@@ -559,9 +559,16 @@
       <type>org.exoplatform.social.common.xmlprocessor.filters.LineBreakerFilterPlugin</type>
     </component-plugin>
     <component-plugin>
-      <name>LineBreakerFilterPlugin</name>
+      <name>URLConverterFilterPlugin</name>
       <set-method>addFilterPlugin</set-method>
       <type>org.exoplatform.social.common.xmlprocessor.filters.URLConverterFilterPlugin</type>
+      <init-params>
+        <value-param>
+          <name>urlMaxLength</name>
+          <description>the max length of URL</description>
+          <value>-1</value>
+        </value-param>
+      </init-params>
     </component-plugin>
   </external-component-plugins>
 
@@ -597,6 +604,7 @@
           <name>autoCreatedInNewRepository</name>
           <description>Node types configuration file</description>
           <value>jar:/conf/portal/chromattic-nodetypes.xml</value>
+          <value>jar:/conf/standalone/nodetypes-override-init.xml</value>
         </values-param>
       </init-params>
     </component-plugin>

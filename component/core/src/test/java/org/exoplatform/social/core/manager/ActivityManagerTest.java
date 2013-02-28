@@ -214,8 +214,6 @@ public class ActivityManagerTest extends AbstractCoreTest {
     {
       final String title = "test";
       ExoSocialActivity activity = new ExoSocialActivityImpl();
-      activity.setUpdated(null);
-      activity.setPostedTime(null);
       activity.setTitle(title);
       activityManager.saveActivity(demoIdentity, activity);
       tearDownActivityList.add(activity);

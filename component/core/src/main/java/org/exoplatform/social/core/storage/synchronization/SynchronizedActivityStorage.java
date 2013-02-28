@@ -18,9 +18,11 @@
 package org.exoplatform.social.core.storage.synchronization;
 
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -337,6 +339,69 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnActivityFeed(final Identity ownerIdentity,final Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnActivityFeed(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnUserActivities(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnActivitiesOfConnections(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime) {
+
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnUserSpacesActivities(ownerIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+
+  }
   /**
    * {@inheritDoc}
    */
@@ -728,5 +793,230 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfSpaceActivities(Identity spaceIdentity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfSpaceActivities(spaceIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceActivities(spaceIdentity, index, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<ExoSocialActivity> getNewerOnSpaceActivities(Identity spaceIdentity,
+                                                           ExoSocialActivity baseActivity,
+                                                           int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNewerOnSpaceActivities(spaceIdentity, baseActivity, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnSpaceActivities(spaceIdentity, baseActivity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<ExoSocialActivity> getOlderOnSpaceActivities(Identity spaceIdentity,
+                                                           ExoSocialActivity baseActivity,
+                                                           int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getOlderOnSpaceActivities(spaceIdentity, baseActivity, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfOlderOnSpaceActivities(Identity spaceIdentity,
+                                               ExoSocialActivity baseActivity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfOlderOnSpaceActivities(spaceIdentity, baseActivity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getNumberOfNewerOnSpaceActivities(Identity spaceIdentity, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfNewerOnSpaceActivities(spaceIdentity, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUpdatedOnActivityFeed(owner, filter);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfMultiUpdated(Identity owner, Map<String, Long> sinceTimes) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfMultiUpdated(owner, sinceTimes);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserSpacesActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getActivitiesOfConnections(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getFeedActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceActivities(owner, sinceTime);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserActivities(Identity owner, ActivityUpdateFilter filter) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUpdatedOnUserActivities(owner, filter);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnSpaceActivities(Identity owner, ActivityUpdateFilter filter) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUpdatedOnSpaceActivities(owner, filter);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUpdatedOnActivitiesOfConnections(owner, filter);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public int getNumberOfUpdatedOnUserSpacesActivities(Identity owner, ActivityUpdateFilter filter) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUpdatedOnUserSpacesActivities(owner, filter);
+    }
+    finally {
+      stopSynchronization(created);
+    }
   }
 }

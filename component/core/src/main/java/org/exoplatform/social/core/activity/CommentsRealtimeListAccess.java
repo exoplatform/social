@@ -16,7 +16,9 @@
  */
 package org.exoplatform.social.core.activity;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.common.jcr.Util;
@@ -91,6 +93,14 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   /**
    * {@inheritDoc}
    */
+  public int getNumberOfNewer(Long sinceTime) {
+//    return activityStorage.getNumberOfNewerComments(existingActivity, sinceTime);
+    return 0;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public List<ExoSocialActivity> loadOlder(ExoSocialActivity baseComment, int length) {
     return activityStorage.getOlderComments(existingActivity, baseComment, length);
   }
@@ -101,4 +111,15 @@ public class CommentsRealtimeListAccess implements RealtimeListAccess<ExoSocialA
   public int getNumberOfOlder(ExoSocialActivity baseComment) {
     return activityStorage.getNumberOfOlderComments(existingActivity, baseComment);
   }
+
+  @Override
+  public int getNumberOfMultiUpdated(Map<String, Long> sinceTimes) {
+    return 0;
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUpadtedActivities(Long sinceTime) {
+    return Collections.emptyList();
+  }
+  
 }

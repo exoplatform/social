@@ -37,7 +37,7 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 import org.exoplatform.social.core.test.QueryNumberTest;
@@ -51,13 +51,15 @@ import org.junit.runners.MethodSorters;
 // TODO :
 // * Fix tests to not have to specify the order of execution like this
 // * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
-@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @QueryNumberTest
 public class ActivityStorageImplTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityStorageImpl activityStorage;
-  private RelationshipStorage relationshipStorage;
+  private RelationshipStorageImpl relationshipStorage;
   private List<ExoSocialActivity> tearDownActivityList;
+  private List<Space>  tearDownSpaceList;
+  private SpaceStorage spaceStorage;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -70,8 +72,9 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityStorage = (ActivityStorageImpl) getContainer().getComponentInstanceOfType(ActivityStorageImpl.class);
-    relationshipStorage = (RelationshipStorage) getContainer().getComponentInstanceOfType(RelationshipStorage.class);
-
+    relationshipStorage = (RelationshipStorageImpl) getContainer().getComponentInstanceOfType(RelationshipStorageImpl.class);
+    spaceStorage = (SpaceStorage) this.getContainer().getComponentInstanceOfType(SpaceStorage.class);
+    
     assertNotNull(identityStorage);
     assertNotNull(activityStorage);
     assertNotNull(relationshipStorage);
@@ -92,6 +95,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertNotNull(demoIdentity.getId());
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
+    tearDownSpaceList = new ArrayList<Space>();
   }
 
   @Override
@@ -99,6 +103,10 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
     for (ExoSocialActivity activity : tearDownActivityList) {
       activityStorage.deleteActivity(activity.getId());
+    }
+
+    for (Space sp : tearDownSpaceList) {
+      spaceStorage.deleteSpace(sp.getId());
     }
 
     identityStorage.deleteIdentity(rootIdentity);
@@ -154,7 +162,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivity() throws Exception {
 
     //
@@ -179,7 +187,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForLike() throws Exception {
 
     //
@@ -213,7 +221,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForWrong() throws Exception {
 
     //
@@ -238,7 +246,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //
@@ -272,7 +280,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(62)
   public void testUpdateActivityForUnLikeWrong() throws Exception {
 
     //
@@ -389,6 +397,11 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     
     assertEquals("userId must be " + johnIdentity.getId(), johnIdentity.getId(), gotActivity.getUserId());
     
+    //
+    List<ExoSocialActivity> gotActivities = activityStorage.getUserActivities(johnIdentity, 0, 20);
+    assertEquals(1, gotActivities.size());
+    assertEquals(johnIdentity.getId(), gotActivities.get(0).getUserId());
+    
     identityStorage.deleteIdentity(spaceIdentity);
   }
 
@@ -439,7 +452,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(1500)
+  @MaxQueryNumber(1502)
   public void testActivityOrder2() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -561,7 +574,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(false, updatedActivity.isLocked());
   }
 
-  @MaxQueryNumber(4000)
+  @MaxQueryNumber(4562)
   public void testCommentOrder() throws Exception {
     // fill 10 activities
     for (int i = 0; i < 10; ++i) {
@@ -594,7 +607,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(300)
+  @MaxQueryNumber(350)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -955,7 +968,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     activityStorage.getActivityProcessors().remove(processor);
 
   }
-
+  
   /**
    * Gets an instance of Space.
    *
@@ -963,7 +976,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    */
   private Space getSpaceInstance() {
     Space space = new Space();
-    space.setDisplayName("my space");
+    space.setDisplayName("myspace");
     space.setPrettyName(space.getDisplayName());
     space.setRegistration(Space.OPEN);
     space.setDescription("add new space");
@@ -1008,4 +1021,31 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
+  private Space getSpaceInstance(int number) {
+    Space space = new Space();
+    space.setApp("app");
+    space.setDisplayName("myspace " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    String[] managers = new String[] {"demo", "tom"};
+    String[] members = new String[] {"raul", "ghost", "dragon"};
+    String[] invitedUsers = new String[] {"register1", "mary"};
+    String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    return space;
+  }
+  
+  private long getSinceTime() {
+    Calendar cal = Calendar.getInstance();
+    return cal.getTimeInMillis();
+  }
 }

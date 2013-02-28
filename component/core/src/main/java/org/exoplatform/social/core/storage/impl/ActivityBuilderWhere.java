@@ -20,20 +20,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.DIRECTION;
+import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.HidableEntity;
+import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.BuilderWhereExpression;
+import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-import org.jboss.util.Strings;
 
 /**
  * Created by The eXo Platform SAS
@@ -41,13 +44,18 @@ import org.jboss.util.Strings;
  *          thanh_vucong@exoplatform.com
  * Nov 21, 2012  
  */
-public abstract class ActivityBuilderWhere implements BuilderWhereExpression<ActivityFilter, QueryBuilder<ActivityEntity>> {
+public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();
+  Identity poster;
   Identity mentioner;
+  Identity liker;
+  Identity commenter;
   List<Identity> identities;
+  List<Identity> posters;
+  String[] activityIds = new String[0];
   
-  public String build(ActivityFilter filter) {
+  public String build(JCRFilterLiteral filter) {
     init();
     String result = make(filter);
     destroy(filter);
@@ -55,7 +63,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   }
    
   @Override
-  public void orderBy(QueryBuilder<ActivityEntity> orderByBuilder, ActivityFilter filter) {
+  public void orderBy(QueryBuilder<ActivityEntity> orderByBuilder, JCRFilterLiteral filter) {
     Iterator<OrderByOption<PropertyLiteralExpression<?>>> it = filter.getOrders();
     
     OrderByOption<PropertyLiteralExpression<?>> orderBy = null;
@@ -67,7 +75,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     }
   }
   
-  public String make(ActivityFilter filter) {
+  public String make(JCRFilterLiteral filter) {
     return where.toString();
   }
   
@@ -75,11 +83,29 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     where.getStringBuilder();
   }
   
-  private void destroy(ActivityFilter filter) {
+  private void destroy(JCRFilterLiteral filter) {
     where.destroy();
     filter.destroy();
+    activityIds = new String[0];
+    posters = null;
+    poster = null;
     mentioner = null;
-    identities = null;
+    liker = null;
+    commenter = null;
+    identities = new ArrayList<Identity>();
+  }
+  
+  public ActivityBuilderWhere poster(Identity poster) {
+    this.poster = poster;
+    return this;
+  }
+  
+  public ActivityBuilderWhere posters(List<Identity> posters) {
+    if (this.posters == null) {
+      this.posters = new ArrayList<Identity>();
+    }
+    this.posters.addAll(posters);
+    return this;
   }
   
   public ActivityBuilderWhere mentioner(Identity mentioner) {
@@ -87,6 +113,15 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
     return this;
   }
   
+  public ActivityBuilderWhere liker(Identity liker) {
+    this.liker = liker;
+    return this;
+  }
+  
+  public ActivityBuilderWhere commenter(Identity commenter) {
+    this.commenter = commenter;
+    return this;
+  }
   /**
    * @param identities contains StreamOwner of Activity
    * @return
@@ -109,13 +144,29 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   }
   
   public List<Identity> getOwners() {
-    return this.identities == null ? new ArrayList<Identity>() : this.identities;
+    return this.identities == null ? new CopyOnWriteArrayList<Identity>() 
+                                   : new CopyOnWriteArrayList<Identity>(this.identities);
   }
   
-  public static ActivityBuilderWhere ACTIVITY_FEED_BUILDER = new ActivityBuilderWhere() {
+  public List<Identity> getPosters() {
+    return this.posters == null ? new CopyOnWriteArrayList<Identity>() 
+                                : new CopyOnWriteArrayList<Identity>(this.posters);
+  }
+  
+  public ActivityBuilderWhere excludedActivities(String...activityIds) {
+    this.activityIds = activityIds;
+    return this;
+  }
+  
+  public String[] excludedActivityIds() {
+    return this.activityIds;
+  }
+  
+  public static ActivityBuilderWhere ACTIVITY_SPACE_BUILDER = new ActivityBuilderWhere() {
 
     @Override
-    public String make(ActivityFilter filter) {
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       //has relationship
       if (identities != null && identities.size() > 0) {
@@ -133,6 +184,12 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
         }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
         where.endGroup();
         
       }
@@ -148,7 +205,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
       }
       where.endGroup();
 
-      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {
         TimestampType type = null;
@@ -164,11 +221,187 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
               break;
             }
           }
-        } else {
-          return Strings.EMPTY;
+        }
+      }
+      return where.toString();
+    }
+  };
+  
+  public static ActivityBuilderWhere ACTIVITY_UPDATED_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
+      
+      boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
+      
+      boolean first = true;
+      //has relationship
+      where.startGroup();
+      if ( hasIndentitiesCondition ) {
+        
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+      }
+        
+      //
+      if (mentioner != null) {
+        
+        if (first) {
+          first = false;
+        }
+        else {
+          where.or();
+        }
+          
+        where.contains(ActivityEntity.mentioners, mentioner.getId());
+        
+      }
+        
+      //
+      if (posters != null) {
+        List<Identity> posters = getPosters();
+        for (Identity currentIdentity : posters) {
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+          where.startGroup();
+          where.equals(ActivityEntity.poster, currentIdentity.getId());
+          where.and().equals(ActivityEntity.isComment, true);
+          where.endGroup();
+
+          }
+        }
+        
+        
+      where.endGroup();
+        
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
+      //
+      if (objFilter != null) {
+        TimestampType type = null;
+        if (objFilter instanceof TimestampType) {
+          type = (TimestampType) objFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
         }
       }
       
+      //
+      String[] excludedActivityIds = this.activityIds;
+      for(String id : excludedActivityIds) {
+        where.and().not().equals(JCRProperties.id, id);
+      }
+      
+      return where.toString();
+    }
+  };
+  
+  public static ActivityBuilderWhere ACTIVITY_VIEWED_RANGE_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
+      
+      boolean hasIndentitiesCondition = identities != null && identities.size() > 0 ? identities.size() > 0 : false;
+      
+      //has relationship
+      if ( hasIndentitiesCondition ) {
+        boolean first = true;
+        where.startGroup();
+
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        where.endGroup();
+        
+      } else {
+        if (mentioner != null) {
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+      }
+      Object fromFilter = null;
+      FilterOption<PropertyLiteralExpression<?>> frFilter = filter.get(ActivityFilter.ACTIVITY_FROM_UPDATED_POINT_FIELD);
+      if (frFilter != null) {
+        fromFilter = frFilter.getValue();
+      }
+      
+      //
+      if (fromFilter != null) {
+        TimestampType type = null;
+        if (fromFilter instanceof TimestampType) {
+          type = (TimestampType) fromFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
+        }
+      }
+      
+      Object toFilter = null;
+      FilterOption<PropertyLiteralExpression<?>> tFilter = filter.get(ActivityFilter.ACTIVITY_TO_UPDATED_POINT_FIELD);
+      if (tFilter != null) {
+        toFilter = tFilter.getValue();
+      }
+      //
+      if (toFilter != null) {
+        TimestampType type = null;
+        if (toFilter instanceof TimestampType) {
+          type = (TimestampType) toFilter;
+          if (type != null) {
+            switch (type) {
+            case NEWER:
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
+              break;
+            case OLDER:
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
+              break;
+            }
+          }
+        }
+      }
       return where.toString();
     }
   };
@@ -176,7 +409,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
   public static ActivityBuilderWhere ACTIVITY_BUILDER = new ActivityBuilderWhere() {
 
     @Override
-    public String make(ActivityFilter filter) {
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
       
       //has relationship
       if (identities != null && identities.size() > 0) {
@@ -194,6 +428,27 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           where.equals(ActivityEntity.identity, currentIdentity.getId());
 
         }
+        
+        if (poster != null) {
+          where.or();
+          where.equals(ActivityEntity.poster, poster.getId());
+        }
+        
+        if (mentioner != null) {
+          where.or();
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        if (commenter != null) {
+          where.or();
+          where.contains(ActivityEntity.commenters, commenter.getId());
+        }
+        
+        if (liker != null) {
+          where.or();
+          where.contains(ActivityEntity.likes, liker.getId());
+        }
+        
         where.endGroup();
         
       }
@@ -209,7 +464,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
       }
       where.endGroup();
 
-      Object objFilter = filter.get(ActivityFilter.ACTIVITY_POINT_FIELD).getValue();
+      Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
       if (objFilter != null) {
         TimestampType type = null;
@@ -218,16 +473,64 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<Act
           if (type != null) {
             switch (type) {
             case NEWER:
-              where.and().greater(ActivityEntity.postedTime, type.get());
+              where.and().greater(ActivityEntity.lastUpdated, type.get());
               break;
             case OLDER:
-              where.and().lesser(ActivityEntity.postedTime, type.get());
+              where.and().lesser(ActivityEntity.lastUpdated, type.get());
               break;
             }
           }
-        } else {
-          return Strings.EMPTY;
         }
+      }
+      return where.toString();
+    }
+  };
+  
+  public static ActivityBuilderWhere ACTIVITY_OWNER_BUILDER = new ActivityBuilderWhere() {
+
+    @Override
+    public String make(JCRFilterLiteral filter) {
+      List<Identity> identities = getOwners();
+      
+      //has relationship
+      if (identities != null && identities.size() > 0) {
+        boolean first = true;
+        where.startGroup();
+        for (Identity currentIdentity : identities) {
+
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+
+          where.equals(ActivityEntity.identity, currentIdentity.getId());
+
+        }
+        
+        //
+        if (mentioner != null) {
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+            
+          where.contains(ActivityEntity.mentioners, mentioner.getId());
+        }
+        
+        //
+        if (poster != null) {
+          where.or();
+          where.startGroup();
+          where.equals(ActivityEntity.poster, poster.getId());
+          where.and().equals(ActivityEntity.isComment, true);
+          where.endGroup();
+        }
+        where.endGroup();
+        
       }
       
       return where.toString();

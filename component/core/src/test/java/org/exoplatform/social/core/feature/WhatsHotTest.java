@@ -139,7 +139,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -174,7 +174,43 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getActivityFeed(rootIdentity, 0, 15);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    //int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    for (ExoSocialActivity activity : activityies) {
+      assertEquals("title " + values[i], activity.getTitle());
+      ++i;
+    }
+  }
+  
+  @MaxQueryNumber(4500)
+  public void testSpaceStreamActivityTab() throws Exception {
+    // fill 5 activities
+    for (int i = 0; i < 5; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+    }
+
+    Iterator<ExoSocialActivity> it = activityStorage.getSpaceActivities(rootIdentity, 0, 5).iterator();
+
+    // fill 10 others
+    for (int i = 0; i < 10; ++i) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("title " + i);
+      activityStorage.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+    }
+    
+    //creates comments
+    while (it.hasNext()) {
+      ExoSocialActivity activity = it.next();
+      createComment(activity, rootIdentity, 1);
+      tearDownActivityList.add(activity);
+    }
+
+    List<ExoSocialActivity> activityies = activityStorage.getSpaceActivities(rootIdentity, 0, 15);
+    int i = 0;
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -211,7 +247,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> activityies = activityStorage.getUserActivities(rootIdentity);
     int i = 0;
-    int[] values = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0};
+    int[] values = {0, 1, 2, 3, 4, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
     for (ExoSocialActivity activity : activityies) {
       assertEquals("title " + values[i], activity.getTitle());
       ++i;
@@ -227,16 +263,116 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
     
-    assertEquals(1, list.size());
+    assertEquals(2, list.size());
     ExoSocialActivity firstActivity = list.get(0);
     
     //
     list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
-    assertEquals(1, list.size());
+    assertEquals(2, list.size());
     
     assertEquals(firstActivity.getTitle(), list.get(0).getTitle());
    
     tearDownActivityList.add(firstActivity);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerActivities() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 2);
+    
+    assertEquals(2, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerActivitiesSpecialCase() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(2, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerMentionerActivities() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(3, list.size());
+    
+    tearDownActivityList.addAll(list);
+    relationshipManager.unregisterListener(publisher);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerPosterActivities() throws Exception {
+
+    //
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    //owner poster comment
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("john title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    
+    createComment(activity2, demoIdentity, 2);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(2, list.size());
+    
+    tearDownActivityList.addAll(list);
+  }
+  
+  @MaxQueryNumber(500)
+  public void testViewerOwnerAllCases() throws Exception {
+    publisher = (RelationshipPublisher) this.getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    assertNotNull(publisher);
+    relationshipManager.addListenerPlugin(publisher);
+    connectIdentities(demoIdentity, johnIdentity, true);
+
+    //
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle("title @demo hi");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    //
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle("john title");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    
+    //owner poster comment
+    createComment(activity2, demoIdentity, 2);
+    
+    List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
+    
+    assertEquals(4, list.size());
+    
+    tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
   }
   

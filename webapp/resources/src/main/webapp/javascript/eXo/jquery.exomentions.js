@@ -110,7 +110,7 @@
       var result = String(x).match(regexpURL);
       if (result && result.length > 0) {
         for ( var i = 0; i < result.length; ++i) {
-          if (result[i].length > 0 && this.validateWWWURL(result[i])) {
+          if (result[i].length > 0 && x.indexOf('@'+result[i]) < 0 && this.validateWWWURL(result[i])) {
             return result[i];
           }
         }
@@ -159,7 +159,7 @@
       };
       for ( var i = 0; i < before.length; ++i) {
         if (before[i] != after[i]) {
-          info.from = i - 1;
+          info.from = (i > 1) ? (i - 1) : 0;
           break;
         }
       }
@@ -189,6 +189,7 @@
     var inputBuffer = [];
     var currentDataQuery = '';
     var cursor = '<div class="cursorText"></div>&nbsp;';
+    var currentSelection = {elm: null, offset : 0};
     var isBlockMenu = false;
     var isInput = false;
     // action add link
@@ -295,13 +296,15 @@
       hideAutoComplete();
 
       // Mentions & syntax message
-      var updatedMessageText = start + addItemMention(mention.value) + end;
+      var point = '<span class="none point"></span>';
+      var updatedMessageText = utils.removeLastBr(start + addItemMention(mention.value) + point + end);
 
       elmInputBox.val(updatedMessageText);
-
+      point = elmInputBox.find('span.point')
+      addElmCaret(point);
+      point.remove();
       initClickMention();
-      setCaratPosition(elmInputBox);
-
+      setCaretPosition(elmInputBox);
     }
 
 
@@ -311,6 +314,7 @@
     }
 
     function insertCursorText(value, index, add) {
+      value = $.trim(value);
       var cursor_ = ' ' + ((add && add === true) ? (settings.triggerChar + cursor) : cursor);
       var val = (index == 0) ? ($.trim(cursor_) + value) :
                  ((index < 0) ? (value + cursor_) : 
@@ -319,9 +323,9 @@
     }
 
     function initClickMention() {
-      var sp = elmInputBox.find('> span');
-      if (sp.length > 0) {
-        $.each(sp, function(index, item) {
+      var spans = elmInputBox.find('> span');
+      if (spans.length > 0) {
+        $.each(spans, function(index, item) {
           var sp = $(item).find('span');
           sp.data('indexMS', {
             'indexMS' : index
@@ -334,26 +338,18 @@
             $('<div class="cursorText"></div>').insertAfter(parent);
             var tx = document.createTextNode(settings.triggerChar);
             $(tx).insertAfter(parent);
+            //
+            addElmCaret(parent);
             parent.remove();
             updateValues();
             saveCacheData();
             initClickMention();
             e.stopPropagation();
             autoSetKeyCode(elmInputBox);
-            setCaratPosition(elmInputBox);
+            setCaretPosition(elmInputBox);
           });
           $(item).on('click', function() {
-            var selection = getSelection();
-            if (selection) {
-              try {
-                var range = document.createRange();
-                range.selectNodeContents(this);
-                range.selectNode(this);
-
-                selection.removeAllRanges();
-                selection.addRange(range);
-              } catch (err) {}
-            }
+            setCaretSelection(this);
           });
         });
       }
@@ -371,7 +367,7 @@
       return selection;
     }
 
-    function setCaratPosition(inputField) {
+    function setCaretPosition(inputField) {
       if (inputField) {
         var cursorText = inputField.find('.cursorText');
         if (inputField.val().length != 0) {
@@ -383,17 +379,7 @@
               'display' : 'inline',
               'height' : '14px'
             }).html('&nbsp;&nbsp;&nbsp;');
-            cursorText.focus();
-            try {
-              var range = document.createRange();
-              range.selectNode(cursorText[0]);
-              range.selectNodeContents(cursorText[0]);
-
-              selection.removeAllRanges();
-              selection.addRange(range);
-            } catch (err) {
-              inputField.focus();
-            }
+            setCaretSelection(cursorText[0]);
           }
         }
         cursorText.remove();
@@ -401,7 +387,49 @@
         updateValues();
       }
     }
+
+    function setCaretSelection(elm) {
+      try {
+        if(elm) {
+          elm.focus();
+          var range = document.createRange();
+          range.selectNode(elm);
+          range.selectNodeContents(elm);
+          
+          var selection = getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      } catch (err) {log(err); }
+    }
+
+    function addElmCaret(elm) {
+      elmInputBox.find('span.none').remove();
+      var tx = document.createElement('span');
+      $(tx).insertAfter(elm);
+      $(tx).addClass('none');
+      saveCaretPosition(tx, 0);
+    }
     
+    function setCaretPositionIE (inputField, tx) {
+
+      // IE Support
+        var selection = getSelection();
+        // Set focus on the element
+        inputField.focus ();
+        var val = inputField.value();
+        // Create empty selection range
+        var oSel = document.selection.createRange ();
+   
+        // Move selection start and end to 0 position
+        oSel.moveStart ('character', -1 * val.length);
+   
+        // Move selection start and end to desired position
+        oSel.moveStart ('character', val.indexOf(tx.outerHTML));
+        oSel.moveEnd ('character', 0);
+        oSel.select ();
+    }
+
     function getInputBoxFullValue() {
       return $.trim(elmInputBox.value());
     }
@@ -422,17 +450,23 @@
       var before = $.trim(elmInputBox.value());
       elmInputBox.animate({
         'cursor' : 'wait'
-      }, 100, function() {
+      }, 50, function() {
         var after = $.trim(elmInputBox.value());
         var info = utils.getIndexChange(before, after);
+        if(after.indexOf('<img src="data:image/') >= 0) {
+          elmInputBox.val(before.substring(0, info.from) + '<div class="cursorText"></div>' + before.substring(info.from));
+          setCaretPosition(elmInputBox);
+          return;
+        }
         var text = after.substr(info.from, info.to);
         var nt = text.replace(new RegExp("(<[a-z0-9].*?>)(.*)(</[a-z0-9].*?>)", "gi"), "$2");
         if (nt.length < text.length) {
           after = after.substr(0, info.from) + $('<div/>').html(text).text() + ' ' + cursor + after.substr(info.to);
+          text = after;
           elmInputBox.val(after);
-          setCaratPosition(elmInputBox);
-          autoAddLink(text);
+          setCaretPosition(elmInputBox);
         }
+        autoAddLink(text);
         elmInputBox.css('cursor', 'text');
         disabledPlaceholder();
       });
@@ -443,10 +477,12 @@
 
     function onInputBoxClick(e) {
       if(elmAutocompleteList.find('li').length > 0) {
-        setCaratPosition(elmInputBox);
+        setCaretPosition(elmInputBox);
         showDropdown();
       } else {
+        e.stopPropagation();
         resetBuffer();
+        saveCaretPosition();
       }
     }
 
@@ -477,6 +513,7 @@
       isInput = true;
       updateValues();
       updateMentionsCollection();
+
       inputBuffer = utils.replaceFirst(inputBuffer.join(''), ' ').split('');
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
@@ -544,7 +581,7 @@
         //inputBuffer.splice((inputBuffer.length - 1), 1);
         if (utils.isIE) {
           if (inputBuffer.length > 1 || (inputBuffer.length == 1 && utils.brVersion < 9)) {
-            onInputBoxInput();
+            onInputBoxInput(e);
           } else {
             hideAutoComplete();
           }
@@ -607,7 +644,9 @@
     }
 
     function onInputBoxKeyUp(e) {
-
+      //
+      saveCaretPosition();
+      
       checkRemoveMoreOneText(e);
 
       backspceBroswerFix(e);
@@ -621,7 +660,6 @@
       } else {
         disabledPlaceholder();
       }
-      //
     }
 
     function checkRemoveMoreOneText(e) {
@@ -629,7 +667,7 @@
       var delta = valueBeforMention.length - currentValue.length;
       var isBackKey = (e.keyCode === KEY.BACKSPACE || e.keyCode === KEY.DELETE);
       var isReset = true;
-
+      
       if (delta > 1 && (isBlockMenu === true) || (isBlockMenu === false && delta == 1 && isBackKey)) {
         triggerOninputMention(valueBeforMention, currentValue);
         isReset = false;
@@ -642,7 +680,7 @@
             currentValue = insertCursorText(currentValue, indexChanged, true);
             elmInputBox.val(currentValue);
             autoSetKeyCode(elmInputBox);
-            setCaratPosition(elmInputBox);
+            setCaretPosition(elmInputBox);
             isReset = false;
           }
         } else if(delta == 1) {
@@ -687,20 +725,27 @@
     }
 
     function triggerOninputMention(before, after) {
-      var indexChanged = utils.getCursorIndexOfText(before, after);
-      var fVal = after.substring(0, indexChanged);
-      var lVal = after.substring(indexChanged, after.length);
-      if(lVal.length > 0) {
-        var t = lVal.indexOf(' ');
-        var k = lVal.indexOf('<br>');
-        t = (t > 0 && t < k) ? t : k;
-        t = (t < 0) ? lVal.length : t;
-        lVal = lVal.substring(0, t);
-        
-        fVal += $.trim(lVal);
+      var val = '';
+      var cr = getCaretPosition();
+      if(cr  > 0) {
+        val = currentSelection.elm.textContent.substr(0, currentSelection.offset);
       }
-
-      var hasTrigger = hasTriggerChar(fVal);
+      if(val.length <= 0) {
+        var indexChanged = utils.getCursorIndexOfText(before, after);
+        var fVal = after.substring(0, indexChanged);
+        var lVal = after.substring(indexChanged, after.length);
+        if(lVal.length > 0) {
+          var t = lVal.indexOf(' ');
+          var k = lVal.indexOf('<br>');
+          t = (t > 0 && t < k) ? t : k;
+          t = (t < 0) ? lVal.length : t;
+          lVal = lVal.substring(0, t);
+          
+          fVal += $.trim(lVal);
+        }
+        val = fVal;
+      }
+      var hasTrigger = hasTriggerChar(val);
       if (hasTrigger != false) {
         inputBuffer = hasTrigger;
         isInput = false;
@@ -715,7 +760,9 @@
       //
       if (val && val.length > 0 && val.indexOf(settings.triggerChar) >= 0) {
         val = val.substring(val.indexOf(settings.triggerChar));
-        if(val.indexOf(' ') < 0 && val.indexOf('&nbsp;') < 0 && val.indexOf('<') < 0) {
+        var c = val[val.length-1].charCodeAt();
+        if(val.indexOf(' ') < 0 && val.indexOf('&nbsp;') < 0 && val.indexOf('<') < 0 
+            && c  !== 32 && c !== 159 && c !== 164 && c !== 160) {
           return val.split('');
         }
       }
@@ -930,7 +977,7 @@
 
     function clearCaseSearch() {
       elmInputBox.parent().stop().animate({
-        'cursor' : 'none'
+        'cursor' : 'default'
       }, settings.cacheResult.live, function() {
         $(this).data("CaseSearch", {});
       });
@@ -1009,7 +1056,10 @@
         }
       };
       displayInput.value = function() {
-        var val = $(this).html().replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
+        var temp = $(this).clone();
+        temp.find('span.none').remove();
+        var val = temp.html(); temp.remove();
+        val = val.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
         return val;
       };
       return displayInput;
@@ -1017,7 +1067,7 @@
     
     function enabledPlaceholder() {
       var parent = elmInputBox.parent();
-      parent.find('div.placeholder:first').show();
+      parent.find('div.placeholder:first').show().css('top', '5px');;
       
       var isLinked = ($('#LinkTitle').length > 0);
       var action = $('#' + settings.idAction);
@@ -1027,13 +1077,88 @@
     }
     
     function disabledPlaceholder() {
-      elmInputBox.parent().find('div.placeholder:first').hide();
+      elmInputBox.parent().find('div.placeholder:first').hide().css('top', '-100px');
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
         action.removeAttr('disabled').removeClass('DisableButton');
         action.attr('onclick', action.data('actionLink').action);        
       }
     }
+
+// keep committed id: e7afc555114f27e20acc343b35c56e609958c534
+    function getCaretPosition() {
+      if(currentSelection.elm === null) {
+        return (currentSelection.offset === null) ? -1 : currentSelection.offset;
+      } else if(typeof currentSelection.elm === 'object') {
+        if(currentSelection.elm === elmInputBox[0]) {
+          return currentSelection.offset;
+        }
+        var tem = $('<div/>');
+        var childs = elmInputBox[0].childNodes;
+        for (var i = 0; i < childs.length; ++i) {
+          var it = childs[i];
+          if(it === currentSelection.elm) {
+            break;
+          } else {
+            tem.append($(it).clone());
+          }
+        }
+        var i = tem.html().length + currentSelection.offset;
+        return i;
+      }
+      return -1;
+    }
+    
+    function saveCaretPosition(elm, offset) {
+      if(elm && (typeof offset) === 'number'){
+        currentSelection.elm = elm;
+        currentSelection.offset = offset;
+      } else {
+        elmInputBox.find('span.none').remove();
+        var select = getSelection();
+        var idx = select.baseOffset;
+        var selectNode = select.anchorNode;
+        if(selectNode && (selectNode === elmInputBox[0] || selectNode.parentNode === elmInputBox[0])) {
+          currentSelection.elm = selectNode;
+          if(selectNode === elmInputBox[0]) {
+            currentSelection.offset = utils.removeLastBr(elmInputBox.value()).length;
+          } else {
+            currentSelection.offset = (select.baseOffset) ? select.baseOffset : ((select.anchorOffset) ? select.anchorOffset : 0);
+          }
+        }
+      }
+      saveCaretPositionIE();
+    }
+
+    function saveCaretPositionIE() {
+      try {
+        if($.browser.msie) {
+          var selection= getSelection();
+          var range = selection.createRange().duplicate();
+          var val = elmInputBox.value();
+          range.moveEnd("character", val.length);
+          var s = (range.text == "" ? val.length : val.lastIndexOf(range.text));
+          range = selection.createRange().duplicate();
+          range.moveStart("character", -val.length);
+          
+          var text = range.htmlText;
+          if(text != null) {
+            text = String(text).replace(/ id\=/, ' id_=').replace(/jQuery/g, 'jq');
+            if(text.indexOf('</') > 0) {
+              var jEml = $(text);
+              text = (jEml.length > 0) ? jEml.find('.ReplaceTextArea').html() : text;
+            }
+            currentSelection.elm = null;
+            if(text != null) {
+              currentSelection.offset = text.length;
+            } else {
+              currentSelection.offset = -1;
+            }
+          }
+        }
+      } catch (err) {log(err); }
+    }
+    
     // Public methods
     return {
       init : function(domTarget) {
@@ -1085,6 +1210,50 @@
             enabledPlaceholder();
           }
         }
+        
+        // action mention
+        if (settings.actionMention && settings.actionMention.length > 0) {
+          var action = null;
+          if(typeof settings.actionMention ==='string') {
+            action = $('#'+settings.actionMention)
+          } else if(typeof settings.actionMention === 'object') {
+            action = $(settings.actionMention);
+          }
+          if(action && action.length > 0) {
+            action.on('click', function(e) {
+              e.stopPropagation();
+
+              var val = elmInputBox.value();
+              if(val.indexOf('class="cursorText"') < 0) {
+                
+                /**
+                 * case 1: 
+                 *  + Selected element is not menstion-input
+                 *  + Browser is can not support HTML5.
+                 *  + Value of input is empty.
+                 *  ==> Add key @ last of content and auto show suggestion list.
+                 */
+                var caretIndex = getCaretPosition();
+                if(val.length == 0 || utils.brVersion < 7 || caretIndex == undefined || caretIndex < 0) {
+                  val = insertCursorText(val.replace(/&nbsp;/g, ' '), -1, true).replace(/&nbsp;/, '');
+                } else {
+                /**
+                 * case 2: 
+                 *  + Selected element is menstion-input
+                 *  + Browser can support HTML5.
+                 *  ==> Add key @ has posision is index of caret text and auto show suggestion list.
+                 */
+                  val = insertCursorText(val, caretIndex, true);
+                }
+                elmInputBox.val(val);
+                autoSetKeyCode(elmInputBox);
+                setCaretPosition(elmInputBox);
+              }
+
+            });
+          }
+        }
+
       },
 
       val : function(callback) {

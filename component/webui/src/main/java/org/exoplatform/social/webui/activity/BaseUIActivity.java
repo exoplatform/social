@@ -17,6 +17,8 @@
 package org.exoplatform.social.webui.activity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,10 +43,11 @@ import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
-import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay.DisplayMode;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
+import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -60,12 +63,14 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
  */
 public class BaseUIActivity extends UIForm {
   private static final Log LOG = ExoLogger.getLogger(BaseUIActivity.class);
-
+  
   private static int LATEST_COMMENTS_SIZE = 2;
   private int commentMinCharactersAllowed = 0;
   private int commentMaxCharactersAllowed = 100;
 
-  private static final int DEFAULT_LIMIT = 20;
+  private static final int DEFAULT_LIMIT = 10;
+  
+  protected static final int LIKES_NUM_DEFAULT = 15;
   
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
@@ -78,12 +83,15 @@ public class BaseUIActivity extends UIForm {
     private String commentStatus;
   }
 
+  private int loadCapacity;
+  private int currentLoadIndex = 0;
+  private RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess;
   private ExoSocialActivity activity;
-  private Identity ownerIdentity;
   private List<ExoSocialActivity> comments;
+  private Identity ownerIdentity;
   private String[] identityLikes;
   private boolean commentFormDisplayed = false;
-  private boolean likesDisplayed = false;
+  private boolean allLoaded = false;
   private CommentStatus commentListStatus = CommentStatus.LATEST;
   private boolean allCommentsHidden = false;
   private boolean commentFormFocused = false;
@@ -100,6 +108,26 @@ public class BaseUIActivity extends UIForm {
     setSubmitAction("return false;");
 
     comments = new ArrayList<ExoSocialActivity>();
+  }
+
+  public RealtimeListAccess<ExoSocialActivity> getActivityCommentsListAccess() {
+    return activityCommentsListAccess;
+  }
+
+  public void setActivityCommentsListAccess(RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess) {
+    this.activityCommentsListAccess = activityCommentsListAccess;
+  }
+
+  public int getCurrentLoadIndex() {
+    return currentLoadIndex;
+  }
+
+  public int getLoadCapacity() {
+    return loadCapacity;
+  }
+
+  public void setLoadCapacity(int loadCapacity) {
+    this.loadCapacity = loadCapacity;
   }
 
   public void setActivity(ExoSocialActivity activity) {
@@ -145,12 +173,12 @@ public class BaseUIActivity extends UIForm {
     return commentFormDisplayed;
   }
 
-  public void setLikesDisplayed(boolean likesDisplayed) {
-    this.likesDisplayed = likesDisplayed;
+  public boolean isAllLoaded() {
+    return allLoaded;
   }
 
-  public boolean isLikesDisplayed() {
-    return likesDisplayed;
+  public void setAllLoaded(boolean allLoaded) {
+    this.allLoaded = allLoaded;
   }
 
   public void setAllCommentsHidden(boolean allCommentsHidden) {
@@ -192,21 +220,34 @@ public class BaseUIActivity extends UIForm {
    * @return
    */
   public List<ExoSocialActivity> getComments() {
+    int commentsSize = activityCommentsListAccess.getSize();
+    //List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     if (commentListStatus == CommentStatus.ALL) {
-      return comments;
+      if (currentLoadIndex == 0) {
+        currentLoadIndex = commentsSize - DEFAULT_LIMIT - LATEST_COMMENTS_SIZE;
+        loadCapacity = DEFAULT_LIMIT + LATEST_COMMENTS_SIZE;
+      } else { 
+        currentLoadIndex -= DEFAULT_LIMIT;
+      }
+      if (currentLoadIndex < 0) currentLoadIndex = 0;
+      comments = activityCommentsListAccess.loadAsList(currentLoadIndex, loadCapacity);
+      if (currentLoadIndex > 0) { 
+        loadCapacity += currentLoadIndex;
+      }
     } else if (commentListStatus == CommentStatus.NONE) {
-      return new ArrayList<ExoSocialActivity>();
+      return comments;
     } else {
-      int commentsSize = comments.size();
       if (commentsSize > LATEST_COMMENTS_SIZE) {
-        return comments.subList(commentsSize - LATEST_COMMENTS_SIZE, commentsSize);
+        comments = activityCommentsListAccess.loadAsList(commentsSize-LATEST_COMMENTS_SIZE, LATEST_COMMENTS_SIZE);
+      } else {
+        comments = activityCommentsListAccess.loadAsList(0, commentsSize >= DEFAULT_LIMIT ? DEFAULT_LIMIT : commentsSize);
       }
     }
     return comments;
   }
 
   public List<ExoSocialActivity> getAllComments() {
-    return comments;
+    return activityCommentsListAccess.loadAsList(0, activityCommentsListAccess.getSize());
   }
 
   public String[] getIdentityLikes() {
@@ -219,9 +260,13 @@ public class BaseUIActivity extends UIForm {
    * @throws Exception
    */
   public String[] getDisplayedIdentityLikes() throws Exception {
-    if (isLiked()) {
-      return (String[]) ArrayUtils.removeElement(identityLikes, Utils.getViewerIdentity().getId());
+    List<String> likes = Arrays.asList(identityLikes);
+    Collections.reverse(likes);
+    identityLikes = (String[])likes.toArray();
+    if ( (identityLikes.length > LIKES_NUM_DEFAULT) && !isAllLoaded() ) {
+      return (String[]) ArrayUtils.subarray(identityLikes, 0, LIKES_NUM_DEFAULT);
     }
+    
     return identityLikes;
   }
 
@@ -359,7 +404,7 @@ public class BaseUIActivity extends UIForm {
     ExoSocialActivity comment = new ExoSocialActivityImpl(Utils.getViewerIdentity().getId(),
             SpaceService.SPACES_APP_ID, message, null);
     Utils.getActivityManager().saveComment(getActivity(), comment);
-    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     setCommentListStatus(CommentStatus.ALL);
   }
@@ -398,12 +443,12 @@ public class BaseUIActivity extends UIForm {
       LOG.info("activity is null, not found. It can be deleted!");
       return;
     }
-    RealtimeListAccess<ExoSocialActivity> activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
+    activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(activity);
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
     comments = getI18N(comments);
     identityLikes = activity.getLikeIdentityIds();
   }
-
+  
   public boolean isUserActivity() {
     boolean isUserActivity = false;
     if (getOwnerIdentity() != null) {
@@ -507,19 +552,7 @@ public class BaseUIActivity extends UIForm {
       if (postContext == PostContext.SPACE) {
         Space space = uiActivitiesContainer.getSpace();
         SpaceService spaceService = getApplicationComponent(SpaceService.class);
-        return spaceService.isLeader(space, Utils.getOwnerRemoteId());
-      } else if (postContext == PostContext.USER) {
-        UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-        if (uiUserActivitiesDisplay != null && uiUserActivitiesDisplay.isActivityStreamOwner()) {
-          if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_STATUS) {
-            return true;
-          } else if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.SPACE_UPDATES) {
-            return false;
-          } else {
-            //connections
-            return false;
-          }
-        }
+        return spaceService.isManager(space, Utils.getOwnerRemoteId());
       }
     } catch (Exception e) {
       LOG.warn("can't not get remoteUserIdentity: remoteUser = " + Utils.getViewerRemoteId());
@@ -557,16 +590,12 @@ public class BaseUIActivity extends UIForm {
     return (getParent().getParent().getParent() instanceof UISpaceActivitiesDisplay);
   }
   
-  public static class ToggleDisplayLikesActionListener extends EventListener<BaseUIActivity> {
+  public static class LoadLikesActionListener extends EventListener<BaseUIActivity> {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
       uiActivity.refresh();
-      if (uiActivity.isLikesDisplayed()) {
-        uiActivity.setLikesDisplayed(false);
-      } else {
-        uiActivity.setLikesDisplayed(true);
-      }
+      uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
   }
@@ -597,7 +626,7 @@ public class BaseUIActivity extends UIForm {
         commentListStatus = CommentStatus.ALL;
       } else if (status.equals(CommentStatus.NONE.getStatus())) {
         commentListStatus = CommentStatus.NONE;
-      }
+      } 
       if (commentListStatus != null) {
         uiActivity.setCommentListStatus(commentListStatus);
       }
@@ -627,11 +656,19 @@ public class BaseUIActivity extends UIForm {
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
       String message = uiFormComment.getValue();
+      
+      if (message == null || message.equals("")) {
+        UIApplication uiApplication = requestContext.getUIApplication();
+        uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.error.Empty_Message",
+                                                      null,
+                                                      ApplicationMessage.WARNING));
+        return;
+      }
+      
       uiFormComment.reset();
       uiActivity.saveComment(requestContext.getRemoteUser(), message);
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
-
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }

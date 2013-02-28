@@ -19,12 +19,17 @@ package org.exoplatform.social.common.xmlprocessor;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+
 /**
  * Implementation of {@link XMLProcessor}.
  *
  * @author Ly Minh Phuong - http://phuonglm.net
  */
 public class XMLProcessorImpl implements XMLProcessor {
+  
+  private static final Log LOG = ExoLogger.getLogger(XMLProcessorImpl.class);
   /**
    * The linked list for all filters.
    */
@@ -90,6 +95,7 @@ public class XMLProcessorImpl implements XMLProcessor {
    * {@inheritDoc}
    */
   public Object process(Object input) {
+    if (input == null) return input;
     for (Iterator<Filter> filterIterator = filters.iterator();
          filterIterator.hasNext();
          ) {

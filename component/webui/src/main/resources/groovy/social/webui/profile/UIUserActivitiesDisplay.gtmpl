@@ -22,41 +22,64 @@
 %>
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
+  import org.exoplatform.social.webui.Utils;
+  import java.util.Calendar;
+  
+  def rcontext = _ctx.getRequestContext() ;
+  def jsManager = rcontext.getJavascriptManager();
+  String script = "var slbox = jq('select[name="+uiform.SELECT_BOX_DISPLAY_MODE+"]');" + 
+                  "slbox.find('option[value='+ slbox.val() +']').hide();";
+  
+  uicomponent.changeLocale();
+  
+  //
+  def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
+	def noUpdates = _ctx.appRes("UIUserActivitiesDisplay.label.No_Updates");
+	def updates = _ctx.appRes("UIUserActivitiesDisplay.label.Updates");
+	def selectedTab = uicomponent.getSelectedDisplayMode().toString();
+	def cookieName = uicomponent.getCookiesKey(selectedTab);
+	
+	noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+	def currentRemoteId = Utils.getViewerRemoteId();
+	def currentServerTime = uicomponent.getCurrentServerTime();
+	//def isOnMyActivities = uicomponent.isOnMyActivities();
 
-  def labelAllUpdates = _ctx.appRes("${uicomponent.id}.label.All_Updates");
-  def labelNetworkUpdates = _ctx.appRes("${uicomponent.id}.label.Network_Updates");
-  def labelSpaceUpdates = _ctx.appRes("${uicomponent.id}.label.Space_Updates");
-  def labelMyStatus = _ctx.appRes("${uicomponent.id}.label.My_Status");
-  def labelMyActivityStream = _ctx.appRes("${uicomponent.id}.label.My_Activity_Stream");
-
-  def selectedDisplayMode = uicomponent.getSelectedDisplayMode();
-  def allUpdatesDisplayModeStyle = "LightBlueStyle";
-  def connectionsDisplayModeStyle = "LightBlueStyle";
-  def mySpacesDisplayModeStyle = "LightBlueStyle";
-  def myStatusDisplayModeStyle = "LightBlueStyle";
-  if (selectedDisplayMode.toString().equals("ALL_UPDATES")) {
-    allUpdatesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("NETWORK_UPDATES")) {
-    connectionsDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("SPACE_UPDATES")) {
-    mySpacesDisplayModeStyle = "DarkBlueStyle";
-  } else if (selectedDisplayMode.toString().equals("MY_STATUS") || selectedDisplayMode.toString().equals("OWNER_STATUS")) {
-    myStatusDisplayModeStyle = "DarkBlueStyle";
-  }
-
+  if ( Utils.isHomePage() ) 
+  {
+    def inputs = """ {
+            numberOfUpdatedActivities: $numberOfUpdatedActivities,
+            cookieName: '$cookieName',
+            updates: '$updates',
+            noUpdates: '$noUpdates', 
+            currentRemoteId: '$currentRemoteId',
+            selectedTab: '$selectedTab',
+            currentServerTime: $currentServerTime
+    } """;
+    
+    jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
+  } 
 %>
-<div id="$uicomponent.id" class="$uicomponent.id">
-  <h4 class="ActivityStreamTitle">$labelMyActivityStream</h4>
-<% if (uicomponent.isActivityStreamOwner()) { %>
-  <div class="UIAction">
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "ALL_UPDATES");%>" class="ActionButton $allUpdatesDisplayModeStyle">$labelAllUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "NETWORK_UPDATES");%>" class="ActionButton $connectionsDisplayModeStyle">$labelNetworkUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "SPACE_UPDATES");%>" class="ActionButton $mySpacesDisplayModeStyle">$labelSpaceUpdates</a>
-    <span style="border-right: 1px solid #e1e1e1;"></span>
-    <a href="javascript:void(0);" onclick="<%= uicomponent.event("ChangeDisplayMode", "MY_STATUS");%>" class="ActionButton $myStatusDisplayModeStyle">$labelMyStatus</a>
+<div class="$uiform.id ClearFix">
+  <% uiform.begin() %>
+  <% if (Utils.isHomePage() && uiform.hasActivities()) { %>
+  <div class="UpdateInfo">
+    <% if(numberOfUpdatedActivities > 0) { %>
+    <span id="numberInfo"><% updates.replace("{0}", numberOfUpdatedActivities + ""); %></span>
+    <% } else {%>
+    <span id="noUpdates"><%=noUpdates%></span>
+    <% } %>
   </div>
-<% } %>
-  <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+  <% } %>
+  
+  <div class="UISelectDisplayMode">
+    <%
+       if (uiform.isActivityStreamOwner() && Utils.isHomePage()) {
+         uiform.renderField(uiform.SELECT_BOX_DISPLAY_MODE);
+       }
+    %>
+  </div>
+  <% uiform.end() %>
+  <div class="ClearFix">
+    <% uicomponent.renderChild(UIActivitiesLoader.class);%>
+  </div>
 </div>
