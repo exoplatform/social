@@ -250,6 +250,7 @@
 			  <% if (uicomponent.commentListToggleable()) {
 			  def showAllCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  def hideAllCommentsAction = uicomponent.event("SetCommentListStatus", "none");
+			  def loadPreviousCommentsAction = uicomponent.event("SetCommentListStatus", "all");
 			  %>
 			  <div class="commentListInfo clearfix">
 				<div class="pull-right numberComment">$commentsHidden/$totalComments</div>
