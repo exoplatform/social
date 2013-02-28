@@ -32,7 +32,7 @@ import org.exoplatform.social.core.space.model.Space;
 public class SpaceLifeCycleEvent  extends LifeCycleEvent<String,Space>{
 
   public enum Type {
-    SPACE_CREATED, SPACE_REMOVED, APP_ADDED, APP_REMOVED, APP_ACTIVATED, APP_DEACTIVATED, JOINED, LEFT, GRANTED_LEAD, REVOKED_LEAD
+    SPACE_CREATED, SPACE_REMOVED, SPACE_RENAMED, APP_ADDED, APP_REMOVED, APP_ACTIVATED, APP_DEACTIVATED, JOINED, LEFT, GRANTED_LEAD, REVOKED_LEAD
   };
 
   /**

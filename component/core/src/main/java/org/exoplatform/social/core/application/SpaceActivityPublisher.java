@@ -32,6 +32,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
+import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
 /**
  * This listener is responsible for initializing and notifying activity stream for the space. We create a special
@@ -110,6 +111,14 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   @Override
   public void spaceRemoved(SpaceLifeCycleEvent event) {
     LOG.debug("space " + event.getSpace().getDisplayName() + " was removed!");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void spaceRenamed(SpaceLifeCycleEvent event) {
+    LOG.debug("space " + event.getSpace().getDisplayName() + " was renamed!");
   }
 
   /**
