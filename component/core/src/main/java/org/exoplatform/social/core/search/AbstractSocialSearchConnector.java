@@ -1,13 +1,13 @@
 package org.exoplatform.social.core.search;
 
+import java.util.Collection;
+
 import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.container.xml.InitParams;
-
-import static org.exoplatform.social.core.search.Sorting.*;
-
-import java.util.Collection;
+import org.exoplatform.social.core.search.Sorting.OrderBy;
+import org.exoplatform.social.core.search.Sorting.SortBy;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -43,11 +43,11 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
 
     //
     SortBy sortBy = null;
-    if ("relevancy".equals(sort)) {
+    if ("relevancy".equalsIgnoreCase(sort)) {
       sortBy = SortBy.RELEVANCY;
-    } else if ("date".equals(sort)) {
+    } else if ("date".equalsIgnoreCase(sort)) {
       sortBy = SortBy.DATE;
-    } else if ("title".equals(sort)) {
+    } else if ("title".equalsIgnoreCase(sort)) {
       sortBy = SortBy.TITLE;
     } else {
       throw new SocialSearchConnectorException("sort must be relevancy, date or title but is : " + sort);
@@ -55,16 +55,16 @@ public abstract class AbstractSocialSearchConnector extends SearchServiceConnect
 
     //
     OrderBy orderBy = null;
-    if ("asc".equals(order)) {
+    if ("ASC".equalsIgnoreCase(order)) {
       orderBy = OrderBy.ASC;
-    } else if ("desc".equals(order)) {
+    } else if ("DESC".equalsIgnoreCase(order)) {
       orderBy = OrderBy.DESC;
     } else {
-      throw new SocialSearchConnectorException("sort must be asc or desc but is : " + order);
+      throw new SocialSearchConnectorException("sort must be ASC or DESC but is : " + order);
     }
 
-    return search(query, new Range(offset, limit), new Sorting(sortBy, orderBy));
+    return search(context, query, new Range(offset, limit), new Sorting(sortBy, orderBy));
   }
 
-  protected abstract Collection<SearchResult> search(String query, Range range, Sorting sort);
+  protected abstract Collection<SearchResult> search(SearchContext context, String query, Range range, Sorting sort);
 }

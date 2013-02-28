@@ -1,5 +1,12 @@
 package org.exoplatform.social.core.search;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
@@ -16,12 +23,10 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.test.AbstractCoreTest;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import org.exoplatform.web.controller.metadata.ControllerDescriptor;
+import org.exoplatform.web.controller.metadata.DescriptorBuilder;
+import org.exoplatform.web.controller.router.Router;
+import org.exoplatform.web.controller.router.RouterConfigException;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -33,9 +38,13 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   private List<Space> tearDown = new ArrayList<Space>();
   private final Log LOG = ExoLogger.getLogger(SpaceSearchConnectorTestCase.class);
+  private String CONTROLLER_PATH = "conf/standalone/controller.xml";
+  private Router router;
+  private SearchContext context;
 
   public void setUp() throws Exception {
     super.setUp();
+    
     identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
 
     Identity userA = new Identity(OrganizationIdentityProvider.NAME, "demo");
@@ -77,12 +86,9 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
     InitParams params = new InitParams();
     params.put("constructor.params", new PropertiesParam());
-    spaceSearchConnector = new SpaceSearchConnector(params, spaceService) {
-      @Override
-      protected String getSpaceUrl(Space space) {
-        return "url://" + space.getPrettyName();
-      }
-    };
+    spaceSearchConnector = new SpaceSearchConnector(params, spaceService) {};
+    
+    loadController();
   }
 
   @Override
@@ -97,28 +103,29 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testCurrentUser() throws Exception {
     setCurrentUser("demo");
-    assertEquals("demo", spaceSearchConnector.getCurrentUserName());
+    assertEquals("demo", getCurrentUserName());
   }
 
   public void testFilter() throws Exception {
     setCurrentUser("demo");
-    assertEquals(1, spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(1, spaceSearchConnector.search(null, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
-    assertEquals(2, spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(1, spaceSearchConnector.search(context, "foo description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
+    assertEquals(2, spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC").size());
   }
 
   public void testData() throws Exception {
     setCurrentUser("demo");
-    Collection<SearchResult> cFoo = spaceSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cFoo = spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
     assertEquals("foo description", rFoo.getExcerpt());
-    assertEquals("url://foo", rFoo.getUrl());
+    log.info(" rFoo.getUrl() " + rFoo.getUrl());
+    assertEquals("/portal/g/:spaces:foo/foo", rFoo.getUrl());
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());
     assertEquals("foo - 1 Member(s) - Free to Join", rFoo.getDetail());
 
-    Collection<SearchResult> cBar = spaceSearchConnector.search(null, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
+    Collection<SearchResult> cBar = spaceSearchConnector.search(context, "bar", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rBar = cBar.iterator().next();
     Profile pBar = identityManager.getProfile(identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, "bar"));
     Space sBar = spaceService.getSpaceByDisplayName("bar");
@@ -129,24 +136,42 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
 
   public void testOrder() throws Exception {
     setCurrentUser("demo");
-    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "asc");
+    List<SearchResult> rTitleAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
     assertEquals("bar", rTitleAsc.get(0).getTitle());
     assertEquals("foo", rTitleAsc.get(1).getTitle());
 
-    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "title", "desc");
+    List<SearchResult> rTitleDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "title", "DESC");
     assertEquals("foo", rTitleDesc.get(0).getTitle());
     assertEquals("bar", rTitleDesc.get(1).getTitle());
 
-    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "asc");
+    List<SearchResult> rDateAsc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "ASC");
     assertEquals("foo", rDateAsc.get(0).getTitle());
     assertEquals("bar", rDateAsc.get(1).getTitle());
 
-    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(null, "description", Collections.EMPTY_LIST, 0, 10, "date", "desc");
+    List<SearchResult> rDateDesc = (List<SearchResult>) spaceSearchConnector.search(context, "description", Collections.EMPTY_LIST, 0, 10, "date", "DESC");
     assertEquals("bar", rDateDesc.get(0).getTitle());
     assertEquals("foo", rDateDesc.get(1).getTitle());
   }
 
   private void setCurrentUser(final String name) {
     ConversationState.setCurrent(new ConversationState(new org.exoplatform.services.security.Identity(name)));
+  }
+  
+  private String getCurrentUserName() {
+    return ConversationState.getCurrent().getIdentity().getUserId();
+  }
+  
+  private void loadController() throws Exception {
+    ClassLoader loader = getClass().getClassLoader();
+    InputStream in = loader.getResourceAsStream(CONTROLLER_PATH);
+    try {
+      ControllerDescriptor routerDesc = new DescriptorBuilder().build(in);
+      router = new Router(routerDesc);
+      context = new SearchContext(router);
+    } catch (RouterConfigException e) {
+      log.info(e.getMessage());
+    } finally {
+      in.close();
+    }
   }
 }

@@ -1,8 +1,14 @@
 package org.exoplatform.social.core.search;
 
-import org.apache.commons.collections.map.HashedMap;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.services.log.ExoLogger;
@@ -10,22 +16,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.web.controller.QualifiedName;
-import org.exoplatform.web.controller.router.Router;
-import org.exoplatform.web.controller.router.URIWriter;
-import org.exoplatform.web.url.navigation.NavigationResource;
-import org.exoplatform.web.url.navigation.NodeURL;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -41,13 +33,18 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
   }
 
   @Override
-  public Collection<SearchResult> search(String query, Range range, Sorting sorting) {
+  public Collection<SearchResult> search(SearchContext context, String query, Range range, Sorting sorting) {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
     SpaceFilter filter = new SpaceFilter();
     filter.setSpaceNameSearchCondition(query);
     filter.setSorting(sorting);
+
+    ExoContainerContext eXoContext = (ExoContainerContext)ExoContainerContext.getCurrentContainer()
+        .getComponentInstanceOfType(ExoContainerContext.class);
+    String portalName = eXoContext.getPortalContainerName();
+
 
     ListAccess<Space> la = spaceService.getVisibleSpacesWithListAccess(getCurrentUserName(), filter);
     try {
@@ -68,13 +65,13 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
         //
         SearchResult result = new SearchResult(
-            getSpaceUrl(s),
+            getSpaceUrl(context, s, portalName),
             s.getDisplayName(),
             s.getDescription(),
             sb.toString(),
             s.getAvatarUrl() != null ? s.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL,
             s.getCreatedTime(),
-            0); // TODO : implement relevancy
+            0);
         results.add(result);
       }
     } catch (Exception e) {
@@ -85,25 +82,25 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
     return results;
   }
 
-  protected String getSpaceUrl(Space space) {
+  protected String getSpaceUrl(SearchContext context, Space space, String portalName) {
 
     try {
       String groupId = space.getGroupId();
       String permanentSpaceName = groupId.split("/")[2];
 
-      RequestContext ctx = RequestContext.getCurrentInstance();
-      NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-      NavigationResource resource = null;
-      if (permanentSpaceName.equals(space.getPrettyName())) {
-        //work-around for SOC-2366 when delete space after that create new space with the same name
-        resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
-                                          + permanentSpaceName, permanentSpaceName);
-      } else {
-        resource = new NavigationResource(SiteType.GROUP, SpaceUtils.SPACE_GROUP + "/"
-                                          + permanentSpaceName, space.getPrettyName());
-      }
+      //
+      String siteName = groupId.replaceAll("/", ":");
 
-      return nodeURL.setResource(resource).toString();
+      //
+      String siteType = SiteType.GROUP.getName();
+
+      String spaceURI = context.handler(portalName)
+          .lang("")
+          .siteName(siteName)
+          .siteType(siteType)
+          .path(permanentSpaceName)
+          .renderLink();
+      return URLDecoder.decode(String.format("/%s%s", portalName, spaceURI), "UTF-8");
     } catch (Exception e) {
       LOG.error("Cannot compute space url for " + space.getDisplayName(), e);
       return "";
@@ -111,7 +108,7 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
 
   }
 
-  public String getCurrentUserName() {
+  private String getCurrentUserName() {
     return ConversationState.getCurrent().getIdentity().getUserId();
   }
 
