@@ -1,5 +1,11 @@
 package org.exoplatform.social.core.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.xml.InitParams;
@@ -11,11 +17,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -33,7 +34,7 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
 
 
   @Override
-  public Collection<SearchResult> search(String query, Range range, Sorting sorting) {
+  public Collection<SearchResult> search(SearchContext context, String query, Range range, Sorting sorting) {
 
     List<SearchResult> results = new ArrayList<SearchResult>();
 
