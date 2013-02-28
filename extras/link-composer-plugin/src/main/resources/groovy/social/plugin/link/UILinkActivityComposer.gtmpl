@@ -41,20 +41,20 @@ link
       titleEditable = _ctx.appRes("UILinkComposerPlugin.msg.Editable_Title_Element");
 
   def linkShare = uicomponent.getLinkShare();
-  def link, images, title, description, linkData;
+  def link, images, title, description, linkData = "{}";
   if (linkShare) {
-    link = linkShare.getLink().replaceAll("'", "&#039;");
+    link = linkShare.getLink().replaceAll("'", "&#39;");
     images = linkShare.getImages();
     def image;
     if (images != null && images.size() > 0) {
       image = images.get(0);
     }
-    title = linkShare.getTitle().replaceAll("'", "&#039;");
-    description = linkShare.getDescription().replaceAll("'", "&#039;");
+    title = linkShare.getTitle().replaceAll("'", "&#39;").replaceAll("\"", "&quot;");
+    description = linkShare.getDescription().replaceAll("'", "&#39;").replaceAll("\"", "&quot;");
     linkData = "{"+
-              "link: '$link',"+
-              "title: '$title',"+
-              "description: '$description'";
+              "link: encodeURI(\"$link\"),"+
+              "title: encodeURI(\"$title\"),"+
+              "description: encodeURI(\"$description\")";
 
     if(image != null){
       linkData += ",image: '$image'";
@@ -62,8 +62,9 @@ link
     linkData += "}";
   } else if(linkInfoDisplayed){
     link = uicomponent.templateParams.get("link");
-    title = uicomponent.templateParams.get("title");
-    description = uicomponent.templateParams.get("description");
+    title = uicomponent.templateParams.get("title").replaceAll("'", "&#39;").replaceAll("\"", "&quot;");
+    description = uicomponent.templateParams.get("description").replaceAll("'", "&#39;").replaceAll("\"", "&quot;");
+    
     def image;
     if(uicomponent.templateParams.get("image") == null){
       images = [];
@@ -72,9 +73,9 @@ link
       image = images.get(0);
     }
     linkData = "{"+
-      "link: '$link',"+
-      "title: '$title',"+
-      "description: '$description'";
+      "link: encodeURI(\"$link\"),"+
+      "title: encodeURI(\"$title\"),"+
+      "description: encodeURI(\"$description\")";
 
     if(image != null){
       linkData += ",image: '$image',";
@@ -86,16 +87,17 @@ link
 
   def params = "{"+
                   "linkInfoDisplayed: $linkInfoDisplayed,"+
-                  "inputLinkId: 'InputLink',"+
-                  "attachButtonId: 'AttachButton',"+
-                  "attachUrl: '${uicomponent.url("Attach")}',"+
-                  "changeLinkContentUrl: '${uicomponent.url("ChangeLinkContent")}',"+
+                  "inputLinkId: \"InputLink\","+
+                  "attachButtonId: \"AttachButton\","+
+                  "attachUrl: encodeURI(\"${uicomponent.url("Attach")}\"),"+
+                  "changeLinkContentUrl: encodeURI(\"${uicomponent.url("ChangeLinkContent")}\"),"+
                   "linkData: $linkData,"+
-                  "titleEditable: '$titleEditable'"+
+                  "titleEditable: encodeURI(\"$titleEditable\")"+
                 "}";
 
   jsManager.require("SHARED/social-ui-link-activity-composer", "linkComposer").addScripts("linkComposer.onLoad($params);");
 %>
+
 <div id="$uicomponentId">
 <% if (linkInfoDisplayed) {
      uicomponent.clearLinkShare();

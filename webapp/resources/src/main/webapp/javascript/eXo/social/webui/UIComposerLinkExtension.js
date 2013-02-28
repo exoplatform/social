@@ -24,13 +24,12 @@
 	  GRAY_COLOR: "gray",
 	  BLACK_COLOR: "black",
 	  changeLinkContent: function () {
-	    var link = this.linkData.link,
+	    var link = decodeURI(this.linkData.link),
 	    title = this.linkData.title,
 	    image = this.linkData.image;
 	    description = this.linkData.description;
-	    var queryString = 'link='+encodeURIComponent(link)
-	        + '&title='+encodeURIComponent(title)
-	        + '&description='+encodeURIComponent(description);
+      var queryString = 'link=' + link + '&title=' + title 
+          + '&description=' + description;
 	    
 	    if(image != null){
 	        queryString += '&image='+encodeURIComponent(image)
@@ -98,8 +97,8 @@
 	    this.linkInfoDisplayed = params.linkInfoDisplayed || false;
 	    this.inputLinkId = params.inputLinkId || 'inputLink';
 	    this.attachButtonId = params.attachButtonId || 'attachButton';
-	    this.attachUrl = params.attachUrl || null;
-	    this.changeLinkContentUrl = params.changeLinkContentUrl || null;
+	    this.attachUrl = decodeURI(params.attachUrl || "");
+	    this.changeLinkContentUrl = decodeURI(params.changeLinkContentUrl || "");
 	    this.shownThumbnailIndex = params.shownThumbnailIndex || 0;
 	    this.uiThumbnailDisplayId = params.uiThumbnailDisplayId || 'UIThumbnailDisplay';
 	    this.thumbnailsId = params.thumbnailsId || 'Thumbnails';
