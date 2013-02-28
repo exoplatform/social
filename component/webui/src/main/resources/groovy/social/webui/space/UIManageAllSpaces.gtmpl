@@ -194,7 +194,7 @@
 		            <a href="javascript:void(0)">$space.displayName</a>
 		            <% } %> 
 		            <% if (iconImgLabel) {%>
-		            	($iconImgLabel)
+		            	<span class="subTxt">($iconImgLabel)</span>
 		            <% } %>
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
@@ -202,7 +202,7 @@
 		            $space.description<br/>
 		          </div>
 		        </div>
-		        <div>
+		        <div class="connectionBtn clearfix">
 		          <% if ("INVITED".equals(typeOfSpace.toString())) { %>
 		              <button type="button" class="btn pull-right" onclick="<%= ignoreInvitationAction %>" title="<%= ignoreInvitationLabel %>">$ignoreInvitationLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptInvitationAction %>" title="<%= acceptInvitationLabel %>">$acceptInvitationLabel</button>
