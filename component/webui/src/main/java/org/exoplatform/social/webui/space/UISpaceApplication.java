@@ -275,6 +275,7 @@ public class UISpaceApplication extends UIForm {
       uiSpaceAppInstaller.setSpace(uiSpaceApp.space);
       uiPopup.getChild(UIPopupWindow.class).setId("UIAddApplication");
       uiPopup.getChild(UIPopupWindow.class).setResizable(false);
+      uiPopup.getChild(UIPopupWindow.class).setWindowSize(596, 0);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }

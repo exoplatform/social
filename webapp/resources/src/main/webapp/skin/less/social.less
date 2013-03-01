@@ -125,7 +125,6 @@
 
 /********* UISpaceApplicationInstaller *******/
 .uiSpaceAppInstaller {
-	padding: 10px;
 	
 	.itemListCont {
 		width: 229px;
@@ -144,12 +143,16 @@
 			    	color: @linkColorHover;
 				}
 			}
+			
+		  .selectedItem a {
+        color: @linkColor;
+      }
 		}
 	}
 	
 	.itemDetailList {
 		width: 333px;
-		margin-left: 20px;
+		margin-left: 10px;
 		.appList {
 			height: 304px;
 			overflow-x: hidden;
