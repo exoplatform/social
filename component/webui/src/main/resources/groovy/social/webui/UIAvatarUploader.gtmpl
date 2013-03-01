@@ -29,36 +29,32 @@
   
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
-<div class="UIForm $uicomponent.id">
-  <div class="HorizontalLayout">
-    <div class="FormContainer">
+<div class="uiForm uiAvatarUploader">
       <%uiform.begin()%>
-      <table class="UIFormGrid">
+      <div class="form-horizontal resizable">
         <% 
            for(field in uiform.getChildren()) { 
              if(field.isRendered()) {
         %>
-        <tr>
             <% fieldName = uicomponent.getLabel(field.getName());%>
             <%
                if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId())) {
             %>
-          <td class="FieldLabel">
+          <label class="control-label">
               <%/*if(fieldName != null && fieldName.length() > 0) {*/%> 
               <%=uicomponent.getLabel(field.getName()) %>
               <%/*}*/%>
-          </td>
-          <td class="FieldComponent"><% uiform.renderField(field) %></td>
+          </label>
+          <div class="controls"><% uiform.renderField(field) %></div>
              <% } else { %>
-          <td class="FieldComponent" colspan="2"><% uiform.renderField(field) %></td>
+          <div class="controls" colspan="2"><% uiform.renderField(field) %></div>
              <% } %>
-        </tr>
           <%
               }
             }
           %>
-      </table>
-      <div class="uiAction">
+      </div>
+      <div class="uiAction uiActionBorder">
       <% for(action in uicomponent.getActions()) { 
                    def actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
                    def link = uicomponent.event(action);
@@ -66,7 +62,5 @@
            <button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$actionLabel" onclick="$link">$actionLabel</button>
        		<% } %>
         </div>
-    </div>
-  </div>
   <%uiform.end()%>
 </div>
