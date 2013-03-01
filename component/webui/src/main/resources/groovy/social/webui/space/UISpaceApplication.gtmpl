@@ -34,6 +34,7 @@
 	jsManager.require("SHARED/jquery", "jq")
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
            .require("SHARED/uiForm");
+  def appNameIco;
 %>
 <div class="uiSpaceApp clearfix">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
@@ -44,13 +45,12 @@
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
          def appName = uicomponent.getAppName(appId);
-         def srcBG = app.getIconURL();
-         def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
+         appNameIco = appId.split(":")[0];
+          
   %>
     <div class="contentSpace pull-left clearfix">
-		<!-- img class="pull-left" src="$srcBG" onError="src='$srcBGError'" /> -->
-		<i class="uiIconApp"></i>
+		<i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
 		<% if (isRemovable) { 
 		     def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;";
 		%>

@@ -38,11 +38,10 @@ jsManager.require("SHARED/jquery", "jq")
       def srcErrorBG = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
       for (application in applicationList) {
         def addApplicationAction = uicomponent.event("InstallApplication", application.applicationName);
-        def srcBG = application.getIconURL();
+        def appNameIco = application.getApplicationName().split(":")[0];
     %>
       <div class="appDescription pull-left clearfix">
-          <!-- <img class="pull-left" onerror="src='$srcErrorBG'" rel="tooltip" data-placement="bottom" title="$application.displayName" alt="$application.displayName" src="$srcBG" />-->
-          <i class="uiIconApp"></i>
+          <i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
 		  <a class="btn-mini btn-primary pull-right" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction">Add</a>
           <div class="appContent">
               <strong>$application.displayName</strong>
