@@ -191,6 +191,8 @@
 
 .UIActivity .CommentBox .ContentBox .ContentBlock {
 	margin-top: 2px;
+	height: 120px;
+  overflow-y: auto;
 }
 
 .UIActivity .ContentBox {
