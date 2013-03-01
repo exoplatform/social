@@ -129,7 +129,10 @@
 	            
 	            $(el).hide();
 	          } else {
-	            $(el).show();
+	            $(el).show('fast', function() {
+	              var commentInputBox = $('#DisplayCommentTextarea' + currentActivityId);
+	              commentInputBox.focus();
+	            });
 	          }
 	        });
 	      });
