@@ -39,7 +39,7 @@
 						if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId()) && !fieldName.equals(field.getName())) {
 					%>												
 						<label class="control-label">
-							<%=uicomponent.getLabel(field.getName()) %>
+							<%=uicomponent.getLabel(field.getName()) %>:
 						</label>
 						<div class="controls"><% uiform.renderField(field) %></div>
 					<%} else {%>
