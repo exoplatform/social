@@ -235,7 +235,7 @@ public class BaseUIActivity extends UIForm {
         loadCapacity += currentLoadIndex;
       }
     } else if (commentListStatus == CommentStatus.NONE) {
-      return comments;
+      comments = new ArrayList<ExoSocialActivity>();
     } else {
       if (commentsSize > LATEST_COMMENTS_SIZE) {
         comments = activityCommentsListAccess.loadAsList(commentsSize-LATEST_COMMENTS_SIZE, LATEST_COMMENTS_SIZE);
