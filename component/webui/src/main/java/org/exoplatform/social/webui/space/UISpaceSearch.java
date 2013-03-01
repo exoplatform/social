@@ -307,7 +307,7 @@ public class UISpaceSearch extends UIForm {
               null,
               null);
       uiPopup.setUIComponent(uiAddSpaceForm);
-      uiPopup.setWindowSize(500, 0);
+      uiPopup.setWindowSize(600, 0);
       uiPopup.setShow(true);
     }
 
