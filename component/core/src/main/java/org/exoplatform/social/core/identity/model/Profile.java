@@ -451,8 +451,12 @@ public class Profile {
     return createdTime;
   }
 
-  public void setCreatedTime(long createdTime) {
-    this.createdTime = createdTime;
+  public void setCreatedTime(Long createdTime) {
+    if (createdTime != null) {
+      this.createdTime = createdTime;
+    } else {
+      this.createdTime = System.currentTimeMillis();
+    }
   }
 
   /*

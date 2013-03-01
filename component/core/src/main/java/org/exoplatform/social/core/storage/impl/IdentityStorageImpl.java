@@ -690,11 +690,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     String remoteId = identity.getRemoteId();
 
     profile.setId(profileEntity.getId());
-    if (profileEntity.getCreatedTime() != null) {
-      profile.setCreatedTime(profileEntity.getCreatedTime());
-    } else {
-      profile.setCreatedTime(System.currentTimeMillis());
-    }
+    profile.setCreatedTime(profileEntity.getCreatedTime());
 
     List<Map<String, String>> phones = new ArrayList<Map<String,String>>();
     List<Map<String, String>> ims = new ArrayList<Map<String,String>>();
