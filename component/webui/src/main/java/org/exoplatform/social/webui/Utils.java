@@ -463,4 +463,61 @@ public class Utils {
     String selectedNode = Utils.getSelectedNode(); 
     return ( selectedNode == null || selectedNode.length() == 0 || HOME.equals(selectedNode));  
   }
+  
+  /**
+   * Truncates large Strings showing a portion of the String's head and tail
+   * with the center cut out and replaced with '...'. Also displays the total
+   * length of the truncated string so size of '...' can be interpreted.
+   * Useful for large strings in UIs or hex dumps to log files.
+   * 
+   * @param str
+   *            the string to truncate
+   * @param head
+   *            the amount of the head to display
+   * @param tail
+   *            the amount of the tail to display
+   * @return the center truncated string
+   */
+  public static final String centerTrunc( String str, int head, int tail ) {
+      StringBuffer buf = null;
+
+      // Return as-is if String is smaller than or equal to the head plus the
+      // tail plus the number of characters added to the trunc representation
+      // plus the number of digits in the string length.
+      if ( str.length() <= ( head + tail + 7 + str.length() / 10 ) )
+      {
+          return str;
+      }
+
+      buf = new StringBuffer();
+      buf.append( str.substring( 0, head ) ).append( "..." );
+      buf.append( str.substring( str.length() - tail ) );
+      return buf.toString();
+  }
+  
+  /**
+   * Truncates large Strings showing a portion of the String's head and tail
+   * with the head cut out and replaced with '...'.
+   * 
+   * @param str
+   *            the string to truncate
+   * @param head
+   *            the amount of the head to display
+   * @return the head truncated string
+   */
+  public static final String trunc( String str, int head) {
+      StringBuffer buf = null;
+
+      // Return as-is if String is smaller than or equal to the head plus the
+      // tail plus the number of characters added to the trunc representation
+      // plus the number of digits in the string length.
+      if ( str.length() <= ( head + 7 + str.length() / 10 ) )
+      {
+          return str;
+      }
+
+      buf = new StringBuffer();
+      buf.append( str.substring( 0, head ) ).append( "..." );
+      return buf.toString();
+  }
 }

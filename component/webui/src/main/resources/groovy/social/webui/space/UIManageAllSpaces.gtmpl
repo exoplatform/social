@@ -189,7 +189,7 @@
 		        <div class="contentBox">
 		          <h4 class="spaceTitle">
 		            <% if (uicomponent.hasAccessPermission(space))  { %>
-		            <a href="<%= spaceUrl %>">$space.displayName</a>
+		            <a href="<%= spaceUrl %>"><%=Utils.trunc(space.displayName, 15) %></a>
 		            <% } else {%>
 		            <a href="javascript:void(0)">$space.displayName</a>
 		            <% } %> 
@@ -199,7 +199,7 @@
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 		          <div class="content">
-		            $space.description<br/>
+		            <%=Utils.trunc(space.description, 45) %><br/>
 		          </div>
 		        </div>
 		        <div class="connectionBtn clearfix">

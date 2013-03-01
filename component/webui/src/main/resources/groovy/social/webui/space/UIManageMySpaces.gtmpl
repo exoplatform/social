@@ -158,12 +158,12 @@
 			        </a>
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">
-			            <a href="<%= spaceUrl %>"><%= space.displayName %></a>
+			            <a href="<%= spaceUrl %>"><%= Utils.trunc(space.displayName, 15)%></a>
 			            <span class="subTxt">($iconImgLabel)</span>
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 			          <div class="content">
-			            $space.description<br/>
+			            <%= Utils.trunc(space.description, 45)%><br/>
 			          </div>
 			          </div>
 			          <div class="connectionBtn clearfix">
