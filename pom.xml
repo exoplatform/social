@@ -23,7 +23,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
@@ -56,7 +56,7 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>3-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>3</org.exoplatform.depmgt.version>
     <org.exoplatform.commons.version>4.0.0-stabilization-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.doc.doc-style.version>4.0.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
