@@ -68,42 +68,40 @@
   def disconnectTitle = (_ctx.appRes(componentId + ".label.DisconnectTitle")).replace("{0}", currentUser + "");
   def relationship = uicomponent.getRelationship();
 %>
-<div class="UIHeaderSection">
+<div class="uiHeaderSection">
 <% uiform.begin() %>
   
-  <h2 class="ClearFix"><%=profile.getPropertyValue(Profile.FULL_NAME)%>
+  <h3><%=profile.getPropertyValue(Profile.FULL_NAME)%>
 	<% if (contactStatus == null) { %>
 	  <% if (!Utils.isOwner()) { %>
-	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$inviteToConnectTitle" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</a>
+	     <button class="btn btn-primary" title="$inviteToConnectTitle" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</button>
 	  <% } %>
 	<% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
-	     <a href="javascript:void(0);" class="WaittingConfirmIcon">&nbsp;</a>
-	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</a>
-	     <span class="ActionSparator"> | </span>
-         <a class="InviConnect ColorLink" href="javascript:void(0);" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</a>	     
+	     <i class="uiIconGrayCircleTick"></i>
+	     <button class="btn" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</button>
+         <button class="btn btn-primary" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</button>	     
 	<% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
-	     <a href="javascript:void(0);" class="WaittingConfirmIcon">&nbsp;</a>
-	     <a class="InviConnect ColorLink" href="javascript:void(0);" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</a> 
+	     <i class="uiIconGrayCircleTick"></i>
+	     <button class="btn" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</button> 
 	<% } else if (contactStatus == Type.CONFIRMED) { %>
-	     <a href="javascript:void(0);" class="HasConnectionIcon">&nbsp;</a>
-	     <a class="InviConnect ColorLink"href="javascript:void(0);" title="$disconnectTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</a>
+	     <i class="uiIconGreenTick"></i>
+	     <button class="btn" title="$disconnectTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</button>
 	<% } %>
-  </h2>
+  </h3>
   
-  <p>
+  <div class="position">
       <% if(!isEdit) { %>
-            <%=position %><% if(isEditable) { %> <a class="ColorLink" href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><%=_ctx.appRes(uicomponent.getName() + ".label.edit")%></a> <% } %>
+            <%=position %><% if(isEditable) { %> <a href="<%=uicomponent.event("Edit", "" + !isEdit)%>"><i class="uiIconEdit"></i></a> <% } %>
       <% } else {
             if (isEditable) { %>
               <%uicomponent.setValue();%>
               <% uiform.renderChild(UIFormStringInput.class) %>
-              <a id="savePosition" class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></a>              
-              <span> | </span>
-              <a id="cancelPosition" class="ColorLink" href="javascript:void(0)" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></a>
+              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
+              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
           <%} else {%>
             <%=position%>
           <%}%>
       <% }%>
-  </p>
+  </div>
 <% uiform.end() %>
 </div>

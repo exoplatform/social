@@ -73,29 +73,6 @@
   }
   
 %>
-<!-- 
-<div class="UIProfileUserSearch">
-<% uiform.begin() %>
-   <div class="SearchSpacesBG ClearFix">	
-    <div class="ClearFix">
-      <label for="<%=childs.get(0).getId()%>" class="Lable">${searchByNameLabel}:&nbsp;</label>
-    	<% uiform.renderField(childs.get(0));%>
-      <button class="btn" rel="tooltip" title="$searchActionLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></button>
-    </div>
-	<div class="ClearFix">
-     <div class="HideFilter ClearFix">
-       <div class="Lable">${searchByRoleLabel}:&nbsp</div>
-		   <div class="MoreContent">
-			   <% uiform.renderField(childs.get(1))%>&nbsp;
-			   $andOrLabel
-			   <% uiform.renderField(childs.get(2))%>&nbsp;
-       </div>
-      </div>
-    </div>
-   </div>
- <% uiform.end() %>
-</div>
--->
 
 <div class="uiProfileUserSearch">
 <% uiform.begin() %>

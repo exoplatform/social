@@ -102,7 +102,7 @@
   }
   
 %>
-<div class="UIContactSection">
+<div class="uiContactSection">
   <script type="text/javascript">
     var uiContactSection = uiContactSection || null;
     function initUIContactSection() {
@@ -118,20 +118,18 @@
   </script>
   <% uiform.begin() %>
   <% uicomponent.renderChild(UITitleBar.class); %>
-  <div class="PortletContent">
+  <div class="form-horizontal">
   <% if(noContactInfo && !isEdit) { %>
     <% if(isEditable) { %>
-    <div class="NoContactInformation">$noContactCurrent</div>
+    <div class="control-group">$noContactCurrent</div>
     <% } else { %>
-    <div class="NoContactInformation">$currentUser $noContact</div>
+    <div class="control-group">$currentUser $noContact</div>
     <% } %>
   <% } else { %>
-    <table class="UIFormGrid">
-      <tbody>
       <% if (isEditable) { %>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:&nbsp;</td>
-          <td class="FieldComponent">
+        <div class="control-group">
+          <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</label>
+          <div class="controls">
           <%
             if (isEdit) { %>
             <% uiform.renderField(genderChild); %>
@@ -143,113 +141,125 @@
                 $noGenderLabel
             <% } %>
           <% } %>
-          </td>
-        </tr>
+          </div>
+        </div>
       <% } else { // isEditable
              if((gender != null) && (gender != "")) { %>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:&nbsp;</td>
-          <td class="FieldComponent">
+        <div class="control-group">
+          <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</label>
+          <div class="controls">
             <%=gender %>
-          </td>
-        </tr>
+          </div>
+        </div>
       <% } %>
     <% } %>
     <!--              phones          -->
     <% if (isEditable) { %>
-        <tr>
-          <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:&nbsp;</td>
-          <td class="FieldComponent">
+        <div class="control-group">
+          <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:</label>
+          <div class="controls">
           <% if (isEdit) {
                if (phoneCount > 0) {
                  for (i in 0..phoneCount-1) {
                    if (phoneChilds.get(i).isRendered()) {
-                     if (i % 2 != 0) {
-                       uiform.renderField(phoneChilds.get(i));
+                     if (i % 2 == 0) {
                      %>
-            <a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;">$removeActionLabel</a>
-            <span class="ActionSparator"> | </span>
-                     <%
+                       <div>
+                       <%
+                       uiform.renderField(phoneChilds.get(i));
+                       
+                       
                      } else {
-                       if (i != 0) {
-                     %>
-            <br />
-                     <%
-                     }
                        uiform.renderField(phoneChilds.get(i));
-                     }
-                   }
-                 }
+                     %>
+                       <a href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
+                       <% if (i != phoneCount - 1) { %>
+                       </div>
+                       <% } else { %>
+                       
+                       <a href="#" onclick="<%=uicomponent.event("Add", phoneChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
+                       <% } %>
+                     <%
+                     } // end else
+                   } // end isRendered
+                 }// end for
                } // end if phoneCount > 0
                if (phoneCount == 0) { %>
              $noPhoneLabel
+             <a href="#" onclick="<%=uicomponent.event("Add", phoneChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
              <% } %>
-          <% } else { %>
+          <% } else { // else isEdit 
+          %> 
                <% if (phoneSize > 0) {
                     phones.each() {
                       def phone = it.get(value);
                       def type = it.get(key);
                 %>
-                    <%=type%>:&nbsp;<%=phone%><br>
-                 <% }
+                    <div><%=type%>:<%=phone%></div>
+                 <% } 
                   } else { %>
                     $noPhoneLabel
                 <% } %>
-              <% } %>
-            <%
-            if (isEdit) {
-            %>  
-                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", phoneChild)%>">$addActionLabel</a>
-            <% } %>
-            </td>
-          </tr>
-        <% } else { %>
+              <% } //end else isEdit
+              %>
+  
+            </div>
+          </div>
+        <% } else { // not isEdit 
+        %>
           <% if(phoneSize > 0) { %>
-            <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:&nbsp;</td>
-              <td class="FieldComponent">
+            <div class="control-group">
+              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:</label>
+              <div class="controls">
               <%     phones.each() {
                       def phone = it.get(value);
                       def type = it.get(key);
 
                     %>
-                    <%=type%>:&nbsp;<%=phone%><br>
+                    <div><%=type%>:<%=phone%></div>
                  <%	} %>
-              </td>
-            </tr>
+              </div>
+            </div>
         <% } %>
       <% } %>
         <!--              end of phones          -->
         <!--              ims          -->
         <% if (isEditable) {%>
-          <tr>
-            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:&nbsp;</td>
-            <td class="FieldComponent">
+          <div class="control-group">
+            <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:</label>
+            <div class="controls">
               <%
                 if (isEdit) { %>
                 <%
                 if (imsCount > 1) {
                      for (i in 0..imsCount-1) {
                        if (imsChilds.get(i).isRendered()) {
-                         if (i % 2 != 0) {
+                         if (i % 2 == 0) {
+                         %>
+                         <div>
+                         <%
                            uiform.renderField(imsChilds.get(i));
                            %>
-                             <a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;">$removeActionLabel</a>
-                             <span class="ActionSparator"> | </span>
                            <%
                          } else {
-                           if (i != 0) {
-                         %>
-                           <br>
-                         <%
-                         }
                            uiform.renderField(imsChilds.get(i));
+                           %>
+                           <a href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
+                           <% if (i != imsCount - 1) { %>
+                             </div>
+                           <% } else { %>
+                             
+                             <a href="#" onclick="<%=uicomponent.event("Add", imChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
+                           <% } %>
+                          <%
+                           
                          }
                        }
                    %>
                    <%}
                  } else {%>
                      $noImsLabel
+                     <a href="#" onclick="<%=uicomponent.event("Add", imChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                  <%}%>
 
                 <% } else { %>
@@ -259,65 +269,65 @@
                           def type = it.get(key);
 
                       %>
-                      <%=type%>:&nbsp;<%=im%><br>
+                      <div><%=type%>:<%=im%></div>
                       <%}
                      } else { %>
                        $noImsLabel
                      <% }
                       %>
                 <% } %>
-            <%
-            if (isEdit) {
-            %>
-                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", imChild)%>">$addActionLabel</a>
-            <% } %>
-            </td>
-          </tr>
+            </div>
+          </div>
         <% } else {%>
              <%if (imsSize > 0) { %>
-             <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:&nbsp;</td>
-              <td class="FieldComponent">
+             <div class="control-group">
+              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:</label>
+              <div class="controls">
               <%    ims.each() {
                     def im = it.get(value);
                     def type = it.get(key);
 
                     %>
-                    <%=type%>:&nbsp;<%=im%><br>
+                    <div><%=type%>:<%=im%></div>
                  <%	} %>
-              </td>
-            </tr>
+              </div>
+            </div>
             <% } %>
         <% } %>
         <!--              end of ims          -->
         <!--              URL          -->
         <% if (isEditable) {%>
-          <tr>
-            <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:&nbsp;</td>
-            <td class="FieldComponent">
+          <div class="control-group">
+            <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:</label>
+            <div class="controls">
               <%
                 if (isEdit) { %>
                   <%
                   if (urlCount > 1) {
                      for (i in 0..urlCount-1) {
                        if (urlChilds.get(i).isRendered()) {
-                         if (i % 2 != 0) {
+                         if (i % 2 == 0) {
+                         %>
+                         <div>
+                         <%
+                         } else {
                            uiform.renderField(urlChilds.get(i));
                            %>
-                             <a class="ColorLink" href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;">$removeActionLabel</a>
-                             <span class="ActionSparator"> | </span>
-                           <%
-                         } else {
-                           if (i != 0) { %>
-                           <br>
-                         <% }
-                           //uiform.renderField(urlChilds.get(i));
+                           <a href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
+                           <% if (i != urlCount - 1) { %>
+                             </div>
+                           <% } else { %>
+                             
+                             <a href="#" onclick="<%=uicomponent.event("Add", urlChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
+                           <% } %>
+                        <%
                          }
                        }
                    %>
                    <%}
                    } else {%>
                        $noUrlLabel
+                       <a href="#" onclick="<%=uicomponent.event("Add", urlChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                    <%}%>
                   </li>
              <% } else { %>
@@ -325,37 +335,30 @@
                     urls.each() {
                       def url = it.get(value);
                   %>
-                  <a href="${url}">${url}</a><br>
+                  <div><a href="${url}">${url}</a></div>
                   <%}
                   } else { %>
                   $noUrlLabel
                   <% }
                   %>
                 <% } %>
-            <%
-            if (isEdit) {
-            %>  
-                <a href="#" class="ColorLink" onclick="<%=uicomponent.event("Add", urlChild)%>">$addActionLabel</a>
-            <% } %>
-            </td>
-          </tr>
+            </div>
+          </div>
       <% } else { %>
           <%if (urlSize > 0) { %>
-             <tr>
-              <td class="FieldLabel"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:&nbsp;</td>
-              <td class="FieldComponent">
+             <div class="control-group">
+              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:</label>
+              <div class="controls">
               <%    urls.each() {
                     def url = it.get(value);
 
                     %>
-                    <a href="${url}">${url}</a><br>
+                    <div><a href="${url}">${url}</a></div>
                  <%	} %>
-              </td>
-            </tr>
+              </div>
+            </div>
             <% } %>
       <% } %>
-      </tbody>
-    </table>
     <% } %>
   </div>
   <% uiform.end() %>
