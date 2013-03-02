@@ -28,7 +28,7 @@
 	              .animate({'display': 'block'}, 
 	                500, function() {
 	                  $(this).show();
-	                  $('div.BottomContainer:last')[0].scrollIntoView(true);
+	                  $('div.bottomContainer:last')[0].scrollIntoView(true);
 	                  $('#ActivitiesLoader').click();
 	                });
 	          }
