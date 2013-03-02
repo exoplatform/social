@@ -117,7 +117,7 @@ link
         if (embedHtml == null) {
         %>
 		<div id="ThumbnailContainer" class="thumbnailContainer clearfix">
-          <% if (images.size() > 0) { %>
+          <% if (images != null && images.size() > 0) { %>
 			<div id="UIThumbnailLeftBox" class="uiBox thumbnailLeft">
 				<div id="UIThumbnailDisplay" class="uiContentBox">
 				  <div id="Thumbnails" class="thumbnailInner">
@@ -163,7 +163,7 @@ link
             <% if (embedHtml != null) { %>
                  <div id="embedHtml">$embedHtml</div>
             <% } %>			
-            <% if (images.size() > 0) { %>
+            <% if (images != null && images.size() > 0) { %>
 			      <span class="uiCheckbox"><input id="ThumbnailCheckbox" type="checkbox" class="checkbox" /><span>$noThumbnail</span></span>
 			      <% } %>
           </div>

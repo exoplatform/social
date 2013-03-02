@@ -237,6 +237,14 @@
 	      });
 	      
 	    }
+	    
+	           
+	    var closeButton = $('#UIActivityComposerContainer').find('a.uiIconClose:first');
+	    if(closeButton.length > 0) {
+	       closeButton.on('click', function() {
+	          $('textarea#composerInput').exoMentions('clearLink', function() { });
+	       })
+	    }
 	  }
 	};
  
