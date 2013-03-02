@@ -135,16 +135,19 @@
       } else {
         this.container.removeClass(this.disabledClass);
       }
-      new_left = this.elem.prop('checked') ? this.rightSide : 0;
+      new_left = this.elem.prop('checked') ? this.rightSide : 1;
       this.handle.animate({
         left: new_left
       }, this.duration);
+      
       this.onLabel.animate({
-        width: new_left + this.handleRadius
+        width: (new_left + this.handleRadius + 6)
       }, this.duration);
+      
       this.offSpan.animate({
         marginRight: -new_left
       }, this.duration);
+      
       return this.onSpan.animate({
         marginLeft: new_left - this.rightSide
       }, this.duration);
@@ -170,13 +173,14 @@
       var containerWidth, offset;
       containerWidth = this._getDimension(this.container, "width");
       this.offLabel.css({
-        width: containerWidth - this.containerRadius
+        width: (containerWidth - this.containerRadius - 4)
       });
       offset = this.containerRadius - 4;
       if ($.browser.msie && $.browser.version < 7) {
         offset -= 3;
       }
       this.rightSide = containerWidth - this._getDimension(this.handle, "width")  - offset;
+      
       if (this.elem.is(':checked')) {
         this.handle.css({
           left: this.rightSide
@@ -189,7 +193,7 @@
         });
       } else {
         this.onLabel.css({
-          width: 0
+          width: 9
         });
         this.onSpan.css({
           marginLeft: -this.rightSide
@@ -278,6 +282,11 @@
       handleClass: 'iOSCheckHandle',
       handleCenterClass: 'iOSCheckHandleCenter',
       handleRightClass: 'iOSCheckHandleRight',
+      dragThreshold: 5,
+      handleMargin: 15,
+      handleRadius: 4,
+      containerWidth: 60,
+      containerRadius: 5,
       dataName: 'iOSCheckbox'
     });
     return this.iphoneStyle(opts);
