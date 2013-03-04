@@ -221,7 +221,7 @@ public class BaseUIActivity extends UIForm {
    */
   public List<ExoSocialActivity> getComments() {
     int commentsSize = activityCommentsListAccess.getSize();
-    //List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
+    List<ExoSocialActivity> comments = new ArrayList<ExoSocialActivity>();
     if (commentListStatus == CommentStatus.ALL) {
       if (currentLoadIndex == 0) {
         currentLoadIndex = commentsSize - DEFAULT_LIMIT - LATEST_COMMENTS_SIZE;
@@ -235,7 +235,7 @@ public class BaseUIActivity extends UIForm {
         loadCapacity += currentLoadIndex;
       }
     } else if (commentListStatus == CommentStatus.NONE) {
-      comments = new ArrayList<ExoSocialActivity>();
+      return comments != null ? comments : new ArrayList<ExoSocialActivity>();
     } else {
       if (commentsSize > LATEST_COMMENTS_SIZE) {
         comments = activityCommentsListAccess.loadAsList(commentsSize-LATEST_COMMENTS_SIZE, LATEST_COMMENTS_SIZE);

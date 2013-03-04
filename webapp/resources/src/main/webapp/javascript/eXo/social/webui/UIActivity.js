@@ -336,9 +336,6 @@ var UIActivity = {
 	    }, 10000, function () {
 	        $(this).data("CacheSearch", {});
 	    });
-	},
-	check: function () {
-	    alert('ssss');
 	}
 
 };

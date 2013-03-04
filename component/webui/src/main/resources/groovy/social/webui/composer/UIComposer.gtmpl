@@ -36,14 +36,14 @@
   uicomponent.changeTitleTextAreInput();
 
   def jsManager = requestContext.getJavascriptManager();
-  def defaultInput = _ctx.appRes("${uicomponent.id}.input.Write_Something");
+  def defaultInput = _ctx.appRes("${uicomponent.id}.label.Write_Something");
   def addLabel = _ctx.appRes("${uicomponent.id}.label.Add");
   def shareLabel = _ctx.appRes("${uicomponent.id}.label.Share");
   def blastInput = "blastInputSpace";
   def shareStatusLabel = _ctx.appRes("${uicomponent.id}.label.ShareStatus");
 
   if (uicomponent.getPostContext().toString().equals("USER") && uicomponent.isActivityStreamOwner()) {
-    defaultInput = _ctx.appRes("${uicomponent.id}.input.What_Are_You_Working_On");
+    defaultInput = _ctx.appRes("${uicomponent.id}.label.What_Are_You_Working_On");
     blastInput = "blastInputPeople";
   }
 
