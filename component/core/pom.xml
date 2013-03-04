@@ -319,7 +319,7 @@
             <include>**/InitContainerTestSuite.java</include>
             <include>**/NoContainerTestSuite.java</include>
           </includes>
-        </configuration>
+      </configuration>
       </plugin>
     </plugins>
   </build>

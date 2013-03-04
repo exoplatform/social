@@ -316,12 +316,99 @@
                     <value><string>SpaceActivityPublisher.manager_role_granted</string></value>
                   </entry>
                   <entry>
+                    <key><string>manager_role_revoked</string></key>
+                    <value><string>SpaceActivityPublisher.manager_role_revoked</string></value>
+                  </entry>
+                  <entry>
                     <key><string>user_joined</string></key>
                     <value><string>SpaceActivityPublisher.user_joined</string></value>
                   </entry>
                   <entry>
                     <key><string>member_left</string></key>
                     <value><string>SpaceActivityPublisher.member_left</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space_renamed</string></key>
+                    <value><string>SpaceActivityPublisher.space_renamed</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space_description_edited</string></key>
+                    <value><string>SpaceActivityPublisher.space_description_edited</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>space_avatar_edited</string></key>
+                    <value><string>SpaceActivityPublisher.space_avatar_edited</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
+        <name>USER_ACTIVITIES_FOR_SPACE</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for exosocial:spaces</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>user_joined_public_space</string></key>
+                    <value><string>SpaceActivityPublisher.member_of_one_or_zero_public_space</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>user_joined_public_spaces</string></key>
+                    <value><string>SpaceActivityPublisher.member_of_number_public_spaces</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>user_space_joined</string></key>
+                    <value><string>SpaceActivityPublisher.user_space_joined</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
+        <name>USER_ACTIVITIES_FOR_RELATIONSHIP</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for relation's activities</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>user_relations</string></key>
+                    <value><string>RelationshipPublisher.user_relations</string></value>
+                  </entry>
+                </map>
+              </field>
+            </object>
+          </object-param>
+        </init-params>
+      </component-plugin>
+      <component-plugin>
+        <name>USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP</name> <!-- activity type -->
+        <set-method>addActivityResourceBundlePlugin</set-method>
+        <type>org.exoplatform.social.core.processor.ActivityResourceBundlePlugin</type>
+        <init-params>
+          <object-param>
+            <name>locale.social.Core</name> <!-- resource bundle key file -->
+            <description>activity key type resource bundle mapping for relation's activities</description>
+            <object type="org.exoplatform.social.core.processor.ActivityResourceBundlePlugin">
+              <field name="activityKeyTypeMapping">
+                <map type="java.util.HashMap">
+                  <entry>
+                    <key><string>user_relation_confirmed</string></key>
+                    <value><string>RelationshipPublisher.user_relation_confirmed</string></value>
                   </entry>
                 </map>
               </field>
@@ -341,6 +428,10 @@
               <field name="activityKeyTypeMapping">
                 <map type="java.util.HashMap">
                   <entry>
+                    <key><string>position_updated</string></key>
+                    <value><string>ProfileUpdatesPublisher.position_updated</string></value>
+                  </entry>
+                  <entry>
                     <key><string>avatar_updated</string></key>
                     <value><string>ProfileUpdatesPublisher.avatar_updated</string></value>
                   </entry>
@@ -355,10 +446,6 @@
                   <entry>
                     <key><string>experience_section_updated</string></key>
                     <value><string>ProfileUpdatesPublisher.experience_section_updated</string></value>
-                  </entry>
-                  <entry>
-                    <key><string>header_section_updated</string></key>
-                    <value><string>ProfileUpdatesPublisher.header_section_updated</string></value>
                   </entry>
                 </map>
               </field>
@@ -481,10 +568,13 @@
 
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
 
+          <value>org.exoplatform.social.core.chromattic.entity.HidableEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.LockableEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>

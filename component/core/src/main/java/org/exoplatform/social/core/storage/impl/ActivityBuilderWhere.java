@@ -29,6 +29,7 @@ import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
@@ -193,6 +194,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
@@ -442,6 +453,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //

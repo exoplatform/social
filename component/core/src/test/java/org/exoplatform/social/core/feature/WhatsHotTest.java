@@ -265,21 +265,14 @@ public class WhatsHotTest extends AbstractCoreTest {
     
     assertEquals(2, list.size());
     ExoSocialActivity firstActivity = list.get(0);
-    ExoSocialActivity secondActivity = list.get(1);
-    
-    //create commend
-    createComment(secondActivity, demoIdentity, 1);
     
     //
     list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
     assertEquals(2, list.size());
     
-    //lastUpdated will be updated when creates new comment.
-    assertEquals(secondActivity.getTitle(), list.get(0).getTitle());
-    assertEquals(firstActivity.getTitle(), list.get(1).getTitle());
+    assertEquals(firstActivity.getTitle(), list.get(0).getTitle());
    
     tearDownActivityList.add(firstActivity);
-    tearDownActivityList.add(secondActivity);
     relationshipManager.unregisterListener(publisher);
   }
   
@@ -307,7 +300,7 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
     
-    assertEquals(4, list.size());
+    assertEquals(2, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
@@ -327,7 +320,7 @@ public class WhatsHotTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
     
-    assertEquals(5, list.size());
+    assertEquals(3, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);
@@ -377,7 +370,7 @@ public class WhatsHotTest extends AbstractCoreTest {
     
     List<ExoSocialActivity> list = activityStorage.getActivities(demoIdentity, johnIdentity, 0, 10);
     
-    assertEquals(6, list.size());
+    assertEquals(4, list.size());
     
     tearDownActivityList.addAll(list);
     relationshipManager.unregisterListener(publisher);

@@ -22,13 +22,25 @@
  * @since	Oct 20, 2009
  * @copyright	eXo Platform SEA
  */
- 
+
+
 /*
 *Social jQuery plugin
 */ 
 // Placeholder plugin for HTML 5
 (function($) {
-    
+  
+  var portal = window.eXo.env.portal
+
+  window.eXo.social = window.eXo.social || {};
+  window.eXo.social.portal = {
+    rest : (portal.rest) ? portal.rest : 'rest',
+    portalName : (portal.portalName) ? portal.portalName : 'classic',
+    context : (portal.context) ? portal.context : '/intranet',
+    accessMode: (portal.accessMode) ? portal.accessMode : 'public',
+    userName : (portal.userName) ? portal.userName : ''
+  };
+   
 	function Placeholder(input) {
     this.input = input;
 

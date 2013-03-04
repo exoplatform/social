@@ -8,17 +8,13 @@ import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.cache.CachedIdentityStorage;
-import org.exoplatform.social.core.storage.cache.CachedSpaceStorage;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
@@ -253,7 +249,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     tearDownIdentityList.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, username));
   }
 
-  @MaxQueryNumber(60)
+  @MaxQueryNumber(70)
   public void testLoadProfileByReloadCreatedProfileNode() throws Exception {
     String providerId = "organization";
     String remoteId = "username";
@@ -304,7 +300,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
     assertEquals(1, result.size());
   }
 
-  @MaxQueryNumber(600)
+  @MaxQueryNumber(650)
   public void testFindManyIdentitiesByExistName() throws Exception {
     final String providerId = "organization";
 
@@ -402,7 +398,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByProfileFilter(String, ProfileFilter, int, int, boolean)}
    *
    */
-  @MaxQueryNumber(630)
+  @MaxQueryNumber(670)
   public void testFindManyIdentitiesByProfileFilter() throws Exception {
     String providerId = "organization";
 
@@ -435,7 +431,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByFirstCharaterOfNameCount(String, char)}
    * 
    */
-  @MaxQueryNumber(570)
+  @MaxQueryNumber(650)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
     populateData();
     final ProfileFilter filter = new ProfileFilter();
@@ -451,7 +447,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByFirstCharaterOfName(String, char, int, int, boolean)}
    * 
    */
-  @MaxQueryNumber(650)
+  @MaxQueryNumber(670)
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
     populateData();
     final ProfileFilter filter = new ProfileFilter();
@@ -465,7 +461,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByProfileFilterCount(String, ProfileFilter)}
    * 
    */
-  @MaxQueryNumber(570)
+  @MaxQueryNumber(700)
   public void testGetIdentitiesByProfileFilterCount() throws Exception {
     populateData();
     ProfileFilter pf = new ProfileFilter();
@@ -491,7 +487,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByProfileFilterCount(String, ProfileFilter, int, int, boolean)}
    * 
    */
-  @MaxQueryNumber(630)
+  @MaxQueryNumber(670)
   public void testGetIdentitiesByProfileFilterAccessList() throws Exception {
     populateData();
     ProfileFilter pf = new ProfileFilter();
@@ -550,14 +546,14 @@ public class IdentityStorageTest extends AbstractCoreTest {
   /**
    *  Tests {@link IdenityStorage#getIdentitiesCount(String)}
    */
-  @MaxQueryNumber(570)
+  @MaxQueryNumber(650)
   public void testGetIdentitiesCount() throws Exception {
     populateData();
     int identitiesCount = identityStorage.getIdentitiesCount(OrganizationIdentityProvider.NAME);
     assertEquals("Number of identities must be " + identitiesCount, 10, identitiesCount);
   }
 
-  @MaxQueryNumber(610)
+  @MaxQueryNumber(700)
   public void testGetSpaceMemberByProfileFilter() throws Exception {
     populateData();
     

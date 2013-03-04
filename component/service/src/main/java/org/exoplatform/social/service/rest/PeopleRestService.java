@@ -32,13 +32,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -49,6 +54,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -91,6 +97,10 @@ public class PeopleRestService implements ResourceContainer{
   private static final String SPACE_MEMBER = "member_of_space";
   /** User to invite to join the space Status information */
   private static final String USER_TO_INVITE = "user_to_invite";
+  /** No action */
+  private static final String NO_ACTION = "NoAction";
+  /** No information */
+  private static final String NO_INFO = "NoInfo";
   /** Number of user names is added to suggest list. */
   private static final long SUGGEST_LIMIT = 20;
   
@@ -545,6 +555,104 @@ public class PeopleRestService implements ResourceContainer{
     return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
   }
   
+  /**
+   * Gets and returns information of people that are displayed as detail user's information on popup.
+   * @param uriInfo
+   * @param securityContext
+   * @param currentUserName userName of current user.
+   * @param userId Id of user is specified.
+   * @param format
+   * @param update
+   * @return Information of people appropriate focus user.
+   * @throws Exception
+   */
+  @GET
+  @Path("/getPeopleInfo/{userId}.{format}")
+  public Response getPeopleInfo(@Context UriInfo uriInfo,
+                                @Context SecurityContext securityContext,
+                                @PathParam("userId") String userId,
+                                @PathParam("format") String format,
+                                @QueryParam("currentUserName") String currentUserName,
+                                @QueryParam("updatedType") String updatedType) throws Exception {
+    
+    if(currentUserName == null || currentUserName.trim().isEmpty()) {
+      currentUserName = getUserId(securityContext, uriInfo);
+    }
+    //
+    MediaType mediaType = Util.getMediaType(format, new String[] { "json", "xml" });
+    PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
+    Identity identity = getIdentityManager()
+        .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+    if (identity != null) {
+      peopleInfo.setRelationshipType(NO_ACTION);
+      if(currentUserName != null && !userId.equals(currentUserName)){
+        Identity currentIdentity = getIdentityManager()
+            .getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserName, false);
+
+        if(currentIdentity != null) {
+          // Process action
+          if (updatedType != null) {
+            if (currentIdentity != null) {
+              if (ACCEPT_ACTION.equals(updatedType)) { // Accept or Deny
+                getRelationshipManager().confirm(currentIdentity, identity);
+              } else if (DENY_ACTION.equals(updatedType)) {
+                getRelationshipManager().deny(currentIdentity, identity);
+              } else if (REVOKE_ACTION.equals(updatedType)) {
+                getRelationshipManager().deny(currentIdentity, identity);
+              } else if (INVITE_ACTION.equals(updatedType)) {
+                getRelationshipManager().inviteToConnect(currentIdentity, identity);
+              } else if (REMOVE_ACTION.equals(updatedType)) {
+                getRelationshipManager().delete(getRelationshipManager().get(currentIdentity, identity));
+              }
+            }
+          }
+
+          // Set relationship type
+          Relationship relationship = getRelationshipManager().get(currentIdentity, identity);
+          peopleInfo.setRelationshipType(getRelationshipType(relationship, currentIdentity));
+        }
+      }
+
+      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
+      
+      if (activitiesListAccess.getSize() > 0) {
+        List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
+        if (activities.size() > 0) {
+          peopleInfo.setActivityTitle(activities.get(0).getTitle());
+        }
+      }
+      Profile userProfile = identity.getProfile();
+      
+      String avatarURL = userProfile.getAvatarUrl();
+      if (avatarURL == null) {
+        avatarURL = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+      }
+      
+      peopleInfo.setAvatarURL(avatarURL);
+
+      peopleInfo.setProfileUrl(LinkProvider.getUserActivityUri(identity.getRemoteId()));
+      
+      peopleInfo.setFullName(identity.getProfile().getFullName());
+      peopleInfo.setPosition(identity.getProfile().getPosition());
+    }
+    return Util.getResponse(peopleInfo, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  private String getUserId(SecurityContext securityContext, UriInfo uriInfo) {
+    String userId = StringUtils.EMPTY;
+    try {
+      userId = ConversationState.getCurrent().getIdentity().getUserId();
+    } catch (Exception e) {}
+    if(userId == null || userId.isEmpty() || IdentityConstants.ANONIM.equals(userId)) {
+      if (securityContext != null && securityContext.getUserPrincipal() != null) {
+        return securityContext.getUserPrincipal().getName();
+      } else if (uriInfo != null) {
+        return Util.getViewerId(uriInfo);
+      }
+    }
+    return userId;
+  }
+  
   private void addToNameList(Identity currentIdentity, List<Relationship> identitiesHasRelation, UserNameList nameList) {
     for (Relationship relationship : identitiesHasRelation) {
       Identity identity = relationship.getPartner(currentIdentity);
@@ -595,8 +703,7 @@ public class PeopleRestService implements ResourceContainer{
   
   public SpaceService getSpaceService() {
     if (spaceService == null) {
-      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getCurrentContainer();
-      spaceService = (SpaceService) portalContainer.getComponentInstanceOfType(SpaceService.class);
+      spaceService = (SpaceService) getPortalContainer().getComponentInstanceOfType(SpaceService.class);
     }
     return spaceService;
   }
@@ -607,8 +714,7 @@ public class PeopleRestService implements ResourceContainer{
    */
   private IdentityManager getIdentityManager() {
     if (identityManager == null) {
-      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getCurrentContainer();
-      identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+      identityManager = (IdentityManager) getPortalContainer().getComponentInstanceOfType(IdentityManager.class);
     }
     return identityManager;
   }
@@ -631,8 +737,7 @@ public class PeopleRestService implements ResourceContainer{
    */
   private RelationshipManager getRelationshipManager() {
     if (relationshipManager == null) {
-      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getCurrentContainer();
-      relationshipManager = (RelationshipManager) portalContainer.getComponentInstanceOfType(RelationshipManager.class);
+      relationshipManager = (RelationshipManager) getPortalContainer().getComponentInstanceOfType(RelationshipManager.class);
     }
     return relationshipManager;
   }
@@ -642,12 +747,12 @@ public class PeopleRestService implements ResourceContainer{
    * @return portalContainer
    * @see PortalContainer
    */
-  private PortalContainer getPortalContainer() {
-    PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName_);
-    if (portalContainer == null) {
+  private ExoContainer getPortalContainer() {
+    ExoContainer exoContainer = ExoContainerContext.getCurrentContainer();
+    if (exoContainer == null) {
       throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
     }
-    return portalContainer;
+    return exoContainer;
   }
   
   /**
@@ -695,10 +800,30 @@ public class PeopleRestService implements ResourceContainer{
    */
   @XmlRootElement
   static public class PeopleInfo {
+    private String id;
+    private String profileUrl;
     private String avatarURL;
     private String activityTitle;
     private String relationshipType;
+    private String fullName;
+    private String position;
+
     
+    public PeopleInfo() {
+    }
+    
+    public PeopleInfo(String relationshipType) {
+      this.relationshipType = relationshipType;
+    }
+
+    public String getFullName() {
+      return fullName;
+    }
+
+    public void setFullName(String fullName) {
+      this.fullName = fullName;
+    }
+
     public String getActivityTitle() {
       return activityTitle;
     }
@@ -721,6 +846,30 @@ public class PeopleRestService implements ResourceContainer{
 
     public void setRelationshipType(String relationshipType) {
       this.relationshipType = relationshipType;
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getProfileUrl() {
+      return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+      this.profileUrl = profileUrl;
+    }
+
+    public String getPosition() {
+      return position;
+    }
+
+    public void setPosition(String position) {
+      this.position = position;
     }
   }
 }

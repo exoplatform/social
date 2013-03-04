@@ -166,6 +166,9 @@
       <module>mentionsLib</module>
       <as>mentions</as>
     </depends>
+    <depends>
+      <module>userPopupPlugin</module>
+    </depends>
   </module>
 
   <module>
@@ -319,5 +322,15 @@
     <script>
       <path>/javascript/eXo/underscore.js</path>
     </script>
+  </module>
+  <module>
+    <name>userPopupPlugin</name>
+    <script>
+      <path>/javascript/eXo/jquery.tipTip.minified.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
   </module>
 </gatein-resources>

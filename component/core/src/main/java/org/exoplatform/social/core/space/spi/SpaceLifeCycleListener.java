@@ -101,5 +101,33 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    * @param event the space lifecycle event
    */
   void revokedLead(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user rename a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceRenamed(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user change the description of a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceDescriptionEdited(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user change the avatar of a space.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceAvatarEdited(SpaceLifeCycleEvent event);
+  
+  /**
+   * Invokes this method when a user update the space access.
+   *
+   * @param event the space lifecycle event
+   */
+  void spaceAccessEdited(SpaceLifeCycleEvent event);
 
 }

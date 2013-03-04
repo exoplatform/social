@@ -16,14 +16,20 @@
  */
 package org.exoplatform.social.core.application;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -36,8 +42,10 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
   private List<ExoSocialActivity> tearDownActivityList;
   private ActivityManager activityManager;
   private IdentityManager identityManager;
+  private IdentityStorage identityStorage;
   private ProfileUpdatesPublisher publisher;
   private String userName = "root";
+  private Identity rootIdentity;
 
   @Override
   public void setUp() throws Exception {
@@ -47,8 +55,12 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     assertNotNull("activityManager must not be null", activityManager);
     identityManager =  (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
     assertNotNull("identityManager must not be null", identityManager);
+    identityStorage =  (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    assertNotNull("identityManager must not be null", identityStorage);
     publisher = (ProfileUpdatesPublisher) getContainer().getComponentInstanceOfType(ProfileUpdatesPublisher.class);
     assertNotNull("profileUpdatesPublisher must not be null", publisher);
+    rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName, true);
+    assertNotNull("rootIdentity.getId() must not be null", rootIdentity.getId());
   }
 
   @Override
@@ -60,34 +72,111 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
         LOG.warn("can not delete activity with id: " + activity.getId());
       }
     }
+    identityManager.deleteIdentity(rootIdentity);
     super.tearDown();
   }
 
-  /**
-   *
-   */
-  public void testPublishActivity() {
-    assert true;
-    /*
-    // create an identity
-    Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userName);
-    assertNotNull("identity.getId() must not be null (means saved in JCR)", identity.getId());
-    Profile profile = identity.getProfile();
-    assertNotNull("profile.getId() must not be null (means saved in JCR)", profile.getId());
-    profile.setProperty(Profile.FIRST_NAME, "First Name");
-    ProfileLifeCycleEvent event = new ProfileLifeCycleEvent(Type.BASIC_UPDATED, "root", profile);
-    publisher.basicInfoUpdated(event);
-    try {
-      Thread.sleep(3000);
-    } catch (InterruptedException e) {
-      LOG.error(e.getMessage(), e);
-    }
-    // check that the activity was created and that it contains what we expect
-    List<Activity> activities = activityManager.getActivities(identity);
-    assertEquals(1, activities.size());
-    tearDownActivityList.add(activities.get(0));
-    assertTrue(activities.get(0).getTitle().contains("basic"));
-    identityManager.deleteIdentity(identity);
-    */
+  public void testProfileUpdated() throws Exception {
+    Profile profile = rootIdentity.getProfile();
+    
+    // update profile will be update on user profile properties also
+    profile.setAttachedActivityType(Profile.AttachedActivityType.USER);
+    
+    //activityId must be null because it don't attach yet when we don't update profile
+    assertNull(getActivityId(profile));
+    
+    //update the profile for the first time
+    profile.setProperty(Profile.POSITION, "developer");
+    identityManager.updateProfile(profile);
+    
+    //from now, activity must not be null
+    assertNotNull(getActivityId(profile));
+    
+    String activityId = getActivityId(profile);
+    ExoSocialActivity activity = activityManager.getActivity(activityId);
+    
+    List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    //Number of comments must be 1
+    assertEquals(1, comments.size());
+    assertEquals("Position is now: developer", comments.get(0).getTitle());
+    
+    //update header
+    profile.setProperty(Profile.POSITION, "CEO");
+    activity = updateProfile(profile);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertNotNull(activity);
+    assertEquals("Position is now: CEO", comments.get(1).getTitle());
+    
+    //Number of comments must be 2
+    assertEquals(2, comments.size());
+    
+    //update basic info
+    profile.setProperty(Profile.EMAIL, "abc@gmail.com");
+    activity = updateProfile(profile);
+    assertNotNull(activity);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Basic informations has been updated.", comments.get(2).getTitle());
+    
+    //Number of comments must be 3
+    assertEquals(3, comments.size());
+    
+    //update contact info
+    profile.setProperty(Profile.GENDER, "Male");
+    activity = updateProfile(profile);
+    assertNotNull(activity);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Contact informations has been updated.", comments.get(3).getTitle());
+    
+    //Number of comments must be 4
+    assertEquals(4, comments.size());
+    
+    //update experience
+    profile.setProperty(Profile.EXPERIENCES, new ArrayList<String>());
+    activity = updateProfile(profile);
+    assertNotNull(activity);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Experiences has been updated.", comments.get(4).getTitle());
+    
+    //Number of comments must be 5
+    assertEquals(5, comments.size());
+    
+    //update avatar
+    AvatarAttachment avatar = new AvatarAttachment();
+    avatar.setMimeType("plain/text");
+    avatar.setInputStream(new ByteArrayInputStream("Attachment content".getBytes()));
+    profile.setProperty(Profile.AVATAR, avatar);
+    activity = updateProfile(profile);
+    assertNotNull(activity);
+    comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+    assertEquals("Avatar has been updated.", comments.get(5).getTitle());
+    
+    //Number of comments must be 6
+    assertEquals(6, comments.size());
+    
+    // make sure just only one activity existing
+    //assertEquals(1, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+    
+    // delete this activity
+    activityManager.deleteActivity(activityId);
+    assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+    
+    //re-updated profile will create new activity with a comment 
+    profile.setProperty(Profile.POSITION, "worker");
+    ExoSocialActivity newActivity = updateProfile(profile);
+    //Number of comments must be 1
+    assertEquals(1, activityManager.getCommentsWithListAccess(newActivity).getSize());
+    
+    activityId = getActivityId(profile);
+    activityManager.deleteActivity(activityId);
   }
+  
+  private String getActivityId(Profile profile) {
+    return identityStorage.getProfileActivityId(profile, Profile.AttachedActivityType.USER);
+  }
+  
+  private ExoSocialActivity updateProfile(Profile profile) {
+    identityManager.updateProfile(profile);
+    return activityManager.getActivity(getActivityId(profile));
+  }
+  
 }

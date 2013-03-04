@@ -51,6 +51,7 @@ import org.exoplatform.social.core.space.SpaceListAccess;
 import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceApplicationHandler;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -429,7 +430,11 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void saveSpace(Space space, boolean isNew) {
+    Space oldSpace = getSpaceById(space.getId());
     spaceStorage.saveSpace(space, isNew);
+    if (! isNew && ! oldSpace.getVisibility().equals(space.getVisibility())) {
+      spaceLifeCycle.spaceAccessEdited(space, space.getEditor());
+    }
   }
 
   /**
@@ -437,6 +442,7 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public void renameSpace(Space space, String newDisplayName) {
     spaceStorage.renameSpace(space, newDisplayName);
+    spaceLifeCycle.spaceRenamed(space, space.getEditor());
   }
   
   /**
@@ -1377,6 +1383,9 @@ public class SpaceServiceImpl implements SpaceService {
    */
   public Space updateSpace(Space existingSpace) {
     spaceStorage.saveSpace(existingSpace, false);
+    if (UpdatedField.DESCRIPTION.equals(existingSpace.getField())) {
+      spaceLifeCycle.spaceDescriptionEdited(existingSpace, existingSpace.getEditor());
+    }
     return existingSpace;
   }
 
@@ -1385,6 +1394,7 @@ public class SpaceServiceImpl implements SpaceService {
     Profile profile = spaceIdentity.getProfile();
     profile.setProperty(Profile.AVATAR, existingSpace.getAvatarAttachment());
     identityStorage.updateProfile(profile);
+    spaceLifeCycle.spaceAvatarEdited(existingSpace, existingSpace.getEditor());
     return existingSpace;
   }
 

@@ -172,8 +172,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
 
       activityStorage.deleteActivity(activity.getId());
       try {
-        activityStorage.getActivity(activity.getId());
-        fail();
+        assertEquals(null, activityStorage.getActivity(activity.getId()));
       } catch (Exception ase) {
         // ok
       }
@@ -389,7 +388,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfNewerOnUserActivities(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(210)
   public void testGetNumberOfNewerOnUserActivities() {
     checkCleanData();
     createActivities(2, demoIdentity);
@@ -541,7 +540,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfOlderOnActivityFeed(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(370)
   public void testGetNumberOfOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -562,7 +561,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getOlderOnActivityFeed(Identity, ExoSocialActivity, int)}.
    */
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(165)
   public void testGetOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     ExoSocialActivity demoBaseActivity = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(2);
@@ -1251,7 +1250,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.12
    */
-  @MaxQueryNumber(846)
+  @MaxQueryNumber(860)
   public void testGetNumberOfNewerOnActivitiesOfConnectionsByTimestamp() {
     List<Relationship> relationships = new ArrayList<Relationship>();
     this.createActivities(3, maryIdentity);

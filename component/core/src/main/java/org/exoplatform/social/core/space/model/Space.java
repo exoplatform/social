@@ -98,6 +98,13 @@ public class Space {
   @Deprecated
   private String creator;
   
+  /**
+   * The editor of space.
+   * 
+   * @since 4.0.0.Alpha1
+   */
+  private String editor;
+  
   /** 
    * The managers of a space.
    * 
@@ -154,6 +161,32 @@ public class Space {
 
   /** The Constant LOW_PRIORITY. */
   public final static String LOW_PRIORITY = "3";
+  
+  /** Types of updating of space. */
+  public static enum                UpdatedField 
+                                      {
+                                        DESCRIPTION(true);
+                                        
+                                        private boolean type;
+                                        
+                                        private UpdatedField(boolean type) {
+                                          this.type = type;
+                                        }
+                                        public boolean value() {
+                                          return this.type;
+                                        }
+                                        
+                                      };
+                                      
+  private UpdatedField field;
+
+  public UpdatedField getField() {
+    return field;
+  }
+
+  public void setField(UpdatedField field) {
+    this.field = field;
+  }
 
   /**
    * Instantiates a new space.
@@ -518,6 +551,26 @@ public class Space {
     this.creator = creator;
   }
   
+  /**
+   * Gets the editor of a space.
+   * 
+   * @since 4.0.0.Alpha1
+   * @return the editor of space
+   */
+  public String getEditor() {
+    return editor;
+  }
+
+  /**
+   * Sets the editor of a space.
+   * 
+   * @param editor the editor of space
+   * @since 4.0.0.Alpha1
+   */
+  public void setEditor(String editor) {
+    this.editor = editor;
+  }
+
   /**
    * Gets the managers of a space.
    * 

@@ -578,7 +578,54 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     return builder.get();
 
   }
+  
+  private Query<SpaceEntity> getPublicSpacesOfMemberQuery(String userId) {
 
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    
+    builder.where(whereExpression
+        .equals(SpaceEntity.membersId, userId)
+        .and().equals(SpaceEntity.visibility, Space.PUBLIC)
+        .and().not().equals(SpaceEntity.managerMembersId, userId)
+        .and().not().equals(SpaceEntity.invitedMembersId, userId)
+        .and().not().equals(SpaceEntity.pendingMembersId, userId)
+        .toString()
+    );
+
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
+
+  }
+
+  private Query<SpaceEntity> getSpacesOfMemberQuery(String userId) {
+
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    
+    builder.where(whereExpression
+        .equals(SpaceEntity.membersId, userId)
+        .and().not().equals(SpaceEntity.visibility, Space.HIDDEN)
+        .and().not().equals(SpaceEntity.invitedMembersId, userId)
+        .and().not().equals(SpaceEntity.pendingMembersId, userId)
+        .toString()
+    );
+
+    if (whereExpression.toString().length() > 0) {
+      builder.where(whereExpression.toString());
+    }
+
+    builder.orderBy(SpaceEntity.name.getName(), Ordering.ASC);
+
+    return builder.get();
+
+  }
+  
   private Query<SpaceEntity> getPendingSpacesFilterQuery(String userId, SpaceFilter spaceFilter) {
 
     QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
@@ -1677,6 +1724,10 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       return Collections.emptyList();
     }
   }
+
+  public int getNumberOfMemberPublicSpaces(String userId) {
+    return getSpacesOfMemberQuery(userId).objects().size();
+  }
   
-  
+
 }

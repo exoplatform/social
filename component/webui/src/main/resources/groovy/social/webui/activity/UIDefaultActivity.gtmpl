@@ -78,7 +78,7 @@
   if (displayedIdentityLikes != null) {
     identityLikesNum = displayedIdentityLikes.length;
   }
-
+  
   def commentListStatus = uicomponent.getCommentListStatus();
   def commentFormDisplayed = uicomponent.isCommentFormDisplayed();
   def likesDisplayed = uicomponent.isAllLoaded();
