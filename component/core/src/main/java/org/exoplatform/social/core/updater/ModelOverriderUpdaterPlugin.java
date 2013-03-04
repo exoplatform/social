@@ -4,6 +4,7 @@ import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.commons.version.util.VersionComparator;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.jcr.core.nodetype.ExtendedNodeTypeManager;
@@ -32,10 +33,10 @@ public class ModelOverriderUpdaterPlugin extends UpgradeProductPlugin {
     //
     PortalContainer portalContainer = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) portalContainer.getComponentInstanceOfType(ChromatticManager.class);
+    ((ComponentRequestLifecycle) manager).startRequest(portalContainer);
     SocialChromatticLifeCycle lifeCycle = (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
 
     //
-    RequestLifeCycle.begin(PortalContainer.getInstance());
     Session session = lifeCycle.getSession().getJCRSession();
 
     try {
@@ -47,8 +48,10 @@ public class ModelOverriderUpdaterPlugin extends UpgradeProductPlugin {
 
       LOG.error(e);
       session.logout();
-      RequestLifeCycle.end();
 
+    }
+      finally {
+        ((ComponentRequestLifecycle) manager).endRequest(portalContainer);
     }
 
   }
@@ -58,7 +61,7 @@ public class ModelOverriderUpdaterPlugin extends UpgradeProductPlugin {
   }
 
   @Override
-  public boolean shouldProceedToUpgrade(String previousVersion, String newVersion) {
+  public boolean shouldProceedToUpgrade(String newVersion, String previousVersion) {
     return VersionComparator.isAfter(newVersion, previousVersion);
   }
 
