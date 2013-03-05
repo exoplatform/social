@@ -63,12 +63,20 @@
                          // call function to get data
                          //opts.getContentFunc();
                          
-                         
+                         clearTimeout($(this).data('timeoutId'));
                          active_tiptip()
                      }, function () {
                          if (!opts.keepAlive) {
                              deactive_tiptip()
                          }
+                         //
+                         var $this = $(this);
+                         var timeoutId = setTimeout(function(){
+	                          if(!tiptip_holder.is(':hover')) {
+	                            deactive_tiptip();
+	                          }
+	                       }, 250);
+	                       $this.data('timeoutId', timeoutId); 
                      });
                      if (opts.keepAlive) {
                          tiptip_holder.hover(function () {}, function () {
