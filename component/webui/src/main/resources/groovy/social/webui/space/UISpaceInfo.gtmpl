@@ -46,7 +46,7 @@
   <% uiform.begin() %>
 	<div class="changeAccount clearfix">
 		<div class="changeAvatar pull-left">
-			<a href="#" class="avatarXLargeWithBorder" title="$clickChangeAvatar">
+			<a href="javascript:void(0);" class="avatarXLargeWithBorder" title="$clickChangeAvatar">
 				<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"/>
 			</a>
 			<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>

@@ -97,7 +97,7 @@
 	        <div class="CommunityMane Line">
 	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
 	  				<% if (isEditable) {%>
-	  					<a href="#" onclick="$actionLink" rel="tooltip" data-placement="bottom" title="Remove" class="DeleteIcon">&nbsp;</a>
+	  					<a href="javascript:void(0);" onclick="$actionLink" rel="tooltip" data-placement="bottom" title="Remove" class="DeleteIcon">&nbsp;</a>
 	  				<% } %>
 	            <div style="clear: both;"><span/></div>
 	        </div>

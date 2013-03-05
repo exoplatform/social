@@ -33,6 +33,6 @@
     <% uicomponent.renderChild(UIFormStringInput.class) %> 
     <label for="fieldFilter">${labelBy}</label>
     <% uicomponent.renderChild(UIFormSelectBox.class) %>
-    <a href="#" onclick="${searchAction}">${labelSearchAction}</a>
+    <a href="javascript:void(0);" onclick="${searchAction}">${labelSearchAction}</a>
   </div>
 <% uicomponent.end(); %>

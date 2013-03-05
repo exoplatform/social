@@ -25,5 +25,5 @@
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="UILogoSocialEx">
-	<a href="#" rel="tooltip" data-placement="bottom" title="$titleLogo"></a>
+	<a href="javascript:void(0);" rel="tooltip" data-placement="bottom" title="$titleLogo"></a>
 </div>

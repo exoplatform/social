@@ -76,8 +76,8 @@
         </div>
         <div class="ColsIconExtan FL">
           <div class="BlockWebsite FL">
-            <a href="#" class="IconChatOnline" rel="tooltip" data-placement="bottom" title="$labelLiveChat"></a>
-            <p><a href="#" class="TxtLinkIcon">$labelLiveChat</a></p>
+            <a href="javascript:void(0);" class="IconChatOnline" rel="tooltip" data-placement="bottom" title="$labelLiveChat"></a>
+            <p><a href="javascript:void(0);" class="TxtLinkIcon">$labelLiveChat</a></p>
           </div>
           <div class="BlockWebsite FL">
             <a href="http://forum.exoplatform.org/portal/public/classic/" rel="tooltip" data-placement="bottom" class="IconForum" title="$labeleXoForums"></a>

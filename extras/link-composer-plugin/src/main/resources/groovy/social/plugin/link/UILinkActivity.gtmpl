@@ -210,7 +210,7 @@
 				<div class="uiBox roundedBottom introBox linkShare">
 					<div class="clearfix">
 						<% if (embedHtml == null) { %>
-							   <a href="#" class="pull-left avatar">$link</a>
+							   <a href="javascript:void(0);" class="pull-left avatar">$link</a>
 						  <% } %>
 						  <div class="$linkClass text">
 								<a class="linkTitle" target="_blank" href="$linkSource">$linkTitle</a>
@@ -290,7 +290,7 @@
 				  <a onclick="$showAllCommentsAction" href="#show-all-comments">$labelShowAllComments</a>
 				<% } else if (commentListStatus.getStatus().equals("all")) { %>
 		      <% if (commentsHidden > 0) { %>
-		        <a onclick="$loadPreviousCommentsAction" href="#">$labelShowPreviousComments</a>
+		        <a onclick="$loadPreviousCommentsAction" href="javascript:void(0);">$labelShowPreviousComments</a>
 		      <% } else { %>
 		        <a onclick="$hideAllCommentsAction" href="#hide-all-comments">$labelHideAllComments</a>
 		      <% } %>

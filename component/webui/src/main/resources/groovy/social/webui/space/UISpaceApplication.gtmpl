@@ -54,7 +54,7 @@
 		<% if (isRemovable) { 
 		     def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;";
 		%>
-		<a class="uiIconClose pull-right" href="#" onclick="$removeApplication"></a>
+		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
 		<% } %>
 		<div class="communityContainer">
 			<strong><%= appName %></strong>

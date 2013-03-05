@@ -96,17 +96,17 @@
 		            <ul class="letterList"> 
 		                <li>
 		                <% if ((selectedChar != null) && (selectedChar == "All")) { %>
-		                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+		                        <a href="javascript:void(0);" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
 		                <%} else {%>
-		                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+		                        <a href="javascript:void(0);" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
 		                <% } %>
 		                </li>
 		                <% for (ch in alphabets) { %>
 		                <li>
 		                <% if ((selectedChar != null) && (selectedChar == ch)) { %>
-		                    <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+		                    <a href="javascript:void(0);" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
 		                <%} else {%>
-		                    <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+		                    <a href="javascript:void(0);" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
 		                <% } %>
 		                </li>
 		                <% } %>

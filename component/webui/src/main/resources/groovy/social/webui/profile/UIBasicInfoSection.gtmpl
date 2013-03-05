@@ -74,7 +74,7 @@
           <% if (isEdit && isEditable) {
             uiform.renderField(children.get(4));
              } else { %>
-             <a href="#" class="email">
+             <a href="javascript:void(0);" class="email">
               <%=children.get(4).getValue();%>
              </a>
           <% } %>

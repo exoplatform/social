@@ -215,9 +215,9 @@
      <% }%>
      <% if (canShowAction) {
          if (isReceiver) {%>
-           | <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
+           | <a href="javascript:void(0);" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
      <%  } else if (isSender) {%>
-           | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
+           | <a href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
      <%  }
         }%>
         </div>
@@ -262,17 +262,17 @@
       <div class="CommentListInfo">
       <% } %>
             <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
-              <a onclick="$showAllCommentsAction" href="#show-all-comments">
+              <a onclick="$showAllCommentsAction" href="javascript:void(0);">
                 $labelShowAllComments
               </a>
             <% } else if (commentListStatus.getStatus().equals("all")) { %>
               <% if (commentsHidden > 0) { %>
-                <a onclick="$showAllCommentsAction" href="#">
+                <a onclick="$showAllCommentsAction" href="javascript:void(0);">
                   $labelShowPreviousComments
                 </a>
                 <span style="float:right">$commentsHidden/$totalComments</span>
               <% } else { %>
-                <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                <a onclick="$hideAllCommentsAction" href="javascript:void(0);">
                   $labelHideAllComments
                 </a>
               <% } %>

@@ -240,17 +240,17 @@
       <div class="CommentListInfo">
       <% } %>
             <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
-              <a onclick="$showAllCommentsAction" href="#show-all-comments">
+              <a onclick="$showAllCommentsAction" href="javascript:void(0);">
                 $labelShowAllComments
               </a>
             <% } else if (commentListStatus.getStatus().equals("all")) { %>
               <% if (commentsHidden > 0) { %>
-                <a onclick="$loadPreviousCommentsAction" href="#">
+                <a onclick="$loadPreviousCommentsAction" href="javascript:void(0);">
                   $labelShowPreviousComments
                 </a>
                 <span style="float:right">$commentsHidden/$totalComments</span>
               <% } else { %>
-                <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                <a onclick="$hideAllCommentsAction" href="javascript:void(0);">
                   $labelHideAllComments
                 </a>
               <% } %>

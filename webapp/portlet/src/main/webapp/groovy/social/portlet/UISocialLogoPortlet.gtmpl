@@ -15,7 +15,7 @@
 <div class="UISocialLogoPortlet ClearFix" id="$uicomponent.id" >
   <%if( _ctx.getRequestContext().getApplicationMode() == PortletMode.VIEW) {%>
     <!-- LOGO IMAGE -->
-    <a href="#" class="Img"><image src="<%=uicomponent.getURL()%>" alt="<%=_ctx.appRes("UISocialLogoPortlet.note.Text")%>" /></a>
+    <a href="javascript:void(0);" class="Img"><image src="<%=uicomponent.getURL()%>" alt="<%=_ctx.appRes("UISocialLogoPortlet.note.Text")%>" /></a>
     <div class="BannerTitle">$navTitle</div>
     <!-- ACTIONs -->
     <% if(prContext.getRemoteUser() == null) { %>

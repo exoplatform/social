@@ -89,7 +89,7 @@
     if(node.getPageRef().format() != null) {
       print """<a class="ItemIcon $icon" href="$href" $title>$label</a>""";
     } else {
-      print """<a class="ItemIcon $icon" href="#" $title>$label</a>""";
+      print """<a class="ItemIcon $icon" href="javascript:void(0);" $title>$label</a>""";
     }
 
     if(hasChild) {

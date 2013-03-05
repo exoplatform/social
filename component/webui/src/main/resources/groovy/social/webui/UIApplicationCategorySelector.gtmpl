@@ -54,7 +54,7 @@ jsmanager.require("SHARED/jquery", "jq")
       }
   %>
     <li id="$applicationCategory.displayName" rel="tooltip" data-placement="bottom" title="$applicationCategory.displayName" onclick="$clickAction" class="$itemClass">
-	  <a href="#" id="$applicationCategory.name">
+	  <a href="javascript:void(0);" id="$applicationCategory.name">
 		  <i class="uiIconArrowRight"></i>$applicationCategory.displayName
 	  </a>
     </li>
