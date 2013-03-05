@@ -39,6 +39,7 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
 /**
  * This listener is responsible for initializing and notifying activity stream for the space. We create a special
