@@ -164,6 +164,7 @@
                    if (phoneChilds.get(i).isRendered()) {
                      if (i % 2 == 0) {
                      %>
+                       <!-- Open one line of components -->
                        <div>
                        <%
                        uiform.renderField(phoneChilds.get(i));
@@ -173,12 +174,13 @@
                        uiform.renderField(phoneChilds.get(i));
                      %>
                        <a href="#" onclick="<%=uicomponent.event("Remove", "" + phoneChilds.get(i).getId()+"." + phoneChilds.get(i-1).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
-                       <% if (i != phoneCount - 1) { %>
-                       </div>
-                       <% } else { %>
                        
+                       <!-- End of elements phone. Add [Add] button. -->
+                       <% if (i == phoneCount - 1) { %>
                        <a href="#" onclick="<%=uicomponent.event("Add", phoneChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                        <% } %>
+                       <!-- Close one line of components -->
+                       </div>
                      <%
                      } // end else
                    } // end isRendered
@@ -236,6 +238,7 @@
                        if (imsChilds.get(i).isRendered()) {
                          if (i % 2 == 0) {
                          %>
+                         <!-- Open one line of components -->
                          <div>
                          <%
                            uiform.renderField(imsChilds.get(i));
@@ -245,12 +248,12 @@
                            uiform.renderField(imsChilds.get(i));
                            %>
                            <a href="#" onclick="<%=uicomponent.event("Remove", ""+imsChilds.get(i-1).getId()+"."+imsChilds.get(i).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
-                           <% if (i != imsCount - 1) { %>
-                             </div>
-                           <% } else { %>
-                             
+                           <!-- End of elements ims. Add [Add] button. -->
+                           <% if (i == imsCount - 1) { %>
                              <a href="#" onclick="<%=uicomponent.event("Add", imChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                            <% } %>
+                           <!-- Close one line of components -->
+                           </div>
                           <%
                            
                          }
@@ -308,18 +311,19 @@
                        if (urlChilds.get(i).isRendered()) {
                          if (i % 2 == 0) {
                          %>
+                         <!-- Open of line of components -->
                          <div>
                          <%
                          } else {
                            uiform.renderField(urlChilds.get(i));
                            %>
                            <a href="#" onclick="<%=uicomponent.event("Remove", ""+urlChilds.get(i-1).getId()+"."+urlChilds.get(i).getId())%>; return false;"><i class="uiIconClose uiIconLightGray"></i></a>
-                           <% if (i != urlCount - 1) { %>
-                             </div>
-                           <% } else { %>
-                             
+                           <!-- End of elements url. Add [Add] button. -->
+                           <% if (i == urlCount - 1) { %>
                              <a href="#" onclick="<%=uicomponent.event("Add", urlChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                            <% } %>
+                           <!-- Close of line of components -->
+                           </div>
                         <%
                          }
                        }
@@ -329,7 +333,6 @@
                        $noUrlLabel
                        <a href="#" onclick="<%=uicomponent.event("Add", urlChild)%>"><i class="uiIconPlus uiIconLightGray"></i></a>
                    <%}%>
-                  </li>
              <% } else { %>
                   <%if (urlSize > 0) {
                     urls.each() {
