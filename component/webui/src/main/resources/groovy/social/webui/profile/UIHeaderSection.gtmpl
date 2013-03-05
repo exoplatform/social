@@ -95,9 +95,14 @@
       <% } else {
             if (isEditable) { %>
               <%uicomponent.setValue();%>
-              <% uiform.renderChild(UIFormStringInput.class) %>
-              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
-              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
+              <div class="pull-right">
+	              <button id="savePosition" class="btn btn-primary" onclick="<%=uicomponent.event("Save") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Send")%></button>              
+	              <button id="cancelPosition" class="btn" onclick="<%=uicomponent.event("Cancel") %>"><%=_ctx.appRes(uicomponent.getName() + ".label.Cancel")%></button>
+              </div>
+              <div class="titleWithBorder">
+              	<% uiform.renderChild(UIFormStringInput.class) %>
+              </div>
+              
           <%} else {%>
             <%=position%>
           <%}%>

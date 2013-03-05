@@ -24,18 +24,23 @@
   def cancelLabel = _ctx.appRes(componentId + ".label.Cancel");
   def saveLabel = _ctx.appRes(componentId + ".label.Save");
 %>
-<div class="uiSocTitleBar">
-	<div class="clearfix">
-	  <% if (isEditable) { %>
-		<% if (!isEdit) { %>
-		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="javascript:void(0)"><i class="uiIconEdit"></i></a>
-		<% } else { %>
+<div class="uiSocTitleBar clearfix">
+
+      <% if (isEditable) { %>
+		<% if (isEdit) { %>
 		<div class="pull-right"> 
 		  <button onclick="<%=uicomponent.event("Cancel")%>; return false;" class="btn">$cancelLabel</button>
 		  <button onclick="<%=uicomponent.event("Save")%>; return false;" class="btn btn-primary">$saveLabel</button>
 		</div>
 		 <% } %>
 	  <% } %>
-	  <%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%>
-	</>
+	  
+		<h4 class="titleWithBorder">
+			<%=_ctx.appRes(uicomponent.getTranlationKey() + ".label.title")%>
+	  <% if (isEditable) { %>
+		<% if (!isEdit) { %>
+		  <a onclick="<%=uicomponent.event("Edit", "" + !isEdit)%>; return false;" href="javascript:void(0)"><i class="uiIconEdit"></i></a>
+		<% } %>
+	  <% } %>
+	</h4>
 </div>
