@@ -42,6 +42,12 @@ public interface SpaceLifeCycleListener extends LifeCycleListener<SpaceLifeCycle
    */
   void spaceRemoved(SpaceLifeCycleEvent event);
 
+  /**
+   * Invokes this method when a space is renamed.
+   *
+   * @param event the space lifecyle event
+   */
+  void spaceRenamed(SpaceLifeCycleEvent event);
 
   /**
    * Invokes this method when an application is added to a space.

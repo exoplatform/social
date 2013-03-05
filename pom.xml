@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.0-stabilization-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -57,7 +57,7 @@
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
     <org.exoplatform.depmgt.version>3</org.exoplatform.depmgt.version>
-    <org.exoplatform.commons.version>4.0.0-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0-stabilization-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.doc.doc-style.version>4.0.0-SNAPSHOT</org.exoplatform.doc.doc-style.version>
     <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
     <org.exoplatform.core.version>2.5.2-GA</org.exoplatform.core.version>

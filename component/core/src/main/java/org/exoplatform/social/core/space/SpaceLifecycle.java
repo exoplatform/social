@@ -45,6 +45,9 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case SPACE_REMOVED:
       listener.spaceRemoved(event);
       break;
+    case SPACE_RENAMED:
+      listener.spaceRenamed(event);
+      break;
     case APP_ACTIVATED:
       listener.applicationActivated(event);
       break;
@@ -80,6 +83,10 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
 
   public void spaceRemoved(Space space, String remover) {
     broadcast(new SpaceLifeCycleEvent(space, remover, Type.SPACE_REMOVED));
+  }
+
+  public void spaceRenamed(Space space, String oldName) {
+    broadcast(new SpaceLifeCycleEvent(space, oldName, Type.SPACE_RENAMED));
   }
 
   public void addApplication(Space space, String appId) {

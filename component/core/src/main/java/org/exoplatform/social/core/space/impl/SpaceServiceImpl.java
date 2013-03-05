@@ -436,7 +436,9 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void renameSpace(Space space, String newDisplayName) {
+    String name = space.getPrettyName();
     spaceStorage.renameSpace(space, newDisplayName);
+    spaceLifeCycle.spaceRenamed(space, name);
   }
   
   /**
