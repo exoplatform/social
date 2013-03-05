@@ -128,7 +128,7 @@
   <% } else { %>
       <% if (isEditable) { %>
         <div class="control-group">
-          <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</label>
+          <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</strong></label>
           <div class="controls">
           <%
             if (isEdit) { %>
@@ -146,7 +146,7 @@
       <% } else { // isEditable
              if((gender != null) && (gender != "")) { %>
         <div class="control-group">
-          <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</label>
+          <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</strong></label>
           <div class="controls">
             <%=gender %>
           </div>
@@ -156,7 +156,7 @@
     <!--              phones          -->
     <% if (isEditable) { %>
         <div class="control-group">
-          <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:</label>
+          <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:</strong></label>
           <div class="controls">
           <% if (isEdit) {
                if (phoneCount > 0) {
@@ -211,7 +211,7 @@
         %>
           <% if(phoneSize > 0) { %>
             <div class="control-group">
-              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:</label>
+              <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:</strong></label>
               <div class="controls">
               <%     phones.each() {
                       def phone = it.get(value);
@@ -228,7 +228,7 @@
         <!--              ims          -->
         <% if (isEditable) {%>
           <div class="control-group">
-            <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:</label>
+            <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:</strong></label>
             <div class="controls">
               <%
                 if (isEdit) { %>
@@ -284,7 +284,7 @@
         <% } else {%>
              <%if (imsSize > 0) { %>
              <div class="control-group">
-              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:</label>
+              <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:</strong></label>
               <div class="controls">
               <%    ims.each() {
                     def im = it.get(value);
@@ -301,7 +301,7 @@
         <!--              URL          -->
         <% if (isEditable) {%>
           <div class="control-group">
-            <label class="control-label"><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:</label>
+            <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:</strong></label>
             <div class="controls">
               <%
                 if (isEdit) { %>
@@ -350,7 +350,7 @@
       <% } else { %>
           <%if (urlSize > 0) { %>
              <div class="control-group">
-              <label class="control-label"><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:</label>
+              <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:</strong></label>
               <div class="controls">
               <%    urls.each() {
                     def url = it.get(value);

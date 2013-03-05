@@ -39,7 +39,7 @@
   <% uicomponent.renderChild(UITitleBar.class); %>
   <div class="form-horizontal">
         <div class="control-group">
-          <label class="control-label" for="<%=children.get(1).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:</label>
+          <label class="control-label" for="<%=children.get(1).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:</strong></label>
           <div class="controls">
           <% if (isEdit && isEditable) {
               uiform.renderField(children.get(1));
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="<%=children.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:</label>
+          <label class="control-label" for="<%=children.get(2).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:</strong></label>
           <div class="controls">
           <% if (isEdit && isEditable) {
                uiform.renderField(children.get(2));
@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="<%=children.get(3).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:</label>
+          <label class="control-label" for="<%=children.get(3).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:</strong></label>
           <div class="controls">
             <% if (isEdit && isEditable) {
                  uiform.renderField(children.get(3));
@@ -69,7 +69,7 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="<%=children.get(4).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:</label>
+          <label class="control-label" for="<%=children.get(4).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:</strong></label>
           <div class="controls">
           <% if (isEdit && isEditable) {
             uiform.renderField(children.get(4));

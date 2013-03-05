@@ -29,8 +29,8 @@
       <% if (isEditable) { %>
 		<% if (isEdit) { %>
 		<div class="pull-right"> 
-		  <button onclick="<%=uicomponent.event("Cancel")%>; return false;" class="btn">$cancelLabel</button>
 		  <button onclick="<%=uicomponent.event("Save")%>; return false;" class="btn btn-primary">$saveLabel</button>
+		  <button onclick="<%=uicomponent.event("Cancel")%>; return false;" class="btn">$cancelLabel</button>
 		</div>
 		 <% } %>
 	  <% } %>
