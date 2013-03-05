@@ -406,6 +406,7 @@ public class BaseUIActivity extends UIForm {
     Utils.getActivityManager().saveComment(getActivity(), comment);
     activityCommentsListAccess = Utils.getActivityManager().getCommentsWithListAccess(getActivity());
     comments = activityCommentsListAccess.loadAsList(0, DEFAULT_LIMIT);
+    currentLoadIndex = 0;
     setCommentListStatus(CommentStatus.ALL);
   }
 
