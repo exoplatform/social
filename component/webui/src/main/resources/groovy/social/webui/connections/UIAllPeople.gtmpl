@@ -78,7 +78,9 @@
   
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
   
-  <% if (uicomponent.isHasPeopleTab()) {%>
+  <% 
+  if (uicomponent.isHasPeopleTab()) { // has tab?
+  %>
   <div class="uiTabNormal uiTabInPage">
      <ul class="nav nav-tabs">
           <li class='<%= ( selectedNode.equals("connections") || selectedNode.equals("all-people") )? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
@@ -88,6 +90,9 @@
      </ul>
      <div class="tab-content">
      	<div class="tab-pane active">
+ 	<% 
+ 	} // end header of tab 
+ 	%>
 		    <div class="boxSpaceList">
 			    <h4 class="titleWithBorder">$contactsDirectory</h4>
 			    <!--div class="DirectoryNormalBox"-->
@@ -195,10 +200,12 @@
 			            }	          
 				      </script>
 			  <%  }	%>
+			  
+  <% 
+  if (uicomponent.isHasPeopleTab()) { // if has tab 
+  %>
 		  </div>
 		</div>
 	</div>
-  <% } %>
-  
-  
+	<% } %>
 </div>
