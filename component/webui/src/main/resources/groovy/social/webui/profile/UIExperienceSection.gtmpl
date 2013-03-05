@@ -35,6 +35,14 @@
   def uicomponentId = uicomponent.id;
   def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  //
+  def organizationLabel = _ctx.appRes("${uicomponentId}.label.company");
+  def positionLabel = _ctx.appRes("${uicomponentId}.label.position");
+  def jobDetailsLabel = _ctx.appRes("${uicomponentId}.label.description");
+  def skillsUsedLabel = _ctx.appRes("${uicomponentId}.label.skills");
+  def startDateLabel = _ctx.appRes("${uicomponentId}.label.startDate");
+  def endDateLabel = _ctx.appRes("${uicomponentId}.label.endDate");
+  
   def addExperience = uicomponent.event("Add") + "; return false";
   def expCounter = 0;
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
@@ -141,32 +149,28 @@
           def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
     %>
-    			<%
-    				if (uicomponent.stringToDate(startDate) != null) {
-    			%>
-    				<%=uicomponent.stringToDate(startDate)%>
-    			<%}%>
-    			
-          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong>
-          
-          <%
-          	if (startDate != null) {
-          %>
-          <%=uicomponent.displayDateTime(startDate)%>
-          
-          <%}%>
-          
-          <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%>
-          
-          <%
-          	if (endDate != null) {
-          %>
-          	<%=uicomponent.displayDateTime(endDate)%><% } %>
-          <%}%>
-          <%if(description != null) {%>${description} <%}%>
-           <%if(skills != null) {%>${skills} <%}%>
-    <%  } %>
-    </div>
+    
+				  <div>$organizationLabel<span>$company</span></div>
+				  <div>$positionLabel<span>$position</span></div>
+				  <% if (description != null || description.length() > 0) {%>
+				  <div>$jobDetailsLabel<span>$description</span></div>
+				  <% } %>
+				  <% if (skills != null || skills.length() > 0) {%>
+				  <div>$skillsUsedLabel<span>$skills</span></div>
+				  <% } %>
+				  <% if (startDate != null || startDate.length() > 0) {%>
+				  <div>$startDateLabel
+				    <span>
+				    <%=uicomponent.displayDateTime(startDate)%>
+				    <% if (isCurrent) { %>
+				      <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
+				    <% } %>
+				    </span>
+				  </div>
+				  <% } %>
+    <%  } %> <!-- End each -->
+    
+    </div> <!-- Close currentExperience -->
     <% } %>
     <%if (pastExp.size() != 0) { %>
     <div class="pastExperience">
@@ -179,31 +183,31 @@
           def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
       %>
-        	<%
-    				if (uicomponent.stringToDate(startDate) != null) {
-    			%>
-    				<%=uicomponent.stringToDate(startDate)%>
-    			<%}%>
-        	
-          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong>
-          
-          <%
-          	if (startDate != null) {
-          %>
-          <%=uicomponent.displayDateTime(startDate)%>
-          
-          <%}%>
-          
-          <%
-          	if (endDate != null) {
-          %>
-          	<% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%>
-          	<%=uicomponent.displayDateTime(endDate)%><% } %>
-          <%}%>
-          <%if(description != null) {%>${description} <%}%>
-          <%if(skills != null) {%>${skills} <%}%>
-        <%}%>
-        </div>
+        <div>$organizationLabel<span>$company</span></div>
+			  <div>$positionLabel<span>$position</span></div>
+			  <% if (description != null || description.length() > 0) {%>
+			  <div>$jobDetailsLabel<span>$description</span></div>
+			  <% } %>
+			  <% if (skills != null || skills.length() > 0) {%>
+			  <div>$skillsUsedLabel<span>$skills</span></div>
+			  <% } %>
+			  <% if (startDate != null || startDate.length() > 0) {%>
+			  <div>$startDateLabel
+	        <span>
+	        <%=uicomponent.displayDateTime(startDate)%>
+	        <% if (isCurrent) { %>
+	          <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
+	        <% } %>
+	        </span>
+	      </div>
+			  <% } %>
+			  <% if (endDate != null || endDate.length() > 0) {%>
+		    <div>$endDateLabel<span><%=uicomponent.displayDateTime(endDate)%></span></div>
+		    <% } %>
+      
+      <%}%><!-- End of each -->
+    </div><!-- CLose pastExperience -->
+    
       <%}%>
       <% if((pastExp.size() == 0) && (currentExp.size() == 0)){%>
         <% if(isEditable) {%>
