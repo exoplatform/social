@@ -31,6 +31,7 @@
   def apps = uicomponent.getApps();
   def spaceUrl = SpaceUtils.getSpaceUrl();
   def space = uicomponent.getSpace(spaceUrl);
+  def spaceHomeUrl = Utils.getSpaceHomeURL(space);
   def appSelected = uicomponent.getAppSelected();
   def srcDefaultAppIcon = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
   
@@ -78,14 +79,14 @@
   <ul class="nav nav-tabs spaceMenuTab" id="spaceMenuTab" style="visibility: hidden;">
     <% if (spaceUrl.equals(appSelected)) { %>
     <li class="active">
-      <a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="javascript:void(0);">
+      <a data-toggle="tab" onclick="location.href='<%= spaceHomeUrl %>'" href="javascript:void(0);">
         <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
         <span class="tabName">$activityStreamLabel</span>
       </a>
     </li>
     <% } else { %>
     <li class="">
-      <a data-toggle="tab" onclick="location.href='<%= spaceUrl %>'" href="javascript:void(0);">
+      <a data-toggle="tab" onclick="location.href='<%= spaceHomeUrl %>'" href="javascript:void(0);">
         <i class="uiIconAppSpaceActivityStreamPortlet uiIconDefaultApp"></i>
         <span class="tabName"> $activityStreamLabel</span>
       </a>
