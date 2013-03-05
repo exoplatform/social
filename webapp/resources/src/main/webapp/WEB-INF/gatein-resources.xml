@@ -226,7 +226,6 @@
   <module>
     <name>social-ui-activity-updates</name>
     <script>
-      <name>eXo.social.webui.UIComposerLinkExtension</name>
       <path>/javascript/eXo/social/webui/UIActivityUpdates.js</path>
     </script>
     <depends>
