@@ -47,12 +47,26 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
 public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();
+  
+  /** */
   Identity poster;
+  /** */
   Identity mentioner;
+  
+  /** */
   Identity liker;
+  
+  /** */
   Identity commenter;
-  List<Identity> identities;
-  List<Identity> posters;
+  
+  /** */
+  ThreadLocal<List<Identity>> identitiesLocal = new ThreadLocal<List<Identity>>();
+  
+  /** */
+  ThreadLocal<List<Identity>> postersLocal = new ThreadLocal<List<Identity>>();
+  
+    
+  /** */
   String[] activityIds = new String[0];
   
   public String build(JCRFilterLiteral filter) {
@@ -87,12 +101,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
     where.destroy();
     filter.destroy();
     activityIds = new String[0];
-    posters = null;
     poster = null;
     mentioner = null;
     liker = null;
     commenter = null;
-    identities = new ArrayList<Identity>();
+    identitiesLocal.remove();
+    postersLocal.remove();
+    //identities = new ArrayList<Identity>();
   }
   
   public ActivityBuilderWhere poster(Identity poster) {
@@ -101,10 +116,18 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   }
   
   public ActivityBuilderWhere posters(List<Identity> posters) {
-    if (this.posters == null) {
-      this.posters = new ArrayList<Identity>();
+    List<Identity> posterList = postersLocal.get();
+    
+    //
+    if (posterList == null) {
+      posterList = new ArrayList<Identity>();
     }
-    this.posters.addAll(posters);
+    
+    //
+    posters.addAll(posterList);
+    
+    //
+    postersLocal.set(posterList);
     return this;
   }
   
@@ -127,10 +150,19 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
    * @return
    */
   public ActivityBuilderWhere owners(List<Identity> identities) {
-    if (this.identities == null) {
-      this.identities = new ArrayList<Identity>();
+    
+   List<Identity> identityList = identitiesLocal.get();
+    
+    //
+    if (identityList == null) {
+      identityList = new ArrayList<Identity>();
     }
-    this.identities.addAll(identities);
+    
+    //
+    identityList.addAll(identities);
+    
+    //
+    identitiesLocal.set(identityList);
     return this;
   }
   
@@ -144,13 +176,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   }
   
   public List<Identity> getOwners() {
-    return this.identities == null ? new CopyOnWriteArrayList<Identity>() 
-                                   : new CopyOnWriteArrayList<Identity>(this.identities);
+    return this.identitiesLocal.get() == null ? new ArrayList<Identity>() 
+                                   : new CopyOnWriteArrayList<Identity>(this.identitiesLocal.get());
   }
   
   public List<Identity> getPosters() {
-    return this.posters == null ? new CopyOnWriteArrayList<Identity>() 
-                                : new CopyOnWriteArrayList<Identity>(this.posters);
+    return this.postersLocal.get() == null ? new ArrayList<Identity>() 
+                                : new CopyOnWriteArrayList<Identity>(this.postersLocal.get());
   }
   
   public ActivityBuilderWhere excludedActivities(String...activityIds) {
@@ -269,23 +301,20 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       }
         
       //
-      if (posters != null) {
-        List<Identity> posters = getPosters();
-        for (Identity currentIdentity : posters) {
-          if (first) {
-            first = false;
-          }
-          else {
-            where.or();
-          }
-          where.startGroup();
-          where.equals(ActivityEntity.poster, currentIdentity.getId());
-          where.and().equals(ActivityEntity.isComment, true);
-          where.endGroup();
-
-          }
+      List<Identity> posters = getPosters();
+      for (Identity currentIdentity : posters) {
+        if (first) {
+          first = false;
         }
-        
+        else {
+          where.or();
+        }
+        where.startGroup();
+        where.equals(ActivityEntity.poster, currentIdentity.getId());
+        where.and().equals(ActivityEntity.isComment, true);
+        where.endGroup();
+
+      }
         
       where.endGroup();
         
@@ -332,6 +361,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         where.startGroup();
 
         for (Identity currentIdentity : identities) {
+          
+          if (currentIdentity == null) continue;
 
           if (first) {
             first = false;
