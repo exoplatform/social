@@ -205,13 +205,13 @@
 					  <% if (uicomponent.isLiked()) { %>
 						<li>
 							<a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
-							   <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalLikesNum
+							   <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalLikesNum
 							</a> 
 						</li>
 					  <% } else { %>
 						<li>
 							<a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
-							  <i class="uiIconThumbDown uiIconLightGray"></i>&nbsp;$totalLikesNum
+							  <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalLikesNum
 							</a>
 						</li>
 					  <% }%>					  			
