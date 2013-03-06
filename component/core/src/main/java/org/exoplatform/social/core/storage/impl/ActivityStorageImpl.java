@@ -137,7 +137,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setStreamOwner(identityEntity.getRemoteId());
     activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
-    activity.setUpdated(new Date(activityMillis));
+    activity.setUpdated(activityMillis);
     activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), true));
       
     //
@@ -192,7 +192,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setBodyId(activityEntity.getBodyId());
     activity.setUserId(activityEntity.getPosterIdentity().getId());
     activity.setPostedTime(activityEntity.getPostedTime());
-    activity.setUpdated(new Date(activityEntity.getLastUpdated()));
+    activity.setUpdated(activityEntity.getLastUpdated());
     activity.setType(activityEntity.getType());
     activity.setAppId(activityEntity.getAppId());
     activity.setExternalId(activityEntity.getExternalId());

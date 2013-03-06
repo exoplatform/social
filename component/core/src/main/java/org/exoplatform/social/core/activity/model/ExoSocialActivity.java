@@ -218,4 +218,12 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
    * @param identityIds array of identity Ids
    */
   void setCommentedIds(String[] identityIds);
+
+  /**
+     * Set the last update datetime
+     *
+     * @param updated last update datetime
+     */
+  public void setUpdated(Long updated);
+
 }
