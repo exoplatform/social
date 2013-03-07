@@ -103,6 +103,9 @@
 	&.clearBG {
 		background: none;
 	}
+	.textBold {
+		font-weight: bold;
+	}
 }
 
 .uiUserActivitiesDisplay.notSeen .uiActivityStream ,.uiUserActivitiesDisplay.notSeen .uiActivitiesLoader {
@@ -556,6 +559,48 @@
 		font-size: 12px;
 	}
 }
+
+/*=======Poll activity==========*/ 
+
+.activityStream  {
+	.pollShare {
+		.pollTitle {
+			margin-bottom : 10px;
+			.numberVoted {
+				color: @grayLight;
+			}
+		}
+		h5 {
+			margin: 0;
+		}
+	}
+	.infoVote {
+		.titleVote {
+			float: left;
+			width: 13%;
+		}
+		.progressing {
+			float: left;			
+			width: 15%;
+			color: @grayLight;
+			text-align: right;
+		}
+		.progressBar {
+			float: left;
+			width: 72%;
+			.progress {
+				.border-radius(20px);
+				#gradient .vertical(#dbdbdb, #ebebeb);
+				margin-bottom: 10px;
+				.bar {
+					#gradient .vertical(#5d83c3, #456697);
+				}
+			}
+		}
+	}
+}
+
+
 /*=======activityTop==========*/
 
 .activityTop {
