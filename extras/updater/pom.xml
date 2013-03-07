@@ -24,6 +24,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>exo.social.component.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
       <scope>provided</scope>
@@ -38,6 +45,12 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
