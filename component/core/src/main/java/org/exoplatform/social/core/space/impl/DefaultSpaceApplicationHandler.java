@@ -509,9 +509,10 @@ public class DefaultSpaceApplicationHandler implements SpaceApplicationHandler {
     try {
       portletPreference = dataStorage.load(state, ApplicationType.PORTLET);
       if (portletPreference == null) {
-        portletPreference = new PortletBuilder().add(SpaceUtils.SPACE_URL, space.getUrl()).build();
+        portletPreference = new PortletBuilder().add(SpaceUtils.SPACE_URL, space.getUrl(),true).build();
       } else {
         portletPreference.setValue(SpaceUtils.SPACE_URL, space.getUrl());
+        portletPreference.setReadOnly(SpaceUtils.SPACE_URL,true);
       }
       dataStorage.save(state, portletPreference);
     } catch (Exception e) {
