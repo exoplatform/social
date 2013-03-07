@@ -192,10 +192,9 @@
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
 			<div class="actionBar clearfix ">
-					 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
+				 <% def toggleDisplayCommentAction = uicomponent.event('ToggleDisplayCommentForm', null, false);
 								 def commentLink = "";
-							  %> 
-					 <% if (activityCommentAndLikable) { %>					 
+							  %> 				 
 					<ul class="pull-right statusAction">
 						<li>
 							<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
@@ -215,8 +214,7 @@
 							</a>
 						</li>
 					  <% }%>					  			
-					</ul>
-					 <% }%>		
+					</ul>	
 			</div><!--end actionBar-->					
 			<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>				
 			<div class="listLikedBox $listPeopleBGClass">		

@@ -500,18 +500,20 @@ public class BaseUIActivity extends UIForm {
     
     //
     if (postContext == PostContext.USER) {
-      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
-      if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
-        String ownerName = uiUserActivitiesDisplay.getOwnerName();
-        Identity ownerIdentity = Utils.getIdentityManager().
-                getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
-        Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, Utils.getViewerIdentity());
-        if (relationship == null) {
-          return false;
-        } else if (!(relationship.getStatus() == Type.CONFIRMED)) {
-          return false;
-        }
-      }
+      //base on SOC-3117
+//      UIUserActivitiesDisplay uiUserActivitiesDisplay = getAncestorOfType(UIUserActivitiesDisplay.class);
+//      if (uiUserActivitiesDisplay != null && !uiUserActivitiesDisplay.isActivityStreamOwner()) {
+//        String ownerName = uiUserActivitiesDisplay.getOwnerName();
+//        Identity ownerIdentity = Utils.getIdentityManager().
+//                getOrCreateIdentity(OrganizationIdentityProvider.NAME, ownerName, false);
+//        Relationship relationship = Utils.getRelationshipManager().get(ownerIdentity, Utils.getViewerIdentity());
+//        if (relationship == null) {
+//          return false;
+//        } else if (!(relationship.getStatus() == Type.CONFIRMED)) {
+//          return false;
+//        }
+//      }
+      return true;
     }
     return true;
   }
