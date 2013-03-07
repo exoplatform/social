@@ -217,9 +217,9 @@
 					  <%
 						def numberOfMembers = ownerMembers.length;
 						if (numberOfMembers > 1) {%>
-						  $numberOfMembers Members
+						  $numberOfMembers <%=_ctx.appRes("UIActivity.label.Members") %>
 						<%} else { %>
-						  $numberOfMembers Member
+						  $numberOfMembers <%=_ctx.appRes("UIActivity.label.Member") %>
 					  <%}%>
 					  </div>
 					<%}%>					

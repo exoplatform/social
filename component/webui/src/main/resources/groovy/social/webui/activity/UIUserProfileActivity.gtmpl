@@ -226,7 +226,7 @@
 						</div>
 						<% if (ownerGender) {%>
 						  <p class="userGender">
-							<span>Gender : $ownerGender</span>
+							<span><%=_ctx.appRes("UIActivity.label.Gender") %> $ownerGender</span>
 						  </p>
 						<%}%>
 					  </div><!--end text-->
