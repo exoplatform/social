@@ -94,6 +94,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     space.setDisplayName("Toto");
     space.setPrettyName(space.getDisplayName());
     space.setGroupId("/platform/users");
+    space.setVisibility(Space.PRIVATE);
     spaceService.saveSpace(space, true);
     assertNotNull("space.getId() must not be null", space.getId());
     SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
@@ -134,9 +135,12 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    space.setDisplayName("Toto");
    space.setPrettyName(space.getDisplayName());
    space.setGroupId("/platform/users");
+   space.setVisibility(Space.PRIVATE);
    spaceService.saveSpace(space, true);
    assertNotNull("space.getId() must not be null", space.getId());
    SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
+   
+   //When a space is created, 2 activities will be created : one is space activity and one is user space activity
    spaceActivityPublisher.spaceCreated(event);
 
    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
@@ -176,7 +180,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
 
    // delete this activity
    activityManager.deleteActivity(activityId);
-   assertEquals(0, activityManager.getActivitiesWithListAccess(rootIdentity).getSize());
+   assertEquals(0, activityManager.getActivitiesWithListAccess(spaceIdentity).getSize());
    
    space.setField(null);
    spaceService.renameSpace(space, "SocialTeam");
@@ -227,8 +231,12 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    }
    
    //clean up
+   String userSpaceActivityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+   activityManager.deleteActivity(activityId);
+   activityManager.deleteActivity(userSpaceActivityId);
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
+   
    
  }
  

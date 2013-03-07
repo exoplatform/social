@@ -39,7 +39,6 @@ import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
 
 /**
  * This listener is responsible for initializing and notifying activity stream for the space. We create a special
@@ -131,6 +130,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     final String activityMessage = "Has joined the space.";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    final String userSpaceActivityMessage = "I joined " + space.getDisplayName() + " space";
+    //
+    recordActivityForUserSpace(event, userSpaceActivityMessage, USER_SPACE_JOINED_TITLE_ID, templateParams, true);
+    
     templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
