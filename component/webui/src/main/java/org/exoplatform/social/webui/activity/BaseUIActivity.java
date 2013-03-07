@@ -134,7 +134,9 @@ public class BaseUIActivity extends UIForm {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     this.activity = activity;
-    setOwnerIdentity(Utils.getIdentityManager().getIdentity(activity.getUserId(), true));
+    Identity identity = Utils.getIdentityManager().getIdentity(activity.getUserId(), true);
+    setOwnerIdentity(identity);
+    
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
     commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.write_a_comment"));
     addChild(commentTextArea);
@@ -569,6 +571,19 @@ public class BaseUIActivity extends UIForm {
 
   public Identity getOwnerIdentity() {
     return ownerIdentity;
+  }
+
+  public Identity getSpaceCreatorIdentity() {
+    
+    // If an activity of space then set creator information
+    if ( SpaceIdentityProvider.NAME.equals(ownerIdentity.getProviderId()) ) {
+      SpaceService spaceService = getApplicationComponent(SpaceService.class);
+      Space space = spaceService.getSpaceByPrettyName(ownerIdentity.getRemoteId()); 
+      String[] managers = space.getManagers();
+      return Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME,managers[0], false);
+    }
+    
+    return null;
   }
 
   /**
