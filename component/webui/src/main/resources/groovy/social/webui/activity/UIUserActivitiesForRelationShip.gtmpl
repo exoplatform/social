@@ -187,13 +187,6 @@
 				</div>
 				<div class="dataInfor">
 					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 
-					<% if (uicomponent.isUserActivity() && uicomponent.isSpaceStreamOwner() && !uicomponent.isUISpaceActivitiesDisplay()) {
-						    Space spaceSource = Utils.getSpaceService().getSpaceByPrettyName(streamOwner);
-								def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
-								def spaceName = spaceSource.displayName;
-					%>
-					<a class="spaceName" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI"><i class="uiIconGroup uiIconLightGray"></i>&nbsp;$spaceName</a>
-					<%} %>
 				</div>
 			</div><!--end heading-->
 			<div class="description">$activity.title</div><!--end description-->
