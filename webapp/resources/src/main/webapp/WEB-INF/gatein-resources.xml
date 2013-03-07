@@ -166,9 +166,6 @@
       <module>mentionsLib</module>
       <as>mentions</as>
     </depends>
-    <depends>
-      <module>userPopupPlugin</module>
-    </depends>
   </module>
 
   <module>
@@ -192,6 +189,9 @@
     <depends>
       <module>mentionsLib</module>
       <as>mentions</as>
+    </depends>
+    <depends>
+      <module>userPopupPlugin</module>
     </depends>
   </module>
   
