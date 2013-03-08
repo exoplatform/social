@@ -138,7 +138,7 @@ public class BaseUIActivity extends UIForm {
     setOwnerIdentity(identity);
     
     UIFormTextAreaInput commentTextArea = new UIFormTextAreaInput("CommentTextarea" + activity.getId(), "CommentTextarea", null);
-    commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.write_a_comment"));
+    commentTextArea.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("BaseUIActivity.label.Add_your_comment"));
     addChild(commentTextArea);
     try {
       refresh();
@@ -245,7 +245,7 @@ public class BaseUIActivity extends UIForm {
         comments = activityCommentsListAccess.loadAsList(0, commentsSize >= DEFAULT_LIMIT ? DEFAULT_LIMIT : commentsSize);
       }
     }
-    return getI18N(comments);
+    return comments;
   }
 
   public List<ExoSocialActivity> getAllComments() {
