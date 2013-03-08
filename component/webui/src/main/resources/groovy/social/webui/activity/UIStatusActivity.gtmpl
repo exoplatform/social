@@ -175,7 +175,7 @@
          def commentLink = "";
       %>
      <% if (activityCommentAndLikable) { %>
-        <a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
+        <a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="javascript:void(0);">
           $labelComment
         </a> 
         <% if ( totalComments > 0 ) { %>
@@ -183,11 +183,11 @@
         <% } %>
         |
       <% if (uicomponent.isLiked()) { %>
-        <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
+        <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="javascript:void(0);">
           $labelUnlike
         </a>
       <% } else { %>
-        <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
+        <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="javascript:void(0);">
           $labelLike
         </a>
       <% }%>

@@ -240,19 +240,19 @@
 			 <% if (activityCommentAndLikable) { %>					 
 			<ul class="pull-right statusAction">
 				<li>
-					<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
+					<a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="javascript:void(0);">
 						<i class="uiIconComment uiIconLightGray"></i>&nbsp;$totalComments
 					</a> 
 				</li>
 			  <% if (uicomponent.isLiked()) { %>
 				<li>
-					<a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
+					<a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="javascript:void(0);">
 					   <i class="uiIconThumbUp uiIconBlue"></i>&nbsp;$totalLikesNum
 					</a> 
 				</li>
 			  <% } else { %>
 				<li>
-					<a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
+					<a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="javascript:void(0);">
 					  <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;$totalLikesNum
 					</a>
 				</li>
