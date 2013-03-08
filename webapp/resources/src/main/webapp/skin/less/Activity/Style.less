@@ -456,25 +456,28 @@
 
 /*================uiCalendarActivity=======================*/
 
+
 [class^="uiIconStatus"] { 
 	.square(38px);
 	display: inline-block;
 	background: url("/social-resources/skin/images/Activity/status-task.png");
-	margin-top: 1px;
-	&.uiIconStatus-needs-action {
+	margin-top: 1px;	
+	&.uiIconStatus-needs-action,&.uiIconStatus-needs-action:hover {
 		background-position: 0px 0px;
 	}
-	&.uiIconStatus-in-process {
+	&.uiIconStatus-in-process,&.uiIconStatus-in-process:hover {
 		background-position: -60px 0px;
 	}
-	&.uiIconStatus-completed {
+	&.uiIconStatus-completed ,&.uiIconStatus-completed:hover{
 		background-position: -120px 0px;
 	}
-	&.uiIconStatus-canceled {
+	&.uiIconStatus-canceled,&.uiIconStatus-canceled:hover { 
 		background-position: -180px 0px;
 	}
+	&:hover {
+		background: url("/social-resources/skin/images/Activity/status-task.png");
+	}	
 }		
-	
 
 .uiCalendarActivity {
 	.introBox .clearfix .calendarBox {		
