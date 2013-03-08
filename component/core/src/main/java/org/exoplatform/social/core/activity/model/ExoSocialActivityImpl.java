@@ -459,6 +459,17 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
   public final void setCommentedIds(final String[] identityIds) {
     commentedIds = Arrays.copyOf(identityIds, identityIds.length);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setUpdated(Long updated) {
+    if (updated != null) {
+      setUpdated(new Date(updated));
+    } else {
+      setUpdated(new Date(System.currentTimeMillis()));
+    }
+  }
   
   /**
    * init time.
@@ -469,6 +480,5 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     setUpdated(date);
     activityStream = new ActivityStreamImpl();
   }
-
 
 }
