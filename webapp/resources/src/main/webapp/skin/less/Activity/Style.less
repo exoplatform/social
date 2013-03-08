@@ -346,9 +346,10 @@
 			.pull-left + .text {
 				margin-left: 46%;
 			}
-			.versionFile {				
+			.versionFile {				 
 				position: absolute;
 				bottom: 0;
+				color: @grayLight;font-size: 12px;
 			}
 		}
 		
@@ -455,6 +456,26 @@
 
 /*================uiCalendarActivity=======================*/
 
+[class^="uiIconStatus"] { 
+	.square(38px);
+	display: inline-block;
+	background: url("/social-resources/skin/images/Activity/status-task.png");
+	margin-top: 1px;
+	&.uiIconStatus-needs-action {
+		background-position: 0px 0px;
+	}
+	&.uiIconStatus-in-process {
+		background-position: -60px 0px;
+	}
+	&.uiIconStatus-completed {
+		background-position: -120px 0px;
+	}
+	&.uiIconStatus-canceled {
+		background-position: -180px 0px;
+	}
+}		
+	
+
 .uiCalendarActivity {
 	.introBox .clearfix .calendarBox {		
 		width: 50px;
@@ -466,27 +487,7 @@
 	p {
 			margin-bottom: 5px;
 	}
-	.statusTask {
-		i { 
-			.square(38px);
-			display: inline-block;
-			background: url("/social-resources/skin/images/Activity/status-task.png");
-			margin-top: 1px;
-			&.needs-actionIcon {
-				background-position: 0px 0px;
-			}
-			&.in-processIcon {
-				background-position: -60px 0px;
-			}
-			&.completedIcon {
-				background-position: -120px 0px;
-			}
-			&.canceledIcon {
-				background-position: -180px 0px;
-			}
-		}		
-		
-	}
+	
 	.introBox .clearfix .statusTask {
 		width: 40px;
 		&+  .text {
@@ -560,7 +561,49 @@
 	}
 }
 
-/*=======userprofile activity==========*/ 
+
+/*=======Space activity==========*/ 
+.uiSpaceActivity {
+	.spaceMembers  {
+		color: @grayLight;
+		font-size: 12px;
+	}
+}
+
+/*=======fileActivity activity==========*/  
+.fileActivity {
+	.introBox .isPreviewable {
+		 .pull-left {
+			width: 50%;
+			&+ .text {
+				margin-left: 52%;
+			}
+		 }
+		 .fileTypeContent {
+			float: left;
+			width: 50px;
+			& + .text {
+				margin-left: 60px;
+			}
+		 }		
+		 .PlayerContianer {
+			width: 330px;
+			& + .text {
+				margin-left: 350px;
+			}
+		 }
+		.PlayerContent {
+			padding: 0;
+			height: 200px;
+			width: 330px;
+		}
+	}
+	.fileShare .linkTitle {
+		display: block;
+		margin-top: -3px;
+	}
+}
+
 .userProfileShare {
 	.userGender  {
 		margin: 0 0 0 20px;
