@@ -124,7 +124,7 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
     }
     
     //
-    posters.addAll(posterList);
+    posterList.addAll(posters);
     
     //
     postersLocal.set(posterList);
@@ -300,21 +300,26 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
         
-      //
-      List<Identity> posters = getPosters();
-      for (Identity currentIdentity : posters) {
-        if (first) {
-          first = false;
-        }
-        else {
-          where.or();
-        }
-        where.startGroup();
-        where.equals(ActivityEntity.poster, currentIdentity.getId());
-        where.and().equals(ActivityEntity.isComment, true);
-        where.endGroup();
+      //take care the case relationship add comment to owner
+      //it also need to calculate in counter
+      if (mentioner != null) {
+        List<Identity> posters = getPosters();
+        for (Identity currentIdentity : posters) {
+          if (first) {
+            first = false;
+          }
+          else {
+            where.or();
+          }
+          where.startGroup();
+          where.equals(ActivityEntity.identity, mentioner.getId());
+          where.and().equals(ActivityEntity.poster, currentIdentity.getId());
+          where.and().equals(ActivityEntity.isComment, true);
+          where.endGroup();
 
+        }
       }
+      
         
       where.endGroup();
         

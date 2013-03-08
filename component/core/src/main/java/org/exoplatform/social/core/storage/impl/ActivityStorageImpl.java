@@ -42,6 +42,7 @@ import org.chromattic.api.query.QueryResult;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityCounter;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityIterator;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -1751,7 +1752,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserActivities);
     
     //
-    //long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
     long compareTime = filter.activityFeedType().toSinceTime();
     
     //
@@ -1759,14 +1759,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
-                                          .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
+                                                                 .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter);
+    
+    //calculate here
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.activityFeedType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
     
     return gotNumber;
+  }
+  
+  /**
+   * Counter of activies what is updated
+   * @param query
+   * @return
+   */
+  private int counter(Query<ActivityEntity> query) {
+    
+    QueryResult<ActivityEntity> results = query.objects();
+    
+    ActivityEntity entity = null;
+    ActivityCounter counter = new ActivityCounter();
+    
+    //
+    while (results.hasNext()) {
+      entity = results.next();
+
+      //
+      if (entity.isComment()) {
+        entity = entity.getParentActivity();
+      }
+
+      counter.add(getStorage().getActivity(entity.getId()));
+
+    }
+    
+    return counter.size();
   }
   
   @Override
@@ -1793,8 +1824,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
     
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
-                                           .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
+                                                                 .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter);
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
       gotNumber = 0;
@@ -1846,9 +1878,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   @Override
   public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
-    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
 
-    if (connectionList.size() == 0) {
+    if (relationships.size() == 0) {
       return 0;
     }
     
@@ -1866,7 +1898,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    //long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
     long compareTime = filter.connectionType().toSinceTime();
     
     //
@@ -1874,8 +1905,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList).posters(connectionList)
-                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(relationships).posters(relationships)
+                                                                 .excludedActivities(filter.excludedActivities()), jcrfilter);
+    
+    //calculate here
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
       gotNumber = 0;
