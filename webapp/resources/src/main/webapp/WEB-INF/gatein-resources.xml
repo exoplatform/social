@@ -55,6 +55,9 @@
     <depends>
        <module>webui</module>
     </depends>
+    <depends>
+      <module>userPopupPlugin</module>
+    </depends>
   </module>
   
   <module>
@@ -190,9 +193,6 @@
       <module>mentionsLib</module>
       <as>mentions</as>
     </depends>
-    <depends>
-      <module>userPopupPlugin</module>
-    </depends>
   </module>
   
   <module>
@@ -325,7 +325,7 @@
   <module>
     <name>userPopupPlugin</name>
     <script>
-      <path>/javascript/eXo/jquery.tipTip.minified.js</path>
+      <path>/javascript/eXo/UIUserProfilePopup.js</path>
     </script>
     <depends>
       <module>jquery</module>

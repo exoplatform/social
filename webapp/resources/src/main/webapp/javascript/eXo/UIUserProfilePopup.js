@@ -21,6 +21,7 @@
      $.fn.userPopup = function (options) {
          var defaults = {
              restURL: "",
+             actionLabels: "",
              getContentFunc: function() {},
              activation: "hover",
              keepAlive: false,
@@ -48,6 +49,7 @@
          }
          return this.each(function () {
              var org_elem = $(this);
+             
              if (opts.content) {
                  var org_title = opts.content
              } else {
@@ -60,10 +62,12 @@
                  var timeout = false;
                  if (opts.activation == "hover") {
                      org_elem.hover(function () {
-                         // call function to get data
-                         //opts.getContentFunc();
+                     
+                         //
+                         loadData($(this));
                          
                          clearTimeout($(this).data('timeoutId'));
+                         
                          active_tiptip()
                      }, function () {
                          if (!opts.keepAlive) {
@@ -106,7 +110,7 @@
                  }
                  function active_tiptip() {
                      opts.enter.call(this);
-                     tiptip_content.html(org_title);
+                     //tiptip_content.html(org_title);
                      tiptip_holder.hide().removeAttr("class").css("margin", "0");
                      tiptip_arrow.removeAttr("style");
                      var top = parseInt(org_elem.offset()['top']);
@@ -195,6 +199,164 @@
                      }
                      tiptip_holder.fadeOut(opts.fadeOut)
                  }
+                 
+                 function loadData(el) {
+                   var userUrl = $(el).attr('href');
+                   var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);
+                   var restUrl = opts.restURL.replace('{0}', userId);
+                   
+                   //
+                   var cachingData = getCache(userId);
+                   
+                   if ( cachingData ) {
+                     buildPopup(cachingData, userId);
+                   } else {
+		                 // 
+		                 $.ajax({
+		                     type: "GET",
+		                     url: restUrl
+		                 }).complete(function (jqXHR) {
+		                     if (jqXHR.readyState === 4) {
+		                       var userData = $.parseJSON(jqXHR.responseText);
+		                       
+		                       //
+		                       putToCache(userId, userData);
+		                       
+		                       buildPopup(userData, userId);
+		                     }
+		                 });
+		               }
+                 }
+                 
+							   function buildPopup(json, ownerUserId) {
+							        var portal = eXo.social.portal;
+							        var relationStatus = json.relationshipType;
+							        var currentViewerId = portal.userName;
+							        var actionContainer = null;
+							        var actionLabels = opts.actionLabels
+							        
+							        tiptip_content.html();
+							        
+							        if (currentViewerId != ownerUserId) {
+							    
+							            var action = $('<div/>', {
+							                "class": "connect btn btn-primary",
+							                "text": "" + actionLabels.Connect,
+							                "data-action": "Invite:" + ownerUserId,
+							                "onclick": "takeAction(this)"
+							            });
+							    
+							            //
+							            if (relationStatus == "pending") { // Viewing is not owner
+							                action = $('<div/>', {
+							                    "class": "connect btn btn-primary",
+							                    "text": "" + actionLabels.Confirm,
+							                    "data-action": "Accept:" + ownerUserId,
+							                    "onclick": "takeAction(this)"
+							                });
+							            } else if (relationStatus == "waiting") { // Viewing is owner
+							                action = $('<div/>', {
+							                    "class": "connect btn",
+							                    "text": "" + actionLabels.CancelRequest,
+							                    "data-action": "Revoke:" + ownerUserId,
+							                    "onclick": "takeAction(this)"
+							                });
+							            } else if (relationStatus == "confirmed") { // Had Connection 
+							                action = $('<div/>', {
+							                    "class": "connect btn",
+							                    "text": "" + actionLabels.RemoveConnection,
+							                    "data-action": "Disconnect:" + ownerUserId,
+							                    "onclick": "takeAction(this)"
+							                });
+							            } else if (relationStatus == "ignored") { // Connection is removed
+							                action = $('<div/>', {
+							                    "class": "connect btn",
+							                    "text": "" + actionLabels.Ignore,
+							                    "data-action": "Deny:" + ownerUserId,
+							                    "onclick": "takeAction(this)"
+							                });
+							            }
+							    
+							            actionContainer = $("<div/>").append(action);
+							    
+							        }
+							    
+							        var popupContent = "<table id='tipName'>" +
+							            "  <tbody>" +
+							            "    <tr>" +
+							            "      <td style='width: 50px;'>" +
+							            "        <img src='" + json.avatarURL + "' alt='image' />" +
+							            "      </td>" +
+							            "      <td>" +
+							            "        <a target='_parent' href='" + json.profileUrl + "'>" + json.fullName + "</a>";
+							        if (json.position) {
+							            popupContent += "<div style='font-weight: normal;'>" + json.position + "</div>";
+							        }
+							        popupContent += "      </td>" +
+							            "     </tr>" +
+							            "    </tbody>" +
+							            "</table>";
+							        if (json.activityTitle) {
+							            popupContent += "<blockquote>" + json.activityTitle + "</blockquote>";
+							        }
+							    
+							        if (currentViewerId != ownerUserId) {
+							            popupContent += "<div class='uiAction connectAction'>";
+							            popupContent += actionContainer.html();
+							            popupContent += "<div/>";
+							        }
+							        
+							        tiptip_content.html(popupContent);
+							    }
+							    
+							    function takeAction(el) {
+							        var dataAction = $(el).attr('data-action');
+							        var updatedType = dataAction.split(":")[0];
+							        var ownerUserId = dataAction.split(":")[1];
+							    
+							        $.ajax({
+							            type: "GET",
+							            url: opts.restURL.replace('{0}', ownerUserId) + '?updatedType=' + updatedType
+							        }).complete(function (jqXHR) {
+							            if (jqXHR.readyState === 4) {
+							                var popup = $(el).closest('#tiptip_holder');
+							                popup.fadeOut('fast', function () {
+							                });
+							                
+							                // clear cache
+							                clearCache();
+							            }
+							        });
+							    }
+                  
+							    function putToCache(key, data) {
+							        var ojCache = $('div#socialUsersData');
+							        if (ojCache.length == 0) {
+							            ojCache = $('<div id="socialUsersData"></div>').appendTo($(document.body));
+							            ojCache.hide();
+							        }
+							        key = 'result' + ((key === ' ') ? '_20' : key);
+							        var datas = ojCache.data("CacheSearch");
+							        if (String(datas) === "undefined") datas = {};
+							        datas[key] = data;
+							        ojCache.data("CacheSearch", datas);
+							    }
+							    
+							    function getCache(key) {
+							        key = 'result' + ((key === ' ') ? '_20' : key);
+							        var datas = $('div#socialUsersData').data("CacheSearch");
+							        return (String(datas) === "undefined") ? null : datas[key];
+							    }
+							    
+							    function clearCache() {
+							        $('div#socialUsersData').stop().animate({
+							            'cursor': 'none'
+							        }, 1000, function () {
+							            $(this).data("CacheSearch", {});
+							        });
+							    }
+							    
+                  window.takeAction = takeAction;
              }
          })
      }

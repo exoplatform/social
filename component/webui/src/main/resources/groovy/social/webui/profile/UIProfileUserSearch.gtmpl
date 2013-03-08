@@ -48,6 +48,20 @@
   def typeOfRelation = uicomponent.getTypeOfRelation();
   def spaceURL = uicomponent.getSpaceURL();
 	
+	def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
+  def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
+  def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
+  def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
+  def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
+  
+	def actionLabels = """ {
+	  Connect: '${connectLabel}',
+	  Confirm: '${confirmLabel}',
+	  CancelRequest: '${cancelRequestLabel}',
+	  RemoveConnection: '${removeConnectionLabel}',
+	  Ignore: '${ignoreLabel}'
+	} """
+  
 	def params = """ {
 	  uicomponentId: '${uicomponentId}',
 	  defaultUserContact: '${nameDefaultVal}',
@@ -61,6 +75,7 @@
 
   jsmanager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($actionLabels);")
            .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
 	         .require("SHARED/uiForm");
 	

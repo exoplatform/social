@@ -92,7 +92,7 @@ public class PeopleRestService implements ResourceContainer{
   /** Revoke action */
   private static final String REVOKE_ACTION = "Revoke";
   /** Remove action */
-  private static final String REMOVE_ACTION = "Remove";
+  private static final String REMOVE_ACTION = "Disconnect";
   /** Member of space Status information */
   private static final String SPACE_MEMBER = "member_of_space";
   /** User to invite to join the space Status information */
