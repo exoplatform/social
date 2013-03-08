@@ -456,29 +456,6 @@
 
 /*================uiCalendarActivity=======================*/
 
-
-[class^="uiIconStatus"] { 
-	.square(38px);
-	display: inline-block;
-	background: url("/social-resources/skin/images/Activity/status-task.png");
-	margin-top: 1px;	
-	&.uiIconStatus-needs-action,&.uiIconStatus-needs-action:hover {
-		background-position: 0px 0px;
-	}
-	&.uiIconStatus-in-process,&.uiIconStatus-in-process:hover {
-		background-position: -60px 0px;
-	}
-	&.uiIconStatus-completed ,&.uiIconStatus-completed:hover{
-		background-position: -120px 0px;
-	}
-	&.uiIconStatus-canceled,&.uiIconStatus-canceled:hover { 
-		background-position: -180px 0px;
-	}
-	&:hover {
-		background: url("/social-resources/skin/images/Activity/status-task.png");
-	}	
-}		
-
 .uiCalendarActivity {
 	.introBox .clearfix .calendarBox {		
 		width: 50px;
@@ -499,24 +476,9 @@
 	}
 	
 	.calendarBox {
-		text-align: center;
-		font-family : @sansBoldFontFamily; 
-		font-weight: bold;
-		.heading {
-			color : @white;
-			border: 1px solid #224886;
-			.border-radius(@baseBorderRadius @baseBorderRadius 0 0);
-			#gradient > .vertical(#638acd, #426393);
-			padding: 2px 0;
-			margin: 0;
-		}
-		.content {
-			font-size: 24px;
-			color: #316399;
-			border: 1px solid #c3c3c3;
-			padding: 8px;
-			.border-radius( 0 0 @baseBorderRadius @baseBorderRadius);
-		}
+		.heading {			
+			padding:0;
+		}		
 	}
 }
 
