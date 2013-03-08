@@ -79,7 +79,7 @@
       //
       $('#numberInfo').html(form.updates.replace("{0}", form.numberOfUpdatedActivities));
       
-      $.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
+      $.each($('#UIActivitiesLoader').find('.activityStream'), function(i, item) {
         if(i < form.numberOfUpdatedActivities) {
           $(item).addClass('UpdatedActivity');
         }
@@ -208,7 +208,7 @@
 		  var limit = form.numberOfUpdatedActivities > form.ACTIVITIES_ON_PAGE_NUM ? form.ACTIVITIES_ON_PAGE_NUM : form.numberOfUpdatedActivities;
 		  
 		  //
-			$.each($('#UIActivitiesLoader').find('.UIActivity'), function(i, item) {
+			$.each($('#UIActivitiesLoader').find('.activityStream'), function(i, item) {
 			  if(i > seenActivitiesNum && i <= seenActivitiesNum + limit) {
 			    $(item).addClass('UpdatedActivity');
 			  }
