@@ -72,18 +72,20 @@
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
 %>
 <div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
-  <% if (Utils.isHomePage() && uicomponent.hasActivities()) { %>
+ <% if (Utils.isHomePage()) { %>
 	<div class="clearfix activityTop">
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
-    <% if(numberOfUpdatedActivities > 0) { %>
-     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="numberInfo"><% updates.replace("{0}", numberOfUpdatedActivities + ""); %></span></div>
-    <% } else {%>
-     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
-    <% } %>
-	</div>
-  <% } %>
+    <% if (uicomponent.hasActivities()) { %>
+	    <% if(numberOfUpdatedActivities > 0) { %>
+	     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="numberInfo"><% updates.replace("{0}", numberOfUpdatedActivities + ""); %></span></div>
+	    <% } else {%>
+	     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
+	    <% } %>
+   <% } %>
+  </div>
+ <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
   <% if ( hasActivities ) { %>
   	<div class="activityBottom"><span></span></div>
