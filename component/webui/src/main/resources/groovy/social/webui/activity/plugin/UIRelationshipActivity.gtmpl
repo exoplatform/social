@@ -305,7 +305,7 @@
       <% } else { %>
       <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
       <% } %>
-        <a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarXSmall">
+        <a href="$commenterProfileUri" title="$commenterFullName" class="avatarXSmall">
           <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>

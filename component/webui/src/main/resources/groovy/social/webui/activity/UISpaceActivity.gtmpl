@@ -268,7 +268,7 @@
 	          personLikeAvatarImageSource = id.profile.avatarUrl;
 	          if (!personLikeAvatarImageSource) { personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL; }
 	          %>
-	            <a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+	            <a class="avatarXSmall" title="$personLikeFullName" href="$personLikeProfileUri">
 	              <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
 	            </a>
 	         <% })%>
@@ -327,7 +327,7 @@
 	        <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem ">
 	      <% }  %>            
 	        <div class="commmentLeft">
-	            <a href="$commenterProfileUri" rel="tooltip" data-placement="bottom" title="$commenterFullName" class="avatarXSmall">
+	            <a href="$commenterProfileUri" title="$commenterFullName" class="avatarXSmall">
 	              <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />         
 	            </a>
 	        </div><!--end commentLeft-->        
@@ -364,13 +364,13 @@
 	      <div class="commentItem commentFormBox" id="CommentFormBlock${activity.id}">
 	    <% } %>
 	            <div class="commmentLeft">
-	                <a rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri" class="avatarXSmall">
+	                <a title="$currentCommenterName" href="$currentCommenterUri" class="avatarXSmall">
 	                   <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>        
 	                </a>
 	            </div><!--end commentLeft--> 
 	            <div class="commentRight">
 	                <div class="commentInputBox ">
-	                    <button class="btn pull-right btn-primary" rel="tooltip" data-placement="bottom" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
+	                    <button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
 	                    <div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
 	                </div>
 	            </div><!--end commentRight-->        
