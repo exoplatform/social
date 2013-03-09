@@ -73,7 +73,7 @@ var UISpaceNavigation = {
 	    var jqObj = $(target);
 	
 	    var input = $("<input>").attr({type : "text", id : nodeName, name : currentLabel, value : currentLabel, maxLength : 50});
-	    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px");
+	    input.css("border", "1px solid #b7b7b7").css("width", (target.offsetWidth - 2) + "px").css("display", "block").css("height", "20px");
 	
 	    jqObj = jqObj.replaceWith(input);
 	    input.blur(function() {
