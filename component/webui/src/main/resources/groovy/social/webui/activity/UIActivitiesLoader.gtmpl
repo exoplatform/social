@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
 
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
   def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
@@ -52,7 +53,7 @@
   jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($actionLabels);");
 %>
 
-<% if ( hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
+<% if ( Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
 <div class="uiActivityStream clearfix" id="$uicomponent.id">
 <% } else { %>
 <div class="uiActivityStream clearBG" id="$uicomponent.id">
