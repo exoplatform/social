@@ -662,7 +662,6 @@ public class BaseUIActivity extends UIForm {
       } else {
         uiActivity.setCommentFormDisplayed(true);
       }
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
     }
   }
 

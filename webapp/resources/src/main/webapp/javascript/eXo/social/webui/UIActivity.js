@@ -84,48 +84,21 @@ var UIActivity = {
       alert('err: init UIActivity!');
     }
     
-    UIActivity.inputContainer.hide();
-    
-    if (UIActivity.commentFormDisplayed) {
-      UIActivity.inputContainer.show();
-      UIActivity.commentTextareaEl.css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-      UIActivity.commentTextareaEl.css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
-      if (UIActivity.commentTextareaEl.val() === UIActivity.inputWriteAComment) {
-        UIActivity.commentTextareaEl.val('');
-      }
-      UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
-    } else {
-      if (UIActivity.allCommentSize == 0) {
-        UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
-      } else {
-        UIActivity.commentBlockBoundEl.attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
-      }
-    };
-
     var commentLinkEl = $("#" + UIActivity.commentLinkId);
-    if (commentLinkEl.length > 0) {
-	    //event handlers
-	    commentLinkEl.on('click', function (evt) {
+        if (commentLinkEl.length > 0) {
+        //event handlers
+        commentLinkEl.on('click', function (evt) {
 	        var commentForms = $("[id^='CommentFormBlock']");
 	        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
 	        var thiscommentBlockId = 'CommentFormBlock' + currentActivityId;
-	        $.each(commentForms, function (idx, el) {
-	            if ($(el).attr('id') !== thiscommentBlockId) {
-	                if (UIActivity.allCommentSize == 0) {
-	                    $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_NONE_CLASS_NAME);
-	                } else {
-	                    $("#" + UIActivity.commentBlockBoundId).attr('class', UIActivity.COMMENT_BLOCK_BOUND_CLASS_NAME);
-	                }
-	
-	                $(el).hide();
-	            } else {
-	                $(el).show('fast', function () {
-	                    var commentInputBox = $('#DisplayCommentTextarea' + currentActivityId);
-	                    commentInputBox.focus();
-	                });
-	            }
+	            
+	        var inputContainer = $('#InputContainer' + currentActivityId);
+	        inputContainer.fadeToggle('fast', function () {
+	            var commentInputBox = $('#DisplayCommentTextarea' + currentActivityId);
+	            commentInputBox.focus();
 	        });
-	    });
+                 
+        });
         
       //
       var commentTextareas = $("[id^='CommentTextarea']");
