@@ -215,12 +215,16 @@
 }
 
 .activityStream{
+	.contentComment {
+		word-wrap: break-word;
+	}
 	.textBold {
 		font-weight: bold;
 	}
 	.linkTitle ,.author a,.sumaryPoint > div{
 		font-family : @sansBoldFontFamily; 
 		font-weight: bold;
+		 word-wrap: break-word;
 	}
 	.author {	
 		a + span {
@@ -347,10 +351,10 @@
 		.isPreviewable {
 			position: relative;
 			.pull-left  {
-				width: 45%;
+				width: 300px;
 			}
 			.pull-left + .text {
-				margin-left: 46%;
+				margin-left: 315px;
 			}
 			.versionFile {				 
 				position: absolute;
@@ -546,9 +550,9 @@
 .fileActivity {
 	.introBox .isPreviewable {
 		 .pull-left {
-			width: 50%;
+			width: 300px;
 			&+ .text {
-				margin-left: 52%;
+				margin-left: 315px;
 			}
 		 }
 		 .fileTypeContent {
