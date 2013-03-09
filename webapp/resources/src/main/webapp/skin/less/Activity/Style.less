@@ -103,9 +103,6 @@
 	&.clearBG {
 		background: none;
 	}
-	.textBold {
-		font-weight: bold;
-	}
 }
 
 .uiUserActivitiesDisplay.notSeen .uiActivityStream ,.uiUserActivitiesDisplay.notSeen .uiActivitiesLoader {
@@ -212,6 +209,9 @@
 }
 
 .activityStream{
+	.textBold {
+		font-weight: bold;
+	}
 	.linkTitle ,.author a,.sumaryPoint > div{
 		font-family : @sansBoldFontFamily; 
 		font-weight: bold;
@@ -761,8 +761,15 @@ blockquote:after {
 
 
 #tiptip_holder .detail {
-  margin-left: 45px;
+  margin-left: 45px; 
 }
 
 /*======= End of User Profile Popup ==========*/
-
+.inputDoc {
+	border: 1px solid @tableBorder;
+    .box-shadow(~'0 2px 1px -2px rgba(255,255,255,1), 0 3px 1px -2px rgba(255,255,255,0.6) inset');
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+	color: @grayLight;
+}
