@@ -53,7 +53,9 @@
 		.uiContentBox {
 			padding: 6px;
 			.thumbnailInner {
-				min-height: 100px;
+				height: 100px;
+				overflow: hidden; 
+				.border-radius(@baseBorderRadius);
 				img {
 					.border-radius(@baseBorderRadius);
 				}

@@ -186,7 +186,7 @@
 								def spaceSourceURI = LinkProvider.getSpaceUri(spaceSource.url);
 								def spaceName = spaceSource.displayName;
 					%>
-					<a class="spaceName" href="$spaceSourceURI"><i class="uiIconGroup uiIconLightGray"></i>&nbsp;$spaceName</a>
+					<a class="spaceName" href="$spaceSourceURI"><i class="uiIconSocGroup uiIconSocLightGray"></i>&nbsp;$spaceName</a>
 					<%} %>
 				</div>
 			</div><!--end heading-->
