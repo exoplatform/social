@@ -65,15 +65,23 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   /** */
   ThreadLocal<List<Identity>> postersLocal = new ThreadLocal<List<Identity>>();
   
+  private Object lock = new Object();
+  
     
   /** */
   String[] activityIds = new String[0];
   
   public String build(JCRFilterLiteral filter) {
-    init();
-    String result = make(filter);
-    destroy(filter);
+    String result = "";
+    
+    //
+    synchronized (lock) {
+      init();
+      result = make(filter);
+      destroy(filter);
+    }
     return result;
+    
   }
    
   @Override
