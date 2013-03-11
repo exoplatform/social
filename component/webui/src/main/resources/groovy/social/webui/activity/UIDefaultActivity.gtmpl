@@ -56,6 +56,9 @@
   def labelYouAndOnePersonLikeThis=_ctx.appRes("UIActivity.label.You_And_One_Person_Like_This");
   def labelYouAndOthersLikeThis=_ctx.appRes("UIActivity.label.You_And_Others_Like_This");
 
+  def labelToDeleteThisActivity=_ctx.appRes("UIActivity.msg.Are_You_Sure_To_Delete_This_Activity");
+  def labelToDeleteThisComment=_ctx.appRes("UIActivity.msg.Are_You_Sure_To_Delete_This_Comment");
+
   def likeActivityAction = uicomponent.event("LikeActivity", "true");
   def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
 
@@ -158,7 +161,7 @@
   def currentTime = System.currentTimeMillis();
 %>
 
-<div class="activityStream uiDefaultActivity">
+<div class="activityStream uiDefaultActivity" id="activityContainer${activity.id}">
   <% uiform.begin() %>
   <div class="activityTimeLine pull-left">
 	<div class="activityAvatar avatarCircle">
@@ -169,12 +172,13 @@
 	
   </div><!--end activityTimeLine-->
   <div class="boxContainer" id="boxContainer">
-	<div id="ContextBox${activity.id}"class="uiBox contentBox">
+	<div id="ContextBox${activity.id}" class="uiBox contentBox">
 		<div id="ActivityContextBox${activity.id}">
 		  <div class="heading">
 				<span class="arrowLeft"></span>
-				 <% if (activityDeletable) {%>
-					<a href="javascript:void(0)" onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="uiIconClose  uiIconLightGray" id="DeleteActivityButton${activity.id}"></a>
+				 <% if (activityDeletable) {
+				 %>
+					<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
 				  <%}%>
 				<div class="author">
 					<a title="$ownerName" href="$ownerUri">$ownerName</a>                
@@ -285,6 +289,7 @@
 			  commenterAvatarImgSrc = id.profile.avatarUrl;
 			  if (!commenterAvatarImgSrc) commenterAvatarImgSrc = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
 			%>
+			<div id="commentContainer${it.id}">
 			  <% if(commentCounter == commentList.size()) { %>
 			  <div id="CommentBlock${activity.id}${commentCounter}" class="commentItem commentItemLast">
 			  <% } else { %>
@@ -308,10 +313,12 @@
 				</div><!--end commentRight-->
 			  <%
 				if (uicomponent.isCommentDeletable(it.userId)) {
+				  String idDeleteComment = "DeleteCommentButton${it.id}";
 			  %>
-				<a href="javascript:void(0)" id="DeleteCommentButton${activity.id}${commentCounter}" onclick="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>" class="uiIconClose uiIconLightGray"></a>
+				<a href="javascript:void(0)" id="$idDeleteComment" data-confirm="$labelToDeleteThisComment" data-delete="<%= uicomponent.event("DeleteComment", uicomponent.id, it.id); %>"  class="uiIconClose uiIconLightGray controllDelete"></a>
 			  <% } %>
 			  </div>
+			</div>
 			<% }) %>
 			</div> <!--end commentlist-->
 			<div class="commentList inputContainer" id="InputContainer${activity.id}">
