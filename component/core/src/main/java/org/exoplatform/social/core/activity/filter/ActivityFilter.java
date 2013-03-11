@@ -159,6 +159,9 @@ public class ActivityFilter extends JCRFilterLiteral {
     protected void start() {
       try {
         super.start();
+        //destroy old value;
+        super.destroy();
+        
         this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
         .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
         
@@ -174,6 +177,7 @@ public class ActivityFilter extends JCRFilterLiteral {
     protected void start() {
       try {
         super.start();
+        super.destroy();
         //
         this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
         .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
