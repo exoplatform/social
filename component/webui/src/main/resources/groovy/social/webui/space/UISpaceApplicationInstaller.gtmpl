@@ -21,10 +21,6 @@
 */
 %>
 
-<div class="$uicomponent.id" id="$uicomponent.id">
-  <div class="UIItemSelector">
-    <div class="LeftColumnStyle ClearFix">
+<div class="uiSpaceAppInstaller clearfix" id="$uicomponent.id">
       <% uicomponent.renderChildren(); %>
-    </div>
-  </div>
 </div>

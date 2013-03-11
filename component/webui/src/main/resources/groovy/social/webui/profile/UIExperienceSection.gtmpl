@@ -35,14 +35,22 @@
   def uicomponentId = uicomponent.id;
   def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  //
+  def organizationLabel = _ctx.appRes("${uicomponentId}.label.company");
+  def positionLabel = _ctx.appRes("${uicomponentId}.label.position");
+  def jobDetailsLabel = _ctx.appRes("${uicomponentId}.label.description");
+  def skillsUsedLabel = _ctx.appRes("${uicomponentId}.label.skills");
+  def startDateLabel = _ctx.appRes("${uicomponentId}.label.startDate");
+  def endDateLabel = _ctx.appRes("${uicomponentId}.label.endDate");
+  
   def addExperience = uicomponent.event("Add") + "; return false";
   def expCounter = 0;
   _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
 %>
-<div class="experience">
+<div class="uiExperienceSection">
 <%uiform.begin()%>
   <% uicomponent.renderChild(UITitleBar.class); %>
-  <div class="PortletContent">
+  <div class="form-horizontal">
     <%if (isEdit && isEditable) {%>
       <%if (childSize > 1) {%>
          <%for (int i=1; i < childSize; i +=7) {
@@ -51,98 +59,87 @@
          %>
          
          <% if (expCounter > 1) { %>
-          <div class="BlockSeparator">
+          <div class="blockSeparator">
         <% } else {%>
           <div>
         <% } %>
-            <table class="UIFormGrid">
-              <tbody>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></label></td>
-                <td class="FieldComponent">
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.company")%></strong></label>
+                <div class="controls">
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
                   }%>
                 
                 <% if ((i + 7) >= childSize) {%>
-                    <a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>&nbsp;
-                    <span class="ActionSparator"> | </span>
-                    <a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>
+                    <a href="javascript:void(0)" onclick="<%= removeExperience%>"><i class="uiIconClose uiIconLightGray"></i></a>
+                    <a href="javascript:void(0)" onclick="<%= addExperience%>"><i class="uiIconPlus uiIconLightGray"></i></a>
 				 <% } else {%>
-					<a class="ColorLink" href="javascript:void(0)" onclick="<%= removeExperience%>">$removeActionLabel</a>
-                  </td>
+					<a href="javascript:void(0)" onclick="<%= removeExperience%>"><i class="uiIconClose uiIconLightGray"></i></a>
+                  
                 <% } %>
-              </tr>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i + 1).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></label></td>
-                <td class="FieldComponent">
+				</div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i + 1).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.position")%></strong></label>
+                <div class="controls">
                 <%if (childs.get(i + 1).isRendered()) {
                   uiform.renderField(childs.get(i + 1));
                 }%>
-                </td>
-              </tr>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i + 2).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></label></td>
-                <td class="FieldComponent">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i + 2).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.description")%></strong></label>
+                <div class="controls">
                 <%if (childs.get(i + 2).isRendered()) {
                   uiform.renderField(childs.get(i + 2));
                 }%>
-                </td>
-              </tr>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i + 3).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.skills")%></label></td>
-                <td class="FieldComponent">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i + 3).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.skills")%></strong></label>
+                <div class="controls">
                 <%if (childs.get(i + 3).isRendered()) {
                   uiform.renderField(childs.get(i + 3));
                 }%>
-                </td>
-              </tr>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i + 4).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></label></td>
-                <td class="FieldComponent">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i + 4).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.startDate")%></strong></label>
+                <div class="controls">
                 <%if (childs.get(i + 4).isRendered()) {
                   uiform.renderField(childs.get(i + 4));
                 }%>
-                </td>
-              </tr>
-              <tr>
-                <td class="FieldLabel"><label for="<%=childs.get(i + 5).getId()%>"><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></label></td>
-                <td class="FieldComponent">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="<%=childs.get(i + 5).getId()%>"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.endDate")%></strong></label>
+                <div class="controls">
                   <%if (childs.get(i + 5).isRendered()) {
                     uiform.renderField(childs.get(i + 5)); %>
-                    <br/>
                   <%}%>
-				  <%if (childs.get(i + 6).isRendered()) {%>
-				        <div class="ClearFix">
-                  <%uiform.renderField(childs.get(i + 6));%>
-                  <label for="<%=childs.get(i + 6).getId()%>" class="StillPositionLabel">&nbsp;<%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></label>
+				  
                 </div>
-                  <%}%>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              </div>
+			  <%if (childs.get(i + 6).isRendered()) {%>
+			  <div class="control-group">
+				<div class="controls">
+				  <label for="<%=childs.get(i + 6).getId()%>"><%uiform.renderField(childs.get(i + 6));%><%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></label>
+				</div>
+			  </div>
+			  <%}%>
         </div>
    <%} //end for
      } else {
   %>
-    <table class="UIFormGrid">
-      <tbody>
-        <tr>
-          <td>&nbsp</td>
-          <td class="FieldComponent">
+        <div class="control-group">
             <%=_ctx.appRes(uicomponent.getId() + ".label.noneExperience")%>
-            <a class="ColorLink" href="javascript:void(0)" onclick="<%= addExperience%>">$addActionLabel</a>
-          </td>
-        </tr>
-       </tbody>
-    </table>
+            <a href="javascript:void(0)" onclick="<%= addExperience%>"><i class="uiIconPlus uiIconLightGray"></i></a>
+        </div>
     <% } %>
   <% } else { %>
     <%if (exp != null) {%>
     <%if (currentExp.size() != 0) { %>
-    <div class="CurrentExperience">
-    <p><%=_ctx.appRes(uicomponent.getName() + ".label.Current")%></p>
+    <div class="currentExperience">
     <%  currentExp.each {
           def company = it.get(Profile.EXPERIENCES_COMPANY);
           def position = it.get(Profile.EXPERIENCES_POSITION);
@@ -151,41 +148,30 @@
           def endDate = it.get(Profile.EXPERIENCES_END_DATE);
           def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
-    %>  <div class="Experience">
-    			<%
-    				if (uicomponent.stringToDate(startDate) != null) {
-    			%>
-    				<%=uicomponent.stringToDate(startDate)%>
-    			<%}%>
-    			
-          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong><br />
-          
-          <%
-          	if (startDate != null) {
-          %>
-          <%=uicomponent.displayDateTime(startDate)%>
-          
-          <%}%>
-          
-          <% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%>
-          
-          <%
-          	if (endDate != null) {
-          %>
-          	<%=uicomponent.displayDateTime(endDate)%><% } %>
-          <%}%>
-          
-          <br />
-          
-          <%if(description != null) {%>${description} <%}%><br>
-           <%if(skills != null) {%>${skills} <%}%><br>
-        </div>
-    <%  } %>
+    %>
+    
+				  <label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div>
+				  <label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div>
+				  <% if (description != null || description.length() > 0) {%>
+				  <label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div>
+				  <% } %>
+				  <% if (skills != null || skills.length() > 0) {%>
+				  <label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div>
+				  <% } %>
+				  <% if (startDate != null || startDate.length() > 0) {%>
+				  <label class="control-label"><strong>$startDateLabel</strong></label>
+				  <div class="controls">
+				    <%=uicomponent.displayDateTime(startDate)%>
+				    <% if (isCurrent) { %>
+				      <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
+				    <% } %>
+				  </div>
+				  <% } %>
+    <%  } %> <!-- End each -->
     </div>
     <% } %>
     <%if (pastExp.size() != 0) { %>
-    <div class="PassExperience" style="background:#d5d5d5 none; padding-left: 8px;">
-    <div style="color: #406c80;margin-top:8px;padding-top:8px; margin-bottom:3px;"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.Past")%></strong></div>
+    <div class="pastExperience">
     <%  pastExp.each {
           def company = it.get(Profile.EXPERIENCES_COMPANY);
           def position = it.get(Profile.EXPERIENCES_POSITION);
@@ -195,48 +181,42 @@
           def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
       %>
-        <div class="Experience">
-        	<%
-    				if (uicomponent.stringToDate(startDate) != null) {
-    			%>
-    				<%=uicomponent.stringToDate(startDate)%>
-    			<%}%>
-        	
-          <strong>${position} <%=_ctx.appRes(uicomponent.getId() + ".label.at")%> ${company}</strong><br/>
-          
-          <%
-          	if (startDate != null) {
-          %>
-          <%=uicomponent.displayDateTime(startDate)%>
-          
-          <%}%>
-          
-          <%
-          	if (endDate != null) {
-          %>
-          	<% if (isCurrent) { %><%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%><% } else { %><%=_ctx.appRes(uicomponent.getName() + ".label.to")%>
-          	<%=uicomponent.displayDateTime(endDate)%><% } %>
-          <%}%>
-          
-          <br />
-          <%if(description != null) {%>${description} <%}%>
-          <%if(skills != null) {%>${skills} <%}%><br>
-        </div>
-        <%}%>
-        </div>
+        	  <label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div>
+			  <label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div>
+			  <% if (description != null || description.length() > 0) {%>
+			  <label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div>
+			  <% } %>
+			  <% if (skills != null || skills.length() > 0) {%>
+			  <label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div>
+			  <% } %>
+			  <% if (startDate != null || startDate.length() > 0) {%>
+			  <label class="control-label"><strong>$startDateLabel</strong></label>
+			  <div class="controls">
+		        <%=uicomponent.displayDateTime(startDate)%>
+		        <% if (isCurrent) { %>
+		          <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
+		        <% } %>
+		      </div>
+			  <% } %>
+			  <% if (endDate != null || endDate.length() > 0) {%>
+		    <label class="control-label"><strong>$endDateLabel</strong></label><div class="controls"><%=uicomponent.displayDateTime(endDate)%></div>
+		    <% } %>
+      
+      <%}%><!-- End of each -->
+    </div>
       <%}%>
       <% if((pastExp.size() == 0) && (currentExp.size() == 0)){%>
         <% if(isEditable) {%>
-        <div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
+        <div class="control-group"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
         <% } else {%>
-        <div class="NoneExperience">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
+        <div class="control-group">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
         <% } %>
       <% } %>
      <%} else {%>
         <% if(isEditable) {%>
-        <div class="NoneExperience"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
+        <div class="control-group"><%=_ctx.appRes(uicomponent.getName() + ".label.noneExperience")%></div>
         <% } else {%>
-        <div class="NoneExperience">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
+        <div class="control-group">$currentUser <%=_ctx.appRes(uicomponent.getName() + ".label.noneExperienceOther")%></div>
         <% } %>
     <%}%>
   <%} //end if else

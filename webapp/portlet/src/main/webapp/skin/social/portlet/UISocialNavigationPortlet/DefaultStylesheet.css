@@ -20,6 +20,9 @@
  * April 23, 2007
  * version: $Id$
  */
+ 
+@import url('../../../css/uiSocialNavigationPortlet/Style.css'); 
+ 
 
 .UINavigationPortlet {
 	background: #b6b6b6;

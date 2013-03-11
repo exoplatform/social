@@ -51,12 +51,15 @@
 
   def changePicture = uicomponent.event('ChangePicture');
   def changePictureLabel = _ctx.appRes(componentId + ".label.ChangePicture");
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="UIProfileNavigationPortlet" id="$uicomponent.id">
   <% uicomponent.renderChild(UIPopupWindow.class); %>
   <%if (Utils.isOwner()) { %>
-      <a onclick="<%=uicomponent.event("ChangePicture")%>; return false;" href="javascript:void(0)" class="Avartar Editable" title="$changePictureLabel">
-        <img title="$currentUser" alt="$currentUser" src="$imageSource"/>
+      <a onclick="<%=uicomponent.event("ChangePicture")%>; return false;" href="javascript:void(0)" class="Avartar Editable" rel="tooltip" data-placement="bottom" title="$changePictureLabel">
+        <img rel="tooltip" data-placement="bottom" title="$currentUser" src="$imageSource"/>
 		<span class="BorderTopLanger"></span>
         <span class="BorderBottomLanger"></span>
       </a>
@@ -65,7 +68,7 @@
       </div>
   <% } else {%>
       <a class="Avartar">
-        <img title="$currentUser" alt="$currentUser" src="$imageSource"/>
+        <img rel="tooltip" data-placement="bottom" title="$currentUser" src="$imageSource"/>
 		<span class="BorderTopLanger"></span>
         <span class="BorderBottomLanger"></span>
       </a>
@@ -84,11 +87,11 @@
     <div class="NormalTab Tab">
     <%}%>
         <% if (uicomponent.isOwner())  {%>
-           <a href="${profileURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>" class="ArowIcon">
+           <a href="${profileURL}" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>" class="ArowIcon">
              <%=_ctx.appRes(uicomponent.getId() + ".label.Profile")%>
            </a>
         <% } else  {%>
-           <a href="${profileURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfileTitle")%>" class="ArowIcon">
+           <a href="${profileURL}" rel="tooltip" data-placement="bottom" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfileTitle")%>" class="ArowIcon">
              <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerProfile")%>
            </a>
         <%}%>
@@ -99,11 +102,11 @@
     <div class="NormalTab Tab">
     <%}%>
         <% if (uicomponent.isOwner())  {%>
-           <a href="${relationURL}" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>" class="ArowIcon">
+           <a href="${relationURL}" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>" class="ArowIcon">
              <%=_ctx.appRes(uicomponent.getId() + ".label.Relations")%>
            </a>
         <% } else  {%>
-           <a href="${relationURL}" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelationsTitle")%>" class="ArowIcon">
+           <a href="${relationURL}" rel="tooltip" data-placement="bottom" title="<%=currentUser%><%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelationsTitle")%>" class="ArowIcon">
              <%=_ctx.appRes(uicomponent.getId() + ".label.ViewerRelations")%>
            </a>
         <%}%>

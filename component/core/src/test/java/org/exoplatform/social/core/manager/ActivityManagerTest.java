@@ -121,6 +121,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
     activity.setTemplateParams(templateParams);
     activity.setTitle(activityTitle);
     activity.setUserId(userId);
+    
+    //
+    activity.isHidden(false);
+    activity.isLocked(true);
     activityManager.saveActivityNoReturn(johnIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -133,6 +137,10 @@ public class ActivityManagerTest extends AbstractCoreTest {
     assertEquals("value 1", values.get(0));
     assertEquals("value 2", values.get(1));
     assertEquals("value 3", values.get(2));
+    
+    //
+    assertTrue(activity.isLocked());
+    assertFalse(activity.isHidden());
   }
   
   /**
@@ -581,7 +589,7 @@ public class ActivityManagerTest extends AbstractCoreTest {
         baseActivity = demoActivity;
       }
     }
-    this.populateActivityMass(maryIdentity, total);
+
     RealtimeListAccess<ExoSocialActivity> demoListAccess = activityManager.getActivitiesWithListAccess(demoIdentity);
     assertNotNull("demoListAccess must not be null", demoListAccess);
     assertEquals("demoListAccess.getSize() must return: 10", 10, demoListAccess.getSize());

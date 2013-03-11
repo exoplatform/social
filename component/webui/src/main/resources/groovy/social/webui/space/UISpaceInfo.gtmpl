@@ -35,56 +35,34 @@
   def saveAction = uicomponent.url('Save');
   def childs = uicomponent.getChildren();
   def clickChangeAvatar = _ctx.appRes("${uicomponent.getId()}.title.ClickChangeAvatar");
-  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+  def changePictureLabel = _ctx.appRes(uicomponent.getId() + ".label.ChangePicture");
+  def saveLabel = _ctx.appRes(uicomponent.getId() + ".action.Save");
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/uiForm");
 %>
-<div class="$uicomponent.id">
+<div class="uiSpaceInfo">
   <% uiform.begin() %>
-    <div class="SpaceContainer">
-   
-      <table class="UIFormGrid">
-        <tbody>
-        	<tr>
-        		<td class="FieldLabel">&nbsp;</td>
-        		<td class="FieldComponent">
-        			<div class="SpaceInfoBound">
-								<div class="SpaceInfoLeft">
-									<a href="#" class="Image" onclick="$changeAvatar" title="$clickChangeAvatar">
-										<img src="$imageSource" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" height="64px" width="64px"/>
-									</a>
-									<div class="ChangeAvaButton">
-										<a href="#" class="ChangeAva" onclick="$changeAvatar">&nbsp;</a>
-									</div>
-								</div>
-							</div>
-        		</td>
-        	</tr>
-          <tr>
-            <td class="FieldLabel">
-              <label for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
-            </td>
-            <td class="FieldComponent"><% uiform.renderField(childs.get(1))%></td>
-          </tr>
-          <tr>
-            <td class="FieldLabel">
-              <label for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
-            </td>
-            <td class="FieldComponent"><% uiform.renderField(childs.get(2)); %></td>
-          </tr>
-          <tr>
-            <td class="FieldLabel">
-              <%=_ctx.appRes(uicomponent.getId() + ".label.priority")%>
-            </td>
-            <td class="FieldComponent">
-              <% uiform.renderField(childs.get(3));%>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="UIAction UISaveButton">
-	      <a href="javascript:void(0);" onclick="$saveAction" class="ActionButton LightBlueStyle"><%=_ctx.appRes(uicomponent.getId() + ".action.Save")%></a>
-	    </div>
-      
-    </div>
+	<div class="changeAccount clearfix">
+		<div class="changeAvatar pull-left">
+			<a href="javascript:void(0);" class="avatarXLargeWithBorder" title="$clickChangeAvatar">
+				<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"/>
+			</a>
+			<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
+		</div>
+		<div class="form-horizontal pull-left">
+			<div class="control-group">
+				<label class="control-label" for="<%=childs.get(1).getId()%>"><%= _ctx.appRes(uicomponent.getId() + ".label.name") %></label>
+				<div class="controls"><% uiform.renderField(childs.get(1))%></div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="<%=childs.get(2).getId()%>"><%=_ctx.appRes(uicomponent.getId() + ".label.description")%></label>
+				<div class="controls"><% uiform.renderField(childs.get(2)); %></div>
+			</div>
+		</div>
+	</div>
+	<div class="uiAction uiActionBorder"><button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
-  <div class="UIAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
+  <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

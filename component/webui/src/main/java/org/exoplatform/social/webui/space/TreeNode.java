@@ -251,7 +251,9 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public void setPageRef(String pageRef) {
-    node.setPageRef(PageKey.parse(pageRef));
+    if ( pageRef != null ) {
+      node.setPageRef(PageKey.parse(pageRef));
+    }
   }
 
   public String getResolvedLabel() {

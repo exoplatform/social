@@ -34,11 +34,15 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
  */
 public class ActivityData implements CacheData<ExoSocialActivity> {
 
+  public final static ActivityData NULL = new ActivityData(new ExoSocialActivityImpl());
+  
   private final String id;
   private final String title;
   private final String body;
   private final String[] likes;
   private final boolean isComment;
+  private final boolean isHidden;
+  private final boolean isLocked;
   private final Long postedTime;
   private final Long lastUpdated;
   private final String[] replyIds;
@@ -67,6 +71,8 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     this.body = activity.getBody();
     this.likes = activity.getLikeIdentityIds();
     this.isComment = activity.isComment();
+    this.isHidden = activity.isHidden();
+    this.isLocked = activity.isLocked();
     this.postedTime = activity.getPostedTime();
     this.lastUpdated = activity.getUpdated().getTime();
     this.replyIds = activity.getReplyToId();
@@ -98,6 +104,11 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
 
   public ExoSocialActivity build() {
 
+    //
+    if (this == NULL) {
+      return null;
+    }
+    
     ExoSocialActivity activity = new ExoSocialActivityImpl();
 
     activity.setId(id);
@@ -106,6 +117,8 @@ public class ActivityData implements CacheData<ExoSocialActivity> {
     if (likes != null) { activity.setLikeIdentityIds(likes); }
     activity.setReplyToId(replyIds);
     activity.isComment(isComment);
+    activity.isHidden(isHidden);
+    activity.isLocked(isLocked);
     activity.setPostedTime(postedTime);
     activity.setUpdated(new Date(lastUpdated));
     activity.setUserId(userId);

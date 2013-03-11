@@ -17,6 +17,8 @@
 
 @import url('/social-resources/skin/social/webui/UIProfileUserSearch/DefaultSkin.css');
 
+@import url('../../../css/uiMembersPortlet/Style.css');
+
 .UIProfileSpace {
 	background: #fbfbfb;
 	zoom: 100%;

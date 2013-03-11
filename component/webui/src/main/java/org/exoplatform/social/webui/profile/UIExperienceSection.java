@@ -41,11 +41,11 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormDateTimeInput;
 import org.exoplatform.webui.form.UIFormInput;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
@@ -72,7 +72,7 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
     }
   ),
   @ComponentConfig(
-    type = UIFormCheckBoxInput.class,
+    type = UICheckBoxInput.class,
     id = "UIFormCheckBoxEndDate",
     events = @EventConfig(phase = Phase.DECODE, listeners = UIExperienceSection.ShowHideEndDateActionListener.class)
   )
@@ -237,7 +237,6 @@ public class UIExperienceSection extends UIProfileSection {
   protected String displayDateTime(Object d) throws ParseException{
     Date date = this.stringToCalendar(d.toString()).getTime(); 
     Locale l = WebuiRequestContext.getCurrentInstance().getLocale();
-    Calendar cal = Calendar.getInstance(l) ;
     DateFormat sf = SimpleDateFormat.getDateInstance(DateFormat.LONG, l);
     return sf.format(date) ;
   }
@@ -353,7 +352,7 @@ public class UIExperienceSection extends UIProfileSection {
           sect.removeChild(UIFormTextAreaInput.class);
           sect.removeChild(UIFormDateTimeInput.class);
           sect.removeChild(UIFormDateTimeInput.class);
-          sect.removeChild(UIFormCheckBoxInput.class);
+          sect.removeChild(UICheckBoxInput.class);
         }
       } else {
         for (HashMap<String, Object> map : experiences) {
@@ -419,9 +418,9 @@ public class UIExperienceSection extends UIProfileSection {
             ((UIFormInput) listChildForSetValue.get(idx + 6)).setValue(listProfile.get(idx + 5));
           }
 
-          ((UIFormCheckBoxInput<Boolean>) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
+          ((UICheckBoxInput) listChildForSetValue.get(idx + 7)).setValue((Boolean) listProfile.get(idx + 6));
           ((UIFormDateTimeInput)listChildForSetValue.get(idx + 6)).setRendered(!(
-                                (UIFormCheckBoxInput<Boolean>)listChildForSetValue.get(idx + 7)).getValue());
+                                (UICheckBoxInput)listChildForSetValue.get(idx + 7)).getValue());
         }
       }
 
@@ -432,11 +431,11 @@ public class UIExperienceSection extends UIProfileSection {
   /**
    * Shows and hides end date component depending on isCurrent variable.<br>
    */
-  static public class ShowHideEndDateActionListener extends EventListener<UIFormCheckBoxInput<Boolean>> {
+  static public class ShowHideEndDateActionListener extends EventListener<UICheckBoxInput> {
 
     @Override
-    public void execute(Event<UIFormCheckBoxInput<Boolean>> event) throws Exception {
-      UIFormCheckBoxInput<Boolean> sect = event.getSource();
+    public void execute(Event<UICheckBoxInput> event) throws Exception {
+      UICheckBoxInput sect = event.getSource();
       UIExperienceSection uiForm = sect.getAncestorOfType(UIExperienceSection.class);
       UIFormDateTimeInput uiDateTime = uiForm.getChildById(Profile.EXPERIENCES_END_DATE + sect.getId());
       boolean isCheck = sect.isChecked();
@@ -503,7 +502,7 @@ public class UIExperienceSection extends UIProfileSection {
     ArrayList<HashMap<String, Object>> experiences = new ArrayList<HashMap<String, Object>>();
     UIFormStringInput uiStringInput = null;
     UIFormTextAreaInput uiFormTextAreaInput = null;
-    UIFormCheckBoxInput<Boolean> uiCheckBox = null;
+    UICheckBoxInput uiCheckBox = null;
     UIFormDateTimeInput uiDateTimeInput = null;
     String company = null;
     String position = null;
@@ -583,7 +582,7 @@ public class UIExperienceSection extends UIProfileSection {
         endDate = null;
       }
       
-      uiCheckBox = (UIFormCheckBoxInput<Boolean>) listUIComp.get(i + 6);
+      uiCheckBox = (UICheckBoxInput) listUIComp.get(i + 6);
       isCurrent = uiCheckBox.getValue();
       
       if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
@@ -677,8 +676,8 @@ public class UIExperienceSection extends UIProfileSection {
     endDate.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.endDate"));
     addUIFormInput(endDate.addValidator(ExpressionValidator.class, DATETIME_REGEX, INVALID_END_DATE_FORMAT));
 
-    UIFormCheckBoxInput<Boolean> uiDateInputCheck = new UIFormCheckBoxInput<Boolean>(Integer.toString(expIdx), null, false);
-    uiDateInputCheck.setComponentConfig(UIFormCheckBoxInput.class, "UIFormCheckBoxEndDate");
+    UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(Integer.toString(expIdx), null, false);
+    uiDateInputCheck.setComponentConfig(UICheckBoxInput.class, "UIFormCheckBoxEndDate");
     uiDateInputCheck.setOnChange("ShowHideEndDate", uiDateInputCheck.getId());
     addUIFormInput(uiDateInputCheck);
 

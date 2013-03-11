@@ -23,9 +23,9 @@
 <%
   uicomponent.refresh();
 %>
-<div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
-  <div class="UITabPane">
- 	  <div class="UISpaceActivitiesContainer">
+<div class="uiSocApplication" id="$uicomponent.id">
+  <div class="uiTabPane">
+ 	  <div class="uiSpaceActivitiesContainer">
       <%
         uicomponent.renderChildren();
       %>

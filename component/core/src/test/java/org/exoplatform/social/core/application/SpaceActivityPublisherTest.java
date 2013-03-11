@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.application;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,19 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ActivityStream;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
 /**
@@ -41,7 +48,9 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
   private final Log LOG = ExoLogger.getLogger(SpaceActivityPublisherTest.class);
   private ActivityManager activityManager;
   private IdentityManager identityManager;
+  private IdentityStorage identityStorage;
   private SpaceService spaceService;
+  private SpaceStorage spaceStorage;
   private SpaceActivityPublisher spaceActivityPublisher;
   private List<ExoSocialActivity> tearDownActivityList;
   @Override
@@ -54,8 +63,12 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     assertNotNull("identityManager must not be null", identityManager);
     spaceService = (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
     assertNotNull("spaceService must not be null", spaceService);
+    spaceStorage = (SpaceStorage) getContainer().getComponentInstanceOfType(SpaceStorage.class);
+    assertNotNull(spaceStorage);
     spaceActivityPublisher = (SpaceActivityPublisher) getContainer().getComponentInstanceOfType(SpaceActivityPublisher.class);
     assertNotNull("spaceActivityPublisher must not be null", spaceActivityPublisher);
+    identityStorage =  (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    assertNotNull("identityStorage must not be null", identityStorage);
   }
 
   @Override
@@ -81,6 +94,7 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     space.setDisplayName("Toto");
     space.setPrettyName(space.getDisplayName());
     space.setGroupId("/platform/users");
+    space.setVisibility(Space.PRIVATE);
     spaceService.saveSpace(space, true);
     assertNotNull("space.getId() must not be null", space.getId());
     SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
@@ -108,4 +122,190 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     spaceService.deleteSpace(space);
     identityManager.deleteIdentity(rootIdentity);
   }
+  
+  /**
+  *
+  * @throws Exception
+  */
+ public void testSpaceUpdated() throws Exception {
+   Identity rootIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false);
+   Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo", false);
+
+   Space space = new Space();
+   space.setDisplayName("Toto");
+   space.setPrettyName(space.getDisplayName());
+   space.setGroupId("/platform/users");
+   space.setVisibility(Space.PRIVATE);
+   spaceService.saveSpace(space, true);
+   assertNotNull("space.getId() must not be null", space.getId());
+   SpaceLifeCycleEvent event  = new SpaceLifeCycleEvent(space, rootIdentity.getRemoteId(), SpaceLifeCycleEvent.Type.SPACE_CREATED);
+   
+   //When a space is created, 2 activities will be created : one is space activity and one is user space activity
+   spaceActivityPublisher.spaceCreated(event);
+
+   Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+   String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
+   ExoSocialActivity activity = activityManager.getActivity(activityId);
+   tearDownActivityList.add(activity);
+   List<ExoSocialActivity> comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+   //Number of comments must be 1
+   assertEquals(1, comments.size());
+   assertEquals("Has joined the space.", comments.get(0).getTitle());
+   
+   //Rename space
+   space.setEditor(rootIdentity.getRemoteId());
+   spaceService.renameSpace(space, "Social");
+   activity = activityManager.getActivity(activityId);
+   assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
+   comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+   assertEquals("Name has been updated to: "+space.getDisplayName(), comments.get(1).getTitle());
+   
+   //Update space's description
+   space.setDescription("social's team");
+   space.setField(UpdatedField.DESCRIPTION);
+   spaceService.updateSpace(space);
+   comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+   assertEquals(3, comments.size());
+   assertEquals("Description has been updated to: "+space.getDescription(), comments.get(2).getTitle());
+   
+   //update avatar
+   AvatarAttachment avatar = new AvatarAttachment();
+   avatar.setMimeType("plain/text");
+   avatar.setInputStream(new ByteArrayInputStream("Attachment content".getBytes()));
+   space.setAvatarAttachment(avatar);
+   spaceService.updateSpaceAvatar(space);
+   comments = activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20);
+   assertEquals(4, comments.size());
+   assertEquals("Space has a new avatar.", comments.get(3).getTitle());
+
+   // delete this activity
+   activityManager.deleteActivity(activityId);
+   assertEquals(0, activityManager.getActivitiesWithListAccess(spaceIdentity).getSize());
+   
+   space.setField(null);
+   spaceService.renameSpace(space, "SocialTeam");
+   activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
+   ExoSocialActivity newActivity = activityManager.getActivity(activityId);
+   tearDownActivityList.add(newActivity);
+   //Number of comments must be 1
+   assertEquals(1, activityManager.getCommentsWithListAccess(newActivity).getSize());
+   
+   { // test case for grant or revoke manage role of users
+     String[] spaceManagers = new String[] {"root"};
+     String[] spaceMembers = new String[] {"demo"};
+     space.setField(null);
+     space.setManagers(spaceManagers);
+     space.setMembers(spaceMembers);
+     space.setEditor("root");
+     
+     spaceService.setManager(space, "demo", true);
+     
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     
+     assertEquals(2, activityManager.getCommentsWithListAccess(newActivity).getSize());
+     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been promoted as space's manager.", comments.get(1).getTitle());
+     assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(1).getUserId());
+     
+     //
+     spaceService.setManager(space, "demo", false);
+     
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     
+     assertEquals(3, activityManager.getCommentsWithListAccess(newActivity).getSize());
+     assertEquals("<a href=\"/portal/classic/profile/demo\">Demo gtn</a> has been revoked as space's manager.", comments.get(2).getTitle());
+     assertEquals(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "root", false).getId(), comments.get(2).getUserId());
+   }
+   
+   {// update both name and description
+     assertEquals("social's team", space.getDescription());
+     
+     String newDescription = "new description";
+     space.setDescription(newDescription);
+     space.setField(UpdatedField.DESCRIPTION);
+     String newDisplayName = "newSpaceName";
+     spaceService.renameSpace(space, newDisplayName);
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     assertEquals(5, comments.size());
+     assertEquals("Name has been updated to: " + space.getDisplayName(), comments.get(3).getTitle());
+     assertEquals("Description has been updated to: " + space.getDescription(), comments.get(4).getTitle());
+   }
+   
+   //clean up
+   String userSpaceActivityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+   activityManager.deleteActivity(activityId);
+   activityManager.deleteActivity(userSpaceActivityId);
+   spaceService.deleteSpace(space);
+   identityManager.deleteIdentity(rootIdentity);
+   
+   
+ }
+ 
+ /**
+  * @throws Exception
+  */
+ public void testUserSpaceJoined() throws Exception {
+   Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,"demo",false);
+   Space space = createOpenSpace(1);
+   space.setVisibility(Space.HIDDEN);
+   spaceService.saveSpace(space, true);
+   spaceService.addPendingUser(space, demoIdentity.getRemoteId());
+   
+   String activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+   assertNull(activityId);
+   
+   Space space2 = createOpenSpace(2);
+   
+   spaceService.addPendingUser(space2, "demo");
+   activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+   assertNotNull(activityId);
+   ExoSocialActivity activity = activityManager.getActivity(activityId);
+   // Number of comments must be 1
+   assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
+   assertEquals("I now member of 1 space",activity.getTitle());
+   
+   Space space3 = createOpenSpace(3);
+   spaceService.addPendingUser(space3, "demo");
+   activity = activityManager.getActivity(activityId);
+   // Number of comments must be 2
+   assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
+   assertEquals("I now member of 2 spaces", activity.getTitle());
+   assertEquals("I joined Toto3 space",activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20).get(1).getTitle());
+   
+   {// leave space
+     spaceService.removeMember(space2, "demo");
+     
+     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+     assertNotNull(activityId);
+     activity = activityManager.getActivity(activityId);
+     assertEquals("I now member of 1 space", activity.getTitle());
+     
+     spaceService.removeMember(space3, "demo");
+     
+     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+     assertNotNull(activityId);
+     activity = activityManager.getActivity(activityId);
+     assertEquals("I now member of 0 space", activity.getTitle());
+   }
+   
+   { // re-join space
+     spaceService.addPendingUser(space2, "demo");
+     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
+     assertNotNull(activityId);
+     activity = activityManager.getActivity(activityId);
+     assertEquals(3, activityManager.getCommentsWithListAccess(activity).getSize());
+     assertEquals("I now member of 1 space", activity.getTitle());
+   }
+ }
+
+ private Space createOpenSpace(int i) throws SpaceException{
+   Space space = new Space();
+   space.setDisplayName("Toto"+i);
+   space.setPrettyName(space.getDisplayName());
+   space.setGroupId("/platform/users");
+   space.setVisibility(Space.PRIVATE);
+   space.setRegistration(Space.OPEN);
+   spaceService.saveSpace(space, true);
+   return space;
+ }
+
 }

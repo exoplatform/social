@@ -35,6 +35,7 @@ pom.xml.versionsBackup
 .settings/
 .classpath
 .project
+*.log
 
 # OS
 .DS_Store

@@ -50,6 +50,11 @@ public class WhereExpression {
     
   }
 
+  public <T> WhereExpression isNull(PropertyLiteralExpression<T> property) {
+    getStringBuilder().append(String.format("%s Is NULL ", property.getName()));
+    return this;
+  }
+  
   public <T> WhereExpression equals(PropertyLiteralExpression<T> property, T value) {
     checkParam(property, value);
 

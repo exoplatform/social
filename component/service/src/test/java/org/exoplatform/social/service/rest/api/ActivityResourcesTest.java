@@ -647,13 +647,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     HashMap<String, Object> activityRest = (HashMap<String, Object>)response.getEntity();
     assertEquals(got1.getId(), activityRest.get("id"));
     
-    try {
-      ExoSocialActivity got2 = activityManager.getActivity(activity.getId());
-      fail("Activity still exits after delete.");
-    }
-    catch (Exception e) {
-      // ok
-    }
+    assertEquals(null, activityManager.getActivity(activity.getId()));
 
   }
 
@@ -692,8 +686,7 @@ public class ActivityResourcesTest extends AbstractResourceTest {
     assertEquals(got1.getId(), activityRest.get("id"));
 
     try {
-      ExoSocialActivity got2 = activityManager.getActivity(activity.getId());
-      fail("Activity still exits after delete.");
+      assertEquals(null, activityManager.getActivity(activity.getId()));
     }
     catch (Exception e) {
       // ok

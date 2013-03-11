@@ -249,16 +249,18 @@ public class ActivityStreamResources implements ResourceContainer {
     try {
       if (sinceId != null) {
         baseActivity = activityManager.getActivity(sinceId);
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       } else if (maxId != null) {
         getOlder = true;
         baseActivity = activityManager.getActivity(maxId);
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       }
     } catch (UndeclaredThrowableException udte) { //bad thing from cache service that we have to handle like this :(
-      if (udte.getCause() instanceof ActivityStorageException) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
     }
 
     RealtimeListAccess<ExoSocialActivity> rala = activityManager.getActivitiesWithListAccess(targetIdentity);
@@ -448,8 +450,14 @@ public class ActivityStreamResources implements ResourceContainer {
     try {
       if (sinceId != null && !sinceId.trim().equals("")) {
         newerActivity = activityManager.getActivity(sinceId);
+        if (newerActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       } else if (maxId != null && !maxId.trim().equals("")) {
         olderActivity = activityManager.getActivity(maxId);
+        if (olderActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       }
     } catch (UndeclaredThrowableException e) {
       if (e.getCause() instanceof ActivityStorageException) {
@@ -648,9 +656,18 @@ public class ActivityStreamResources implements ResourceContainer {
     try {
       if (sinceId != null) {
         baseActivity = activityManager.getActivity(sinceId);
+        
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        
       } else if (maxId != null) {
         getOlder = true;
         baseActivity = activityManager.getActivity(maxId);
+        
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       }
     } catch (UndeclaredThrowableException udte) { //bad thing from cache service that we have to handle like this :(
       if (udte.getCause() instanceof ActivityStorageException) {
@@ -846,9 +863,18 @@ public class ActivityStreamResources implements ResourceContainer {
     try {
       if (sinceId != null) {
         baseActivity = activityManager.getActivity(sinceId);
+        
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        
       } else if (maxId != null) {
         getOlder = true;
         baseActivity = activityManager.getActivity(maxId);
+        
+        if (baseActivity == null) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
       }
     } catch (UndeclaredThrowableException udte) {
       if (udte.getCause() instanceof ActivityStorageException) {

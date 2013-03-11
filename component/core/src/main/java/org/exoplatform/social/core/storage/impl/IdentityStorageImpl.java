@@ -39,6 +39,7 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileXpEntity;
@@ -49,6 +50,7 @@ import org.exoplatform.social.core.chromattic.entity.SpaceRef;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.identity.model.Profile.AttachedActivityType;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
@@ -456,8 +458,15 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
     ProfileEntity profileEntity = identityEntity.createProfile();
+    
+    //
     identityEntity.setProfile(profileEntity);
     profile.setId(profileEntity.getId());
+    
+    //
+    ActivityProfileEntity activityPEntity = profileEntity.createActivityProfile();
+    profileEntity.setActivityProfile(activityPEntity);
+    
     profile.setCreatedTime(System.currentTimeMillis());
 
     //
@@ -614,7 +623,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       profileEntity.setExternalUrl(profile.getUrl());
       profileEntity.setExternalAvatarUrl(profile.getAvatarUrl());
     }
-
+    
     getSession().save();
 
     //
@@ -1204,6 +1213,32 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return getSpaceMemberIdentitiesByProfileFilterQueryBuilder(space, profileFilter, type, offset, limit, true).size();
 
   }
-  
 
+  /**
+   * {@inheritDoc}
+   */
+  public void updateProfileActivityId(Identity identity, String activityId, AttachedActivityType type) {
+    try {
+      ProfileEntity profileEntity = _findById(ProfileEntity.class, identity.getProfile().getId());
+      ActivityProfileEntity activityPEntity = profileEntity.getActivityProfile();
+      type.setActivityId(activityPEntity, activityId);
+      profileEntity.setActivityProfile(activityPEntity);
+      getSession().save();
+    } catch (NodeNotFoundException e) {
+      LOG.debug(e.getMessage(), e);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public String getProfileActivityId(Profile profile, AttachedActivityType type) {
+    try {
+      ProfileEntity profileEntity = _findById(ProfileEntity.class, profile.getId());
+      ActivityProfileEntity activityPEntity = profileEntity.getActivityProfile();
+      return type.getActivityId(activityPEntity);
+    } catch (Exception e) {
+      return null;
+    }
+  }
 }

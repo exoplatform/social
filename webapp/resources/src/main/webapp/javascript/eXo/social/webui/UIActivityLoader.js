@@ -28,12 +28,14 @@
 	              .animate({'display': 'block'}, 
 	                500, function() {
 	                  $(this).show();
-	                  $('div.BottomContainer:last')[0].scrollIntoView(true);
+	                  $('div.bottomContainer:last')[0].scrollIntoView(true);
 	                  $('#ActivitiesLoader').click();
 	                });
 	          }
 	        }
 	      });
+	      
+	      UIActivityLoader.processBottomTimeLine();
 	    });
 	
 	  },
@@ -43,6 +45,7 @@
 	    }
       UIActivityLoader.hasMore = (hasMore === true || hasMore === 'true') ? true : false;
 	    UIActivityLoader.initIndicator();
+	    UIActivityLoader.processBottomTimeLine();
 	  },
 	  initIndicator : function() {
 	    $('#UIActivitiesLoader').find('div.ActivityIndicator').remove();
@@ -51,6 +54,14 @@
 	      activityIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
 	    }
 	    activityIndicator.appendTo('#UIActivitiesLoader');
+	  },
+	  processBottomTimeLine : function() {
+	    //
+      if ( UIActivityLoader.hasMore ) {
+        $('div.activityBottom').hide();
+      } else {
+        $('div.activityBottom').show();
+      }
 	  }
 	};
   return UIActivityLoader;

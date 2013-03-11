@@ -17,6 +17,10 @@
   if (currIdentity.getRemoteId().equals(uicomponent.getCurrentUserName())) {
     isOwner = true;
   }
+  
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div class="UIMyRelations" id="$uicomponent.id">
 	<div class="UITabPane">
@@ -87,13 +91,13 @@
 			  	<div class="ContentSpace ClearFix">
 			  <% }%>
 	    	<div class="AvartarPeopleBG">
-	           <img height="47px" width="47px" src="$imageSource" title="$fullName" alt="$fullName" />
+	           <img height="47px" width="47px" src="$imageSource" rel="tooltip" data-placement="bottom" title="$fullName"/>
 	        </div>
 	    	<div class="CommunityContainer">
 	        <div class="CommunityMane Line">
 	            <div style="float: left; cursor: pointer;" class="CommunityName"><a class="CommunityNameMiddle" href="${profileURL}">${fullName}</a></div>
 	  				<% if (isEditable) {%>
-	  					<a href="#" onclick="$actionLink" title="Remove" class="DeleteIcon">&nbsp;</a>
+	  					<a href="javascript:void(0);" onclick="$actionLink" rel="tooltip" data-placement="bottom" title="Remove" class="DeleteIcon">&nbsp;</a>
 	  				<% } %>
 	            <div style="clear: both;"><span/></div>
 	        </div>

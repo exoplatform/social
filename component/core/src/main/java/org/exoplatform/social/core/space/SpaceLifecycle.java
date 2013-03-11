@@ -45,9 +45,6 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case SPACE_REMOVED:
       listener.spaceRemoved(event);
       break;
-    case SPACE_RENAMED:
-      listener.spaceRenamed(event);
-      break;
     case APP_ACTIVATED:
       listener.applicationActivated(event);
       break;
@@ -72,6 +69,18 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
     case REVOKED_LEAD:
       listener.revokedLead(event);
       break;
+    case SPACE_RENAMED:
+      listener.spaceRenamed(event);
+      break;
+    case SPACE_DESCRIPTION_EDITED:
+      listener.spaceDescriptionEdited(event);
+      break;
+    case SPACE_AVATAR_EDITED:
+      listener.spaceAvatarEdited(event);
+      break;
+    case SPACE_HIDDEN:
+      listener.spaceAccessEdited(event);
+      break;
     default:
       break;
     }
@@ -83,10 +92,6 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
 
   public void spaceRemoved(Space space, String remover) {
     broadcast(new SpaceLifeCycleEvent(space, remover, Type.SPACE_REMOVED));
-  }
-
-  public void spaceRenamed(Space space, String oldName) {
-    broadcast(new SpaceLifeCycleEvent(space, oldName, Type.SPACE_RENAMED));
   }
 
   public void addApplication(Space space, String appId) {
@@ -124,6 +129,22 @@ public class SpaceLifecycle extends AbstractLifeCycle<SpaceLifeCycleListener, Sp
 
   public void revokedLead(Space space, String userId) {
     broadcast(new SpaceLifeCycleEvent(space, userId, Type.REVOKED_LEAD));
+  }
+  
+  public void spaceRenamed(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_RENAMED));
+  }
+  
+  public void spaceDescriptionEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_DESCRIPTION_EDITED));
+  }
+  
+  public void spaceAvatarEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_AVATAR_EDITED));
+  }
+  
+  public void spaceAccessEdited(Space space, String userId) {
+    broadcast(new SpaceLifeCycleEvent(space, userId, Type.SPACE_HIDDEN));
   }
 
 }

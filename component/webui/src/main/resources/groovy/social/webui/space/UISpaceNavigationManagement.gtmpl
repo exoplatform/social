@@ -6,22 +6,36 @@
   def uicomponentId = uicomponent.id;
   def addNodeActionLabel = _ctx.appRes("${uicomponentId}.action.addNode")
   def saveActionLabel = _ctx.appRes("${uicomponentId}.action.Save")
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
-<div class="UISpaceNavigationManagement" id="$uicomponent.id">
-	<div class="TopTitleBar">
+<div class="uiSpaceNavigationManagement" id="$uicomponent.id">
+<!-- <div class="TopTitleBar">
 	    <%= uicomponent.getOwner();%>
-	</div>	
-  <%
-  	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
-  	uicomponent.renderChild(UIPopupWindow.class);
-  %>
-  
-  <% 
-     def addNodeAction = uicomponent.event("AddNode") + "; return false;"
-     def saveAction = uicomponent.event("Save") + "; return false;"
-  %>
-  <a class="AddNodeButton" href="#" onclick="$addNodeAction">$addNodeActionLabel</a>
-  <div class="UIAction UISaveButton">
-	  <a href="#" onclick="$saveAction" class="ActionButton LightBlueStyle">$saveActionLabel</a>
+	</div>
+	-->	
+	<div class="addNodeCont">
+		<ul class="breadcrumb">  
+			<li>
+				<a href="javascript:void(0);">Space</a>
+				<span class="uiIconMiniArrowRight">&nbsp;</span>
+			</li>
+			<li class="active"><%=uicomponent.getSpace().getDisplayName(); %></li>
+		</ul>
+			
+	  <%
+	  	uicomponent.renderChild(UISpaceNavigationNodeSelector.class);
+	  	uicomponent.renderChild(UIPopupWindow.class);
+	  %>
+	  
+	  <% 
+	     def addNodeAction = uicomponent.event("AddNode") + "; return false;"
+	     def saveAction = uicomponent.event("Save") + "; return false;"
+	  %>
+		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$addNodeActionLabel" onclick="$addNodeAction">$addNodeActionLabel</button>
+	</div>
+	<div class="uiAction uiActionBorder">
+		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveActionLabel" onclick="$saveAction">$saveActionLabel</button>
 	</div>
 </div>

@@ -33,7 +33,8 @@ public class RequestNavInfo {
     this.siteType = siteType != null ? siteType : "";
     this.siteName = siteName != null ? siteName : "";
 
-    if (path == null | "home".equals(path)) {
+    //in the case .../home#comments needs to take care.
+    if (path == null | "home".equals(path) | path.indexOf("home#") >= 0) {
       this.path = "";
     } else {
       this.path = path;

@@ -29,6 +29,7 @@ import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
@@ -46,12 +47,26 @@ import org.exoplatform.social.core.storage.query.WhereExpression;
 public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();
+  
+  /** */
   Identity poster;
+  /** */
   Identity mentioner;
+  
+  /** */
   Identity liker;
+  
+  /** */
   Identity commenter;
-  List<Identity> identities;
-  List<Identity> posters;
+  
+  /** */
+  ThreadLocal<List<Identity>> identitiesLocal = new ThreadLocal<List<Identity>>();
+  
+  /** */
+  ThreadLocal<List<Identity>> postersLocal = new ThreadLocal<List<Identity>>();
+  
+    
+  /** */
   String[] activityIds = new String[0];
   
   public String build(JCRFilterLiteral filter) {
@@ -86,12 +101,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
     where.destroy();
     filter.destroy();
     activityIds = new String[0];
-    posters = null;
     poster = null;
     mentioner = null;
     liker = null;
     commenter = null;
-    identities = new ArrayList<Identity>();
+    identitiesLocal.remove();
+    postersLocal.remove();
+    //identities = new ArrayList<Identity>();
   }
   
   public ActivityBuilderWhere poster(Identity poster) {
@@ -100,10 +116,18 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   }
   
   public ActivityBuilderWhere posters(List<Identity> posters) {
-    if (this.posters == null) {
-      this.posters = new ArrayList<Identity>();
+    List<Identity> posterList = postersLocal.get();
+    
+    //
+    if (posterList == null) {
+      posterList = new ArrayList<Identity>();
     }
-    this.posters.addAll(posters);
+    
+    //
+    posterList.addAll(posters);
+    
+    //
+    postersLocal.set(posterList);
     return this;
   }
   
@@ -126,10 +150,19 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
    * @return
    */
   public ActivityBuilderWhere owners(List<Identity> identities) {
-    if (this.identities == null) {
-      this.identities = new ArrayList<Identity>();
+    
+   List<Identity> identityList = identitiesLocal.get();
+    
+    //
+    if (identityList == null) {
+      identityList = new ArrayList<Identity>();
     }
-    this.identities.addAll(identities);
+    
+    //
+    identityList.addAll(identities);
+    
+    //
+    identitiesLocal.set(identityList);
     return this;
   }
   
@@ -143,13 +176,13 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
   }
   
   public List<Identity> getOwners() {
-    return this.identities == null ? new CopyOnWriteArrayList<Identity>() 
-                                   : new CopyOnWriteArrayList<Identity>(this.identities);
+    return this.identitiesLocal.get() == null ? new ArrayList<Identity>() 
+                                   : new CopyOnWriteArrayList<Identity>(this.identitiesLocal.get());
   }
   
   public List<Identity> getPosters() {
-    return this.posters == null ? new CopyOnWriteArrayList<Identity>() 
-                                : new CopyOnWriteArrayList<Identity>(this.posters);
+    return this.postersLocal.get() == null ? new ArrayList<Identity>() 
+                                : new CopyOnWriteArrayList<Identity>(this.postersLocal.get());
   }
   
   public ActivityBuilderWhere excludedActivities(String...activityIds) {
@@ -193,6 +226,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //
@@ -257,8 +300,9 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
         
-      //
-      if (posters != null) {
+      //take care the case relationship add comment to owner
+      //it also need to calculate in counter
+      if (mentioner != null) {
         List<Identity> posters = getPosters();
         for (Identity currentIdentity : posters) {
           if (first) {
@@ -268,13 +312,14 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
             where.or();
           }
           where.startGroup();
-          where.equals(ActivityEntity.poster, currentIdentity.getId());
+          where.equals(ActivityEntity.identity, mentioner.getId());
+          where.and().equals(ActivityEntity.poster, currentIdentity.getId());
           where.and().equals(ActivityEntity.isComment, true);
           where.endGroup();
 
-          }
         }
-        
+      }
+      
         
       where.endGroup();
         
@@ -321,6 +366,8 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         where.startGroup();
 
         for (Identity currentIdentity : identities) {
+          
+          if (currentIdentity == null) continue;
 
           if (first) {
             first = false;
@@ -442,6 +489,16 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
         
       }
       where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+      
+      //
+      where.and();
+      //
+      where.startGroup();
+      {
+        where.equals(HidableEntity.isHidden, Boolean.FALSE);
+        where.or().isNull(HidableEntity.isHidden);
+      }
+      where.endGroup();
 
       Object objFilter = filter.get(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).getValue();
       //

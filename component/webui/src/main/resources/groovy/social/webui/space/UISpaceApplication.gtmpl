@@ -30,53 +30,47 @@
   
   UIPageIterator iterator = uicomponent.getUIPageIterator();
   List<Application> applications = uicomponent.getApplications();
-  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/uiForm");
+  def appNameIco;
 %>
-<div class="$uicomponent.id">
+<div class="uiSpaceApp clearfix">
   <% def addApplication = uicomponent.event("AddApplication") + ";return false;" %>
-	 <div class="UIAction">
-		<span class="ActionButton LightBlueStyle">
-		  <a href="#" class="AddAplicationIcon" onclick="$addApplication">$addApplicationLabel</a>
-		</span>
-	 </div>
+	<button class="addApp btn btn-primary" rel="tooltip" data-placement="bottom" title="$addApplicationLabel" onclick="$addApplication">$addApplicationLabel</button>
   <% uiform.begin() %>
-  <div class="ContainerSpace">
   <% for(app in applications) {
        if (app != null) {
          def appId = app.getApplicationName();
          def isRemovable = uicomponent.isRemovable(appId);
-         def appName = uicomponent.getAppName(app);
-         def srcBG = "/" + app.getCategoryName() + "/skin/DefaultSkin/portletIcons/" + uicomponent.getApplicationName(app.getApplicationName()) + ".png";
-         def srcBGError = "/eXoResources/skin/sharedImages/Icon80x80/DefaultPortlet.png";
+         def appName = uicomponent.getAppName(appId);
          def applicationIconTitle = _ctx.appRes("${uicomponentId}.title.ApplicationIcon");
+         appNameIco = appId.split(":")[0];
+          
   %>
-    <div class="ContentSpace ClearFix">
-      <div class="ApplicationIcon"><img src="$srcBG" onError="src='$srcBGError'" title="$applicationIconTitle" alt="$applicationIconTitle" /></div>
-      <div class="CommunityContainer">
-        <div class="CommunityMane ClearFix Line">
-          <div class="CommunityName FL"><%= appName %></div>
-          <% if (isRemovable) { %>
-          <div class="SpaceAction">
-              <% def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;" %>
-              <a href="#" class="CenterButton RemoveButton" onclick="$removeApplication" title="<%= _ctx.appRes(uicomponent.getId() + ".button.remove")%>">&nbsp;</a>
-          </div>
-          <% } %>
-        </div>
-        <div class="Text"><%= app.getDescription() %></div>
-      </div>
-    </div>
+    <div class="contentSpace pull-left clearfix">
+		<i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
+		<% if (isRemovable) { 
+		     def removeApplication = uicomponent.event("RemoveApplication", app.getApplicationName()) + ";return false;";
+		%>
+		<a class="uiIconClose pull-right" href="javascript:void(0);" onclick="$removeApplication"></a>
+		<% } %>
+		<div class="communityContainer">
+			<strong><%= appName %></strong>
+			<br/>
+			<span><%= app.getDescription() %></span>
+		</div>
+	</div>
     <% } %>
   <% } %>
-  </div>
-  <div class="FR">
-    <%
+ 
+  <% uiform.end() %>
+  <%
       if(uicomponent.getUIPageIterator().getAvailablePage() > 1) {
         _ctx.renderUIComponent(iterator);
       }
     %>
-  </div>
   
-  
-  <% uiform.end() %>
   <% uicomponent.renderChild(UIPopupContainer.class) %>
 </div>

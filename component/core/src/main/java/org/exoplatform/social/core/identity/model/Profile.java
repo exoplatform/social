@@ -18,8 +18,10 @@ package org.exoplatform.social.core.identity.model;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.model.AvatarAttachment;
 
 /**
@@ -107,7 +109,6 @@ public class Profile {
   /** Resized subfix */
   public static final String        RESIZED_SUBFIX = "RESIZED_";
 
-
   /** Types of updating of profile. */
   public static enum                UpdateType 
                                       {
@@ -117,7 +118,65 @@ public class Profile {
                                         EXPERIENCES,
                                         AVATAR
                                       };
-                                                
+                                      
+  public static enum                AttachedActivityType
+                                      {
+                                        USER("userProfileActivityId"),
+                                        SPACE("spaceProfileActivityId"),
+                                        RELATION("relationActivityId"),
+                                        RELATIONSHIP("relationShipActivityId");
+                                        
+                                        private String type;
+                                        private AttachedActivityType(String type) {
+                                          this.type = type;
+                                        }
+                                        public String value() {
+                                          return this.type;
+                                        }
+                                        public void setActivityId(ActivityProfileEntity entity, String activityId) {
+                                          switch (this) {
+                                            case USER: {
+                                              entity.setUserProfileActivityId(activityId);
+                                              break;
+                                            }
+                                            case SPACE: {
+                                              entity.setSpaceProfileActivityId(activityId);
+                                              break;
+                                            }
+                                            case RELATION: {
+                                              entity.setRelationActivityId(activityId);
+                                              break;
+                                            }
+                                            case RELATIONSHIP: {
+                                              entity.setRelationShipActivityId(activityId);
+                                              break;
+                                            }
+                                            default :
+                                              break;
+                                          }
+                                        }
+                                        public String getActivityId(ActivityProfileEntity entity) {
+                                          switch (this) {
+                                          case USER: {
+                                            return entity.getUserProfileActivityId();
+                                          }
+                                          case SPACE: {
+                                            return entity.getSpaceProfileActivityId();
+                                          }
+                                          case RELATION: {
+                                            return entity.getRelationActivityId();
+                                          }
+                                          case RELATIONSHIP: {
+                                            return entity.getRelationShipActivityId();
+                                          }
+                                          default : {
+                                            return null;
+                                          }
+                                        }
+                                        }
+                                      };
+  
+                                      
   /** The properties. */
   private final Map<String, Object> properties     = new HashMap<String, Object>();
 
@@ -151,6 +210,8 @@ public class Profile {
   /** Profile url, this will never be stored */
   private String                    avatarUrl;
 
+  private AttachedActivityType      attachedActivityType;
+  
   /** Profile created time **/
   private long                      createdTime;
 
@@ -231,6 +292,14 @@ public class Profile {
    */
   public UpdateType getUpdateType() {
     return updateType;
+  }
+
+  public AttachedActivityType getAttachedActivityType() {
+    return attachedActivityType;
+  }
+
+  public void setAttachedActivityType(AttachedActivityType attachedActivityType) {
+    this.attachedActivityType = attachedActivityType;
   }
 
   /**
@@ -445,6 +514,26 @@ public class Profile {
    */
   public final String getPosition() {
     return (String) getProperty(Profile.POSITION);
+  }
+  
+  /**
+   * Gets gender
+   * 
+   * @return gender of user
+   * @since 4.0.0.Alpha1
+   */
+  public final String getGender() {
+    return (String) getProperty(Profile.GENDER);
+  }
+  
+  /**
+   * Gets Phones
+   * 
+   * @return list of user's number phone
+   * @since 4.0.0.Alpha1
+   */
+  public final List<Map<String, String>> getPhones() {
+    return (List<Map<String, String>>) getProperty(Profile.CONTACT_PHONES);
   }
 
   public long getCreatedTime() {

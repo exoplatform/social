@@ -25,6 +25,6 @@
   def jsManager = pcontext.getJavascriptManager();
   jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
 %>
-<div class="UIPeoplePortlet UISocApplication" id="$uicomponent.id">
+<div class="uiSocApplication" id="$uicomponent.id">
   <% uicomponent.renderChildren(); %>
 </div>

@@ -282,8 +282,9 @@ public class LinkShare extends DefaultFilter {
   /**
    * Gets information of the provided link by using remover filter,
    * using call back filter methods to get desired information.
+ * @param encoding 
    */
-  private void get() throws Exception {
+  private void get(String encoding) throws Exception {
     //Creates element remover filter
     ElementRemover remover = new ElementRemover();
     remover.acceptElement("head", null);
@@ -308,6 +309,7 @@ public class LinkShare extends DefaultFilter {
     parser.setProperty("http://cyberneko.org/html/properties/filters", filter);
     parser.setDocumentHandler(this);
     XMLInputSource source = new XMLInputSource(null, link, null);
+    source.setEncoding(encoding);
     try {
       parser.parse(source);
     } catch (NullPointerException ne) {
@@ -359,14 +361,13 @@ public class LinkShare extends DefaultFilter {
     // if there is no media object, processes link to get page metadata
     if(linkShare.mediaObject == null) {
       String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);
-      mimeType = mimeType.toLowerCase();
-      
-      if(mimeType.startsWith(IMAGE_MIME_TYPE)){
+      if(mimeType.toLowerCase().startsWith(IMAGE_MIME_TYPE)){
         linkShare.images = new ArrayList<String>(0);
         linkShare.images.add(link);
         linkShare.description = "";
-      } else if(mimeType.startsWith(HTML_MIME_TYPE)){
-        linkShare.get();
+      } else if(mimeType.toLowerCase().startsWith(HTML_MIME_TYPE)){
+        String encoding = (mimeType.contains("charset=")) ? mimeType.split("charset=")[1] : "UTF-8"; 
+        linkShare.get(encoding);
       } else {
         linkShare.images = new ArrayList<String>(0);
         linkShare.description = "";

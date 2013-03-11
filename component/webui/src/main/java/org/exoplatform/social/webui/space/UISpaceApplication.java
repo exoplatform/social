@@ -17,7 +17,6 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -29,7 +28,6 @@ import org.exoplatform.application.registry.Application;
 import org.exoplatform.application.registry.ApplicationCategory;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceUtils;
@@ -240,7 +238,7 @@ public class UISpaceApplication extends UIForm {
    * @return application name depend on the display name is changed or not.
    * @throws Exception 
    */
-  public String getAppName(Application application) throws Exception {
+  public String getAppName(String appId) throws Exception {
     String spaceUrl = SpaceUtils.getSpaceUrl();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     Space space = spaceService.getSpaceByUrl(spaceUrl);
@@ -248,21 +246,20 @@ public class UISpaceApplication extends UIForm {
       return null;
     }
 
-    UserNode homeNode = SpaceUtils.getSpaceUserNode(space);
-    
-    Collection<UserNode> nodes = homeNode.getChildren();
-    String applicationName = application.getApplicationName();
-    String appName = applicationName.split(":")[1];
-    String appNodeName;
-    for (UserNode node : nodes) {
-      String nodeUri = node.getURI();
-      appNodeName = nodeUri.substring(nodeUri.indexOf("/") + 1);
-      if (appNodeName.equals(appName)) {
-        return SpaceUtils.getDisplayAppName(node.getResolvedLabel());
+    String installedApps = space.getApp();
+    String[] apps = installedApps.split(",");
+    String[] appParts = null;
+    String appName = appId.split(":")[0];
+    for (String app : apps) {
+      if (app.length() != 0) {
+        appParts = app.split(":");
+        if (appParts[0].equals(appName)) {
+          return appParts[1];
+        }
       }
     }
-
-    return SpaceUtils.getDisplayAppName(application.getDisplayName());
+    
+    return null;
   }
 
   /**
@@ -277,6 +274,8 @@ public class UISpaceApplication extends UIForm {
       UISpaceApplicationInstaller uiSpaceAppInstaller = uiPopup.activate(UISpaceApplicationInstaller.class, 700);
       uiSpaceAppInstaller.setSpace(uiSpaceApp.space);
       uiPopup.getChild(UIPopupWindow.class).setId("UIAddApplication");
+      uiPopup.getChild(UIPopupWindow.class).setResizable(false);
+      uiPopup.getChild(UIPopupWindow.class).setWindowSize(596, 0);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }

@@ -29,6 +29,7 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.identity.model.Profile;
 
+  def uicomponentId = uicomponent.id;
   def isEditable = uicomponent.isEditable();
   def currIdentity = Utils.getOwnerIdentity();
   def pendingRelationIdx = 0;
@@ -45,18 +46,74 @@
   if (list.size() == uicomponent.getPeopleNum()) {
     uicomponent.setLoadAtEnd(true)
   }
+  
+  def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+  def contactsDirectory = _ctx.appRes("${uicomponentId}.label.ContactsDirectory")
+  def labelEveryone = _ctx.appRes("${uicomponentId}.label.Everyone")
+  def myConnectionsLabel = _ctx.appRes("${uicomponentId}.label.MyConnections");
+	def labelRequestsReceived = _ctx.appRes("${uicomponentId}.label.RequestsReceived")
+	def labelRequestsSent = _ctx.appRes("${uicomponentId}.label.RequestsSent")
+	def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
+	def portalURI = Utils.getURI("");
+	def ownerIdentity = Utils.getOwnerIdentity();
+	def ownerId = ownerIdentity.getRemoteId();
+	def allPeopleURL = "${portalURI}connections/all-people/${ownerId}";
+	def networkURL = "${portalURI}connections/network/${ownerId}";
+	def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
+	def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
+	def selectedNode = uicomponent.getSelectedNode();
+	def selectedStartChar = uicomponent.getSelectedChar();
+	def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 
-<div class="$uicomponent.id UISocApplication" id="$uicomponent.id">
-	<div class="ContainerSpace">
-		<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+<div class="uiPendingRelation" id="$uicomponent.id">
+  	<% uicomponent.renderChild(UIProfileUserSearch.class); %>
+  
+	  <% if (uicomponent.isHasPeopleTab()) {%>
+	  <div class="uiTabNormal uiTabInPage">
+	     <ul class="nav nav-tabs">
+	          <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
+	          <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
+	          <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
+	          <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
+	     </ul>
+		  <div class="tab-content">
+   <div class="tab-pane active">
+	    <div class="boxSpaceList">
+	        <h4 class="titleWithBorder">$contactsDirectory</h4>
+	        <!--div class="DirectoryNormalBox"-->
+	        <div class="uiFilterList">
+	            <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+	            <ul class="letterList"> 
+	                 <li>
+	                 <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
+	                            <a href="#$searchAll" id="searchAll" class="selected" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+	                 <%} else {%>
+	                            <a href="#$searchAll" id="searchAll" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
+	                 <% } %>
+	                 </li>
+	                 
+	                 <% for (ch in alphabets) { %>
+	                      <li>
+	                 <% if ((selectedStartChar != null) && (selectedStartChar == ch)) { %>
+	                        <a href="#$ch" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+	                 <%   } else {%>
+	                        <a href="#$ch" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
+	                 <%   } %>
+	                      </li>
+	                 <% } %>
+	                </ul>
+	      </div>
+	    </div>
 
       <%if ((list == null) || (list.size() == 0)) {%>
-		<div class="NoneContentSpace">
-			<% def peopleURL = Utils.getURI("people") %>
-		</div>
+		    <div class="noneContentSpace">		  
+   		  </div>
       <%}%>
-      <div class="ClearFix">
+      
+      <div class="userList clearfix">
       <%	for(identity in list) {
           def profileURL = LinkProvider.getUserProfileUri(identity.getRemoteId());
           def fullName = identity.profile.fullName;
@@ -69,54 +126,34 @@
           String imageSource = identity.profile.avatarUrl;
           if (!imageSource) imageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
       %>
-        <% if (pendingRelationIdx % 2 == 0) { %>
-		<div class="ContentSpaceGray ClearFix">
-	<% } else {%>
-	    <div class="ContentSpace ClearFix">
-	<% }%>
-				
-            <a class="AvatarUser">
-              <img title="${fullName}" src="$imageSource" alt="${fullName}" />
-              <span class="BorderTop"></span>
-              <span class="BorderBottom"></span>
-            </a>
-			<div class="CommunityMane ClearFix">
-			 <a class="CommunityName InviteTitle" href="${profileURL}">${fullName}</a>
-		      <%if ((position.length() + email.length()) == 0 ) {%>
-                  <span class="NonePositionAndEmail"></span>
-                <% } else {%>
+      
+		    <div class="spaceBox pull-left">
+          <a class="avatarXLarge pull-left">
+            <img rel="tooltip" data-placement="bottom" title="${fullName}" src="$imageSource"/>
+          </a>
+			    <div class="contentBox">
+            <h4 class="spaceTitle"><a href="${profileURL}">${fullName}</a></h4>         
 	                <% if(position.length() > 0) { %>
-	                <div class="Position">
-	                  ${position}
-	                </div>
-	                <%  } else {%>
-	                <span class="NonePosition"></span>
+	                <div class="position">${position}</div>
 	                <%  } %>
 	                <% if(email.length() > 0) { %>
-	                <div class="Email">
-	                  <a href="mailto:${email}">${email}</a>
-	                </div>
-	                <%  } else {%>
-	                <span class="NoneEmail"></span>
+	                <div class="email"><a href="mailto:${email}">${email}</a></div>
 	                <%  } %>
-                <% } %>
-
-			</div>
-       <% if (isEditable) {%>
-       <ul class="InviteTitle">
-              <li class="Status FL">$invitationSentLabel &nbsp;:&nbsp;</li>
-              <li class="FL"><a href="javascript:void(0)" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" title="$cancelRequestLabel">$cancelRequestLabel</a></li>
-       </ul>
-      <% } %>
-		</div>
+			    </div>
+		       <% if (isEditable) {%>
+				       	<div class="connectionBtn clearfix">
+				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
+				        </div>
+		      <% } %>
+		    </div>
   <% } %>
   
   </div>
     
   <% if(uicomponent.isEnableLoadNext()) { %>
-      <div id="LoadMoreButton" class="ShowMoreAction" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
-        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMoreContacts")%>
-      </div>
+      <button id="LoadMoreButton" class="btn" onclick="<%=uicomponent.event('LoadMorePeople')%>" >
+        <%=_ctx.appRes(uicomponent.getId() + ".label.ShowMore")%>
+      </button>
   <% } else { %>
       <script type="text/javascript">
         var loadMoreButton = document.getElementById("LoadMoreButton");
@@ -128,4 +165,9 @@
       </script>
   <%  }	%>
   </div>
+  </div>
+	  </div>
+	  <% } %>
+	  
+	 
 </div>

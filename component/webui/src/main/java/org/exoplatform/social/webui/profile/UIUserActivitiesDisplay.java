@@ -19,12 +19,10 @@ package org.exoplatform.social.webui.profile;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
@@ -38,14 +36,16 @@ import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.activity.UIActivitiesLoader;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIDropDownControl;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIForm;
-import org.exoplatform.webui.form.UIFormSelectBox;
 
 /**
  * Displays user's activities
@@ -54,22 +54,27 @@ import org.exoplatform.webui.form.UIFormSelectBox;
  * @since Jul 30, 2010
  * @copyright eXo SAS
  */
-@ComponentConfig(
-  lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
-  events = {
-    @EventConfig(listeners = UIUserActivitiesDisplay.ChangeDisplayModeActionListener.class)
-  }
-)
-public class UIUserActivitiesDisplay extends UIForm {
+@ComponentConfigs({
+  @ComponentConfig(
+                   lifecycle = UIFormLifecycle.class,
+                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
+                 ),
+  @ComponentConfig(
+    type = UIDropDownControl.class, 
+    id = "DisplayModesDropDown", 
+    template = "system:/groovy/webui/core/UIDropDownControl.gtmpl",
+    events = {
+      @EventConfig(listeners = UIUserActivitiesDisplay.ChangeOptionActionListener.class)
+    }
+  )
+})
+public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
-  private static final String   SELECT_BOX_DISPLAY_MODE = "SelectBoxDisplayModes";
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   
   private Object locker = new Object();
-  private Locale currentLocale = null;
   private boolean notChangedMode;
   private boolean postActivity;
   private int numberOfUpdatedActivities;
@@ -89,16 +94,22 @@ public class UIUserActivitiesDisplay extends UIForm {
   private String                     viewerName;
 
   /**
-   * Default constructor.
-   * 
+   * constructor
    * @throws Exception 
    */
   public UIUserActivitiesDisplay() throws Exception {
-    if (this.getId() == null) this.setId("UIUserActivitiesDisplay");
-    //
-    UIFormSelectBox uiFormSelectBox = new UIFormSelectBox(SELECT_BOX_DISPLAY_MODE, SELECT_BOX_DISPLAY_MODE, getSelectItemOption());
-    uiFormSelectBox.setOnChange("ChangeDisplayMode");
-    addChild(uiFormSelectBox);
+    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
+    displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_ACTIVITIES.toString()));
+    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.CONNECTIONS.toString()));
+    displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.MY_SPACE.toString()));
+    displayModes.add(new SelectItemOption<String>("My_Status", DisplayMode.MY_ACTIVITIES.toString()));
+    
+    UIDropDownControl uiDropDownControl = addChild(UIDropDownControl.class, "DisplayModesDropDown", null);
+    uiDropDownControl.setOptions(displayModes);
+    
+    setSelectedMode(uiDropDownControl);
+    
+    addChild(uiDropDownControl);
 
     // TODO: init() run two time when initiation this form.
     String remoteId = Utils.getOwnerRemoteId();
@@ -112,28 +123,6 @@ public class UIUserActivitiesDisplay extends UIForm {
     // set lastUpdatedNumber after init() method invoked inside setSelectedDisplayMode() method
     int numberOfUpdates = this.getNumberOfUpdatedActivities();
     setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
-    
-    this.currentLocale = Util.getPortalRequestContext().getLocale();
-  }
-  
-  private List<SelectItemOption<String>> getSelectItemOption() throws Exception {
-    List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
-    displayModes.add(new SelectItemOption<String>(getLabel("All_Updates"), DisplayMode.ALL_ACTIVITIES.name()));
-    displayModes.add(new SelectItemOption<String>(getLabel("Network_Updates"), DisplayMode.CONNECTIONS.name()));
-    displayModes.add(new SelectItemOption<String>(getLabel("Space_Updates"), DisplayMode.MY_SPACE.name()));
-    displayModes.add(new SelectItemOption<String>(getLabel("My_Status"), DisplayMode.MY_ACTIVITIES.name()));
-    return displayModes;
-  }
-
-  protected void changeLocale() throws Exception {
-    PortalRequestContext portalContext = Util.getPortalRequestContext();
-    Locale locale = portalContext.getLocale();
-    if (this.currentLocale == null || !this.currentLocale.getLanguage().equals(locale.getLanguage())) {
-      // change options of SelectBoxInput
-      getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setOptions(getSelectItemOption());
-      
-      this.currentLocale = locale;
-    }
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
@@ -154,7 +143,7 @@ public class UIUserActivitiesDisplay extends UIForm {
   
   public void setSelectedDisplayMode(DisplayMode displayMode) {
     selectedDisplayMode = displayMode;
-    getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).setValue(displayMode.name());
+    getChild(UIDropDownControl.class).setValue(selectedDisplayMode.toString());
     try {
       //init();
     } catch (Exception e) {
@@ -268,11 +257,16 @@ public class UIUserActivitiesDisplay extends UIForm {
     
     this.notChangedMode = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
 
-    //setNumberOfUpdatedActivities(getActivitiesUpdatedNum(refresh));
     setNumberOfUpdatedActivities(getActivitiesUpdatedNum(notChangedMode));
     
     //
     activitiesLoader.init();
+  }
+  
+  private void setSelectedMode(UIDropDownControl uiDropDownControl) {
+    if (selectedDisplayMode != null) {
+      uiDropDownControl.setValue(selectedDisplayMode.toString());
+    }
   }
 
   public void setChangedMode(boolean changedMode) {
@@ -289,42 +283,48 @@ public class UIUserActivitiesDisplay extends UIForm {
     return activitiesContainer.getChildren().size() > 1; 
   }
   
-  public static class ChangeDisplayModeActionListener extends EventListener<UIUserActivitiesDisplay> {
-    @Override
-    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
-      //
-      UIUserActivitiesDisplay uiUserActivities = event.getSource();
- 
-      //
-      String selectedDisplayMode = uiUserActivities.getUIFormSelectBox(SELECT_BOX_DISPLAY_MODE).getValue();
-      if (selectedDisplayMode != null) {
-        uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
-        uiUserActivities.init();
-        
-        uiUserActivities.setChangedMode(false);
-        
-        UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
-//        UIActivitiesContainer activitiesContainer = activitiesLoader.getChild(UIActivitiesContainer.class);
-        
-        //int numberOfUpdates = uiUserActivities.getActivitiesUpdatedNum(false);
-        //activitiesContainer.setNumberOfUpdatedActivities(numberOfUpdates);
-        
-        int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
-        
-        //
-        event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
-        
-        event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
+  public static class ChangeOptionActionListener extends EventListener<UIDropDownControl> {
 
-        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
-      }
-      
-      //
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiUserActivities);
-    }
-  }
+    public void execute(Event<UIDropDownControl> event) throws Exception {
+     UIDropDownControl uiDropDown = event.getSource();
+     UIUserActivitiesDisplay uiUserActivities = uiDropDown.getParent();
+     WebuiRequestContext requestContext = event.getRequestContext();
+     String selectedDisplayMode = requestContext.getRequestParameter(OBJECTID);
+
+     if (selectedDisplayMode.equals(DisplayMode.ALL_ACTIVITIES.toString())) {
+       uiUserActivities.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
+     } else if (selectedDisplayMode.equals(DisplayMode.MY_ACTIVITIES.toString())) {
+       uiUserActivities.setSelectedDisplayMode(DisplayMode.MY_ACTIVITIES);
+     } else if (selectedDisplayMode.equals(DisplayMode.MY_SPACE.toString())) {
+       uiUserActivities.setSelectedDisplayMode(DisplayMode.MY_SPACE);
+     } else {
+       uiUserActivities.setSelectedDisplayMode(DisplayMode.CONNECTIONS);
+     }
+     
+     if (selectedDisplayMode != null) {
+       uiUserActivities.setSelectedDisplayMode(selectedDisplayMode);
+       uiUserActivities.init();
+       
+       uiUserActivities.setChangedMode(false);
+       
+       UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
+       
+       int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
+       
+       //
+       event.getRequestContext().getJavascriptManager()
+       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
+       
+       event.getRequestContext().getJavascriptManager()
+       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
+
+       event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
+     }
+     
+     requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
+   }
+ }
+
   
   private int getActivitiesUpdatedNum(boolean hasRefresh) {
     if (this.postActivity) {
@@ -367,10 +367,6 @@ public class UIUserActivitiesDisplay extends UIForm {
                   .fromSinceTime(Utils.getLastVisited(Utils.FROM, mode))
                   .toSinceTime(Utils.getLastVisited(Utils.TO, mode))
                   .lastNumberOfUpdated(getLastUpdatedNum(mode));
-    
-    //TODO
-    //mode = DisplayMode.OWNER_STATUS.toString();
-    //ActivityFilterType.USER_ACTIVITIES.fromSinceTime(getLastVisited(FROM)).toSinceTime(getLastVisited(TO)).lastNumberOfUpdated(getLastUpdatedNum()); // Need to checked
     
     ActivityUpdateFilter updatedFilter = new ActivityUpdateFilter(hasRefresh);
    
@@ -428,5 +424,4 @@ public class UIUserActivitiesDisplay extends UIForm {
     String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     Utils.setCookies(cookieKey, value);
   }
-  
 }

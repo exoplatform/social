@@ -24,7 +24,6 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
@@ -36,6 +35,7 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -225,6 +225,18 @@ public class Utils {
    */
   public static final RelationshipManager getRelationshipManager() {
     return (RelationshipManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RelationshipManager.class);
+  }
+  
+  /**
+   * @param identity
+   * @return
+   * @throws Exception
+   */
+  public static final Relationship getRelationship(Identity identity) throws Exception {
+    if (identity.equals(getViewerIdentity())) {
+      return null;
+    }
+    return getRelationshipManager().get(identity, getViewerIdentity());
   }
 
   /**
@@ -450,5 +462,62 @@ public class Utils {
   public static boolean isHomePage() {
     String selectedNode = Utils.getSelectedNode(); 
     return ( selectedNode == null || selectedNode.length() == 0 || HOME.equals(selectedNode));  
+  }
+  
+  /**
+   * Truncates large Strings showing a portion of the String's head and tail
+   * with the center cut out and replaced with '...'. Also displays the total
+   * length of the truncated string so size of '...' can be interpreted.
+   * Useful for large strings in UIs or hex dumps to log files.
+   * 
+   * @param str
+   *            the string to truncate
+   * @param head
+   *            the amount of the head to display
+   * @param tail
+   *            the amount of the tail to display
+   * @return the center truncated string
+   */
+  public static final String centerTrunc( String str, int head, int tail ) {
+      StringBuffer buf = null;
+
+      // Return as-is if String is smaller than or equal to the head plus the
+      // tail plus the number of characters added to the trunc representation
+      // plus the number of digits in the string length.
+      if ( str.length() <= ( head + tail + 7 + str.length() / 10 ) )
+      {
+          return str;
+      }
+
+      buf = new StringBuffer();
+      buf.append( str.substring( 0, head ) ).append( "..." );
+      buf.append( str.substring( str.length() - tail ) );
+      return buf.toString();
+  }
+  
+  /**
+   * Truncates large Strings showing a portion of the String's head and tail
+   * with the head cut out and replaced with '...'.
+   * 
+   * @param str
+   *            the string to truncate
+   * @param head
+   *            the amount of the head to display
+   * @return the head truncated string
+   */
+  public static final String trunc( String str, int head) {
+      StringBuffer buf = null;
+
+      // Return as-is if String is smaller than or equal to the head plus the
+      // tail plus the number of characters added to the trunc representation
+      // plus the number of digits in the string length.
+      if ( str.length() <= ( head + 7 + str.length() / 10 ) )
+      {
+          return str;
+      }
+
+      buf = new StringBuffer();
+      buf.append( str.substring( 0, head ) ).append( "..." );
+      return buf.toString();
   }
 }

@@ -30,34 +30,13 @@ def rcontext = _ctx.getRequestContext() ;
 def jsmanager = rcontext.getJavascriptManager().require("SHARED/uiForm");
 
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
-def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
 def searchLabel  = _ctx.appRes("${uicomponentId}.label.Search");
-def spaceFilterLabel = _ctx.appRes("${uicomponentId}.label.SpaceFilter");
-def labelSpaceFoundListing = uicomponent.getLabelSpaceFound();
 def searchId = "SpaceSearch";
-def selectedChar = uicomponent.getSelectedChar();
 def nameForSearch = uicomponent.getSpaceNameSearch();
 def spaceNum = uicomponent.getSpaceNum();
-def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 def childs = uicomponent.getChildren();
 def searchAction = uicomponent.event('Search');
-def spacesOrder = _ctx.appRes("${uicomponentId}.label.SpacesOrder");
-
-def labelAllSpaces = _ctx.appRes("${uicomponent.id}.label.All_Space");
-def labelMySpace = _ctx.appRes("${uicomponent.id}.label.My_Space");
-def labelInvitationsReceived = _ctx.appRes("${uicomponent.id}.label.Invitations_Received");
-def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
-
-def selectedNode = Utils.getSelectedNode();
-def allSpacesURL = Utils.getURI("all-spaces");
-def mySpaceURL = Utils.getURI("spaces");
-def invitationsReceivedURL = Utils.getURI("invitationSpace");
-def requestPendingURL = Utils.getURI("pendingSpace");
-def allSpacesDisplayModeStyle = "NotSelectedTab";
-def mySpaceDisplayModeStyle = "NotSelectedTab";
-def receivedInvitationDisplayModeStyle = "NotSelectedTab";
-def sentInvitationDisplayModeStyle = "NotSelectedTab";
 
 def restContextName = uicomponent.getRestContextName();
 def currentUserName = uicomponent.getCurrentUserName();
@@ -76,82 +55,26 @@ def params = """ {
 	typeOfSuggest: 'space'
 } """
 
-jsmanager.require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);");
+jsmanager.require("SHARED/jquery", "jq")
+         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+         .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);");
 
-if (selectedNode.equals("all-spaces")) {
-  allSpacesDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("spaces")) {
-  mySpaceDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("invitationSpace")) {
-  receivedInvitationDisplayModeStyle = "SelectedTab";
-} else if (selectedNode.equals("pendingSpace")) {
-  sentInvitationDisplayModeStyle = "SelectedTab";
-}
 %>
-<div class="UISpaceSearch">
+<div class="uiSpaceSearch">
 <% uiform.begin() %>
     <!--search by name-->   
-    <div class="SpaceSearchContainer ClearFix">
-       <div class="UIAction">
-         <span class="ActionButton LightBlueStyle"><a class="AddSpaceIcon" href="#" onclick="<%= uicomponent.event("AddSpace") %>" ><%= labelActionAddSpace %></a></span>
-       </div>
-		   <label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
-		     $findSpaceLabel:&nbsp; 
-		   </label>
-		   <div class="SearchContent">
-		     <%uiform.renderField(childs.get(0)); %>
-		   </div>
-       <div class="UIAction">
-        <span class="ActionButton LightBlueStyle"><a id="SearchButton" href="#" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></a></span>
-       </div>		   
-    </div>
-    
-    <!--search by directory-->
-    <div class="BoxSpaceList">
-            <div class="SpaceListTitle">
-              $spaceFilterLabel
-            </div>
-            <div class="DirectoryNormalBox">
-                <ul class="LetterList">
-                        <li>
-                            <%  if ((selectedChar != null) && (selectedChar == "All")) { %>
-                                        <a href="#" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-                             <%} else {%>
-                                        <a href="#" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-                            <% } %>
-                        </li>
-                        <% for (ch in alphabets) { %>
-                        <li>
-                        <% if ((selectedChar != null) && (selectedChar == ch)) {
-                            %>
-                                        <a href="#" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-                             <%} else {%>
-                                        <a href="#" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-                                <% } %>
-                        </li>
-                        <% } %>
-                </ul>
-            </div>
-        </div>
-        <% uiform.end() %>
-        <div class="UIPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
-        
-        <ul class="MenuSpace ClearFix">
-	        <li class="FL"><a href="$allSpacesURL" class="$allSpacesDisplayModeStyle">$labelAllSpaces</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$mySpaceURL" class="$mySpaceDisplayModeStyle">$labelMySpace</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$invitationsReceivedURL" class="$receivedInvitationDisplayModeStyle">$labelInvitationsReceived</a></li>
-	        <li class="Line FL">&nbsp;</li>
-	        <li class="FL"><a href="$requestPendingURL" class="$sentInvitationDisplayModeStyle">$labelRequestsPending</a></li>
-        </ul>
-        
-     <div class="BoxSpaceList">
-	     <div class="SpaceListTitle">
-	          $labelSpaceFoundListing
-            <%if (uicomponent.getSpaceNum() > 0) {%>
-                $spacesOrder
-            <%}%>
-	     </div>
-     </div>
+	<div class="uiGrayLightBox ClearFix">
+		<button class="btn btn-primary pull-left" rel="tooltip" data-placement="bottom" title="$labelActionAddSpace" type="button" onclick="<%= uicomponent.event("AddSpace") %>" ><i class="uiIconSocSimplePlus uiIconSocWhite"></i><%= labelActionAddSpace %></button>
+		
+		<!--label for="<%=childs.get(0).getId()%>" class="LeftContentInput">
+			$findSpaceLabel:&nbsp; 
+		</label-->
+		<div class="uiSearchInput pull-right">
+			<%uiform.renderField(childs.get(0)); %>
+		</div>
+		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
+	</div>
+ 
+	<% uiform.end() %>
+	<div class="uiPopupMySpaces"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

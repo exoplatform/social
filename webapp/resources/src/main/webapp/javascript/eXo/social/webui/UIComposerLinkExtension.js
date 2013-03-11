@@ -18,19 +18,19 @@
 /**
  * UIComposerLinkExtension.js
  */
-(function ($){
+
+(function($) { 
 	var UIComposerLinkExtension = {
 	  HTTP: "http://",
 	  GRAY_COLOR: "gray",
 	  BLACK_COLOR: "black",
 	  changeLinkContent: function () {
-	    var link = this.linkData.link,
+	    var link = decodeURI(this.linkData.link),
 	    title = this.linkData.title,
 	    image = this.linkData.image;
 	    description = this.linkData.description;
-	    var queryString = 'link='+encodeURIComponent(link)
-	        + '&title='+encodeURIComponent(title)
-	        + '&description='+encodeURIComponent(description);
+      var queryString = 'link=' + link + '&title=' + title 
+          + '&description=' + description;
 	    
 	    if(image != null){
 	        queryString += '&image='+encodeURIComponent(image)
@@ -98,8 +98,8 @@
 	    this.linkInfoDisplayed = params.linkInfoDisplayed || false;
 	    this.inputLinkId = params.inputLinkId || 'inputLink';
 	    this.attachButtonId = params.attachButtonId || 'attachButton';
-	    this.attachUrl = params.attachUrl || null;
-	    this.changeLinkContentUrl = params.changeLinkContentUrl || null;
+	    this.attachUrl = decodeURI(params.attachUrl || "");
+	    this.changeLinkContentUrl = decodeURI(params.changeLinkContentUrl || "");
 	    this.shownThumbnailIndex = params.shownThumbnailIndex || 0;
 	    this.uiThumbnailDisplayId = params.uiThumbnailDisplayId || 'UIThumbnailDisplay';
 	    this.thumbnailsId = params.thumbnailsId || 'Thumbnails';
@@ -121,11 +121,7 @@
 	    }
 	  },
 	  init: function() {
-	    
-	    function get(id){
-	      return $('#'+id);
-	    }
-	    
+	
 	    function showThumbnail() {
 	      for (var i = 0, l = this.images.length; i < l; i++) {
 	        this.images[i].style.display = 'none';
@@ -137,22 +133,16 @@
 	    function doStats() {
 	      this.stats.html((this.shownThumbnailIndex + 1) + ' / ' + this.images.length);
 	    }
-	    
+	
 	    UIComposerLinkExtension = this;
 	    if (this.linkInfoDisplayed) {
-	      
-	      this.uiThumbnailDisplay = get(this.uiThumbnailDisplayId);
-	      this.thumbnails = get(this.thumbnailsId);
-	      this.backThumbnail = get(this.backThumbnailId);
-	      this.nextThumbnail = get(this.nextThumbnailId);
-	      this.stats = get(this.statsId);
-	      this.linkTitle = $('#LinkTitle');
-	      this.linkDescription = $('#LinkDescription');
-	      
-	      this.uiThumbnailDisplay.find('.ThumbnailAction').css({margin:'auto'});
-	     
-	      var parent = this.uiThumbnailDisplay.parent().parent();
-	      parent.css('position', 'relative');
+	      this.uiThumbnailDisplay = $('#' + this.uiThumbnailDisplayId);
+	      this.thumbnails = $('#' + this.thumbnailsId);
+	      this.backThumbnail = $('#' + this.backThumbnailId);
+	      this.nextThumbnail = $('#' + this.nextThumbnailId);
+	      this.stats = $('#' + this.statsId);
+	      this.linkTitle = $('#' + 'LinkTitle');
+	      this.linkDescription = $('#' + 'LinkDescription');
 	      
 	      var titleParam = this.titleEditable;
 	      if (this.linkTitle) {
@@ -168,8 +158,7 @@
 	      }
 	      
 	      if (this.thumbnails) {
-	        this.thumbnails.css({minHeight:'100px', textAlign:'center'});
-	        this.thumbnailCheckbox = get(this.thumbnailCheckboxId);
+	        this.thumbnailCheckbox = $('#' + this.thumbnailCheckboxId);
 	        this.images = $('img',this.thumbnails);
 	        doStats.apply(this);
 	
@@ -193,13 +182,15 @@
 	        
 	        this.thumbnailCheckbox.on('click', function(evt) {
 	          if (UIComposerLinkExtension.thumbnailCheckbox.attr('checked') == 'checked') {
-	            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '50px',
-	                                                                     'display':'none'});
 	            UIComposerLinkExtension.linkData.image = '';
+	            $('#UIRightBox').removeClass('contentRight');
+	            $('#UIRightBox').addClass('resetMargin');
+	            $('#UIThumbnailLeftBox').toggle();
 	          } else {
-	            UIComposerLinkExtension.uiThumbnailDisplay.parent().css({'height': '',
-	                                                                     'display':'block'});
 	            UIComposerLinkExtension.linkData.image = $(UIComposerLinkExtension.images[UIComposerLinkExtension.shownThumbnailIndex]).attr('src');
+	            $('#UIRightBox').removeClass('resetMargin');
+	            $('#UIRightBox').addClass('contentRight');
+	            $('#UIThumbnailLeftBox').toggle();
 	          }
 	          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
 	        });
@@ -208,24 +199,23 @@
 	      }
 	
 	    } else {
-	
-	      this.inputLink = get(this.inputLinkId);
-	      this.attachButton = get(this.attachButtonId);
+	      this.inputLink = $('#' + this.inputLinkId);
+	      this.attachButton = $('#' + this.attachButtonId);
 	      this.inputLink.val(UIComposerLinkExtension.HTTP);
-	      this.inputLink.css({color: UIComposerLinkExtension.GRAY_COLOR, border: 'none', outlineWidth: '0'});
+	      this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
 	      var UIComposerLinkExtension = this;
 	      var inputLink = this.inputLink;
 	      inputLink.on('focus', function(evt) {
 	        if (inputLink.val() === UIComposerLinkExtension.HTTP) {
 	          inputLink.val('');
-	          inputLink.css({color: UIComposerLinkExtension.BLACK_COLOR});
+	          inputLink.css('color', UIComposerLinkExtension.BLACK_COLOR);
 	        }
 	      });
 	      
 	      this.inputLink.on('blur', function(evt) {
 	        if (inputLink.val() === '') {
 	          inputLink.val(UIComposerLinkExtension.HTTP);
-	          inputLink.css({color: UIComposerLinkExtension.GRAY_COLOR});
+	          inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
 	        }
 	      });
 	      
@@ -245,6 +235,14 @@
 	        });
 	      });
 	      
+	    }
+	    
+	           
+	    var closeButton = $('#UIActivityComposerContainer').find('a.uiIconClose:first');
+	    if(closeButton.length > 0) {
+	       closeButton.on('click', function() {
+	          $('textarea#composerInput').exoMentions('clearLink', function() { });
+	       })
 	    }
 	  }
 	};

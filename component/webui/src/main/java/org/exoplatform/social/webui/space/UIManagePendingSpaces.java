@@ -19,12 +19,12 @@ package org.exoplatform.social.webui.space;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
@@ -36,7 +36,7 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * UIManagePendingSpaces: list all pending spaces which user can revoke pending. <br />
@@ -49,7 +49,7 @@ import org.exoplatform.webui.event.Event.Phase;
   template = "classpath:groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
   events = {
       @EventConfig(listeners = UIManagePendingSpaces.RevokePendingActionListener.class),
-      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIManagePendingSpaces.SearchActionListener.class),
       @EventConfig(listeners = UIManagePendingSpaces.LoadMoreSpaceActionListener.class)
   }
 )
@@ -62,6 +62,7 @@ public class UIManagePendingSpaces extends UIContainer {
    * SEARCH ALL.
    */
   private static final String SEARCH_ALL = "All";
+  private static final String SPACE_SEARCH = "SpaceSearch";
   
   SpaceService spaceService = null;
   String userId = null;
@@ -78,6 +79,7 @@ public class UIManagePendingSpaces extends UIContainer {
   private List<Space> pendingSpacesList;
   private ListAccess<Space> pendingSpacesListAccess;
   private int pendingSpacesNum;
+  private String selectedChar = null;
   
   /**
    * Constructor to initialize iterator.
@@ -104,6 +106,7 @@ public class UIManagePendingSpaces extends UIContainer {
       loadingCapacity = SPACES_PER_PAGE;
       pendingSpacesList = new ArrayList<Space>();
       setPendingSpacesList(loadPendingSpaces(currentLoadIndex, loadingCapacity));
+      setSelectedChar(SEARCH_ALL);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -219,6 +222,24 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   /**
+   * Gets selected character.
+   *
+   * @return Character is selected.
+   */
+  public String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character.
+   *
+   * @param selectedChar A {@code String}
+   */
+  public void setSelectedChar(String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+  
+  /**
    * Gets name of searched space.
    * 
    * @return the spaceNameSearch
@@ -278,7 +299,7 @@ public class UIManagePendingSpaces extends UIContainer {
   }
 
   private List<Space> loadPendingSpaces(int index, int length) throws Exception {
-    String charSearch = uiSpaceSearch.getSelectedChar();
+    String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
       setPendingSpacesListAccess(getSpaceService().getPendingSpacesWithListAccess(getUserId()));
@@ -323,6 +344,18 @@ public class UIManagePendingSpaces extends UIContainer {
     @Override
     public void execute(Event<UIManagePendingSpaces> event) throws Exception {
       UIManagePendingSpaces uiManagePendingSpaces = event.getSource();
+      WebuiRequestContext ctx = event.getRequestContext();
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      if (charSearch == null) {
+        uiManagePendingSpaces.setSelectedChar(SEARCH_ALL);
+      } else {
+        ResourceBundle resApp = ctx.getApplicationResourceBundle();
+        String defaultSpaceNameAndDesc = resApp.getString(uiManagePendingSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
+        ((UIFormStringInput) uiManagePendingSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
+        uiManagePendingSpaces.setSelectedChar(charSearch);
+      }
+      
       uiManagePendingSpaces.loadSearch();
       uiManagePendingSpaces.setLoadAtEnd(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiManagePendingSpaces);
@@ -407,18 +440,4 @@ public class UIManagePendingSpaces extends UIContainer {
     return userId;
   }
 
-  /**
-   * Gets pending space names.
-   * 
-   * @return pending space names
-   * @throws SpaceException
-   */
-  private List<String> getPendingSpaceNames() throws SpaceException {
-    List<String> spaceNames = new ArrayList<String>();
-    for (Space space : this.pendingSpacesList) {
-      spaceNames.add(space.getDisplayName());
-    }
-
-    return spaceNames;
-  }
 }

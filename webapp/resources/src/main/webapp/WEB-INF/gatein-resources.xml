@@ -55,6 +55,9 @@
     <depends>
        <module>webui</module>
     </depends>
+    <depends>
+      <module>userPopupPlugin</module>
+    </depends>
   </module>
   
   <module>
@@ -125,9 +128,9 @@
   </module>
   
   <module>
-    <name>social-ui-space-app-name-edition</name>
+    <name>social-ui-space-nav</name>
     <script>
-       <path>/javascript/eXo/social/webui/UISpaceAppNameEdition.js</path>
+       <path>/javascript/eXo/social/webui/UISpaceNavigation.js</path>
     </script>
     <depends>
       <module>socialUtil</module>
@@ -138,6 +141,9 @@
     <depends>
       <module>jquery</module>
       <as>$</as>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
     </depends>
   </module>
 
@@ -220,7 +226,6 @@
   <module>
     <name>social-ui-activity-updates</name>
     <script>
-      <name>eXo.social.webui.UIComposerLinkExtension</name>
       <path>/javascript/eXo/social/webui/UIActivityUpdates.js</path>
     </script>
     <depends>
@@ -285,6 +290,18 @@
       <as>jQuery</as>
     </depends>
   </module>
+
+  <module>
+    <name>iphonePlugin</name>
+    <script>
+      <path>/javascript/iphone/checkbox/iphone-style-checkboxes.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+  </module>
+  
   <module>
     <name>mentionsPlugin</name>
     <script>
@@ -304,5 +321,15 @@
     <script>
       <path>/javascript/eXo/underscore.js</path>
     </script>
+  </module>
+  <module>
+    <name>userPopupPlugin</name>
+    <script>
+      <path>/javascript/eXo/UIUserProfilePopup.js</path>
+    </script>
+    <depends>
+      <module>jquery</module>
+      <as>jQuery</as>
+    </depends>
   </module>
 </gatein-resources>

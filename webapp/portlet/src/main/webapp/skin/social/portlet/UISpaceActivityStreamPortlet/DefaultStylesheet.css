@@ -20,12 +20,14 @@
 @import url('/social-resources/skin/social/webui/activity/UIDefaultActivity/DefaultSkin.css');
 @import url('/social-resources/skin/social/webui/UIActivitiesLoader/DefaultSkin.css');
 
+@import url('../../../css/uiSpaceActivityStreamPortlet/Style.css');
+
 /**
  * UISpaceActivityStream portlet style
  */
 
 .UISpaceActivityStreamPortlet {
-	font-family: lucida sans;
+	/*font-family: lucida sans;*/
 }
 
 .UISpaceActivitiesContainer {

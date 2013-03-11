@@ -29,6 +29,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.composer.UIComposer;
+import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -150,6 +151,10 @@ public class UIActivitiesLoader extends UIContainer {
     return selectedDisplayMode;
   }
 
+  protected boolean isUIUserActivityDisplay() {
+    return getParent() instanceof UIUserActivitiesDisplay;
+  }
+  
   public void init() {
     try {
       hasMore = false;

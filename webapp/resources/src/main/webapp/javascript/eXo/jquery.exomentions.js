@@ -53,7 +53,7 @@
       wrapper : _.template('<div class="exo-mentions"></div>'),
       autocompleteList : _.template('<div class="autocomplete-menu"></div>'),
       autocompleteListItem : _.template('<li class="data" data-ref-id="<%= id %>" data-ref-type="<%= type %>" data-display="<%= display %>"><%= content %></li>'),
-      autocompleteListItemAvatar : _.template('<img  src="<%= avatar %>" />'),
+      autocompleteListItemAvatar : _.template('<div class="avatarSmall"><img  src="<%= avatar %>" /></div>'),
       autocompleteListItemIcon : _.template('<div class="icon <%= icon %>"></div>'),
       mentionItemSyntax : _.template('<%=id%>'),
       mentionItemHighlight : _.template('<strong><span><%= value %></span></strong>')
@@ -309,7 +309,7 @@
 
 
     function addItemMention(value) {
-      var val = '<span contenteditable="false">' + value + '<span class="icon"' + ((utils.isFirefox) ? 'contenteditable="true"' : '') + '>x</span></span>';
+      var val = '<span contenteditable="false">' + value + '<i class="uiIconClose uiIconLightGray"' + ((utils.isFirefox) ? 'contenteditable="true"' : '') + '>x</i></span>';
       return insertCursorText(val, -1, false);
     }
 
@@ -323,10 +323,11 @@
     }
 
     function initClickMention() {
-      var spans = elmInputBox.find('> span');
-      if (spans.length > 0) {
-        $.each(spans, function(index, item) {
-          var sp = $(item).find('span');
+      var sp = elmInputBox.find('> span');
+      if (sp.length > 0) {
+        $.each(sp, function(index, item) {
+          var sp = $(item).find('i');
+
           sp.data('indexMS', {
             'indexMS' : index
           }).off('click');
@@ -1031,7 +1032,7 @@
 
     function getTemplate() {
       var editableType = ($.browser.webkit) ? 'plaintext-only' : 'true';
-      return $('<div contenteditable="' + editableType + '" g_editable="true" class="ReplaceTextArea editable"></div>');
+      return $('<div contenteditable="' + editableType + '" g_editable="true" class="replaceTextArea editable"></div>');
     }
 
     function initDisplay(id, target) {
@@ -1044,7 +1045,7 @@
       displayInput.val = function(v) {
         if (v === null || typeof v === "undefined") {
           var temp = $(this).clone();
-          temp.find('.icon').remove();
+          temp.find('span').find('i').remove();
           return utils.getSimpleValue(temp.html());
         } else {
           if (typeof v === 'object') {

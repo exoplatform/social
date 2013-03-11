@@ -42,6 +42,7 @@ import org.chromattic.api.query.QueryResult;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.ActivityProcessor;
+import org.exoplatform.social.core.activity.filter.ActivityCounter;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityIterator;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -54,7 +55,9 @@ import org.exoplatform.social.core.chromattic.entity.ActivityDayEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityListEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityParameters;
+import org.exoplatform.social.core.chromattic.entity.HidableEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.LockableEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -131,6 +134,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setPostedTime(activityMillis);
     activityEntity.setLastUpdated(activityMillis);
     activityEntity.setPosterIdentity(posterIdentityEntity);
+    
 
     // Fill activity model
     activity.setId(activityEntity.getId());
@@ -168,6 +172,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activityEntity.setUrl(activity.getUrl());
     activityEntity.setPriority(activity.getPriority());
     activityEntity.setLastUpdated(activity.getUpdated().getTime());
+    //
+    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, true);
+    hidable.setHidden(activity.isHidden());
+    LockableEntity lockable = _getMixin(activityEntity, LockableEntity.class, true);
+    lockable.setLocked(activity.isLocked());
     activityEntity.setMentioners(activity.getMentionedIds());
     activityEntity.setCommenters(activity.getCommentedIds());
 
@@ -231,6 +240,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     else {
       activity.setTemplateParams(new HashMap<String, String>());
     }
+    
+    //
+    LockableEntity lockable = _getMixin(activityEntity, LockableEntity.class, false);
+    if (lockable != null) {
+      activity.isLocked(lockable.getLocked());
+    }
+    HidableEntity hidable = _getMixin(activityEntity, HidableEntity.class, false);
+    if (hidable != null) {
+      activity.isHidden(hidable.getHidden());
+    }
+    
 
     //
     fillStream(activityEntity, activity);
@@ -241,8 +261,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     ActivityStream stream = new ActivityStreamImpl();
-    IdentityEntity identityEntity = activityEntity.getIdentity();
+    
+    IdentityEntity identityEntity = null;
 
+    //update new stream owner
+    try {
+      Identity streamOwnerIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner());
+      IdentityEntity streamOwnerEntity = _findById(IdentityEntity.class, streamOwnerIdentity.getId());
+      identityEntity = streamOwnerEntity;
+      activityEntity.setIdentity(streamOwnerEntity);
+    } catch (Exception e) {
+      identityEntity = activityEntity.getIdentity();
+    }
     //
     stream.setId(identityEntity.getId());
     stream.setPrettyId(identityEntity.getRemoteId());
@@ -343,7 +373,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     }
     catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
+      //throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_GET_ACTIVITY, e.getMessage(), e);
+      return null;
     }
   }
 
@@ -393,14 +424,25 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
+      commentEntity.setType(comment.getType());
+      commentEntity.setTitleId(comment.getTitleId());
       commentEntity.setBody(comment.getBody());
       commentEntity.setIdentity(activityEntity.getIdentity());
       commentEntity.setPosterIdentity(_findById(IdentityEntity.class, comment.getUserId()));
       commentEntity.setComment(Boolean.TRUE);
       commentEntity.setPostedTime(commentMillis);
       commentEntity.setLastUpdated(commentMillis);
+      
+      HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
+      hidable.setHidden(comment.isHidden());
+      
       comment.setId(commentEntity.getId());
 
+      Map<String, String> params = comment.getTemplateParams();
+      if (params != null) {
+        commentEntity.putParams(params);
+      }
+      
       //
       String[] ids = activity.getReplyToId();
       List<String> listIds;
@@ -658,35 +700,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfNewerOnUserActivities(Identity ownerIdentity, ExoSocialActivity baseActivity) {
 
-    int nb = 0;
-
-    try {
-
-      //
-      IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
-      ActivityEntity activity = _findById(ActivityEntity.class, baseActivity.getId());
-
-      //
-      Long targetTimestamp = activity.getPostedTime();
-
-      for (ActivityEntity current : new ActivityList(identity.getActivityList())) {
-        //
-        if (current.getPostedTime() <= targetTimestamp) {
-          return nb;
-        }
-
-        //
-        ++nb;
-      }
-
-      return nb;
-
+    if (ownerIdentity == null) {
+      return 0;
     }
-    catch (NodeNotFoundException e) {
-      throw new ActivityStorageException(
-          ActivityStorageException.Type.FAILED_TO_GET_ACTIVITIES_COUNT,
-          e.getMessage());
-    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
+    
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_BUILDER.owners(ownerIdentity), filter).objects().size();
 
   }
 
@@ -1182,9 +1205,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     limit = (limit > commentIds.size() ? commentIds.size() : limit);
-    int toIndex = (limit+offset >= commentIds.size() ? commentIds.size() : limit+offset);
-    for(String commentId : commentIds.subList(offset, toIndex)) {
-      activities.add(getStorage().getActivity(commentId));
+    int maxIndex = ((limit + offset) > commentIds.size() ? commentIds.size() : (limit + offset));
+    for(String commentId : commentIds.subList(offset, maxIndex)) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
@@ -1195,7 +1220,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public int getNumberOfComments(ExoSocialActivity existingActivity) {
-    return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
+    //return getStorage().getActivity(existingActivity.getId()).getReplyToId().length;
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+
+    //
+    for(String commentId : commentIds) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
   }
 
   /**
@@ -1203,9 +1242,27 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfNewerComments(ExoSocialActivity existingActivity, ExoSocialActivity baseComment) {
 
-    List<String> commentId = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
-    return commentId.indexOf(baseComment.getId());
+    //List<String> commentId = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    //return commentId.indexOf(baseComment.getId());
 
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int baseIndex = commentIds.indexOf(baseComment.getId());
+    if (baseIndex > commentIds.size()) {
+      baseIndex = commentIds.size();
+    }
+
+    //
+    for(String commentId : commentIds.subList(0, baseIndex)) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
   }
 
   /**
@@ -1225,7 +1282,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     for(String commentId : commentIds.subList(0, baseIndex)) {
-      activities.add(getStorage().getActivity(commentId));
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
@@ -1238,10 +1297,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfOlderComments(ExoSocialActivity existingActivity, ExoSocialActivity baseComment) {
 
-    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    /*List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
     int index = commentIds.indexOf(baseComment.getId());
 
-    return (commentIds.size() - index - 1);
+    return (commentIds.size() - index - 1);*/
+    
+    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+
+    //
+    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
+    int baseIndex = commentIds.indexOf(baseComment.getId());
+
+    //
+    for(String commentId : commentIds.subList(baseIndex + 1, commentIds.size())) {
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
+    }
+
+    //
+    return activities.size();
 
   }
 
@@ -1259,7 +1334,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     for(String commentId : commentIds.subList(baseIndex + 1, limit)) {
-      activities.add(getStorage().getActivity(commentId));
+      ExoSocialActivity comment = getActivity(commentId);
+      if (!comment.isHidden())
+        activities.add(getStorage().getActivity(commentId));
     }
 
     //
@@ -1284,7 +1361,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       if (changedActivity.getTitle() == null) changedActivity.setTitle(activityEntity.getTitle());
       if (changedActivity.getBody() == null) changedActivity.setBody(activityEntity.getBody());
-
+      
       _saveActivity(changedActivity);
       
       getSession().save();
@@ -1675,7 +1752,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.addExcludedActivities(excludedUserActivities);
     
     //
-    //long compareTime = filter.isRefreshTab() ? filter.activityFeedType().fromSinceTime() : filter.activityFeedType().toSinceTime();
     long compareTime = filter.activityFeedType().toSinceTime();
     
     //
@@ -1683,14 +1759,45 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
-                                          .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(identities).mentioner(owner)
+                                                                 .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter);
+    
+    //calculate here
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.activityFeedType().lastNumberOfUpdated()) {
       gotNumber = 0;
     }
     
     return gotNumber;
+  }
+  
+  /**
+   * Counter of activies what is updated
+   * @param query
+   * @return
+   */
+  private int counter(Query<ActivityEntity> query) {
+    
+    QueryResult<ActivityEntity> results = query.objects();
+    
+    ActivityEntity entity = null;
+    ActivityCounter counter = new ActivityCounter();
+    
+    //
+    while (results.hasNext()) {
+      entity = results.next();
+
+      //
+      if (entity.isComment()) {
+        entity = entity.getParentActivity();
+      }
+
+      counter.add(getStorage().getActivity(entity.getId()));
+
+    }
+    
+    return counter.size();
   }
   
   @Override
@@ -1717,8 +1824,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
     
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
-                                           .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.mentioner(owner)
+                                                                 .posters(relationships).excludedActivities(filter.excludedActivities()), jcrfilter);
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.userActivitiesType().lastNumberOfUpdated()) {
       gotNumber = 0;
@@ -1770,9 +1878,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   @Override
   public int getNumberOfUpdatedOnActivitiesOfConnections(Identity owner, ActivityUpdateFilter filter) {
-    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+    List<Identity> relationships = relationshipStorage.getConnections(owner);
 
-    if (connectionList.size() == 0) {
+    if (relationships.size() == 0) {
       return 0;
     }
     
@@ -1790,7 +1898,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     
     //
-    //long compareTime = filter.isRefreshTab() ? filter.connectionType().fromSinceTime() : filter.connectionType().toSinceTime();
     long compareTime = filter.connectionType().toSinceTime();
     
     //
@@ -1798,8 +1905,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     jcrfilter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(compareTime));
 
     //
-    int gotNumber = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(connectionList).posters(connectionList)
-                                                              .excludedActivities(filter.excludedActivities()), jcrfilter).objects().size();
+    Query<ActivityEntity> query = getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.ACTIVITY_UPDATED_BUILDER.owners(relationships).posters(relationships)
+                                                                 .excludedActivities(filter.excludedActivities()), jcrfilter);
+    
+    //calculate here
+    int gotNumber = counter(query);
     
     if (filter.isRefreshTab() && gotNumber == filter.connectionType().lastNumberOfUpdated()) {
       gotNumber = 0;

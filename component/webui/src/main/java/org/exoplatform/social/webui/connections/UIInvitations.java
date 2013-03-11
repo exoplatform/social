@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -29,6 +31,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -36,7 +39,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.event.Event.Phase;
 
 /**
  * Manages connection invitations of all existing users. Manages actions
@@ -55,7 +57,7 @@ import org.exoplatform.webui.event.Event.Phase;
     events = {
       @EventConfig(listeners = UIInvitations.ConfirmActionListener.class),
       @EventConfig(listeners = UIInvitations.IgnoreActionListener.class),
-      @EventConfig(listeners = UIInvitations.SearchActionListener.class, phase = Phase.DECODE),
+      @EventConfig(listeners = UIInvitations.SearchActionListener.class),
       @EventConfig(listeners = UIInvitations.LoadMorePeopleActionListener.class)
     }
   )
@@ -84,6 +86,49 @@ public class UIInvitations extends UIContainer {
   private List<Identity> peopleList;
   private ListAccess<Identity> peopleListAccess;
   private int peopleNum;
+  private boolean hasPeopleTab;
+  String selectedChar = null;
+  
+  public boolean isHasPeopleTab() {
+    return hasPeopleTab;
+  }
+
+  public void setHasPeopleTab(boolean hasPeopleTab) {
+    this.hasPeopleTab = hasPeopleTab;
+  }
+
+  /**
+   * Gets selected character when search by alphabet.
+   *
+   * @return The selected character.
+   */
+  public final String getSelectedChar() {
+    return selectedChar;
+  }
+
+  /**
+   * Sets selected character to variable.
+   *
+   * @param selectedChar <code>char</code>
+   */
+  public final void setSelectedChar(final String selectedChar) {
+    this.selectedChar = selectedChar;
+  }
+  
+  /**
+   * Returns the current selected node.<br>
+   *
+   * @return selected node.
+   * @since 1.2.2
+   */
+  public String getSelectedNode() {
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
+    if (currentPath.split("/").length >= 2) {
+      return  currentPath.split("/")[1];
+    }
+    return currentPath;
+  }
   
   /**
    * Constructor to initialize iterator.
@@ -92,7 +137,7 @@ public class UIInvitations extends UIContainer {
    */
   public UIInvitations() throws Exception {
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
-    uiProfileUserSearch.setHasPeopleTab(true);
+    setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
     addChild(uiProfileUserSearch);
     init();
@@ -389,6 +434,7 @@ public class UIInvitations extends UIContainer {
     @Override
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();
+      
       uiInvitations.loadSearch();
       uiInvitations.setLoadAtEnd(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);

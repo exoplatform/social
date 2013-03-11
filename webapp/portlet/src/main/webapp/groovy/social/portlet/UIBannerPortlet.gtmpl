@@ -26,18 +26,21 @@
   String portletId = uicomponent.getId();
   String registerURI = Utils.getURI("register");
   String homeURI = Utils.getURI("");
+  def jsManager = _ctx.getRequestContext().getJavascriptManager();
+	jsManager.require("SHARED/jquery", "jq")
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
 <div id="$portletId" class="UIBannerPortlet UIApplication">
   <div class="ApplicationMinWidth">
     <div class="InlineContainer">
-      <a href="$homeURI" class="LogoBlock" title="<%= _ctx.appRes("UISocialBannerPortlet.title.Logo") %>"><span></span></a>
+      <a href="$homeURI" class="LogoBlock" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UISocialBannerPortlet.title.Logo") %>"><span></span></a>
         <%if(prContext.getRemoteUser() != null) {%>
           <div class="BannerTitle"><span></span></div>
         <%} else {%>
           <div class="LeftLoginContainer">
             <div class="RightLoginContainer">
               <div class="MiddleLoginContainer ClearFix">
-				  <a href="#" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
+				  <a href="javascript:void(0);" onclick="$signInAction"><%= _ctx.appRes("UISocialBannerPortlet.label.Sign_In") %></a>
 				  <a href="$registerURI"><%= _ctx.appRes("UISocialBannerPortlet.label.Register") %></a>
 				  <a class="Language" onclick="$changeLanguageAction">
 					<%= _ctx.appRes("UISocialBannerPortlet.label.ChangeLanguage") %>

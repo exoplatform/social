@@ -632,10 +632,13 @@
 
           <value>org.exoplatform.social.core.chromattic.entity.IdentityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ProfileEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.RelationshipListEntity</value>
 
+          <value>org.exoplatform.social.core.chromattic.entity.HidableEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.LockableEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityListEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityDayEntity</value>

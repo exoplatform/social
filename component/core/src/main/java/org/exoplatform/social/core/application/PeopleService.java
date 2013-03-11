@@ -18,4 +18,5 @@ package org.exoplatform.social.core.application;
 
 public interface PeopleService {
   public static final String PEOPLE_APP_ID = "exosocial:people";
+  public static final String USER_PROFILE_ACTIVITY = "USER_PROFILE_ACTIVITY";
 }

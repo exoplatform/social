@@ -149,12 +149,11 @@ public class ActivityResources implements ResourceContainer {
     
     try{
       activity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException) {
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+      if(activity == null) {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
+    } catch (UndeclaredThrowableException undeclaredThrowableException) {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     
     if(activity.isComment()){
@@ -333,12 +332,11 @@ public class ActivityResources implements ResourceContainer {
     ExoSocialActivity existingActivity = null;
     try{
       existingActivity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+      if (existingActivity == null) {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
       
     if(!SecurityManager.canDeleteActivity(portalContainer, authenticatedUserIdentity, existingActivity)){
@@ -461,6 +459,11 @@ public class ActivityResources implements ResourceContainer {
     ExoSocialActivity activity = null;
     try {
       activity = activityManager.getActivity(activityId);
+      if (activity == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      
+      //
       if(!SecurityManager.canAccessActivity(portalContainer, authenticatedIdentity, activity)){
         throw new WebApplicationException(Response.Status.FORBIDDEN);
       }
@@ -482,12 +485,8 @@ public class ActivityResources implements ResourceContainer {
       resultJson.put("comments", commentWrapers);
       return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
       
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
+    } catch (WebApplicationException wex){
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
     } catch (Exception e){
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
@@ -544,12 +543,11 @@ public class ActivityResources implements ResourceContainer {
     
     try {
       activity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+      if (activity == null) {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     
     if(!SecurityManager.canCommentToActivity(portalContainer, authenticatedIdentity, activity)){
@@ -617,10 +615,11 @@ public class ActivityResources implements ResourceContainer {
     try{
       activity = activityManager.getActivity(activityId);
       commentActivity = activityManager.getActivity(commentId);
+      if (commentActivity == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
     } catch (UndeclaredThrowableException undeclaredThrowableException){
       if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     }
@@ -868,10 +867,11 @@ public class ActivityResources implements ResourceContainer {
     ExoSocialActivity activity = null;
     try{
       activity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+      if (activity == null) {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
+      }
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     }

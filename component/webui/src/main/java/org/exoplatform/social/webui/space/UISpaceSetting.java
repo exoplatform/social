@@ -49,7 +49,7 @@ import org.exoplatform.webui.event.EventListener;
     type = UITabPane.class,
     id = "UISpaceSettingTabPane",
     template = "classpath:groovy/social/webui/space/UISpaceSettingPane.gtmpl",
-    events = { @EventConfig(listeners = UISpaceSetting.SelectTabActionListener.class) })
+    events = { @EventConfig(listeners = UITabPane.SelectTabActionListener.class) })
   })
 public class UISpaceSetting extends UIContainer {
 
@@ -181,6 +181,8 @@ public class UISpaceSetting extends UIContainer {
         }
       }
       uiTabPane.setSelectedTab(renderTab);
+      //Not a good solution but let's accept it as temporary solution.
+      context.addUIComponentToUpdateByAjax(uiTabPane);
     }
   }
 }

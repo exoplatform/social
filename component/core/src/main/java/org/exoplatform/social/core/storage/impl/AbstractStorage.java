@@ -137,6 +137,25 @@ public abstract class AbstractStorage {
       }
     }
   }
+  
+  protected <M> M _getMixin(Object o, Class<M> mixinType, boolean create) {
+    M mixin = getSession().getEmbedded(o, mixinType);
+    if (mixin == null && create) {
+      mixin = getSession().create(mixinType);
+      getSession().setEmbedded(o, mixinType, mixin);
+    }
+    return mixin;
+  }
+
+  protected <M> boolean _removeMixin(Object o, Class<M> mixinType) {
+    M mixin = getSession().getEmbedded(o, mixinType);
+    if (mixin != null) {
+      getSession().setEmbedded(o, mixinType, null);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   public static boolean startSynchronization() {
 

@@ -139,6 +139,18 @@ public class SpaceLifeCycleTest extends AbstractCoreTest {
       recordEvent(event);
     }
 
+    public void spaceDescriptionEdited(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void spaceAvatarEdited(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
+    public void spaceAccessEdited(SpaceLifeCycleEvent event) {
+      recordEvent(event);
+    }
+
   }
 
   class MockFailingListener extends MockListener {

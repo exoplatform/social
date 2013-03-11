@@ -52,7 +52,7 @@
   def labelLike = _ctx.appRes("UIActivity.label.Like");
   def labelUnlike = _ctx.appRes("UIActivity.label.Unlike");
   def labelSource = _ctx.appRes("UIActivity.label.Source");
-  def inputWriteAComment = _ctx.appRes("UIActivity.input.Write_A_Comment");
+  def inputWriteAComment = _ctx.appRes("UIActivity.input.Add_your_comment");
   def labelShowAllComments = _ctx.appRes("UIActivity.label.Show_All_Comments");
   def labelHideAllComments = _ctx.appRes("UIActivity.label.Hide_All_Comments");
   def labelShowPreviousComments = _ctx.appRes("UIActivity.label.Show_Previous_Comments");
@@ -100,7 +100,9 @@
     commentFormFocused: '${uicomponent.isCommentFormFocused()}'
    }"""
   
-  jsManager.require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
+  jsManager.require("SHARED/jquery", "jq")
+           .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+           .require("SHARED/social-ui-activity", "activity").addScripts("activity.onLoad($params);");
   
   //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
   uicomponent.setCommentFormFocused(false);
@@ -109,7 +111,7 @@
 
   if (uicomponent.isLiked()) {
     if (totalLikesNum > 2) {
-      labelLikes = labelYouAndOthersLikeThis.replace("{0}", totalLikesNum + "");
+      labelLikes = labelYouAndOthersLikeThis.replace("{0}", totalLikesNum - 1 + "");
     } else if (totalLikesNum == 2) {
       def likeId = (displayedIdentityLikes[0] == Utils.getViewerIdentity().getId()) ? displayedIdentityLikes[1] : displayedIdentityLikes[0];
       def id = Utils.getIdentityManager().getIdentity(likeId);
@@ -158,15 +160,15 @@
 <div class="UIActivity">
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
-    <a class="Avatar" title="$ownerName" href="$ownerUri">
-      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName" />
+    <a class="avatarXSmall" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">
+      <img alt="$ownerName" src="$ownerAvatar"/>
       <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent ClearFix">
-          <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a>
+          <a class="Text" rel="tooltip" data-placement="bottom" title="$ownerName" href="$ownerUri">$ownerName</a>
       <% if (activityDeletable) {%>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
       <%}%>
@@ -183,7 +185,7 @@
     				def spaceName = spaceSource.displayName;
     				activityPostedTimeInSpace = uicomponent.getPostedTimeInSpaceString(_ctx, activity.postedTime);
           %>
-          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
+          <span class="DateTime">$activityPostedTimeInSpace <strong><a class="Text" rel="tooltip" data-placement="bottom" title="$spaceName" href="$spaceSourceURI">$spaceName</a></strong> *</span>
         <%} else {%>
           <span class="DateTime">$activityPostedTime *</span>
         <% } %>
@@ -191,7 +193,7 @@
          def commentLink = "";
       %>
      <% if (activityCommentAndLikable) { %>
-        <a class="$commentLink" onclick="$toggleDisplayCommentAction" id="CommentLink${activity.id}" href="#comment">
+        <a class="$commentLink"  id="CommentLink${activity.id}" href="javascript:void(0);">
           $labelComment
         </a> 
         <% if ( totalComments > 0 ) { %>
@@ -199,11 +201,11 @@
         <% } %>
         |
       <% if (uicomponent.isLiked()) { %>
-        <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="#unlike">
+        <a onclick="$unlikeActivityAction" id="UnLikeLink${activity.id}" href="javascript:void(0);">
           $labelUnlike
         </a>
       <% } else { %>
-        <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="#like">
+        <a onclick="$likeActivityAction" id="LikeLink${activity.id}" href="javascript:void(0);">
           $labelLike
         </a>
       <% }%>
@@ -213,9 +215,9 @@
      <% }%>
      <% if (canShowAction) {
          if (isReceiver) {%>
-           | <a href="#" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
+           | <a href="javascript:void(0);" onclick="${uicomponent.event("Accept")}">$labelAccept</a> | <a href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}">$labelRefuse</a>
      <%  } else if (isSender) {%>
-           | <a href="#" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
+           | <a href="javascript:void(0);" onclick="${uicomponent.event("Refuse")}">$labelRevoke</a>
      <%  }
         }%>
         </div>
@@ -237,8 +239,8 @@
               personLikeAvatarImageSource = id.profile.avatarUrl;
               if (!personLikeAvatarImageSource) personLikeAvatarImageSource = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
               %>
-                <a class="AvatarPeopleBG" title="$personLikeFullName" href="$personLikeProfileUri">
-                  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" title="$personLikeFullName" />
+                <a class="avatarXSmall"  rel="tooltip" data-placement="bottom" title="$personLikeFullName" href="$personLikeProfileUri">
+                  <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
                 </a>
              <% })%>
              <% if ( hasMore ) { %>
@@ -260,17 +262,17 @@
       <div class="CommentListInfo">
       <% } %>
             <% if (commentListStatus.getStatus().equals("latest") || commentListStatus.getStatus().equals("none")) { %>
-              <a onclick="$showAllCommentsAction" href="#show-all-comments">
+              <a onclick="$showAllCommentsAction" href="javascript:void(0);">
                 $labelShowAllComments
               </a>
             <% } else if (commentListStatus.getStatus().equals("all")) { %>
               <% if (commentsHidden > 0) { %>
-                <a onclick="$showAllCommentsAction" href="#">
+                <a onclick="$showAllCommentsAction" href="javascript:void(0);">
                   $labelShowPreviousComments
                 </a>
                 <span style="float:right">$commentsHidden/$totalComments</span>
               <% } else { %>
-                <a onclick="$hideAllCommentsAction" href="#hide-all-comments">
+                <a onclick="$hideAllCommentsAction" href="javascript:void(0);">
                   $labelHideAllComments
                 </a>
               <% } %>
@@ -303,8 +305,8 @@
       <% } else { %>
       <div id="CommentBlock${activity.id}${commentCounter}" class="CommentBox ClearFix">
       <% } %>
-        <a href="$commenterProfileUri" title="$commenterFullName" class="AvatarCM">
-          <img width="38px" height="36px" title="$commenterFullName" alt="$commenterFullName" src="$commenterAvatarImgSrc" />
+        <a href="$commenterProfileUri" title="$commenterFullName" class="avatarXSmall">
+          <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
           <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
         </a>
@@ -337,13 +339,13 @@
     <% } else { %>
       <div class="CommentBox InputArea CommentFormBox ClearFix" id="CommentFormBlock${activity.id}">
     <% } %>
-        <a class="AvatarCM" title="$currentCommenterName" href="$currentCommenterUri">
-          <img title="$currentCommenterName" src="$currentCommenterAvatar" alt="$currentCommenterName" />
+        <a class="avatarXSmall"  rel="tooltip" data-placement="bottom" title="$currentCommenterName" href="$currentCommenterUri">
+          <img alt="$currentCommenterName" src="$currentCommenterAvatar"/>
 		      <span class="BorderTopCM"></span>
           <span class="BorderBottomCM"></span>
 		    </a>
         <div class="CommentInputBox"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
-        <input type="button" onclick="<%= uicomponent.event("PostComment") %>" value="$labelComment" class="CommentButton DisplayNone" id="CommentButton${activity.id}" />
+        <button class="btn" rel="tooltip" data-placement="bottom" title="$labelComment" onclick="<%= uicomponent.event("PostComment") %>" id="CommentButton${activity.id}">$labelComment</button>
       </div>
     </div>
    </div>

@@ -22,8 +22,10 @@
 %>
 <%
   import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.social.webui.Utils;
 
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
 
   def pcontext = Util.getPortalRequestContext();
   def jsManager = pcontext.getJavascriptManager();
@@ -33,22 +35,50 @@
 	  jsManager.require("SHARED/social-ui-activities-loader", "activitiesLoader")
 	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
   }
+
+  def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
+  def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
+  def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
+  def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
+  def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
   
+	def actionLabels = """ {
+	  Connect: '${connectLabel}',
+	  Confirm: '${confirmLabel}',
+	  CancelRequest: '${cancelRequestLabel}',
+	  RemoveConnection: '${removeConnectionLabel}',
+	  Ignore: '${ignoreLabel}'
+	} """
+  
+  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($actionLabels);");
 %>
-<div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.getActivitiesContainer().getChildren().size()> 1) {
+
+<% if ( Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
+<div class="uiActivityStream clearfix" id="$uicomponent.id">
+<% } else { %>
+<div class="uiActivityStream clearBG" id="$uicomponent.id">
+<% } %>
+<% if ( hasActivities ) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
    } else {
      if (!uicomponent.isExtendLoader()) {
        %>
-        <div class="NoActivity">$labelNotAnyUpdatesPostedYet</div>
+        <div class="noActivity">$labelNotAnyUpdatesPostedYet</div>
        <%
      }
    }
+   
   if(uicomponent.id.equals("UIActivitiesLoader")) {
-%>
-<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>" class="ActivitiesLoader"></div>
+  %>
+  <%
+    if(!uicomponent.isExtendLoader()){
+      %>
+      	<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>"></div>
+        
+      <%
+    }
+  %>
 <%} %>
-<div class="BottomContainer"></div>
+<div class="bottomContainer"></div>
 </div>
