@@ -25,4 +25,10 @@ public class JCRProperties {
 
   public static final PropertyLiteralExpression<String> path = new PropertyLiteralExpression<String>(String.class, "jcr:path");
   public static final PropertyLiteralExpression<String> id = new PropertyLiteralExpression<String>(String.class, "jcr:uuid");
+  
+  public static final PropertyLiteralExpression<String> JCR_EXCERPT = new PropertyLiteralExpression<String>(String.class, "rep:excerpt()");
+  public static final PropertyLiteralExpression<String> JCR_RELEVANCY = new PropertyLiteralExpression<String>(String.class, "jcr:score");
+  
+  public static final String PROFILE_NODE_TYPE = "soc:profiledefinition";
+  public static final String SPACE_NODE_TYPE = "soc:spacedefinition";
 }

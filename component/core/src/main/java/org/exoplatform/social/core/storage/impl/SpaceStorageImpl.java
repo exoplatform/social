@@ -49,6 +49,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
+import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
@@ -178,7 +179,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         builder.orderBy(SpaceEntity.createdTime.getName(), ordering);
         break;
       case RELEVANCY:
-        // TODO : implement relevancy order, let's do the same as title for now
+        builder.orderBy(JCRProperties.JCR_RELEVANCY.getName(), ordering);
       case TITLE:
         builder.orderBy(SpaceEntity.name.getName(), ordering);
         break;
