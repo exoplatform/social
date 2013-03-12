@@ -1021,16 +1021,16 @@ public class CachedActivityStorage implements ActivityStorage {
   }
 
   @Override
-  public int getNumberOfSpaceActivities(final Identity ownerIdentity) {
+  public int getNumberOfSpaceActivities(final Identity spaceIdentity) {
     //
     ActivityCountKey key =
-        new ActivityCountKey(new IdentityKey(ownerIdentity), ActivityType.SPACE);
+        new ActivityCountKey(new IdentityKey(spaceIdentity), ActivityType.SPACE);
 
     //
     return activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
-            return new IntegerData(storage.getNumberOfUserSpacesActivities(ownerIdentity));
+            return new IntegerData(storage.getNumberOfSpaceActivities(spaceIdentity));
           }
         },
         key)
