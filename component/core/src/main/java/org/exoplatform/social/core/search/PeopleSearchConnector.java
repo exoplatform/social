@@ -91,6 +91,8 @@ public class PeopleSearchConnector extends AbstractSocialSearchConnector {
             getRelevancy(row));
         results.add(result);
       }
+    } catch (IllegalArgumentException aex) {
+      LOG.warn(aex.getMessage());
     } catch (Exception e) {
       LOG.error(e);
     }
