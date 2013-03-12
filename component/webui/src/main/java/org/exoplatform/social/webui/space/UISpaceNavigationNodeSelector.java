@@ -48,6 +48,7 @@ import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -468,7 +469,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       Page page = (pageId != null) ? dataService.getPage(pageId) : null;
       if (page != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
-        if (!userACL.hasPermission(page)) {
+        SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
+        UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
+        if (!(spaceService.isManager(uiSpaceNavigationManagement.getSpace(), Utils.getViewerRemoteId()) 
+            || userACL.hasPermission(page))) {
           uiApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.UserNotPermission",
                                                   new String[] { pageId },
                                                   1));
