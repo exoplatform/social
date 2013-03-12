@@ -212,7 +212,7 @@
 				<% } %>
 				<div class="uiBox roundedBottom introBox linkShare">
 					<div class="clearfix">
-						<% if (embedHtml == null || link != "") { %>
+						<% if (embedHtml == null && link.length() != 0) { %>
 							   <a href="javascript:void(0);" class="pull-left avatar">$link</a>
 						  <% } %>
 						  <div class="$linkClass text">
