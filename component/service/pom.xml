@@ -60,10 +60,10 @@
       <artifactId>commons-webui-component</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.jboss.logging</groupId>
           <artifactId>jboss-logging-spi</artifactId>
+          <groupId>org.jboss.logging</groupId>
         </exclusion>
-       </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>
