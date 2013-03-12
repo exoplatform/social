@@ -264,7 +264,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
         builder.orderBy(ProfileEntity.createdTime.getName(), ordering);
         break;
       case RELEVANCY:
-        // TODO : implement relevancy order, let's do the same as title for now
+        builder.orderBy(JCRProperties.JCR_RELEVANCY.getName(), ordering);
       case TITLE:
         builder.orderBy(ProfileEntity.fullName.getName(), ordering);
         break;
@@ -1081,8 +1081,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     whereExpression
         .like(JCRProperties.path, getProviderRoot().getProviders().get(
                                                     providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
-.and()
-.not().equals(ProfileEntity.deleted, "true");
+        .and().not().equals(ProfileEntity.deleted, "true");
 
     StorageUtils.applyExcludes(whereExpression, excludedIdentityList);
     StorageUtils.applyFilter(whereExpression, profileFilter);

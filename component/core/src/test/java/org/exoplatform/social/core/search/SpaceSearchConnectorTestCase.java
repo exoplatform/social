@@ -119,7 +119,8 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
     Collection<SearchResult> cFoo = spaceSearchConnector.search(context, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "ASC");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
-    assertEquals("foo description", rFoo.getExcerpt());
+    assertTrue(rFoo.getExcerpt().indexOf("foo description") >= 0);
+    assertTrue(rFoo.getRelevancy() > 0);
     log.info(" rFoo.getUrl() " + rFoo.getUrl());
     assertEquals("/portal/g/:spaces:foo/foo", rFoo.getUrl());
     assertEquals(LinkProvider.SPACE_DEFAULT_AVATAR_URL, rFoo.getImageUrl());

@@ -111,7 +111,8 @@ public class PeopleSearchConnectorTestCase extends AbstractCoreTest {
     Collection<SearchResult> cFoo = peopleSearchConnector.search(null, "foo", Collections.EMPTY_LIST, 0, 10, "relevancy", "asc");
     SearchResult rFoo = cFoo.iterator().next();
     assertEquals("foo", rFoo.getTitle());
-    assertEquals("foo position", rFoo.getExcerpt());
+    assertTrue(rFoo.getExcerpt().indexOf("foo") >= 0);
+    assertTrue(rFoo.getRelevancy() > 0);
     assertEquals("foo@mail.com - +17889989 - Male", rFoo.getDetail());
 
     Profile pFoo = identityManager.getProfile(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "foo"));
