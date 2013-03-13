@@ -23,6 +23,8 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
@@ -72,6 +74,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
+  private static final String   SLASH = "/";
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   
   private Object locker = new Object();
@@ -275,6 +278,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   protected long getCurrentServerTime() {
     return Calendar.getInstance().getTimeInMillis();
+  }
+  
+  protected String getSitePath() {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    String siteName = portalRequestContext.getSiteName();
+    SiteType siteType = portalRequestContext.getSiteType();
+    return SLASH + siteType.getName() + SLASH + siteName + SLASH;
   }
   
   protected boolean hasActivities() {

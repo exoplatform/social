@@ -699,8 +699,12 @@ public class BaseUIActivity extends UIForm {
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
-
-      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+      if (activitiesContainer.getActivityList().size() == 0) {
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer
+          .getAncestorOfType(UIUserActivitiesDisplay.class));
+      } else {
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+      }
     }
   }
 

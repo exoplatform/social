@@ -23,6 +23,7 @@
 <%
   import org.exoplatform.social.webui.activity.UIActivitiesLoader;
   import org.exoplatform.webui.core.UIDropDownControl;
+  import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.webui.Utils;
   import java.util.Calendar;
 
@@ -42,17 +43,41 @@
                   
   jsManager.require("SHARED/jquery", "jq").addScripts(script);
   
-    //
-    def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
-    def noUpdates = _ctx.appRes("UIUserActivitiesDisplay.label.No_Updates");
-    def updates = _ctx.appRes("UIUserActivitiesDisplay.label.Updates");
-    def selectedTab = uicomponent.getSelectedDisplayMode().toString();
-    def cookieName = uicomponent.getCookiesKey(selectedTab);
-    
-    noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
-    def currentRemoteId = Utils.getViewerRemoteId();
-    def currentServerTime = uicomponent.getCurrentServerTime();
-    //def isOnMyActivities = uicomponent.isOnMyActivities();
+  //
+  def composer_Hint_Text = _ctx.appRes("UIActivity.label.Composer_Hint_Text");
+  def sitePath = uicomponent.getSitePath();
+  def wikis_link = "<a href='${sitePath}wiki'>wikis</a>";
+  def forums_link = "<a href='${sitePath}forum'>forums</a>";
+  def calendars_link = "<a href='${sitePath}calendar'>calendars</a>";
+  def documents_link = "<a href='${sitePath}documents'>documents</a>";
+  def spaces_link = "<a href='${sitePath}all-spaces'>spaces</a>";
+  def iOS_App_Store_link = "<a href='https://itunes.apple.com/fr/app/exo-platform-3.5/id410476273?mt=8'>iOS App Store </a>";
+  def google_play = "<a href='https://play.google.com/store/apps/details?id=org.exoplatform'>Google Play</a>";
+  
+  def what_are_powerful_apps = _ctx.appRes("UIActivity.label.What_are_powerful_apps");
+  def what_are_powerful_apps_details = _ctx.appRes("UIActivity.label.What_are_powerful_apps_details")
+                                       .replace("{wikis_link}", wikis_link)
+                                       .replace("{forums_link}", forums_link)
+                                       .replace("{calendars_link}", calendars_link)
+                                       .replace("{documents_link}", documents_link);
+  def how_working_places_are_organized = _ctx.appRes("UIActivity.label.How_working_places_are_organized");
+  def how_working_places_are_organized_details = _ctx.appRes("UIActivity.label.How_working_places_are_organized_details")
+                                                 .replace("{spaces_link}", spaces_link);
+  def collaborate_from_anywhere_at_anytime = _ctx.appRes("UIActivity.label.Collaborate_from_anywhere_at_anytime");
+  def collaborate_from_anywhere_at_anytime_details = _ctx.appRes("UIActivity.label.Collaborate_from_anywhere_at_anytime_details")
+                                                     .replace("{iOS_App_Store_Link}", iOS_App_Store_link)
+                                                     .replace("{Google_Play}", google_play);  
+
+	//
+	def numberOfUpdatedActivities = uicomponent.getNumberOfUpdatedActivities();
+	def noUpdates = _ctx.appRes("UIUserActivitiesDisplay.label.No_Updates");
+	def updates = _ctx.appRes("UIUserActivitiesDisplay.label.Updates");
+	def selectedTab = uicomponent.getSelectedDisplayMode().toString();
+	def cookieName = uicomponent.getCookiesKey(selectedTab);
+	
+	noUpdates = noUpdates.replaceAll("'","&#39;").replaceAll('"',"&#34;");
+	def currentRemoteId = Utils.getViewerRemoteId();
+	def currentServerTime = uicomponent.getCurrentServerTime();
 
   if ( Utils.isHomePage() ) 
   {
@@ -70,8 +95,84 @@
   } 
   
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+  
+  //
+  def isWelcomeActivity = !hasActivities;
+  def welcomeActivityAvatar = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;  
+  def welcomeActivityName = _ctx.appRes("UIActivity.label.Welcome_Activity_Author");
+  def welcomeActivityPostedTime = _ctx.appRes("UIActivity.label.Welcome_Activity_Posted_Time");
+  String hint_text_script = "jq('#ComposerHintCloseBtn').on('click', function() {" +
+                            "  jq(this).parent().fadeOut('slow');" +
+                            "});";
+        
+  jsManager.require("SHARED/jquery", "jq").addScripts(hint_text_script);
 %>
 <div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
+<% if (isWelcomeActivity) { %>
+  <div>
+    $composer_Hint_Text
+    <a id="ComposerHintCloseBtn" href="javascript:void(0);">x</a>
+  </div>
+  <div class="clearfix activityTop">
+    <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
+  </div>
+  <div id="UIActivitiesLoader" class="uiActivityStream clearfix">
+    <div id="UIActivitiesContainer_welcomeActivity" class="UIActivitiesContainer_welcomeActivity">
+      <div class="activityStream uiDefaultActivity" id="welcomeActivity">
+			  <div class="activityTimeLine pull-left">
+			    <div class="activityAvatar avatarCircle">
+			        <a title="$welcomeActivityName" href="javascript:void(0);">
+			          <img alt="$welcomeActivityName" src="$welcomeActivityAvatar"/>
+			        </a>
+			    </div>
+			  </div><!--end activityTimeLine-->
+			  
+			  <div class="boxContainer" id="boxContainer">
+			    <div id="ContextBoxWelcomeActivity" class="uiBox contentBox">
+			        <div id="ActivityContextBoxWelcomeActivity">
+			          <div class="heading">
+			                <span class="arrowLeft"></span>
+			                <div class="author">
+			                    <a title="$welcomeActivityName" href="javascript:void(0);">$welcomeActivityName</a>                
+			                </div>
+			                <div class="dataInfor">
+			                    <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$welcomeActivityPostedTime</span> 
+			                </div>
+			            </div><!--end heading-->
+			            
+			            <!-- Welcome content -->
+			            <div class="description">
+				            <div><strong>$what_are_powerful_apps</strong></div>
+				            <div>$what_are_powerful_apps_details</div>
+				            <div><strong>$how_working_places_are_organized</strong></div>
+		                <div>$how_working_places_are_organized_details</div>
+		                <div><strong>$collaborate_from_anywhere_at_anytime</strong></div>
+		                <div>$collaborate_from_anywhere_at_anytime_details</div>
+			            </div>
+			            <!-- End Welcome content-->
+			            
+			            <div class="actionBar clearfix ">
+			                    <ul class="pull-right statusAction">
+			                        <li>
+			                            <a href="javascript:void(0);">
+			                                <i class="uiIconComment uiIconLightGray"></i>&nbsp;0
+			                            </a> 
+			                        </li>
+			                        <li>
+			                            <a href="javascript:void(0);">
+			                              <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;0
+			                            </a>
+			                        </li>
+			                    </ul>   
+			            </div><!--end actionBar-->                  
+			        </div><!--end #ActivityContextBoxWelcomeActivity-->
+			    </div> <!--end ContextBoxWelcomeActivity-->  
+			  </div> <!-- #boxContainer-->    
+			</div><!--activityStream-->
+    </div>
+  </div>
+  <div class="activityBottom"><span></span></div>
+<% } else { %>
  <% if (Utils.isHomePage()) { %>
 	<div class="clearfix activityTop">
     <div class="pull-right">
@@ -90,4 +191,5 @@
   <% if ( hasActivities ) { %>
   	<div class="activityBottom"><span></span></div>
   <% } %>
+<% } %>
 </div>
