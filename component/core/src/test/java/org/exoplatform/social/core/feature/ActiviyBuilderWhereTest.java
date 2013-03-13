@@ -75,7 +75,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testWhereOwners() throws Exception {
     ActivityFilter filter = new ActivityFilter() {};
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
     List<Identity> identities = new ArrayList<Identity>(2);
     identities.add(demoIdentity);
     identities.add(rootIdentity);
@@ -89,7 +89,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testFeedNewerOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -111,7 +111,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testFeedWithMentions() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     //
     List<Identity> identities = new ArrayList<Identity>(2);
@@ -128,7 +128,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testFeedOlderOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -164,7 +164,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testFeedWithMultiThread() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_VIEWED_RANGE_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.viewedRange();
     long accessPoint = Calendar.getInstance().getTime().getTime();
     //
     List<Identity> identities = null;
@@ -191,7 +191,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserNewerOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -212,7 +212,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserOlderOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -233,7 +233,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     Identity spaceIdentity = new Identity("space_new1");
     spaceIdentity.setRemoteId("space_new1");
@@ -254,7 +254,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceNewerOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -276,7 +276,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testUserSpaceOlderOwner() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -298,7 +298,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testConnectionNewerOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
@@ -320,7 +320,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   public void testConnectionOlderOwners() throws Exception {
     ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.ACTIVITY_BUILDER;
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
     
