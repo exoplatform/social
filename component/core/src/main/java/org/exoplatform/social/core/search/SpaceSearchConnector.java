@@ -86,7 +86,8 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
         SearchResult result = new SearchResult(
             getSpaceUrl(context, s, portalName),
             s.getDisplayName(),
-            getExcerpt(row),
+            //getExcerpt(row),
+            s.getDescription(),
             sb.toString(),
             s.getAvatarUrl() != null ? s.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL,
             s.getCreatedTime(),
