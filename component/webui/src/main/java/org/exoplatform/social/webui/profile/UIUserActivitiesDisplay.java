@@ -103,8 +103,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public UIUserActivitiesDisplay() throws Exception {
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
     displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_ACTIVITIES.toString()));
-    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.CONNECTIONS.toString()));
     displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.MY_SPACE.toString()));
+    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.CONNECTIONS.toString()));
     displayModes.add(new SelectItemOption<String>("My_Status", DisplayMode.MY_ACTIVITIES.toString()));
     
     UIDropDownControl uiDropDownControl = addChild(UIDropDownControl.class, "DisplayModesDropDown", null);
