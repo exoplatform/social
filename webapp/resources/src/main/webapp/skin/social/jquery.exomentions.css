@@ -82,7 +82,7 @@
 	color: #999999;
 	font-size: 13px;
 	height: 28px;
-	padding: 10px;
+	padding: 5px 8px;
 }
 
 .exo-mentions .replaceTextArea:focus {
@@ -91,7 +91,7 @@
 }
 
 .activityStream  .exo-mentions .replaceTextArea { 
-	padding: 3px 6px;
+	padding: 3px 5px;
 }
 
 .exo-mentions .replaceTextArea span {

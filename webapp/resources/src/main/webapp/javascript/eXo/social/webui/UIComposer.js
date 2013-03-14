@@ -85,7 +85,7 @@
         actionMention : 'mentionButton',
         elasticStyle : {
           maxHeight : '64px',
-          minHeight : '64px'
+          minHeight : '35px'
         },
         messages : window.eXo.social.I18n.mentions
       });
