@@ -74,7 +74,7 @@
               <property name="jbosscache-cluster-name" value="jcrindexer${container.name.suffix}" />
               <property name="jbosscache-shareable" value="true" />
               <property name="max-volatile-time" value="60" />
-              <property name="indexing-configuration-path" value="war:/conf/social-extension/jcr/indexing-configuration.xml" />
+              <!-- <property name="indexing-configuration-path" value="war:/conf/social-extension/jcr/indexing-configuration.xml" /> -->
             </properties>
           </query-handler>
           <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
