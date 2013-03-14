@@ -245,7 +245,7 @@ public class BaseUIActivity extends UIForm {
         comments = activityCommentsListAccess.loadAsList(0, commentsSize >= DEFAULT_LIMIT ? DEFAULT_LIMIT : commentsSize);
       }
     }
-    return comments;
+    return getI18N(comments);
   }
 
   public List<ExoSocialActivity> getAllComments() {
