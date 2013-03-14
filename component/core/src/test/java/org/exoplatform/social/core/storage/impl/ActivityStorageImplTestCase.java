@@ -131,6 +131,11 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(activity.getId(), got.getId());
     assertEquals(activity.getTitle(), got.getTitle());
 
+    //
+    ExoSocialActivity act = new ExoSocialActivityImpl();
+    act.setTitle("@#$%^&*(()_+:<>?");
+    activityStorage.saveActivity(rootIdentity, act);
+    assertNotNull(act.getId());
   }
 
   /**
