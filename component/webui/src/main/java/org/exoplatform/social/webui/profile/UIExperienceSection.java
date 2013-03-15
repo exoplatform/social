@@ -48,7 +48,7 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
+import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
 /**
@@ -649,10 +649,10 @@ public class UIExperienceSection extends UIProfileSection {
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
       .addValidator(MandatoryValidator.class)
-      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
+      .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 3, 60));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
       .addValidator(MandatoryValidator.class)
-      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
+      .addValidator(PersonalNameValidator.class).addValidator(StringLengthValidator.class, 3, 60));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
     description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));

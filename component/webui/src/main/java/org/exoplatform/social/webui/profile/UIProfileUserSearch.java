@@ -426,7 +426,7 @@ public class UIProfileUserSearch extends UIForm {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent()
-              .createEvent(SEARCH, Event.Phase.DECODE, ctx);
+              .createEvent(SEARCH, Event.Phase.PROCESS, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
