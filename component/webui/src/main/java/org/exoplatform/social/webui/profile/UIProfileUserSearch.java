@@ -374,6 +374,7 @@ public class UIProfileUserSearch extends UIForm {
       filter.setExcludedIdentityList(excludedIdentityList);
       
       uiSearch.invokeSetBindingBean(filter);
+      normalizeInputValues(filter);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
       String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
@@ -430,8 +431,26 @@ public class UIProfileUserSearch extends UIForm {
         searchEvent.broadcast();
       }
     }
-
     
+    private void normalizeInputValues(ProfileFilter filter) {
+      String name = filter.getName();
+      String pos = filter.getPosition();
+      String skills = filter.getSkills();
+      
+      if (name != null & name.length() > 0) {
+        filter.setName(Utils.normalizeString(name));
+      }
+      
+      if (pos != null & pos.length() > 0) {
+        filter.setPosition(Utils.normalizeString(pos));
+      }
+      
+      if (skills != null & skills.length() > 0) {
+        filter.setSkills(Utils.normalizeString(skills));
+      }
+    }
+
+
     /**
      * Checks input values follow regular expression.
      *

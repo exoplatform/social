@@ -520,4 +520,18 @@ public class Utils {
       buf.append( str.substring( 0, head ) ).append( "..." );
       return buf.toString();
   }
+  
+  /**
+   * Trim space characters at the beginning and end of string. Replace multiple spaces by a single space character.
+   * 
+   * @param str
+   * @return
+   * @since 4.0.0-RC1
+   */
+  public static String normalizeString(String str) {
+    if(str != null) {
+      return str.trim().replaceAll("(\\s){2,}"," ");
+    }
+    return null;
+  }
 }
