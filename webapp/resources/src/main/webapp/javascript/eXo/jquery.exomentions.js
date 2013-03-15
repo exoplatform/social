@@ -34,7 +34,12 @@
     firstShowAll : false,
     selectFirst : true,
     elastic : true,
-    elasticStyle : {},
+    elasticStyle : {
+      maxHeight : '0px',
+      minHeight : '0px',
+      marginButton: '4px',
+      enableMargin: false
+    },
     idAction : "",
     actionLink : null,
     classes : {
@@ -1296,35 +1301,51 @@
   $.fn.extend({
     elastic : function(settings) {
       elasticStyle = settings.elasticStyle;
-      if (elasticStyle && typeof elasticStyle === 'object') {
+      if (elasticStyle && typeof elasticStyle === 'object' && parseInt(elasticStyle.maxHeight) > 0) {
         return this.each(function() {
+          
           var delta = parseInt(elasticStyle.maxHeight) - parseInt(elasticStyle.minHeight);
           $(this).css({
             'height' : elasticStyle.minHeight,
-            'marginBottom' : (delta + 4) + 'px'
+            'marginBottom' : (delta + elasticStyle.marginButton) + 'px'
           });
-          $(this).data('elasticStyle', {
-            'maxHeight' : elasticStyle.maxHeight,
-            'minHeight' : elasticStyle.minHeight,
-            'delta' : delta
-          }).on('focus keyup', function() {
-            var maxH = $(this).data('elasticStyle').maxHeight;
-            if ($(this).height() < parseInt(maxH)) {
-              $(this).animate({
-                'height' : maxH,
-                'marginBottom' : '4px'
-              }, 100, function() {});
-            }
-          }).on('blur', function() {
-            var val = $.trim($(this).html());
-            val = utils.getSimpleValue(val);
-            if (val.length == 0) {
-              $(this).animate({
-                'height' : $(this).data('elasticStyle').minHeight,
-                'marginBottom' : ($(this).data('elasticStyle').delta + 4) + 'px'
-              }, 300, function() {});
-            }
-          });
+          
+          if(delta > 0) {
+            $(this).data('elasticStyle', {
+              'maxHeight' : elasticStyle.maxHeight,
+              'minHeight' : elasticStyle.minHeight,
+              'marginButton' : elasticStyle.marginButton,
+              'enableMargin' : String(elasticStyle.enableMargin),
+              'delta' : delta
+            });
+            $(this).on('focus keyup', function() {
+              var elasticStyle_ = $(this).data('elasticStyle');
+              if ($(this).height() < parseInt(elasticStyle_.maxHeight)) {
+                var animateCSS = {'height' : elasticStyle_.maxHeight};
+                if(elasticStyle_.enableMargin === 'true') {
+                  animateCSS = {
+                    'height' : elasticStyle_.maxHeight,
+                    'marginBottom' : elasticStyle_.marginButton
+                  };
+                }
+                $(this).animate(animateCSS, 100, function() {});
+              }
+            }).on('blur', function() {
+              var val = $.trim($(this).html());
+              val = utils.getSimpleValue(val);
+              if (val.length == 0) {
+                var elasticStyle_ = $(this).data('elasticStyle');
+                var animateCSS = {'height' : elasticStyle_.minHeight};
+                if(elasticStyle_.enableMargin === 'true') {
+                  animateCSS = {
+                    'height' : elasticStyle_.maxHeight,
+                    'marginBottom' : (elasticStyle_.delta + parseInt(elasticStyle_.marginButton)) + 'px'
+                  };
+                }
+                $(this).animate(animateCSS, 300, function() {});
+              }
+            });
+          }
         });
       }
     }
