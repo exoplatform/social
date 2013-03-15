@@ -117,16 +117,12 @@
                   <%if (childs.get(i + 5).isRendered()) {
                     uiform.renderField(childs.get(i + 5)); %>
                   <%}%>
-				  
+				  <%if (childs.get(i + 6).isRendered()) {%>
+					  <label for="<%=childs.get(i + 6).getId()%>"><%uiform.renderField(childs.get(i + 6));%><%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></label>
+				  <%}%>
                 </div>
               </div>
-			  <%if (childs.get(i + 6).isRendered()) {%>
-			  <div class="control-group">
-				<div class="controls">
-				  <label for="<%=childs.get(i + 6).getId()%>"><%uiform.renderField(childs.get(i + 6));%><%=_ctx.appRes(uicomponent.getName() + ".label.StillInPosition")%></label>
-				</div>
-			  </div>
-			  <%}%>
+			  
         </div>
    <%} //end for
      } else {
