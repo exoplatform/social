@@ -117,7 +117,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(100)
   public void testSaveActivity() throws Exception {
 
     //
