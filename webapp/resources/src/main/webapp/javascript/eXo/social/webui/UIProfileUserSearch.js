@@ -130,6 +130,7 @@ var UIProfileUserSearch = {
 	        var keynum = e.keyCode || e.which;  
 	        if(keynum == UIProfileUserSearch.KEY.ENTER) {
 	          searchBtn.click();
+	          event.preventDefault();
 	        } else {
 	        }
       }

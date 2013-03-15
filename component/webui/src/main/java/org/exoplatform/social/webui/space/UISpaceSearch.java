@@ -258,6 +258,7 @@ public class UISpaceSearch extends UIForm {
     uiPopup.setShow(false);
     uiPopup.setWindowSize(400, 0);
     addChild(uiPopup);
+    setSubmitAction("return false;");
   }
 
   /**
@@ -284,7 +285,7 @@ public class UISpaceSearch extends UIForm {
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
         uiSpaceSearch.setNewSearch(true);
 
-        Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.DECODE, ctx);
+        Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
         if (searchEvent != null) {
           searchEvent.broadcast();
         }

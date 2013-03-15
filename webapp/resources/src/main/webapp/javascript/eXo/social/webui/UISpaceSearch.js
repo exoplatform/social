@@ -50,7 +50,17 @@
       searchEl.placeholder();
 			
 		  $(searchEl).autosuggest(buildURL(), {onSelect:function(){searchBtn.click();}, defaultVal:defaultSpaceNameAndDesc});
-
+      
+      $(searchEl).keydown(function(event) {
+        var e = event || window.event;
+        var keynum = e.keyCode || e.which;  
+        if(keynum == 13) {
+          searchBtn.click();
+          event.preventDefault();
+        } else {
+        }
+      });
+      
       function buildURL() {
 	      restContextName = (restContextName) ? restContextName : UISpaceSearch.DEFAULT_REST_INFO.CONTEXT_NAME;
 	      var restURL = "/" + restContextName + "/" + portalName + UISpaceSearch.DEFAULT_REST_INFO.PATH;

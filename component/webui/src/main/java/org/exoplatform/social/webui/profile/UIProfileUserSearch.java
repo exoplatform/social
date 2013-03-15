@@ -319,6 +319,7 @@ public class UIProfileUserSearch extends UIForm {
     addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
+    setSubmitAction("return false;");
   }
 
   protected void resetUIComponentValues() {

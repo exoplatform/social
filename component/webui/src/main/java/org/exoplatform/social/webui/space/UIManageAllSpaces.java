@@ -388,7 +388,7 @@ public class UIManageAllSpaces extends UIContainer {
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
       if (charSearch == null) {
-        uiManageAllSpaces.setSelectedChar(SEARCH_ALL);
+        uiManageAllSpaces.setSelectedChar(null);
       } else {
         ResourceBundle resApp = ctx.getApplicationResourceBundle();
         String defaultSpaceNameAndDesc = resApp.getString(uiManageAllSpaces.getId() + ".label.DefaultSpaceNameAndDesc");

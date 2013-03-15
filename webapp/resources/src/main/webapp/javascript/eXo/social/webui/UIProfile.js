@@ -14,7 +14,7 @@ var UIProfile = {
       positionEl.on('keydown', function(event) {
         if ((event.keyCode || event.which) == UIProfile.KEYS.ENTER) {
           saveButtonEl.click();
-          event.stopPropagation()
+          event.preventDefault();
           return;
         }
       });
