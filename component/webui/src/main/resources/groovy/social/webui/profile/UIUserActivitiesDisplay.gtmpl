@@ -103,7 +103,6 @@
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
   
   //
-  def isWelcomeActivity = !hasActivities;
   def welcomeActivityAvatar = LinkProvider.PROFILE_DEFAULT_AVATAR_URL;  
   def welcomeActivityName = _ctx.appRes("UIActivity.label.Welcome_Activity_Author");
   def welcomeActivityPostedTime = _ctx.appRes("UIActivity.label.Welcome_Activity_Posted_Time");
@@ -114,7 +113,7 @@
   jsManager.require("SHARED/jquery", "jq").addScripts(hint_text_script);
 %>
 <div id="$uicomponent.id" class="uiUserActivitiesDisplay clearfix"> <!-- use js to add beside one class that named "notSeen" if having some new updates  -->
-<% if (isWelcomeActivity) { %>
+<% if (uicomponent.isWelcomeActivity()) { %>
   <div>
     $composer_Hint_Text
     <a id="ComposerHintCloseBtn" href="javascript:void(0);">x</a>

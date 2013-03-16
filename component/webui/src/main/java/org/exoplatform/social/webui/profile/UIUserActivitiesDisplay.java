@@ -418,6 +418,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
     this.postActivity = postActivity;
   }
 
+  protected boolean isWelcomeActivity() {
+    boolean hasActivities = getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+    boolean isAllActivitiesModeOnHomePage = DisplayMode.ALL_ACTIVITIES.equals(getSelectedDisplayMode());
+    
+    return Utils.isHomePage() ? !hasActivities && isAllActivitiesModeOnHomePage : !hasActivities;
+  }
+  
   private long getLastUpdatedNum(String mode) {
     String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     String strValue = Utils.getCookies(cookieKey);
