@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -64,6 +65,10 @@ public class UISpaceSearch extends UIForm {
    */
   public static final String SEARCH = "Search";
 
+  private static final String ASTERIK_STR = "*";
+  
+  private static final String PERCENTAGE_STR = "%";
+  
   /**
    * DEFAULT SPACE NAME SEARCH.
    */
@@ -274,12 +279,13 @@ public class UISpaceSearch extends UIForm {
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
       String defaultSpaceNameAndDesc = resApp.getString(uiSpaceSearch.getId() + ".label.DefaultSpaceNameAndDesc");
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
-      if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc)) {
+      if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc) || ASTERIK_STR
+          .equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
         uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
         uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
-          searchCondition = searchCondition.trim();
+          searchCondition = Utils.normalizeString(searchCondition);
         }
         
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
