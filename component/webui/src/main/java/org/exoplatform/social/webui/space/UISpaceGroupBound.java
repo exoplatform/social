@@ -17,9 +17,12 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.MembershipHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.webui.UISocialGroupSelector;
@@ -62,6 +65,7 @@ public class UISpaceGroupBound extends UIContainer {
   private final String USE_EXISTING_GROUP = "UseExistingGroupCheckBox";
   private final String POPUP_GROUP_BOUND = "UIPopupGroupBound";
   private final String SELECTED_GROUP = "groupId";
+  private final String ANY_MEMBERSHIP_TYPE = "*";
 
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
@@ -111,8 +115,26 @@ public class UISpaceGroupBound extends UIContainer {
     OrganizationService service = getApplicationComponent(OrganizationService.class);
     RequestContext reqCtx = RequestContext.getCurrentInstance();
     String remoteUser = reqCtx.getRemoteUser();
-    Collection groups = service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils.getUserACL().getAdminMSType());
-    return (groups.size() > 0);    
+    
+    // super user or not
+    if (service.getGroupHandler().findGroupByMembership(remoteUser, SpaceUtils
+        .getUserACL().getAdminMSType()).size() > 0) {
+      return true;
+    }
+    
+    // has any membership type
+    OrganizationService organizationService = SpaceUtils.getOrganizationService();
+    MembershipHandler memberShipHandler = organizationService.getMembershipHandler();
+    Collection<Membership> memberships = memberShipHandler.findMembershipsByUser(remoteUser);
+    Iterator<Membership> membershipsIt = memberships.iterator();
+    while (membershipsIt.hasNext()) {
+      Membership membership = (Membership) membershipsIt.next();
+      if (ANY_MEMBERSHIP_TYPE.equals(membership.getMembershipType())) {
+        return true;
+      }
+    }
+    
+    return false;    
   }
   
   /**

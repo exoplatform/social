@@ -72,6 +72,8 @@ import org.exoplatform.webui.form.UIForm;
 })
 public class UISocialGroupSelector extends UIContainer {
   final static public String MANAGER = "manager";
+  final static public String ANY = "*";
+  
   private static Log LOG = ExoLogger.getLogger(UISocialGroupSelector.class);
   private Group selectGroup_;
 
@@ -111,9 +113,8 @@ public class UISocialGroupSelector extends UIContainer {
     if (groups.size() > 0) {
       for (Object child : groups) {
         Group childGroup = (Group) child;
-        Membership membership = service.getMembershipHandler()
-            .findMembershipByUserGroupAndType(remoteUser,
-                childGroup.getId(), MANAGER);
+        Membership membership = getMemberShip(remoteUser, childGroup.getId());
+            
         if (membership != null) {
           listGroup.add(childGroup.getId());
         }
@@ -221,9 +222,7 @@ public class UISocialGroupSelector extends UIContainer {
         ;
         Membership membership = null;
         try {
-          membership = orgService.getMembershipHandler()
-              .findMembershipByUserGroupAndType(remoteUser,
-                  group.getId(), MANAGER);
+          membership = getMemberShip(remoteUser, group.getId());
         } catch (Exception e) {
           LOG.warn("Error when finding membership for filtering tree node", e);
         }
@@ -262,9 +261,7 @@ public class UISocialGroupSelector extends UIContainer {
         Membership membership = null;
         for (Group group : groups) {
           try {
-            membership = orgService.getMembershipHandler()
-                .findMembershipByUserGroupAndType(remoteUser,
-                    group.getId(), MANAGER);
+            membership = getMemberShip(remoteUser, group.getId());
           } catch (Exception e) {
             LOG.warn("Error when filtering tree node", e);
           }
@@ -349,5 +346,20 @@ public class UISocialGroupSelector extends UIContainer {
         event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
       }
     }
+  }
+  
+  private Membership getMemberShip(String remoteUser, String id) throws Exception {
+    OrganizationService service = getApplicationComponent(OrganizationService.class);
+    Membership membership = service.getMembershipHandler()
+    .findMembershipByUserGroupAndType(remoteUser,
+        id, MANAGER);
+    
+    if (membership == null) {
+      membership = service.getMembershipHandler()
+          .findMembershipByUserGroupAndType(remoteUser,
+              id, ANY);
+    }
+    
+    return membership;
   }
 }
