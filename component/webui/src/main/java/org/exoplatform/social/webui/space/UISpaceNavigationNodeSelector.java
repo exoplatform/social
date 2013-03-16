@@ -33,6 +33,9 @@ import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
@@ -571,10 +574,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
   static public class PasteNodeActionListener extends BaseActionListener<UIRightClickPopupMenu> {
     private UISpaceNavigationNodeSelector uiNodeSelector;
-
-    private DataStorage                   dataStorage;
-
-    private UserPortalConfigService       service;
+    
+    private PageService pageService;
 
     public void execute(Event<UIRightClickPopupMenu> event) throws Exception {
       WebuiRequestContext context = event.getRequestContext();
@@ -631,8 +632,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         return;
       }
 
-      service = uiNodeSelector.getApplicationComponent(UserPortalConfigService.class);
-      dataStorage = uiNodeSelector.getApplicationComponent(DataStorage.class);
+      pageService = uiNodeSelector.getApplicationComponent(PageService.class);
       pasteNode(sourceNode, targetNode, sourceNode.isCloneNode());
       uiNodeSelector.selectNode(targetNode);
     }
@@ -663,11 +663,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
     private String clonePageFromNode(TreeNode node, String pageName, SiteKey siteKey) throws Exception {
       String pageId = node.getPageRef();
       if (pageId != null) {
-        Page page = dataStorage.getPage(pageId);
+        PageKey sourceKey = PageKey.parse(pageId);
+        PageContext page = pageService.loadPage(sourceKey);
+        
         if (page != null) {
-          page = dataStorage.clonePage(pageId, siteKey.getTypeName(), siteKey.getName(), pageName);
-          return page.getPageId();
-        }
+          page = pageService.clone(sourceKey, siteKey.page(pageName));
+          return page.getKey().format();
+         }
       }
       return null;
     }
