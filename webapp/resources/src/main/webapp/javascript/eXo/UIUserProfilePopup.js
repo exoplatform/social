@@ -297,7 +297,11 @@
 							            "    </tbody>" +
 							            "</table>";
 							        if (json.activityTitle) {
-							            popupContent += "<blockquote>" + json.activityTitle + "</blockquote>";
+							          var stringTitle = json.activityTitle;
+							          if (stringTitle.length > 120) {
+							            stringTitle = stringTitle.substring(0,120) + " ...";
+							          }
+							            popupContent += "<blockquote>" + stringTitle + "</blockquote>";
 							        }
 							    
 							        if (currentViewerId != ownerUserId) {
