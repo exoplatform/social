@@ -179,13 +179,13 @@
       %>
         	  <label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div>
 			  <label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div>
-			  <% if (description != null || description.length() > 0) {%>
+			  <% if (description != null && description.length() > 0) {%>
 			  <label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div>
 			  <% } %>
-			  <% if (skills != null || skills.length() > 0) {%>
+			  <% if (skills != null && skills.length() > 0) {%>
 			  <label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div>
 			  <% } %>
-			  <% if (startDate != null || startDate.length() > 0) {%>
+			  <% if (startDate != null && startDate.length() > 0) {%>
 			  <label class="control-label"><strong>$startDateLabel</strong></label>
 			  <div class="controls">
 		        <%=uicomponent.displayDateTime(startDate)%>
@@ -194,7 +194,7 @@
 		        <% } %>
 		      </div>
 			  <% } %>
-			  <% if (endDate != null || endDate.length() > 0) {%>
+			  <% if (endDate != null && endDate.length() > 0) {%>
 		    <label class="control-label"><strong>$endDateLabel</strong></label><div class="controls"><%=uicomponent.displayDateTime(endDate)%></div>
 		    <% } %>
       
