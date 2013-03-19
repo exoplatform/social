@@ -434,7 +434,13 @@ public class IdentityManagerTest extends AbstractCoreTest {
    */
   public void testGetIdentitiesByProfileFilter() throws Exception {
     String providerId = OrganizationIdentityProvider.NAME;
-    populateData();
+    populateIdentities(5, true);
+    
+    populateData("root");
+    populateData("john");
+    populateData("mary");
+    populateData("raul");
+    populateData("ghost");
     
     ProfileFilter pf = new ProfileFilter();
     ListAccess idsListAccess = null;
@@ -447,50 +453,70 @@ public class IdentityManagerTest extends AbstractCoreTest {
       pf.setFirstCharacterOfName('L');
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
       
       // Filter identity by name.
       pf.setFirstCharacterOfName('\u0000');
       pf.setName("FirstName");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
-      pf.setName("FirstName2");
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
+      pf.setName("FirstName root");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
       assertEquals("The number of identities must be " + idsListAccess.getSize(), 1, idsListAccess.getSize());
+      
+      //
       pf.setName("");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("*");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("n%me");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("n*me");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("%me");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("%name%");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("n%me");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("fir%n%me");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("noname");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
@@ -502,11 +528,15 @@ public class IdentityManagerTest extends AbstractCoreTest {
       pf.setPosition("dev");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities get by position must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities get by position must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setPosition("d%v");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities get by position must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities get by position must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setPosition("test");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
@@ -517,7 +547,7 @@ public class IdentityManagerTest extends AbstractCoreTest {
       pf.setPosition("");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities get by gender must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities get by gender must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
     }
@@ -527,7 +557,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
       pf.setPosition("*%");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
       assertNotNull("Identity List Access must not be null", idsListAccess);
-      assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 10, idsListAccess.getSize());
+      assertEquals("The number of identities get by profile filter must be " + idsListAccess.getSize(), 5, idsListAccess.getSize());
+      
+      //
       pf.setName("noname");
       pf.setPosition("*%");
       idsListAccess = identityManager.getIdentitiesByProfileFilter(providerId, pf, false);
@@ -539,15 +571,19 @@ public class IdentityManagerTest extends AbstractCoreTest {
     {
       ProfileFilter profileFilter = new ProfileFilter();
       ListAccess<Identity> identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
-      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+      assertEquals("identityListAccess.getSize() must return 5", 5, identityListAccess.getSize());
+      
+      //
       Identity testIdentity = populateIdentity("test", false);
       ListAccess<Identity> identityListAccess1 = identityManager.getIdentitiesByProfileFilter("organization", new ProfileFilter(), false);
-      assertEquals("identityListAccess1.getSize() must return 11", 11, identityListAccess1.getSize());
+      assertEquals(5, identityListAccess1.getSize());
       identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
-      assertEquals("identityListAccess.getSize() must return 11", 11, identityListAccess.getSize());
+      assertEquals(5, identityListAccess.getSize());
+      
+      //
       identityManager.deleteIdentity(testIdentity);
       identityListAccess = identityManager.getIdentitiesByProfileFilter("organization", profileFilter, false);
-      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+      assertEquals(5, identityListAccess.getSize());
     }
 
     //Test with excluded identity list
@@ -558,9 +594,9 @@ public class IdentityManagerTest extends AbstractCoreTest {
       ProfileFilter profileFilter = new ProfileFilter();
       profileFilter.setExcludedIdentityList(excludedIdentities);
       ListAccess<Identity> identityListAccess = identityManager.getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, profileFilter, false);
-      assertEquals("identityListAccess.getSize() must return 10", 10, identityListAccess.getSize());
+      assertEquals(4, identityListAccess.getSize());
       Identity[] identityArray = identityListAccess.load(0, 100);
-      assertEquals("identityArray.length must be 10", 10, identityArray.length);
+      assertEquals(4, identityArray.length);
     }
   }
 
@@ -603,7 +639,27 @@ public class IdentityManagerTest extends AbstractCoreTest {
    *
    */
   private void populateData() {
-    populateIdentities(10, true);
+    populateIdentities(5, true);
+  }
+  
+  /**
+   * Populate list of identities.
+   *
+   */
+  private void populateData(String remoteId) {
+    String providerId = "organization";
+    Identity identity = new Identity(providerId, remoteId);
+    identityManager.saveIdentity(identity);
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, "FirstName " + remoteId);
+    profile.setProperty(Profile.LAST_NAME, "LastName" + remoteId);
+    profile.setProperty(Profile.FULL_NAME, "FirstName " + remoteId + " " +  "LastName" + remoteId);
+    profile.setProperty(Profile.POSITION, "developer");
+    profile.setProperty(Profile.GENDER, "male");
+
+    identityManager.saveProfile(profile);
+    identity.setProfile(profile);
+    tearDownIdentityList.add(identity);
   }
 
   /**
