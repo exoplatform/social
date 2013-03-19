@@ -169,11 +169,27 @@ public class LinkShare extends DefaultFilter {
   }
   
   /**
+   * Set new value for title.
+   * @param title
+   */
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  /**
    * gets description
    * @return description
    */
   public String getDescription() {
     return this.escapeSpecialCharacters(this.description);
+  }
+
+  /**
+   * Set new value for description.
+   * @param description
+   */
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   /**

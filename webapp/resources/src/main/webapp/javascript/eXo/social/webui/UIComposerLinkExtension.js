@@ -24,9 +24,11 @@
 	  HTTP: "http://",
 	  GRAY_COLOR: "gray",
 	  BLACK_COLOR: "black",
+	  SINGLE_COMMA: "single_comma",
+    DOUBLE_COMMA: "double_comma",
 	  changeLinkContent: function () {
 	    var link = decodeURI(this.linkData.link),
-	    title = this.linkData.title,
+	    title = this.linkData.title;
 	    image = this.linkData.image;
 	    description = this.linkData.description;
       var queryString = 'link=' + link + '&title=' + title 
@@ -108,6 +110,17 @@
 	    this.statsId = params.statsId || 'Stats';
 	    this.thumbnailCheckboxId = params.thumbnailCheckboxId || 'ThumbnailCheckbox';
 	    this.linkData = params.linkData || {};
+	    
+	    var comp = UIComposerLinkExtension;
+      if (this.linkData.title) {
+        this.linkData.title = this.linkData.title.replace(/comp.SINGLE_COMMA/g, "&#39;");
+        this.linkData.title = this.linkData.title.replace(/comp.DOUBLE_COMMA/g, "&quot;");
+      }
+      
+      if (this.linkData.description) { 
+        this.linkData.description = this.linkData.description.replace(/comp.SINGLE_COMMA/g, "&#39;");
+        this.linkData.description = this.linkData.description.replace(/comp.DOUBLE_COMMA/g, "&quot;");
+      }
 	    if (!this.attachUrl) {
 	      alert('error: attachUrl is null!');
 	    }
