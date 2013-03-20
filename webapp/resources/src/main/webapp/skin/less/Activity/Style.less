@@ -110,8 +110,10 @@
 	}
 }
 
-.uiUserActivitiesDisplay.notSeen .uiActivityStream ,.uiUserActivitiesDisplay.notSeen .uiActivitiesLoader {
-	background: url("/social-resources/skin/images/Activity/time-line-top-active.png") no-repeat 14px 0;
+.uiUserActivitiesDisplay.notSeen {
+ 	.uiActivityStream,.uiActivitiesLoader,.boxLoadMore{ 	
+		background: url("/social-resources/skin/images/Activity/time-line-top-active.png") no-repeat 14px 0;
+	}
 }
 
 /*==============activityStreamStatus=============== */
@@ -510,12 +512,15 @@
 }
 
 .boxLoadMore {		
-	height: 30px;
+  background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 24px 0px;
+	padding-left: 65px;
 	.showMore  {
-		text-align: center;
-		margin: 0 8px;
+		text-align: center; 
 		#gradient .vertical(#f2f2f2,@dropdownDividerTop);
+		border: 1px solid @tableBorder;
+    	.border-radius(@borderRadiusSmall);
 		.box-shadow(0px 2px 2px -1px rgba(35,44,48,0.18));
+		padding: 5px 0;
 		a {
 			color: @grayDark;
 		}
