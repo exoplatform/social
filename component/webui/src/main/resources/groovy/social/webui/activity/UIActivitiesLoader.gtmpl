@@ -25,6 +25,7 @@
   import org.exoplatform.social.webui.Utils;
 
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def labelLoadMore = _ctx.appRes("UIActivitiesLoader.label.Load_More");
   def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
 
   def pcontext = Util.getPortalRequestContext();
@@ -74,7 +75,11 @@
   <%
     if(!uicomponent.isExtendLoader()){
       %>
-      	<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>"></div>
+        <div class="boxLoadMore">
+      	  <div id="ActivitiesLoader" class="showMore" onclick="<%=uicomponent.event('LoadMore')%>">
+      	  <a href="javascript:void(0);">$labelLoadMore</a>
+      	  </div>
+      	</div>
         
       <%
     }
