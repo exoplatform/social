@@ -1684,18 +1684,24 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     Space space = null;
     
     //
-    Iterator<SpaceRef> it = mapRefs.values().iterator();
-    while(it.hasNext()) {
+    for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+      SpaceRef ref = entry.getValue();
+
+      // Lazy clean up
+      if (ref.getSpaceRef() == null) {
+        listRef.removeRef(entry.getKey());
+        continue;
+      }
+
       if (filter.getAppId() == null) {
-        spaces.add(it.next());
+        spaces.add(ref);
       } else {
-        SpaceRef ref = it.next();
         if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
           spaces.add(ref);
-        };
+        }
       }
-      
     }
+
     //reserve order
     Collections.reverse(spaces);
     

@@ -56,4 +56,9 @@ public abstract class SpaceListEntity {
     }
     return ref;
   }
+
+  public void removeRef(String name) {
+    getRefs().remove(name);
+  }
+
 }
