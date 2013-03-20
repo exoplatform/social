@@ -182,15 +182,11 @@
 /*common  activityStreams*/
 
 .activityStream {
+	padding-bottom: 30px;
 	 background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 24px 0px;
-	 &+ .activityStream {
-		 padding: 30px 0 0;
-	 }
-	 
-	 &+ .activityStream:last-child {
-		 padding: 30px 0 30px;
-	 }
-	 
+	 &.updatedActivity {
+		background: url("/social-resources/skin/images/Activity/time-line-active.png") repeat-y  24px 0;
+	}	
 	 &.boxLoadMore {
 		padding: 30px 0 0 ;
 	 }
@@ -209,9 +205,6 @@
 	}	
 }
 
-.uiUserActivitiesDisplay.notSeen .activityStream {
-	 background: url("/social-resources/skin/images/Activity/time-line-active.png") repeat-y 24px 0px;
-}
 
 .activityStream{
 	.contentComment {
