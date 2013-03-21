@@ -300,13 +300,24 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private List<Identity> getSpacesId(Identity ownerIdentity) {
 
     List<Identity> identitiesId = new ArrayList<Identity>();
-    List<Space> spaces = spaceStorage.getAccessibleSpaces(ownerIdentity.getRemoteId());
-    for (Space space : spaces) {
-      identitiesId.add(identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
+    long offset = 0;
+    long limit = 30;
+    int loaded = loadIdRange(ownerIdentity, offset, offset + limit, identitiesId);
+    while (loaded == limit) {
+      loaded = loadIdRange(ownerIdentity, offset, offset + limit, identitiesId);
+      offset += limit;
     }
 
     return identitiesId;
 
+  }
+
+  private int loadIdRange(Identity ownerIdentity, long offset, long limit, List<Identity> result) {
+    List<Space> spaces = spaceStorage.getAccessibleSpaces(ownerIdentity.getRemoteId(), offset, limit);
+    for (Space space : spaces) {
+      result.add(identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
+    }
+    return spaces.size();
   }
   
   private Map<String, Identity> getSpacesIdOfIdentity(Identity identity) {
