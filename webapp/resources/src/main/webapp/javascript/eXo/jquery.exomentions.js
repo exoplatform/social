@@ -778,9 +778,9 @@
     function backspceBroswerFix(e) {
       var selection = getSelection();
       if (utils.isFirefox) {
-        var node = selection.focusNode;
-        if (String(node.tagName).toLowerCase() === 'span' && node.className === 'icon') {
-          $(node).trigger('click');
+        var node = $(selection.focusNode);
+        if (node.is('i') && node.hasClass('uiIconClose')) {
+          node.trigger('click');
         }
       } else if (utils.isIE) {
         var cRange = selection.createRange();
