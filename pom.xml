@@ -206,7 +206,7 @@
         <version>${org.exoplatform.commons.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>						
+      </dependency>
       <!-- Import versions from platform-ui project -->
       <dependency>
         <groupId>org.exoplatform.platform-ui</groupId>
@@ -351,7 +351,7 @@
         <groupId>org.gatein.wci</groupId>
         <artifactId>wci-wci</artifactId>
         <version>${org.gatein.wci.version}</version>
-      </dependency>			
+      </dependency>
       <!-- Import versions from jcr project -->
       <dependency>
         <groupId>org.exoplatform.jcr</groupId>
@@ -390,7 +390,7 @@
         <artifactId>doc-style</artifactId>
         <version>${org.exoplatform.doc.doc-style.version}</version>
         <classifier>templates</classifier>
-      </dependency>			
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
