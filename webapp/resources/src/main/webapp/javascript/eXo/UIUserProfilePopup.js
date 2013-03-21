@@ -21,7 +21,7 @@
      $.fn.userPopup = function (options) {
          var defaults = {
              restURL: "",
-             actionLabels: "",
+             labels: "",
              getContentFunc: function() {},
              activation: "hover",
              keepAlive: false,
@@ -206,12 +206,14 @@
                    var restUrl = opts.restURL.replace('{0}', userId);
                    
                    //
+                   initPopup();
+                   
+                   //
                    var cachingData = getCache(userId);
                    
                    if ( cachingData ) {
                      buildPopup(cachingData, userId);
                    } else {
-		                 // 
 		                 $.ajax({
 		                     type: "GET",
 		                     url: restUrl
@@ -228,20 +230,46 @@
 		               }
                  }
                  
+                 function initPopup() {
+                   var profile_popup = $('<div/>', {
+                     "id": "profile-popup",
+                     "class": "profile-popup",
+                     "height": "100px"
+                   });
+                   
+                   var loadingIndicator = $('<div/>', {
+                     "id": "loading-indicator"
+                   });
+                   var loadingText = $('<div/>', {
+                     "id": "loading-text",
+                     "text": "" + opts.labels.StatusTitle
+                   });
+                   
+                   $('#tiptip_content').find('div.loading-indicator').remove();
+                   for (var i=1; i < 9; i++) {
+                     loadingIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
+                   }
+                   
+                   profile_popup.append(loadingIndicator);
+                   profile_popup.append(loadingText);
+                   
+                   tiptip_content.html(profile_popup);
+                 }
+                 
 							   function buildPopup(json, ownerUserId) {
 							        var portal = eXo.social.portal;
 							        var relationStatus = json.relationshipType;
 							        var currentViewerId = portal.userName;
 							        var actionContainer = null;
-							        var actionLabels = opts.actionLabels
+							        var labels = opts.labels;
 							        
-							        tiptip_content.html();
+							        tiptip_content.empty();
 							        
 							        if (currentViewerId != ownerUserId) {
 							    
 							            var action = $('<div/>', {
 							                "class": "connect btn btn-primary",
-							                "text": "" + actionLabels.Connect,
+							                "text": "" + labels.Connect,
 							                "data-action": "Invite:" + ownerUserId,
 							                "onclick": "takeAction(this)"
 							            });
@@ -250,28 +278,28 @@
 							            if (relationStatus == "pending") { // Viewing is not owner
 							                action = $('<div/>', {
 							                    "class": "connect btn btn-primary",
-							                    "text": "" + actionLabels.Confirm,
+							                    "text": "" + labels.Confirm,
 							                    "data-action": "Accept:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "waiting") { // Viewing is owner
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.CancelRequest,
+							                    "text": "" + labels.CancelRequest,
 							                    "data-action": "Revoke:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "confirmed") { // Had Connection 
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.RemoveConnection,
+							                    "text": "" + labels.RemoveConnection,
 							                    "data-action": "Disconnect:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "ignored") { // Connection is removed
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.Ignore,
+							                    "text": "" + labels.Ignore,
 							                    "data-action": "Deny:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });

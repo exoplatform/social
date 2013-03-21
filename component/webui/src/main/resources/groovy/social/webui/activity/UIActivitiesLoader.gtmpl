@@ -37,13 +37,15 @@
 	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
   }
 
+  def statusTitle = _ctx.appRes("UserProfilePopup.label.Loading");
   def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
   def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
   def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
   def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
   def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
   
-	def actionLabels = """ {
+	def labels = """ {
+    StatusTitle: '${statusTitle}',
 	  Connect: '${connectLabel}',
 	  Confirm: '${confirmLabel}',
 	  CancelRequest: '${cancelRequestLabel}',
@@ -51,7 +53,7 @@
 	  Ignore: '${ignoreLabel}'
 	} """
   
-  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($actionLabels);");
+  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($labels);");
 %>
 
 <% if ( Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
