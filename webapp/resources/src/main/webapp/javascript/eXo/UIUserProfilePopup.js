@@ -260,14 +260,14 @@
 							        var portal = eXo.social.portal;
 							        var relationStatus = json.relationshipType;
 							        var currentViewerId = portal.userName;
-							        var actionContainer = null;
+							        var action = null;
 							        var labels = opts.labels;
 							        
 							        tiptip_content.empty();
 							        
 							        if (currentViewerId != ownerUserId) {
 							    
-							            var action = $('<div/>', {
+							            action = $('<div/>', {
 							                "class": "connect btn btn-primary",
 							                "text": "" + labels.Connect,
 							                "data-action": "Invite:" + ownerUserId,
@@ -305,40 +305,59 @@
 							                });
 							            }
 							    
-							            actionContainer = $("<div/>").append(action);
+							            //actionContainer = $("<div/>").append(action);
 							    
 							        }
 							    
-							        var popupContent = "<table id='tipName'>" +
-							            "  <tbody>" +
-							            "    <tr>" +
-							            "      <td style='width: 50px;'>" +
-							            "        <img src='" + json.avatarURL + "' alt='image' />" +
-							            "      </td>" +
-							            "      <td>" +
-							            "        <a target='_parent' href='" + json.profileUrl + "'>" + json.fullName + "</a>";
-							        if (json.position) {
-							            popupContent += "<div style='font-weight: normal;'>" + json.position + "</div>";
+							        //
+							        var popupContentContainer = $("<div/>");
+							        var popupContent = $("<table/>", {
+							          "id" : "tipName"
+							        });
+							        var tbody = $("<tbody/>");
+							        var tr = $("<tr/>");
+							        var tdAvatar = $("<td/>", {
+							           "width": "50px"
+							        });
+							        var img = $("<img/>",{
+							           "src" : json.avatarURL
+							        });
+							        var tdProfile = $("<td/>");
+							        var aProfile = $("<a/>", {
+                         "target" : "_parent",
+                         "href" : json.profileUrl,
+                         "text" : json.fullName
+                      });
+                      
+                      if (json.position) {
+								        var divPosition = $("<div/>", {
+								           "font-weight" : "normal",
+								           "text" : json.position
+								        });
+								        tdProfile.append(divPosition);
 							        }
-							        popupContent += "      </td>" +
-							            "     </tr>" +
-							            "    </tbody>" +
-							            "</table>";
+
 							        if (json.activityTitle) {
-							          var stringTitle = json.activityTitle;
-							          if (stringTitle.length > 120) {
-							            stringTitle = stringTitle.substring(0,120) + " ...";
-							          }
-							            popupContent += "<blockquote>" + stringTitle + "</blockquote>";
-							        }
-							    
-							        if (currentViewerId != ownerUserId) {
-							            popupContent += "<div class='uiAction connectAction'>";
-							            popupContent += actionContainer.html();
-							            popupContent += "<div/>";
+								        var blockquote = $("<blockquote/>", {
+								           "text" : json.activityTitle
+								        });
+								        popupContent.after(blockquote);
 							        }
 							        
-							        tiptip_content.html(popupContent);
+							        if (currentViewerId != ownerUserId) {
+							            var divUIAction = $("<div/>",{
+							              "class" : "uiAction connectAction"
+							            }).append(action);
+							            popupContentContainer.children().last().after(divUIAction);
+							        }
+							        
+							        popupContentContainer.append(popupContent);
+                      popupContent.append(tbody);
+                      tbody.append(tr);
+                      tdAvatar.append(img);
+                      tdProfile.append(aProfile);
+                      tr.append(tdAvatar).append(tdProfile);
+							        tiptip_content.html(popupContentContainer.html());
 							    }
 							    
 							    function takeAction(el) {
