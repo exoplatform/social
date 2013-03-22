@@ -52,12 +52,6 @@ import org.exoplatform.webui.form.validator.StringLengthValidator;
   }
 )
 public class UIBasicInfoSection extends UIProfileSection {
-
-  /** REGEX EXPRESSION. */
-  public static final String USER_NAME_VALIDATOR_REGEX = "^[\\p{L}][\\p{L}._\\-\\d]+$";
-
-  /** INVALID CHARACTER MESSAGE. */
-  public static final String INVALID_CHAR_MESSAGE = "UIBasicInfoSection.msg.Invalid-char";
   
   public String lastloadUser;
 
@@ -67,9 +61,7 @@ public class UIBasicInfoSection extends UIProfileSection {
 
     UIFormStringInput userName = new UIFormStringInput(Profile.USERNAME, Profile.USERNAME, null);
     userName.setEditable(false);
-    addUIFormInput(userName.addValidator(MandatoryValidator.class).addValidator(StringLengthValidator.class, 3, 30)
-                   .addValidator(ResourceValidator.class).addValidator(ExpressionValidator.class,
-                   USER_NAME_VALIDATOR_REGEX, "ResourceValidator.msg.Invalid-char"));
+    addUIFormInput(userName.addValidator(MandatoryValidator.class));
     
     addUIFormInput(new UIFormStringInput(Profile.FIRST_NAME,
                                          Profile.FIRST_NAME,
