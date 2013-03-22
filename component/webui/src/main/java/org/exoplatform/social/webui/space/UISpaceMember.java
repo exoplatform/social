@@ -140,9 +140,8 @@ public class UISpaceMember extends UIForm {
    * @throws Exception
    */
   public UISpaceMember() throws Exception {
-    addUIFormInput(new UIFormStringInput(USER, null, null)
-            .addValidator(MandatoryValidator.class)
-            .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d\\s._,-]+$", "UISpaceMember.msg.Invalid-char"));
+	addUIFormInput(new UIFormStringInput(USER, null, null)
+					.addValidator(MandatoryValidator.class));  
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
     searchUserPopup.setWindowSize(640, 0);
     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
