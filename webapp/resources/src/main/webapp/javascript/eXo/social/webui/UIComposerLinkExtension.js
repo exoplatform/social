@@ -81,10 +81,10 @@
 	        //detects element by class, if class contains ContentTitle -> update title,
 	        // if class contains ContentDescription -> update description
 	        oldEl.css('display',"block")
-	        if (oldEl.hasClass('Title')) {
+	        if (oldEl.hasClass('title')) {
 	          UIComposerLinkExtension.linkData.title = $(editableEl).val();
 	          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
-	        } else if (oldEl.hasClass('Content')) {
+	        } else if (oldEl.hasClass('content')) {
 	          UIComposerLinkExtension.linkData.description = $(editableEl).val();
 	          UIComposerLinkExtension.changeLinkContent.apply(UIComposerLinkExtension);
 	        }
@@ -159,13 +159,13 @@
 	      
 	      var titleParam = this.titleEditable;
 	      if (this.linkTitle) {
-	        this.linkTitle.on('click', function(evt) {
+	        this.linkTitle.on('dblclick', function(evt) {
 	          UIComposerLinkExtension.addEditableText(this, 'input', titleParam);
 	        });
 	      }
 	      
 	      if (this.linkDescription) {
-	        this.linkDescription.on('click', function(evt) {
+	        this.linkDescription.on('dblclick', function(evt) {
 	          UIComposerLinkExtension.addEditableText(this, 'textarea', titleParam);
 	        });
 	      }
