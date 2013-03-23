@@ -51,7 +51,9 @@ public class LinkProvider {
           RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/Member.png";
   public static final String SPACE_WAITING_CONFIRM_ICON =
           RESOURCE_URL + "/skin/social/webui/UIManageSpaces/DefaultSkin/background/WaitingConfirm.png";
-  
+  public static final String STARTER_ACTIVITY_AVATAR = RESOURCE_URL + "/skin/images/Activity/starterAvt.png";
+  public static final String STARTER_ACTIVITY_IMAGE = RESOURCE_URL + "/skin/images/Activity/starterActImg.png";
+
   public static final String ROUTE_DELIMITER = "/";
   
   private static IdentityManager identityManager;

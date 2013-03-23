@@ -143,7 +143,7 @@
 			  <div class="boxContainer" id="boxContainer">
 			    <div id="ContextBoxWelcomeActivity" class="uiBox contentBox">
 			        <div id="ActivityContextBoxWelcomeActivity">
-			          <div class="heading">
+			            <div class="heading">
 			                <span class="arrowLeft"></span>
 			                <div class="author">
 			                    <a title="$welcomeActivityName" href="javascript:void(0);">$welcomeActivityName</a>                
@@ -156,7 +156,7 @@
 			            <!-- Welcome content -->
 			            <div class="description clearfix">
 			            	<div class="img pull-left">
-								<img src="$welcomeActivityImage" />			            	
+								      <img src="$welcomeActivityImage" />			            	
 			            	</div>
 			              	<p>$head_line</p>
 			              	<p><strong>$connect_and_discuss_with_others</strong><br />
@@ -169,21 +169,6 @@
 		               		$anywhere_at_anytime_details</p>
 			            </div>
 			            <!-- End Welcome content-->
-			            
-			            <div class="actionBar clearfix ">
-			                    <ul class="pull-right statusAction">
-			                        <li>
-			                            <a href="javascript:void(0);">
-			                                <i class="uiIconComment uiIconLightGray"></i>&nbsp;0
-			                            </a> 
-			                        </li>
-			                        <li>
-			                            <a href="javascript:void(0);">
-			                              <i class="uiIconThumbUp uiIconLightGray"></i>&nbsp;0
-			                            </a>
-			                        </li>
-			                    </ul>   
-			            </div><!--end actionBar-->                  
 			        </div><!--end #ActivityContextBoxWelcomeActivity-->
 			    </div> <!--end ContextBoxWelcomeActivity-->  
 			  </div> <!-- #boxContainer-->    
