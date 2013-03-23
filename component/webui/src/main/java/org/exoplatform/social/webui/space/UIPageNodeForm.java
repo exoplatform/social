@@ -381,6 +381,8 @@ public class UIPageNodeForm extends UIFormTabPane {
 
     if (getUICheckBoxInput(SWITCH_MODE).getValue().toString().equals("true"))
       node.setLabel(null);
+    else if (node.getLabel() == null)
+      node.setLabel(node.getName());
   }
 
   public void setShowCheckPublicationDate(boolean show) {
