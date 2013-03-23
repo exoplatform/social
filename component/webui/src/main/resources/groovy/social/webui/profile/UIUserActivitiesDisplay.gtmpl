@@ -56,6 +56,8 @@
   def iOS_App_Store_link = "<a href='https://itunes.apple.com/fr/app/exo-platform-3.5/id410476273?mt=8'>iOS App Store </a>";
   def google_play = "<a href='https://play.google.com/store/apps/details?id=org.exoplatform'>Google Play</a>";
   
+  def head_line = _ctx.appRes("UIActivity.label.Head_line");
+  
   def connect_and_discuss_with_others = _ctx.appRes("UIActivity.label.Connect_and_discuss_with_others");
   def connect_and_discuss_with_others_details = _ctx.appRes("UIActivity.label.Connect_and_discuss_with_others_details")
                                        .replace("{connections_link}", connections_link)
@@ -147,6 +149,7 @@
 			            
 			            <!-- Welcome content -->
 			            <div class="description">
+			              <div>$head_line</div>
 			              <div><strong>$connect_and_discuss_with_others</strong></div>
                     <div>$connect_and_discuss_with_others_details</div>
 				            <div><strong>$discover_the_power_of_social_collaboration</strong></div>
