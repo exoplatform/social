@@ -637,6 +637,17 @@ public interface SpaceService {
   void renameSpace(Space space, String newDisplayName) throws SpaceException;
   
   /**
+   * Renames a space by identity who has right as super admin role
+   * 
+   * @remoteId who made rename space
+   * @param space the existing space
+   * @param newDisplayName  new display name
+   * @throws SpaceException
+   * @since 4.0.0
+   */
+  void renameSpace(String remoteId, Space space, String newDisplayName) throws SpaceException;
+  
+  /**
    * Deletes a space by its id.
    *
    * @param spaceId

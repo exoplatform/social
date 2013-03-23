@@ -239,10 +239,19 @@ public class CachedSpaceStorage implements SpaceStorage {
    * {@inheritDoc}
    */
   public void renameSpace(Space space, String newDisplayName) throws SpaceStorageException {
+    renameSpace(null, space, newDisplayName);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void renameSpace(String remoteId, Space space, String newDisplayName) throws SpaceStorageException {
     String oldDisplayName = space.getDisplayName();
     String oldUrl = SpaceUtils.cleanString(oldDisplayName);
     String oldPrettyName = space.getPrettyName();
-    storage.renameSpace(space, newDisplayName);
+    
+    //
+    storage.renameSpace(remoteId, space, newDisplayName);
 
     //remove identity and profile from cache
     cachedIdentityStorage = this.getCachedIdentityStorage();

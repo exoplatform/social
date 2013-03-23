@@ -441,8 +441,27 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public void renameSpace(Space space, String newDisplayName) {
-    String name = space.getPrettyName();
     spaceStorage.renameSpace(space, newDisplayName);
+    spaceLifeCycle.spaceRenamed(space, space.getEditor());
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void renameSpace(String remoteId, Space space, String newDisplayName) {
+    
+    if (remoteId != null && 
+        remoteId.equals(getUserACL().getSuperUser()) &&
+        isMember(space, remoteId) == false) {
+
+      spaceStorage.renameSpace(remoteId, space, newDisplayName);
+      
+    } else {
+      
+      spaceStorage.renameSpace(space, newDisplayName);
+    }
+    
+    //
     spaceLifeCycle.spaceRenamed(space, space.getEditor());
   }
   

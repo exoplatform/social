@@ -60,6 +60,17 @@ public interface SpaceStorage {
   public void renameSpace(Space space, String newDisplayName) throws SpaceStorageException;
   
   /**
+   * Renames a space.
+   * 
+   * @remoteId who update Space information
+   * @param space
+   * @param newDisplayName
+   * @throws SpaceStorageException
+   * @since 4.0.0
+   */
+  public void renameSpace(String remoteId, Space space, String newDisplayName) throws SpaceStorageException;
+  
+  /**
    * Deletes a space by space id.
    *
    * @param id
@@ -320,7 +331,9 @@ public interface SpaceStorage {
    * @return a list of the accessible spaces
    * @throws SpaceStorageException
    * @since 1.2.0-GA
+   * @deprecated 4.0.0-RC2
    */
+  @Deprecated
   public List<Space> getAccessibleSpaces(String userId) throws SpaceStorageException;
   
   /**

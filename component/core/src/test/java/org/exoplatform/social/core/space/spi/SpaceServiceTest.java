@@ -1417,6 +1417,36 @@ public class SpaceServiceTest extends AbstractCoreTest {
     Space got = spaceService.getSpaceById(space.getId());
     assertEquals(newDisplayName, got.getDisplayName());
     
+    {
+      newDisplayName = "new display name with super admin";
+      
+      //
+      spaceService.renameSpace(root.getRemoteId(), space, newDisplayName);
+      
+      got = spaceService.getSpaceById(space.getId());
+      assertEquals(newDisplayName, got.getDisplayName());
+    }
+    
+    {
+      newDisplayName = "new display name with normal admin";
+      
+      //
+      spaceService.renameSpace(mary.getRemoteId(), space, newDisplayName);
+      
+      got = spaceService.getSpaceById(space.getId());
+      assertEquals(newDisplayName, got.getDisplayName());
+    }
+    
+    {
+      newDisplayName = "new display name with null remoteId";
+      
+      //
+      spaceService.renameSpace(null, space, newDisplayName);
+      
+      got = spaceService.getSpaceById(space.getId());
+      assertEquals(newDisplayName, got.getDisplayName());
+    }
+    
     Identity savedIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
     assertNotNull(savedIdentity);
   }
@@ -2723,7 +2753,7 @@ public class SpaceServiceTest extends AbstractCoreTest {
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
     String[] managers = new String[] {"demo", "tom"};
-    String[] members = new String[] {"raul", "ghost", "dragon"};
+    String[] members = new String[] {"demo", "raul", "ghost", "dragon"};
     String[] invitedUsers = new String[] {"register1", "mary"};
     String[] pendingUsers = new String[] {"jame", "paul", "hacker"};
     space.setInvitedUsers(invitedUsers);
