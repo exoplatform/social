@@ -364,7 +364,7 @@
                     urls.each() {
                       def url = it.get(value);
                   %>
-                  <div><a href="${url}">${url}</a></div>
+                  <div><a  target="_blank" href="${url}">${url}</a></div>
                   <%}
                   } else { %>
                   $noUrlLabel
@@ -386,7 +386,7 @@
                     def url = it.get(value);
 
                     %>
-                    <div><a href="${url}">${url}</a></div>
+                    <div><a  target="_blank" href="${url}">${url}</a></div>
                  <%	} %>
               </div>
            <% if (isEdit) { %>

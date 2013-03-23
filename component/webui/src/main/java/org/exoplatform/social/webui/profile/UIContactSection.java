@@ -112,8 +112,10 @@ public class UIContactSection extends UIProfileSection {
   
   /** URL REGEX EXPRESSION. */
   public static final String URL_REGEX_EXPRESSION =
-  "^(http|https|ftp)\\:\\/\\/[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
-
+  "\\b(?:(https?|ftp|file)://|www\\.)?[a-z0-9\\-\\.]+\\.[a-z]{2,3}(:[a-z0-9]*)?\\/?([a-z0-9\\-\\._\\?\\,\\'\\/\\\\+&amp;%\\$#\\=~])*$";
+  
+  public static final String HTTP_PROTOCOL = "http://";
+  
   /** INVALID URL. */
   public static final String INVALID_URL = "UIContactSect.msg.Invalid-url";
   
@@ -374,6 +376,10 @@ public class UIContactSection extends UIProfileSection {
         UIFormStringInput uiStringInput = (UIFormStringInput) listUIComp.get(i+1);
         key = uiStringInput.getValue();
         value = uiStringInput.getValue();
+        if (!value.matches("^(https?|ftp)://.*$")) {
+          key = HTTP_PROTOCOL + key;
+          value = HTTP_PROTOCOL + value;
+        }
       } else {
         key = ((UIFormSelectBox) listUIComp.get(i)).getValue();
         value = ((UIFormStringInput) listUIComp.get(i+1)).getValue();
