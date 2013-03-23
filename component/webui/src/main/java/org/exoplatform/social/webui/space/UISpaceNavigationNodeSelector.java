@@ -406,10 +406,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       DataStorage dataService = uiNodeSelector.getApplicationComponent(DataStorage.class);
       // get selected page
       String pageId = selectedPageNode.getPageRef();
-      Page selectPage = (pageId != null) ? dataService.getPage(pageId) : null;
-      if (selectPage != null) {
+      UserPortalConfigService userService = uiNodeSelector.getApplicationComponent(UserPortalConfigService.class);
+      
+      PageContext pageContext = (pageId != null) ? userService.getPageService().loadPage(PageKey.parse(pageId)) : null;
+      
+      if (pageContext != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
-        if (!userACL.hasEditPermission(selectPage)) {
+        if (!userACL.hasEditPermission(pageContext)) {
           uiApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.UserNotPermission",
                                                   new String[] { pageId },
                                                   1));
@@ -435,6 +438,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         uiToolPanel.setWorkingComponent(UIPage.class, null);
         UIPage uiPage = (UIPage) uiToolPanel.getUIComponent();
 
+        //
+        Page selectPage = userService.getDataStorage().getPage(pageId);
+        pageContext.update(selectPage);
+        
         if (selectPage.getTitle() == null)
           selectPage.setTitle(selectedPageNode.getLabel());
 
