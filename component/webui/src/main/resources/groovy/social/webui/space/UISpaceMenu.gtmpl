@@ -96,6 +96,9 @@
   
   <%
   for(node in apps) {
+    if ( uicomponent.HIDDEN.equals(node.getVisibility().toString()) ) {
+      continue;
+    }
     def nodeTitle = node.getResolvedLabel();
     def nodeLabel = getFitString(nodeTitle, 15);
     def nodeUri = node.getURI();
