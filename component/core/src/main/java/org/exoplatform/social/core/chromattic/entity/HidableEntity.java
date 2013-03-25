@@ -28,10 +28,13 @@ import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
  */
 @MixinType(name = "soc:hidable")
 public abstract class HidableEntity {
-  
+
+  /**
+   * Can be hidden or not.
+   */
   @Property(name = "soc:isHidden")
-  public abstract boolean getHidden();
-  public abstract void setHidden(boolean isHidden);
+  public abstract Boolean getHidden();
+  public abstract void setHidden(Boolean isHidden);
   public static final PropertyLiteralExpression<Boolean> isHidden =
       new PropertyLiteralExpression<Boolean>(Boolean.class, "soc:isHidden");
 }
