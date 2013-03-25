@@ -188,7 +188,11 @@
 			          </h4>
 			          <div class="membersCount" >$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 			          <div class="content">
-			            $space.description<br/>
+                    <% if (space.description != null && space.description.length() > 0) { %>
+                      $space.description<br/>
+                    <% } else { %>
+                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description"); %>
+                    <% } %>
 			          </div>
 			        </div>
 					<div class="connectionBtn clearfix">
