@@ -322,13 +322,18 @@
 							        var img = $("<img/>",{
 							           "src" : json.avatarURL
 							        });
+							        
+                      tdAvatar.append(img);
+                      
 							        var tdProfile = $("<td/>");
 							        var aProfile = $("<a/>", {
                          "target" : "_parent",
                          "href" : json.profileUrl,
                          "text" : json.fullName
                       });
-                      
+
+                      tdProfile.append(aProfile);
+
                       if (json.position) {
 								        var divPosition = $("<div/>", {
 								           "font-weight" : "normal",
@@ -336,27 +341,35 @@
 								        });
 								        tdProfile.append(divPosition);
 							        }
-
+                      
+                      tr.append(tdAvatar).append(tdProfile);
+                      
+                      tbody.append(tr);
+                      
+                      popupContent.append(tbody);
+                      
 							        if (json.activityTitle) {
 								        var blockquote = $("<blockquote/>", {
 								           "text" : json.activityTitle
 								        });
-								        popupContent.after(blockquote);
+							        }
+							        
+							        popupContentContainer.append(popupContent);
+							        
+							        if (blockquote) {
+							          popupContentContainer.append(blockquote);
 							        }
 							        
 							        if (currentViewerId != ownerUserId) {
 							            var divUIAction = $("<div/>",{
 							              "class" : "uiAction connectAction"
 							            }).append(action);
-							            popupContentContainer.children().last().after(divUIAction);
 							        }
 							        
-							        popupContentContainer.append(popupContent);
-                      popupContent.append(tbody);
-                      tbody.append(tr);
-                      tdAvatar.append(img);
-                      tdProfile.append(aProfile);
-                      tr.append(tdAvatar).append(tdProfile);
+							        if (divUIAction) {
+							          popupContentContainer.append(divUIAction);
+							        }
+							        
 							        tiptip_content.html(popupContentContainer.html());
 							    }
 							    
