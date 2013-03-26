@@ -333,7 +333,14 @@ public class UIManageAllSpaces extends UIContainer {
     
     return TypeOfSpace.NONE.toString(); // No relationship with this space.
   }
-
+  
+  protected boolean isSuperUser(Space space) {
+    String currentUserId = Utils.getOwnerIdentity().getRemoteId();
+    SpaceService spaceService = Utils.getSpaceService();
+    
+    return spaceService.hasSettingPermission(space, currentUserId);
+  }
+  
   private List<Space> loadSpaces(int index, int length) throws Exception {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
