@@ -419,6 +419,9 @@ public class UIUserActivitiesDisplay extends UIContainer {
   }
 
   protected boolean isWelcomeActivity() {
+    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    if ( !viewerName.equals(ownerName) ) return false;
+    
     boolean hasActivities = getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
     boolean isAllActivitiesModeOnHomePage = DisplayMode.ALL_ACTIVITIES.equals(getSelectedDisplayMode());
     
