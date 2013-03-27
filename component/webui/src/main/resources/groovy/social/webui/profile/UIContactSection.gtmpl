@@ -127,9 +127,7 @@
     <% } %>
   <% } else { %>
       <% if (isEditable) { %>
-       <% if (isEdit) { %>
         <div class="control-group">
-       <% } %>
           <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</strong></label>
           <div class="controls">
           <%
@@ -144,28 +142,20 @@
             <% } %>
           <% } %>
           </div>
-       <% if (isEdit) { %>
         </div>
-       <% } %>
       <% } else { // isEditable
              if((gender != null) && (gender != "")) { %>
-       <% if (isEdit) { %>
         <div class="control-group">
-       <% } %>
           <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.gender")%>:</strong></label>
           <div class="controls">
             <%=gender %>
           </div>
-       <% if (isEdit) { %>
         </div>
-       <% } %>
       <% } %>
     <% } %>
     <!--              phones          -->
     <% if (isEditable) { %>
-       <% if (isEdit) { %>
         <div class="control-group">
-       <% } %>
           <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.phones")%>:</strong></label>
           <div class="controls">
           <% if (isEdit) {
@@ -216,15 +206,11 @@
               %>
   
             </div>
-         <% if (isEdit) { %>
           </div>
-         <% } %>
         <% } else { // not isEdit 
         %>
           <% if(phoneSize > 0) { %>
-           <% if (isEdit) { %>
             <div class="control-group">
-           <% } %>
               <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.phones")%>:</strong></label>
               <div class="controls">
               <%     phones.each() {
@@ -235,17 +221,13 @@
                     <div><%=type%>:<%=phone%></div>
                  <%	} %>
               </div>
-           <% if (isEdit) { %>
             </div>
-           <% } %>
         <% } %>
       <% } %>
         <!--              end of phones          -->
         <!--              ims          -->
         <% if (isEditable) {%>
-         <% if (isEdit) { %>
           <div class="control-group">
-         <% } %>
             <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.ims")%>:</strong></label>
             <div class="controls">
               <%
@@ -298,14 +280,10 @@
                       %>
                 <% } %>
             </div>
-         <% if (isEdit) { %>
           </div>
-         <% } %>
         <% } else {%>
              <%if (imsSize > 0) { %>
-            <% if (isEdit) { %>
              <div class="control-group">
-            <% } %>
               <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.ims")%>:</strong></label>
               <div class="controls">
               <%    ims.each() {
@@ -316,17 +294,13 @@
                     <div><%=type%>:<%=im%></div>
                  <%	} %>
               </div>
-           <% if (isEdit) { %>
             </div>
-           <% } %>
             <% } %>
         <% } %>
         <!--              end of ims          -->
         <!--              URL          -->
         <% if (isEditable) {%>
-         <% if (isEdit) { %>
           <div class="control-group">
-         <% } %>
             <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getName() + ".label.urls")%>:</strong></label>
             <div class="controls">
               <%
@@ -372,14 +346,10 @@
                   %>
                 <% } %>
             </div>
-         <% if (isEdit) { %>
           </div>
-         <% } %>
       <% } else { %>
           <%if (urlSize > 0) { %>
-            <% if (isEdit) { %>
              <div class="control-group">
-            <% } %>
               <label class="control-label"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.urls")%>:</strong></label>
               <div class="controls">
               <%    urls.each() {
@@ -389,9 +359,7 @@
                     <div><a  target="_blank" href="${url}">${url}</a></div>
                  <%	} %>
               </div>
-           <% if (isEdit) { %>
             </div>
-           <% } %>
             <% } %>
       <% } %>
     <% } %>

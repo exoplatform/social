@@ -146,21 +146,22 @@
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
     %>
     
-				  <label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div>
-				  <label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div>
+				  <div class="control-group"><label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div></div>
+				  <div class="control-group"><label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div></div>
 				  <% if (description != null && description.length() > 0) {%>
-				  <label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div>
+				  <div class="control-group"><label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div></div>
 				  <% } %>
 				  <% if (skills != null && skills.length() > 0) {%>
-				  <label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div>
+				  <div class="control-group"><label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div></div>
 				  <% } %>
 				  <% if (startDate != null && startDate.length() > 0) {%>
-				  <label class="control-label"><strong>$startDateLabel</strong></label>
+				  <div class="control-group"><label class="control-label"><strong>$startDateLabel</strong></label>
 				  <div class="controls">
 				    <%=uicomponent.displayDateTime(startDate)%>
 				    <% if (isCurrent) { %>
 				      <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
 				    <% } %>
+				  </div>
 				  </div>
 				  <% } %>
     <%  } %> <!-- End each -->
@@ -177,25 +178,26 @@
           def isCurrent = it.get(Profile.EXPERIENCES_IS_CURRENT);
           def description = it.get(Profile.EXPERIENCES_DESCRIPTION);
       %>
-        	  <label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div>
-			  <label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div>
+        	  <div class="control-group"><label class="control-label"><strong>$organizationLabel</strong></label><div class="controls">$company</div></div>
+			  <div class="control-group"><label class="control-label"><strong>$positionLabel</strong></label><div class="controls">$position</div></div>
 			  <% if (description != null && description.length() > 0) {%>
-			  <label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div>
+			  <div class="control-group"><label class="control-label"><strong>$jobDetailsLabel</strong></label><div class="controls">$description</div></div>
 			  <% } %>
 			  <% if (skills != null && skills.length() > 0) {%>
-			  <label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div>
+			  <div class="control-group"><label class="control-label"><strong>$skillsUsedLabel</strong></label><div class="controls">$skills</div></div>
 			  <% } %>
 			  <% if (startDate != null && startDate.length() > 0) {%>
-			  <label class="control-label"><strong>$startDateLabel</strong></label>
+			  <div class="control-group"><label class="control-label"><strong>$startDateLabel</strong></label>
 			  <div class="controls">
 		        <%=uicomponent.displayDateTime(startDate)%>
 		        <% if (isCurrent) { %>
 		          <%=_ctx.appRes(uicomponent.getName() + ".label.untilNow")%> 
 		        <% } %>
 		      </div>
+			  </div>
 			  <% } %>
 			  <% if (endDate != null && endDate.length() > 0) {%>
-		    <label class="control-label"><strong>$endDateLabel</strong></label><div class="controls"><%=uicomponent.displayDateTime(endDate)%></div>
+		    <div class="control-group"><label class="control-label"><strong>$endDateLabel</strong></label><div class="controls"><%=uicomponent.displayDateTime(endDate)%></div></div>
 		    <% } %>
       
       <%}%><!-- End of each -->
