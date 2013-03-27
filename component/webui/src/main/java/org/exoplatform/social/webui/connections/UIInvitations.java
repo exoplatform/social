@@ -19,6 +19,7 @@ package org.exoplatform.social.webui.connections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -26,12 +27,14 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -39,6 +42,7 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIFormStringInput;
 
 /**
  * Manages connection invitations of all existing users. Manages actions
@@ -435,9 +439,47 @@ public class UIInvitations extends UIContainer {
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();
       
+      WebuiRequestContext ctx = event.getRequestContext();
+      UIProfileUserSearch uiSearch = uiInvitations.uiProfileUserSearch;
+      
+      String charSearch = ctx.getRequestParameter(OBJECTID);
+      
+      ResourceBundle resApp = ctx.getApplicationResourceBundle();
+
+      String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
+      String defaultPosVal = resApp.getString(uiSearch.getId() + ".label.Position");
+      String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
+      
+      ProfileFilter filter = uiInvitations.uiProfileUserSearch.getProfileFilter();
+      
+      try {
+        uiInvitations.setSelectedChar(charSearch);
+        if (charSearch != null) { // search by alphabet
+          ((UIFormStringInput) uiSearch.getChildById(UIProfileUserSearch.SEARCH)).setValue(defaultNameVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.POSITION)).setValue(defaultPosVal);
+          ((UIFormStringInput) uiSearch.getChildById(Profile.EXPERIENCES_SKILLS)).setValue(defaultSkillsVal);
+          filter.setName(charSearch);
+          filter.setPosition("");
+          filter.setSkills("");
+          filter.setFirstCharacterOfName(charSearch.toCharArray()[0]);
+          if (UIProfileUserSearch.ALL_FILTER.equals(charSearch)) {
+            filter.setFirstCharacterOfName(UIProfileUserSearch.EMPTY_CHARACTER);
+            filter.setName("");
+          }
+          uiSearch.setRawSearchConditional("");
+        } else if (UIProfileUserSearch.ALL_FILTER.equals(uiSearch.getRawSearchConditional())) {
+          uiInvitations.setSelectedChar(UIProfileUserSearch.ALL_FILTER);
+        }
+        
+        uiSearch.setProfileFilter(filter);
+        uiSearch.setNewSearch(true);
+      } catch (Exception e) {
+        uiSearch.setIdentityList(new ArrayList<Identity>());
+      }
+      
+      
       uiInvitations.loadSearch();
       uiInvitations.setLoadAtEnd(false);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }
 

@@ -92,13 +92,17 @@ public class UIProfileUserSearch extends UIForm {
   static final String PREFIX_ADDED_FOR_CHECK = "PrefixAddedForCheck";
 
   /** Empty character. */
-  private static final char EMPTY_CHARACTER = '\u0000';
+  public static final char EMPTY_CHARACTER = '\u0000';
+  
+  private static final String ASTERIK_STR = "*";
+  
+  private static final String PERCENTAGE_STR = "%";
   
   /** Html attribute title. */
   private static final String HTML_ATTRIBUTE_TITLE   = "title";
   
   /** All people filter. */
-  private static final String ALL_FILTER = "All";
+  public static final String ALL_FILTER = "All";
   
   /**
    * List used for identities storage.
@@ -319,6 +323,7 @@ public class UIProfileUserSearch extends UIForm {
     addUIFormInput(skills);
     profileFilter = new ProfileFilter();
     setHasPeopleTab(false);
+    setSubmitAction("return false;");
   }
 
   protected void resetUIComponentValues() {
@@ -373,6 +378,7 @@ public class UIProfileUserSearch extends UIForm {
       filter.setExcludedIdentityList(excludedIdentityList);
       
       uiSearch.invokeSetBindingBean(filter);
+      normalizeInputValues(filter);
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
 
       String defaultNameVal = resApp.getString(uiSearch.getId() + ".label.Name");
@@ -380,23 +386,27 @@ public class UIProfileUserSearch extends UIForm {
       String defaultSkillsVal = resApp.getString(uiSearch.getId() + ".label.Skills");
       try {
           StringBuffer rawSearchMessageStringBuffer = new StringBuffer();
-          if ((filter.getName() == null) || filter.getName().equals(defaultNameVal)) {
+          String name = filter.getName();
+          String pos = filter.getPosition();
+          String skills = filter.getSkills();
+          
+          if ((name == null) || name.equals(defaultNameVal) || ASTERIK_STR.equals(name) || PERCENTAGE_STR.equals(name)) {
             filter.setName("");
           } else {
-            rawSearchMessageStringBuffer.append(defaultNameVal + ":" + filter.getName());
+            rawSearchMessageStringBuffer.append(defaultNameVal + ":" + name);
           }
           
-          if ((filter.getPosition() == null) || filter.getPosition().equals(defaultPosVal)) {
+          if ((pos == null) || pos.equals(defaultPosVal) || ASTERIK_STR.equals(pos) || PERCENTAGE_STR.equals(pos)) {
             filter.setPosition("");
           } else {
             rawSearchMessageStringBuffer
-              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultPosVal + ":" + filter.getPosition());
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultPosVal + ":" + pos);
           }
-          if ((filter.getSkills() == null) || filter.getSkills().equals(defaultSkillsVal)) {
+          if ((skills == null) || skills.equals(defaultSkillsVal) || ASTERIK_STR.equals(skills) || PERCENTAGE_STR.equals(skills)) {
             filter.setSkills("");
           } else {
             rawSearchMessageStringBuffer
-              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultSkillsVal + ":" + filter.getSkills());
+              .append((rawSearchMessageStringBuffer.length() > 0 ? " " : "") + defaultSkillsVal + ":" + skills);
           }
           
           if(rawSearchMessageStringBuffer.length() > 0){
@@ -424,13 +434,31 @@ public class UIProfileUserSearch extends UIForm {
         uiSearch.setIdentityList(new ArrayList<Identity>());
       }
       Event<UIComponent> searchEvent = uiSearch.<UIComponent>getParent()
-              .createEvent(SEARCH, Event.Phase.DECODE, ctx);
+              .createEvent(SEARCH, Event.Phase.PROCESS, ctx);
       if (searchEvent != null) {
         searchEvent.broadcast();
       }
     }
-
     
+    private void normalizeInputValues(ProfileFilter filter) {
+      String name = filter.getName();
+      String pos = filter.getPosition();
+      String skills = filter.getSkills();
+      
+      if (name != null & name.length() > 0) {
+        filter.setName(Utils.normalizeString(name));
+      }
+      
+      if (pos != null & pos.length() > 0) {
+        filter.setPosition(Utils.normalizeString(pos));
+      }
+      
+      if (skills != null & skills.length() > 0) {
+        filter.setSkills(Utils.normalizeString(skills));
+      }
+    }
+
+
     /**
      * Checks input values follow regular expression.
      *

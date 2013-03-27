@@ -21,7 +21,7 @@
      $.fn.userPopup = function (options) {
          var defaults = {
              restURL: "",
-             actionLabels: "",
+             labels: "",
              getContentFunc: function() {},
              activation: "hover",
              keepAlive: false,
@@ -206,12 +206,14 @@
                    var restUrl = opts.restURL.replace('{0}', userId);
                    
                    //
+                   initPopup();
+                   
+                   //
                    var cachingData = getCache(userId);
                    
                    if ( cachingData ) {
                      buildPopup(cachingData, userId);
                    } else {
-		                 // 
 		                 $.ajax({
 		                     type: "GET",
 		                     url: restUrl
@@ -228,20 +230,46 @@
 		               }
                  }
                  
+                 function initPopup() {
+                   var profile_popup = $('<div/>', {
+                     "id": "profile-popup",
+                     "class": "profile-popup",
+                     "height": "100px"
+                   });
+                   
+                   var loadingIndicator = $('<div/>', {
+                     "id": "loading-indicator"
+                   });
+                   var loadingText = $('<div/>', {
+                     "id": "loading-text",
+                     "text": "" + opts.labels.StatusTitle
+                   });
+                   
+                   $('#tiptip_content').find('div.loading-indicator').remove();
+                   for (var i=1; i < 9; i++) {
+                     loadingIndicator.append($('<div id="rotateG_0' + i + '" class="blockG"></div>'));
+                   }
+                   
+                   profile_popup.append(loadingIndicator);
+                   profile_popup.append(loadingText);
+                   
+                   tiptip_content.html(profile_popup);
+                 }
+                 
 							   function buildPopup(json, ownerUserId) {
 							        var portal = eXo.social.portal;
 							        var relationStatus = json.relationshipType;
 							        var currentViewerId = portal.userName;
-							        var actionContainer = null;
-							        var actionLabels = opts.actionLabels
+							        var action = null;
+							        var labels = opts.labels;
 							        
-							        tiptip_content.html();
+							        tiptip_content.empty();
 							        
 							        if (currentViewerId != ownerUserId) {
 							    
-							            var action = $('<div/>', {
+							            action = $('<div/>', {
 							                "class": "connect btn btn-primary",
-							                "text": "" + actionLabels.Connect,
+							                "text": "" + labels.Connect,
 							                "data-action": "Invite:" + ownerUserId,
 							                "onclick": "takeAction(this)"
 							            });
@@ -250,64 +278,120 @@
 							            if (relationStatus == "pending") { // Viewing is not owner
 							                action = $('<div/>', {
 							                    "class": "connect btn btn-primary",
-							                    "text": "" + actionLabels.Confirm,
+							                    "text": "" + labels.Confirm,
 							                    "data-action": "Accept:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "waiting") { // Viewing is owner
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.CancelRequest,
+							                    "text": "" + labels.CancelRequest,
 							                    "data-action": "Revoke:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "confirmed") { // Had Connection 
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.RemoveConnection,
+							                    "text": "" + labels.RemoveConnection,
 							                    "data-action": "Disconnect:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "ignored") { // Connection is removed
 							                action = $('<div/>', {
 							                    "class": "connect btn",
-							                    "text": "" + actionLabels.Ignore,
+							                    "text": "" + labels.Ignore,
 							                    "data-action": "Deny:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            }
 							    
-							            actionContainer = $("<div/>").append(action);
+							            //actionContainer = $("<div/>").append(action);
 							    
 							        }
 							    
-							        var popupContent = "<table id='tipName'>" +
-							            "  <tbody>" +
-							            "    <tr>" +
-							            "      <td style='width: 50px;'>" +
-							            "        <img src='" + json.avatarURL + "' alt='image' />" +
-							            "      </td>" +
-							            "      <td>" +
-							            "        <a target='_parent' href='" + json.profileUrl + "'>" + json.fullName + "</a>";
-							        if (json.position) {
-							            popupContent += "<div style='font-weight: normal;'>" + json.position + "</div>";
+							        //
+							        var popupContentContainer = $("<div/>");
+							        var popupContent = $("<table/>", {
+							          "id" : "tipName"
+							        });
+							        var tbody = $("<tbody/>");
+							        var tr = $("<tr/>");
+							        var tdAvatar = $("<td/>", {
+							           "width": "50px"
+							        });
+							        var img = $("<img/>",{
+							           "src" : json.avatarURL
+							        });
+							        
+                      tdAvatar.append(img);
+                      
+							        var tdProfile = $("<td/>");
+							        var aProfile = $("<a/>", {
+                         "target" : "_parent",
+                         "href" : json.profileUrl,
+                         "text" : json.fullName
+                      });
+
+                      tdProfile.append(aProfile);
+
+                      if (json.position) {
+								        var divPosition = $("<div/>", {
+								           "font-weight" : "normal",
+								           "text" : json.position
+								        });
+								        tdProfile.append(divPosition);
 							        }
-							        popupContent += "      </td>" +
-							            "     </tr>" +
-							            "    </tbody>" +
-							            "</table>";
+                      
+                      tr.append(tdAvatar).append(tdProfile);
+                      
+                      tbody.append(tr);
+                      
+                      popupContent.append(tbody);
+                      
 							        if (json.activityTitle) {
-							            popupContent += "<blockquote>" + json.activityTitle + "</blockquote>";
-							        }
-							    
-							        if (currentViewerId != ownerUserId) {
-							            popupContent += "<div class='uiAction connectAction'>";
-							            popupContent += actionContainer.html();
-							            popupContent += "<div/>";
+								        var blockquote = $("<blockquote/>", {
+								           "text" : stripString(json.activityTitle)
+								        });
 							        }
 							        
-							        tiptip_content.html(popupContent);
+							        popupContentContainer.append(popupContent);
+							        
+							        if (blockquote) {
+							          popupContentContainer.append(blockquote);
+							        }
+							        
+							        if (currentViewerId != ownerUserId) {
+							            var divUIAction = $("<div/>",{
+							              "class" : "uiAction connectAction"
+							            }).append(action);
+							        }
+							        
+							        if (divUIAction) {
+							          popupContentContainer.append(divUIAction);
+							        }
+							        
+							        tiptip_content.html(popupContentContainer.html());
 							    }
+							    
+							    function stripString(activityTitle) {
+							      var MAX_CHAR = 100;
+							      var DOT_DOT_DOT = "...";
+
+							      if ( activityTitle.match(/<(\w+)((?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/) ) {
+                      activityTitle=activityTitle.replace(/<br>/gi, "\n");
+                      activityTitle=activityTitle.replace(/<p.*>/gi, "\n");
+                      activityTitle=activityTitle.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ");
+                      activityTitle=activityTitle.replace(/<(?:.|\s)*?>/g, "");
+                    }
+
+							      //
+							      if (activityTitle.length < MAX_CHAR) {
+							        return activityTitle;
+							      }
+							      
+							      //
+							      return activityTitle.substring(0, MAX_CHAR) + DOT_DOT_DOT;
+							    };
 							    
 							    function takeAction(el) {
 							        var dataAction = $(el).attr('data-action');

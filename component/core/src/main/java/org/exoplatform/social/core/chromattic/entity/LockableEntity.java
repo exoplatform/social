@@ -29,6 +29,9 @@ import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 @MixinType(name = "soc:lockable")
 public abstract class LockableEntity {
 
+  /**
+     * Can be locked or not.
+     */
   @Property(name = "soc:isLocked")
   public abstract Boolean getLocked();
   public abstract void setLocked(Boolean isLocked);

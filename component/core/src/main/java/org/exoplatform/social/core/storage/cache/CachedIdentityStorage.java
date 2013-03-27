@@ -170,6 +170,13 @@ public class CachedIdentityStorage implements IdentityStorage {
     //
     return storage.updateIdentity(identity);
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void updateIdentityMembership(final String remoteId) throws IdentityStorageException {
+    clearCache();
+  }
 
   /**
    * {@inheritDoc}

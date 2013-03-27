@@ -172,7 +172,7 @@ public class TreeNode implements NodeChangeListener<UserNode> {
   }
 
   public String getPageRef() {
-    return node.getPageRef().format();
+   return node.getPageRef() != null ? node.getPageRef().format() : null;
   }
 
   public String getId() {

@@ -79,16 +79,21 @@
       //
       $('#numberInfo').html(form.updates.replace("{0}", form.numberOfUpdatedActivities));
       
+      //
+      if (form.numberOfUpdatedActivities > 0) {
+        $('#UIUserActivitiesDisplay').addClass('notSeen');
+      }
+      
       $.each($('#UIActivitiesLoader').find('.activityStream'), function(i, item) {
         if(i < form.numberOfUpdatedActivities) {
-          $(item).addClass('UpdatedActivity');
+          $(item).addClass('updatedActivity');
         }
       });
 	
 	    function isScrolledIntoView() {
 	      var scrollTop = $(window).scrollTop();
 	      var docViewBottom = scrollTop + $(window).height();
-	      var elem = $('#UIActivitiesLoader').find('.UpdatedActivity:last');
+	      var elem = $('#UIActivitiesLoader').find('.updatedActivity:last');
 	      if(elem.length > 0) {
 	        var elemTop = elem.offset().top;
 	        var elemBottom = elemTop + elem.height();
@@ -171,9 +176,9 @@
 	  },
 	  unMarkedAsUpdate : function() {
 	    var form = UIActivityUpdates;
-	    var updatedEls = $('#UIActivitiesLoader').find('.UpdatedActivity');
-	    
-	    updatedEls.removeClass('UpdatedActivity');
+	    var updatedEls = $('#UIActivitiesLoader').find('.updatedActivity');
+	    $('#UIUserActivitiesDisplay').removeClass('notSeen');
+	    updatedEls.removeClass('updatedActivity');
 	    
 	    $('#numberInfo').html(form.noUpdates);
 	    
@@ -181,10 +186,11 @@
 	  },
 	  unMarkedPageAsUpdate : function() {
 	    var form = UIActivityUpdates;
-			var updatedEls = $('#UIActivitiesLoader').find('.UpdatedActivity');
+			var updatedEls = $('#UIActivitiesLoader').find('.updatedActivity');
 			var limit = form.numberOfUpdatedActivities > form.ACTIVITIES_ON_PAGE_NUM ? form.ACTIVITIES_ON_PAGE_NUM : form.numberOfUpdatedActivities;
+			
 			for( var id=0; id < limit; id++ ) {
-			  $(updatedEls[id]).removeClass('UpdatedActivity');
+			  $(updatedEls[id]).removeClass('updatedActivity');
 			  form.numberOfUpdatedActivities = form.numberOfUpdatedActivities - 1;
 			}
 			
@@ -210,7 +216,7 @@
 		  //
 			$.each($('#UIActivitiesLoader').find('.activityStream'), function(i, item) {
 			  if(i > seenActivitiesNum && i <= seenActivitiesNum + limit) {
-			    $(item).addClass('UpdatedActivity');
+			    $(item).addClass('updatedActivity');
 			  }
 			});
 			
@@ -258,9 +264,10 @@
 			form.resetCookie(currentSelectedTabCookieKey, form.ALL);
 	  },
 	  removeUpdateInfo : function() {
-	    var updatedEls = $('#UIActivitiesLoader').find('.UpdatedActivity');
+	    var updatedEls = $('#UIActivitiesLoader').find('.updatedActivity');
 	    var updatedInfoBox = $('#UIActivitiesLoader').find('.UpdateInfo');
-      updatedEls.removeClass('UpdatedActivity');
+	    $('#UIUserActivitiesDisplay').removeClass('notSeen');
+      updatedEls.removeClass('updatedActivity');
       updatedInfoBox.remove();
 	  },
 	  setFromCookie : function(from_key, to_key) {

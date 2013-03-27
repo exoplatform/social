@@ -82,7 +82,7 @@
 	color: #999999;
 	font-size: 13px;
 	height: 28px;
-	padding: 10px;
+	padding: 5px 8px;
 }
 
 .exo-mentions .replaceTextArea:focus {
@@ -91,10 +91,10 @@
 }
 
 .activityStream  .exo-mentions .replaceTextArea { 
-	padding: 3px 6px;
+	padding: 3px 5px;
 }
 
-.exo-mentions .replaceTextArea span {
+.exo-mentions .replaceTextArea > span {
   background: #e0e8f5;
   border-radius: 3px;
   color: #2f5e92;
@@ -103,31 +103,25 @@
   display: inline-block;
 }
 
-.exo-mentions .replaceTextArea span i {
-	margin-left: 6px;
-    text-indent: -1000px;
+.exo-mentions .replaceTextArea > span i {
+  margin-left: 6px;
+  text-indent: -1000px;
 }
 
-.exo-mentions .ReplaceTextArea span.none {
+.exo-mentions .replaceTextArea span.none {
   background: none transparent;
+  border: none;
   border-radius: 0px;
   color: #fff;
   padding: 0px;
   display: inline;
-	width: 0px;
+  width: 0px;
 }
 
-.exo-mentions .ReplaceTextArea .icon {
-  background: url('/social-resources/skin/ShareImages/mention-remove.png') no-repeat center right;
-  font-weight: bold;
+.exo-mentions .replaceTextArea .uiIconClose {
   color: transparent;
   text-indent: -9999px;
   cursor: pointer;
-  width: 13px;
-  height: 11px;
-  display: inline-block;
-  padding: 0px;
-	font-size:10.5px;
 }
 
 .exo-mentions .replaceTextArea .cursorText {
@@ -137,10 +131,10 @@
 
 .exo-mentions .placeholder {
   color: gray;
-  opacity: 0.85;
   position: absolute;
   top: 10px;
   left: 10px;
+  opacity: 0.85;
 }
 
 .activityStream .exo-mentions .placeholder {

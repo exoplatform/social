@@ -333,7 +333,14 @@ public class UIManageAllSpaces extends UIContainer {
     
     return TypeOfSpace.NONE.toString(); // No relationship with this space.
   }
-
+  
+  protected boolean isSuperUser(Space space) {
+    String currentUserId = Utils.getOwnerIdentity().getRemoteId();
+    SpaceService spaceService = Utils.getSpaceService();
+    
+    return spaceService.hasSettingPermission(space, currentUserId);
+  }
+  
   private List<Space> loadSpaces(int index, int length) throws Exception {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
@@ -388,7 +395,7 @@ public class UIManageAllSpaces extends UIContainer {
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
       if (charSearch == null) {
-        uiManageAllSpaces.setSelectedChar(SEARCH_ALL);
+        uiManageAllSpaces.setSelectedChar(null);
       } else {
         ResourceBundle resApp = ctx.getApplicationResourceBundle();
         String defaultSpaceNameAndDesc = resApp.getString(uiManageAllSpaces.getId() + ".label.DefaultSpaceNameAndDesc");

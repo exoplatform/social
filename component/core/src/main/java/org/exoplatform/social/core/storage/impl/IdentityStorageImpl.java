@@ -39,6 +39,8 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
@@ -47,6 +49,7 @@ import org.exoplatform.social.core.chromattic.entity.ProviderEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipEntity;
 import org.exoplatform.social.core.chromattic.entity.RelationshipListEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRef;
+import org.exoplatform.social.core.identity.IdentityResult;
 import org.exoplatform.social.core.identity.SpaceMemberFilterListAccess.Type;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -58,6 +61,7 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -82,6 +86,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   private IdentityStorage identityStorage;
   private RelationshipStorage relationshipStorage;
   private SpaceStorage spaceStorage;
+  private OrganizationService organizationService;
 
   static enum PropNs {
 
@@ -175,6 +180,14 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     }
 
     return relationshipStorage;
+  }
+  
+  private OrganizationService getOrganizationService() {
+    if (organizationService == null) {
+      organizationService = (OrganizationService) PortalContainer.getInstance().getComponentInstanceOfType(OrganizationService.class);
+    }
+
+    return organizationService;
   }
 
   private SpaceStorage getSpaceStorage() {
@@ -827,6 +840,13 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return findIdentityById(identity.getId());
 
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void updateIdentityMembership(final String remoteId) throws IdentityStorageException {
+    //only clear Identity Caching when user updated Group, what raised by Organization Service
+  }
 
   public void hardDeleteIdentity(final Identity identity) throws IdentityStorageException {
     try {
@@ -1007,7 +1027,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     String inputName = profileFilter.getName().replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
     StorageUtils.processUsernameSearchPattern(inputName);
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-    List<Identity> listIdentity = new ArrayList<Identity>();
 
     QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
     WhereExpression whereExpression = new WhereExpression();
@@ -1024,19 +1043,36 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+   //QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+    
+    QueryResult<ProfileEntity> results = builder.get().objects();
+    
+    //
+    IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
+    
+    //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      
+      if (isUserActivated(identity) == false) continue;
+      
       Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
-      listIdentity.add(identity);
+      
+      identityResult.add(identity);
+      
+      //
+      if (identityResult.addMore() == false) {
+        break;
+      }
+      
 
     }
 
-    return listIdentity;
+    return identityResult.result();
   }
   
   /**
@@ -1061,7 +1097,24 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
     builder.where(whereExpression.toString());
 
-    return builder.get().objects().size();
+    QueryResult<ProfileEntity> results = builder.get().objects();
+    
+    //
+    IdentityResult identityResult = new IdentityResult(results.size());
+    
+    //
+    while (results.hasNext()) {
+
+      ProfileEntity profileEntity = results.next();
+
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      
+      if (isUserActivated(identity) == false) continue;
+      
+      identityResult.add(identity);
+    }
+
+    return identityResult.result().size();
 
   }
 
@@ -1087,9 +1140,25 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     StorageUtils.applyFilter(whereExpression, profileFilter);
 
     builder.where(whereExpression.toString());
+    
+    QueryResult<ProfileEntity> results = builder.get().objects();
+    
+    //
+    IdentityResult identityResult = new IdentityResult(results.size());
+    
+    //
+    while (results.hasNext()) {
 
-    return builder.get().objects().size();
+      ProfileEntity profileEntity = results.next();
 
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      
+      if (isUserActivated(identity) == false) continue;
+      
+      identityResult.add(identity);
+    }
+
+    return identityResult.result().size();
   }
 
   /**
@@ -1099,7 +1168,6 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       long offset, long limit, boolean forceLoadOrReloadProfile) throws IdentityStorageException {
 
     List<Identity> excludedIdentityList = profileFilter.getExcludedIdentityList();
-    List<Identity> listIdentity = new ArrayList<Identity>();
 
     //
     QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
@@ -1117,20 +1185,53 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     builder.where(whereExpression.toString());
     applyOrder(builder, profileFilter);
 
-    QueryResult<ProfileEntity> results = builder.get().objects(offset, limit);
+    QueryResult<ProfileEntity> results = builder.get().objects();
+    
+    //
+    IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
+    
+    //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
       Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      
+      if (isUserActivated(identity) == false) continue;
+      
       Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
-      listIdentity.add(identity);
+      
+      identityResult.add(identity);
+      
+      //
+      if (identityResult.addMore() == false) {
+        break;
+      }
+      
 
     }
 
-    return listIdentity;
+    return identityResult.result();
 
+  }
+  
+  /**
+   * Checks Identity in Social is activated or not
+   * @param identity
+   * @return TRUE activated otherwise FALSE
+   * @throws IdentityStorageException
+   */
+  private boolean isUserActivated(Identity identity) throws IdentityStorageException {
+    //
+    OrganizationService orgService = getOrganizationService();
+    try {
+      Collection<?> got = orgService.getMembershipHandler().findMembershipsByUserAndGroup(identity.getRemoteId(), SpaceUtils.PLATFORM_USERS_GROUP);
+      
+      return got != null && got.size() > 0;
+    } catch (Exception e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER, e.getMessage());
+    }
   }
 
   /**

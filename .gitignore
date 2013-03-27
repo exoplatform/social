@@ -44,3 +44,4 @@ pom.xml.versionsBackup
 *.swp
 *.log
 rebel.xml
+transaction.log

@@ -79,6 +79,9 @@ public class UISpaceMenu extends UIContainer {
   private static final String SPACE_HOME_APP_NAME = "UISpaceMenu.label.Home";
 
   private static final String SPACE_SETTINGS = "settings";
+  
+  public static final String HIDDEN = "HIDDEN";
+  
   /**
    * Stores SpaceService object.
    */

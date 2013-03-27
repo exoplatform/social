@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration SYSTEM "http://www.exoplatform.org/dtd/indexing-configuration-1.0.dtd">
+<configuration xmlns:soc="http://www.exoplatform.org/jcr/soc/1.0/">
+	<!-- Spaces -->
+	<index-rule nodeType="soc:spacedefinition">
+  		<!-- Space: name (soc:displayName) -->
+  		<property boost="3.0">soc:displayName</property>	
+  		<!-- Space: description -->
+ 		<property boost="2.0">soc:description</property>
+ 	</index-rule>
+ 	
+	<index-rule nodeType="soc:profiledefinition">
+		<!-- Profile: first name (void-firstName) -->
+  		<property boost="3.0">void-firstName</property>
+  		<!-- Profile: first name (void-lastName) -->
+  		<property boost="3.0">void-lastName</property>
+  		<!-- Profile: title (void-position) -->
+		<property boost="3.0">void-position</property>
+ 	</index-rule>
+ 	 	
+	<index-rule nodeType="soc:profilexp">
+		<!-- Profile: background skills (soc:skills) -->
+  		<property boost="2.0">soc:skills</property>
+	 	<!-- Profile: background job details (soc:description) -->
+		<property boost="2.0">soc:description</property>
+ 		<!-- Profile: background position (soc:position) -->
+		<property boost="2.0">soc:position</property>
+		<!-- Profile: background organization (soc:company) -->
+		<property boost="1.5">soc:company</property>
+ 	</index-rule> 	
+</configuration>

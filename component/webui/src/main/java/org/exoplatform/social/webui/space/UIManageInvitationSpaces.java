@@ -355,7 +355,7 @@ public class UIManageInvitationSpaces extends UIContainer {
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
       if (charSearch == null) {
-        uiManageInvitedSpaces.setSelectedChar(SEARCH_ALL);
+        uiManageInvitedSpaces.setSelectedChar(null);
       } else {
         ResourceBundle resApp = ctx.getApplicationResourceBundle();
         String defaultSpaceNameAndDesc = resApp.getString(uiManageInvitedSpaces.getId() + ".label.DefaultSpaceNameAndDesc");

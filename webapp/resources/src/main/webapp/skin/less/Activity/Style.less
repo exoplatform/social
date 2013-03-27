@@ -53,7 +53,9 @@
 		.uiContentBox {
 			padding: 6px;
 			.thumbnailInner {
-				min-height: 100px;
+				height: 100px;
+				overflow: hidden; 
+				.border-radius(@baseBorderRadius);
 				img {
 					.border-radius(@baseBorderRadius);
 				}
@@ -107,12 +109,61 @@
 		margin-top: 0px; 
 	}
 }
-.uiActivityStream.clearBG .clearBG {
-	margin-top: -20px;
+
+.uiUserActivitiesDisplay.notSeen {
+ 	.uiActivityStream,.uiActivitiesLoader,.boxLoadMore{ 	
+		background: url("/social-resources/skin/images/Activity/time-line-top-active.png") no-repeat 14px 0;
+	}
 }
 
-.uiUserActivitiesDisplay.notSeen .uiActivityStream ,.uiUserActivitiesDisplay.notSeen .uiActivitiesLoader {
-	background: url("/social-resources/skin/images/Activity/time-line-top-active.png") no-repeat 14px 0;
+.uiUserActivitiesDisplay {
+	.composerHintCont {
+		background: #DFEBFF;
+	    border: 1px solid #6289CC;
+	    .border-radius(4px);
+	    margin: -20px 0 20px;
+	    padding: 10px 30px 10px 15px;
+	    position: relative;
+	}
+	
+	.composerHintCont .arrowLeft {
+		background: url("/social-resources/skin/images/Activity/composerHintArrow.png") no-repeat 0 0;
+	    display: block;
+	    height: 18px;
+	    position: absolute;
+	    right: 24px;
+	    top: -18px;
+	    width: 34px;
+	}
+	
+	.composerHintCont .iconBorder {
+		background-color: #F9F9F9;
+	    background-image: linear-gradient(to bottom, #FFFFFF, #F1F1F1);
+	    background-repeat: repeat-x;
+	    border: 1px solid #CFCFCF;
+	    border-radius: 3px 3px 3px 3px;
+	    box-shadow: 0 1px 2px 0 #FFFFFF;
+	    cursor: pointer;
+	    display: block;
+	    padding: 2px 4px;
+	    line-height: 20px;
+	    position: absolute;
+	    right: 7px;
+	    top: 9px;
+	}
+	
+	.composerHintCont .hint {
+		font-size: 16px;
+		color: #616161;
+	}
+	
+	.description {
+		padding: 30px 16px;
+		.img {
+		margin: 0 20px 20px 0;
+		text-align: center;
+		}
+	}
 }
 
 /*==============activityStreamStatus=============== */
@@ -183,15 +234,11 @@
 /*common  activityStreams*/
 
 .activityStream {
+	padding-bottom: 30px;
 	 background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 24px 0px;
-	 &+ .activityStream {
-		 padding: 30px 0 0;
-	 }
-	 
-	 &+ .activityStream:last-child {
-		 padding: 30px 0 50px;
-	 }
-	 
+	 &.updatedActivity {
+		background: url("/social-resources/skin/images/Activity/time-line-active.png") repeat-y  24px 0;
+	}	
 	 &.boxLoadMore {
 		padding: 30px 0 0 ;
 	 }
@@ -210,9 +257,6 @@
 	}	
 }
 
-.uiUserActivitiesDisplay.notSeen .activityStream {
-	 background: url("/social-resources/skin/images/Activity/time-line-active.png") repeat-y 24px 0px;
-}
 
 .activityStream{
 	.contentComment {
@@ -347,7 +391,10 @@
 		.pull-left + .text {
 			margin-left: 90px;
 		}
-		
+		.descriptionText {
+			    word-wrap: break-word;
+			    min-height: 30px;
+		}
 		.isPreviewable {
 			position: relative;
 			.pull-left  {
@@ -356,9 +403,7 @@
 			.pull-left + .text {
 				margin-left: 315px;
 			}
-			.versionFile {				 
-				position: absolute;
-				bottom: 0;
+			.versionFile {			
 				color: @grayLight;font-size: 12px;
 			}
 		}
@@ -403,6 +448,9 @@
 			position: relative;
 			&+ .commentItem {
 				margin: 15px 0 0 0;
+			}
+			.ContentBlock {
+				 word-wrap: break-word;
 			}
 			.uiIconClose ,.viewComment{
 				position: absolute;
@@ -518,12 +566,15 @@
 }
 
 .boxLoadMore {		
-	height: 30px;
+  background: url("/social-resources/skin/images/Activity/time-line.png") repeat-y 24px 0px;
+	padding-left: 65px;
 	.showMore  {
-		text-align: center;
-		margin: 0 8px;
+		text-align: center; 
 		#gradient .vertical(#f2f2f2,@dropdownDividerTop);
+		border: 1px solid @tableBorder;
+    	.border-radius(@borderRadiusSmall);
 		.box-shadow(0px 2px 2px -1px rgba(35,44,48,0.18));
+		padding: 5px 0;
 		a {
 			color: @grayDark;
 		}
@@ -574,9 +625,14 @@
 			width: 330px;
 		}
 	}
-	.fileShare .linkTitle {
-		display: block;
-		margin-top: -3px;
+	.fileShare {
+		.linkTitle {
+			display: block;
+			margin-top: -3px;
+		}
+		.videoContent {
+			width: 100%;
+		}
 	}
 }
 
@@ -700,6 +756,178 @@
     .border-radius(@borderRadiusSmall);
     .box-shadow(0 3px 4px rgba(0,0,0,0.15));
 }
+
+.profile-popup {
+}
+
+.profile-popup #loading-indicator {
+  background: @white;
+  position: relative;
+  width: 30px;
+  height: 37px;
+  margin: 2px auto;
+  display: block; 
+}
+
+.profile-popup #loading-text {
+  padding: 12px;
+  text-align: center;
+}
+
+.profile-popup .blockG{
+  position:absolute;
+  background-color:#FFFFFF;
+  width:3px;
+  height:12px;
+  -moz-border-radius:4px 4px 0 0;
+  -webkit-border-radius:4px 4px 0 0;
+  -webkit-transform:scale(0.4);
+  -webkit-animation-name:fadeG;
+  -webkit-animation-duration:0.5599999999999999s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-direction:linear;
+  -moz-transform:scale(0.4);
+  -moz-animation-name:fadeG;
+  -moz-animation-duration:0.5599999999999999s;
+  -moz-animation-iteration-count:infinite;
+  -moz-animation-direction:linear;
+  border-radius:4px 4px 0 0;
+  -o-transform:scale(0.4);
+  -o-animation-name:fadeG;
+  -o-animation-duration:0.5599999999999999s;
+  -o-animation-iteration-count:infinite;
+  -o-animation-direction:linear;
+  -ms-transform:scale(0.4);
+  -ms-animation-name:fadeG;
+  -ms-animation-duration:0.5599999999999999s;
+  -ms-animation-iteration-count:infinite;
+  -ms-animation-direction:linear;
+}
+
+.profile-popup #rotateG_01{
+  left:0;
+  top:13px;
+  -webkit-animation-delay:0.20999999999999996s;
+  -webkit-transform:rotate(-90deg);
+  -moz-animation-delay:0.20999999999999996s;
+  -moz-transform:rotate(-90deg);
+  -o-animation-delay:0.20999999999999996s;
+  -o-transform:rotate(-90deg);
+  -ms-animation-delay:0.20999999999999996s;
+  -ms-transform:rotate(-90deg);
+}
+
+.profile-popup #rotateG_02{
+  left:4px;
+  top:5px;
+  -webkit-animation-delay:0.27999999999999997s;
+  -webkit-transform:rotate(-45deg);
+  -moz-animation-delay:0.27999999999999997s;
+  -moz-transform:rotate(-45deg);
+  -o-animation-delay:0.27999999999999997s;
+  -o-transform:rotate(-45deg);
+  -ms-animation-delay:0.27999999999999997s;
+  -ms-transform:rotate(-45deg);
+}
+
+.profile-popup #rotateG_03{
+  left:13px;
+  top:1px;
+  -webkit-animation-delay:0.35s;
+  -webkit-transform:rotate(0deg);
+  -moz-animation-delay:0.35s;
+  -moz-transform:rotate(0deg);
+  -o-animation-delay:0.35s;
+  -o-transform:rotate(0deg);
+  -ms-animation-delay:0.35s;
+  -ms-transform:rotate(0deg);
+}
+
+.profile-popup #rotateG_04{
+  right:4px;
+  top:5px;
+  -webkit-animation-delay:0.41999999999999993s;
+  -webkit-transform:rotate(45deg);
+  -moz-animation-delay:0.41999999999999993s;
+  -moz-transform:rotate(45deg);
+  -o-animation-delay:0.41999999999999993s;
+  -o-transform:rotate(45deg);
+  -ms-animation-delay:0.41999999999999993s;
+  -ms-transform:rotate(45deg);
+}
+
+.profile-popup #rotateG_05{
+  right:0;
+  top:13px;
+  -webkit-animation-delay:0.48999999999999994s;
+  -webkit-transform:rotate(90deg);
+  -moz-animation-delay:0.48999999999999994s;
+  -moz-transform:rotate(90deg);
+  -o-animation-delay:0.48999999999999994s;
+  -o-transform:rotate(90deg);
+  -ms-animation-delay:0.48999999999999994s;
+  -ms-transform:rotate(90deg);
+}
+
+.profile-popup #rotateG_06{
+  right:4px;
+  bottom:3px;
+  -webkit-animation-delay:0.5599999999999999s;
+  -webkit-transform:rotate(135deg);
+  -moz-animation-delay:0.5599999999999999s;
+  -moz-transform:rotate(135deg);
+  -o-animation-delay:0.5599999999999999s;
+  -o-transform:rotate(135deg);
+  -ms-animation-delay:0.5599999999999999s;
+  -ms-transform:rotate(135deg);
+}
+
+.profile-popup #rotateG_07{
+  bottom:0;
+  left:13px;
+  -webkit-animation-delay:0.63s;
+  -webkit-transform:rotate(180deg);
+  -moz-animation-delay:0.63s;
+  -moz-transform:rotate(180deg);
+  -o-animation-delay:0.63s;
+  -o-transform:rotate(180deg);
+  -ms-animation-delay:0.63s;
+  -ms-transform:rotate(180deg);
+}
+
+.profile-popup #rotateG_08{
+  left:4px;
+  bottom:3px;
+  -webkit-animation-delay:0.7s;
+  -webkit-transform:rotate(-135deg);
+  -moz-animation-delay:0.7s;
+  -moz-transform:rotate(-135deg);
+  -o-animation-delay:0.7s;
+  -o-transform:rotate(-135deg);
+  -ms-animation-delay:0.7s;
+  -ms-transform:rotate(-135deg);
+}
+
+@-webkit-keyframes fadeG{
+  0%{ background-color:#000000 }
+  100% { background-color:#FFFFFF }
+}
+
+@-moz-keyframes fadeG{
+  0% { background-color:#000000 }
+  100%  { background-color:#FFFFFF }
+}
+
+@-o-keyframes fadeG{
+  0% { background-color:#000000 }
+  100% { background-color:#FFFFFF }
+}
+
+@-ms-keyframes fadeG{
+  0% { background-color:#000000 }
+  100% { background-color:#FFFFFF }
+}
+
 
 // Arrows
 

@@ -20,6 +20,7 @@ package org.exoplatform.social.webui.space;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -125,13 +126,15 @@ public class UISpaceAddForm extends UIFormTabPane {
       String selectedGroup = uiGroupBound.getSelectedGroup();
       String creator = ctx.getRemoteUser();
       ResourceBundle resApp = ctx.getApplicationResourceBundle();
+      String defaultDescription = resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION);
       Space space = new Space();
       uiAddForm.invokeSetBindingBean(space);
       space.setDisplayName(space.getDisplayName().trim());
       space.setPrettyName(space.getDisplayName());
       String spaceDescription = space.getDescription();
-      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0)) {
-        space.setDescription(resApp.getString(MSG_DEFAULT_SPACE_DESCRIPTION));
+      if ((spaceDescription == null) || (spaceDescription.trim().length() == 0) 
+                                     || spaceDescription.trim().equals(defaultDescription)) {
+        space.setDescription(StringUtils.EMPTY);
       } else {
         space.setDescription(StringEscapeUtils.escapeHtml(spaceDescription));  
       }

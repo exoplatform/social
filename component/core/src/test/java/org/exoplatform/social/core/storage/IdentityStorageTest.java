@@ -431,53 +431,72 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#getIdentitiesByFirstCharaterOfNameCount(String, char)}
    * 
    */
-  @MaxQueryNumber(650)
+  @MaxQueryNumber(1200)
   public void testGetIdentitiesByFirstCharacterOfNameCount() throws Exception {
     populateData();
+    populateData("root");
+    populateData("john");
+    populateData("mary");
+    populateData("raul");
+    populateData("ghost");
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     int idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
     assertEquals("Number of identity must be " + idsCount, 0, idsCount);
     filter.setFirstCharacterOfName('L');
     idsCount = identityStorage.getIdentitiesByFirstCharacterOfNameCount("organization", filter);
-    assertEquals("Number of identity must be " + idsCount, 10, idsCount);
+    assertEquals("Number of identity must be " + idsCount, 5, idsCount);
   }
 
   /**
    * Tests {@link IdenityStorage#getIdentitiesByFirstCharaterOfName(String, char, int, int, boolean)}
    * 
    */
-  @MaxQueryNumber(670)
+  @MaxQueryNumber(1100)
   public void testGetIdentitiesByFirstCharacterOfName() throws Exception {
     populateData();
+    
+    populateData("root");
+    populateData("john");
+    populateData("mary");
+    populateData("raul");
+    populateData("ghost");
+    
     final ProfileFilter filter = new ProfileFilter();
     filter.setFirstCharacterOfName('F');
     assertEquals(0, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 1, false).size());
     filter.setFirstCharacterOfName('L');
-    assertEquals(10, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 10, false).size());
+    assertEquals(5, identityStorage.getIdentitiesByFirstCharacterOfName("organization", filter, 0, 10, false).size());
   }
   
   /**
    * Tests {@link IdenityStorage#getIdentitiesByProfileFilterCount(String, ProfileFilter)}
    * 
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(2000)
   public void testGetIdentitiesByProfileFilterCount() throws Exception {
     populateData();
+    
+    populateData("root");
+    populateData("john");
+    populateData("mary");
+    populateData("raul");
+    populateData("ghost");
+    
     ProfileFilter pf = new ProfileFilter();
     
     int idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
-    assertEquals(10, idsCount);
+    assertEquals(5, idsCount);
     
     pf.setPosition("developer");
     pf.setName("FirstName");
     
     idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
-    assertEquals(10, idsCount);
+    assertEquals(5, idsCount);
     
     pf.setName("LastN");
     idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
-    assertEquals(10, idsCount);
+    assertEquals(5, idsCount);
     
 //    idsCount = identityStorage.getIdentitiesByProfileFilterCount("organization", pf);
 //    assertEquals(0, idsCount);
@@ -493,12 +512,12 @@ public class IdentityStorageTest extends AbstractCoreTest {
     ProfileFilter pf = new ProfileFilter();
     
     List<Identity> identities = identityStorage.getIdentitiesByProfileFilter("organization", pf, 0, 20, false);
-    assertEquals("Number of identities must be " + identities.size(), 10, identities.size());
+    assertEquals("Number of identities must be " + identities.size(), 5, identities.size());
     
     pf.setPosition("developer");
     pf.setName("FirstName");
     identities = identityStorage.getIdentitiesByProfileFilter("organization", pf, 0, 20, false);
-    assertEquals("Number of identities must be " + identities.size(), 10, identities.size());
+    assertEquals("Number of identities must be " + identities.size(), 5, identities.size());
     
     try {
       identities = identityStorage.getIdentitiesByProfileFilter("organization", pf, -1, 20, false);
@@ -550,7 +569,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
   public void testGetIdentitiesCount() throws Exception {
     populateData();
     int identitiesCount = identityStorage.getIdentitiesCount(OrganizationIdentityProvider.NAME);
-    assertEquals("Number of identities must be " + identitiesCount, 10, identitiesCount);
+    assertEquals("Number of identities must be " + identitiesCount, 5, identitiesCount);
   }
 
   @MaxQueryNumber(700)
@@ -632,9 +651,32 @@ public class IdentityStorageTest extends AbstractCoreTest {
   }
   
   private void populateData() {
+    populateData(5);
+  }
+  
+  /**
+   * Populate list of identities.
+   *
+   */
+  private void populateData(String remoteId) {
     String providerId = "organization";
-    int total = 10;
-    for (int i = 0; i < total; i++) {
+    Identity identity = new Identity(providerId, remoteId);
+    identityStorage.saveIdentity(identity);
+    Profile profile = new Profile(identity);
+    profile.setProperty(Profile.FIRST_NAME, "FirstName " + remoteId);
+    profile.setProperty(Profile.LAST_NAME, "LastName" + remoteId);
+    profile.setProperty(Profile.FULL_NAME, "FirstName " + remoteId + " " +  "LastName" + remoteId);
+    profile.setProperty(Profile.POSITION, "developer");
+    profile.setProperty(Profile.GENDER, "male");
+
+    identityStorage.saveProfile(profile);
+    identity.setProfile(profile);
+    tearDownIdentityList.add(identity);
+  }
+  
+  private void populateData(int number) {
+    String providerId = "organization";
+    for (int i = 0; i < number; i++) {
       String remoteId = "username" + i;
       Identity identity = new Identity(providerId, remoteId);
       identityStorage.saveIdentity(identity);

@@ -32,7 +32,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.validator.EmailAddressValidator;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.NaturalLanguageValidator;
+import org.exoplatform.webui.form.validator.PersonalNameValidator;
 import org.exoplatform.webui.form.validator.ResourceValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
@@ -74,13 +74,13 @@ public class UIBasicInfoSection extends UIProfileSection {
     addUIFormInput(new UIFormStringInput(Profile.FIRST_NAME,
                                          Profile.FIRST_NAME,
                                          null).
-                   addValidator(MandatoryValidator.class).addValidator(NaturalLanguageValidator.class).
+                   addValidator(MandatoryValidator.class).addValidator(PersonalNameValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.LAST_NAME,
                                          Profile.LAST_NAME,
                                          null).
-                   addValidator(MandatoryValidator.class).addValidator(NaturalLanguageValidator.class).
+                   addValidator(MandatoryValidator.class).addValidator(PersonalNameValidator.class).
                    addValidator(StringLengthValidator.class, 1, 45));
 
     addUIFormInput(new UIFormStringInput(Profile.EMAIL, Profile.EMAIL, null).

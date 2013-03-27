@@ -362,7 +362,7 @@ public class UIManageMySpaces extends UIContainer {
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
       if (charSearch == null) {
-        uiManageMySpaces.setSelectedChar(SEARCH_ALL);
+        uiManageMySpaces.setSelectedChar(null);
       } else {
         ResourceBundle resApp = ctx.getApplicationResourceBundle();
         String defaultSpaceNameAndDesc = resApp.getString(uiManageMySpaces.getId() + ".label.DefaultSpaceNameAndDesc");

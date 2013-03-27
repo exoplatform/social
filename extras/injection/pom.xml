@@ -21,8 +21,8 @@
       <artifactId>commons-api</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.jboss.logging</groupId>
           <artifactId>jboss-logging-spi</artifactId>
+          <groupId>org.jboss.logging</groupId>
         </exclusion>
       </exclusions>
     </dependency>

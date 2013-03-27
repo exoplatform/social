@@ -60,10 +60,10 @@
       <artifactId>commons-webui-component</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.jboss.logging</groupId>
           <artifactId>jboss-logging-spi</artifactId>
+          <groupId>org.jboss.logging</groupId>
         </exclusion>
-       </exclusions>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>
@@ -73,7 +73,6 @@
     <dependency>
       <groupId>org.exoplatform.doc</groupId>
       <artifactId>doc-style</artifactId>
-      <classifier>templates</classifier>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -208,7 +207,6 @@
             <configuration>
               <includeGroupIds>org.exoplatform.doc</includeGroupIds>
               <includeArtifactIds>doc-style</includeArtifactIds>
-              <includeClassifiers>templates</includeClassifiers>
               <excludes>META-INF/**</excludes>
               <outputDirectory>${project.build.directory}/templates</outputDirectory>
             </configuration>

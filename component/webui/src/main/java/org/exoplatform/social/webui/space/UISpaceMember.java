@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.PageList;
@@ -30,7 +31,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.social.webui.UISocialGroupSelector;
 import org.exoplatform.social.webui.UIUsersInGroupSelector;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.services.organization.OrganizationService;
@@ -38,7 +38,6 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.StringListAccess;
@@ -103,18 +102,12 @@ import org.exoplatform.webui.organization.account.UIUserSelector;
 
 public class UISpaceMember extends UIForm {
 
-  private static final String MSG_ERROR_REMOVE_MEMBER = "UISpaceMember.msg.error_remove_member";
-  private static final String MSG_ERROR_REMOVE_LEADER = "UISpaceMember.msg.error_remove_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER = "UISpaceMember.msg.error_self_remove_leader";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_YOU = "UISpaceMember.msg.error_self_remove_leader_you";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_ARE = "UISpaceMember.msg.error_self_remove_leader_are";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_IS = "UISpaceMember.msg.error_self_remove_leader_is";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_LEAVING_IT = "UISpaceMember.msg.error_self_remove_leader_leaving_it";
   private static final String MSG_ERROR_SELF_REMOVE_LEADER_REMOVING_THE_RIGHTS = "UISpaceMember.msg.error_self_remove_leader_removing_the_rights";
-  private static final String MSG_ERROR_REVOKE_INVITED = "UISpaceMember.msg.error_revoke_invited";
-  private static final String MSG_ERROR_DECLINE_USER = "UISpaceMember.msg.error_decline_user";
-  private static final String MSG_ERROR_VALIDATE_USER = "UISpaceMember.msg.error_validate_user";
-  private static final String MSG_ERROR_MAKE_LEADER = "UISpaceMember.msg.error_make_leader";
   /**
    * The first page.
    */
@@ -448,22 +441,24 @@ public class UISpaceMember extends UIForm {
     public void execute(Event<UISpaceMember> event) throws Exception {
       UISpaceMember uiSpaceMember = event.getSource();
       WebuiRequestContext requestContext = event.getRequestContext();
-      UIApplication uiApp = requestContext.getUIApplication();
       SpaceService spaceService = uiSpaceMember.getSpaceService();
       uiSpaceMember.setHasErr(false);
-      invitedUserNames = null;
-      uiSpaceMember.validateInvitedUser();
+      uiSpaceMember.validateInvitedUser(uiSpaceMember.getUsersName());
       Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-      String usersInput = uiSpaceMember.getUsersName();
       
-      String[] invitedUsers = null;
-      String name = null;
-      if (usersInput != null) {
-        invitedUsers = uiSpaceMember.getUsersName().split(",");
+      if (invitedUserNames != null) {
+        String[] invitedUsers = invitedUserNames.split(",");
+        String name = null;
         List<String> usersForInviting = new ArrayList<String>();
         if (invitedUsers != null) {
           for (int idx = 0; idx < invitedUsers.length; idx++) {
             name = invitedUsers[idx].trim();
+            
+            if (name.equals(uiSpaceMember.getUserACL().getSuperUser())) {
+              spaceService.addMember(space, name);
+              continue;
+            }
+            
             if ((name.length() > 0) &&
                 !usersForInviting.contains(name) &&
                 !ArrayUtils.contains(space.getPendingUsers(), name)) {
@@ -474,10 +469,10 @@ public class UISpaceMember extends UIForm {
         for (String userName : usersForInviting) {
           spaceService.addInvitedUser(space, userName);
         }
-        uiSpaceMember.setUsersName(null);
+        uiSpaceMember.setUsersName(StringUtils.EMPTY);
       }
+      
       requestContext.addUIComponentToUpdateByAjax(uiSpaceMember);
-      //requestContext.addUIComponentToUpdateByAjax(uiApp.getUIPopupMessages());
     }
   }
 
@@ -728,11 +723,11 @@ public class UISpaceMember extends UIForm {
         userNameForInvite = userNamesInputted.trim() + ", " + userNamesSelected;
       }
       
-      uiSpaceMember.setUsersName(userNameForInvite);
+      uiSpaceMember.validateInvitedUser(userNameForInvite);
+      
       UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
       uiPopup.setUIComponent(null);
       uiPopup.setShow(false);
-      uiSpaceMember.validateInvitedUser();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -775,11 +770,12 @@ public class UISpaceMember extends UIForm {
         }
       }
       
-      uiSpaceMember.setUsersName(userNamesInputted);
+      uiSpaceMember.validateInvitedUser(userNamesInputted);
+      
       UIPopupWindow uiPopup = uiSpaceMember.getChild(UIPopupWindow.class);
       uiPopup.setUIComponent(null);
       uiPopup.setShow(false);
-      uiSpaceMember.validateInvitedUser();
+      
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSpaceMember);
     }
   }
@@ -805,120 +801,107 @@ public class UISpaceMember extends UIForm {
    *
    * @throws Exception
    */
-  private void validateInvitedUser() throws Exception {
+  private void validateInvitedUser(String userNameForInvite) throws Exception {
     WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
     UIApplication uiApp = requestContext.getUIApplication();
-    String[] invitedUserList = getUsersName().split(",");
-    String usersNotExist = null;
-    String usersIsInvited = null;
-    String usersIsMember = null;
-    String newMemberForInvite = null;
-    SpaceService spaceService = getSpaceService();
-    Space space = spaceService.getSpaceById(spaceId);
+    String[] invitedUserList = userNameForInvite.split(",");
     String invitedUser = null;
     ApplicationMessage appMsg = null;
+    invitedUserNames = null;
+    List<String> validUsers = new ArrayList<String>();
+    List<String> invitedUsers = new ArrayList<String>();
+    List<String> memberUsers = new ArrayList<String>();
+    List<String> notExistUsers = new ArrayList<String>();
+    
     for (String userStr : invitedUserList) {
       invitedUser = userStr.trim();
 
       if (invitedUser.length() == 0) {
         continue;
       }
-
-      try {
-        if (invitedUser.equals(getUserACL().getSuperUser())) {
-          //BUG #SOC-539
-          if (spaceService.isMember(space, invitedUser)) {
-            throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
-          } else {
-            spaceService.addMember(space, invitedUser);
-          }
-        } else {
-          checkInvitedUser(space, invitedUser);
-          if (newMemberForInvite == null) {
-            newMemberForInvite = invitedUser;
-          } else {
-            newMemberForInvite += ", " + invitedUser;
-          }
-        }
-      } catch (SpaceException e) {
-        setHasErr(true);
-        invitedUserNames = getUsersName();
-        if (e.getCode() == SpaceException.Code.USER_NOT_EXIST) {
-          if (usersNotExist == null) {
-            usersNotExist = invitedUser;
-          } else {
-            usersNotExist += "," + invitedUser;
-          }
-        } else if (e.getCode() == SpaceException.Code.USER_ALREADY_INVITED) {
-          if (usersIsInvited == null) {
-            usersIsInvited = invitedUser;
-          } else {
-            usersIsInvited += "," + invitedUser;
-          }
-        } else if (e.getCode() == SpaceException.Code.USER_ALREADY_MEMBER) {
-          if (usersIsMember == null) {
-            usersIsMember = invitedUser;
-          } else {
-            usersIsMember += "," + invitedUser;
-          }
-        }
+      
+      if (isMember(invitedUser)) {
+        memberUsers.add(invitedUser);
+      } else if (isNotExisted(invitedUser)){
+        notExistUsers.add(invitedUser);
+      } else if (hasInvited(invitedUser)) {
+        invitedUsers.add(invitedUser);
+      } else {
+        validUsers.add(invitedUser);
       }
     }
-    setUsersName(newMemberForInvite);
-    String remainUsers = null;
-    if (usersNotExist != null) {
-      remainUsers = usersNotExist;
+    
+    if (validUsers.size() > 0) {
+      setUsersName(StringUtils.join(validUsers, ','));
+      invitedUserNames = StringUtils.join(validUsers, ',');
+    }
+    
+    if (notExistUsers.size() > 0) {
+      setHasErr(true);
       appMsg = new ApplicationMessage("UISpaceMember.msg.user-not-exist",
-                                      new String[]{usersNotExist},
+                                      notExistUsers.toArray(new String[notExistUsers.size()]),
                                       ApplicationMessage.WARNING);
       appMsg.setArgsLocalized(false);
       uiApp.addMessage(appMsg);
     }
-    if (usersIsInvited != null) {
-      if (remainUsers == null) {
-        remainUsers = usersIsInvited;
-      } else {
-        remainUsers += "," + usersIsInvited;
-      }
+    
+    if (invitedUsers.size() > 0) {
+      setHasErr(true);
       appMsg = new ApplicationMessage("UISpaceMember.msg.user-is-invited",
-                                      new String[]{usersIsInvited}, ApplicationMessage.WARNING);
+                                      invitedUsers.toArray(new String[invitedUsers.size()]),
+                                      ApplicationMessage.WARNING);
       appMsg.setArgsLocalized(false);
       uiApp.addMessage(appMsg);
     }
-    if (usersIsMember != null) {
-      if (remainUsers == null) {
-        remainUsers = usersIsMember;
-      } else {
-        remainUsers += "," + usersIsMember;
-      }
+    
+    if (memberUsers.size() > 0) {
+      setHasErr(true);
       appMsg = new ApplicationMessage("UISpaceMember.msg.user-is-member",
-                                      new String[]{usersIsMember},
+                                      memberUsers.toArray(new String[memberUsers.size()]),
                                       ApplicationMessage.WARNING);
       appMsg.setArgsLocalized(false);
       uiApp.addMessage(appMsg);
     }
   }
-
-  private void checkInvitedUser(Space space, String userId) throws Exception {
-    OrganizationService orgService = getApplicationComponent(OrganizationService.class);
+  
+  private boolean isMember(String userId) {
     SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
     try {
-      User user = orgService.getUserHandler().findUserByName(userId);
-      if (user == null) {
-        throw new SpaceException(SpaceException.Code.USER_NOT_EXIST);
+      if (spaceService.isMember(space, userId)) {
+        return true;
       }
     } catch (Exception e) {
-      if (e instanceof SpaceException) {
-        throw (SpaceException) e;
+      return false;
+    }
+    return false;
+  }
+  
+  private boolean hasInvited(String userId) {
+    SpaceService spaceService = getSpaceService();
+    Space space = spaceService.getSpaceById(spaceId);
+    try {
+      if (spaceService.isInvitedUser(space, userId)) {
+        return true;
       }
-      throw new SpaceException(SpaceException.Code.ERROR_RETRIEVING_USER, e);
+    } catch (Exception e) {
+      return false;
     }
-
-    if (spaceService.isInvitedUser(space, userId)) {
-      throw new SpaceException(SpaceException.Code.USER_ALREADY_INVITED);
-    } else if (spaceService.isMember(space, userId) && !userId.equals(getUserACL().getSuperUser())) {
-      throw new SpaceException(SpaceException.Code.USER_ALREADY_MEMBER);
+    return false;
+  }
+  
+  private boolean isNotExisted(String userId) {
+    OrganizationService orgService = getApplicationComponent(OrganizationService.class);
+    try {
+      User user = orgService.getUserHandler().findUserByName(userId);
+      
+      if (user != null) {
+        return false;
+      }
+    } catch (Exception e) {
+      return true;
     }
+    return true;
   }
 
   /**
@@ -965,6 +948,8 @@ public class UISpaceMember extends UIForm {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     IdentityManager idm = (IdentityManager) container.getComponentInstanceOfType(IdentityManager.class);
     Identity identity = idm.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    
+    if (identity == null) return StringUtils.EMPTY;
     
     return identity.getProfile().getFullName();
   }

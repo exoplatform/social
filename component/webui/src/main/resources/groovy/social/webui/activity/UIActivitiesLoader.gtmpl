@@ -25,6 +25,7 @@
   import org.exoplatform.social.webui.Utils;
 
   def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_Updates_Posted_Yet");
+  def labelLoadMore = _ctx.appRes("UIActivitiesLoader.label.Load_More");
   def hasActivities = uicomponent.getActivitiesContainer().getChildren().size() > 1;
 
   def pcontext = Util.getPortalRequestContext();
@@ -36,13 +37,15 @@
 	    .addScripts("activitiesLoader.init('$uicomponent.id', $hasMore);");
   }
 
+  def statusTitle = _ctx.appRes("UserProfilePopup.label.Loading");
   def connectLabel = _ctx.appRes("UserProfilePopup.label.Connect");
   def confirmLabel = _ctx.appRes("UserProfilePopup.label.Confirm");
   def cancelRequestLabel = _ctx.appRes("UserProfilePopup.label.CancelRequest");
   def removeConnectionLabel = _ctx.appRes("UserProfilePopup.label.RemoveConnection");
   def ignoreLabel = _ctx.appRes("UserProfilePopup.label.Ignore");
   
-	def actionLabels = """ {
+	def labels = """ {
+    StatusTitle: '${statusTitle}',
 	  Connect: '${connectLabel}',
 	  Confirm: '${confirmLabel}',
 	  CancelRequest: '${cancelRequestLabel}',
@@ -50,7 +53,7 @@
 	  Ignore: '${ignoreLabel}'
 	} """
   
-  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($actionLabels);");
+  jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($labels);");
 %>
 
 <% if ( Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
@@ -74,7 +77,11 @@
   <%
     if(!uicomponent.isExtendLoader()){
       %>
-      	<div id="ActivitiesLoader" onclick="<%=uicomponent.event('LoadMore')%>"></div>
+        <div class="boxLoadMore">
+      	  <div id="ActivitiesLoader" class="showMore" onclick="<%=uicomponent.event('LoadMore')%>">
+      	  <a href="javascript:void(0);">$labelLoadMore</a>
+      	  </div>
+      	</div>
         
       <%
     }

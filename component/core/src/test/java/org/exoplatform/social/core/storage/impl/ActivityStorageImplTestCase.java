@@ -117,7 +117,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     super.tearDown();
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(100)
   public void testSaveActivity() throws Exception {
 
     //
@@ -131,6 +131,11 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     assertEquals(activity.getId(), got.getId());
     assertEquals(activity.getTitle(), got.getTitle());
 
+    //
+    ExoSocialActivity act = new ExoSocialActivityImpl();
+    act.setTitle("@#$%^&*(()_+:<>?");
+    activityStorage.saveActivity(rootIdentity, act);
+    assertNotNull(act.getId());
   }
 
   /**

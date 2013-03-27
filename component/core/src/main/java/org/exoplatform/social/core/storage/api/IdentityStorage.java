@@ -50,6 +50,16 @@ public interface IdentityStorage {
    * @since  1.2.0-GA
    */
   public Identity updateIdentity(final Identity identity) throws IdentityStorageException;
+  
+  /**
+   * Updates existing identity's membership in OrganizationService.
+   *
+   * @param remoteId the remoteId to be updated membership.
+   * @return the updated identity.
+   * @throws IdentityStorageException
+   * @since  4.0.0
+   */
+  public void updateIdentityMembership(final String remoteId) throws IdentityStorageException;
 
   /**
    * Gets the identity by his id.

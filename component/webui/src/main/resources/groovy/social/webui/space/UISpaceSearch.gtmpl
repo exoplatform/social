@@ -27,7 +27,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 def uicomponentId = uicomponent.id;
 def labelActionAddSpace = _ctx.appRes("${uicomponentId}.label.AddNewSpace")
 def rcontext = _ctx.getRequestContext() ;
-def jsmanager = rcontext.getJavascriptManager().require("SHARED/uiForm");
+def jsmanager = rcontext.getJavascriptManager();
 
 def defaultSpaceNameAndDesc = _ctx.appRes("${uicomponentId}.label.DefaultSpaceNameAndDesc");
 def findSpaceLabel = _ctx.appRes("${uicomponentId}.label.FindSpace");
@@ -57,7 +57,8 @@ def params = """ {
 
 jsmanager.require("SHARED/jquery", "jq")
          .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-         .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);");
+         .require("SHARED/social-ui-space-search", "socialUISpaceSearch").addScripts("socialUISpaceSearch.init($params);")
+         .require("SHARED/uiForm");
 
 %>
 <div class="uiSpaceSearch">
@@ -72,7 +73,7 @@ jsmanager.require("SHARED/jquery", "jq")
 		<div class="uiSearchInput pull-right">
 			<%uiform.renderField(childs.get(0)); %>
 		</div>
-		<!--button class="btn" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button-->
+		<button type="button" class="btn hide" rel="tooltip" title="$searchLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%=searchLabel %></button>
 	</div>
  
 	<% uiform.end() %>

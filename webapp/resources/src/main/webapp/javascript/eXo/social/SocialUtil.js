@@ -6,15 +6,19 @@
     };
   }
   
-  var portal = eXo.env.portal
   eXo.social = eXo.social || {};
-  eXo.social.portal = {
-    rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
-    portalName : (portal.portalName) ? portal.portalName : 'classic',
-    context : (portal.context) ? portal.context : '/socialdemo',
-    accessMode : (portal.accessMode) ? portal.accessMode : 'public',
-    userName : (portal.userName) ? portal.userName : ''
-  };
+  
+  if (eXo.env) {
+	  var portal = eXo.env.portal
+	  
+	  eXo.social.portal = {
+	    rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
+	    portalName : (portal.portalName) ? portal.portalName : 'classic',
+	    context : (portal.context) ? portal.context : '/socialdemo',
+	    accessMode : (portal.accessMode) ? portal.accessMode : 'public',
+	    userName : (portal.userName) ? portal.userName : ''
+	  };
+  }
   eXo.social.I18n = eXo.social.I18n || {};
   eXo.social.I18n.mentions = eXo.social.I18n.mentions || {
     helpSearch: 'Type to start searching for users.',
@@ -139,7 +143,7 @@
     }
   };
 
-  eXo.social.SocialUtils = SocialUtils;
+  eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 
 })(window.eXo);

@@ -152,10 +152,51 @@ var UIActivity = {
         idAction : ('CommentButton'+UIActivity.activityId),
         elasticStyle : {
           maxHeight : '52px',
-          minHeight : '22px'
+          minHeight : '22px',
+          marginButton: '4px',
+          enableMargin: false
         },
         messages : window.eXo.social.I18n.mentions
     });
+  
+    var actionDeletes = $('a.controllDelete');
+    if (actionDeletes.length > 0) {
+      $.each(actionDeletes,
+        function(id, elm) {
+          $(elm).off('click').on('click',
+          function() {
+            var jElm = $(this);
+            var idElm = this.id;
+            var confirmText = jElm.attr('data-confirm');
+            if (confirm(confirmText)) {
+              if (idElm.indexOf('Activity') > 0) { // remove activity
+                var idActivty = idElm.replace('DeleteActivityButton', '')
+                $('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
+                  {
+                    height : '1px',
+                    opacity : '0'
+                  }, 500,
+                  function() {
+                    $(this).removeClass('activityStream');
+                    window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+                  });
+              } else if (idElm.indexOf('Comment') > 0) { // remove comment
+                var idComment = idElm.replace('DeleteCommentButton', '')
+                $('#commentContainer' + idComment).css('overflow', 'hidden').animate(
+                  {
+                    height : '1px',
+                    opacity : '0.1'
+                  }, 300,
+                  function() {
+                    $(this).hide();
+                    window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+                  });
+              }
+            }
+          })
+        }
+      );
+    }
 	}
 
 };

@@ -47,9 +47,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.webui.form.validator.ExpressionValidator;
-import org.exoplatform.webui.form.validator.MandatoryValidator;
-import org.exoplatform.webui.form.validator.SpecialCharacterValidator;
-import org.exoplatform.webui.form.validator.StringLengthValidator;
+import org.exoplatform.webui.form.validator.PersonalNameValidator;
 
 /**
  * Component manages all experience informations
@@ -520,7 +518,8 @@ public class UIExperienceSection extends UIProfileSection {
     Profile p = getProfile();
     List<UIComponent> listUIComp = getChilds();
     int totalUIComponent = listUIComp.size() - 1; // List of children not include UITitleBar child.
-
+    
+    int errorCode = 0;
     if (totalUIComponent == 0) {
       if (p != null) {
         Profile updateProfile = new Profile(p.getIdentity());
@@ -529,7 +528,7 @@ public class UIExperienceSection extends UIProfileSection {
         Utils.getIdentityManager().updateExperienceSection(updateProfile);
       }
 
-      return 0;
+      return errorCode;
     }
 
     for (int i = 1; i <= totalUIComponent; i += 7) {
@@ -540,7 +539,7 @@ public class UIExperienceSection extends UIProfileSection {
 
       if ((company == null) || (company.length() == 0)) {
         uiApplication.addMessage(new ApplicationMessage(INVALID_COMPANY_MANDATORY, null, 1));
-        return 2;
+        errorCode = 1;
       }
       
       uiStringInput = (UIFormStringInput) listUIComp.get(i + 1);
@@ -548,7 +547,7 @@ public class UIExperienceSection extends UIProfileSection {
 
       if ((position == null) || (position.length() == 0)) {
         uiApplication.addMessage(new ApplicationMessage(INVALID_POSITION_MANDATORY, null, 1));
-        return 2;
+        errorCode = 1;
       }
       
       uiFormTextAreaInput = (UIFormTextAreaInput) listUIComp.get(i + 2);
@@ -569,7 +568,7 @@ public class UIExperienceSection extends UIProfileSection {
         startDate = calendarToString(cal);
         if ((startDate == null) || (startDate.length() == 0)) {
           uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-          return 2;
+          errorCode = 1;
         }
       }
       
@@ -588,7 +587,7 @@ public class UIExperienceSection extends UIProfileSection {
       if (startDate == null && (endDate != null || isCurrent.booleanValue()) ||
           "".equals(startDate) && ("".equals(endDate)|| isCurrent.booleanValue())) {
         uiApplication.addMessage(new ApplicationMessage(INVALID_START_DATE_MANDATORY, null, 1));
-        return 2;
+        errorCode = 1;
       }
       
       if (startDate != null && !"".equals(startDate)) {
@@ -598,22 +597,22 @@ public class UIExperienceSection extends UIProfileSection {
         eDate = stringToDate(endDate);
         if (endDate != null && !"".equals(endDate) && sDate.after(today)) {
           uiApplication.addMessage(new ApplicationMessage(START_DATE_AFTER_TODAY, null, 1));
-          return 2;
+          errorCode = 1;
         }
 
         if (!isCurrent) {
           if ((endDate == null) || (endDate.length() == 0)) {
             uiApplication.addMessage(new ApplicationMessage(INVALID_END_DATE_MANDATORY, null, 1));
-            return 2;
+            errorCode = 1;
           }
           
           if ((eDate != null) && eDate.after(today)) {
             uiApplication.addMessage(new ApplicationMessage(END_DATE_AFTER_TODAY, null, 1));
-            return 2;
+            errorCode = 1;
           }
           if ((sDate != null) && sDate.after(eDate)) {
             uiApplication.addMessage(new ApplicationMessage(STARTDATE_BEFORE_ENDDATE, null, 1));
-            return 1;
+            errorCode = 1;
           }
         } else {
           endDate = null;
@@ -631,11 +630,15 @@ public class UIExperienceSection extends UIProfileSection {
 
       experiences.add(uiMap);
     }
-
+    
+    if (errorCode == 1) {
+      return errorCode;
+    }
+    
     p.setProperty(Profile.EXPERIENCES, experiences);
     Utils.getIdentityManager().updateProfile(p);
 
-    return 0;
+    return errorCode;
   }
 
   /**
@@ -648,11 +651,9 @@ public class UIExperienceSection extends UIProfileSection {
     ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
     expIdx += 1;
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_COMPANY + expIdx, null, null)
-      .addValidator(MandatoryValidator.class)
-      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
+      .addValidator(PersonalNameValidator.class));
     addUIFormInput(new UIFormStringInput(Profile.EXPERIENCES_POSITION + expIdx, null, null)
-      .addValidator(MandatoryValidator.class)
-      .addValidator(SpecialCharacterValidator.class).addValidator(StringLengthValidator.class, 3, 60));
+      .addValidator(PersonalNameValidator.class));
 
     UIFormTextAreaInput description = new UIFormTextAreaInput(Profile.EXPERIENCES_DESCRIPTION + expIdx, null, null);
     description.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIExperienceSection.label.description"));

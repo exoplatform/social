@@ -343,7 +343,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       exoActivity.setExternalId(activity.getExternalId());
       exoActivity.setId(activity.getId());
       exoActivity.setMediaItems(activity.getMediaItems());
-      exoActivity.setPostedTime(activity.getPostedTime());
+      if (activity.getPostedTime() != null)
+        exoActivity.setPostedTime(activity.getPostedTime());
       exoActivity.setPriority(activity.getPriority());
       exoActivity.setStreamFaviconUrl(activity.getStreamFaviconUrl());
       exoActivity.setStreamSourceUrl(activity.getStreamSourceUrl());
@@ -352,7 +353,8 @@ public class ExoActivityService extends ExoService implements ActivityService {
       exoActivity.setTemplateParams(activity.getTemplateParams());
       exoActivity.setTitle(activity.getTitle());
       exoActivity.setTitleId(activity.getTitleId());
-      exoActivity.setUpdated(activity.getUpdated());
+      if (activity.getUpdated() != null)
+        exoActivity.setUpdated(activity.getUpdated());
       exoActivity.setUrl(activity.getUrl());
       exoActivity.setUserId(activity.getUserId());
 

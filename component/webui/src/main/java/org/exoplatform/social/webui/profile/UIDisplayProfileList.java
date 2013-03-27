@@ -485,7 +485,9 @@ public class UIDisplayProfileList extends UIContainer {
             filter.setName("");
           }
           uiSearch.setRawSearchConditional("");
-        } 
+        }  else if (ALL_FILTER.equals(uiSearch.getRawSearchConditional())) {
+          uiAllPeople.setSelectedChar(ALL_FILTER);
+        }
         
         uiSearch.setProfileFilter(filter);
         uiSearch.setNewSearch(true);

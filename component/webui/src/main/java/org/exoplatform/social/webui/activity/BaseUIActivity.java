@@ -245,7 +245,7 @@ public class BaseUIActivity extends UIForm {
         comments = activityCommentsListAccess.loadAsList(0, commentsSize >= DEFAULT_LIMIT ? DEFAULT_LIMIT : commentsSize);
       }
     }
-    return comments;
+    return getI18N(comments);
   }
 
   public List<ExoSocialActivity> getAllComments() {
@@ -699,8 +699,11 @@ public class BaseUIActivity extends UIForm {
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
-
-      event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+      if (activitiesContainer.getActivityList().size() == 0) {
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer.getParent().getParent());
+      } else {
+        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
+      }
     }
   }
 

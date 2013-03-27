@@ -24,6 +24,7 @@ import org.exoplatform.services.organization.MembershipEventListener;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 
 /**
  * SocialMembershipListenerImpl is registered to OrganizationService to handle membership operation associated
@@ -58,6 +59,8 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
         spaceService.setManager(space, m.getUserName(), false);
         SpaceUtils.refreshNavigation();
       }
+    } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
+      clearIdentityCaching();
     }
   }
 
@@ -95,6 +98,15 @@ public class SocialMembershipListenerImpl extends MembershipEventListener {
         SpaceUtils.refreshNavigation();
       }
 
+    } else if (m.getGroupId().startsWith(SpaceUtils.PLATFORM_USERS_GROUP)) {
+      clearIdentityCaching();
     }
+  }
+  
+  private void clearIdentityCaching() {
+    IdentityStorage storage = (IdentityStorage) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityStorage.class);
+    
+    //clear caching for identity
+    storage.updateIdentityMembership(null);
   }
 }

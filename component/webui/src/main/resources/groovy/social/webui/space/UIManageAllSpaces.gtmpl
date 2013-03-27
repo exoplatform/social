@@ -199,21 +199,31 @@
 		          </h4>
 		          <div class="membersCount">$fieldLabelMembers <%= SpaceUtils.countMembers(space) %></div>
 		          <div class="content">
-		            <%=Utils.trunc(space.description, 45) %><br/>
+		            <% if (space.description != null && space.description.length() > 0) { %>
+		              <%=Utils.trunc(space.description, 45) %><br/>
+		            <% } else { %>
+		              <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description"); %>
+		            <% } %>
 		          </div>
 		        </div>
 		        <div class="connectionBtn clearfix">
-		          <% if ("INVITED".equals(typeOfSpace.toString())) { %>
+   		        <% if ("MANAGER".equals(typeOfSpace.toString())) {  %>
+                  <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>">$deleteSpaceLabel</button>
+                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>">$leaveSpaceLabel</button>
+                  <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'" title="<%= editSpaceLabel %>">$editSpaceLabel</button>                  
+		          <% } else if (uicomponent.isSuperUser(space)) { %>
+		              <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>">$deleteSpaceLabel</button>
+		             <% if ("MEMBER".equals(typeOfSpace.toString())) { %>
+                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>">$leaveSpaceLabel</button>
+		             <% } %>
+		              <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'" title="<%= editSpaceLabel %>">$editSpaceLabel</button>
+		          <% } else if ("INVITED".equals(typeOfSpace.toString())) { %>
 		              <button type="button" class="btn pull-right" onclick="<%= ignoreInvitationAction %>" title="<%= ignoreInvitationLabel %>">$ignoreInvitationLabel</button>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= acceptInvitationAction %>" title="<%= acceptInvitationLabel %>">$acceptInvitationLabel</button>
               <% } else if ("SENT".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="btn btn-primary pull-right" onclick="<%= cancelInvitationAction %>" title="<%= cancelInvitationLabel %>">$cancelInvitationLabel</button>
               <% } else if ("MEMBER".equals(typeOfSpace.toString())) {  %>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>">$leaveSpaceLabel</button>
-              <% } else if ("MANAGER".equals(typeOfSpace.toString())) {  %>
-                  <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>" title="<%= deleteSpaceLabel %>">$deleteSpaceLabel</button>
-                  <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>" title="<%= leaveSpaceLabel %>">$leaveSpaceLabel</button>
-                  <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'" title="<%= editSpaceLabel %>">$editSpaceLabel</button>                  
               <% } else {
                    if (Space.VALIDATION.equals(registration)) { %>
                      <button type="button" class="btn btn-primary pull-right" onclick="<%= requestToJoinSpaceAction %>" title="<%= requestToJoinSpaceLabel %>">$requestToJoinSpaceLabel</button>

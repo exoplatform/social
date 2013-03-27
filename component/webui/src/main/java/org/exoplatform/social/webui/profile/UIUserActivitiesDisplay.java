@@ -23,6 +23,8 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
@@ -72,6 +74,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
 
   static private final Log      LOG = ExoLogger.getLogger(UIUserActivitiesDisplay.class);
   private static final int      ACTIVITY_PER_PAGE = 20;
+  private static final String   SLASH = "/";
   public static final String ACTIVITY_STREAM_VISITED_PREFIX_COOKIED = "exo_social_activity_stream_%s_visited_%s";
   
   private Object locker = new Object();
@@ -100,8 +103,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
   public UIUserActivitiesDisplay() throws Exception {
     List<SelectItemOption<String>> displayModes = new ArrayList<SelectItemOption<String>>(4);
     displayModes.add(new SelectItemOption<String>("All_Updates", DisplayMode.ALL_ACTIVITIES.toString()));
-    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.CONNECTIONS.toString()));
     displayModes.add(new SelectItemOption<String>("Space_Updates", DisplayMode.MY_SPACE.toString()));
+    displayModes.add(new SelectItemOption<String>("Network_Updates", DisplayMode.CONNECTIONS.toString()));
     displayModes.add(new SelectItemOption<String>("My_Status", DisplayMode.MY_ACTIVITIES.toString()));
     
     UIDropDownControl uiDropDownControl = addChild(UIDropDownControl.class, "DisplayModesDropDown", null);
@@ -277,6 +280,13 @@ public class UIUserActivitiesDisplay extends UIContainer {
     return Calendar.getInstance().getTimeInMillis();
   }
   
+  protected String getSitePath() {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    String siteName = portalRequestContext.getSiteName();
+    SiteType siteType = portalRequestContext.getSiteType();
+    return SLASH + siteType.getName() + SLASH + siteName + SLASH;
+  }
+  
   protected boolean hasActivities() {
     UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
     UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
@@ -408,6 +418,16 @@ public class UIUserActivitiesDisplay extends UIContainer {
     this.postActivity = postActivity;
   }
 
+  protected boolean isWelcomeActivity() {
+    viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
+    if ( !viewerName.equals(ownerName) ) return false;
+    
+    boolean hasActivities = getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+    boolean isAllActivitiesModeOnHomePage = DisplayMode.ALL_ACTIVITIES.equals(getSelectedDisplayMode());
+    
+    return Utils.isHomePage() ? !hasActivities && isAllActivitiesModeOnHomePage : !hasActivities;
+  }
+  
   private long getLastUpdatedNum(String mode) {
     String cookieKey = String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, mode, Utils.getViewerRemoteId());
     String strValue = Utils.getCookies(cookieKey);

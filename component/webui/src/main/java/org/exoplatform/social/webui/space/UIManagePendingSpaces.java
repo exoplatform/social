@@ -348,7 +348,7 @@ public class UIManagePendingSpaces extends UIContainer {
       String charSearch = ctx.getRequestParameter(OBJECTID);
       
       if (charSearch == null) {
-        uiManagePendingSpaces.setSelectedChar(SEARCH_ALL);
+        uiManagePendingSpaces.setSelectedChar(null);
       } else {
         ResourceBundle resApp = ctx.getApplicationResourceBundle();
         String defaultSpaceNameAndDesc = resApp.getString(uiManagePendingSpaces.getId() + ".label.DefaultSpaceNameAndDesc");

@@ -331,6 +331,17 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
   }
   
+  private void changeSpaceRef(String remoteId, SpaceEntity spaceEntity, Space space, RefType type) {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, remoteId);
+      SpaceListEntity listRef = type.refsOf(identityEntity);
+      SpaceRef ref = listRef.getRef(spaceEntity.getName());
+      ref.setName(space.getPrettyName());
+    } catch (NodeNotFoundException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+  }
+  
   private void manageRefList(UpdateContext context, SpaceEntity spaceEntity, RefType type) {
 
     if (context.getAdded() != null) {
@@ -773,12 +784,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * {@inheritDoc}
    */
   public void renameSpace(Space space, String newDisplayName) {
+    renameSpace(null, space, newDisplayName);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void renameSpace(String remoteId, Space space, String newDisplayName) {
     SpaceEntity entity;
 
     try {
-      
-      String oldDisplayName = space.getDisplayName();
-      
       String oldPrettyName = space.getPrettyName();
       
       space.setDisplayName(newDisplayName);
@@ -792,6 +807,10 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       this.changeSpaceRef(entity, space, RefType.MANAGER);
       this.changeSpaceRef(entity, space, RefType.INVITED);
       this.changeSpaceRef(entity, space, RefType.PENDING);
+      
+      if (remoteId != null) {
+        this.changeSpaceRef(remoteId, entity, space, RefType.MEMBER);
+      }
       
       fillEntityFromSpace(space, entity);
 
@@ -1684,18 +1703,24 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     Space space = null;
     
     //
-    Iterator<SpaceRef> it = mapRefs.values().iterator();
-    while(it.hasNext()) {
+    for(Map.Entry<String, SpaceRef> entry :  mapRefs.entrySet()) {
+      SpaceRef ref = entry.getValue();
+
+      // Lazy clean up
+      if (ref.getSpaceRef() == null) {
+        listRef.removeRef(entry.getKey());
+        continue;
+      }
+
       if (filter.getAppId() == null) {
-        spaces.add(it.next());
+        spaces.add(ref);
       } else {
-        SpaceRef ref = it.next();
         if (ref.getSpaceRef().getApp().toLowerCase().indexOf(filter.getAppId().toLowerCase()) > 0) {
           spaces.add(ref);
-        };
+        }
       }
-      
     }
+
     //reserve order
     Collections.reverse(spaces);
     

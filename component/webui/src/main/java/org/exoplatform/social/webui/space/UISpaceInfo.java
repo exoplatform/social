@@ -240,7 +240,8 @@ public class UISpaceInfo extends UIForm {
       
       if (nameChanged) {
         space.setDisplayName(oldDisplayName);
-        spaceService.renameSpace(space, name);
+        String remoteId = Utils.getViewerRemoteId();
+        spaceService.renameSpace(remoteId, space, name);
       } else {
         spaceService.updateSpace(space);
       }

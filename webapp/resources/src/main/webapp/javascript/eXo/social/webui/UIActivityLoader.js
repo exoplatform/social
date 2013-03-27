@@ -59,8 +59,10 @@
 	    //
       if ( UIActivityLoader.hasMore ) {
         $('div.activityBottom').hide();
+        $('#ActivitiesLoader').parent().show();
       } else {
         $('div.activityBottom').show();
+        $('#ActivitiesLoader').parent().hide();
       }
 	  }
 	};

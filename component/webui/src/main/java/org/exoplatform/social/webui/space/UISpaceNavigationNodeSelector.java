@@ -33,6 +33,9 @@ import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationError;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserNodeFilterConfig;
@@ -48,6 +51,7 @@ import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -402,10 +406,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       DataStorage dataService = uiNodeSelector.getApplicationComponent(DataStorage.class);
       // get selected page
       String pageId = selectedPageNode.getPageRef();
-      Page selectPage = (pageId != null) ? dataService.getPage(pageId) : null;
-      if (selectPage != null) {
+      UserPortalConfigService userService = uiNodeSelector.getApplicationComponent(UserPortalConfigService.class);
+      
+      PageContext pageContext = (pageId != null) ? userService.getPageService().loadPage(PageKey.parse(pageId)) : null;
+      
+      if (pageContext != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
-        if (!userACL.hasEditPermission(selectPage)) {
+        if (!userACL.hasEditPermission(pageContext)) {
           uiApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.UserNotPermission",
                                                   new String[] { pageId },
                                                   1));
@@ -431,6 +438,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         uiToolPanel.setWorkingComponent(UIPage.class, null);
         UIPage uiPage = (UIPage) uiToolPanel.getUIComponent();
 
+        //
+        Page selectPage = userService.getDataStorage().getPage(pageId);
+        pageContext.update(selectPage);
+        
         if (selectPage.getTitle() == null)
           selectPage.setTitle(selectedPageNode.getLabel());
 
@@ -468,7 +479,10 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       Page page = (pageId != null) ? dataService.getPage(pageId) : null;
       if (page != null) {
         UserACL userACL = uiApp.getApplicationComponent(UserACL.class);
-        if (!userACL.hasPermission(page)) {
+        SpaceService spaceService = uiNodeSelector.getApplicationComponent(SpaceService.class);
+        UISpaceNavigationManagement uiSpaceNavigationManagement = uiNodeSelector.getParent();
+        if (!(spaceService.isManager(uiSpaceNavigationManagement.getSpace(), Utils.getViewerRemoteId()) 
+            || userACL.hasPermission(page))) {
           uiApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.UserNotPermission",
                                                   new String[] { pageId },
                                                   1));
@@ -567,10 +581,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
   static public class PasteNodeActionListener extends BaseActionListener<UIRightClickPopupMenu> {
     private UISpaceNavigationNodeSelector uiNodeSelector;
-
-    private DataStorage                   dataStorage;
-
-    private UserPortalConfigService       service;
+    
+    private PageService pageService;
 
     public void execute(Event<UIRightClickPopupMenu> event) throws Exception {
       WebuiRequestContext context = event.getRequestContext();
@@ -627,8 +639,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         return;
       }
 
-      service = uiNodeSelector.getApplicationComponent(UserPortalConfigService.class);
-      dataStorage = uiNodeSelector.getApplicationComponent(DataStorage.class);
+      pageService = uiNodeSelector.getApplicationComponent(PageService.class);
       pasteNode(sourceNode, targetNode, sourceNode.isCloneNode());
       uiNodeSelector.selectNode(targetNode);
     }
@@ -659,11 +670,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
     private String clonePageFromNode(TreeNode node, String pageName, SiteKey siteKey) throws Exception {
       String pageId = node.getPageRef();
       if (pageId != null) {
-        Page page = dataStorage.getPage(pageId);
+        PageKey sourceKey = PageKey.parse(pageId);
+        PageContext page = pageService.loadPage(sourceKey);
+        
         if (page != null) {
-          page = dataStorage.clonePage(pageId, siteKey.getTypeName(), siteKey.getName(), pageName);
-          return page.getPageId();
-        }
+          page = pageService.clone(sourceKey, siteKey.page(pageName));
+          return page.getKey().format();
+         }
       }
       return null;
     }
