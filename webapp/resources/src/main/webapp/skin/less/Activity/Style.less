@@ -391,7 +391,10 @@
 		.pull-left + .text {
 			margin-left: 90px;
 		}
-		
+		.descriptionText {
+			    word-wrap: break-word;
+			    min-height: 30px;
+		}
 		.isPreviewable {
 			position: relative;
 			.pull-left  {
@@ -400,9 +403,7 @@
 			.pull-left + .text {
 				margin-left: 315px;
 			}
-			.versionFile {				 
-				position: absolute;
-				bottom: 0;
+			.versionFile {			
 				color: @grayLight;font-size: 12px;
 			}
 		}
@@ -447,6 +448,9 @@
 			position: relative;
 			&+ .commentItem {
 				margin: 15px 0 0 0;
+			}
+			.ContentBlock {
+				 word-wrap: break-word;
 			}
 			.uiIconClose ,.viewComment{
 				position: absolute;
