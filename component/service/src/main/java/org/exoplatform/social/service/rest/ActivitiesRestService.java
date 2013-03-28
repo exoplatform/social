@@ -70,8 +70,10 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  *
  *
  * @author     hoatle <hoatlevan at gmail dot com>
+ * 
+ * @LevelAPI Platform
+ * 
  * @since      Dec 29, 2009
- * @copyright  eXo Platform SEA
  */
 @Path("{portalName}/social/activities")
 public class ActivitiesRestService implements ResourceContainer {
@@ -91,33 +93,22 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * Destroy activity by activityId
-   * if detects any comments of that activity, destroys these comments, too.
-   * @param activityId
-   * @return activity
-   */
-  private ExoSocialActivity destroyActivity(String activityId) {
-    _activityManager = getActivityManager();
-    ExoSocialActivity activity = _activityManager.getActivity(activityId);
-
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    try {
-      _activityManager.deleteActivity(activityId);
-    } catch(Exception ex) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    return activity;
-  }
-
-  /**
    * Destroy activity and return the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity to be destroyed.
+   *        
    * @param format
-   * @return response
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @POST
   @Path("destroy/{activityId}.{format}")
@@ -132,110 +123,22 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Show list of like by activityId.
-   * @param activityId
-   * @return
-   * @throws Exception
-   */
-  private LikeList showLikes(String activityId) {
-    _activityManager = getActivityManager();
-    ExoSocialActivity activity = null;
-    try {
-      activity = _activityManager.getActivity(activityId);
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException((Response.Status.INTERNAL_SERVER_ERROR));
-    }
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-
-    //
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
-    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
-    return likeList;
-  }
-
-  /**
-   * Update like of an activity.
-   * @param activityId
-   * @param like
-   * @throws Exception
-   */
-  private LikeList updateLike(String activityId, Like like) throws Exception {
-
-    _activityManager = getActivityManager();
-    _identityManager = getIdentityManager();
-
-    //
-    ExoSocialActivity activity = _activityManager.getActivity(activityId);
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-
-    //
-    String identityId = like.getIdentityId();
-    if (identityId == null) {
-      throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
-    }
-    Identity identity = _identityManager.getIdentity(like.getIdentityId(), false);
-
-    //
-    _activityManager.saveLike(activity, identity);
-
-    //
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
-    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
-    return likeList;
-  }
-
-  /**
-   * Destroy like from an activity.
-   * @param activityId
-   * @param identityId
-   */
-  private LikeList destroyLike(String activityId, String identityId) {
-
-    _activityManager = getActivityManager();
-    ExoSocialActivity activity = null;
-    //
-    try {
-      activity = _activityManager.getActivity(activityId);
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-
-    //
-    if (identityId == null) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-
-    try {
-      Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
-      _activityManager.deleteLike(activity, user);
-    } catch(Exception ex) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-
-    //
-    LikeList likeList = new LikeList();
-    likeList.setActivityId(activityId);
-    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
-
-    return likeList;
-  }
-
-  /**
    * Show list of like by activityId and return the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity that the like to be showed.
+   *        
    * @param format
-   * @return response
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{activityId}/likes/show.{format}")
@@ -252,12 +155,24 @@ public class ActivitiesRestService implements ResourceContainer {
 
   /**
    * Update like by the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity that like to be updated.
+   *        
    * @param format
+   *        The response format type, for example: JSON, or XML.
+   *        
    * @param like
-   * @return response
+   *        The like to be updated.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @POST
   @Path("{activityId}/likes/update.{format}")
@@ -275,12 +190,22 @@ public class ActivitiesRestService implements ResourceContainer {
 
   /**
    * Destroy like by identityId and return the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity that like to be destroyed.
+   *        
    * @param identityId
    * @param format
-   * @return response
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @POST
   @Path("{activityId}/likes/destroy/{identityId}.{format}")
@@ -296,155 +221,23 @@ public class ActivitiesRestService implements ResourceContainer {
     return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
   }
 
-
-  /**
-   * Show comment list of an activity from its activityId.
-   *
-   * @param activityId
-   * @return commentList
-   * @see CommentList
-   */
-  private CommentList showComments(String activityId) {
-    CommentList commentList = new CommentList();
-    commentList.setActivityId(activityId);
-    _activityManager = getActivityManager();
-    ExoSocialActivity activity = null;
-    try {
-      activity = _activityManager.getActivity(activityId);
-      if (activity == null) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      }
-      String[] commentIds = activity.getReplyToId();
-      if (commentIds == null) {
-        commentList.setComments(new ArrayList<ExoSocialActivity>());
-      } else {
-        for (String commentId: commentIds) {
-          if (commentId.length() > 0) {
-            commentList.addComment(_activityManager.getActivity(commentId));
-          }
-        }
-      }
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-    }
-
-    return commentList;
-  }
-
-  /**
-   * Create or update comment to an activity by its activityId.
-   * @param activityId
-   * @param comment
-   * @return commentList
-   * @see CommentList
-   */
-  private CommentList updateComment(String activityId, ExoSocialActivity comment, UriInfo uriInfo, String portalName) {
-    CommentList commentList = new CommentList();
-    commentList.setActivityId(activityId);
-    ExoSocialActivity activity = null;
-    try {
-      activity = _activityManager.getActivity(activityId);
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    if (activity == null) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-    _activityManager = getActivityManager();
-    //TODO hoatle set current userId from authentication context instead of getting userId from comment
-//    if (comment.getUserId() == null) {
-//      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-//    }
-    ConversationState state = ConversationState.getCurrent();
-    String userId = null;
-    if (state != null) {
-      userId = state.getIdentity().getUserId();
-    } else {
-      try {
-        userId = Util.getViewerId(uriInfo);
-      } catch (Exception e) {
-        LOG.warn(e.getMessage(), e);
-      }
-    }
-    Identity identity = null;
-    try {
-      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
-    } catch (Exception e1) {
-      LOG.warn(e1.getMessage(), e1);
-    }
-    
-    if (identity == null) {
-      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
-                                                                    false);
-    }
-    
-     //TODO hoatle set current userId from authentication context instead of getting userId from comment
-     if (comment.getUserId() == null) {
-       throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    } else {
-      comment.setUserId(identity.getId());
-    }
-
-    try {
-      _activityManager.saveComment(activity, comment);
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    commentList.addComment(comment);
-    return commentList;
-  }
-
-  /**
-     * Get identityManager.
-     * @return
-     */
-    private IdentityManager getIdentityManager(String portalName) {
-      if (_identityManager == null) {
-        PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
-        _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-      }
-      return _identityManager;
-    }
-
-
-  /**
-   * Destroy a comment (by its commentId) from an activity (by its activityId).
-   *
-   * @param activityId
-   * @param commentId
-   * @return commentList
-   * @see CommentList
-   */
-  private CommentList destroyComment(String activityId, String commentId) {
-
-    CommentList commentList = new CommentList();
-    commentList.setActivityId(activityId);
-
-    _activityManager = getActivityManager();
-
-    ExoSocialActivity activity = null;
-    try {
-      activity = _activityManager.getActivity(activityId);
-      ExoSocialActivity comment = _activityManager.getActivity(commentId);
-      if (activity == null || comment == null) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      }
-      commentList.addComment(comment);
-      _activityManager.deleteComment(activityId, commentId);
-    } catch (ActivityStorageException e) {
-      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    return commentList;
-  }
-
-
   /**
    * Show comment list by the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity that comments to be showed.
+   *        
    * @param format
-   * @return response
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{activityId}/comments/show.{format}")
@@ -463,12 +256,25 @@ public class ActivitiesRestService implements ResourceContainer {
    * Show comment list by the JSON/XML format with limit and offset.
    * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target activity that comments to be showed.
+   *        
    * @param format
+   *        The response format type, for example: JSON, or XML.
+   *        
    * @param offset
+   *        Specify the from number of comment to be showed. It must be greater than or equal to 0.
+   *        
    * @param limit
-   * @return response
+   *        Specify the number of spaces to be showed.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{activityId}/comments.{format}")
@@ -478,7 +284,6 @@ public class ActivitiesRestService implements ResourceContainer {
                                @PathParam("format") String format,
                                @QueryParam("offset") Integer offset,
                                @QueryParam("limit") Integer limit) throws Exception {
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
     
     ActivityManager activityManager = Util.getActivityManager(portalName);
@@ -536,11 +341,21 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Get an activity by its Id.
    *
-   * @param uriInfo The URI request information.
-   * @param portalContainerName The associated portal container name.
-   * @param activityId The specified activity Id.
-   * @param format The expected returned format.
-   * @return a response object
+   * @param uriInfo 
+   *        The URI request information.
+   *        
+   * @param portalContainerName 
+   *        The associated portal container name.
+   * 
+   * @param activityId
+   *        The id of target activity.
+   *        
+   * @param format 
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return The response contains returned result.
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{activityId}.{format}")
@@ -553,7 +368,6 @@ public class ActivitiesRestService implements ResourceContainer {
                                   @QueryParam("activity_stream") String showActivityStream,
                                   @QueryParam("number_of_likes") int numberOfLikes) {
     
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
     MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
     ActivityManager activityManager = Util.getActivityManager(portalContainerName);
     IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
@@ -626,11 +440,22 @@ public class ActivitiesRestService implements ResourceContainer {
    * Update comment by the JSON/XML format.
    * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of target comment to be updated.
+   *        
    * @param format
+   *        The response format type, for example: JSON, or XML.
+   *        
    * @param comment
-   * @return response
+   *        The comment to be updated.
+   *        
+   * @return response The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @POST
   @Path("{activityId}/comments/update.{format}")
@@ -650,12 +475,23 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Comment an existing activity from a specified activity Id. Just returns the created comment.
    *
-   * @param uriInfo The uri request uri
+   * @param uriInfo 
+            The request URI information.
+            
    * @param portalName The associated portal container name.
-   * @param activityId The specified activity Id.
-   * @param format The expected returned format.
-   * @param text The content of comment.
-   * @return a response object
+   * 
+   * @param activityId 
+            The id of target comment to be created.
+            
+   * @param format 
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @param text 
+   *        The content of comment.
+   *        
+   * @return The response contains returned result.
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{activityId}/comments/create.{format}")
@@ -700,12 +536,24 @@ public class ActivitiesRestService implements ResourceContainer {
   
   /**
    * Destroy comments and return the JSON/XML format.
+   * 
    * @param uriInfo
+   *        The request URI information.
+   *        
    * @param activityId
+   *        The id of activity that contain target comment.
+   *        
    * @param commentId
+   *        The id of target comment to be destroyed.
+   * 
    * @param format
-   * @return response
+   *        The response format type, for example: JSON, or XML.
+   *        
+   * @return response The response contains returned result. 
+   *         
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @POST
   @Path("{activityId}/comments/destroy/{commentId}.{format}")
@@ -719,6 +567,262 @@ public class ActivitiesRestService implements ResourceContainer {
     CommentList commentList = null;
     commentList = destroyComment(activityId, commentId);
     return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Destroy activity by activityId
+   * if detects any comments of that activity, destroys these comments, too.
+   * @param activityId
+   * @return activity
+   */
+  private ExoSocialActivity destroyActivity(String activityId) {
+    _activityManager = getActivityManager();
+    ExoSocialActivity activity = _activityManager.getActivity(activityId);
+
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    try {
+      _activityManager.deleteActivity(activityId);
+    } catch(Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return activity;
+  }
+  
+  /**
+   * Show list of like by activityId.
+   * @param activityId
+   * @return
+   * @throws Exception
+   */
+  private LikeList showLikes(String activityId) {
+    _activityManager = getActivityManager();
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException((Response.Status.INTERNAL_SERVER_ERROR));
+    }
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
+    return likeList;
+  }
+  
+  /**
+   * Update like of an activity.
+   * @param activityId
+   * @param like
+   * @throws Exception
+   */
+  private LikeList updateLike(String activityId, Like like) throws Exception {
+
+    _activityManager = getActivityManager();
+    _identityManager = getIdentityManager();
+
+    //
+    ExoSocialActivity activity = _activityManager.getActivity(activityId);
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+
+    //
+    String identityId = like.getIdentityId();
+    if (identityId == null) {
+      throw new WebApplicationException(Response.Status.NOT_ACCEPTABLE);
+    }
+    Identity identity = _identityManager.getIdentity(like.getIdentityId(), false);
+
+    //
+    _activityManager.saveLike(activity, identity);
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
+    return likeList;
+  }
+
+  /**
+   * Destroy like from an activity.
+   * @param activityId
+   * @param identityId
+   */
+  private LikeList destroyLike(String activityId, String identityId) {
+
+    _activityManager = getActivityManager();
+    ExoSocialActivity activity = null;
+    //
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+
+    //
+    if (identityId == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    try {
+      Identity user = getIdentityManager().getIdentity(activity.getUserId(), false);
+      _activityManager.deleteLike(activity, user);
+    } catch(Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+
+    //
+    LikeList likeList = new LikeList();
+    likeList.setActivityId(activityId);
+    likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
+
+    return likeList;
+  }
+  
+  /**
+   * Show comment list of an activity from its activityId.
+   *
+   * @param activityId
+   * @return commentList
+   * @see CommentList
+   */
+  private CommentList showComments(String activityId) {
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+    _activityManager = getActivityManager();
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+      if (activity == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      String[] commentIds = activity.getReplyToId();
+      if (commentIds == null) {
+        commentList.setComments(new ArrayList<ExoSocialActivity>());
+      } else {
+        for (String commentId: commentIds) {
+          if (commentId.length() > 0) {
+            commentList.addComment(_activityManager.getActivity(commentId));
+          }
+        }
+      }
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+
+    return commentList;
+  }
+
+  /**
+   * Create or update comment to an activity by its activityId.
+   * @param activityId
+   * @param comment
+   * @return commentList
+   * @see CommentList
+   */
+  private CommentList updateComment(String activityId, ExoSocialActivity comment, UriInfo uriInfo, String portalName) {
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    if (activity == null) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    _activityManager = getActivityManager();
+
+    ConversationState state = ConversationState.getCurrent();
+    String userId = null;
+    if (state != null) {
+      userId = state.getIdentity().getUserId();
+    } else {
+      try {
+        userId = Util.getViewerId(uriInfo);
+      } catch (Exception e) {
+        LOG.warn(e.getMessage(), e);
+      }
+    }
+    Identity identity = null;
+    try {
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId);
+    } catch (Exception e1) {
+      LOG.warn(e1.getMessage(), e1);
+    }
+    
+    if (identity == null) {
+      identity = getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                    false);
+    }
+    
+     //TODO hoatle set current userId from authentication context instead of getting userId from comment
+     if (comment.getUserId() == null) {
+       throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    } else {
+      comment.setUserId(identity.getId());
+    }
+
+    try {
+      _activityManager.saveComment(activity, comment);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    commentList.addComment(comment);
+    return commentList;
+  }
+
+  /**
+   * Get identityManager.
+   * @return
+   */
+  private IdentityManager getIdentityManager(String portalName) {
+    if (_identityManager == null) {
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+      _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
+    }
+    return _identityManager;
+  }
+
+
+  /**
+   * Destroy a comment (by its commentId) from an activity (by its activityId).
+   *
+   * @param activityId
+   * @param commentId
+   * @return commentList
+   * @see CommentList
+   */
+  private CommentList destroyComment(String activityId, String commentId) {
+
+    CommentList commentList = new CommentList();
+    commentList.setActivityId(activityId);
+
+    _activityManager = getActivityManager();
+
+    ExoSocialActivity activity = null;
+    try {
+      activity = _activityManager.getActivity(activityId);
+      ExoSocialActivity comment = _activityManager.getActivity(commentId);
+      if (activity == null || comment == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      commentList.addComment(comment);
+      _activityManager.deleteComment(activityId, commentId);
+    } catch (ActivityStorageException e) {
+      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return commentList;
   }
 
   /**

@@ -49,8 +49,10 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * ex: GET: http://localhost:8080/rest/social/apps/show.json
  *
  * @author     hoatle <hoatlevan at gmail dot com>
+ * 
  * @since      Jan 6, 2010
- * @copyright  eXo Platform SAS 
+ * 
+ * @LevelAPI Platform
  */
 @Path("social/apps")
 public class AppsRestService implements ResourceContainer {
@@ -60,47 +62,22 @@ public class AppsRestService implements ResourceContainer {
    * constructor
    */
   public AppsRestService() {}
-
-  /**
-   * shows appList
-   * @return appList application list entity
-   * @see AppList
-   */
-  private AppList showApps() {
-    AppList appList = new AppList();
-    ApplicationRegistryService applicationRegistryService = getApplicationRegistryService();
-    //String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
-    try {
-      List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories("root");
-      Iterator<ApplicationCategory> applicationCategoryItr = applicationCategoryList.iterator();
-      ApplicationCategory applicationCategory;
-      while (applicationCategoryItr.hasNext()) {
-        applicationCategory = applicationCategoryItr.next();
-        ApplicationType<org.exoplatform.portal.pom.spi.portlet.Portlet> portletType = ApplicationType.PORTLET;
-        List<Application> applications = applicationRegistryService.getApplications(applicationCategory, portletType);
-        Iterator<Application> applicationItr = applications.iterator();
-        Application application;
-        while (applicationItr.hasNext()) {
-          App app = new App();
-          application = applicationItr.next();
-          app.setAppId(application.getId());
-          app.setAppName(application.getDisplayName());
-          appList.addApp(app);
-        }
-      }
-    } catch (Exception ex) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    return appList;
-  }
   
   /**
    * shows apps by json/xml format: <br />
    * GET: /{restContextName}/social/apps/show.{format}
-   * @param uriInfo provided as {@link Context}
-   * @param format can be json or xml
-   * @return response
+   * 
+   * @param uriInfo
+   *        The request URI information.
+   *        
+   * @param format
+   *        The type of returned result.
+   *        
+   * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("show.{format}")
@@ -168,6 +145,39 @@ public class AppsRestService implements ResourceContainer {
       }
       _apps.add(app);
     }
+  }
+  
+  /**
+   * shows appList
+   * @return appList application list entity
+   * @see AppList
+   */
+  private AppList showApps() {
+    AppList appList = new AppList();
+    ApplicationRegistryService applicationRegistryService = getApplicationRegistryService();
+    //String[] applicationTypes = {org.exoplatform.web.application.Application.EXO_PORTLET_TYPE};
+    try {
+      List<ApplicationCategory> applicationCategoryList = applicationRegistryService.getApplicationCategories("root");
+      Iterator<ApplicationCategory> applicationCategoryItr = applicationCategoryList.iterator();
+      ApplicationCategory applicationCategory;
+      while (applicationCategoryItr.hasNext()) {
+        applicationCategory = applicationCategoryItr.next();
+        ApplicationType<org.exoplatform.portal.pom.spi.portlet.Portlet> portletType = ApplicationType.PORTLET;
+        List<Application> applications = applicationRegistryService.getApplications(applicationCategory, portletType);
+        Iterator<Application> applicationItr = applications.iterator();
+        Application application;
+        while (applicationItr.hasNext()) {
+          App app = new App();
+          application = applicationItr.next();
+          app.setAppId(application.getId());
+          app.setAppName(application.getDisplayName());
+          appList.addApp(app);
+        }
+      }
+    } catch (Exception ex) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return appList;
   }
   
   /**

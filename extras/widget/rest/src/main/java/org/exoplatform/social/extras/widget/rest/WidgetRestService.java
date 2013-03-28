@@ -48,12 +48,36 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
+/**
+ * The class show out capability to build widget applications that integrated with third party application.
+ *  
+ * @LevelAPI Platform
+ */
 @Path("spaces/{containerName}")
 public class WidgetRestService implements ResourceContainer {
   private static Log log = ExoLogger.getLogger(WidgetRestService.class.getName());
 
   private static final int DEFAULT_LIMIT = 20;
   
+  /**
+   * Redirects to space with the provided name; in case of space not existing then created before redirecting.
+   * 
+   * @param containerName
+   *        The name of container.
+   *        
+   * @param portalName
+   *        The name of current portal.
+   *        
+   * @param spaceName
+   *        The name of space to be redirected.
+   *        
+   * @param description
+   *        The description of target space.
+   *        
+   * @return
+   * 
+   * @LevelAPI Platform
+   */
   @GET
   @Path("go_to_space")
   public Response goToSpace(@PathParam("containerName") String containerName,
@@ -112,6 +136,28 @@ public class WidgetRestService implements ResourceContainer {
     }
   }
 
+  /**
+   * Get space information and build an output to display space information.
+   * 
+   * @param containerName
+   *        The name of container.
+   *        
+   * @param portalName
+   *        The name of current portal.
+   *        
+   * @param spaceName
+   *        The name of space to be redirected.
+   *        
+   * @param description
+   *        The description of target space.
+   * 
+   * @param uriInfo
+   *        The request URI information.
+   *        
+   * @return
+   * 
+   * @LevelAPI Platform
+   */
   @GET
   @Path("space_info")
   @Produces("text/html")

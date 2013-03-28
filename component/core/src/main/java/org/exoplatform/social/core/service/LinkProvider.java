@@ -36,6 +36,13 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 
+/**
+ * The <code>LinkProvider</code> class builds and provides default links and links of users, spaces and activities.
+ * Links be built base on specific provided information as name or id of target user or space.
+ * In case of wrong when building, default links will be returned.    
+ * 
+ * @LevelAPI Platform
+ */
 public class LinkProvider {
   public static final String RESOURCE_URL = "/social-resources";
   public static final String JAVASCRIPT_RESOURCE_URL = RESOURCE_URL + "/javascript/";
@@ -67,6 +74,8 @@ public class LinkProvider {
   /**
    * Constructor with parameter to inject the default portal owner name
    * @param params
+   *        The params get from configuration.
+   * 
    * @since 1.2.0 GA
    */
   public LinkProvider(InitParams params){
@@ -74,10 +83,15 @@ public class LinkProvider {
   }
 
   /**
-   * Returns the uri link to space profile.
+   * Gets the uri link to space profile by its pretty name.
    *
-   * @param prettyName
+   * @param prettyName 
+   *        The pretty name of space.
+   * 
    * @return the uri link to space
+   * 
+   * @LevelAPI Platform
+   * 
    * @since 1.2.0 GA
    */
   public static String getSpaceUri(final String prettyName) {
@@ -95,42 +109,62 @@ public class LinkProvider {
   }
 
   /**
-   * Returns the uri link to user profile.
+   * Gets the uri link to user profile by user's name.
    *
-   * @param username
+   * @param username 
+   *        The name of user (remoteId)
+   * 
    * @return the uri link to user profile
+   * 
+   * @LevelAPI Platform
    */
   public static String getProfileUri(final String username) {
     return buildProfileUri(username, null, null);
   }
 
   /**
-   * Returns the uri link to user profile in a portalOwner.
+   * Gets the uri link to user profile by user's name and owner portal.
    *
    * @param username
+   *        The name of user (remoteId)
+   *        
    * @param portalOwner
+   *        The portal owner (classic, public..)
+   * 
    * @return the uri link to user profile
+   * 
+   * @LevelAPI Platform
    */
   public static String getProfileUri(final String username, final String portalOwner) {
     return buildProfileUri(username, null, portalOwner);
   }
 
   /**
-   * Returns tag <a> with a link to profile of userName.
+   * Gets tag <a> with a link to profile of userName.
    *
-   * @param username
+   * @param username 
+   *        The name of user (remoteId)
+   *        
    * @return tag <a> with a link to profile of userName
+   * 
+   * @LevelAPI Platform
    */
   public static String getProfileLink(final String username) {
     return getProfileLink(username, null);
   }
 
   /**
-   * Returns tag <a> with a link to profile of userName on portalName.
+   * Gets tag <a> with a link to profile of userName on portalName.
    *
-   * @param username
+   * @param username 
+   *        The name of user (remoteId)
+   *        
    * @param portalOwner
+   *        The portal owner (classic, public..)
+   *        
    * @return tag <a> with a link to profile of userName on portalName
+   * 
+   * @LevelAPI Platform
    */
   public static String getProfileLink(final String username, final String portalOwner) {
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
@@ -142,11 +176,21 @@ public class LinkProvider {
   /**
    * Gets absolute profile uri of userName
    *
-   * @param userName
+   * @param username 
+   *        The name of user (remoteId)
+   *        
    * @param portalName
+   *        The name of current portal
+   *        
    * @param portalOwner
+   *        The portal owner (classic, public..)
+   *        
    * @param host
+   *        The name of provided host
+   * 
    * @return absolute profile uri of userName
+   * 
+   * @LevelAPI Platform
    */
   public static String getAbsoluteProfileUrl(final String userName, final String portalName,
                                              final String portalOwner, final String host) {
@@ -154,56 +198,76 @@ public class LinkProvider {
   }
 
   /**
-   * Gets activity link of user; remoteId should be the id name. For
-   * example: root
+   * Gets activity link of user; remoteId should be the id name. 
+   * For example: root
    * 
    * @param remoteId
-   * @return
+   *        The name of user (remoteId)
+   *        
+   * @return Link to activity of provided user.
+   * 
+   * @LevelAPI Platform
    */
   public static String getUserActivityUri(final String remoteId) {
     return getActivityUri(OrganizationIdentityProvider.NAME,remoteId);
   }
 
   /**
-   * Gets connections link of user; remoteId should be the id name. For
-   * example: root
+   * Gets connections link of user; remoteId should be the id name. 
+   * For example: root
    * 
    * @param remoteId
-   * @return
+   *        The name of user (remoteId)
+   *        
+   * @return The link point to connections of provided user.
+   * 
+   * @LevelAPI Platform
    */
   public static String getUserConnectionsUri(final String remoteId) {
     return getBaseUri(null, null) + "/connections/all-people" + ROUTE_DELIMITER + remoteId;
   }
   
   /**
-   * Gets connections link of user; remoteId should be the id name. For
-   * example: root
+   * Gets connections link of user; remoteId should be the id name. 
+   * For example: root
    * 
    * @param remoteId
-   * @return
+   *        The name of user (remoteId)
+   *        
+   * @return The link to network of provided user who has connection with current user. 
    */
   public static String getUserConnectionsYoursUri(final String remoteId) {
     return getBaseUri(null, null) + "/connections/network" + ROUTE_DELIMITER + remoteId;
   }
   
   /**
-   * Gets profile link of user; remoteId should be the id name. For
-   * example: root
+   * Gets profile link of user; remoteId should be the id name. 
+   * For example: root
    *
    * @param remoteId
-   * @return
+   *        The name of user (remoteId)
+   *        
+   * @return The link to profile of provided user.
+   * 
+   * @LevelAPI Platform
    */
   public static String getUserProfileUri(final String remoteId) {
     return getBaseUri(null, null) + "/profile" + ROUTE_DELIMITER + remoteId;
   }
 
   /**
-   * Gets activity link of space or user; remoteId should be the id name. For
-   * example: organization:root or space:abc_def.
+   * Gets activity link of space or user; remoteId should be the id name. 
+   * For example: organization:root or space:abc_def.
    *
    * @param providerId
+   *        The provider information.
+   *        
    * @param remoteId
-   * @return
+   *        The id of target identity.
+   *        
+   * @return The link to activity of provided user on provided provider.
+   * 
+   * @LevelAPI Platform
    */
   public static String getActivityUri(final String providerId, final String remoteId) {
     final String prefix = getBaseUri(null, null) + "/";
@@ -221,8 +285,15 @@ public class LinkProvider {
    * Gets activity link of the space.
    *
    * @param remoteId
+   *        The id of target space.
+   *        
    * @param groupId
-   * @return
+   *        The group id of target space.
+   *        
+   * @return The link to activity of space
+   * 
+   * @LevelAPI Platform
+   * 
    * @since 1.2.8
    */
   public static String getActivityUriForSpace(final String remoteId, final String groupId) {
@@ -233,17 +304,26 @@ public class LinkProvider {
    * Builds avatar image uri from avatarAttachment.
    *
    * @param avatarAttachment
-   * @return uri
+   *        The attachment used to build link to avatar.
+   *        
+   * @return The link to avatar of provided attachment.
+   * 
+   * @LevelAPI Platform
    */
   public static String buildAvatarImageUri(final AvatarAttachment avatarAttachment) {
     return buildAvatarImageUri(PortalContainer.getInstance(), avatarAttachment);
   }
 
   /**
-   * Gets url of avatar.
+   * Gets link to avatar of provided space.
    *
    * @param space
-   * @return
+   *        The target object to get its avatar base on attachment information.
+   *        
+   * @return The link to avatar of target space.
+   * 
+   * @LevelAPI Platform
+   * 
    * @since 1.2.0-GA
    */
   public static String buildAvatarImageUri(final Space space) {
@@ -254,7 +334,12 @@ public class LinkProvider {
    * Gets url of avatar from identity name.
    *
    * @param identityName
-   * @return
+   *        The name of target identity to build link to avatar.
+   *        
+   * @return Link to avatar of target provided identity name.
+   * 
+   * @LevelAPI Platform
+   * 
    * @since 1.2.0-GA
    */
   public static String buildAvatarImageUri(final String identityName) {
@@ -334,6 +419,8 @@ public class LinkProvider {
    * @param userName
    * @param portalName
    * @param portalOwner
+   *        The portal owner (classic, public..)
+   *        
    * @return profile uri
    */
   private static String buildProfileUri(final String userName, final String portalName, String portalOwner) {
@@ -346,6 +433,8 @@ public class LinkProvider {
    *
    * @param portalName
    * @param portalOwner
+   *        The portal owner (classic, public..)
+   *        
    * @return
    */
   private static String getBaseUri(final String portalName, String portalOwner) {
@@ -392,6 +481,7 @@ public class LinkProvider {
    * Gets portal owner, if parameter is null or "", the method return default portal owner.
    *
    * @param portalOwner
+   *        The portal owner (classic, public..)
    * @return portalOwner
    */
   private static String getPortalOwner(String portalOwner) {
