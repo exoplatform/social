@@ -263,12 +263,12 @@ public class WhatsHotTest extends AbstractCoreTest {
 
     List<ExoSocialActivity> list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
     
-    assertEquals(2, list.size());
+    assertEquals(1, list.size());
     ExoSocialActivity firstActivity = list.get(0);
     
     //
     list = activityStorage.getActivitiesOfConnections(demoIdentity, 0, 2);
-    assertEquals(2, list.size());
+    assertEquals(1, list.size());
     
     assertEquals(firstActivity.getTitle(), list.get(0).getTitle());
    

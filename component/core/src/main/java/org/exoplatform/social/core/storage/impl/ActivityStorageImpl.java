@@ -968,7 +968,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   public List<ExoSocialActivity> getActivitiesOfConnections(Identity ownerIdentity, int offset, int limit) {
 
     List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
-    connections.add(ownerIdentity);
+    
+    if (connections.size() <=0 ) {
+      return Collections.emptyList();
+    }
     
     //
     ActivityFilter filter = new ActivityFilter(){};
@@ -985,7 +988,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     //
 
     List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
-    connectionList.add(ownerIdentity);
+    
+    if (connectionList.size() <= 0) {
+      return 0;
+    }
 
     //
     ActivityFilter filter = new ActivityFilter(){};
