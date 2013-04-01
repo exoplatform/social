@@ -160,7 +160,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
    * @param numberOfItems
    * @param addedToTearDownList
    */
-  private Identity populateProfile(Identity identity) {
+  private Identity populateProfile(Identity identity) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     Profile profile = identity.getProfile();
     assertNotNull(profile);
@@ -187,7 +187,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
 
   }
   
-  private Identity updateProfilePosition(Identity identity, String position) {
+  private Identity updateProfilePosition(Identity identity, String position) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     Profile profile = identity.getProfile();
     assertNotNull(profile);
@@ -204,7 +204,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
 
   }
   
-  private Identity updateProfileGender(Identity identity, String gender) {
+  private Identity updateProfileGender(Identity identity, String gender) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     Profile profile = identity.getProfile();
     assertNotNull(profile);
@@ -218,7 +218,7 @@ public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
 
   }
   
-  private Identity updateProfileKeyValue(Identity identity, String key, String value) {
+  private Identity updateProfileKeyValue(Identity identity, String key, String value) throws Exception {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     Profile profile = identity.getProfile();
     assertNotNull(profile);

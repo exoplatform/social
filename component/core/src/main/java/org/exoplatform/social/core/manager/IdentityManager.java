@@ -30,6 +30,7 @@ import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.webui.exception.MessageException;
 
 /**
  * The <code>IdentityManager</code> class provides APIs to manage identities.
@@ -148,7 +149,7 @@ public interface IdentityManager {
    * 
    * @since  1.2.0-GA
    */
-  void updateProfile(Profile specificProfile);
+  void updateProfile(Profile specificProfile) throws MessageException;
 
   /**
    * Gets identity list access which contains all the identities from a provided provider which are 
@@ -451,7 +452,7 @@ public interface IdentityManager {
    * @LevelAPI Provisional
    * @deprecated Will be removed by 4.0.x
    */
-  void updateAvatar(Profile p);
+  void updateAvatar(Profile p) throws MessageException;
 
   /**
    * Updates basic info.

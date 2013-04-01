@@ -174,7 +174,7 @@ public class ProfileUpdatesPublisherTest extends AbstractCoreTest {
     return identityStorage.getProfileActivityId(profile, Profile.AttachedActivityType.USER);
   }
   
-  private ExoSocialActivity updateProfile(Profile profile) {
+  private ExoSocialActivity updateProfile(Profile profile) throws Exception {
     identityManager.updateProfile(profile);
     return activityManager.getActivity(getActivityId(profile));
   }
