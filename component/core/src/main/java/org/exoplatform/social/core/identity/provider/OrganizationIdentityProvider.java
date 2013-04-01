@@ -173,9 +173,10 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
           updateContact();
         }
       } catch (Exception e) {
-        LOG.warn("Failed to update user by profile", e);
         if ( e instanceof MessageException) {
           throw (MessageException) e;
+        } else {
+          LOG.warn("Failed to update user by profile", e);
         }
         
       }
