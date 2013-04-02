@@ -568,6 +568,16 @@ public interface SpaceService {
   public SpaceListAccess getVisibleSpacesWithListAccess(String userId, SpaceFilter spaceFilter);
   
   /**
+   * Provides Unified Search feature to get these spaces of a user which that user can see the visible spaces.
+   * @param userId
+   * @param spaceFilter
+   * @return list of spaces
+   * @LevelAPI Platform
+   * @since 4.0.0-GA
+   */
+  public SpaceListAccess getUnifiedSearchSpacesWithListAccess(String userId, SpaceFilter spaceFilter);
+  
+  /**
    * Gets spaces of a user which that user has the edit permission.
    *
    * @param userId

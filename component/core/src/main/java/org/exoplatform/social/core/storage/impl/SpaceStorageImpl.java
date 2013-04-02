@@ -442,7 +442,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
           .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), firstCharacterOfNameLowerCase);
     }
   }
-
+  
   private boolean isValidInput(String input) {
     if (input == null || input.length() == 0) {
       return false;
@@ -469,6 +469,40 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(searchCondition).append(StorageUtils.PERCENT_STR);
     }
     return searchConditionBuffer.toString();
+  }
+  
+  private List<String> processUnifiedSearchCondition(String searchCondition) {
+    String[] spaceConditions = searchCondition.split(" ");
+    List<String> result = new ArrayList<String>(spaceConditions.length);
+    
+    //
+    StringBuffer searchConditionBuffer = null;
+    for (String conditionValue : spaceConditions) {
+      
+      //
+      searchConditionBuffer = new StringBuffer();
+      
+      //
+      if (!conditionValue.contains(StorageUtils.ASTERISK_STR) && !conditionValue.contains(StorageUtils.PERCENT_STR)) {
+        if (conditionValue.charAt(0) != StorageUtils.ASTERISK_CHAR) {
+          searchConditionBuffer.append(StorageUtils.ASTERISK_STR).append(conditionValue);
+        }
+        if (conditionValue.charAt(conditionValue.length() - 1) != StorageUtils.ASTERISK_CHAR) {
+          searchConditionBuffer.append(StorageUtils.ASTERISK_STR);
+        }
+      } else {
+        conditionValue = conditionValue.replace(StorageUtils.ASTERISK_STR, StorageUtils.PERCENT_STR);
+        searchConditionBuffer.append(StorageUtils.PERCENT_STR).append(conditionValue).append(StorageUtils.PERCENT_STR);
+      }
+      
+      //
+      result.add(searchConditionBuffer.toString());
+      
+    }
+    
+    
+    
+    return result;
   }
 
   /*
@@ -1271,6 +1305,13 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
   public int getVisibleSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
     return _getVisibleSpaces(userId, spaceFilter).objects().size();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getUnifiedSearchSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException {
+    return _getUnifiedSearchSpaces(userId, spaceFilter).objects().size();
+  }
 
   
   /**
@@ -1311,6 +1352,113 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     }
 
     return spaces;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getUnifiedSearchSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException {
+    List<Space> spaces = new ArrayList<Space>();
+
+    //
+    QueryResult<SpaceEntity> results = _getUnifiedSearchSpaces(userId, spaceFilter).objects(offset, limit);
+
+    while (results.hasNext()) {
+      SpaceEntity currentSpace = results.next();
+      Space space = new Space();
+      fillSpaceFromEntity(currentSpace, space);
+      spaces.add(space);
+    }
+
+    return spaces;
+  }
+  
+  private Query<SpaceEntity> _getUnifiedSearchSpaces(String userId, SpaceFilter spaceFilter) {
+
+    QueryBuilder<SpaceEntity> builder = getSession().createQueryBuilder(SpaceEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+
+    if (validateFilter(spaceFilter)) {
+      _applyUnifiedSearchFilter(whereExpression, spaceFilter);
+      whereExpression.and();
+      whereExpression.startGroup();
+    }
+    
+    //visibility::(soc:visibily like 'private') 
+    whereExpression.startGroup();
+    whereExpression.like(SpaceEntity.visibility, Space.PRIVATE);
+    whereExpression.endGroup();
+    
+    //(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate'))
+    // OR
+    //(soc:membersId like '' OR managerMembersId like '' OR soc:invitedMembersId like '')
+    whereExpression.or(); 
+    whereExpression.startGroup(); 
+
+    whereExpression.equals(SpaceEntity.membersId, userId)
+                   .or()
+                   .equals(SpaceEntity.managerMembersId, userId)
+                   .or()
+                   .equals(SpaceEntity.invitedMembersId, userId);
+
+    whereExpression.endGroup();
+    whereExpression.endAllGroup();
+
+
+    builder.where(whereExpression.toString());
+    applyOrder(builder, spaceFilter);
+    
+    return builder.get();
+
+  }
+  
+  private void _applyUnifiedSearchFilter(WhereExpression whereExpression, SpaceFilter spaceFilter) {
+
+    String spaceNameSearchCondition = spaceFilter.getSpaceNameSearchCondition();
+    char firstCharacterOfName = spaceFilter.getFirstCharacterOfSpaceName();
+
+    if (spaceNameSearchCondition != null && spaceNameSearchCondition.length() != 0) {
+      if (this.isValidInput(spaceNameSearchCondition)) {
+
+        List<String> unifiedSearchConditions = this.processUnifiedSearchCondition(spaceNameSearchCondition);
+        boolean first = true;
+        for(String condition : unifiedSearchConditions) {
+          //
+          if (first == false) {
+            whereExpression.or();
+          } else {
+            whereExpression.startGroup();
+            first = false;
+          }
+          
+          //
+          if (condition.contains(StorageUtils.PERCENT_STR)) {
+            whereExpression.startGroup();
+            whereExpression
+                .like(SpaceEntity.name, condition)
+                .or()
+                .like(SpaceEntity.description, condition);
+            whereExpression.endGroup();
+          }
+          else {
+            whereExpression.startGroup();
+            whereExpression
+                .contains(SpaceEntity.name, condition)
+                .or()
+                .contains(SpaceEntity.description, condition);
+            whereExpression.endGroup();
+          }
+        } //end for
+        whereExpression.endGroup();
+      }
+    }
+    else if (!Character.isDigit(firstCharacterOfName)) {
+      String firstCharacterOfNameString = Character.toString(firstCharacterOfName);
+      String firstCharacterOfNameLowerCase = firstCharacterOfNameString.toLowerCase() + StorageUtils.PERCENT_STR;
+      whereExpression
+          .like(whereExpression.callFunction(QueryFunction.LOWER, SpaceEntity.name), firstCharacterOfNameLowerCase);
+    }
   }
 
   private Query<SpaceEntity> _getVisibleSpaces(String userId, SpaceFilter spaceFilter) {

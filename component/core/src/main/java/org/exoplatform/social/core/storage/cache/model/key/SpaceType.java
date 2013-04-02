@@ -29,5 +29,6 @@ public enum SpaceType {
   ACCESSIBLE,
   VISIBLE,
   EDITABLE,
-  ALL
+  ALL,
+  UNIFIED_SEARCH
 }
