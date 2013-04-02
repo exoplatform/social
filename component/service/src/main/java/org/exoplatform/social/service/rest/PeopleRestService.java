@@ -456,12 +456,11 @@ public class PeopleRestService implements ResourceContainer{
 
       RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesWithListAccess(identity);
       
-      if (activitiesListAccess.getSize() > 0) {
-        List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, DEFAULT_LIMIT);
-        if (activities.size() > 0) {
-          peopleInfo.setActivityTitle(activities.get(0).getTitle());
-        }
+      List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
+      if (activities.size() > 0) {
+        peopleInfo.setActivityTitle(activities.get(0).getTitle());
       }
+      
       Profile userProfile = identity.getProfile();
       
       String avatarURL = userProfile.getAvatarUrl();
