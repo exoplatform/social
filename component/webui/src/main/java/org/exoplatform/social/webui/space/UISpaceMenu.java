@@ -101,6 +101,7 @@ public class UISpaceMenu extends UIContainer {
    */
   public UISpaceMenu() throws Exception {
     appList = SpaceUtils.getApplications(getSpace().getGroupId());
+    spaceService = getSpaceService(); 
   }
 
   /**
@@ -110,7 +111,7 @@ public class UISpaceMenu extends UIContainer {
    * @throws Exception
    */
   public List<UserNode> getApps() throws Exception {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
     space = spaceSrc.getSpaceByUrl(spaceUrl);
     if (space == null) {
@@ -145,7 +146,7 @@ public class UISpaceMenu extends UIContainer {
       UIPortal uiPortal = Util.getUIPortal();
       PortalRequestContext prContext = Util.getPortalRequestContext();
       SpaceService spaceService = spaceMenu.getApplicationComponent(SpaceService.class);
-      String spaceUrl = SpaceUtils.getSpaceUrl();
+      String spaceUrl = Utils.getSpaceUrlByContext();
       Space space = spaceService.getSpaceByUrl(spaceUrl);
 
       UserNode selectedNode = uiPortal.getSelectedUserNode();
@@ -276,7 +277,7 @@ public class UISpaceMenu extends UIContainer {
   }
 
   protected String getAppIcon(String pageRef) {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     Space space = getSpaceService().getSpaceByUrl(spaceUrl);
     String installedApps = space.getApp();
     String[] apps = installedApps.split(",");
@@ -321,7 +322,7 @@ public class UISpaceMenu extends UIContainer {
   private Space getSpace() {
     if (space == null) {
       spaceService = getSpaceService();
-      String spaceUrl = SpaceUtils.getSpaceUrl();
+      String spaceUrl = Utils.getSpaceUrlByContext();
       space = spaceService.getSpaceByUrl(spaceUrl);
     }
     return space;

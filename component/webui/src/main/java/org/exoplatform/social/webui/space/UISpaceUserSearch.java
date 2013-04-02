@@ -26,6 +26,7 @@ import org.exoplatform.services.organization.Query;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -95,7 +96,7 @@ public class UISpaceUserSearch extends UIForm {
    */
   private String getGroupId() throws Exception {
     if (groupId == null) {
-      String spaceUrl = SpaceUtils.getSpaceUrl();
+      String spaceUrl = Utils.getSpaceUrlByContext();
       SpaceService spaceService = getApplicationComponent(SpaceService.class);
       return spaceService.getSpaceByUrl(spaceUrl).getGroupId();
     }

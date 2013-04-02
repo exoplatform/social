@@ -24,11 +24,14 @@ import javax.servlet.http.Cookie;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.portal.webui.workspace.UIPortalApplication;
 import org.exoplatform.portal.webui.workspace.UIWorkingWorkspace;
+import org.exoplatform.social.common.router.ExoRouter;
+import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -533,5 +536,39 @@ public class Utils {
       return str.trim().replaceAll("(\\s){2,}"," ");
     }
     return null;
+  }
+  
+  /**
+   * Check whether is being in a space context or not.
+   * 
+   * @return
+   * @since 4.0.0-RC2
+   */
+  public static boolean isSpaceContext() {
+    return (getSpaceByContext() != null);
+  }
+
+  /**
+   * Gets the space url based on the current context.
+   * 
+   * @return
+   * @since 4.0.0-RC2
+   */
+  public static String getSpaceUrlByContext() {
+    Space space = getSpaceByContext();
+    return (space != null ? space.getUrl() : null);
+  }
+
+  private static Space getSpaceByContext() {
+    //
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Route route = ExoRouter.route(requestPath);
+    if (route == null) return null;
+
+    //
+    String spacePrettyName = route.localArgs.get("spacePrettyName");
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    return spaceService.getSpaceByPrettyName(spacePrettyName);
   }
 }

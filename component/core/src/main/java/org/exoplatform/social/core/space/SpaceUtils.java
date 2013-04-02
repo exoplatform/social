@@ -43,6 +43,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
@@ -80,6 +81,8 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.social.common.router.ExoRouter;
+import org.exoplatform.social.common.router.ExoRouter.Route;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -421,13 +424,56 @@ public class SpaceUtils {
    * Gets spaceName by portletPreference.
    *
    * @return
+   * @deprecated Use {@link org.exoplatform.social.webui.Utils.getSpaceUrlByContext() } instead.
    */
   public static String getSpaceUrl() {
-    PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-    PortletPreferences pref = pcontext.getRequest().getPreferences();
-    return pref.getValue(SPACE_URL, "");
+    //
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Route route = ExoRouter.route(requestPath);
+    if (route == null) return null;
+
+    //
+    String spacePrettyName = route.localArgs.get("spacePrettyName");
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    Space space = spaceService.getSpaceByPrettyName(spacePrettyName);
+    
+    return (space != null ? space.getUrl() : null);
   }
 
+  /**
+   * Check whether is being in a space context or not.
+   * 
+   * @return
+   * @since 4.0.0-RC2
+   */
+  public static boolean isSpaceContext() {
+    return (getSpaceByContext() != null);
+  }
+
+  /**
+   * Gets the space url based on the current context.
+   * 
+   * @return
+   * @since 4.0.0-RC2
+   */
+  public static String getSpaceUrlByContext() {
+    Space space = getSpaceByContext();
+    return (space != null ? space.getUrl() : null);
+  }
+
+  private static Space getSpaceByContext() {
+    //
+    PortalRequestContext pcontext = Util.getPortalRequestContext();
+    String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
+    Route route = ExoRouter.route(requestPath);
+    if (route == null) return null;
+
+    //
+    String spacePrettyName = route.localArgs.get("spacePrettyName");
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    return spaceService.getSpaceByPrettyName(spacePrettyName);
+  }
   /**
    * Remove pages and group navigation of space when delete space.
    * 
@@ -482,20 +528,11 @@ public class SpaceUtils {
     if (menuContainer == null) {
       menuContainer = findContainerById(pageChildren, SPACE_MENU);
     }
-    changeMenuPortletPreference(menuContainer, dataStorage, space);
 
     //change applications portlet preference
     Container applicationContainer = findContainerById(pageChildren, APPLICATION_CONTAINER);
     if (applicationContainer == null) {
       applicationContainer = findContainerById(pageChildren, SPACE_APPLICATIONS);
-    }
-    if (applicationContainer.getId().equals(SPACE_APPLICATIONS)) {
-      for (int i = 0; i < applicationContainer.getChildren().size(); i ++) {
-        Container container = (Container) applicationContainer.getChildren().get(i);
-        changeAppPortletPreference(container, dataStorage, space);
-      }
-    } else {
-      changeAppPortletPreference(applicationContainer, dataStorage, space);
     }
   }
 
