@@ -71,8 +71,6 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  *
  * @author     hoatle <hoatlevan at gmail dot com>
  * 
- * @LevelAPI Platform
- * 
  * @since      Dec 29, 2009
  */
 @Path("{portalName}/social/activities")
@@ -95,19 +93,11 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Destroy activity and return the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity to be destroyed.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity to be destroyed.
+   * @param format The response format type, for example: JSON, or XML.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @POST
@@ -125,19 +115,11 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Show list of like by activityId and return the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity that the like to be showed.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that the like to be showed.
+   * @param format The response format type, for example: JSON, or XML.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -156,22 +138,12 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Update like by the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity that like to be updated.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param like
-   *        The like to be updated.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that like to be updated.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param like The like to be updated.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @POST
@@ -191,20 +163,12 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Destroy like by identityId and return the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity that like to be destroyed.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that like to be destroyed.
    * @param identityId
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param format The response format type, for example: JSON, or XML.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @POST
@@ -224,19 +188,11 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Show comment list by the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity that comments to be showed.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that comments to be showed.
+   * @param format The response format type, for example: JSON, or XML.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -255,25 +211,13 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Show comment list by the JSON/XML format with limit and offset.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target activity that comments to be showed.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param offset
-   *        Specify the from number of comment to be showed. It must be greater than or equal to 0.
-   *        
-   * @param limit
-   *        Specify the number of spaces to be showed.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that comments to be showed.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param offset Specify the from number of comment to be showed. It must be greater than or equal to 0.
+   * @param limit Specify the number of spaces to be showed.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -341,20 +285,11 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Get an activity by its Id.
    *
-   * @param uriInfo 
-   *        The URI request information.
-   *        
-   * @param portalContainerName 
-   *        The associated portal container name.
-   * 
-   * @param activityId
-   *        The id of target activity.
-   *        
-   * @param format 
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo  The URI request information.
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The id of target activity.
+   * @param format The response format type, for example: JSON, or XML.
    * @return The response contains returned result.
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -439,22 +374,12 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Update comment by the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of target comment to be updated.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param comment
-   *        The comment to be updated.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target comment to be updated.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param comment The comment to be updated.
    * @return response The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @POST
@@ -475,22 +400,12 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Comment an existing activity from a specified activity Id. Just returns the created comment.
    *
-   * @param uriInfo 
-            The request URI information.
-            
+   * @param uriInfo The request URI information.
    * @param portalName The associated portal container name.
-   * 
-   * @param activityId 
-            The id of target comment to be created.
-            
-   * @param format 
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param text 
-   *        The content of comment.
-   *        
+   * @param activityId The id of target comment to be created.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param text The content of comment.
    * @return The response contains returned result.
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -537,22 +452,12 @@ public class ActivitiesRestService implements ResourceContainer {
   /**
    * Destroy comments and return the JSON/XML format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param activityId
-   *        The id of activity that contain target comment.
-   *        
-   * @param commentId
-   *        The id of target comment to be destroyed.
-   * 
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param activityId The id of activity that contain target comment.
+   * @param commentId The id of target comment to be destroyed.
+   * @param format The response format type, for example: JSON, or XML.
    * @return response The response contains returned result. 
-   *         
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @POST

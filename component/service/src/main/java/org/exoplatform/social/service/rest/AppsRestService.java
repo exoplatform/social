@@ -52,7 +52,6 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * 
  * @since      Jan 6, 2010
  * 
- * @LevelAPI Platform
  */
 @Path("social/apps")
 public class AppsRestService implements ResourceContainer {
@@ -67,16 +66,10 @@ public class AppsRestService implements ResourceContainer {
    * shows apps by json/xml format: <br />
    * GET: /{restContextName}/social/apps/show.{format}
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param format
-   *        The type of returned result.
-   *        
+   * @param uriInfo The request URI information.
+   * @param format The type of returned result.
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET

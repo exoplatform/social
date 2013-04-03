@@ -74,8 +74,6 @@ import org.exoplatform.web.controller.router.URIWriter;
  * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
  *
  * @author hoatle <hoatlevan at gmail dot com>
- * 
- * @LevelAPI Platform
  */
 @Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
@@ -144,19 +142,11 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * shows mySpaceList by json/xml format
    *
-   * @param uriInfo
-   *        The request URI information.
-   * 
-   * @param portalName
-   *        The name of current container.
-   * 
-   * @param format
-   *        The type of returned result.
-   *        
+   * @param uriInfo The request URI information.
+   * @param portalName The name of current container.
+   * @param format The type of returned result.
    * @return response
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -189,23 +179,12 @@ public class SpacesRestService implements ResourceContainer {
    * Provides a way to get last n space ordered by last access and be able to filter on containing application
    * of the authenticated user identity who makes this request.
    *
-   * @param uriInfo             
-   *        The request URI information.
-   *        
-   * @param portalContainerName 
-   *        The portal container name.
-   *        
-   * @param format              
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param offset              
-   *        Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
-   *        
-   * @param limit               
-   *        Specify the number of spaces to retrieve. It must be less than or equal to 10.
-   *        
-   * @param appId               
-   *        AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   * @param uriInfo The request URI information.
+   * @param portalContainerName The portal container name.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param offset Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
+   * @param limit Specify the number of spaces to retrieve. It must be less than or equal to 10.
+   * @param appId AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
    * @authenticated
    * @request
    *{code}
@@ -222,7 +201,6 @@ public class SpacesRestService implements ResourceContainer {
    * }
    *{code}
    * @return the response
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -271,19 +249,11 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * Shows pendingSpaceList by json/xml format
    * 
-   * @param uriInfo             
-   *        The request URI information.
-   *        
-   * @param portalContainerName 
-   *        The portal container name.
-   *        
-   * @param format              
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param portalContainerName The portal container name.
+   * @param format The response format type, for example: JSON, or XML.
    * @return response
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -304,27 +274,14 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * Suggests space's name for searching.
    *
-   * @param uriInfo             
-   *        The request URI information.
-   *        
-   * @param portalName 
-   *        The name of portal.
-   *        
-   * @param conditionToSearch
-   *        The input information to search.
-   *        
-   * @param typeOfRelation
-   *        The type of relationship of user and space.
-   *        
-   * @param userId
-   *        Id of current user.
-   *        
-   * @param format              
-   *        The response format type, for example: JSON, or XML.
-   *        
+   * @param uriInfo The request URI information.
+   * @param portalName The name of portal.
+   * @param conditionToSearch The input information to search.
+   * @param typeOfRelation The type of relationship of user and space.
+   * @param userId Id of current user.
+   * @param format The response format type, for example: JSON, or XML.
    * @return
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET

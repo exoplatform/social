@@ -61,8 +61,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *
  * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  * 
- * @LevelAPI Platform
- * 
  * @since 1.2.8
  * 
  * @see {@link ActivityResourceBundlePlugin}
@@ -95,6 +93,7 @@ public final class I18NActivityProcessor {
    * Registers an activity resource bundle plugin.
    *
    * @param activityResourceBundlePlugin the activity resource bundle plugin.
+   * @LevelAPI Platform
    */
   public void addActivityResourceBundlePlugin(ActivityResourceBundlePlugin activityResourceBundlePlugin) {
     //this could be a bug from exojcr as component plugin is not set name on it's constructor.
@@ -115,6 +114,7 @@ public final class I18NActivityProcessor {
    * Un-registers an existing registered resource bundle plugin.
    *
    * @param activityResourceBundlePlugin the existing activity resource bundle plugin.
+   * @LevelAPI Platform
    */
   public void removeActivityResourceBundlePlugin(ActivityResourceBundlePlugin activityResourceBundlePlugin) {
     if (!activityResourceBundlePlugin.isValid()) {
@@ -130,11 +130,9 @@ public final class I18NActivityProcessor {
   /**
    * Processes the I18N activity which means that activity.getTitleId() != null.
    *
-   * @param i18nActivity 
-   *        The target activity to be proceeded.
+   * @param i18nActivity The target activity to be proceeded.
    *        
-   * @param selectedLocale 
-   *        The target locale that activity will be localized.
+   * @param selectedLocale The target locale that activity will be localized.
    *
    * @return the activity which content has been localized.
    * 
@@ -169,6 +167,7 @@ public final class I18NActivityProcessor {
    * @param selectedLocale the selected locale
    *
    * @return the new activity with I18N title
+   * @LevelAPI Platform
    */
   public ExoSocialActivity processKeys(ExoSocialActivity i18nActivity, Locale selectedLocale) {
     //only processes I18N activity type
@@ -190,6 +189,16 @@ public final class I18NActivityProcessor {
     return i18nActivity;
   }
   
+  /**
+   * Sets the external resource bundle service.
+   *
+   * @param resourceBundleService the resource bundle service
+   * @LevelAPI Platform
+   */
+  public void setResourceBundleService(ResourceBundleService resourceBundleService) {
+    this.resourceBundleService = resourceBundleService;
+  }
+
   private ExoSocialActivity transformKeys(ExoSocialActivity i18nActivity, ResourceBundle resourceBundle) {
 
     String[] resourceKeys = I18NActivityUtils.getResourceKeys(i18nActivity);
@@ -225,16 +234,7 @@ public final class I18NActivityProcessor {
 
     return i18nActivity;
   }
-
-  /**
-   * Sets the external resource bundle service.
-   *
-   * @param resourceBundleService the resource bundle service
-   */
-  public void setResourceBundleService(ResourceBundleService resourceBundleService) {
-    this.resourceBundleService = resourceBundleService;
-  }
-
+  
   /**
    * Checks if this i18n activity has registered activity resource bundle plugin.
    *

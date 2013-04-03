@@ -38,7 +38,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
  * 
  * @author     hoatle <hoatlevan at gmail dot com>
  * 
- * @LevelAPI Platform
  */
 @Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
@@ -51,16 +50,10 @@ public class IdentityRestService implements ResourceContainer {
   /**
    * Gets identity by user's name and return in json format.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param username
-   *        The name of target user.
-   *        
+   * @param uriInfo The request URI information.
+   * @param username The name of target user.
    * @return UserId The information of provided user.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET

@@ -38,25 +38,16 @@ import org.exoplatform.webui.exception.MessageException;
  * One identity is get by its id and allow load profile or not; With a list of identity, returned 
  * result is a <code>ListAccess</code> for lazy loading.
  * API to add or remove provider information is provided.  
- * 
- * @LevelAPI Platform
  */
 public interface IdentityManager {
 
   /**
    * Gets or creates an Identity object provided by a identity provider and identity id.
    *
-   * @param providerId 
-   *        The id of identity provider.
-   *        
-   * @param remoteId 
-   *        The identifier that identifies the identity in the specific identity provider.
-   *        
-   * @param isProfileLoaded 
-   *        Is profile loaded or not.
-   * 
+   * @param providerId The id of identity provider.
+   * @param remoteId The identifier that identifies the identity in the specific identity provider.
+   * @param isProfileLoaded Is profile loaded or not.
    * @return the Identity that matched provided information.
-   * 
    * @LevelAPI Platform 
    */
   Identity getOrCreateIdentity(String providerId, String remoteId, boolean isProfileLoaded);
@@ -64,14 +55,9 @@ public interface IdentityManager {
   /**
    * Gets the stored identity by its id, this id is its uuid stored by JCR.
    *
-   * @param identityId 
-   *        Provided id to get
-   * 
-   * @param isProfileLoaded 
-   *        Is profile loaded or not
-   * 
+   * @param identityId Provided id to get
+   * @param isProfileLoaded Is profile loaded or not
    * @return identity of provided id
-   * 
    * @LevelAPI Platform 
    */
   Identity getIdentity(String identityId, boolean isProfileLoaded);
@@ -79,13 +65,9 @@ public interface IdentityManager {
   /**
    * Updates specific identity's properties.
    *
-   * @param identity 
-   *        The identity to be updated.
-   * 
+   * @param identity The identity to be updated.
    * @return the updated identity.
-   * 
    * @LevelAPI Platform 
-   * 
    * @since  1.2.0-GA
    */
   Identity updateIdentity(Identity identity);
@@ -93,9 +75,7 @@ public interface IdentityManager {
   /**
    * Deletes an specific identity.
    *
-   * @param identity   
-   *        The specific identity.
-   *        
+   * @param identity The specific identity.
    * @LevelAPI Platform 
    */
   void deleteIdentity(Identity identity);
@@ -103,9 +83,7 @@ public interface IdentityManager {
   /**
    * Hard deletes an specific identity.
    *
-   * @param identity   
-   *        The specific identity.
-   * 
+   * @param identity The specific identity.
    * @LevelAPI Platform 
    */
   void hardDeleteIdentity(Identity identity);
@@ -114,13 +92,9 @@ public interface IdentityManager {
    * Gets identity list access which contains all the identities connected with the provided identity.
    * Returned result with type is <code>ListAccess</code> then it can be lazy loaded.
    *
-   * @param identity 
-   *        The provided identity.
-   * 
+   * @param identity The provided identity.
    * @return the identities which have connection with provided identity.
-   * 
    * @LevelAPI Platform 
-   * 
    * @since  1.2.0-GA
    */
   ListAccess<Identity> getConnectionsWithListAccess(Identity identity);
@@ -128,13 +102,9 @@ public interface IdentityManager {
   /**
    * Gets a profile associated with a provided identity.
    *
-   * @param identity 
-   *        The provided identity.
-   * 
+   * @param identity The provided identity.
    * @return the profile associated with the provided identity.
-   * 
    * @LevelAPI Platform 
-   * 
    * @since  1.2.0-GA
    */
   Profile getProfile(Identity identity);
@@ -142,11 +112,8 @@ public interface IdentityManager {
   /**
    * Updates an specific profile.
    *
-   * @param specificProfile 
-   *        The specific profile
-   * 
+   * @param specificProfile The specific profile
    * @LevelAPI Platform 
-   * 
    * @since  1.2.0-GA
    */
   void updateProfile(Profile specificProfile) throws MessageException;
@@ -156,19 +123,11 @@ public interface IdentityManager {
    * filtered by profile filter.
    * Returned result with type is <code>ListAccess</code> then it can be lazy loaded.
    *
-   * @param providerId     
-   *        The id of provider
-   *        
-   * @param profileFilter  
-   *        The filter
-   *        
-   * @param isProfileLoaded 
-   *        Is profile loaded or not or not
-   * 
+   * @param providerId The id of provider
+   * @param profileFilter The filter
+   * @param isProfileLoaded Is profile loaded or not or not
    * @return the identities that matched filter information.
-   * 
    * @LevelAPI Platform 
-   * 
    * @since 1.2.0-GA
    */
   ListAccess<Identity> getIdentitiesByProfileFilter(String providerId, ProfileFilter profileFilter,
@@ -178,20 +137,11 @@ public interface IdentityManager {
    * Gets space identities by filter information. 
    * Returned result with type is <code>ListAccess</code> then it can be lazy loaded.
    * 
-   * @param space 
-   *        The space in which to get identities.
-   *        
-   * @param profileFilter
-   *        The filter information
-   *        
-   * @param type
-   *        Type of identities to find.
-   *        
-   * @param isProfileLoaded 
-   *        Is profile loaded or not
-   * 
+   * @param space The space in which to get identities.
+   * @param profileFilter The filter information
+   * @param type Type of identities to find.
+   * @param isProfileLoaded Is profile loaded or not
    * @return Identities on space that matched filter and type.
-   * 
    * @LevelAPI Platform 
    */
   ListAccess<Identity> getSpaceIdentityByProfileFilter(Space space, ProfileFilter profileFilter, Type type,
@@ -200,19 +150,16 @@ public interface IdentityManager {
   /**
    * Adds an identity provider to identity manager.
    *
-   * @param identityProvider 
-   *        The identity provider
+   * @param identityProvider The identity provider
+   * @LevelAPI Platform 
    */
   void addIdentityProvider(IdentityProvider<?> identityProvider);
 
   /**
    * Remove an specific identity provider.
    *
-   * @param identityProvider 
-   *        The specific identity provider
-   * 
+   * @param identityProvider The specific identity provider
    * @LevelAPI Platform 
-   * 
    * @since 1.2.0-GA
    */
   void removeIdentityProvider(IdentityProvider<?> identityProvider);
@@ -232,11 +179,8 @@ public interface IdentityManager {
    *  &lt;/external-component-plugins&gt;
    * </pre>
    *
-   * @param profileListenerPlugin 
-   *        The profile listener plugin
-   * 
+   * @param profileListenerPlugin The profile listener plugin
    * @LevelAPI Platform 
-   * 
    * @since 1.2.0-GA
    */
   void registerProfileListener(ProfileListenerPlugin profileListenerPlugin);
@@ -245,9 +189,7 @@ public interface IdentityManager {
    * Registers one or more {@link IdentityProvider} through an
    * {@link IdentityProviderPlugin}.
    *
-   * @param plugin 
-   *        Identity provider plugin
-   *        
+   * @param plugin Identity provider plugin
    * @LevelAPI Platform 
    */
   void registerIdentityProviders(IdentityProviderPlugin plugin);

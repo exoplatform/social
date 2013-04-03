@@ -66,8 +66,6 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
  * Provides REST Services for manipulating jobs relates to people.
  * 
  * @author hanhvq@gmail.com
- * 
- * @LevelAPI Platform
  */
 
 @Path("social/people")
@@ -119,19 +117,11 @@ public class PeopleRestService implements ResourceContainer{
   /**
    * Gets and returns list of user's name that match the input string for suggesting.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param name
-   *        The provided characters to be searched.
-   *        
+   * @param uriInfo The request URI information.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param name The provided characters to be searched.
    * @return list of user's name match the input string.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -182,19 +172,11 @@ public class PeopleRestService implements ResourceContainer{
   /**
    * Gets and returns list of user's name that match the input string for suggesting.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param name
-   *        The provided characters to be searched.
-   *        
+   * @param uriInfo The request URI information.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param name The provided characters to be searched.
    * @return list of user's name that matched the input string.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -229,31 +211,15 @@ public class PeopleRestService implements ResourceContainer{
   /**
    * Gets and returns list people's information that have had connection with current viewer.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param portalName 
-   *        The name of current portal.
-   *        
-   * @param nameToSearch
-   *        The name of user who want to get.
-   *        
-   * @param offset
-   *        Start point of returned result.
-   *        
-   * @param limit
-   *        End point of returned result.
-   *        
-   * @param lang
-   *        The locale type.
-   * 
+   * @param uriInfo The request URI information.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param portalName The name of current portal.
+   * @param nameToSearch The name of user who want to get.
+   * @param offset Start point of returned result.
+   * @param limit End point of returned result.
+   * @param lang The locale type.
    * @return list people's information.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -307,26 +273,14 @@ public class PeopleRestService implements ResourceContainer{
   /**
    * Gets and returns information of people that are displayed as detail user's information on popup.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param portalName 
-   *        The name of current portal container.
-   *        
-   * @param currentUserName 
-   *        The name of user who sends request.
-   *        
+   * @param uriInfo The request URI information.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param portalName The name of current portal container.
+   * @param currentUserName The name of user who sends request.
    * @param userId Id of user is specified.
-   * 
    * @param update
-   * 
    * @return Information of people appropriate focus user.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
@@ -382,28 +336,14 @@ public class PeopleRestService implements ResourceContainer{
    * Gets a set of information of target user. Returned information of user such as: full name, position
    * avatar, link to profile and relationship status with user who sends request.
    * 
-   * @param uriInfo
-   *        The request URI information.
-   *        
-   * @param securityContext
-   *        The security context.
-   *        
-   * @param userId 
-   *        The id of specific user.
-   * 
-   * @param format
-   *        The response format type, for example: JSON, or XML.
-   *        
-   * @param currentUserName 
-   *        The user name  who sends request.
-   *        
-   * @param updatedType
-   *        The provided type of update.
-   * 
+   * @param uriInfo The request URI information.
+   * @param securityContextThe security context.
+   * @param userId The id of specific user.
+   * @param formatThe response format type, for example: JSON, or XML.
+   * @param currentUserName The user name  who sends request.
+   * @param updatedType The provided type of update.
    * @return Information of people appropriate focus user.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
    */
   @GET
