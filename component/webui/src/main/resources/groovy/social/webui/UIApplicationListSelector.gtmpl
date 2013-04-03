@@ -42,13 +42,13 @@ jsManager.require("SHARED/jquery", "jq")
     %>
       <div class="appDescription pull-left clearfix">
           <i class="uiIconApp<%=appNameIco%> uiIconDefaultApp"></i>
-		  <a class="btn-mini btn-primary pull-right" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction">Add</a>
+		  <a class="btn-mini btn-primary pull-right" rel="tooltip" data-placement="bottom" title="$installApplicationLabel" onclick="$addApplicationAction"><%=_ctx.appRes("UIApplicationListSelector.label.add");%></a>
           <div class="appContent">
               <strong>$application.displayName</strong>
 			  <br/>
-              <strong>$typeLabel:</strong>$application.type.name
+              <strong>$typeLabel:</strong> $application.type.name
 			  <br/>
-			  <strong>$descriptionLabel:</strong>$application.description
+			  <strong>$descriptionLabel:</strong> $application.description
         </div>
       </div>
       <%
