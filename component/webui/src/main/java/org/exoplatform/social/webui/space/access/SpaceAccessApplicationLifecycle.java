@@ -52,6 +52,10 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext)context;
+    
+    //
+    if (pcontext.isResponseComplete()) return;
+    
     //
     String siteName = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
     String siteType = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_TYPE);
@@ -65,9 +69,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     }
     
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    String appName = route.localArgs.get("appName");
-    String page = route.localArgs.get("page");
-    
     
     if (pcontext.getSiteType().equals(SiteType.GROUP)
         && pcontext.getSiteName().startsWith("/spaces") && spacePrettyName != null
@@ -81,11 +82,8 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
         return;
       }
       
-      if ("wiki".equals(appName) && (page != null && page.length() > 0)) {
-        processWikiSpaceAccess(pcontext, remoteId, space, page);
-      } else {
-        processSpaceAccess(pcontext, remoteId, space);
-      }
+      //
+      processSpaceAccess(pcontext, remoteId, space);
     }
   }
   
@@ -95,28 +93,6 @@ public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<Web
     return SpaceAccessType.SUPER_ADMINISTRATOR.doCheck(remoteId, space);
   }
 
-  
-  private void processWikiSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space, String wikiPage) throws IOException {
-    
-    boolean gotStatus = SpaceAccessType.SPACE_NOT_FOUND.doCheck(remoteId, space);
-    if (gotStatus) {
-      sendRedirect(pcontext, SpaceAccessType.SPACE_NOT_FOUND, null);
-      return;
-    }
-    
-    //Gets Wiki Page Perma link
-    //http://int.exoplatform.org/portal/intranet/wiki/group/spaces/engineering/Spec_Func_-_Wiki_Page_Permalink
-    //sendRedirect to Pemanent URI
-    
-    gotStatus = SpaceAccessType.NOT_ACCESS_WIKI_SPACE.doCheck(remoteId, space);
-    if (gotStatus) {
-      pcontext.getRequest().getSession().setAttribute(SpaceAccessType.ACCESSED_SPACE_WIKI_PAGE_KEY, wikiPage);
-      
-      
-      sendRedirect(pcontext, SpaceAccessType.NOT_ACCESS_WIKI_SPACE, space.getPrettyName());
-      return;
-    }
-  }
   
   private void processSpaceAccess(PortalRequestContext pcontext, String remoteId, Space space) throws IOException {
     
