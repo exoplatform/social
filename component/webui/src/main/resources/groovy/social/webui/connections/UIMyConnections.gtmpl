@@ -40,7 +40,7 @@
   def removeTitle = _ctx.appRes(uicomponent.getId() + ".label.RemoveConnection")
   
       
-  if (uicomponent.isLoadAtEnd()) {
+  if (uicomponent.isLoadAtEnd() || uicomponent.isRefresh()) {
     uicomponent.init();
   }
 

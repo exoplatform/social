@@ -94,6 +94,7 @@ public class UIMyConnections extends UIContainer {
   private int peopleNum;
   private boolean hasPeopleTab;
   String selectedChar = null;
+  private Identity lastOwner = null;
   
   public boolean isHasPeopleTab() {
     return hasPeopleTab;
@@ -352,11 +353,11 @@ public class UIMyConnections extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-    Identity owner = Utils.getOwnerIdentity();
+    lastOwner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
-    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(owner, filter);
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
     setPeopleNum(listAccess.getSize());
@@ -365,6 +366,16 @@ public class UIMyConnections extends UIContainer {
 
     return Arrays.asList(identities);
 
+  }
+  
+  /**
+   * Checks need to refresh relationship list or not.
+   * @return
+   */
+  protected boolean isRefresh() {
+    Identity current = Utils.getOwnerIdentity();
+    if (this.lastOwner == null || current == null) return false;
+    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
   }
   
   /**
