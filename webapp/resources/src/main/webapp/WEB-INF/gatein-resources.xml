@@ -68,6 +68,13 @@
       <module>jquery</module>
       <as>gj</as>
     </depends>
+    <depends>
+      <module>uiMaskLayer</module>
+    </depends>
+    <depends>
+      <module>uiPopupWindow</module>
+      <as>popupWindow</as>
+    </depends>    
   </module>
   
   <module>
