@@ -36,6 +36,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainer;
@@ -384,13 +385,23 @@ public class PeopleRestService implements ResourceContainer{
                                 @PathParam("format") String format,
                                 @QueryParam("currentUserName") String currentUserName,
                                 @QueryParam("updatedType") String updatedType) throws Exception {
+    //
+    
+    if (format.indexOf('.') > 0) {
+      userId = new StringBuffer(userId).append(".").append(format.substring(0, format.lastIndexOf('.'))).toString();
+      format = format.substring(format.lastIndexOf('.') + 1);
+    }
+    
+    String[] mediaTypes = new String[] { "json", "xml" };
+    format = ArrayUtils.contains(mediaTypes, format) ? format : mediaTypes[0];
     
     if(currentUserName == null || currentUserName.trim().isEmpty()) {
       currentUserName = getUserId(securityContext, uriInfo);
     }
     
     //
-    MediaType mediaType = Util.getMediaType(format, new String[] { "json", "xml" });
+    MediaType mediaType = Util.getMediaType(format, mediaTypes);
+    
     PeopleInfo peopleInfo = new PeopleInfo(NO_INFO);
     Identity identity = getIdentityManager()
         .getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);

@@ -203,7 +203,7 @@
                  function loadData(el) {
                    var userUrl = $(el).attr('href');
                    var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);
-                   var restUrl = opts.restURL.replace('{0}', userId);
+                   var restUrl = opts.restURL.replace('{0}', window.encodeURI(userId));
                    
                    //
                    initPopup();
@@ -220,6 +220,10 @@
 		                 }).complete(function (jqXHR) {
 		                     if (jqXHR.readyState === 4) {
 		                       var userData = $.parseJSON(jqXHR.responseText);
+		                       
+		                       if (!userData) {
+		                         return;
+		                       }
 		                       
 		                       //
 		                       putToCache(userId, userData);
