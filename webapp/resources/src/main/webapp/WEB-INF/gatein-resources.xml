@@ -64,6 +64,10 @@
     <script>
        <path>/javascript/eXo/social/SocialUtil.js</path>
     </script>
+    <depends>
+      <module>jquery</module>
+      <as>gj</as>
+    </depends>
   </module>
   
   <module>
