@@ -32,6 +32,7 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * LinkShareRestService: gets information from a provided link.<br />
  * POST: /rest/social/linkshare <br />
  * 
+ * @anchor LinkShareRestService
  */
 @Path("social/linkshare")
 public class LinkShareRestService implements ResourceContainer {
@@ -48,8 +49,13 @@ public class LinkShareRestService implements ResourceContainer {
    * @param uriInfo The request URI information.
    * @param format The response format type, for example: JSON, or XML.
    * @param linkShareRequest The parameter passed to request.
+   * 
+   * @anchor LinkShareRestService.getLink
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST

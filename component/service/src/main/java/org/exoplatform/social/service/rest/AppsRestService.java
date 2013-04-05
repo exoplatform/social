@@ -48,6 +48,8 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * <br />
  * ex: GET: http://localhost:8080/rest/social/apps/show.json
  *
+ * @anchor AppsRestService
+ *
  * @since      Jan 6, 2010
  * 
  */
@@ -66,8 +68,13 @@ public class AppsRestService implements ResourceContainer {
    * 
    * @param uriInfo The request URI information.
    * @param format The type of returned result.
+   * 
+   * @anchor AppsRestService.showApps
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET

@@ -67,6 +67,8 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  * POST: /restContextName/social/activities/{activityId}/likes/destroy/{identity}.{format} <br />
  * ... <br />
  * See methods for more api details.
+ * 
+ * @anchor ActivitiesRestService
  *
  * @since      Dec 29, 2009
  */
@@ -93,8 +95,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param uriInfo The request URI information.
    * @param activityId The id of target activity to be destroyed.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.destroyActivity
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST
@@ -115,8 +122,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param uriInfo The request URI information.
    * @param activityId The id of target activity that the like to be showed.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.showLikes
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -139,8 +151,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId The id of target activity that like to be updated.
    * @param format The response format type, for example: JSON, or XML.
    * @param like The like to be updated.
+   * 
+   * @anchor ActivitiesRestService.updateLike
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST
@@ -164,8 +181,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId The id of target activity that like to be destroyed.
    * @param identityId
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.destroyLike
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST
@@ -188,8 +210,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param uriInfo The request URI information.
    * @param activityId The id of target activity that comments to be showed.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.showComments
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -213,8 +240,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param format The response format type, for example: JSON, or XML.
    * @param offset Specify the from number of comment to be showed. It must be greater than or equal to 0.
    * @param limit Specify the number of spaces to be showed.
+   * 
+   * @anchor ActivitiesRestService.showComments
+   * 
    * @return The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -286,7 +318,11 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The id of target activity.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.getActivityById
+   * 
    * @return The response contains returned result.
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -375,8 +411,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId The id of target comment to be updated.
    * @param format The response format type, for example: JSON, or XML.
    * @param comment The comment to be updated.
+   * 
+   * @anchor ActivitiesRestService.updateComment
+   * 
    * @return response The response contains returned result.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST
@@ -402,7 +443,11 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId The id of target comment to be created.
    * @param format The response format type, for example: JSON, or XML.
    * @param text The content of comment.
+   * 
+   * @anchor ActivitiesRestService.createCommentActivityById
+   * 
    * @return The response contains returned result.
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -453,8 +498,13 @@ public class ActivitiesRestService implements ResourceContainer {
    * @param activityId The id of activity that contain target comment.
    * @param commentId The id of target comment to be destroyed.
    * @param format The response format type, for example: JSON, or XML.
+   *
+   * @anchor ActivitiesRestService.destroyComment
+   * 
    * @return response The response contains returned result. 
+   *
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @POST
@@ -475,6 +525,7 @@ public class ActivitiesRestService implements ResourceContainer {
    * Destroy activity by activityId
    * if detects any comments of that activity, destroys these comments, too.
    * @param activityId
+   * @anchor ActivitiesRestService
    * @return activity
    */
   private ExoSocialActivity destroyActivity(String activityId) {

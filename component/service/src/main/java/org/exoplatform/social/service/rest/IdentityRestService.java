@@ -35,7 +35,11 @@ import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
  * The class <code>IdentityRestService</code> provides API to work with identity.
+ * Url template: <tt>{rest_context_name}/social/identity/{username}/id</tt>
+ * <br />
+ * GET: /{rest_context_name}/social/identity/{username}/id/show.{format}
  * 
+ * @anchor IdentityRestService
  */
 @Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
@@ -50,8 +54,13 @@ public class IdentityRestService implements ResourceContainer {
    * 
    * @param uriInfo The request URI information.
    * @param username The name of target user.
+   * 
+   * @anchor IdentityRestService.getId
+   * 
    * @return UserId The information of provided user.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET

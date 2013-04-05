@@ -40,7 +40,8 @@ import org.exoplatform.social.service.rest.api.models.Versions;
  * <p>The version <tt>public</tt> rest service to gets the current latest rest service version and supported
  * versions.</p> <p> Url template: <tt>{rest_context_name}/api/social/version</tt> </p>
  *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @anchor VersionResources
+ * 
  * @since Jun 9, 2011.
  */
 @Path("api/social/version")
@@ -66,13 +67,16 @@ public class VersionResources implements ResourceContainer {
    *
    * @param uriInfo The URI information.
    * @param format  The expected returned format.
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get
+   * 
+   * @anchor VersionResources.getLatestVersion
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/api/social/version/latest.json
    * or
    * GET: http://localhost:8080/rest/api/social/version/latest.xml
    *{code}
+   *
    * @response
    *{code:json}
    * {"version": "v1-alpha3"}
@@ -81,7 +85,9 @@ public class VersionResources implements ResourceContainer {
    *{code:xml}
    * <version>v1-alpha3</version>
    *{code}
+   *
    * @return response of the request, the type bases on the format param
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -105,13 +111,16 @@ public class VersionResources implements ResourceContainer {
    *
    * @param uriInfo The URI information.
    * @param format  The expected returned format.
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get
+   * 
+   * @anchor VersionResources.getSupportedVersions
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/api/social/version/supported.json
    * or
    * GET: http://localhost:8080/rest/api/social/version/supported.xml
    *{code}
+   *
    * @response
    *{code:json}
    * {"versions": ["v1-alpha3"]}
@@ -122,7 +131,9 @@ public class VersionResources implements ResourceContainer {
    *   <version>v1-alpha3</version>
    * </versions>
    *{code}
+   *
    * @return response of the request, the type bases on the format param
+   * 
    * @LevelAPI Platform
    */
   @GET

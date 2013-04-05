@@ -64,6 +64,11 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
  * PeopleRestService.java < /br>
  * 
  * Provides REST Services for manipulating jobs relates to people.
+ * Url template: <tt>{rest_context_name}/social/people</tt>
+ * <br />
+ * GET: /{rest_context_name}/social/people/suggest.{format}
+ * 
+ * @anchor PeopleRestService
  */
 
 @Path("social/people")
@@ -118,8 +123,13 @@ public class PeopleRestService implements ResourceContainer{
    * @param uriInfo The request URI information.
    * @param format The response format type, for example: JSON, or XML.
    * @param name The provided characters to be searched.
+   * 
+   * @anchor PeopleRestService.suggestUsernames
+   * 
    * @return list of user's name match the input string.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -173,8 +183,13 @@ public class PeopleRestService implements ResourceContainer{
    * @param uriInfo The request URI information.
    * @param format The response format type, for example: JSON, or XML.
    * @param name The provided characters to be searched.
+   * 
+   * @anchor PeopleRestService.suggestUsernames
+   * 
    * @return list of user's name that matched the input string.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -216,8 +231,13 @@ public class PeopleRestService implements ResourceContainer{
    * @param offset Start point of returned result.
    * @param limit End point of returned result.
    * @param lang The locale type.
+   * 
+   * @anchor PeopleRestService.searchConnection
+   * 
    * @return list people's information.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -277,9 +297,16 @@ public class PeopleRestService implements ResourceContainer{
    * @param currentUserName The name of user who sends request.
    * @param userId Id of user is specified.
    * @param update
+   * 
+   * @anchor PeopleRestService.getPeopleInfo
+   * 
    * @return Information of people appropriate focus user.
+   * 
    * @throws Exception
-   * @LevelAPI Platform
+   * 
+   * @LevelAPI Provisional
+   * 
+   * @deprecated Will be removed by 4.0.x
    */
   @GET
   @Path("{portalName}/{currentUserName}/getPeopleInfo/{userId}.{format}")
@@ -340,8 +367,13 @@ public class PeopleRestService implements ResourceContainer{
    * @param formatThe response format type, for example: JSON, or XML.
    * @param currentUserName The user name  who sends request.
    * @param updatedType The provided type of update.
+   * 
+   * @anchor PeopleRestService.getPeopleInfo
+   * 
    * @return Information of people appropriate focus user.
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET

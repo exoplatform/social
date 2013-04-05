@@ -73,6 +73,8 @@ import org.exoplatform.web.controller.router.URIWriter;
  * /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br /> Example:<br /> GET:
  * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
  *
+ * @anchor SpacesRestService
+ *
  */
 @Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
@@ -139,13 +141,18 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * shows mySpaceList by json/xml format
+   * Shows mySpaceList by json/xml format
    *
    * @param uriInfo The request URI information.
    * @param portalName The name of current container.
    * @param format The type of returned result.
+   * 
+   * @anchor SpacesRestService
+   * 
    * @return response
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -184,11 +191,16 @@ public class SpacesRestService implements ResourceContainer {
    * @param offset Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
    * @param limit Specify the number of spaces to retrieve. It must be less than or equal to 10.
    * @param appId AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   * 
+   * @anchor SpacesRestService
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -199,7 +211,9 @@ public class SpacesRestService implements ResourceContainer {
    * "moreSpacesUrl":null
    * }
    *{code}
+   *
    * @return the response
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -251,8 +265,13 @@ public class SpacesRestService implements ResourceContainer {
    * @param uriInfo The request URI information.
    * @param portalContainerName The portal container name.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor SpacesRestService
+   * 
    * @return response
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
@@ -279,8 +298,13 @@ public class SpacesRestService implements ResourceContainer {
    * @param typeOfRelation The type of relationship of user and space.
    * @param userId Id of current user.
    * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor SpacesRestService
+   * 
    * @return
+   * 
    * @throws Exception
+   * 
    * @LevelAPI Platform
    */
   @GET
