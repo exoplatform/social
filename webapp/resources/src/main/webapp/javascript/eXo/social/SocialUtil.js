@@ -142,7 +142,6 @@
         return browser;
     },
     setCookies : function(name, value, expiredays) {
-      console.log(name +' ' + value);
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + expiredays);
       expiredays = ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
