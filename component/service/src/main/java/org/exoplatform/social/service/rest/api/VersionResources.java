@@ -61,7 +61,7 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Get the latest eXo Social REST API version. This version number should be used as the latest and stable
+   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable
    * version that is considered to include all new features and updates of eXo Social REST services.
    *
    * @param uriInfo The URI information.
@@ -82,6 +82,7 @@ public class VersionResources implements ResourceContainer {
    * <version>v1-alpha3</version>
    *{code}
    * @return response of the request, the type bases on the format param
+   * @LevelAPI Platform
    */
   @GET
   @Path("latest.{format}")
@@ -97,7 +98,7 @@ public class VersionResources implements ResourceContainer {
 
 
   /**
-   * Get eXo Social REST service versions that are supported. This is for backward compatibility. If a client
+   * Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client
    * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
    * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
    * {{{[v1, v2, v1-beta3]}}}.
@@ -122,6 +123,7 @@ public class VersionResources implements ResourceContainer {
    * </versions>
    *{code}
    * @return response of the request, the type bases on the format param
+   * @LevelAPI Platform
    */
   @GET
   @Path("supported.{format}")

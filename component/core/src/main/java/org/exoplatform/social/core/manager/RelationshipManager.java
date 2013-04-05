@@ -32,10 +32,6 @@ import org.exoplatform.social.core.storage.RelationshipStorageException;
  *   <li>Interact between identities: invite, confirm, deny, ignore.</li>
  *   <li>Get list access to get list of connections, incoming, outgoing.</li>
  * </ul>
- *
- *@LevelAPI Platform
- *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
  */
 public interface RelationshipManager {
   /**

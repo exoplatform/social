@@ -32,7 +32,6 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * LinkShareRestService: gets information from a provided link.<br />
  * POST: /rest/social/linkshare <br />
  * 
- * @author hoatle <hoatlevan at gmail dot com>
  */
 @Path("social/linkshare")
 public class LinkShareRestService implements ResourceContainer {

@@ -65,7 +65,6 @@ public class WidgetRestService implements ResourceContainer {
    * @param spaceName The name of space to be redirected.
    * @param description The description of target space.
    * @return
-   * @LevelAPI Platform
    */
   @GET
   @Path("go_to_space")
@@ -134,7 +133,6 @@ public class WidgetRestService implements ResourceContainer {
    * @param description The description of target space.
    * @param uriInfo The request URI information.
    * @return
-   * @LevelAPI Platform
    */
   @GET
   @Path("space_info")

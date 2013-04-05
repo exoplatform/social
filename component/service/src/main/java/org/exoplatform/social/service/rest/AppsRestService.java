@@ -48,8 +48,6 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
  * <br />
  * ex: GET: http://localhost:8080/rest/social/apps/show.json
  *
- * @author     hoatle <hoatlevan at gmail dot com>
- * 
  * @since      Jan 6, 2010
  * 
  */

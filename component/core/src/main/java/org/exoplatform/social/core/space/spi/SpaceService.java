@@ -30,9 +30,6 @@ import org.exoplatform.social.core.space.model.Space;
 /**
  * SpaceService provides methods for working with Space.
  * 
- * @LevelAPI Platform
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
  * @since Aug 29, 2008
  * 
  */

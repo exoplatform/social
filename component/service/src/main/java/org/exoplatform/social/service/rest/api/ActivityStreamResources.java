@@ -47,8 +47,6 @@ import static org.exoplatform.social.service.rest.RestChecker.*;
  * - activity stream of the authenticated identity's connections.
  * - activity stream of the authenticated identity's spaces.
  *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @since  Sep 22, 2011
  * @since 1.2.3
  */
 @Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/activity_stream/")
@@ -61,7 +59,7 @@ public class ActivityStreamResources implements ResourceContainer {
 
 
   /**
-   * Get activities of a defined identity which can be a user identity, a space identity, or any type of identities.
+   * Gets activities of a defined identity which can be a user identity, a space identity, or any type of identities.
    * There is one special _identityId_ called "me" which stands for the authenticated user who makes this request.
    *
    * @param uriInfo             The URI information.
@@ -206,6 +204,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * }
    *{code}
    * @return the response
+   * @LevelAPI Platform
    */
   @GET
   @Path("{identityId}.{format}")
@@ -280,7 +279,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get the activity stream feed of the authenticated user identity who makes this request.
+   * Gets the activity stream feed of the authenticated user identity who makes this request.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -422,6 +421,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * }
    *{code}
    * @return the response
+   * @LevelAPI Platform
    */
   @GET
   @Path("feed.{format}")
@@ -488,7 +488,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get activities of spaces in which the authenticated user identity is space member that makes this request.
+   * Gets activities of spaces in which the authenticated user identity is space member that makes this request.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -630,6 +630,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * }
    *{code}
    * @return the response
+   * @LevelAPI Platform
    */
   @GET
   @Path("spaces.{format}")
@@ -693,7 +694,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get activities of connections of a specified identity.
+   * Gets activities of connections of a specified identity.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -836,6 +837,7 @@ public class ActivityStreamResources implements ResourceContainer {
    * }
    *{code}
    * @return the response
+   * @LevelAPI Platform
    */
   @GET
   @Path("connections.{format}")

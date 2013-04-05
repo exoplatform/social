@@ -64,8 +64,6 @@ import org.exoplatform.webui.utils.TimeConvertUtils;
  * PeopleRestService.java < /br>
  * 
  * Provides REST Services for manipulating jobs relates to people.
- * 
- * @author hanhvq@gmail.com
  */
 
 @Path("social/people")

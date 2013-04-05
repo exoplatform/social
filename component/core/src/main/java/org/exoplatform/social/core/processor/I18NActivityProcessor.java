@@ -59,8 +59,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *   </li>
  * </ul>
  *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * 
  * @since 1.2.8
  * 
  * @see {@link ActivityResourceBundlePlugin}

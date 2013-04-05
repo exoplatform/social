@@ -36,8 +36,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 /**
  * The class <code>IdentityRestService</code> provides API to work with identity.
  * 
- * @author     hoatle <hoatlevan at gmail dot com>
- * 
  */
 @Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {

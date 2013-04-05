@@ -68,9 +68,6 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  * ... <br />
  * See methods for more api details.
  *
- *
- * @author     hoatle <hoatlevan at gmail dot com>
- * 
  * @since      Dec 29, 2009
  */
 @Path("{portalName}/social/activities")

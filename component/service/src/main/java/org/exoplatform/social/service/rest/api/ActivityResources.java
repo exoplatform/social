@@ -56,18 +56,16 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
  * Activity Resources end point.
- * @author <a href="http://phuonglm.net">PhuongLM</a>
  * @since Jun 15, 2011
  */
 @Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/")
 public class ActivityResources implements ResourceContainer {
 
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
-  private static final int MAX_NUMBER_OF_COMMENT = 100;
   private static final int MAX_NUMBER_OF_LIKE = 100;
 
   /**
-   * Get an activity object from a specified activity Id.
+   * Gets an activity object from a specified activity Id.
    *
    * @param uriInfo The uri request info.
    * @param portalContainerName The associated portal container name.
@@ -121,7 +119,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
-   *
+   * @LevelAPI Platform
    */
   @GET
   @Path("activity/{activityId}.{format}")
@@ -187,7 +185,7 @@ public class ActivityResources implements ResourceContainer {
 
 
   /**
-   * Create an activity to an identity's activity stream. If no _identity\_id_ is specified, the activity will be created
+   * Creates an activity to an identity's activity stream. If no _identity\_id_ is specified, the activity will be created
    * to the authenticated identity's activity stream.
    *
    * @param uriInfo the uri request info
@@ -218,6 +216,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity.{format}")
@@ -272,7 +271,7 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Delete an existing activity by its Id using the DELETE method. The deleted activity information will be returned
+   * Deletes an existing activity by its Id using the DELETE method. The deleted activity information will be returned
    * in the JSON format.
    *
    * @param uriInfo the uri request uri
@@ -313,6 +312,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @DELETE
   @Path("activity/{activityId}.{format}")
@@ -351,7 +351,7 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Delete an existing activity by its Id using the POST method. The deleted activity information will be returned in
+   * Deletes an existing activity by its Id using the POST method. The deleted activity information will be returned in
    * the JSON format. It is recommended to use the DELETE method, except the case that clients cannot make request via
    * this method.
    *
@@ -393,6 +393,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity/destroy/{activityId}.{format}")
@@ -405,7 +406,7 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Get the comments on an activity.
+   * Gets the comments on an activity.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -440,6 +441,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @GET
   @Path("activity/{activityId}/comments.{format}")
@@ -493,7 +495,7 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Post a new comment on an existing activity. The poster of this comment is an authenticated identity.
+   * Posts a new comment on an existing activity. The poster of this comment is an authenticated identity.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -517,6 +519,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity/{activityId}/comment.{format}")
@@ -567,7 +570,7 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Delete an existing comment by its Id.
+   * Deletes an existing comment by its Id.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -591,6 +594,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @DELETE
   @Path("activity/{activityId}/comment/{commentId}.{format}")
@@ -639,7 +643,7 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Delete an existing comment by its Id using the POST method. The deleted activity information will be returned in the JSON format. It is recommended to use the POST method, except the case that clients cannot make request via this method.
+   * Deletes an existing comment by its Id using the POST method. The deleted activity information will be returned in the JSON format. It is recommended to use the POST method, except the case that clients cannot make request via this method.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -663,6 +667,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity/{activityId}/comment/destroy/{commentId}.{format}")
@@ -677,7 +682,7 @@ public class ActivityResources implements ResourceContainer {
   
   
   /**
-   * Get all the identities who like an existing activity.
+   * Gets all the identities who like an existing activity.
    * 
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -716,6 +721,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return
+   * @LevelAPI Platform
    */
   @GET
   @Path("activity/{activityId}/likes.{format}")
@@ -773,7 +779,7 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Allow an authenticated identity to do the "like" action on an existing activity.
+   * Allows an authenticated identity to do the "like" action on an existing activity.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -792,6 +798,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity/{activityId}/like.{format}")
@@ -829,7 +836,7 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Allow an identity to remove his "like" action on an activity.
+   * Allows an identity to remove his "like" action on an activity.
    *
    * @param uriInfo The uri request uri
    * @param portalContainerName The associated portal container name.
@@ -848,6 +855,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @DELETE
   @Path("activity/{activityId}/like.{format}")
@@ -889,7 +897,7 @@ public class ActivityResources implements ResourceContainer {
   }
   
   /**
-   * Allow an identity to remove his "like" action on an activity. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
+   * Allows an identity to remove his "like" action on an activity. It is recommended to use the DELETE method, except the case that clients cannot make request via this method.
    *
    * @param uriInfo the uri request uri
    * @param portalContainerName The associated portal container name.
@@ -908,6 +916,7 @@ public class ActivityResources implements ResourceContainer {
    * }
    *{code}
    * @return a response object
+   * @LevelAPI Platform
    */
   @POST
   @Path("activity/{activityId}/like/destroy.{format}")

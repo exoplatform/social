@@ -73,7 +73,6 @@ import org.exoplatform.web.controller.router.URIWriter;
  * /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br /> Example:<br /> GET:
  * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
  *
- * @author hoatle <hoatlevan at gmail dot com>
  */
 @Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
