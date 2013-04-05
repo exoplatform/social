@@ -1,4 +1,4 @@
-(function (eXo, $) {
+(function (eXo, $, uiMaskLayer, popupWindow) {
   
   if(!String.prototype.trim) {
     String.prototype.trim = function () {
@@ -216,12 +216,15 @@
         'overflow' : 'hidden'
       });
       popup.animate({ height : pHeight + 'px' }, 500, function() { });
+      uiMaskLayer.createMask(popup[0].parentNode, popup[0], 1);
+      popupWindow.initDND(popup.find('.popupTitle')[0], popup[0]);
     },
   
     hiden : function(e) {
       var thiz = $(this);
       var popup = thiz.parents('#UISocialPopupConfirmation')
       if (popup.length > 0) {
+        uiMaskLayer.removeMask(popup[0].previousSibling);
         popup.animate({
           height : '0px'
         }, 300, function() {
@@ -250,4 +253,4 @@
   eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 
-})(window.eXo, gj);
+})(window.eXo, gj, uiMaskLayer, popupWindow);
