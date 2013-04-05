@@ -98,8 +98,8 @@
             selectedTab: '$selectedTab',
             currentServerTime: $currentServerTime
     } """;
-    
-    jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
+    //remove for TQA for profiling
+    //jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
   } 
   
   def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;

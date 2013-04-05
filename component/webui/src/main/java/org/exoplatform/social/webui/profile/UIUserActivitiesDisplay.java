@@ -124,8 +124,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     setSelectedDisplayMode(selectedDisplayMode);
     
     // set lastUpdatedNumber after init() method invoked inside setSelectedDisplayMode() method
-    int numberOfUpdates = this.getNumberOfUpdatedActivities();
-    setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
+    //int numberOfUpdates = this.getNumberOfUpdatedActivities();
+    //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
   }
 
   public UIActivitiesLoader getActivitiesLoader() {
@@ -188,8 +188,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     init();
     
     //
-    int numberOfUpdates = this.getNumberOfUpdatedActivities();
-    setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
+    //int numberOfUpdates = this.getNumberOfUpdatedActivities();
+    //setLastUpdatedNum(selectedDisplayMode.toString(), "" + numberOfUpdates);
   }
 
   public String getOwnerName() {
@@ -260,7 +260,8 @@ public class UIUserActivitiesDisplay extends UIContainer {
     
     this.notChangedMode = lastVisitedMode == null ? true : this.selectedDisplayMode.toString().equals(lastVisitedMode.trim());   
 
-    setNumberOfUpdatedActivities(getActivitiesUpdatedNum(notChangedMode));
+    //setNumberOfUpdatedActivities(getActivigetActivitiesUpdatedNumtiesUpdatedNum(notChangedMode));
+    setNumberOfUpdatedActivities(0);
     
     //
     activitiesLoader.init();
@@ -319,14 +320,14 @@ public class UIUserActivitiesDisplay extends UIContainer {
        
        UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
        
-       int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
+       //int numberOfUpdates = uiUserActivities.getNumberOfUpdatedActivities();
        
        //
        event.getRequestContext().getJavascriptManager()
        .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.ACTIVITY_STREAM_TAB_SELECTED_COOKIED, Utils.getViewerRemoteId()) + "','" + selectedDisplayMode + "');");
-       
-       event.getRequestContext().getJavascriptManager()
-       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
+//       
+//       event.getRequestContext().getJavascriptManager()
+//       .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.resetCookie('" + String.format(Utils.LAST_UPDATED_ACTIVITIES_NUM, selectedDisplayMode, Utils.getViewerRemoteId()) + "','" + numberOfUpdates + "');");
 
        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      }
