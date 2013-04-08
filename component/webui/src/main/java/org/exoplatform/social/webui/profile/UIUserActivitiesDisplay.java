@@ -58,8 +58,10 @@ import org.exoplatform.webui.event.EventListener;
  */
 @ComponentConfigs({
   @ComponentConfig(
-                   lifecycle = UIFormLifecycle.class,
-                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl"
+                   template = "classpath:groovy/social/webui/profile/UIUserActivitiesDisplay.gtmpl",
+                   events = {
+                       @EventConfig(listeners = UIUserActivitiesDisplay.RefreshStreamActionListener.class)
+                   }
                  ),
   @ComponentConfig(
     type = UIDropDownControl.class, 
@@ -332,6 +334,19 @@ public class UIUserActivitiesDisplay extends UIContainer {
        event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      }
      
+     requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
+   }
+ }
+  
+  public static class RefreshStreamActionListener extends EventListener<UIUserActivitiesDisplay> {
+    public void execute(Event<UIUserActivitiesDisplay> event) throws Exception {
+     UIUserActivitiesDisplay uiUserActivities = event.getSource();
+     WebuiRequestContext requestContext = event.getRequestContext();
+     uiUserActivities.init();
+     
+     //
+     UIActivitiesLoader activitiesLoader = uiUserActivities.getChild(UIActivitiesLoader.class);
+     event.getRequestContext().addUIComponentToUpdateByAjax(activitiesLoader);
      requestContext.addUIComponentToUpdateByAjax(uiUserActivities);
    }
  }

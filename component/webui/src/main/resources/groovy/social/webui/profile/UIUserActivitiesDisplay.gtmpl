@@ -44,6 +44,7 @@
   jsManager.require("SHARED/jquery", "jq").addScripts(script);
   
   //
+  def refreshTooltipButton = _ctx.appRes("UIActivity.label.Refresh");
   def composer_Hint_Text = _ctx.appRes("UIActivity.label.Composer_Hint_Text");
   def sitePath = uicomponent.getSitePath();
   
@@ -127,7 +128,12 @@
   </div>
   
   <div class="clearfix activityTop">
-    <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
+    <div class="activityStreamStatus pull-left">
+    
+    <div class="arrowBottom"></div>
+      <!--<span id="noUpdates"><%=noUpdates%></span>-->
+      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+    </div>
   </div>
   <div id="UIActivitiesLoader" class="uiActivityStream clearfix">
     <div id="UIActivitiesContainer_welcomeActivity" class="UIActivitiesContainer_welcomeActivity">
@@ -182,13 +188,19 @@
     <div class="pull-right">
       <% uicomponent.renderChild(UIDropDownControl.class);%>
     </div>
-    <% if (uicomponent.hasActivities()) { %>
+    <!-- add comment for Number of updates
+      <% if (uicomponent.hasActivities()) { %>
 	    <% if(numberOfUpdatedActivities > 0) { %>
 	     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="numberInfo"><% updates.replace("{0}", numberOfUpdatedActivities + ""); %></span></div>
 	    <% } else {%>
 	     <div class="activityStreamStatus pull-left"><div class="arrowBottom"></div><span id="noUpdates"><%=noUpdates%></span></div>
 	    <% } %>
-   <% } %>
+      <% } %>
+    -->
+    <div class="activityStreamStatus pull-left">
+      <div class="arrowBottom"></div>
+        <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+      </div>
   </div>
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
