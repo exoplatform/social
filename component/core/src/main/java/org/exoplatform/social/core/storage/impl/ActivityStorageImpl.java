@@ -63,6 +63,8 @@ import org.exoplatform.social.core.chromattic.utils.ActivityList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -2031,7 +2033,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (viewer != null 
               && owner.getId().equals(viewer.getId()) == false) {
       //
-      boolean hasRelationship = relationshipStorage.getRelationship(owner, viewer) != null;
+      Relationship rel = relationshipStorage.getRelationship(owner, viewer);
+      
+      //
+      boolean hasRelationship = false;
+      if (rel != null && rel.getStatus() == Type.CONFIRMED) {
+        hasRelationship = true;
+      }
       
       //
       if (hasRelationship) {
