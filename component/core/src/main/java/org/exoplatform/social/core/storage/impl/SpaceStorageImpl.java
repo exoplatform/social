@@ -1381,36 +1381,12 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
 
     if (validateFilter(spaceFilter)) {
       _applyUnifiedSearchFilter(whereExpression, spaceFilter);
-      whereExpression.and();
-      whereExpression.startGroup();
     }
-    
-    //visibility::(soc:visibily like 'private') 
-    whereExpression.startGroup();
-    whereExpression.like(SpaceEntity.visibility, Space.PRIVATE);
-    whereExpression.endGroup();
-    
-    //(soc:visibily like 'private' AND (soc:registration like 'open' OR soc:registration like 'validate'))
-    // OR
-    //(soc:membersId like '' OR managerMembersId like '' OR soc:invitedMembersId like '')
-    whereExpression.or(); 
-    whereExpression.startGroup(); 
-
-    whereExpression.equals(SpaceEntity.membersId, userId)
-                   .or()
-                   .equals(SpaceEntity.managerMembersId, userId)
-                   .or()
-                   .equals(SpaceEntity.invitedMembersId, userId);
-
-    whereExpression.endGroup();
-    whereExpression.endAllGroup();
-
 
     builder.where(whereExpression.toString());
     applyOrder(builder, spaceFilter);
     
     return builder.get();
-
   }
   
   private void _applyUnifiedSearchFilter(WhereExpression whereExpression, SpaceFilter spaceFilter) {
