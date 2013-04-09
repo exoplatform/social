@@ -17,9 +17,15 @@
 
 package org.exoplatform.social.core.storage.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
@@ -31,17 +37,13 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.cache.CachedActivityStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -54,13 +56,24 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
   private final IdentityStorage identityStorage;
   private RelationshipStorage relationshipStorage;
+  private CachedActivityStorage cachedActivityStorage;
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
    this.identityStorage = identityStorage;
  }
 
   private enum Origin { FROM, TO }
-
+  
+  private CachedActivityStorage getCachedActivityStorage() {
+    
+    if (this.cachedActivityStorage == null) {
+      PortalContainer container = PortalContainer.getInstance();
+      this.cachedActivityStorage  = (CachedActivityStorage) container.getComponentInstanceOfType(ActivityStorage.class);
+    }
+    
+    return this.cachedActivityStorage;
+  }
+  
   private void putRelationshipToList(List<Relationship> relationships, RelationshipListEntity list) {
     if (list != null) {
       for (Map.Entry<String, RelationshipEntity> entry : list.getRelationships().entrySet()) {
@@ -540,6 +553,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       _removeById(RelationshipEntity.class, relationship.getId());
       
       getSession().save();
+      
+      getCachedActivityStorage().clearCache();
 
       //
       LOG.debug(String.format(
