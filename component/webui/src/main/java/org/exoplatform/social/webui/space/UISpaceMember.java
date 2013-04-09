@@ -620,7 +620,7 @@ public class UISpaceMember extends UIForm {
         String targetUser = rcontext.getRequestParameter(OBJECTID);
         SpaceService spaceService = uiSpaceMember.getSpaceService();
         Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-
+        space.setEditor(Utils.getViewerRemoteId());
         boolean success = false;
         if (spaceService.isManager(space, targetUser))
         {
