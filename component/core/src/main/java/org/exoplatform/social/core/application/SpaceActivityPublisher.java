@@ -196,7 +196,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
     
-    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.GRANTED_LEAD), activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
+    recordActivity(event, activityMessage, MANAGER_GRANTED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been promoted as space's manager " + space.getDisplayName());
   }
 
@@ -244,7 +244,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, USER_NAME_PARAM);
-    recordActivity(new SpaceLifeCycleEvent(space, space.getEditor(), Type.REVOKED_LEAD), activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
+    recordActivity(event, activityMessage, MANAGER_REVOKED_TITLE_ID, templateParams);
     LOG.debug("user " + event.getTarget() + " has been revoked as space's manage "
             + event.getSpace().getDisplayName());
   }
