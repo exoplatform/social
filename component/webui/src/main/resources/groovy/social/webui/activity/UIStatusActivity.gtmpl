@@ -153,15 +153,15 @@
 <div class="UIActivity">
   <% uiform.begin() %>
   <div class="NormalBox ClearFix">
-    <a class="Avatar" title="$ownerName" href="$ownerUri">
-      <img title="$ownerName" src="$ownerAvatar" alt="$ownerName" />
+    <a class="Avatar"  href="$ownerUri">
+      <img  src="$ownerAvatar" alt="$ownerName" />
       <span class="BorderTop"></span>
       <span class="BorderBottom"></span>
     </a>
     <div class="ContentBox" id="ContextBox${activity.id}">
       <div id="ActivityContextBox${activity.id}">
       <h5 class="TitleContent ClearFix">
-        <a class="Text" title="$ownerName" href="$ownerUri">$ownerName</a><br>
+        <a class="Text"  href="$ownerUri">$ownerName</a><br>
         <span class="DateTime">$activityPostedTime</span>
       <% if (activityDeletable) {%>
         <span onclick="<%= uicomponent.event("DeleteActivity", uicomponent.getId(), ""); %>" class="CloseContentBoxNormal" id="DeleteActivityButton${activity.id}"></span>
