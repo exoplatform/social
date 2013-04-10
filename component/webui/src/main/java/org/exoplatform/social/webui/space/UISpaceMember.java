@@ -610,34 +610,37 @@ public class UISpaceMember extends UIForm {
     }
   }
 
-  static public class ToggleLeadershipActionListener extends EventListener<UISpaceMember>
-  {
-     @Override
-     public void execute(Event<UISpaceMember> event) throws Exception
-     {
-        UISpaceMember uiSpaceMember = event.getSource();
-        WebuiRequestContext rcontext = event.getRequestContext();
-        String targetUser = rcontext.getRequestParameter(OBJECTID);
-        SpaceService spaceService = uiSpaceMember.getSpaceService();
-        Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-        space.setEditor(Utils.getViewerRemoteId());
-        boolean success = false;
-        if (spaceService.isManager(space, targetUser))
-        {
-           spaceService.setManager(space, targetUser, false);
-           success = true;
+  static public class ToggleLeadershipActionListener extends EventListener<UISpaceMember> {
+    @Override
+    public void execute(Event<UISpaceMember> event) throws Exception {
+      UISpaceMember uiSpaceMember = event.getSource();
+      WebuiRequestContext rcontext = event.getRequestContext();
+      String targetUser = rcontext.getRequestParameter(OBJECTID);
+      SpaceService spaceService = uiSpaceMember.getSpaceService();
+      Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
+      space.setEditor(Utils.getViewerRemoteId());
+      
+      boolean success = false;
+      if (spaceService.isManager(space, targetUser)) {
+        if (spaceService.isOnlyManager(space, targetUser)) {
+          UIApplication uiApp = rcontext.getUIApplication();
+          String currentUser = rcontext.getRemoteUser();
+          
+          //
+          uiApp.addMessage(new ApplicationMessage(MSG_ERROR_SELF_REMOVE_LEADER, uiSpaceMember.makeParamSelfRemoveLeaderErrorMessage(targetUser, currentUser), ApplicationMessage.WARNING));
+          return;
         }
-        else if (spaceService.isMember(space, targetUser))
-        {
-           spaceService.setManager(space, targetUser, true);
-           success = true;
-        }
+        spaceService.setManager(space, targetUser, false);
+        success = true;
+      } else if (spaceService.isMember(space, targetUser)) {
+        spaceService.setManager(space, targetUser, true);
+        success = true;
+      }
 
-        if (success)
-        {
-           ((WebuiRequestContext)rcontext.getParentAppRequestContext()).setResponseComplete(true);
-        }
-     }
+      if (success) {
+        ((WebuiRequestContext) rcontext.getParentAppRequestContext()).setResponseComplete(true);
+      }
+    }
   }
 
   /**
