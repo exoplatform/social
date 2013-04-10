@@ -695,6 +695,7 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      uiActivity.checkExistingOrNot(uiActivity.getActivity().getId(), event);
       Utils.getActivityManager().deleteActivity(uiActivity.getActivity().getId());
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
@@ -728,6 +729,17 @@ public class BaseUIActivity extends UIForm {
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
+    }
+  }
+
+  protected void checkExistingOrNot(String activityId, Event<BaseUIActivity> event) {
+    ExoSocialActivity existingActivity = Utils.getActivityManager().getActivity(activityId);
+    if (existingActivity == null) {
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage("UIComposer.msg.info.Activity_Comment_Deleted",
+                                                    null,
+                                                    ApplicationMessage.INFO));
+      return;
     }
   }
 

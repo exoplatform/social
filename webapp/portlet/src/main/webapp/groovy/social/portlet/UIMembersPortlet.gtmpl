@@ -34,7 +34,6 @@
     def adminLabel = _ctx.appRes("${uicomponentId}.label.Admin")
     def administratorLabel = _ctx.appRes("${uicomponentId}.label.Administrator")
     def spaceMemberLabel = _ctx.appRes("${uicomponentId}.label.SpaceMember")
-    def labelUserList = _ctx.appRes("${uicomponentId}.label.UserList")
     def space = uicomponent.getSpace();
     def visibility = space.getVisibility();
     def spaceName = space.getDisplayName();
