@@ -93,7 +93,6 @@ public class UIAllPeople extends UIContainer {
   UIProfileUserSearch uiProfileUserSearch = null;
 
   private boolean loadAtEnd = false;
-  private boolean hasUpdated = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
@@ -102,6 +101,7 @@ public class UIAllPeople extends UIContainer {
   private int peopleNum;
   private boolean hasPeopleTab;
   String selectedChar = null;
+  private Identity lastOwner = null;
   
   public boolean isHasPeopleTab() {
     return hasPeopleTab;
@@ -162,7 +162,6 @@ public class UIAllPeople extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedIdentity(false);
       setLoadAtEnd(false);
       enableLoadNext = false;
       currentLoadIndex = 0;
@@ -171,7 +170,7 @@ public class UIAllPeople extends UIContainer {
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
-      setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -223,34 +222,13 @@ public class UIAllPeople extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one element is updated or not.
-   * 
-   * @return the hasUpdatedIdentity
-   */
-  public boolean isHasUpdatedIdentity() {
-    return hasUpdated;
-  }
-
-  /**
-   * Sets information that clarify one element is updated or not.
-   * 
-   * @param hasUpdatedIdentity the hasUpdatedIdentity to set
-   */
-  public void setHasUpdatedIdentity(boolean hasUpdatedIdentity) {
-    this.hasUpdated = hasUpdatedIdentity;
-  }
-
-  /**
    * Gets list of all type of people.
    * 
    * @return the peopleList
    * @throws Exception 
    */
   public List<Identity> getPeopleList() throws Exception {
-    if (isHasUpdatedIdentity()) {
-      setHasUpdatedIdentity(false);
-      setPeopleList(loadPeople(0, this.peopleList.size()));
-    }
+    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -303,20 +281,13 @@ public class UIAllPeople extends UIContainer {
   public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
     this.peopleListAccess = peopleListAccess;
   }
-
+  
   /**
-   * Loads more people.
+   * increase offset.
    * @throws Exception
    */
-  public void loadNext() throws Exception {
+  public void increaseOffset() throws Exception {
     currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getPeopleNum()) {
-      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
-      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                    .load(currentLoadIndex, loadingCapacity)));
-      currentPeopleList.addAll(loadedPeople);
-      setPeopleList(currentPeopleList);
-    }
   }
   
   /**
@@ -330,11 +301,11 @@ public class UIAllPeople extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-    Identity owner = Utils.getOwnerIdentity();
+    lastOwner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
-    ListAccess<Identity> listAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(owner.getProviderId(), filter,
+    ListAccess<Identity> listAccess = Utils.getIdentityManager().getIdentitiesByProfileFilter(lastOwner.getProviderId(), filter,
                                                                                               false);
     Identity[] identities = listAccess.load(index, length);
 
@@ -347,6 +318,16 @@ public class UIAllPeople extends UIContainer {
   }
   
   /**
+   * Checks need to refresh relationship list or not.
+   * @return
+   */
+  protected boolean isNewOwner() {
+    Identity current = Utils.getOwnerIdentity();
+    if (this.lastOwner == null || current == null) return false;
+    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
+  }
+  
+  /**
    * Listeners loading more people action.
    * 
    * @author <a href="mailto:hanhvq@exoplatform.com">Hanh Vi Quoc</a>
@@ -356,7 +337,7 @@ public class UIAllPeople extends UIContainer {
     public void execute(Event<UIAllPeople> event) throws Exception {
       UIAllPeople uiAllPeople = event.getSource();
       if (uiAllPeople.currentLoadIndex < uiAllPeople.peopleNum) {
-        uiAllPeople.loadNext();
+        uiAllPeople.increaseOffset();
       } else {
         uiAllPeople.setEnableLoadNext(false);
       }
@@ -384,7 +365,6 @@ public class UIAllPeople extends UIContainer {
         return;
       }
       
-      uiAllPeople.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().inviteToConnect(invitingIdentity, invitedIdentity);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
@@ -411,8 +391,9 @@ public class UIAllPeople extends UIContainer {
         return;
       }
       
-      uiAllPeople.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
+      
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
 
@@ -430,20 +411,17 @@ public class UIAllPeople extends UIContainer {
 
       Relationship relationship = Utils.getRelationshipManager().get(invitingIdentity, inviIdentityIdentity);
       
-      uiAllPeople.setLoadAtEnd(false);
-      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
-        Utils.getRelationshipManager().delete(relationship);
-        return;
-      }
-      
       if (relationship == null) {
         UIApplication uiApplication = event.getRequestContext().getUIApplication();
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
       
-      uiAllPeople.setHasUpdatedIdentity(true);
-      Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
+      uiAllPeople.setLoadAtEnd(false);
+      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
+        Utils.getRelationshipManager().delete(relationship);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      }
     }
   }
 

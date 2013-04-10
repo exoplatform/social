@@ -37,9 +37,9 @@
   def invitationSentLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationSent")
   def cancelRequestLabel = _ctx.appRes(uicomponent.getId() + ".label.CancelRequest")
   
-  //if (uicomponent.isLoadAtEnd()) {
-  uicomponent.init();
-  //}
+  if (uicomponent.isNewOwner()) {
+    uicomponent.init();
+  }
 
   def list = uicomponent.getPeopleList();
 

@@ -44,8 +44,8 @@
   
   def peopleIdx = 0
   
-  if (uicomponent.isLoadAtEnd()) {
-  uicomponent.init();
+  if (uicomponent.isNewOwner()) {
+    uicomponent.init();
   }
 
   def list = uicomponent.getPeopleList();

@@ -48,9 +48,9 @@
 
   def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
    
-  //if (uicomponent.isLoadAtEnd() || ) {
-  uicomponent.init();
-  //}
+  if (uicomponent.isNewOwner()) {
+    uicomponent.init();
+  }
 
   def myInvitations = uicomponent.getPeopleList();
 
