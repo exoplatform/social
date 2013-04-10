@@ -169,7 +169,7 @@ public class UIMyConnections extends UIContainer {
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
-      setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
       if (Utils.isOwner()) {
         uiProfileUserSearch.setHasPeopleTab(true);
       } else {
