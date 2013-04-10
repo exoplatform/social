@@ -25,7 +25,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
-import org.exoplatform.social.core.storage.cache.CachedActivityStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 /**
@@ -47,8 +46,6 @@ public abstract class AbstractStorage {
   //
   protected static final String SENDER = "sender";
   protected static final String RECEIVER = "receiver";
-
-  private CachedActivityStorage cachedActivityStorage;
 
   protected AbstractStorage() {
 
@@ -183,5 +180,5 @@ public abstract class AbstractStorage {
     return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
 
   }
-
+  
 }

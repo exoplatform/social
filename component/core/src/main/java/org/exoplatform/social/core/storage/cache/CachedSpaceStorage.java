@@ -749,6 +749,23 @@ public class CachedSpaceStorage implements SpaceStorage {
         },
         key).build();
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int getUnifiedSearchSpacesCount(final String userId, final SpaceFilter spaceFilter) throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.UNIFIED_SEARCH);
+
+    //
+    return spacesCountCache.get(
+        new ServiceContext<IntegerData>() {
+          public IntegerData execute() {
+            return new IntegerData(storage.getUnifiedSearchSpacesCount(userId, spaceFilter));
+          }
+        },
+        key).build();
+  }
 
   /**
    * {@inheritDoc}
@@ -764,6 +781,29 @@ public class CachedSpaceStorage implements SpaceStorage {
         new ServiceContext<ListSpacesData>() {
           public ListSpacesData execute() {
             List<Space> got = storage.getVisibleSpaces(userId, spaceFilter, offset, limit);
+            return buildIds(got);
+          }
+        },
+        listKey);
+
+    //
+    return buildSpaces(keys);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public List<Space> getUnifiedSearchSpaces(final String userId, final SpaceFilter spaceFilter, final long offset, final long limit)
+                                      throws SpaceStorageException {
+    //
+    SpaceFilterKey key = new SpaceFilterKey(userId, spaceFilter, SpaceType.UNIFIED_SEARCH);
+    ListSpacesKey listKey = new ListSpacesKey(key, offset, limit);
+
+    //
+    ListSpacesData keys = spacesCache.get(
+        new ServiceContext<ListSpacesData>() {
+          public ListSpacesData execute() {
+            List<Space> got = storage.getUnifiedSearchSpaces(userId, spaceFilter, offset, limit);
             return buildIds(got);
           }
         },

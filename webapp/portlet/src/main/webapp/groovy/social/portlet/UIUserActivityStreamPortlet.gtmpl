@@ -33,13 +33,12 @@
   def jsManager = rcontext.getJavascriptManager();
   def currentServerTime = Calendar.getInstance().getTimeInMillis();
   
-  jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates")
-           .addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId',$currentServerTime);");
+  //jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates");
+  //         .addScripts("activityUpdates.initCookiesForFirstRun('$currentRemoteId',$currentServerTime);");
   
   jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
 
   uicomponent.refresh();
-  def labelUserActivities = _ctx.appRes("${uicomponent.id}.label.UserActivities");
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
   <% if ( Utils.isHomePage() ) { %>

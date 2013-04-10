@@ -308,11 +308,23 @@ public interface SpaceStorage {
    * Gets the count of the visible spaces of the userId.
    * 
    * @param userId
+   * @param spaceFilter
    * @return
    * @throws SpaceStorageException
    * @since 1.2.5-GA
    */
   public int getVisibleSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException;
+  
+  /**
+   * Provides Unified Search to get the count of the visible spaces of the userId.
+   * 
+   * @param userId
+   * @param spaceFilter
+   * @return
+   * @throws SpaceStorageException
+   * @since 4.0.0-GA
+   */
+  public int getUnifiedSearchSpacesCount(String userId, SpaceFilter spaceFilter) throws SpaceStorageException;
 
   /**
    * Gets the count of the accessible spaces of the user by filter.
@@ -345,6 +357,17 @@ public interface SpaceStorage {
    * @since 1.2.5-GA
    */
   public List<Space> getVisibleSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
+                                      throws SpaceStorageException;
+  
+  /**
+   * Provides Unified Search to get the spaces of a user which that user has the visible spaces.
+   *
+   * @param userId the userId
+   * @return a list of the accessible spaces
+   * @throws SpaceStorageException
+   * @since 4.0.0-GA
+   */
+  public List<Space> getUnifiedSearchSpaces(String userId, SpaceFilter spaceFilter, long offset, long limit)
                                       throws SpaceStorageException;
   
   /**

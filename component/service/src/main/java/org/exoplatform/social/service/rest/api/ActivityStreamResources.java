@@ -47,8 +47,8 @@ import static org.exoplatform.social.service.rest.RestChecker.*;
  * - activity stream of the authenticated identity's connections.
  * - activity stream of the authenticated identity's spaces.
  *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
- * @since  Sep 22, 2011
+ * @anchor ActivityStreamResources
+ *
  * @since 1.2.3
  */
 @Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/activity_stream/")
@@ -61,7 +61,7 @@ public class ActivityStreamResources implements ResourceContainer {
 
 
   /**
-   * Get activities of a defined identity which can be a user identity, a space identity, or any type of identities.
+   * Gets activities of a defined identity which can be a user identity, a space identity, or any type of identities.
    * There is one special _identityId_ called "me" which stands for the authenticated user who makes this request.
    *
    * @param uriInfo             The URI information.
@@ -90,12 +90,16 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            number of likes is less than the provided positive number, the number of actual likes
    *                            must be returned. If the total number of likes is more than 100, it is recommended to
    *                            use _activity/\:activityId/likes.format_ instead.
-   * @anchor SOCref.DevRef.V1alpha3.ActivityStreamResource.Identity.GetDefault
+   *                            
+   * @anchor ActivityStreamResource.getActivityStreamByIdentityId
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/f92cd6f0c0a80137102696ac26430766.json?limit=30&since_id=12345&number_of_likes=5
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -205,7 +209,10 @@ public class ActivityStreamResources implements ResourceContainer {
    *   ]
    * }
    *{code}
+   *
    * @return the response
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{identityId}.{format}")
@@ -280,7 +287,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get the activity stream feed of the authenticated user identity who makes this request.
+   * Gets the activity stream feed of the authenticated user identity who makes this request.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -306,12 +313,16 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            of likes is less than the provided positive number, the number of actual likes must be
    *                            returned. If the total number of likes is more than 100, it is recommended to use:
    *                            "_activity/\:activityId/likes.format_" instead.
-   * @anchor SOCref.DevRef.V1alpha3.ActivityStreamResource.Feed.Getlastest
+   *                            
+   * @anchor ActivityStreamResource.getActivityFeedOfAuthenticated
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/feed.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -421,7 +432,10 @@ public class ActivityStreamResources implements ResourceContainer {
    *   ]
    * }
    *{code}
+   *
    * @return the response
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("feed.{format}")
@@ -488,7 +502,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get activities of spaces in which the authenticated user identity is space member that makes this request.
+   * Gets activities of spaces in which the authenticated user identity is space member that makes this request.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -514,12 +528,16 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            of likes is less than the provided positive number, the number of actual likes must be
    *                            returned. If the total number of likes is more than 100, it is recommended to use:
    *                            "_activity/\:activityId/likes.format_" instead.
-   * @anchor SOCref.DevRef.V1alpha3.ActivityStreamResources.Spaces.GetDefault
+   *                            
+   * @anchor ActivityStreamResources.getActivitySpacesOfAuthenticated
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/spaces.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -629,7 +647,10 @@ public class ActivityStreamResources implements ResourceContainer {
    *   ]
    * }
    *{code}
+   *
    * @return the response
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("spaces.{format}")
@@ -693,7 +714,7 @@ public class ActivityStreamResources implements ResourceContainer {
   }
 
   /**
-   * Get activities of connections of a specified identity.
+   * Gets activities of connections of a specified identity.
    *
    * @param uriInfo             The URI information.
    * @param portalContainerName The portal container name.
@@ -719,12 +740,16 @@ public class ActivityStreamResources implements ResourceContainer {
    *                            of likes is less than the provided positive number, the number of actual likes must be
    *                            returned. If the total number of likes is more than 100, it is recommended to use:
    *                            "_activity/\:activityId/likes.format_" instead.
-   * @anchor SOCref.DevRef.V1alpha3.ActivityStreamResources.Connection.default
+   *                            
+   * @anchor ActivityStreamResources.getActivityConnectionsOfAuthenticated
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity_stream/connections.json?limit=30&since_id=12345&number_of_comments=5&number_of_likes=5
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -835,7 +860,10 @@ public class ActivityStreamResources implements ResourceContainer {
    *   ]
    * }
    *{code}
+   *
    * @return the response
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("connections.{format}")

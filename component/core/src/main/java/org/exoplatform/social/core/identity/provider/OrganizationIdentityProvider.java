@@ -35,6 +35,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.model.Profile.UpdateType;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.webui.exception.MessageException;
 
 
 /**
@@ -138,7 +139,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
    * @param profile
    */
   @Override
-  public void onUpdateProfile(Profile profile) {
+  public void onUpdateProfile(Profile profile) throws MessageException {
     new UpdateProfileProcess(profile).doUpdate();
   }
   
@@ -162,7 +163,7 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
     /**
      * update profile information
      */
-    public void doUpdate() {
+    public void doUpdate() throws MessageException {
       try {
         if (Profile.UpdateType.BASIC_INFOR == updateType) {
           updateBasicInfo();
@@ -172,7 +173,12 @@ public class OrganizationIdentityProvider extends IdentityProvider<User> {
           updateContact();
         }
       } catch (Exception e) {
-        LOG.warn("Failed to update user by profile", e);
+        if ( e instanceof MessageException) {
+          throw (MessageException) e;
+        } else {
+          LOG.warn("Failed to update user by profile", e);
+        }
+        
       }
     }
 

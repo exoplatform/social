@@ -37,7 +37,6 @@ import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceException;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -282,7 +281,7 @@ public class UIMembersPortlet extends UIPortletApplication {
    * @throws SpaceException
    */
   public Space getSpace() throws SpaceException {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     SpaceService spaceService = getApplicationComponent(SpaceService.class);
     return spaceService.getSpaceByUrl(spaceUrl);
   }

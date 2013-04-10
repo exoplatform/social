@@ -38,9 +38,7 @@
   <% uiform.begin() %>
   <% uicomponent.renderChild(UITitleBar.class); %>
   <div class="form-horizontal">
-       <% if (isEdit) { %>
         <div class="control-group">
-       <% } %>
           <label class="control-label" for="<%=children.get(1).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.userName")%>:</strong></label>
           <div class="controls">
           <% if (isEdit) {
@@ -49,10 +47,8 @@
                <%=children.get(1).getValue(); %>
           <% } %>
           </div>
-       <% if (isEdit) { %>
         </div>
         <div class="control-group">
-       <% } %>
           <label class="control-label" for="<%=children.get(2).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.firstName")%>:</strong></label>
           <div class="controls">
           <% if (isEdit) {
@@ -61,10 +57,8 @@
                <%=children.get(2).getValue(); %>
           <% } %>
           </div>
-       <% if (isEdit) { %>
         </div>
         <div class="control-group">
-       <% } %>
           <label class="control-label" for="<%=children.get(3).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.lastName")%>:</strong></label>
           <div class="controls">
             <% if (isEdit) {
@@ -73,10 +67,8 @@
                  <%=children.get(3).getValue(); %>
             <% } %>
           </div>
-       <% if (isEdit) { %>
         </div>
         <div class="control-group">
-       <% } %>
           <label class="control-label" for="<%=children.get(4).getId()%>"><strong><%=_ctx.appRes(uicomponent.getId() + ".label.email")%>:</strong></label>
           <div class="controls">
           <% if (isEdit) {
@@ -87,9 +79,7 @@
              </a>
           <% } %>
           </div>
-       <% if (isEdit) { %>
         </div>
-       <% } %>
   </div>
   <% uiform.end() %>
 </div>

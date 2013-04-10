@@ -243,8 +243,8 @@ public class UIActivitiesLoader extends UIContainer {
       
       
       //
-      event.getRequestContext().getJavascriptManager()
-      .require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.markActivitiesOnPageLoad();");
+      //event.getRequestContext().getJavascriptManager()
+      //.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.markActivitiesOnPageLoad();");
 
     }
   }

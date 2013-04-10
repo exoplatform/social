@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +73,8 @@ import org.exoplatform.web.controller.router.URIWriter;
  * /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br /> Example:<br /> GET:
  * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
  *
- * @author hoatle <hoatlevan at gmail dot com>
- * @since Jan 6, 2010
+ * @anchor SpacesRestService
+ *
  */
 @Path("{portalName}/social/spaces")
 public class SpacesRestService implements ResourceContainer {
@@ -142,132 +141,19 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * shows my spaceList by userId
+   * Shows mySpaceList by json/xml format
    *
-   * @param userId
-   * @return spaceList
-   * @see SpaceList
-   */
-  private SpaceList showMySpaceList(String userId) {
-    SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService();
-    List<Space> mySpaces = null;
-    List<SpaceRest> mySpacesRest = new ArrayList<SpaceRest>();
-    try {
-      mySpaces = _spaceService.getSpaces(userId);
-      
-      for (Space space : mySpaces) {
-        SpaceRest spaceRest = new SpaceRest(space);
-        mySpacesRest.add(spaceRest);
-      }
-      
-      //fix for issue SOC-2039, sets the space url with new navigation controller
-      Router router = this.getRouter(this.getConfigurationPath());
-      
-      this.fillSpacesURI(mySpacesRest, router);
-    } catch (SpaceException e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    
-    spaceList.setSpaces(mySpacesRest);
-    return spaceList;
-  }
-  
-  /**
-   * get my spaceList by userId which user is last visited
+   * @param uriInfo The request URI information.
+   * @param portalName The name of current container.
+   * @param format The type of returned result.
    * 
-   * @param userId
-   * @param appId
-   * @param limit
-   * @return
-   */
-  private SpaceList getLastVisitedSpace(String userId, String appId, int offset, int limit) {
-    SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService();
-    List<Space> mySpaces = null;
-    
-    
-    try {
-      mySpaces = _spaceService.getLastAccessedSpace(userId, appId, offset, limit);
-      SpaceRest spaceRest;
-      for (Space space : mySpaces) {
-        spaceRest = new SpaceRest(space);
-        spaceList.addSpace(spaceRest);
-      }
-    } catch (SpaceException e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    return spaceList;
-  }
-
-  /**
-   * shows pending spaceList by userId
-   *
-   * @param userId
-   * @return spaceList
-   * @see SpaceList
-   */
-  private SpaceList showPendingSpaceList(String userId) {
-    SpaceList spaceList = new SpaceList();
-    _spaceService = getSpaceService();
-    List<Space> pendingSpaces;
-    List<SpaceRest> pendingSpacesRest = new ArrayList<SpaceRest>();
-    try {
-      pendingSpaces = _spaceService.getPendingSpaces(userId);
-      for (Space space : pendingSpaces) {
-        SpaceRest spaceRest = new SpaceRest(space);
-        pendingSpacesRest.add(spaceRest);
-      }
-    } catch (SpaceException e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-    spaceList.setSpaces(pendingSpacesRest);
-    return spaceList;
-  }
-
-  /**
-   * Fill url for more spaces.
+   * @anchor SpacesRestService
    * 
-   * @param spaceList
-   * @param portalOwner
-   * @since 1.2.9
-   */
-  private void fillUrlAllSpaces(SpaceList spaceList, String portalOwner) {
-    try {
-      Router router = this.getRouter(this.getConfigurationPath());
-      
-      Map<QualifiedName, String> qualifiedName = new HashedMap();
-      qualifiedName.put(REQUEST_HANDLER, "portal");
-      qualifiedName.put(REQUEST_SITE_TYPE, "portal");
-      qualifiedName.put(LANG, "");
-      
-      StringBuilder urlBuilder = new StringBuilder();
-      UserPortalConfig userPortalConfig = SpaceUtils.getUserPortalConfig();
-      qualifiedName.put(REQUEST_SITE_NAME, userPortalConfig.getPortalName());
-      if (portalOwner.equals("socialdemo")) {
-        qualifiedName.put(PATH, "all-spaces");
-      } else {
-        qualifiedName.put(PATH, "spaces");
-      }
-      router.render(qualifiedName, new URIWriter(urlBuilder));
-      spaceList.setMoreSpacesUrl(urlBuilder.toString());
-    } catch (Exception e) {
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-  
-  /**
-   * shows mySpaceList by json/xml format
-   *
-   * @param uriInfo provided as {@link Context}
-   * @param userId
-   * @param format
    * @return response
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("mySpaces/show.{format}")
@@ -299,17 +185,22 @@ public class SpacesRestService implements ResourceContainer {
    * Provides a way to get last n space ordered by last access and be able to filter on containing application
    * of the authenticated user identity who makes this request.
    *
-   * @param uriInfo             The URI information.
+   * @param uriInfo The request URI information.
    * @param portalContainerName The portal container name.
-   * @param format              The response format type, for example: JSON, or XML.
-   * @param offset              Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
-   * @param limit               Specify the number of spaces to retrieve. It must be less than or equal to 10.
-   * @param appId               AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   * @param format The response format type, for example: JSON, or XML.
+   * @param offset Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
+   * @param limit Specify the number of spaces to retrieve. It must be less than or equal to 10.
+   * @param appId AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   * 
+   * @anchor SpacesRestService
+   * 
    * @authenticated
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -320,7 +211,10 @@ public class SpacesRestService implements ResourceContainer {
    * "moreSpacesUrl":null
    * }
    *{code}
+   *
    * @return the response
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("lastVisitedSpace/list.{format}")
@@ -366,13 +260,19 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * shows pendingSpaceList by json/xml format
-   *
-   * @param uriInfo
-   * @param userId
-   * @param format
+   * Shows pendingSpaceList by json/xml format
+   * 
+   * @param uriInfo The request URI information.
+   * @param portalContainerName The portal container name.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor SpacesRestService
+   * 
    * @return response
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("pendingSpaces/show.{format}")
@@ -392,14 +292,20 @@ public class SpacesRestService implements ResourceContainer {
   /**
    * Suggests space's name for searching.
    *
-   * @param uriInfo
-   * @param portalName
-   * @param conditionToSearch
-   * @param typeOfRelation
-   * @param userId
-   * @param format
+   * @param uriInfo The request URI information.
+   * @param portalName The name of portal.
+   * @param conditionToSearch The input information to search.
+   * @param typeOfRelation The type of relationship of user and space.
+   * @param userId Id of current user.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor SpacesRestService
+   * 
    * @return
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("suggest.{format}")
@@ -535,6 +441,125 @@ public class SpacesRestService implements ResourceContainer {
     }
   }
 
+  /**
+   * shows my spaceList by userId
+   *
+   * @param userId
+   * @return spaceList
+   * @see SpaceList
+   */
+  private SpaceList showMySpaceList(String userId) {
+    SpaceList spaceList = new SpaceList();
+    _spaceService = getSpaceService();
+    List<Space> mySpaces = null;
+    List<SpaceRest> mySpacesRest = new ArrayList<SpaceRest>();
+    try {
+      mySpaces = _spaceService.getSpaces(userId);
+      
+      for (Space space : mySpaces) {
+        SpaceRest spaceRest = new SpaceRest(space);
+        mySpacesRest.add(spaceRest);
+      }
+      
+      //fix for issue SOC-2039, sets the space url with new navigation controller
+      Router router = this.getRouter(this.getConfigurationPath());
+      
+      this.fillSpacesURI(mySpacesRest, router);
+    } catch (SpaceException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    
+    spaceList.setSpaces(mySpacesRest);
+    return spaceList;
+  }
+  
+  /**
+   * get my spaceList by userId which user is last visited
+   * 
+   * @param userId
+   * @param appId
+   * @param limit
+   * @return
+   */
+  private SpaceList getLastVisitedSpace(String userId, String appId, int offset, int limit) {
+    SpaceList spaceList = new SpaceList();
+    _spaceService = getSpaceService();
+    List<Space> mySpaces = null;
+    
+    
+    try {
+      mySpaces = _spaceService.getLastAccessedSpace(userId, appId, offset, limit);
+      SpaceRest spaceRest;
+      for (Space space : mySpaces) {
+        spaceRest = new SpaceRest(space);
+        spaceList.addSpace(spaceRest);
+      }
+    } catch (SpaceException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    return spaceList;
+  }
+
+  /**
+   * shows pending spaceList by userId
+   *
+   * @param userId
+   * @return spaceList
+   * @see SpaceList
+   */
+  private SpaceList showPendingSpaceList(String userId) {
+    SpaceList spaceList = new SpaceList();
+    _spaceService = getSpaceService();
+    List<Space> pendingSpaces;
+    List<SpaceRest> pendingSpacesRest = new ArrayList<SpaceRest>();
+    try {
+      pendingSpaces = _spaceService.getPendingSpaces(userId);
+      for (Space space : pendingSpaces) {
+        SpaceRest spaceRest = new SpaceRest(space);
+        pendingSpacesRest.add(spaceRest);
+      }
+    } catch (SpaceException e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+    spaceList.setSpaces(pendingSpacesRest);
+    return spaceList;
+  }
+
+  /**
+   * Fill url for more spaces.
+   * 
+   * @param spaceList
+   * @param portalOwner
+   * @since 1.2.9
+   */
+  private void fillUrlAllSpaces(SpaceList spaceList, String portalOwner) {
+    try {
+      Router router = this.getRouter(this.getConfigurationPath());
+      
+      Map<QualifiedName, String> qualifiedName = new HashedMap();
+      qualifiedName.put(REQUEST_HANDLER, "portal");
+      qualifiedName.put(REQUEST_SITE_TYPE, "portal");
+      qualifiedName.put(LANG, "");
+      
+      StringBuilder urlBuilder = new StringBuilder();
+      UserPortalConfig userPortalConfig = SpaceUtils.getUserPortalConfig();
+      qualifiedName.put(REQUEST_SITE_NAME, userPortalConfig.getPortalName());
+      if (portalOwner.equals("socialdemo")) {
+        qualifiedName.put(PATH, "all-spaces");
+      } else {
+        qualifiedName.put(PATH, "spaces");
+      }
+      router.render(qualifiedName, new URIWriter(urlBuilder));
+      spaceList.setMoreSpacesUrl(urlBuilder.toString());
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
   /**
    * gets spaceService
    *

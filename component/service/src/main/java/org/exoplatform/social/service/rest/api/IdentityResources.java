@@ -38,8 +38,9 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
  * Identity Resources end point. 
- *
- * @author <a href="http://phuonglm.net">PhuongLM</a>
+ * 
+ * @anchor IdentityResources
+ * 
  * @since 1.2.2
  */
 @Path("api/social/" + VersionResources.LATEST_VERSION + "/{portalContainerName}/identity/")
@@ -47,18 +48,22 @@ public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   
   /**
-   * Get the identity and its associated profile by the activity ID.
+   * Gets the identity and its associated profile by the activity ID.
    *
    * @param uriInfo The uri request uri.
    * @param portalContainerName The associated portal container name.
    * @param identityId The specified  ID of identity.
    * @param format The expected returned format.
-   * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.Notes.Get
+   * 
+   * @anchor IdentityResources.getIdentityById
+   * 
    * @authentication
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
    *{code}
+   *
    * @response
    *{code:json}
    * {
@@ -71,8 +76,10 @@ public class IdentityResources implements ResourceContainer {
    *   }
    * }
    *{code}
+   *
    * @return a response object
    * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("{identityId}.{format}")
@@ -109,7 +116,7 @@ public class IdentityResources implements ResourceContainer {
   }
 
   /**
-   * Get the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
+   * Gets the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
    * its providerId and remoteId. There could be as many identities as possible. Currently, there are 2 built-in types
    * of identities (user identities and space identities) in Social.
    *
@@ -118,8 +125,11 @@ public class IdentityResources implements ResourceContainer {
    * @param providerId The providerId of Identity.
    * @param remoteId The remoteId of Identity.
    * @param format The expected returned format.
-   * @anchor SOCref.DevRef.RestService_APIs_v1alpha3.IdentityResources.identity.Get
+   * 
+   * @anchor IdentityResources.getIdentityProviderIdAndRemoteId
+   * 
    * @authentication
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json
@@ -140,7 +150,11 @@ public class IdentityResources implements ResourceContainer {
    *   }
    * }
    *{code}
+   *
    * @return a response object
+   * 
+   * @LevelAPI Platform
+   * 
    * @since 1.2.2
    */
   @GET

@@ -67,11 +67,10 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  * POST: /restContextName/social/activities/{activityId}/likes/destroy/{identity}.{format} <br />
  * ... <br />
  * See methods for more api details.
+ * 
+ * @anchor ActivitiesRestService
  *
- *
- * @author     hoatle <hoatlevan at gmail dot com>
  * @since      Dec 29, 2009
- * @copyright  eXo Platform SEA
  */
 @Path("{portalName}/social/activities")
 public class ActivitiesRestService implements ResourceContainer {
@@ -91,9 +90,442 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
+   * Destroy activity and return the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity to be destroyed.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.destroyActivity
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @POST
+  @Path("destroy/{activityId}.{format}")
+  public Response destroyActivity(@Context UriInfo uriInfo,
+                                  @PathParam("portalName") String portalName,
+                                  @PathParam("activityId") String activityId,
+                                  @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    ExoSocialActivity activity = destroyActivity(activityId);
+    return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Show list of like by activityId and return the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that the like to be showed.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.showLikes
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @GET
+  @Path("{activityId}/likes/show.{format}")
+  public Response showLikes(@Context UriInfo uriInfo,
+                            @PathParam("portalName") String portalName,
+                            @PathParam("activityId") String activityId,
+                            @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    LikeList likeList = null;
+    likeList = showLikes(activityId);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Update like by the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that like to be updated.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param like The like to be updated.
+   * 
+   * @anchor ActivitiesRestService.updateLike
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @POST
+  @Path("{activityId}/likes/update.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response updateLike(@Context UriInfo uriInfo,
+                             @PathParam("portalName") String portalName,
+                             @PathParam("activityId") String activityId,
+                             @PathParam("format") String format,
+                             Like like) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    LikeList likeList = updateLike(activityId, like);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Destroy like by identityId and return the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that like to be destroyed.
+   * @param identityId
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.destroyLike
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @POST
+  @Path("{activityId}/likes/destroy/{identityId}.{format}")
+  public Response destroyLike(@Context UriInfo uriInfo,
+                              @PathParam("portalName") String portalName,
+                              @PathParam("activityId") String activityId,
+                              @PathParam("identityId") String identityId,
+                              @PathParam("format") String format) throws Exception{
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    LikeList likeList =  null;
+    likeList = destroyLike(activityId, identityId);
+    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Show comment list by the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that comments to be showed.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.showComments
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @GET
+  @Path("{activityId}/comments/show.{format}")
+  public Response showComments(@Context UriInfo uriInfo,
+                               @PathParam("portalName") String portalName,
+                               @PathParam("activityId") String activityId,
+                               @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    CommentList commentList = null;
+    commentList = showComments(activityId);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Show comment list by the JSON/XML format with limit and offset.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target activity that comments to be showed.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param offset Specify the from number of comment to be showed. It must be greater than or equal to 0.
+   * @param limit Specify the number of spaces to be showed.
+   * 
+   * @anchor ActivitiesRestService.showComments
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @GET
+  @Path("{activityId}/comments.{format}")
+  public Response showComments(@Context UriInfo uriInfo,
+                               @PathParam("portalName") String portalName,
+                               @PathParam("activityId") String activityId,
+                               @PathParam("format") String format,
+                               @QueryParam("offset") Integer offset,
+                               @QueryParam("limit") Integer limit) throws Exception {
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+    
+    ActivityManager activityManager = Util.getActivityManager(portalName);
+    
+    if(offset == null || limit == null ){
+      offset = 0;
+      limit = 10;
+    }
+    
+    if(offset < 0 || limit < 0){
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    
+    ExoSocialActivity activity = null;
+    try {
+      activity = activityManager.getActivity(activityId);
+      
+      int total;
+      List<CommentRestOut> commentWrapers = null;
+      ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
+      
+      if(offset > comments.getSize()){
+        offset = 0;
+        limit = 0;
+      } else if(offset + limit > comments.getSize()){
+        limit = comments.getSize() - offset;
+      }
+      
+      total = limit;
+      
+      ExoSocialActivity[] commentsLimited =  comments.load(offset, total + offset);
+      commentWrapers = new ArrayList<CommentRestOut>(total);
+      for(int i = 0; i < total; i++){
+        CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
+        commentRestOut.setPosterIdentity(commentsLimited[i], portalName);
+        commentWrapers.add(commentRestOut);      
+      }
+      
+      HashMap<String, Object> resultJson = new HashMap<String, Object>();
+      resultJson.put("totalNumberOfComments", commentWrapers.size());
+      resultJson.put("comments", commentWrapers);
+      return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
+      
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    } catch (Exception e){
+      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  /**
+   * Get an activity by its Id.
+   *
+   * @param uriInfo  The URI request information.
+   * @param portalContainerName The associated portal container name.
+   * @param activityId The id of target activity.
+   * @param format The response format type, for example: JSON, or XML.
+   * 
+   * @anchor ActivitiesRestService.getActivityById
+   * 
+   * @return The response contains returned result.
+   * 
+   * @LevelAPI Platform
+   */
+  @GET
+  @Path("{activityId}.{format}")
+  public Response getActivityById(@Context UriInfo uriInfo,
+                                  @PathParam("portalName") String portalContainerName,
+                                  @PathParam("activityId") String activityId,
+                                  @PathParam("format") String format,
+                                  @QueryParam("poster_identity") String showPosterIdentity,
+                                  @QueryParam("number_of_comments") int numberOfComments,
+                                  @QueryParam("activity_stream") String showActivityStream,
+                                  @QueryParam("number_of_likes") int numberOfLikes) {
+    
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+    ActivityManager activityManager = Util.getActivityManager(portalContainerName);
+    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
+    
+    ExoSocialActivity activity = null;
+    try {
+      activity = activityManager.getActivity(activityId);
+    } catch (UndeclaredThrowableException undeclaredThrowableException) {
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    
+    if(activity.isComment()) {
+      throw new WebApplicationException(Response.Status.NOT_FOUND);
+    }
+    ActivityRestOut model = new ActivityRestOut();
+    
+    
+    model.setId(activity.getId());
+    model.setTitle(activity.getTitle());
+    model.setPriority(activity.getPriority());
+    model.setAppId(activity.getAppId());
+    model.setType(activity.getType());
+    model.setPostedTime(activity.getPostedTime());
+    model.setCreatedAt(Util.convertTimestampToTimeString(activity.getPostedTime()));
+    model.setTitleId(activity.getTitleId());
+    model.setTemplateParams(activity.getTemplateParams());
+    
+    if(activity.getLikeIdentityIds() != null){
+      model.setTotalNumberOfLikes(activity.getLikeIdentityIds().length);
+    } else {
+      model.setTotalNumberOfLikes(null);
+    }
+    
+    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
+                                                                  true).getId(),activity)){
+      model.setLiked(true);
+    } else {
+      model.setLiked(false);
+    }
+    
+    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).
+                                                                           getCommentsWithListAccess(activity);
+    model.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
+    
+    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
+    if(streamOwnerIdentity != null){
+      model.put(Field.IDENTITY_ID.toString(),streamOwnerIdentity.getId());
+    }
+    
+    
+    
+    if (isPassed(showPosterIdentity)) {
+      model.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(activity.getUserId(), false)));
+    }
+    
+    if (isPassed(showActivityStream)) {
+      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
+    }
+    
+    model.setNumberOfComments(numberOfComments, activity, portalContainerName);
+    
+    return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  /**
+   * Update comment by the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of target comment to be updated.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param comment The comment to be updated.
+   * 
+   * @anchor ActivitiesRestService.updateComment
+   * 
+   * @return response The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @POST
+  @Path("{activityId}/comments/update.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response updateComment(@Context UriInfo uriInfo,
+                                @PathParam("portalName") String portalName,
+                                @PathParam("activityId") String activityId,
+                                @PathParam("format") String format,
+                                ExoSocialActivityImpl comment) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    CommentList commentList = null;
+    commentList = updateComment(activityId, comment, uriInfo, portalName);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
+   * Comment an existing activity from a specified activity Id. Just returns the created comment.
+   *
+   * @param uriInfo The request URI information.
+   * @param portalName The associated portal container name.
+   * @param activityId The id of target comment to be created.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param text The content of comment.
+   * 
+   * @anchor ActivitiesRestService.createCommentActivityById
+   * 
+   * @return The response contains returned result.
+   * 
+   * @LevelAPI Platform
+   */
+  @GET
+  @Path("{activityId}/comments/create.{format}")
+  public Response createCommentActivityById(@Context UriInfo uriInfo,
+                                           @PathParam("portalName") String portalName,
+                                           @PathParam("activityId") String activityId,
+                                           @PathParam("format") String format,
+                                           @QueryParam("text") String text) {
+    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
+    
+    if(text == null || text.trim().equals("")){
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+      
+    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
+
+    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                                       Util.getViewerId(uriInfo), false);
+    ActivityManager activityManager = Util.getActivityManager(portalName);
+    ExoSocialActivity activity = null;
+    
+    try {
+      activity = activityManager.getActivity(activityId);
+    } catch (UndeclaredThrowableException undeclaredThrowableException){
+      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      } else {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    
+    ExoSocialActivity commentActivity = new ExoSocialActivityImpl();
+    commentActivity.setTitle(text);
+    commentActivity.setUserId(currentIdentity.getId());
+    
+    activityManager.saveComment(activity,commentActivity);
+    
+    CommentRestOut commentOut = new CommentRestOut(commentActivity, portalName);
+    
+    return Util.getResponse(commentOut, uriInfo, mediaType, Response.Status.OK);
+  }
+  
+  /**
+   * Destroy comments and return the JSON/XML format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param activityId The id of activity that contain target comment.
+   * @param commentId The id of target comment to be destroyed.
+   * @param format The response format type, for example: JSON, or XML.
+   *
+   * @anchor ActivitiesRestService.destroyComment
+   * 
+   * @return response The response contains returned result. 
+   *
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
+   */
+  @POST
+  @Path("{activityId}/comments/destroy/{commentId}.{format}")
+  public Response destroyComment(@Context UriInfo uriInfo,
+                                 @PathParam("portalName") String portalName,
+                                 @PathParam("activityId") String activityId,
+                                 @PathParam("commentId") String commentId,
+                                 @PathParam("format") String format) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    portalName_ = portalName;
+    CommentList commentList = null;
+    commentList = destroyComment(activityId, commentId);
+    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
+  }
+
+  /**
    * Destroy activity by activityId
    * if detects any comments of that activity, destroys these comments, too.
    * @param activityId
+   * @anchor ActivitiesRestService
    * @return activity
    */
   private ExoSocialActivity destroyActivity(String activityId) {
@@ -110,27 +542,7 @@ public class ActivitiesRestService implements ResourceContainer {
     }
     return activity;
   }
-
-  /**
-   * Destroy activity and return the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("destroy/{activityId}.{format}")
-  public Response destroyActivity(@Context UriInfo uriInfo,
-                                  @PathParam("portalName") String portalName,
-                                  @PathParam("activityId") String activityId,
-                                  @PathParam("format") String format) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    ExoSocialActivity activity = destroyActivity(activityId);
-    return Util.getResponse(activity, uriInfo, mediaType, Response.Status.OK);
-  }
-
+  
   /**
    * Show list of like by activityId.
    * @param activityId
@@ -155,7 +567,7 @@ public class ActivitiesRestService implements ResourceContainer {
     likeList.setLikes(getLikes(activity.getLikeIdentityIds()));
     return likeList;
   }
-
+  
   /**
    * Update like of an activity.
    * @param activityId
@@ -228,75 +640,7 @@ public class ActivitiesRestService implements ResourceContainer {
 
     return likeList;
   }
-
-  /**
-   * Show list of like by activityId and return the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @return response
-   * @throws Exception
-   */
-  @GET
-  @Path("{activityId}/likes/show.{format}")
-  public Response showLikes(@Context UriInfo uriInfo,
-                            @PathParam("portalName") String portalName,
-                            @PathParam("activityId") String activityId,
-                            @PathParam("format") String format) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    LikeList likeList = null;
-    likeList = showLikes(activityId);
-    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
-  }
-
-  /**
-   * Update like by the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @param like
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/likes/update.{format}")
-  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-  public Response updateLike(@Context UriInfo uriInfo,
-                             @PathParam("portalName") String portalName,
-                             @PathParam("activityId") String activityId,
-                             @PathParam("format") String format,
-                             Like like) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    LikeList likeList = updateLike(activityId, like);
-    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
-  }
-
-  /**
-   * Destroy like by identityId and return the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param identityId
-   * @param format
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/likes/destroy/{identityId}.{format}")
-  public Response destroyLike(@Context UriInfo uriInfo,
-                              @PathParam("portalName") String portalName,
-                              @PathParam("activityId") String activityId,
-                              @PathParam("identityId") String identityId,
-                              @PathParam("format") String format) throws Exception{
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    LikeList likeList =  null;
-    likeList = destroyLike(activityId, identityId);
-    return Util.getResponse(likeList, uriInfo, mediaType, Response.Status.OK);
-  }
-
-
+  
   /**
    * Show comment list of an activity from its activityId.
    *
@@ -351,10 +695,7 @@ public class ActivitiesRestService implements ResourceContainer {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
     _activityManager = getActivityManager();
-    //TODO hoatle set current userId from authentication context instead of getting userId from comment
-//    if (comment.getUserId() == null) {
-//      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-//    }
+
     ConversationState state = ConversationState.getCurrent();
     String userId = null;
     if (state != null) {
@@ -395,16 +736,16 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-     * Get identityManager.
-     * @return
-     */
-    private IdentityManager getIdentityManager(String portalName) {
-      if (_identityManager == null) {
-        PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
-        _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
-      }
-      return _identityManager;
+   * Get identityManager.
+   * @return
+   */
+  private IdentityManager getIdentityManager(String portalName) {
+    if (_identityManager == null) {
+      PortalContainer portalContainer = (PortalContainer) ExoContainerContext.getContainerByName(portalName);
+      _identityManager = (IdentityManager) portalContainer.getComponentInstanceOfType(IdentityManager.class);
     }
+    return _identityManager;
+  }
 
 
   /**
@@ -435,290 +776,6 @@ public class ActivitiesRestService implements ResourceContainer {
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
     return commentList;
-  }
-
-
-  /**
-   * Show comment list by the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @return response
-   * @throws Exception
-   */
-  @GET
-  @Path("{activityId}/comments/show.{format}")
-  public Response showComments(@Context UriInfo uriInfo,
-                               @PathParam("portalName") String portalName,
-                               @PathParam("activityId") String activityId,
-                               @PathParam("format") String format) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    CommentList commentList = null;
-    commentList = showComments(activityId);
-    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
-  }
-
-  /**
-   * Show comment list by the JSON/XML format with limit and offset.
-   * 
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @param offset
-   * @param limit
-   * @return response
-   * @throws Exception
-   */
-  @GET
-  @Path("{activityId}/comments.{format}")
-  public Response showComments(@Context UriInfo uriInfo,
-                               @PathParam("portalName") String portalName,
-                               @PathParam("activityId") String activityId,
-                               @PathParam("format") String format,
-                               @QueryParam("offset") Integer offset,
-                               @QueryParam("limit") Integer limit) throws Exception {
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
-    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-    
-    ActivityManager activityManager = Util.getActivityManager(portalName);
-    
-    if(offset == null || limit == null ){
-      offset = 0;
-      limit = 10;
-    }
-    
-    if(offset < 0 || limit < 0){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-    
-    ExoSocialActivity activity = null;
-    try {
-      activity = activityManager.getActivity(activityId);
-      
-      int total;
-      List<CommentRestOut> commentWrapers = null;
-      ListAccess<ExoSocialActivity> comments =  activityManager.getCommentsWithListAccess(activity);
-      
-      if(offset > comments.getSize()){
-        offset = 0;
-        limit = 0;
-      } else if(offset + limit > comments.getSize()){
-        limit = comments.getSize() - offset;
-      }
-      
-      total = limit;
-      
-      ExoSocialActivity[] commentsLimited =  comments.load(offset, total + offset);
-      commentWrapers = new ArrayList<CommentRestOut>(total);
-      for(int i = 0; i < total; i++){
-        CommentRestOut commentRestOut = new CommentRestOut(commentsLimited[i], portalName);
-        commentRestOut.setPosterIdentity(commentsLimited[i], portalName);
-        commentWrapers.add(commentRestOut);      
-      }
-      
-      HashMap<String, Object> resultJson = new HashMap<String, Object>();
-      resultJson.put("totalNumberOfComments", commentWrapers.size());
-      resultJson.put("comments", commentWrapers);
-      return Util.getResponse(resultJson, uriInfo, mediaType, Response.Status.OK);
-      
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    } catch (Exception e){
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
-  }
-  
-  /**
-   * Get an activity by its Id.
-   *
-   * @param uriInfo The URI request information.
-   * @param portalContainerName The associated portal container name.
-   * @param activityId The specified activity Id.
-   * @param format The expected returned format.
-   * @return a response object
-   */
-  @GET
-  @Path("{activityId}.{format}")
-  public Response getActivityById(@Context UriInfo uriInfo,
-                                  @PathParam("portalName") String portalContainerName,
-                                  @PathParam("activityId") String activityId,
-                                  @PathParam("format") String format,
-                                  @QueryParam("poster_identity") String showPosterIdentity,
-                                  @QueryParam("number_of_comments") int numberOfComments,
-                                  @QueryParam("activity_stream") String showActivityStream,
-                                  @QueryParam("number_of_likes") int numberOfLikes) {
-    
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalContainerName);
-    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-    ActivityManager activityManager = Util.getActivityManager(portalContainerName);
-    IdentityManager identityManager = Util.getIdentityManager(portalContainerName);
-    
-    ExoSocialActivity activity = null;
-    try {
-      activity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException) {
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    }
-    
-    if(activity.isComment()) {
-      throw new WebApplicationException(Response.Status.NOT_FOUND);
-    }
-    ActivityRestOut model = new ActivityRestOut();
-    
-    
-    model.setId(activity.getId());
-    model.setTitle(activity.getTitle());
-    model.setPriority(activity.getPriority());
-    model.setAppId(activity.getAppId());
-    model.setType(activity.getType());
-    model.setPostedTime(activity.getPostedTime());
-    model.setCreatedAt(Util.convertTimestampToTimeString(activity.getPostedTime()));
-    model.setTitleId(activity.getTitleId());
-    model.setTemplateParams(activity.getTemplateParams());
-    
-    if(activity.getLikeIdentityIds() != null){
-      model.setTotalNumberOfLikes(activity.getLikeIdentityIds().length);
-    } else {
-      model.setTotalNumberOfLikes(null);
-    }
-    
-    if(Util.isLikedByIdentity(identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo),
-                                                                  true).getId(),activity)){
-      model.setLiked(true);
-    } else {
-      model.setLiked(false);
-    }
-    
-    RealtimeListAccess<ExoSocialActivity> commentRealtimeListAccess = Util.getActivityManager(portalContainerName).
-                                                                           getCommentsWithListAccess(activity);
-    model.setTotalNumberOfComments(commentRealtimeListAccess.getSize());
-    
-    Identity streamOwnerIdentity = Util.getOwnerIdentityIdFromActivity(portalContainerName, activity);
-    if(streamOwnerIdentity != null){
-      model.put(Field.IDENTITY_ID.toString(),streamOwnerIdentity.getId());
-    }
-    
-    
-    
-    if (isPassed(showPosterIdentity)) {
-      model.setPosterIdentity(new IdentityRestOut(identityManager.getIdentity(activity.getUserId(), false)));
-    }
-    
-    if (isPassed(showActivityStream)) {
-      model.setActivityStream(new ActivityStreamRestOut(activity.getActivityStream(), portalContainerName));
-    }
-    
-    model.setNumberOfComments(numberOfComments, activity, portalContainerName);
-    
-    return Util.getResponse(model, uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  /**
-   * Update comment by the JSON/XML format.
-   * 
-   * @param uriInfo
-   * @param activityId
-   * @param format
-   * @param comment
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/comments/update.{format}")
-  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-  public Response updateComment(@Context UriInfo uriInfo,
-                                @PathParam("portalName") String portalName,
-                                @PathParam("activityId") String activityId,
-                                @PathParam("format") String format,
-                                ExoSocialActivityImpl comment) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    CommentList commentList = null;
-    commentList = updateComment(activityId, comment, uriInfo, portalName);
-    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
-  }
-
-  /**
-   * Comment an existing activity from a specified activity Id. Just returns the created comment.
-   *
-   * @param uriInfo The uri request uri
-   * @param portalName The associated portal container name.
-   * @param activityId The specified activity Id.
-   * @param format The expected returned format.
-   * @param text The content of comment.
-   * @return a response object
-   */
-  @GET
-  @Path("{activityId}/comments/create.{format}")
-  public Response createCommentActivityById(@Context UriInfo uriInfo,
-                                           @PathParam("portalName") String portalName,
-                                           @PathParam("activityId") String activityId,
-                                           @PathParam("format") String format,
-                                           @QueryParam("text") String text) {
-    PortalContainer portalContainer = RestChecker.checkValidPortalContainerName(portalName);
-    
-    if(text == null || text.trim().equals("")){
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-      
-    MediaType mediaType = RestChecker.checkSupportedFormat(format, new String[]{"json"});
-
-    Identity currentIdentity = Util.getIdentityManager(portalName).getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                       Util.getViewerId(uriInfo), false);
-    ActivityManager activityManager = Util.getActivityManager(portalName);
-    ExoSocialActivity activity = null;
-    
-    try {
-      activity = activityManager.getActivity(activityId);
-    } catch (UndeclaredThrowableException undeclaredThrowableException){
-      if(undeclaredThrowableException.getCause() instanceof ActivityStorageException){
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
-      } else {
-        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-      }
-    }
-    
-    ExoSocialActivity commentActivity = new ExoSocialActivityImpl();
-    commentActivity.setTitle(text);
-    commentActivity.setUserId(currentIdentity.getId());
-    
-    activityManager.saveComment(activity,commentActivity);
-    
-    CommentRestOut commentOut = new CommentRestOut(commentActivity, portalName);
-    
-    return Util.getResponse(commentOut, uriInfo, mediaType, Response.Status.OK);
-  }
-  
-  /**
-   * Destroy comments and return the JSON/XML format.
-   * @param uriInfo
-   * @param activityId
-   * @param commentId
-   * @param format
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("{activityId}/comments/destroy/{commentId}.{format}")
-  public Response destroyComment(@Context UriInfo uriInfo,
-                                 @PathParam("portalName") String portalName,
-                                 @PathParam("activityId") String activityId,
-                                 @PathParam("commentId") String commentId,
-                                 @PathParam("format") String format) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    portalName_ = portalName;
-    CommentList commentList = null;
-    commentList = destroyComment(activityId, commentId);
-    return Util.getResponse(commentList, uriInfo, mediaType, Response.Status.OK);
   }
 
   /**

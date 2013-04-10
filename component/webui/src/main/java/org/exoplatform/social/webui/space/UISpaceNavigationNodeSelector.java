@@ -317,7 +317,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
       String nodeID = context.getRequestParameter(OBJECTID);
       TreeNode node = uiNodeSelector.findNode(nodeID);
-
+      
+      TreeNode rootNode = uiNodeSelector.getRootNode();
+      
+      if ( node.getId().equals(rootNode.getId()) ) {
+        return;
+      }
+      
       try {
         node = rebaseNode(node, uiNodeSelector);
       } catch (NavigationServiceException ex) {
@@ -344,6 +350,13 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       } else {
         node = uiNodeSelector.findNode(nodeID);
       }
+      
+      TreeNode rootNode = uiNodeSelector.getRootNode();
+      
+      if ( node.getId().equals(rootNode.getId()) ) {
+        return;
+      }
+      
 
       try {
         node = rebaseNode(node, uiNodeSelector);

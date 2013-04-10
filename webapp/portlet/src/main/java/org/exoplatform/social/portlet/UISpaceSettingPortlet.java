@@ -21,6 +21,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.space.UISpaceSetting;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
@@ -54,7 +55,7 @@ public class UISpaceSettingPortlet extends UIPortletApplication {
    * @throws Exception
    */
   public void initData() throws Exception {
-    String spaceUrl = SpaceUtils.getSpaceUrl();
+    String spaceUrl = Utils.getSpaceUrlByContext();
     Space space  = spaceSrc.getSpaceByUrl(spaceUrl);
     if (space != null) {
       uiSpaceSetting.setValues(space);

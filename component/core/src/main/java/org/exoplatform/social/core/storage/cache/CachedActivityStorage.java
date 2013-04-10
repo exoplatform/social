@@ -66,7 +66,7 @@ public class CachedActivityStorage implements ActivityStorage {
 
   private final ActivityStorageImpl storage;
 
-  void clearCache() {
+  public void clearCache() {
 
     try {
       exoActivitiesCache.select(new ScopeCacheSelector<ListActivitiesKey, ListActivitiesData>());

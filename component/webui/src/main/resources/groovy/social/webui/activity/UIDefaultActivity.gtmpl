@@ -165,7 +165,7 @@
   <% uiform.begin() %>
   <div class="activityTimeLine pull-left">
 	<div class="activityAvatar avatarCircle">
-		<a title="$ownerName" href="$ownerUri">
+		<a  href="$ownerUri">
 		  <img alt="$ownerName" src="$ownerAvatar"/>
 		</a>
 	</div>
@@ -181,7 +181,7 @@
 					<a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="uiIconClose uiIconLightGray controllDelete" id="DeleteActivityButton${activity.id}"></a>
 				  <%}%>
 				<div class="author">
-					<a title="$ownerName" href="$ownerUri">$ownerName</a>                
+					<a  href="$ownerUri">$ownerName</a>                
 				</div>
 				<div class="dataInfor">
 					<span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;$activityPostedTime</span> 

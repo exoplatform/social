@@ -612,6 +612,10 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
       uiActivity.refresh();
       uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
@@ -622,6 +626,10 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
       uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       String isLikedStr = requestContext.getRequestParameter(OBJECTID);
@@ -635,6 +643,10 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
       uiActivity.refresh();
       String status = event.getRequestContext().getRequestParameter(OBJECTID);
       CommentStatus commentListStatus = null;
@@ -669,6 +681,10 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
       uiActivity.refresh();
       WebuiRequestContext requestContext = event.getRequestContext();
       UIFormTextAreaInput uiFormComment = uiActivity.getChild(UIFormTextAreaInput.class);
@@ -695,7 +711,11 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
-      Utils.getActivityManager().deleteActivity(uiActivity.getActivity().getId());
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
+      Utils.getActivityManager().deleteActivity(activityId);
       UIActivitiesContainer activitiesContainer = uiActivity.getParent();
       activitiesContainer.removeChildById(uiActivity.getId());
       activitiesContainer.removeActivity(uiActivity.getActivity());
@@ -713,6 +733,10 @@ public class BaseUIActivity extends UIForm {
     @Override
     public void execute(Event<BaseUIActivity> event) throws Exception {
       BaseUIActivity uiActivity = event.getSource();
+      String activityId = uiActivity.getActivity().getId();
+      if (uiActivity.isNoLongerExisting(activityId, event)) {
+        return;
+      }
       WebuiRequestContext requestContext = event.getRequestContext();
       Utils.getActivityManager().deleteComment(uiActivity.getActivity().getId(),
                                                requestContext.getRequestParameter(OBJECTID));
@@ -731,6 +755,18 @@ public class BaseUIActivity extends UIForm {
     }
   }
 
+  protected boolean isNoLongerExisting(String activityId, Event<BaseUIActivity> event) {
+    ExoSocialActivity existingActivity = Utils.getActivityManager().getActivity(activityId);
+    if (existingActivity == null) {
+      UIApplication uiApplication = event.getRequestContext().getUIApplication();
+      uiApplication.addMessage(new ApplicationMessage("BaseUIActivity.msg.info.Activity_No_Longer_Exist",
+                                                    null,
+                                                    ApplicationMessage.INFO));
+      return true;
+    }
+    return false;
+  }
+  
   /**
    * Allow child can be override this method to process I18N
    * @param activity

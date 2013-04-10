@@ -48,7 +48,7 @@
 
   def invitationReceivedLabel = _ctx.appRes(uicomponent.getId() + ".label.InvitationReceived")
    
-  if (uicomponent.isLoadAtEnd()) {
+  if (uicomponent.isNewOwner()) {
     uicomponent.init();
   }
 

@@ -31,9 +31,8 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 /**
  * LinkShareRestService: gets information from a provided link.<br />
  * POST: /rest/social/linkshare <br />
- * Created by The eXo Platform SAS
- * @author hoatle <hoatlevan at gmail dot com>
- * @since  Dec 29, 2009
+ * 
+ * @anchor LinkShareRestService
  */
 @Path("social/linkshare")
 public class LinkShareRestService implements ResourceContainer {
@@ -45,11 +44,35 @@ public class LinkShareRestService implements ResourceContainer {
   }
 
   /**
-   * gets linkShare
-   * @param link
-   * @param lang
-   * @return linkShare
+   * Gets link content by linkShare request as post data.
+   * 
+   * @param uriInfo The request URI information.
+   * @param format The response format type, for example: JSON, or XML.
+   * @param linkShareRequest The parameter passed to request.
+   * 
+   * @anchor LinkShareRestService.getLink
+   * 
+   * @return The response contains returned result.
+   * 
+   * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
+  @POST
+  @Path("show.{format}")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  public Response getLink(@Context UriInfo uriInfo,
+                          @PathParam("format") String format,
+                          LinkShareRequest linkShareRequest) throws Exception {
+    MediaType mediaType = Util.getMediaType(format);
+    if (linkShareRequest == null || !linkShareRequest.verify()) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    LinkShare linkShare = null;
+    linkShare = getLinkShare(linkShareRequest.getLink(), linkShareRequest.getLang());
+    return Util.getResponse(linkShare, uriInfo, mediaType, Response.Status.OK);
+  }
+  
   private LinkShare getLinkShare(String link, String lang) throws Exception {
     if (link == null || link.length() == 0) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -65,28 +88,5 @@ public class LinkShareRestService implements ResourceContainer {
       throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
     }
     return ls;
-  }
-
-  /**
-   * gets link content by posting with linkShare request as post data.
-   * @param uriInfo
-   * @param format
-   * @param linkShareRequest
-   * @return response
-   * @throws Exception
-   */
-  @POST
-  @Path("show.{format}")
-  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-  public Response getLink(@Context UriInfo uriInfo,
-                          @PathParam("format") String format,
-                          LinkShareRequest linkShareRequest) throws Exception {
-    MediaType mediaType = Util.getMediaType(format);
-    if (linkShareRequest == null || !linkShareRequest.verify()) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
-    }
-    LinkShare linkShare = null;
-    linkShare = getLinkShare(linkShareRequest.getLink(), linkShareRequest.getLang());
-    return Util.getResponse(linkShare, uriInfo, mediaType, Response.Status.OK);
   }
 }

@@ -53,7 +53,7 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
     String portalName = eXoContext.getPortalContainerName();
 
 
-    ListAccess<Space> la = spaceService.getVisibleSpacesWithListAccess(getCurrentUserName(), filter);
+    ListAccess<Space> la = spaceService.getUnifiedSearchSpacesWithListAccess(getCurrentUserName(), filter);
     
     //
     try {

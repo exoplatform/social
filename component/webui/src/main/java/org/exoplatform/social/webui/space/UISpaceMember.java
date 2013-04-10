@@ -140,9 +140,7 @@ public class UISpaceMember extends UIForm {
    * @throws Exception
    */
   public UISpaceMember() throws Exception {
-    addUIFormInput(new UIFormStringInput(USER, null, null)
-            .addValidator(MandatoryValidator.class)
-            .addValidator(ExpressionValidator.class, "^\\p{L}[\\p{L}\\d\\s._,-]+$", "UISpaceMember.msg.Invalid-char"));
+    addUIFormInput(new UIFormStringInput(USER, null, null).addValidator(MandatoryValidator.class));
     UIPopupWindow searchUserPopup = addChild(UIPopupWindow.class, "SearchUser", "SearchUser");
     searchUserPopup.setWindowSize(640, 0);
     iteratorPendingUsers = createUIComponent(UIPageIterator.class, null, iteratorPendingID);
@@ -622,7 +620,7 @@ public class UISpaceMember extends UIForm {
         String targetUser = rcontext.getRequestParameter(OBJECTID);
         SpaceService spaceService = uiSpaceMember.getSpaceService();
         Space space = spaceService.getSpaceById(uiSpaceMember.spaceId);
-
+        space.setEditor(Utils.getViewerRemoteId());
         boolean success = false;
         if (spaceService.isManager(space, targetUser))
         {

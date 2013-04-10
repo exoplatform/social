@@ -5,7 +5,9 @@
 				on('click', function() {
 					var uiForm = $(this).parents('.UIForm:first');
 					if (uiForm.length > 0) {
-						uiForm.submitForm(form.attr("id"), 'ChangeOption', true);					
+						var action = uiForm.find('.uiAction:first').find('a:first');
+						var link = String(action.attr('onclick')).replace('Create', 'ChangeOption');
+						eval(link);			
 					}				
 				});
 			

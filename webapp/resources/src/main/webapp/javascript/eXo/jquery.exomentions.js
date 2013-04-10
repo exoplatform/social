@@ -193,7 +193,7 @@
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery = '';
-    var cursor = '<div class="cursorText"></div>&nbsp;';
+    var cursor = '<div class="cursorText"></div>' + ((utils.isIE === false) ? '&nbsp;' : '');
     var currentSelection = {elm: null, offset : 0};
     var isBlockMenu = false;
     var isInput = false;
@@ -374,10 +374,9 @@
     }
 
     function setCaretPosition(inputField) {
-      if (inputField) {
+      if (inputField != null && inputField.length > 0) {
         var cursorText = inputField.find('.cursorText');
         if (inputField.val().length != 0) {
-
           var elm = inputField[0];
           var selection = getSelection();
           if (selection) {
@@ -396,17 +395,23 @@
 
     function setCaretSelection(elm) {
       try {
-        if(elm) {
+        if (elm) {
           elm.focus();
-          var range = document.createRange();
-          range.selectNode(elm);
-          range.selectNodeContents(elm);
-          
-          var selection = getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
+          if (document.selection) {
+            var range = document.selection.createRange();
+          } else {
+            var range = document.createRange();
+            range.selectNode(elm);
+            range.selectNodeContents(elm);
+
+            var selection = getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
         }
-      } catch (err) {log(err); }
+      } catch (err) {
+        log(err);
+      }
     }
 
     function addElmCaret(elm) {
@@ -425,7 +430,7 @@
         inputField.focus ();
         var val = inputField.value();
         // Create empty selection range
-        var oSel = document.selection.createRange ();
+        var oSel = document.selection.createRange();
    
         // Move selection start and end to 0 position
         oSel.moveStart ('character', -1 * val.length);
@@ -515,11 +520,11 @@
     }
 
     function onInputBoxInput(e) {
+			
       if(isInput) return;
       isInput = true;
       updateValues();
       updateMentionsCollection();
-
       inputBuffer = utils.replaceFirst(inputBuffer.join(''), ' ').split('');
       var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
       if (triggerCharIndex === 0) {
@@ -554,20 +559,15 @@
           typedValue = ' ';
         }
         inputBuffer.push(typedValue);
-        if (utils.isIE) {
-          //onInputBoxInput(e);
-        }
       }
       disabledPlaceholder();
     }
 
     function onInputBoxKeyDown(e) {
       isInput = false;
-      // Run without IE
-      if (String.fromCharCode(e.which || e.keyCode) === settings.triggerChar) {
-        //onInputBoxInput(e);
+      if (utils.isIE) {
+        elmInputBox.find('.cursorText').remove();
       }
-
       // 
       valueBeforMention = elmInputBox.value();
 
@@ -673,7 +673,6 @@
       var delta = valueBeforMention.length - currentValue.length;
       var isBackKey = (e.keyCode === KEY.BACKSPACE || e.keyCode === KEY.DELETE);
       var isReset = true;
-      
       if (delta > 1 && (isBlockMenu === true) || (isBlockMenu === false && delta == 1 && isBackKey)) {
         triggerOninputMention(valueBeforMention, currentValue);
         isReset = false;
@@ -686,7 +685,9 @@
             currentValue = insertCursorText(currentValue, indexChanged, true);
             elmInputBox.val(currentValue);
             autoSetKeyCode(elmInputBox);
-            setCaretPosition(elmInputBox);
+            if (utils.isIE === false) {
+              setCaretPosition(elmInputBox);
+            }
             isReset = false;
           }
         } else if(delta == 1) {
@@ -719,9 +720,10 @@
       
       if (e.keyCode === KEY.SPACE && 
           ((isBlockMenu === false) || 
-              (isReset && (elmAutocompleteList.find('li.msg').length > 0 ||inputBuffer.join().indexOf('  ') >= 0)))) {
+              (isReset && (elmAutocompleteList.find('li.msg').length > 0 || inputBuffer.join().indexOf('  ') >= 0)))) {
         resetBuffer();
       }
+      
     }
     
     function getIndexBufferChange(valueBeforMention, currentValue, buffer) {
@@ -776,16 +778,15 @@
     }
 
     function backspceBroswerFix(e) {
-      var selection = getSelection();
       if (utils.isFirefox) {
+				var selection = getSelection();
         var node = $(selection.focusNode);
         if (node.is('i') && node.hasClass('uiIconClose')) {
           node.trigger('click');
         }
       } else if (utils.isIE) {
-        var cRange = selection.createRange();
-        // log(cRange.parentElement());
-        // cRange.pasteHTML('text');
+        //var cRange = document.selection.createRange();
+        //var node = $(cRange.parentElement());
       }
     }
     
@@ -892,7 +893,6 @@
         }
       }
       
-      
       if (results && results.length > 0 && results != 'searching' && (query != '' || settings.firstShowAll)) {
         _.each(results, function(item, index) {
           var itemUid = _.uniqueId('mention_');
@@ -940,7 +940,7 @@
     }
 
     function doSearch(query) {
-      if ((query === '' || String(query) === 'undefined') && !settings.firstShowAll) {
+      if ((typeof query === 'undefined' || $.trim(query) === '') && !settings.firstShowAll) {
         populateDropdown('', null);
       } else if (query.length >= settings.minChars) {
         if (settings.cacheResult.hasUse) {
@@ -1139,8 +1139,10 @@
     function saveCaretPositionIE() {
       try {
         if($.browser.msie) {
-          var selection= getSelection();
-          var range = selection.createRange().duplicate();
+          var selection= document.selection;
+          var range = selection.createRange();
+          var node = range.parentElement();
+          var range = range.duplicate();
           var val = elmInputBox.value();
           range.moveEnd("character", val.length);
           var s = (range.text == "" ? val.length : val.lastIndexOf(range.text));
@@ -1154,7 +1156,7 @@
               var jEml = $(text);
               text = (jEml.length > 0) ? jEml.find('.ReplaceTextArea').html() : text;
             }
-            currentSelection.elm = null;
+            currentSelection.elm = node;
             if(text != null) {
               currentSelection.offset = text.length;
             } else {

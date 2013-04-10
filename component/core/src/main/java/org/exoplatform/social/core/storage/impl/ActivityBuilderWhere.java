@@ -467,9 +467,10 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
       public String make(JCRFilterLiteral filter) {
         List<Identity> identities = getOwners();
 
+        boolean first = true;
         //has relationship
         if (identities != null && identities.size() > 0) {
-          boolean first = true;
+          
           where.startGroup();
           for (Identity currentIdentity : identities) {
 
@@ -507,7 +508,11 @@ public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCR
           where.endGroup();
 
         }
-        where.and().equals(ActivityEntity.isComment, Boolean.FALSE);
+        if (first == false) {
+          where.and();
+        }
+        
+        where.equals(ActivityEntity.isComment, Boolean.FALSE);
 
         //
         where.and();

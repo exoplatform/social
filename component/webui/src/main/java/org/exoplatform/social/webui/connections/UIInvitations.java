@@ -83,7 +83,6 @@ public class UIInvitations extends UIContainer {
   private static final int RECEIVED_INVITATION_PER_PAGE = 45;
   
   private boolean loadAtEnd = false;
-  private boolean hasUpdated = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
@@ -92,6 +91,7 @@ public class UIInvitations extends UIContainer {
   private int peopleNum;
   private boolean hasPeopleTab;
   String selectedChar = null;
+  private Identity lastOwner = null;
   
   public boolean isHasPeopleTab() {
     return hasPeopleTab;
@@ -153,7 +153,6 @@ public class UIInvitations extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedIdentity(false);
       setLoadAtEnd(false);
       enableLoadNext = false;
       currentLoadIndex = 0;
@@ -162,7 +161,7 @@ public class UIInvitations extends UIContainer {
       List<Identity> excludedIdentityList = new ArrayList<Identity>();
       excludedIdentityList.add(Utils.getViewerIdentity());
       uiProfileUserSearch.getProfileFilter().setExcludedIdentityList(excludedIdentityList);
-      setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
+      //setPeopleList(loadPeople(currentLoadIndex, loadingCapacity));
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -219,26 +218,6 @@ public class UIInvitations extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one element is updated or not.
-   * 
-   * @return the hasUpdatedIdentity
-   * @since 1.2.2
-   */
-  public boolean isHasUpdatedIdentity() {
-    return hasUpdated;
-  }
-
-  /**
-   * Sets information that clarify one element is updated or not.
-   * 
-   * @param hasUpdatedIdentity the hasUpdatedIdentity to set
-   * @since 1.2.2
-   */
-  public void setHasUpdatedIdentity(boolean hasUpdatedIdentity) {
-    this.hasUpdated = hasUpdatedIdentity;
-  }
-
-  /**
    * Gets list of all type of people.
    * 
    * @return the peopleList
@@ -246,10 +225,7 @@ public class UIInvitations extends UIContainer {
    * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
-    if (isHasUpdatedIdentity()) {
-      setHasUpdatedIdentity(false);
-      setPeopleList(loadPeople(0, this.peopleList.size()));
-    }
+    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -307,22 +283,13 @@ public class UIInvitations extends UIContainer {
   public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
     this.peopleListAccess = peopleListAccess;
   }
-
+  
   /**
-   * Loads more people.
-   * 
+   * increase offset.
    * @throws Exception
-   * @since 1.2.2
    */
-  public void loadNext() throws Exception {
+  public void increaseOffset() throws Exception {
     currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getPeopleNum()) {
-      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
-      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                    .load(currentLoadIndex, loadingCapacity)));
-      currentPeopleList.addAll(loadedPeople);
-      setPeopleList(currentPeopleList);
-    }
   }
   
   /**
@@ -338,11 +305,11 @@ public class UIInvitations extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-    Identity owner = Utils.getOwnerIdentity();
+    lastOwner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
-    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getIncomingByFilter(owner, filter);
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getIncomingByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
     setPeopleNum(listAccess.getSize());
@@ -351,6 +318,16 @@ public class UIInvitations extends UIContainer {
 
     return Arrays.asList(identities);
 
+  }
+  
+  /**
+   * Checks need to refresh relationship list or not.
+   * @return
+   */
+  protected boolean isNewOwner() {
+    Identity current = Utils.getOwnerIdentity();
+    if (this.lastOwner == null || current == null) return false;
+    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
   }
   
   /**
@@ -364,7 +341,7 @@ public class UIInvitations extends UIContainer {
     public void execute(Event<UIInvitations> event) throws Exception {
       UIInvitations uiInvitations = event.getSource();
       if (uiInvitations.currentLoadIndex < uiInvitations.peopleNum) {
-        uiInvitations.loadNext();
+        uiInvitations.increaseOffset();
       } else {
         uiInvitations.setEnableLoadNext(false);
       }
@@ -394,8 +371,8 @@ public class UIInvitations extends UIContainer {
         uiApplication.addMessage(new ApplicationMessage(INVITATION_REVOKED_INFO, null, ApplicationMessage.INFO));
         return;
       }
-      uiInvitations.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().confirm(invitedIdentity, invitingIdentity);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }
 
@@ -422,8 +399,8 @@ public class UIInvitations extends UIContainer {
         return;
       }
       
-      uiInvitations.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().deny(invitedIdentity, invitingIdentity);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiInvitations);
     }
   }
 

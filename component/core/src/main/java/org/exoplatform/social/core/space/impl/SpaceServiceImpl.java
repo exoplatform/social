@@ -287,6 +287,13 @@ public class SpaceServiceImpl implements SpaceService {
   /**
    * {@inheritDoc}
    */
+  public SpaceListAccess getUnifiedSearchSpacesWithListAccess(String userId, SpaceFilter spaceFilter) {
+    return new SpaceListAccess(this.spaceStorage, userId, spaceFilter,SpaceListAccess.Type.UNIFIED_SEARCH);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public List<Space> getEditableSpaces(String userId)  throws SpaceException {
     try {
       return Arrays.asList(this.getSettingableSpaces(userId).load(OFFSET, LIMIT));

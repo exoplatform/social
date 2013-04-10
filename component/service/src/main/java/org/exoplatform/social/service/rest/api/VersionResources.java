@@ -40,7 +40,8 @@ import org.exoplatform.social.service.rest.api.models.Versions;
  * <p>The version <tt>public</tt> rest service to gets the current latest rest service version and supported
  * versions.</p> <p> Url template: <tt>{rest_context_name}/api/social/version</tt> </p>
  *
- * @author <a href="http://hoatle.net">hoatle (hoatlevan at gmail dot com)</a>
+ * @anchor VersionResources
+ * 
  * @since Jun 9, 2011.
  */
 @Path("api/social/version")
@@ -61,18 +62,21 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Get the latest eXo Social REST API version. This version number should be used as the latest and stable
+   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable
    * version that is considered to include all new features and updates of eXo Social REST services.
    *
    * @param uriInfo The URI information.
    * @param format  The expected returned format.
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Versionlastest.Get
+   * 
+   * @anchor VersionResources.getLatestVersion
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/api/social/version/latest.json
    * or
    * GET: http://localhost:8080/rest/api/social/version/latest.xml
    *{code}
+   *
    * @response
    *{code:json}
    * {"version": "v1-alpha3"}
@@ -81,7 +85,10 @@ public class VersionResources implements ResourceContainer {
    *{code:xml}
    * <version>v1-alpha3</version>
    *{code}
+   *
    * @return response of the request, the type bases on the format param
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("latest.{format}")
@@ -97,20 +104,23 @@ public class VersionResources implements ResourceContainer {
 
 
   /**
-   * Get eXo Social REST service versions that are supported. This is for backward compatibility. If a client
+   * Gets eXo Social REST service versions that are supported. This is for backward compatibility. If a client
    * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
    * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
    * {{{[v1, v2, v1-beta3]}}}.
    *
    * @param uriInfo The URI information.
    * @param format  The expected returned format.
-   * @anchor SOCref.DevelopersReferences.RestService_APIs_v1alpha3.VersionResources.Get
+   * 
+   * @anchor VersionResources.getSupportedVersions
+   * 
    * @request
    *{code}
    * GET: http://localhost:8080/rest/api/social/version/supported.json
    * or
    * GET: http://localhost:8080/rest/api/social/version/supported.xml
    *{code}
+   *
    * @response
    *{code:json}
    * {"versions": ["v1-alpha3"]}
@@ -121,7 +131,10 @@ public class VersionResources implements ResourceContainer {
    *   <version>v1-alpha3</version>
    * </versions>
    *{code}
+   *
    * @return response of the request, the type bases on the format param
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("supported.{format}")

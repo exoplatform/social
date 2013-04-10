@@ -44,7 +44,7 @@
   
   def peopleIdx = 0
   
-  if (uicomponent.isLoadAtEnd()) {
+  if (uicomponent.isNewOwner()) {
     uicomponent.init();
   }
 

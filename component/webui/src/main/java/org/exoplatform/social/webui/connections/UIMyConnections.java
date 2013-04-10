@@ -85,7 +85,6 @@ public class UIMyConnections extends UIContainer {
   private static final int MY_CONNECTION_PER_PAGE = 45;
   
   private boolean loadAtEnd = false;
-  private boolean hasUpdated = false;
   private int currentLoadIndex;
   private boolean enableLoadNext;
   private int loadingCapacity;
@@ -94,6 +93,7 @@ public class UIMyConnections extends UIContainer {
   private int peopleNum;
   private boolean hasPeopleTab;
   String selectedChar = null;
+  private Identity lastOwner = null;
   
   public boolean isHasPeopleTab() {
     return hasPeopleTab;
@@ -161,7 +161,6 @@ public class UIMyConnections extends UIContainer {
    */
   public void init() {
     try {
-      setHasUpdatedIdentity(false);
       setLoadAtEnd(false);
       enableLoadNext = false;
       currentLoadIndex = 0;
@@ -232,26 +231,6 @@ public class UIMyConnections extends UIContainer {
   }
 
   /**
-   * Gets information that clarify one element is updated or not.
-   * 
-   * @return the hasUpdatedIdentity
-   * @since 1.2.2
-   */
-  public boolean isHasUpdatedIdentity() {
-    return hasUpdated;
-  }
-
-  /**
-   * Sets information that clarify one element is updated or not.
-   * 
-   * @param hasUpdatedIdentity the hasUpdatedIdentity to set
-   * @since 1.2.2
-   */
-  public void setHasUpdatedIdentity(boolean hasUpdatedIdentity) {
-    this.hasUpdated = hasUpdatedIdentity;
-  }
-
-  /**
    * Gets list of all type of people.
    * 
    * @return the peopleList
@@ -259,10 +238,7 @@ public class UIMyConnections extends UIContainer {
    * @since 1.2.2
    */
   public List<Identity> getPeopleList() throws Exception {
-    if (isHasUpdatedIdentity()) {
-      setHasUpdatedIdentity(false);
-      setPeopleList(loadPeople(0, this.peopleList.size()));
-    }
+    this.peopleList = loadPeople(0, currentLoadIndex + loadingCapacity);
     
     int realPeopleListSize = this.peopleList.size();
 
@@ -321,22 +297,13 @@ public class UIMyConnections extends UIContainer {
   public void setPeopleListAccess(ListAccess<Identity> peopleListAccess) {
     this.peopleListAccess = peopleListAccess;
   }
-
+  
   /**
-   * Loads more people.
-   * 
+   * increase offset.
    * @throws Exception
-   * @since 1.2.2
    */
-  public void loadNext() throws Exception {
+  public void increaseOffset() throws Exception {
     currentLoadIndex += loadingCapacity;
-    if (currentLoadIndex <= getPeopleNum()) {
-      List<Identity> currentPeopleList = new ArrayList<Identity>(this.peopleList);
-      List<Identity> loadedPeople = new ArrayList<Identity>(Arrays.asList(getPeopleListAccess()
-                    .load(currentLoadIndex, loadingCapacity)));
-      currentPeopleList.addAll(loadedPeople);
-      setPeopleList(currentPeopleList);
-    }
   }
   
   /**
@@ -352,11 +319,11 @@ public class UIMyConnections extends UIContainer {
   
   private List<Identity> loadPeople(int index, int length) throws Exception {
 
-    Identity owner = Utils.getOwnerIdentity();
+    lastOwner = Utils.getOwnerIdentity();
 
     ProfileFilter filter = uiProfileUserSearch.getProfileFilter();
 
-    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(owner, filter);
+    ListAccess<Identity> listAccess = Utils.getRelationshipManager().getConnectionsByFilter(lastOwner, filter);
     Identity[] identities = listAccess.load(index, length);
 
     setPeopleNum(listAccess.getSize());
@@ -365,6 +332,16 @@ public class UIMyConnections extends UIContainer {
 
     return Arrays.asList(identities);
 
+  }
+  
+  /**
+   * Checks need to refresh relationship list or not.
+   * @return
+   */
+  protected boolean isNewOwner() {
+    Identity current = Utils.getOwnerIdentity();
+    if (this.lastOwner == null || current == null) return false;
+    return !this.lastOwner.getRemoteId().equals(current.getRemoteId());
   }
   
   /**
@@ -378,7 +355,7 @@ public class UIMyConnections extends UIContainer {
     public void execute(Event<UIMyConnections> event) throws Exception {
       UIMyConnections uiMyConnections = event.getSource();
       if (uiMyConnections.currentLoadIndex < uiMyConnections.peopleNum) {
-        uiMyConnections.loadNext();
+        uiMyConnections.increaseOffset();
       } else {
         uiMyConnections.setEnableLoadNext(false);
       }
@@ -408,8 +385,8 @@ public class UIMyConnections extends UIContainer {
         return;
       }
       
-      uiMyConnections.setHasUpdatedIdentity(true);
       Utils.getRelationshipManager().delete(relationship);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiMyConnections);
     }
   }
 

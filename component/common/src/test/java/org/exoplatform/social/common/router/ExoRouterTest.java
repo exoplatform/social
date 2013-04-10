@@ -86,6 +86,27 @@ public class ExoRouterTest extends AbstractCommonTest {
       put("streamOwnerId","mary");
     }});
     
+    //
+    route = ExoRouter.route("/connections/all-people/demo");
+    
+    assertRouter(route, "connections.network.show", new HashMap<String,String>(){{
+      put("streamOwnerId","demo");
+    }});
+    
+    //
+    route = ExoRouter.route("/connections/recievedIvitations/root");
+    
+    assertRouter(route, "connections.network.show", new HashMap<String,String>(){{
+      put("streamOwnerId","root");
+    }});
+    
+    //
+    route = ExoRouter.route("/connections/pendingRequests/john.vu");
+    
+    assertRouter(route, "connections.network.show", new HashMap<String,String>(){{
+      put("streamOwnerId","john.vu");
+    }});
+    
   }
   
   public void testRouterForSpaceAccess() throws Exception {

@@ -34,11 +34,12 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
- * IdentityRestService.java
- * gets identityId by username
- * @author     hoatle <hoatlevan at gmail dot com>
- * @since      Dec 29, 2009
- * @copyright  eXo Platform SAS
+ * The class <code>IdentityRestService</code> provides API to work with identity.
+ * Url template: <tt>{rest_context_name}/social/identity/{username}/id</tt>
+ * <br />
+ * GET: /{rest_context_name}/social/identity/{username}/id/show.{format}
+ * 
+ * @anchor IdentityRestService
  */
 @Path("{portalName}/social/identity/{username}/id")
 public class IdentityRestService implements ResourceContainer {
@@ -49,10 +50,18 @@ public class IdentityRestService implements ResourceContainer {
   public IdentityRestService() {}
 
   /**
-   * gets identity by username and return by json format
-   * @param username
-   * @return UserId
+   * Gets identity by user's name and return in json format.
+   * 
+   * @param uriInfo The request URI information.
+   * @param username The name of target user.
+   * 
+   * @anchor IdentityRestService.getId
+   * 
+   * @return UserId The information of provided user.
+   * 
    * @throws Exception
+   * 
+   * @LevelAPI Platform
    */
   @GET
   @Path("show.json")

@@ -38,6 +38,7 @@ import org.exoplatform.social.core.profile.ProfileListener;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.webui.exception.MessageException;
 
 /**
  * Class IdentityManagerImpl implements IdentityManager without caching.
@@ -124,7 +125,7 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public void updateProfile(Profile existingProfile) {
+  public void updateProfile(Profile existingProfile) throws MessageException {
     identityStorage.updateProfile(existingProfile);
     broadcastUpdateProfileEvent(existingProfile);
     this.getIdentityProvider(existingProfile.getIdentity().getProviderId()).onUpdateProfile(existingProfile);
@@ -389,7 +390,7 @@ public class IdentityManagerImpl implements IdentityManager {
   /**
    * {@inheritDoc}
    */
-  public void updateAvatar(Profile p) {
+  public void updateAvatar(Profile p) throws MessageException {
     updateProfile(p);
   }
 

@@ -62,7 +62,7 @@
                   </entry>
                   <entry>
                     <key><string>connections.network.show</string></key>
-                    <value><string>/connections/network/{streamOwnerId}</string></value>
+                    <value><string>/connections/{relationshipStatus}/{streamOwnerId}</string></value>
                   </entry>
                   <entry>
                     <key><string>space.access</string></key>

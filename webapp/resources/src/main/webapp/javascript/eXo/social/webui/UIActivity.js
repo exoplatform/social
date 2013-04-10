@@ -85,57 +85,29 @@ var UIActivity = {
     }
     
     var commentLinkEl = $("#" + UIActivity.commentLinkId);
-        if (commentLinkEl.length > 0) {
-        //event handlers
-        commentLinkEl.on('click', function (evt) {
-	        var commentForms = $("[id^='CommentFormBlock']");
-	        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
-	        var thiscommentBlockId = 'CommentFormBlock' + currentActivityId;
-	            
-	        var inputContainer = $('#InputContainer' + currentActivityId);
-	        inputContainer.fadeToggle('fast', function () {
-	            var commentInputBox = $('#DisplayCommentTextarea' + currentActivityId);
-	            commentInputBox.focus();
-	        });
-                 
-        });
-        
-      //
-      var commentTextareas = $("[id^='CommentTextarea']");
-      $.each(commentTextareas, function(idx, el) {
-        var currentActivityId = $(this).attr('id').replace('CommentTextarea', '');
-        $(el).on('focus', function(evt){
-          $(this).css('height', UIActivity.FOCUS_COMMENT_TEXT_AREA_HEIGHT);
-          $(this).css('color', UIActivity.FOCUS_COMMENT_TEXT_AREA_COLOR);
-          if ($(this).val() === UIActivity.inputWriteAComment) {
-            $(this).val('');
+    if (commentLinkEl.length > 0) {
+      commentLinkEl.off('click').on('click', function (evt) {
+        var currentActivityId = $(this).attr('id').replace('CommentLink', '');
+        var inputContainer = $('#InputContainer' + currentActivityId).fadeToggle('fast', function () {
+          var thiz = $(this);
+          if(thiz.css('display') === 'block') {
+            var blockInput = thiz.parents('.uiActivityStream:first').find('.inputContainerShow');
+            if(blockInput.length > 0) {
+              blockInput.removeClass('inputContainerShow').hide();
+            }
+            thiz.addClass('inputContainerShow');
+            thiz.find('div.replaceTextArea:first').focus();
+
+            var ctTop = ($(window).height()- thiz.height())/2;
+            var nTop = thiz.offset().top - ctTop - 20;
+            nTop = (nTop > 0) ? nTop : 0;
+            
+            $('html, body').animate({scrollTop:nTop}, 'slow');
+          } else {
+            thiz.removeClass('inputContainerShow')
           }
-          $("#CommentButton" + currentActivityId).removeAttr("disabled");
-        });
-        
-        $(el).on('blur', function(evt){
-	        if ($(this).val() === '') {
-	          $("#CommentButton" + currentActivityId).attr("disabled", "disabled");
-	          $(this).val(UIActivity.inputWriteAComment);
-	
-	          $(this).css('height', UIActivity.DEFAULT_COMMENT_TEXT_AREA_HEIGHT);
-	          $(this).css('color', UIActivity.DEFAULT_COMMENT_TEXT_AREA_COLOR);
-	        }
         });
       });
-      
-      if (UIActivity.commentFormDisplayed) {
-        $("#" + UIActivity.commentFormBlockId).removeAttr("disabled");
-        UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
-        if (UIActivity.commentFormFocused) {
-          UIActivity.commentTextareaEl.focus();
-        }
-      } else {
-        $("#" + UIActivity.commentFormBlockId).attr("disabled", "disabled");
-        UIActivity.commentTextareaEl.val(UIActivity.inputWriteAComment);
-      }
-    } else {
-      $("#" + UIActivity.commentFormBlockId).attr("disabled", "disabled");
     }
     
 	  //
@@ -161,44 +133,53 @@ var UIActivity = {
   
     var actionDeletes = $('a.controllDelete');
     if (actionDeletes.length > 0) {
-      $.each(actionDeletes,
-        function(id, elm) {
-          $(elm).off('click').on('click',
-          function() {
-            var jElm = $(this);
-            var idElm = this.id;
-            var confirmText = jElm.attr('data-confirm');
-            if (confirm(confirmText)) {
-              if (idElm.indexOf('Activity') > 0) { // remove activity
-                var idActivty = idElm.replace('DeleteActivityButton', '')
-                $('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
-                  {
-                    height : '1px',
-                    opacity : '0'
-                  }, 500,
-                  function() {
-                    $(this).removeClass('activityStream');
-                    window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-                  });
-              } else if (idElm.indexOf('Comment') > 0) { // remove comment
-                var idComment = idElm.replace('DeleteCommentButton', '')
-                $('#commentContainer' + idComment).css('overflow', 'hidden').animate(
-                  {
-                    height : '1px',
-                    opacity : '0.1'
-                  }, 300,
-                  function() {
-                    $(this).hide();
-                    window.eval(jElm.attr('data-delete').replace('javascript:', ''));
-                  });
-              }
-            }
-          })
-        }
-      );
+      actionDeletes.off('click').on('click',
+				function(e) {
+					$('.currentDeleteActivity:first').removeClass('currentDeleteActivity');
+					var jElm = $(this);
+					jElm.addClass('currentDeleteActivity');
+					var id = jElm.attr('id');
+					if(id == null || id.length == 0) {
+					  $('#SocialCurrentConfirm').removeAttr('id');
+						id = "SocialCurrentConfirm";
+						jElm.attr('id', id)
+					}
+					var confirmText = jElm.attr('data-confirm');
+					eXo.social.PopupConfirmation.confirm(id, [{action: UIActivity.removeActivity, label : 'OK'}], 'Confirmation', confirmText, 'Close');
+				}
+			);
     }
+	},
+	removeActivity : function () {
+		var jElm = $('.currentDeleteActivity:first');
+		var idElm = jElm.attr('id');
+		jElm.removeClass('currentDeleteActivity');
+		if (idElm.indexOf('Activity') > 0) { // remove activity
+			var idActivty = idElm.replace('DeleteActivityButton', '')
+			$('#activityContainer' + idActivty).css('overflow', 'hidden').animate(
+				{
+					height : '1px',
+					opacity : '0'
+				}, 500,
+				function() {
+					$(this).removeClass('activityStream');
+					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+				});
+		} else if (idElm.indexOf('Comment') > 0) { // remove comment
+			var idComment = idElm.replace('DeleteCommentButton', '')
+			$('#commentContainer' + idComment).css('overflow', 'hidden')
+			.animate(
+				{
+					height : '1px',
+					opacity : '0.1'
+				}, 300,
+				function() {
+					$(this).hide();
+					window.eval(jElm.attr('data-delete').replace('javascript:', ''));
+				}
+			);
+		}
 	}
-
 };
 
 return UIActivity;

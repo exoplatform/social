@@ -1,4 +1,4 @@
-(function (eXo) {
+(function (eXo, $, uiMaskLayer, popupWindow) {
   
   if(!String.prototype.trim) {
     String.prototype.trim = function () {
@@ -9,15 +9,15 @@
   eXo.social = eXo.social || {};
   
   if (eXo.env) {
-	  var portal = eXo.env.portal
-	  
-	  eXo.social.portal = {
-	    rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
-	    portalName : (portal.portalName) ? portal.portalName : 'classic',
-	    context : (portal.context) ? portal.context : '/socialdemo',
-	    accessMode : (portal.accessMode) ? portal.accessMode : 'public',
-	    userName : (portal.userName) ? portal.userName : ''
-	  };
+    var portal = eXo.env.portal
+    
+    eXo.social.portal = {
+      rest : (portal.rest) ? portal.rest : 'rest-socialdemo',
+      portalName : (portal.portalName) ? portal.portalName : 'classic',
+      context : (portal.context) ? portal.context : '/socialdemo',
+      accessMode : (portal.accessMode) ? portal.accessMode : 'public',
+      userName : (portal.userName) ? portal.userName : ''
+    };
   }
   eXo.social.I18n = eXo.social.I18n || {};
   eXo.social.I18n.mentions = eXo.social.I18n.mentions || {
@@ -140,10 +140,116 @@
         var browser = searchString(this.dataBrowser) || null; 
         
         return browser;
+    },
+    setCookies : function(name, value, expiredays) {
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + expiredays);
+      expiredays = ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+      var path = ';path=/portal';
+      document.cookie = name + "=" + escape(value) + expiredays + path;
+    }
+    
+  };
+  
+
+  PopupConfirmation = {
+    actions : [],
+    title : '',
+    message : '',
+    makeTemplate : function() {
+      $('#UISocialPopupConfirmation').remove();
+      var popup = $('#UIPopupWindow').clone();
+      popup.attr('id', 'UISocialPopupConfirmation');
+      popup.find('a.uiIconClose').removeAttr('onclick').on('click', PopupConfirmation.hiden);
+      var popupContent = popup.find('.popupContent');
+      var ul = $('<ul class="singleMessage popupMessage resizable"><ul>');
+      ul.append($('<li><span class="confirmationIcon contentMessage"></span></li>'));
+      popupContent.append(ul);
+      popupContent.append($('<div class="uiAction uiActionBorder"></div>'));
+      return popup;
+    },
+  
+    confirm : function(id, actions, title, message, closeLabel) {
+      SocialUtils.setCookies('currentConfirm', id, 300);
+      var popup = PopupConfirmation.makeTemplate();
+      popup.find('.popupTitle').html(title);
+      popup.find('.contentMessage').html(message);
+      var uiAction = popup.find('.uiAction');
+      for ( var i = 0; i < actions.length; ++i) {
+        uiAction.append(PopupConfirmation.addAction(actions[i].action, actions[i].label));
+      }
+      uiAction.append(PopupConfirmation.addAction(null, closeLabel));
+  
+      //
+      PopupConfirmation.show(popup);
+    },
+  
+    addAction : function(action, label) {
+      var btn = $('<a href="javascript:void(0);" class="btn">' + label + '</a>');
+      btn.on('click', PopupConfirmation.hiden);
+      if (typeof action === 'function') {
+        btn.on('mouseup', action);
+        btn.html(label);
+      } else if (action !== null) {
+        btn.attr('onclick', action)
+      }
+      return btn;
+    },
+  
+    show : function(popup) {
+      $('#UIPortalApplication').append(popup);
+      popup.css({
+        height : 'auto',
+        width : '400px',
+        visibility : 'hidden',
+        display : 'block'
+      });
+      var pHeight = popup.height();
+      var top = ($(window).height() - pHeight) / 2 - 30;
+      top = ((top > 10) ? top : 10) + $(window).scrollTop();
+      var left = ($(window).width() - popup.width()) / 2;
+      popup.css({
+        'top' : top + 'px',
+        'left' : left + 'px',
+        'visibility' : 'visible',
+        'overflow' : 'hidden'
+      });
+      popup.animate({ height : pHeight + 'px' }, 500, function() { });
+      uiMaskLayer.createMask(popup[0].parentNode, popup[0], 1);
+      popupWindow.initDND(popup.find('.popupTitle')[0], popup[0]);
+    },
+  
+    hiden : function(e) {
+      var thiz = $(this);
+      var popup = thiz.parents('#UISocialPopupConfirmation')
+      if (popup.length > 0) {
+        uiMaskLayer.removeMask(popup[0].previousSibling);
+        popup.animate({
+          height : '0px'
+        }, 300, function() {
+          $(this).remove();
+        });
+      }
+      SocialUtils.setCookies('currentConfirm', '', -300);
+    },
+
+    executeCurrentConfirm : function() {
+      var currentConfirm = eXo.core.Browser.getCookie('currentConfirm');
+      if (currentConfirm && String(currentConfirm).length > 0) {
+        var jcurrentConfirm = $('#' + currentConfirm);
+        if (jcurrentConfirm.length > 0) {
+          if(currentConfirm === 'SocialCurrentConfirm') {
+            jcurrentConfirm.removeAttr('id');
+          }
+          jcurrentConfirm.trigger('click');
+        }
+      }
     }
   };
 
+  setTimeout(PopupConfirmation.executeCurrentConfirm, 220);
+  eXo.social.PopupConfirmation = eXo.social.PopupConfirmation || PopupConfirmation;
   eXo.social.SocialUtil = SocialUtils;
   return SocialUtils;
 
-})(window.eXo);
+})(window.eXo, gj, uiMaskLayer, popupWindow);

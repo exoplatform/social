@@ -87,7 +87,7 @@ public class UIDefaultActivityComposer extends UIActivityComposer {
       Utils.getActivityManager().saveActivityNoReturn(ownerIdentity, activity);
 
       //
-      uiUserActivitiesDisplay.setPostActivity(true);
+      //uiUserActivitiesDisplay.setPostActivity(true);
 
       if (uiUserActivitiesDisplay.getSelectedDisplayMode() == DisplayMode.MY_SPACE) {
         uiUserActivitiesDisplay.setSelectedDisplayMode(DisplayMode.ALL_ACTIVITIES);
