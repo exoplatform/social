@@ -205,8 +205,8 @@
 		<div class="uiBox roundedBottom introBox contentShare">	
 			<div class="clearfix">
 				<div class="pull-left">					
-					<a  href="$ownerUri"  data-placement="bottom" rel="tooltip">
-						  <img  src="$ownerAvatar" alt="$ownerName" />
+					<a href="$ownerUri" class="avatarXMedium">
+						  <img src="$ownerAvatar" alt="$ownerName" />
 					</a>
 				</div>
 				<div class="text">
