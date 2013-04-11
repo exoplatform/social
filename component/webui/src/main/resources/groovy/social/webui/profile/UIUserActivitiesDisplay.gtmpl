@@ -197,10 +197,12 @@
 	    <% } %>
       <% } %>
     -->
+    <% if (hasActivities) { %>
     <div class="activityStreamStatus pull-left">
       <div class="arrowBottom"></div>
-        <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
-      </div>
+      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+    </div>
+    <% } %>
   </div>
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
