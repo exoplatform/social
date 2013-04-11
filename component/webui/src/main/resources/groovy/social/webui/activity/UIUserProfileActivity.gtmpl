@@ -200,7 +200,7 @@
 			<div class="uiBox roundedBottom introBox userProfileShare">	
 				<div class="clearfix">
 					<div class="pull-left">
-						<a  href="$ownerUri">
+						<a href="$ownerUri" class="avatarXMedium">
 							<img alt="$ownerName" src="$ownerAvatar"/>
 						</a>
 					</div>
