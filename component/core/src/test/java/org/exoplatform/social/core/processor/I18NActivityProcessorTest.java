@@ -228,19 +228,29 @@ public class I18NActivityProcessorTest extends TestCase {
     activityKeyTypeMapping.put("add_topic", "add_topic");
     activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
     activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
-    activityKeyTypeMapping.put("test_single_qoute", "FakeResourceBundle.test_single_qoute");
+    activityKeyTypeMapping.put("test_single_quote", "FakeResourceBundle.test_single_quote");
+    activityKeyTypeMapping.put("test_three_quote", "FakeResourceBundle.test_three_quote");
     initActivityResourceBundlePlugin(activityKeyTypeMapping);
     i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
 
-    final String title = "I'm connected mary";
+    String title = "I'm connected mary";
     ExoSocialActivity activity = createActivity(title);
-    I18NActivityUtils.addResourceKey(activity, "test_single_qoute", "mary");
+    I18NActivityUtils.addResourceKey(activity, "test_single_quote", "mary");
     
     Locale enLocale = new Locale("en");
 
     ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
 
     assertEquals("I'm connected to mary", newActivity.getTitle());
+    
+    //
+    title = "I'm connected 'mary'";
+    activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "test_three_quote", "mary");
+    
+    //
+    newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+    assertEquals("I'm connected to 'mary'", newActivity.getTitle());
 
   }
 

@@ -69,13 +69,9 @@ public class ResourceBundleUtilTest extends TestCase {
     assertEquals("output must be: " + expected, expected, output);
 
     //NOTICE: the ' must be '' as following this bug report: http://bugs.sun.com/view_bug.do?bug_id=4839037
-    input = "L'espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
     List<String> listArguments = new ArrayList<String> (2);
     listArguments.add("old display name");
     listArguments.add("new display name");
-    output = ResourceBundleUtil.replaceArguments(input, listArguments);
-    expected = "Lespace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
-    assertEquals(expected, output);
 
     input = "L''espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
     output = ResourceBundleUtil.replaceArguments(input, listArguments);
@@ -114,6 +110,43 @@ public class ResourceBundleUtilTest extends TestCase {
     expected = "L'espace <strong>{0}</strong> a été renommé à <strong>{1}</strong>.";
     assertEquals(expected, output);
 
+  }
+  
+  public void testProcessSingleQuote() throws Exception {
+    String input = "I'm connected with {0}";
+    String output = ResourceBundleUtil.processSingleQuote(input);
+    String expected = "I''m connected with {0}";
+    assertEquals(expected, output);
+    
+    //
+    input = "I''m connected with {0}";
+    output = ResourceBundleUtil.processSingleQuote(input);
+    expected = "I''m connected with {0}";
+    assertEquals(expected, output);
+    
+    //
+    input = "I'''m connected with {0}";
+    output = ResourceBundleUtil.processSingleQuote(input);
+    expected = "I''m connected with {0}";
+    assertEquals(expected, output);
+    
+    //
+    input = "I''''m connected with {0}";
+    output = ResourceBundleUtil.processSingleQuote(input);
+    expected = "I''m connected with {0}";
+    assertEquals(expected, output);
+    
+    input = "I'm connected with {0}";
+    String[] arguments = new String[] {"mary"};
+    output = ResourceBundleUtil.replaceArguments(input, arguments);
+    expected = "I'm connected with mary";
+    assertEquals(expected, output);
+    
+    input = "I'm connected with '{0}'";
+    arguments = new String[] {"mary"};
+    output = ResourceBundleUtil.replaceArguments(input, arguments);
+    expected = "I'm connected with 'mary'";
+    assertEquals(expected, output);
   }
 
 }
