@@ -37,9 +37,6 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 import org.exoplatform.webui.organization.OrganizationUtils;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform October 2, 2009
- */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/UISocialLogoPortlet.gtmpl"

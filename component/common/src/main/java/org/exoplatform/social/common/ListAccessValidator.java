@@ -19,8 +19,6 @@ package org.exoplatform.social.common;
 /**
  * Validates input information of list access.
  * 
- * Author : hanhvq@gmail.com
- * Mar 22, 2011
  * @since 1.2.0-GA  
  */
 public class ListAccessValidator {

@@ -34,13 +34,6 @@ import org.exoplatform.webui.core.UITabPane;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-/**
- * {@link UISpaceSetting} used to manage space info, permission and members. <br />
- * Created by The eXo Platform SARL
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Sep 12, 2008
- */
 @ComponentConfigs({
   @ComponentConfig(
     template = "classpath:groovy/social/webui/space/UISpaceSetting.gtmpl"

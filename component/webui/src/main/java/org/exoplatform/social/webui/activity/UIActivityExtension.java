@@ -18,12 +18,6 @@ package org.exoplatform.social.webui.activity;
 
 import org.exoplatform.webui.ext.UIExtension;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
- */
 public class UIActivityExtension extends UIExtension{
   private String activityBuiderClass;
 

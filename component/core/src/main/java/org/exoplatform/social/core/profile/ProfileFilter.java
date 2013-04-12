@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.profile;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Sep 15, 2009
- */
 
 import java.util.ArrayList;
 import java.util.List;

@@ -75,9 +75,6 @@ import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 import org.exoplatform.webui.form.validator.Validator;
 
-/**
- * Author : Dang Van Minh, Pham Tuan minhdv81@yahoo.com Jun 14, 2006
- */
 public class UIPageNodeForm extends UIFormTabPane {
 
   private TreeNode                     pageNode_;

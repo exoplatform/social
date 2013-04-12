@@ -26,18 +26,6 @@ import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
-/**
- * This UI is used in UIAddSpaceForm. <br />
- * Setting variables: <br />
- * - Name <br />
- * - Description <br />
- * <p/>
- * Created by The eXo Platform SAS
- *
- * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
- * @since Jul 1, 2009
- */
-
 public class UISpaceSettings extends UIFormInputSet {
   private final String SPACE_DISPLAY_NAME             = "displayName";
 

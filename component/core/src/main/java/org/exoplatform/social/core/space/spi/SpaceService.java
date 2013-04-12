@@ -665,7 +665,7 @@ public interface SpaceService {
   /**
    * Renames a space by identity who has right as super admin role
    * 
-   * @remoteId who made rename space
+   * @param remoteId who made rename space
    * @param space the existing space
    * @param newDisplayName  new display name
    * @throws SpaceException
@@ -844,9 +844,9 @@ public interface SpaceService {
   /**
    * Checks whether a user is the only leader of a space or not.
    *
-   * @param spaceId
-   * @param userId
-   * @return
+   * @param spaceId Id of space
+   * @param userId Id of user (remoteId)
+   * @return True if user is the last leader of space.
    * @throws SpaceException
    * @LevelAPI Provisional
    * @deprecated Use {@link #isOnlyManager(org.exoplatform.social.core.space.model.Space, String)} instead.
@@ -858,8 +858,8 @@ public interface SpaceService {
   /**
    * Checks whether a user is a space's member or not.
    *
-   * @param spaceId
-   * @param userId
+   * @param spaceId Id of space
+   * @param userId Id of user (remoteId)
    * @return true if that user is a member; otherwise,false
    * @throws SpaceException
    * @LevelAPI Provisional
@@ -872,9 +872,10 @@ public interface SpaceService {
   /**
    * Checks if a user can access a space or not.
    * If the user is root or the space's member, return true
-   * @param spaceId
-   * @param userId
-   * @return
+   * 
+   * @param spaceId Id of space
+   * @param userId Id of user (remoteId)
+   * @return True if user has access permission and vice-versa
    * @throws SpaceException
    * @LevelAPI Provisional
    * @deprecated Use {@link #hasAccessPermission(org.exoplatform.social.core.space.model.Space, String)} instead.
@@ -887,9 +888,9 @@ public interface SpaceService {
    * Checks if a user can have the edit permission of a space or not.
    * If user is root or the space's manager, return true.
    *
-   * @param space
-   * @param userId
-   * @return
+   * @param space Provided space
+   * @param userId Id of user (user remoteId)
+   * @return True if user has edition permission and vice-versa
    * @throws SpaceException
    * @LevelAPI Provisional
    * @deprecated Use {@link #hasSettingPermission(org.exoplatform.social.core.space.model.Space, String)} instead.
@@ -901,9 +902,9 @@ public interface SpaceService {
   /**
    * Checks if a user can have edit permission of a space.
    * If user is root or the space's manager, return true
-   * @param spaceId
-   * @param userId
-   * @return
+   * @param spaceId Id of space
+   * @param userId Id of user (remoteId)
+   * @return True if user has edition permission and vice-versa
    * @throws SpaceException
    * @LevelAPI Provisional
    * @deprecated Use {@link #hasSettingPermission(org.exoplatform.social.core.space.model.Space, String)} instead.
@@ -1314,7 +1315,7 @@ public interface SpaceService {
   /**
    * Gets the portlet preferences required to use in creating the portlet application.
    *
-   * @return
+   * @return Array of Portlet preferences.
    * @LevelAPI Provisional
    * @deprecated Will be removed by 4.0.x
    */

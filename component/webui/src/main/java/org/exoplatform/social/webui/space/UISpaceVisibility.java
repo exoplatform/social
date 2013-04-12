@@ -28,17 +28,6 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
 
-/**
- * This class is used to build UI for setting space's visibility Setting <br />
- * variables: <br />
- * - Visibility: Private or Hidden <br />
- * - Registration: Open, Validation or Close <br />
- *
- * Created by The eXo Platform SAS
- *
- * @author <a href="mailto:hoatlevan@gmail.com">hoatle</a>
- * @since  Jul 1, 2009
- */
 
 @ComponentConfig(
   template = "classpath:groovy/social/webui/space/UIVisibilityFormInputSet.gtmpl"

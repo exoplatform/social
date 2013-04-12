@@ -23,12 +23,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- * exo@exoplatform.com
- * 11:28:17 AM
- */
 
 public class TemplateParamsProcessorTest extends AbstractCoreTest {
 

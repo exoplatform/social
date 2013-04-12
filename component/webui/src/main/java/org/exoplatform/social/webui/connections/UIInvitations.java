@@ -44,17 +44,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * Manages connection invitations of all existing users. Manages actions
- * such as accept or deny invitation and search action.<br>
- *   - Get all users that have invited connection.<br>
- *   - Check the status of each user with current user then display the list.<br>
- *   - Listens to event: accept, deny contact and search action.<br>
- *
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Aug 25, 2009
- */
 @ComponentConfigs({
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIInvitations.gtmpl",

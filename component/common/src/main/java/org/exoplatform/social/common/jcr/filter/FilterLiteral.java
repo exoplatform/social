@@ -19,12 +19,6 @@ package org.exoplatform.social.common.jcr.filter;
 import java.util.Iterator;
 
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public interface FilterLiteral<P> {
 
   public enum DIRECTION {

@@ -38,12 +38,6 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- * exo@exoplatform.com
- * 3:03:46 PM
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/activity/UIActivitiesLoader.gtmpl",
   events = {

@@ -35,7 +35,6 @@ import org.exoplatform.webui.form.validator.URLValidator;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
-/** Created by The eXo Platform SAS Author : eXoPlatform October 2, 2009 */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "system:/groovy/webui/form/UIFormWithTitle.gtmpl",

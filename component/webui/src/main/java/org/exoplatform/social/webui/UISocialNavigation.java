@@ -37,10 +37,7 @@ import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-/**
- * {@link UISocialNavigation} used as child of UISocialNavigationPortlet.
- * Created by The eXo Platform SARL
- */
+
 public class UISocialNavigation extends UIComponent {
   private boolean    useAJAX = true;
 

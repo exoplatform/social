@@ -33,12 +33,6 @@ import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 17, 2012  
- */
 public class SpaceAccessApplicationLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
 
   private static final Log LOG = ExoLogger.getLogger(SpaceAccessApplicationLifecycle.class);

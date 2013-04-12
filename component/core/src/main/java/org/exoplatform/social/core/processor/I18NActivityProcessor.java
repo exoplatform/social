@@ -51,7 +51,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *     create a resource bundle file and this file name is called "resourceBundleKeyFile" for configuration later.
  *   </li>
  *   <li>
- *     register that resource bundle file with {@link org.exoplatform.services.resources.impl.BaseResourceBundlePlugin} to
+ *     register that resource bundle file with {@link BaseResourceBundlePlugin} to
  *     {@link ResourceBundleService}.
  *   </li>
  *   <li>
@@ -61,7 +61,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
  *
  * @since 1.2.8
  * 
- * @see {@link ActivityResourceBundlePlugin}
+ * @see org.exoplatform.social.core.processor.ActivityResourceBundlePlugin
  */
 public final class I18NActivityProcessor {
 

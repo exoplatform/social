@@ -46,13 +46,6 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
-/**
- * UISpaceApplication.java used for adding/ removing applications.
- * Created by The eXo Platform SARL
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Sep 12, 2008
- */
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

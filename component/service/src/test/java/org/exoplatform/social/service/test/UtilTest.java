@@ -22,8 +22,6 @@ import junit.framework.TestCase;
 
 
 /**
- * Author : hanhvq@exolpatform.com
- * May 10, 2011 
  * @since 1.2.0-GA
  */
 public class UtilTest extends TestCase {

@@ -60,15 +60,6 @@ import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 
-/**
- * {@link UISpaceMember} is used for managing space member: inviting, validating or declining user's
- * request to join; set leader... <br />
- * <p/>
- * Created by The eXo Platform SARL <br />
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Sep 12, 2008
- */
 
 @ComponentConfigs ({
   @ComponentConfig(

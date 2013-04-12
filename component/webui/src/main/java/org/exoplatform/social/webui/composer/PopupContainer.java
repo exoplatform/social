@@ -23,12 +23,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/composer/PopupContainer.gtmpl"
 )

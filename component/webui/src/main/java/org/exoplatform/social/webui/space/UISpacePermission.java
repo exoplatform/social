@@ -33,13 +33,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormRadioBoxInput;
-/**
- * {@link UISpacePermission} used to manages space's visibility and registration.<br />
- *
- * Created by The eXo Platform SARL
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Feb 19, 2009
- */
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,

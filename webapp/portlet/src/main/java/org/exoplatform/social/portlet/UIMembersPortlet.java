@@ -53,14 +53,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * {@link UIMembersPortlet} used as a portlet displaying space members.<br />
- * <p/>
- * Created by The eXo Platform SARL
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Nov 07, 200
- */
 
 @ComponentConfigs ({
   @ComponentConfig(

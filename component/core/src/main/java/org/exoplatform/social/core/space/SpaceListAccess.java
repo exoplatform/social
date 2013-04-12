@@ -24,14 +24,6 @@ import org.exoplatform.social.common.ListAccessValidator;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
-/**
- * SpaceListAccess for LazyPageList usage
- * 
- * Created by The eXo Platform SAS
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Aug 28, 2009  
- */
 public class SpaceListAccess implements ListAccess<Space> {
   /** The space activityStorage. */
   private SpaceStorage spaceStorage;

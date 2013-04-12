@@ -20,12 +20,6 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 
 /**
- * Created by The eXo Platform SAS
- * Author : vien_levan
- *          vien_levan@exoplatform.com
- * Sep 6, 2011  
- * 
- * SpaceRest used for MySpaceGadget
  * @since 1.2.2
  */
 public class SpaceRest {

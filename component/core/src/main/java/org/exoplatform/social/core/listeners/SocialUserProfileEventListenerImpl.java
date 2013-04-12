@@ -28,12 +28,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Thanh.Vu
- *          thanhvc@exoplatform.com
- * Feb 2, 2012  
- */
 public class SocialUserProfileEventListenerImpl extends UserProfileEventListener {
 
   

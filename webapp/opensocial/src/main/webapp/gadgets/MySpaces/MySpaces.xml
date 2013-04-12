@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
- **
- * Created by The eXo Platform SARL
- *
--->
+
 <Module>
   <ModulePrefs author="eXoPlatform"
     title="My Spaces Gadget"

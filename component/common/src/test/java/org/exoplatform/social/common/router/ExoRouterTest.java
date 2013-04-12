@@ -25,12 +25,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.AbstractCommonTest;
 import org.exoplatform.social.common.router.ExoRouter.Route;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Sep 7, 2012  
- */
 public class ExoRouterTest extends AbstractCommonTest {
   
   private static final Log LOG = ExoLogger.getLogger(ExoRouterTest.class);

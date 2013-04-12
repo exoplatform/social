@@ -24,12 +24,6 @@ import junit.framework.TestCase;
 
 import org.exoplatform.social.core.identity.model.Identity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          thanhvc@exoplatform.com
- * Mar 19, 2013  
- */
 public class IdentityResultTest extends TestCase {
   
   Identity demoIdentity = null;

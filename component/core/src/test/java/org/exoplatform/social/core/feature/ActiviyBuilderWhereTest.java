@@ -28,12 +28,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 29, 2012  
- */
 public class ActiviyBuilderWhereTest extends TestCase {
   Identity demoIdentity = null;
   

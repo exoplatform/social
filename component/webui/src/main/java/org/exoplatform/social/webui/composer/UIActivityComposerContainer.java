@@ -19,12 +19,6 @@ package org.exoplatform.social.webui.composer;
 import org.exoplatform.portal.webui.container.UIContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/composer/UIActivityComposerContainer.gtmpl"
 )

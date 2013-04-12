@@ -36,16 +36,6 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * Searches space by space name that input by user.<br>
- *   - Search action is listened and information for search space is processed.<br>
- *   - After spaces is requested is returned, the search process is completed,
- *   - Search event is broadcasted to the form that added search form as child.<br>
- *
- * Author : hanhvi
- *          hanhvq@gmail.com
- * Oct 28, 2009
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/space/UISpaceSearch.gtmpl",

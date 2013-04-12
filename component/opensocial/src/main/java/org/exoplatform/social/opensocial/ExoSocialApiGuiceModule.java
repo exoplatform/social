@@ -57,12 +57,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 
-/**
- * Created by The eXo Platform SARL
- * Modify : dang.tung
- *          tungcnw@gmail.com
- * Oct 7, 2009
- */
 public class ExoSocialApiGuiceModule  extends AbstractModule {
 
 

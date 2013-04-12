@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.space;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 18, 2012  
- */
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
@@ -29,12 +23,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 17, 2012  
- */
 public enum SpaceAccessType {
 
   SUPER_ADMINISTRATOR("social.space.access.administrator") {

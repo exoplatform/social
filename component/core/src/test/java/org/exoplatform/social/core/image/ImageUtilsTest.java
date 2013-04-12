@@ -19,11 +19,6 @@ package org.exoplatform.social.core.image;
 
 import junit.framework.TestCase;
 
-/**
- * Created by The eXo Platform SAS
- * 
- * @Author : Tuannx tuan.nguyenxuan@exoplatform.com Oct 28, 2010
- */
 public class ImageUtilsTest extends TestCase {
 
   public void testBuildFileName() {

@@ -57,13 +57,6 @@ import org.exoplatform.webui.form.validator.ExpressionValidator;
 import org.exoplatform.webui.form.validator.MandatoryValidator;
 import org.exoplatform.webui.form.validator.StringLengthValidator;
 
-/**
- * UISpaceInfo.java used for managing space's name, description, priority...<br />
- * Created by The eXo Platform SARL
- *
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Sep 12, 2008
- */
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

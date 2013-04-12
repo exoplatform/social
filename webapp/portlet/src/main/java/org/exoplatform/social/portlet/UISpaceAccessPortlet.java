@@ -21,12 +21,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh.vucong
- *          thanhvucong.78@gmail.com
- * Dec 28, 2012  
- */
 @ComponentConfig(
                  lifecycle = UIApplicationLifecycle.class,
                  template = "app:/groovy/social/portlet/UISpaceAccessPortlet.gtmpl"

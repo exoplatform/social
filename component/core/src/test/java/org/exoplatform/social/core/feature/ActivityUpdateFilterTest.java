@@ -37,12 +37,6 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Feb 2, 2013  
- */
 public class ActivityUpdateFilterTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityStorageImpl activityStorage;

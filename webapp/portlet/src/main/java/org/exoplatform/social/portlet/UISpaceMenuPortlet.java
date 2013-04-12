@@ -21,12 +21,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
-/**
- * {@link UISpaceMenuPortlet} used as a portlet displaying space menu. <br />
- * Created by The eXo Platform SARL
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Dec 15, 2008
- */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/UISpaceMenuPortlet.gtmpl"

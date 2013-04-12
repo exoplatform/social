@@ -35,12 +35,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh.vucong
- *          thanhvucong.78@gmail.com
- * Nov 10, 2012  
- */
 @RunWith(Suite.class)
 @SuiteClasses({
   GlobalIdTest.class,

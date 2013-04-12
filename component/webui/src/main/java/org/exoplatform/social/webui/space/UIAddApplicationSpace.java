@@ -33,15 +33,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
-/**
- * UIAddApplicationSpace used for installing application to space <br />
- * <p/>
- * Created by The eXo Platform SARL
- *
- * @author dang.tung <tungcnw at gmail dot com>
- * @since Sep 12, 2008
- */
-
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/space/UIAddApplicationSpace.gtmpl",

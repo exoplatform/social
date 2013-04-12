@@ -30,12 +30,6 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 19, 2012  
- */
 public class SpaceAccessTest extends AbstractCoreTest {
   private SpaceService spaceService;
   private IdentityStorage identityStorage;

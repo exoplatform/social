@@ -21,12 +21,6 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 28, 2009
- */
 public class RelationshipListAccess implements ListAccess<Relationship> {
   /** The list is used for relation storage. */
   private final List<Relationship> list;

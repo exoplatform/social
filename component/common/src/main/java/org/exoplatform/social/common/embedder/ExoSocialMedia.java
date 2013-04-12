@@ -17,10 +17,6 @@
 package org.exoplatform.social.common.embedder;
 
 /**
- * Created by The eXo Platform SAS
- * Author : vietnq
- *          vietnq@exoplatform.com
- * May 25, 2012
  * @since 4.0.0-GA  
  */
 public class ExoSocialMedia {

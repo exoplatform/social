@@ -44,14 +44,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * Searches users in profile by user name and some other filter condition.<br>
- * - Search action is listened and information for search user is processed.<br>
- * - After users is requested is returned, the search process is completed, -
- * Search event is broadcasted to the form that added search form as child.<br>
- * Author : hanhvi hanhvq@gmail.com
- * Sep 25, 2009
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "classpath:groovy/social/webui/profile/UIProfileUserSearch.gtmpl",

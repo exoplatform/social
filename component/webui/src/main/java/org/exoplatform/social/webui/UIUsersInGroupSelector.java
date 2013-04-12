@@ -45,11 +45,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIForm;
 
-/**
- * Author : hanh.vi
- *          hanhvq@gmail.com
- * May 18, 2010
- */
 @ComponentConfigs({
   @ComponentConfig(
     template = "classpath:groovy/social/webui/space/UISocialGroupSelector.gtmpl",

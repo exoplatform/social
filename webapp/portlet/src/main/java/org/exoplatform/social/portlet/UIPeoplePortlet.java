@@ -22,14 +22,6 @@ import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 
-/**
- * Manages information about all existing users. Manages actions
- * such as request make connections, invoke request, accept or deny invitation
- * and delete connection.
- *
- * Author : hanhvq@gmail.com
- * Oct 24, 2009
- */
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/groovy/social/portlet/UIPeoplePortlet.gtmpl"

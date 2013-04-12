@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.common.jcr.filter;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public class BarFilter {
 
 }

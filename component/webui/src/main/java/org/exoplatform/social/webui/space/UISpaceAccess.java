@@ -37,10 +37,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
 /**
- * Created by The eXo Platform SAS
- * Author : thanh.vucong
- *          thanhvucong.78@gmail.com
- * Dec 28, 2012
  * @since 4.0  
  */
 

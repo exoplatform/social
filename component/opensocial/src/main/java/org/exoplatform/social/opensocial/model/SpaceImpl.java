@@ -16,13 +16,6 @@
  */
 package org.exoplatform.social.opensocial.model;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Jan 08, 2009
- */
-
 
 public class SpaceImpl implements Space {
 
