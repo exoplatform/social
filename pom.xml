@@ -27,7 +27,7 @@
   </parent>
   <groupId>org.exoplatform.social</groupId>
   <artifactId>social</artifactId>
-  <version>4.0.0-RC2</version>
+  <version>4.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Social</name>
   <description>eXo Social - Enterprise Social Networking</description>
@@ -41,7 +41,7 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/social.git</developerConnection>
-    <tag>4.0.0-RC2</tag>
+    <tag>HEAD</tag>
     <url>http://fisheye.exoplatform.org/browse/social</url>
   </scm>
   <properties>
