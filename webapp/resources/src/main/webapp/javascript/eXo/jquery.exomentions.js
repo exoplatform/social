@@ -1207,7 +1207,7 @@
         // add placeholder
         var title = jElmTarget.attr('title');
         if ($.trim(title).length > 0) {
-          var placeholder = $('<div class="placeholder">' + title + '</div>').attr('title', title);
+          var placeholder = $('<div class="placeholder">' + title + '</div>').removeAttr("title");
           placeholder.on('click', function() {
             elmInputBox.focus();
           });

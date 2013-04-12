@@ -47,7 +47,7 @@
 				'id': 'mentionButton'
 			}
 			).append($('<i />',{
-			'class':'uiIconSocMention'
+			'class':'uiIconSocMention uiIconSocLightGray'
 			}));
 			$('div#ActivityComposerExt>a:last-child').before(mentionButton);
 
