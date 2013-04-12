@@ -19,11 +19,5 @@ package org.exoplatform.social.core.chromattic.filter;
 import org.exoplatform.social.common.jcr.filter.AbstractFilterLiteral;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 22, 2012  
- */
 public abstract class JCRFilterLiteral extends AbstractFilterLiteral<PropertyLiteralExpression<?>>{
 }

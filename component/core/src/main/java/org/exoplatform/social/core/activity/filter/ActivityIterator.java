@@ -24,12 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Feb 19, 2013  
- */
 public class ActivityIterator implements Collection<ExoSocialActivity> {
   private final long offset;
   private final long limit;

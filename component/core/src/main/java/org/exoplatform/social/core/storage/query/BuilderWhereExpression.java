@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.core.storage.query;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public interface BuilderWhereExpression<F, O> {
   
   String build(F filer);

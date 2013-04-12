@@ -24,12 +24,6 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.core.UIContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
- */
 public class UIActivityComposerManager extends BaseComponentPlugin {
   private static final Log LOG = ExoLogger.getLogger(UIActivityComposerManager.class);
 

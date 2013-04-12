@@ -18,12 +18,6 @@ package org.exoplatform.social.core.activity.filter;
 
 import org.apache.commons.lang.ArrayUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Feb 2, 2013  
- */
 public class ActivityUpdateFilter {
 
   private String[] excludedActivities = new String[0];

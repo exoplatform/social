@@ -38,12 +38,6 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public abstract class ActivityBuilderWhere implements BuilderWhereExpression<JCRFilterLiteral, QueryBuilder<ActivityEntity>> {
 
   final WhereExpression where = new WhereExpression();

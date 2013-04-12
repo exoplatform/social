@@ -23,12 +23,6 @@ import org.apache.shindig.social.core.model.PersonImpl;
 
 import com.google.common.collect.Maps;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- */
-
 public class ExoPersonImpl extends PersonImpl {
 
   private List<Space> spaces;

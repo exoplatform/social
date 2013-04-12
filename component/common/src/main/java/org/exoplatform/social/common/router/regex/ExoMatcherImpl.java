@@ -16,12 +16,6 @@
  */
 package org.exoplatform.social.common.router.regex;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 19, 2012  
- */
 import java.util.regex.Matcher;
 
 

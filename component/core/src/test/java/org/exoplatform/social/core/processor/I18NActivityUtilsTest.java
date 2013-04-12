@@ -21,12 +21,6 @@ import junit.framework.TestCase;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Jan 24, 2013  
- */
 public class I18NActivityUtilsTest extends TestCase {
 
   @Override

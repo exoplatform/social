@@ -31,12 +31,6 @@ import org.exoplatform.social.common.router.regex.ExoMatcher;
 import org.exoplatform.social.common.router.regex.ExoPattern;
 import org.picocontainer.Startable;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 19, 2012  
- */
 public class ExoRouter implements Startable {
 
   /**

@@ -27,12 +27,7 @@ import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
-/**
- * {@link UIHomeSpacePortlet} used for default space's home page.
- * Created by The eXo Platform SARL
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Oct 23, 2008
- */
+
 
 @ComponentConfig(
     lifecycle = UIApplicationLifecycle.class,

@@ -32,12 +32,6 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 import org.exoplatform.social.core.test.MaxQueryNumber;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 28, 2012  
- */
 public class MentionsActivityTest extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityStorageImpl activityStorage;

@@ -29,12 +29,6 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.rest.SpacesRestService.SpaceList;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Jan 8, 2013  
- */
 public class SpaceRestServiceTest extends AbstractResourceTest {
   static private SpaceService spaceService;
   

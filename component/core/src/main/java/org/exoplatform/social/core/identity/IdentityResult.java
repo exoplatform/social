@@ -25,12 +25,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          thanhvc@exoplatform.com
- * Mar 16, 2013  
- */
 public class IdentityResult implements Collection<Identity> {
   private final long offset;
   private final long limit;

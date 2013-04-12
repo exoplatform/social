@@ -25,12 +25,6 @@ import org.exoplatform.container.xml.ObjectParameter;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 19, 2012  
- */
 public class ExoRouterConfig extends BaseComponentPlugin {
 
   /**

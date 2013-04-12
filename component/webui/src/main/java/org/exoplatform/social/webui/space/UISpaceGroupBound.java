@@ -38,16 +38,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
-/**
- * This UI component is used for setting space's bound to a group <br />
- *
- * If not set, a new group is created. <br />
- * A popup window will be displayed for user to choose from existing group <br />
- *
- * Created by The eXo Platform SAS
- * @author  <a href="mailto:hoatlevan@gmail.com">hoatle</a>
- * @since   Jul 1, 2009
- */
+
 @ComponentConfigs({
   @ComponentConfig(
     template = "classpath:groovy/social/webui/space/UISpaceGroupBound.gtmpl",

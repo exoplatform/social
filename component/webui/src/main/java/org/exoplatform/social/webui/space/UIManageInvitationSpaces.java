@@ -42,14 +42,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * UIManageInvitationSpaces.java used for managing invitation spaces. <br />
- * Created by The eXo Platform SAS
- * @author tung.dang <tungcnw at gmail dot com>
- * @since Nov 02, 2009
- * @modified Aug 23 2011 by hanhvq
- */
-
 @ComponentConfig(
   template="classpath:groovy/social/webui/space/UIManageInvitationSpaces.gtmpl",
   events = {

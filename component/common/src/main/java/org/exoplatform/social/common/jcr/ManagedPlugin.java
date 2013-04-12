@@ -21,13 +21,6 @@ import org.exoplatform.management.annotations.Managed;
 import org.exoplatform.management.annotations.ManagedDescription;
 import org.exoplatform.management.annotations.ManagedName;
 
-/**
- * A managed plugin base class
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jul 18, 2009  
- */
 @Managed
 public abstract class ManagedPlugin extends BaseComponentPlugin {
 

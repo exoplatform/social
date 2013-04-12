@@ -19,12 +19,6 @@ package org.exoplatform.social.common.jcr.filter;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.FilterOption;
 import org.exoplatform.social.common.jcr.filter.FilterLiteral.OrderByOption;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public class FooFilter {
 
   public static FilterOption<FieldLiteral<?>> FOO_FILTER_OPTION = new FilterOption<FieldLiteral<?>>(FooEntity.foo);

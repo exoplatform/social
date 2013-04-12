@@ -35,13 +35,6 @@ import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-/**
- * Displays uploaded content from UIAvatarUploader.<br>
- *
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Nov 4, 2009
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/UIAvatarUploadContent.gtmpl",
   events = {

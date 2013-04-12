@@ -24,15 +24,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 
-/**
- * ListAccess is used in loading connection with the input providerId, existing Identity and ProfileFilter, .
- * With this list we can manage the size of returned list by offset and limit.
- * 
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          thanhvc@exoplatform.com
- * Aug 22, 2011  
- */
 public class ConnectionFilterListAccess implements ListAccess<Identity> {
   
   private RelationshipStorage relationshipStorage; 

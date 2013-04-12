@@ -32,12 +32,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Feb 6, 2012  
- */
 public class SocialUserProfileEventListenerImplTest extends AbstractCoreTest {
   private final Log  LOG = ExoLogger.getLogger(SocialUserProfileEventListenerImplTest.class);
 

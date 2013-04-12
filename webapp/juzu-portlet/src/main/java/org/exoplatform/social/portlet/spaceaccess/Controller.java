@@ -37,12 +37,6 @@ import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : quangpld
- *          quangpld@exoplatform.com
- * Oct 18, 2012
- */
 public class Controller {
   
   @Inject @Path("spaceAccessMessage.gtmpl") spaceAccessMessage message;

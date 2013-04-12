@@ -21,13 +21,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jul 23, 2010  
- */
-
 @ComponentConfig(
    lifecycle = UIFormLifecycle.class,
    template = "classpath:groovy/social/plugin/link/UILinkActivity.gtmpl",

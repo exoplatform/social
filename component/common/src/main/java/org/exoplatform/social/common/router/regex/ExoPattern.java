@@ -23,12 +23,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Oct 19, 2012  
- */
 public class ExoPattern {
 
   // Group pattern which uses to match Group /{group}/

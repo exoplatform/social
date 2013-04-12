@@ -44,17 +44,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * Manages relation with the current user of all existing users. Manages actions
- * such as remove relation and search action.<br>
- *   - Get all users that really have relation.<br>
- *   - Check the status of each user with current user then display the list.<br>
- *   - Listens to event: remove relation and search action.<br>
- *
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Aug 25, 2009
- */
 @ComponentConfigs({
   @ComponentConfig(
     template =  "classpath:groovy/social/webui/connections/UIMyConnections.gtmpl",

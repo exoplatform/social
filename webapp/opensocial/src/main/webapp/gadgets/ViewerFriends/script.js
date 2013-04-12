@@ -10,12 +10,6 @@
   should have received a copy of the GNU General Public License along
   with this program; if not, see<http://www.gnu.org/licenses/>.
 */
-/**
-  * Created by The eXo Platform SARL
-  * Author : hoat_le
-  *          hoatlevan@gmail.com
-  * Jun 17, 2009
-  */
 
 var eXo = eXo || {};
 eXo.social = eXo.social || {};

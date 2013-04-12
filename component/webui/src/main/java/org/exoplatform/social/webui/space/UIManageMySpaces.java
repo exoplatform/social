@@ -42,16 +42,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * UIManageMySpaces.java <br />
- * Manage all user's spaces, user can edit, delete, leave space.
- * User can create new space here. <br />
- *
- * Created by The eXo Platform SAS
- * @author hoatle <hoatlevan at gmail dot com>
- * @since Jun 29, 2009
- * @modified Aug 23 2011 by hanhvq
- */
 @ComponentConfig(
   template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
   events = {

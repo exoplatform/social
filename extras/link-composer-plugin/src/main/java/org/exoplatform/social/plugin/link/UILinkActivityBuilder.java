@@ -30,12 +30,6 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jul 23, 2010  
- */
 public class UILinkActivityBuilder extends BaseUIActivityBuilder {
   private static final Log LOG = ExoLogger.getLogger(UILinkActivityBuilder.class);
   

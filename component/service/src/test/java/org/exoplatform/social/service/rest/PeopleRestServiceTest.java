@@ -26,12 +26,6 @@ import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
 import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Nov 26, 2010  
- */
 public class PeopleRestServiceTest  extends AbstractResourceTest {
   static private PeopleRestService peopleRestService;
 

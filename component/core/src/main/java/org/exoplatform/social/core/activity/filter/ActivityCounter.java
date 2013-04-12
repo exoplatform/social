@@ -24,12 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Mar 8, 2013  
- */
 public class ActivityCounter implements Collection<ExoSocialActivity> {
 
   private String[] ids;

@@ -21,12 +21,6 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 30, 2010
- */
 public class RestPortalContainerNameConfig extends BaseComponentPlugin {
   private static Log LOG = ExoLogger.getExoLogger(RestPortalContainerNameConfig.class);
 

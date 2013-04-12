@@ -20,12 +20,6 @@ import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Jan 16, 2013  
- */
 @MixinType(name = "soc:hidable")
 public abstract class HidableEntity {
 

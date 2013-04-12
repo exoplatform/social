@@ -21,12 +21,6 @@ import java.util.Map;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Jan 24, 2013  
- */
 public class I18NActivityUtils {
 
   /** */

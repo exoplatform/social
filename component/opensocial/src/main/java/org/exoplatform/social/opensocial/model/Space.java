@@ -20,12 +20,6 @@ import org.apache.shindig.protocol.model.Exportablebean;
 
 import com.google.inject.ImplementedBy;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Jan 08, 2009
- */
 @ImplementedBy(SpaceImpl.class)
 @Exportablebean
 public interface Space {

@@ -45,12 +45,7 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 
-/**
- * {@link UISpaceMenu} used as a portlet displaying space menu. <br />
- * Created by The eXo Platform SARL
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Dec 15, 2008
- */
+
 @ComponentConfig(
   template = "classpath:groovy/social/webui/space/UISpaceMenu.gtmpl",
   events = {

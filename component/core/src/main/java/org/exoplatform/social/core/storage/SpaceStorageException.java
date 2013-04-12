@@ -19,10 +19,6 @@ package org.exoplatform.social.core.storage;
 import org.exoplatform.social.common.ExoSocialException;
 
 /**
- * Created by The eXo Platform SAS
- * Author : vien_levan
- *          vien_levan@exoplatform.com
- * Feb 25, 2011
  * @since 1.2.0-GA
  */
 public class SpaceStorageException extends ExoSocialException {

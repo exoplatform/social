@@ -21,8 +21,6 @@ import org.exoplatform.social.common.ExoSocialException;
 /**
  * Handles Runtime Exception when performing data in Identity Storage.
  * 
- * Author : hanh.vi@exoplatform.com
- * Mar 25, 2011  
  * @since 1.2.0-GA
  */
 public class IdentityStorageException extends ExoSocialException {

@@ -37,12 +37,6 @@ import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Zun
- *          exo@exoplatform.com
- * Jul 23, 2010
- */
 @ComponentConfig()
 public class UIDefaultActivityComposer extends UIActivityComposer {
 

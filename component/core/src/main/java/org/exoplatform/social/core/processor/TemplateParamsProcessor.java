@@ -24,14 +24,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
-/**
- * The templateParamsProcessor to process an activity. Replace template key
- * by template value in activity's title.
- * Created by The eXo Platform SAS
- * Author : Zun 
- * exo@exoplatform.com
- * 10:59:09 AM
- */
 
 public class TemplateParamsProcessor extends BaseActivityProcessorPlugin {
   private static final Log LOG = ExoLogger.getLogger(TemplateParamsProcessor.class);

@@ -24,11 +24,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UITree;
 
-/**
- * Author : hanh.vi
- *          hanhvq@gmail.com
- * May 18, 2010
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/UIFilterableTree.gtmpl",
   events = @EventConfig(listeners = UITree.ChangeNodeActionListener.class)

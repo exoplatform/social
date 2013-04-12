@@ -49,12 +49,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 8, 2012  
- */
 @SuiteClasses({
   SpaceLastVisitedTest.class,
   WhatsHotTest.class,

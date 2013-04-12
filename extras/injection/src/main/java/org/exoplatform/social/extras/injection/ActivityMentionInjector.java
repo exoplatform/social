@@ -24,12 +24,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.extras.injection.utils.LoremIpsum4J;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Dec 3, 2012  
- */
 public class ActivityMentionInjector extends AbstractSocialInjector {
 
   /** . */

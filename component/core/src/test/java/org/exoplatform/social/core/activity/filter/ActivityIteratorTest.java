@@ -25,12 +25,6 @@ import junit.framework.TestCase;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Feb 20, 2013  
- */
 public class ActivityIteratorTest extends TestCase {
   private ActivityIterator ait = null;
   

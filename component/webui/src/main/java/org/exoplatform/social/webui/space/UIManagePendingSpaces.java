@@ -38,13 +38,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 
-/**
- * UIManagePendingSpaces: list all pending spaces which user can revoke pending. <br />
- * Created by The eXo Platform SAS
- * @author hoatle <hoatlevan at gmail dot com>
- * @since Jun 23, 2009
- * @modified Aug 23 2011 by hanhvq
- */
 @ComponentConfig(
   template = "classpath:groovy/social/webui/space/UIManagePendingSpaces.gtmpl",
   events = {

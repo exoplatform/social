@@ -21,10 +21,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.AbstractCommonTest;
 
 /**
- * Created by The eXo Platform SAS
- * Author : vietnq
- *          vietnq@exoplatform.com
- * May 29, 2012  
  * @since 4.0.0-GA
  */
 public class EmbedderTest extends AbstractCommonTest {

@@ -21,12 +21,6 @@ import java.util.List;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Aug 28, 2009
- */
 public class IdentityListAccess implements ListAccess<Identity> {
   /** The list used for identity storage. */
   private final List<Identity> list;

@@ -33,12 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 12, 2012  
- */
 @RunWith(Suite.class)
 @SuiteClasses({
   DOMParserTest.class,

@@ -21,12 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public abstract class AbstractFilterLiteral<P> implements FilterLiteral<P> {
 
   //TODO Improves ThreadLocal here

@@ -34,12 +34,6 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Thanh_VuCong
- *          thanhvc@exoplatform.com
- * Sep 21, 2011  
- */
 public class SpaceUtilsRestTest extends AbstractCoreTest {
 
   private final Log LOG = ExoLogger.getLogger(SpaceUtilsRestTest.class);

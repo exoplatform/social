@@ -12,14 +12,7 @@
   should have received a copy of the GNU General Public License along
   with this program; if not, see<http://www.gnu.org/licenses/>.
 -->
-<!--
-  **
-  * Created by The eXo Platform SARL
-  * Author : hanh_vi
-  *          hanhvq@gmail.com
-  * July 15, 2009
-  *
--->
+
 <Module>
   <ModulePrefs author="eXoPlatform"
     description="Gadget for Social Rss Reader" directory_title="Social Rss Reader"

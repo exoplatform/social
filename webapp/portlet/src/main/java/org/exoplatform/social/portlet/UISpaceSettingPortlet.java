@@ -27,12 +27,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
-/**
- * {@link UISpaceSettingPortlet} used as a portlet containing {@link UISpaceSetting}.
- * Created by The eXo Platform SARL
- * @author <a href="mailto:tungcnw@gmail.com">dang.tung</a>
- * @since Jan 6, 2009
- */
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,

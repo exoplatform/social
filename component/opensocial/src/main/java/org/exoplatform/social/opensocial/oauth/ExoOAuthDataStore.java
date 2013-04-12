@@ -42,12 +42,6 @@ import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-/**
- * Created by The eXo Platform SARL
- * Author : dang.tung
- *          tungcnw@gmail.com
- * Jul 15, 2009
- */
 
 public class ExoOAuthDataStore implements OAuthDataStore {
   // This needs to be long enough that an attacker can't guess it.  If the attacker can guess this

@@ -27,12 +27,6 @@ import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
 
-/**
- * Created by The eXo Platform SAS
- * Author : thanh_vucong
- *          thanh_vucong@exoplatform.com
- * Nov 21, 2012  
- */
 public class ActivityFilter extends JCRFilterLiteral {
   
   private static final Log LOG = ExoLogger.getLogger(ActivityFilter.class);

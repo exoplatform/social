@@ -40,13 +40,6 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormUploadInput;
 
 
-/**
- * Uploads image to set user's avatar.<br>
- *
- * Author : hoatle
- *          hoatlevan@gmail.com
- * Sep 8, 2009
- */
 @ComponentConfigs ({
   @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
