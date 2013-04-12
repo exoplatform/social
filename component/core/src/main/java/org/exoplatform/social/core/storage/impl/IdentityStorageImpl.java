@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -166,7 +167,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   private void putParam(ProfileEntity profileEntity, Object value, String key) {
     Map<String, List<String>> params = createEntityParamMap(value);
-    profileEntity.setProperty(key, new ArrayList<String>(params.keySet()));
+    Iterator<List<String>> valuesItr = params.values().iterator();
+    List<String> values = null;
+    if (valuesItr.hasNext()) {
+      values = (List<String>) valuesItr.next();
+    }
+    profileEntity.setProperty(key, values);
   }
 
   private IdentityStorage getStorage() {
