@@ -38,7 +38,7 @@ var UISpaceNavigation = {
 	        }
 	    }
 
-	    UISpaceNavigation.initNavigation(index - 1, moreLabel);
+	    UISpaceNavigation.initNavigation(index, moreLabel);
     };
   
     function reset() {
@@ -125,27 +125,32 @@ var UISpaceNavigation = {
     }).append($('<i/>', {
                           'class' : 'uiIconAppMoreButton'
                         }))
-            .append($('<span/>', {
-                                               'text' : moreLabel
-                                             }));
+      .append($('<span/>', {
+                             'text' : moreLabel
+                           })
+      );
 
     // clear
     tabContainer.empty();
 
     // rebuild
     $.each(tabs, function(idx, el) {
-      if (idx < index) {
+      if (idx < index - 1) {
         tabContainer.append(el);
       } else {
         dropDownMenu.append(el);
       }
     });
     
-    var dropDown = $('<li/>', {
-      'class' : 'dropdown'
-    }).append(dropDownToggle).append(dropDownMenu);
-    
-    if (tabs.length >= (index + 1)) {
+    if (dropDownMenu.children().length == 1) {
+      var el = dropDownMenu.children(':first');
+      dropDownMenu.remove();
+      tabContainer.append(el);
+    } else if (dropDownMenu.children().length > 1) {
+	    var dropDown = $('<li/>', {
+	      'class' : 'dropdown'
+	    }).append(dropDownToggle).append(dropDownMenu);
+      
       tabContainer.append(dropDown);
     };
     
