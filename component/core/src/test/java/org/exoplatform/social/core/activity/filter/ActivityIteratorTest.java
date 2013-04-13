@@ -108,7 +108,7 @@ public class ActivityIteratorTest extends TestCase {
   }
   
   public void testAddMoreElementsOffset2() throws Exception {
-    ait = new ActivityIterator(2, 2, 3);
+    ait = new ActivityIterator(1, 2, 3);
     ExoSocialActivity activity1 = new ExoSocialActivityImpl();
     activity1.setId("id1");
     activity1.setTitle("title @demo hi");
@@ -158,7 +158,7 @@ public class ActivityIteratorTest extends TestCase {
     ait.add(activity1);
     
     assertTrue(ait.addMore());
-    assertEquals(1, ait.result().size());
+    assertEquals(0, ait.result().size());
   }
   
   public void testCalculatorOffset0() throws Exception {
@@ -232,7 +232,7 @@ public class ActivityIteratorTest extends TestCase {
     }
     
     //
-    assertEquals(4, ait.result().size());
+    assertEquals(3, ait.result().size());
   }
   
 

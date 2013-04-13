@@ -1860,6 +1860,46 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertNotNull("activity.getTemplateParams() must not be null", activity.getTemplateParams());
     assertEquals("http://xxxxxxxxxxxxxxxx/xxxx=xxxxx", activity.getTemplateParams().get(URL_PARAMS));
   }
+  
+  /**
+   * Test {@link ActivityStorage#getComments(ExoSocialActivity, int, int)}
+   * 
+   * @since 4.0
+   */
+  @MaxQueryNumber(300)
+  public void testGetHiddenComments() {
+    int totalNumber = 5;
+    String activityTitle = "activity title";
+    
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    for (int i = 0; i < totalNumber; i++) {
+      //John comments on Root's activity
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("Comment " + i);
+      comment.setUserId(johnIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+    }
+    
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 5);
+    assertEquals("comments.size() must return: 5", 5, comments.size());
+    
+    ExoSocialActivity hiddenComment = comments.get(3);
+    hiddenComment.isHidden(true);
+    activityStorage.updateActivity(hiddenComment);
+    List<ExoSocialActivity> newCommentsList = activityStorage.getComments(activity, 0, 5);
+    assertEquals("newCommentsList.size() must return: 4", 4, newCommentsList.size());
+    
+    //get 2 lastest comments
+    newCommentsList = activityStorage.getComments(activity, 2, 2);
+    assertEquals("newCommentsList.size() must return: 2", 2, newCommentsList.size());
+    assertEquals("Comment 2",newCommentsList.get(0).getTitle());
+    assertEquals("Comment 4",newCommentsList.get(1).getTitle());
+  }
 
   /**
    * Creates activities.

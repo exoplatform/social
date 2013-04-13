@@ -107,7 +107,7 @@ public class ActivityIterator implements Collection<ExoSocialActivity> {
     }
     
     //
-    if (++skip < offset) {
+    if (skip++ < offset) {
       return false;
     }
     
