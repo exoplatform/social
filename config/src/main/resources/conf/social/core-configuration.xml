@@ -389,6 +389,10 @@
                     <key><string>user_relations</string></key>
                     <value><string>RelationshipPublisher.user_relations</string></value>
                   </entry>
+                  <entry>
+                    <key><string>user_relation</string></key>
+                    <value><string>RelationshipPublisher.user_relation</string></value>
+                  </entry>
                 </map>
               </field>
             </object>
