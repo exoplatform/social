@@ -1,98 +1,55 @@
 <%
-  import org.exoplatform.webui.core.UIRightClickPopupMenu;
-  import org.exoplatform.webui.application.WebuiRequestContext;
-  import org.exoplatform.web.application.JavascriptManager;
-
-  UIRightClickPopupMenu uiPopupMenu = uicomponent.getUIRightClickPopupMenu();
-  WebuiRequestContext rcontext = _ctx.getRequestContext();
-
-  def selected = uicomponent.getSelected();
-  def sibling = uicomponent.getSibbling();
-  def children = uicomponent.getChildren();
-  def indexOfRightMostDisplayedSibbling = uicomponent.getRightMostDisplayedNodeIndex(sibling, rcontext);
-  def indexOfRightMostDisplayedChild = uicomponent.getRightMostDisplayedNodeIndex(children, rcontext);
-
-  if(uiPopupMenu != null){
-    String id = uicomponent.getParent().getId();
-    JavascriptManager jsmanager = rcontext.getJavascriptManager();
-    jsmanager.require("SHARED/jquery", "jq")
-             .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-             .require("SHARED/webui-ext", "webuiExt").addScripts("webuiExt.UIRightClickPopupMenu.disableContextMenu('"+id+"') ;");
-    uicomponent.renderUIComponent(uiPopupMenu);
-  }
+    import org.exoplatform.webui.core.UIRightClickPopupMenu;
+    
+    def selected = uicomponent.getSelected();
+    def sibling = uicomponent.getSibbling();
+    def children = uicomponent.getChildren();   
+    String id = uicomponent.getParent().getId();                                                  
+    UIRightClickPopupMenu uiPopupMenu = uicomponent.getUIRightClickPopupMenu();
+    
+    def rcontext = _ctx.getRequestContext();
+    def jsMan = rcontext.getJavascriptManager(); 
+    jsMan.require("SHARED/webui-ext", "webuiExt")
+          .addScripts("webuiExt.UITree.init('$id', '$uicomponent.expandIcon','$uicomponent.colapseIcon',${uiPopupMenu != null});");
+    
+    if(uiPopupMenu != null){
+        uicomponent.renderUIComponent(uiPopupMenu); 
+    }   
 %>
-<div class="UITrees ScrollArea">
-  <div class="TreeContainer JSContainer">
-    <div style="padding-bottom: 12px">
-      <div class="HomeNode">
-        <a class="LevelUpArrowIcon" href="<%=uicomponent.getActionLink();%>" onkeydown="event.cancelBubble=true;" onmousedown="event.cancelBubble=true;" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UITree.tooltip.UpLevel")%>" style="display: block;"><span></span></a>
-      </div>
-      <%
-      int count=0;
-      for(object in sibling) {
-      if(uicomponent.displayThisNode(object, rcontext)){
-        if(count == indexOfRightMostDisplayedSibbling) {
-      %>
-        <div class="LastNode Node">
-          <%
-          String objId = String.valueOf(uicomponent.getId(object));
-          String actionLink = uicomponent.event("ChangeNode", objId);
-          %>
-          <%=uicomponent.renderNode(object);%>
-          <%
-            if(uicomponent.isSelected(object)){%>
-              <div class = "ChildrenContainer" actionLink="$actionLink" display = "block">
-            <%
-            int countChild=0;
-            for(child in children) {
-            if(uicomponent.displayThisNode(child, rcontext)){
-            if(countChild == indexOfRightMostDisplayedChild) {
-            %>
-                 <div class="LastNode Node">
-                  <%=uicomponent.renderNode(child);%>
-                </div>
-             <% } else { %>
-                <div class="Node">
-                  <%=uicomponent.renderNode(child);%>
-                </div>
-              <% } %>
-              <% } %>
-              <%countChild++;}	%>
-              </div>
-          <%}%>
-          </div>
-      <% } else { %>
-          <div class="Node">
-          <%
-          String objId = String.valueOf(uicomponent.getId(object));
-          String actionLink = uicomponent.event("ChangeNode", objId);
-          %>
-          <%=uicomponent.renderNode(object);%>
-          <%
-            if(uicomponent.isSelected(object)){%>
-            <div class = "ChildrenContainer" actionLink="$actionLink" display = "block">
-            <%
-            int countChild=0;
-            for(child in children) {
-            if(uicomponent.displayThisNode(child, rcontext)){
-                  if(countChild == indexOfRightMostDisplayedChild) {
-             %>
-                 <div class="LastNode Node">
-                  <%=uicomponent.renderNode(child);%>
-                </div>
-             <% } else { %>
-                <div class="Node">
-                  <%=uicomponent.renderNode(child);%>
-                </div>
-              <% } %>
-              <% } %>
-              <%countChild++;}	%>
-              </div>
-          <%}%>
-          </div>
-        <% } %>
-        <% } %>
-      <%count++;}%>
-    </div>
-  </div>
+<div class="uiTrees scrollArea">
+    <div class="treeContainer jsContainer">
+        
+            <div class="homeNode clearfix">
+                <a class="actionIcon pull-left" href="<%=uicomponent.getActionLink();%>" rel="tooltip" title="<%=_ctx.appRes("UITree.tooltip.UpLevel")%>" style="display: block;"><i class="uiIconUpLevel uiIconLightGray"></i></a>
+            </div>
+            
+            <ul class="nodeGroup">
+                <%
+                int count=0;
+                for(object in sibling) {
+                %>
+                <li class="node">
+                    <% 
+                    String objId = String.valueOf(uicomponent.getId(object));
+                    String actionLink = uicomponent.event("ChangeNode", objId);
+                    %>
+                    <%=uicomponent.renderNode(object);%>                                            
+                    <%  
+                        if(uicomponent.isSelected(object)){%>
+                        <ul class = "childrenContainer" actionLink="$actionLink">
+                        <%  
+                        int countChild=0;
+                        for(child in children) {                
+                         %>
+                                <li class="node">
+                                    <%=uicomponent.renderNode(child);%>
+                                </li>
+                            <%countChild++;}    %>                              
+                        </ul>                   
+                    <%}%>                            
+                    </li>
+                <%count++;}%>
+            </ul>
+            
+    </div>  
 </div>
