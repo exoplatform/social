@@ -148,7 +148,7 @@ var UISpaceNavigation = {
       tabContainer.append(el);
     } else if (dropDownMenu.children().length > 1) {
 	    var dropDown = $('<li/>', {
-	      'class' : 'dropdown'
+	      'class' : 'dropdown pull-right'
 	    }).append(dropDownToggle).append(dropDownMenu);
       
       tabContainer.append(dropDown);
