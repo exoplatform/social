@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -316,8 +315,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   private int loadIdRange(Identity ownerIdentity, long offset, long limit, List<Identity> result) {
     List<Space> spaces = spaceStorage.getAccessibleSpaces(ownerIdentity.getRemoteId(), offset, limit);
+    Identity identity = null;
     for (Space space : spaces) {
-      result.add(identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName()));
+      identity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+      if (identity != null) {
+        result.add(identity);
+      }
+      
     }
     return spaces.size();
   }
