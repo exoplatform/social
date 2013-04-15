@@ -6,39 +6,51 @@
 	jsManager.require("SHARED/jquery", "jq")
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();"); 
 %>
-<div class="UIGroupMembershipSelector" id="$uicomponent.id">
+<div class="uiGroupMembershipSelector" id="$uicomponent.id">
 	<div class="Container ClearFix"> 
 		<div class="SelectedGroupPath"><% uicomponent.renderChild(UIBreadcumbs.class); %></div>
-		<div class="GroupSelector">
-			<div class="ContentContainer">
-				<div class="MembershipTitle"><%=_ctx.appRes("UISocialGroupSelector.title.selectGroupMember")%></div>
-				<%uicomponent.renderChild(UITree.class);%>
-			</div>
-		</div>
-		<div class="MembershipSelector">
-			<div class="ContentContainer">
-				<div class="MembershipTitle"><%=_ctx.appRes("UISocialGroupSelector.title.selectChildGroup")%></div>
-				<div class="OverflowContainer">
-					<%								
-					boolean even = true; 
-					if(groups != null && groups.size() > 0) {
-						for(member in groups){
-							String rowCssClass = "OddRow"; 
-							if(even) rowCssClass = "EvenRow"; 	
-							even = !even; 
-					%>
-						<div class="$rowCssClass">
-							<a class="ItemIcon" href="<%=uicomponent.event("SelectGroup", member)%>" rel="tooltip" data-placement="bottom" title="$member">$member</a>
-						</div>
-						<%}%>
-					<% } else if( groups != null && groups.size() == 0 ) { %>
-						<div class="AddButton">
-							<a class="ItemIcon" href="<%= uicomponent.event("SelectGroup",uicomponent.getCurrentGroup().getId()) %>"><%=_ctx.appRes("UISocialGroupSelector.title.addGroupButton")%></a>
-						</div>
-					<% } %>	
-				</div>
-			</div>
-		</div>
+		
+		<div class="row-fluid" >
+	    <div class="span6">
+	        <div class="uiBox selectGroup noRounded">
+	            <h5 class="title"><%=_ctx.appRes("UISocialGroupSelector.title.selectGroupMember")%></h5>
+	            <%uicomponent.renderChild(UITree.class);%>
+	        </div>
+	    </div> <!-- End of span6 -->
+	    <div class="span6">
+	      <div class="uiBox noRounded childGoup">
+	        <h5 class="title">
+	          <%=_ctx.appRes("UISocialGroupSelector.title.selectChildGroup")%>
+	        </h5>
+	        
+	        <div class="uiContentBox">
+	          <ul>
+	          <%                
+	          if(groups != null && groups.size() > 0) {
+	            for(member in groups){
+	          %>
+                <li>
+                  <span class="uiIconMiniArrowRight"></span>
+                  <a lass="ItemIcon" href="<%=uicomponent.event("SelectGroup", member)%>">$member</a>  
+                </li>
+	          <%    
+	            }
+	          } else if( groups != null && groups.size() == 0 ) {
+	          %>
+                <li>
+                  <span class="uiIconMiniArrowRight"></span>
+                  <a class="ItemIcon" href="<%= uicomponent.event("SelectGroup",uicomponent.getCurrentGroup().getId()) %>" rel="tooltip" data-placement="bottom" ><%=_ctx.appRes("UISocialGroupSelector.title.addGroupButton")%></a>
+                </li>
+	          <%                            
+	          } 
+	          %>
+	          </ul>
+	        </div> <!-- End of uiContentBox -->
+	      </div> <!-- End of uiBox noRounded childGoup -->
+	    </div> <!-- End of span6 -->
+	    
+    </div> <!-- End of row-fluid -->
+		
 		
 	</div>
 </div> 		
