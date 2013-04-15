@@ -425,11 +425,13 @@ public class UIDisplayProfileList extends UIContainer {
       }
       
       uiAllPeople.setLoadAtEnd(false);
-      if (relationship != null && relationship.getStatus() == Relationship.Type.CONFIRMED) {
+      if (relationship.getStatus() == Relationship.Type.CONFIRMED) {
         Utils.getRelationshipManager().delete(relationship);
-        event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
+      } else {
+        Utils.getRelationshipManager().deny(inviIdentityIdentity, invitingIdentity);
       }
-
+      
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiAllPeople);
     }
   }
 
