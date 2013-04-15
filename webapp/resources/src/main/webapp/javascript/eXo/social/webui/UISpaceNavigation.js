@@ -169,4 +169,4 @@ var UISpaceNavigation = {
 };
 
 return UISpaceNavigation;
-})($);
+})(jQuery);
