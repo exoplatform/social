@@ -79,11 +79,11 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   
   public static final String MANAGER_GRANTED_TITLE_ID = "manager_role_granted";
   
-  public static final String USER_JOINED_TITLE_ID = "user_joined";
+  public static final String USER_JOINED_TITLE_ID = "has_joined";
   
   public static final String USER_SPACE_JOINED_TITLE_ID = "user_space_joined";
   
-  public static final String MEMBER_LEFT_TITLE_ID = "member_left";
+  public static final String MEMBER_LEFT_TITLE_ID = "has_left";
   
   public static final String MANAGER_REVOKED_TITLE_ID = "manager_role_revoked";
   
@@ -145,6 +145,11 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void spaceRemoved(SpaceLifeCycleEvent event) {
+    Map<String, String> templateParams = new LinkedHashMap<String, String>();
+    
+    // update user space activity for space
+    recordActivityForUserSpace(event, null, USER_SPACE_JOINED_TITLE_ID, templateParams, false);
+    
     LOG.debug("space " + event.getSpace().getDisplayName() + " was removed!");
   }
 

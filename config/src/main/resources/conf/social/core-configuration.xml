@@ -320,6 +320,14 @@
                     <value><string>SpaceActivityPublisher.manager_role_revoked</string></value>
                   </entry>
                   <entry>
+                    <key><string>has_joined</string></key>
+                    <value><string>SpaceActivityPublisher.has_joined</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>has_left</string></key>
+                    <value><string>SpaceActivityPublisher.has_left</string></value>
+                  </entry>
+                  <entry>
                     <key><string>user_joined</string></key>
                     <value><string>SpaceActivityPublisher.user_joined</string></value>
                   </entry>
