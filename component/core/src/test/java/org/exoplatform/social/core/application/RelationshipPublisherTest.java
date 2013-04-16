@@ -97,7 +97,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     ExoSocialActivity rootActivity = activityManager.getActivity(rootActivityId);
     List<ExoSocialActivity> rootComments = activityManager.getCommentsWithListAccess(rootActivity).loadAsList(0, 10);
     assertEquals(1, rootComments.size());
-    assertEquals("I'm now connected with 1 user",rootActivity.getTitle());
+    assertEquals("I'm now connected with 1 user(s)",rootActivity.getTitle());
     assertEquals("I'm now connected with Demo gtn",rootComments.get(0).getTitle());
     
     String demoActivityId =  identityStorage.getProfileActivityId(demoIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
@@ -105,7 +105,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     ExoSocialActivity demoActivity = activityManager.getActivity(demoActivityId);
     List<ExoSocialActivity> demoComments = activityManager.getCommentsWithListAccess(demoActivity).loadAsList(0, 10);
     assertEquals(1, demoComments.size());
-    assertEquals("I'm now connected with 1 user",demoActivity.getTitle());
+    assertEquals("I'm now connected with 1 user(s)",demoActivity.getTitle());
     assertEquals("I'm now connected with Root Root",demoComments.get(0).getTitle());
     
     Relationship rootToJohnRelationship = relationshipManager.inviteToConnect(rootIdentity, johnIdentity);
@@ -115,7 +115,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     rootActivity = activityManager.getActivity(rootActivityId);
     rootComments = activityManager.getCommentsWithListAccess(rootActivity).loadAsList(0, 10);
     assertEquals(2, rootComments.size());
-    assertEquals("I'm now connected with 2 users",rootActivity.getTitle());
+    assertEquals("I'm now connected with 2 user(s)",rootActivity.getTitle());
     assertEquals("I'm now connected with John Anthony",rootComments.get(1).getTitle());
     
     String johnActivityId =  identityStorage.getProfileActivityId(johnIdentity.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
@@ -123,7 +123,7 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     ExoSocialActivity johnActivity = activityManager.getActivity(johnActivityId);
     List<ExoSocialActivity> johnComments = activityManager.getCommentsWithListAccess(johnActivity).loadAsList(0, 10);
     assertEquals(1, johnComments.size());
-    assertEquals("I'm now connected with 1 user",johnActivity.getTitle());
+    assertEquals("I'm now connected with 1 user(s)",johnActivity.getTitle());
     assertEquals("I'm now connected with Root Root",johnComments.get(0).getTitle());
     
     //remove a connection will re-updated activity's title
@@ -131,10 +131,10 @@ public class RelationshipPublisherTest extends  AbstractCoreTest {
     relationshipPublisher.removed(new RelationshipEvent(Type.REMOVE, relationshipManager, rootToJohnRelationship));
     
     rootActivity = activityManager.getActivity(rootActivityId);
-    assertEquals("I'm now connected with 1 user",rootActivity.getTitle());
+    assertEquals("I'm now connected with 1 user(s)",rootActivity.getTitle());
     
     johnActivity = activityManager.getActivity(johnActivityId);
-    assertEquals("I'm now connected with 0 user",johnActivity.getTitle());
+    assertEquals("I'm now connected with 0 user(s)",johnActivity.getTitle());
     
     activityManager.deleteActivity(johnActivity);
     activityManager.deleteActivity(rootActivity);

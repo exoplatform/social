@@ -78,7 +78,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   private ExoSocialActivity createNewComment(Identity userIdenity, String fullName) {
     ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
     comment.setType(USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP);
-    String message = "I'm now connected with " + fullName;
+    String message = String.format("I'm now connected with %s", fullName);
     comment.setTitle(message);
     comment.setUserId(userIdenity.getId());
     I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
@@ -86,13 +86,9 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   }
   
   private void updateActivity(ExoSocialActivity activity, int numberOfConnections) {
-    String title = "I'm now connected with " + numberOfConnections + " users";
+    String title = String.format("I'm now connected with %s user(s)", numberOfConnections);
     String titleId = "user_relations";
     Map<String,String> params = new HashMap<String,String>();
-    if (numberOfConnections <= 1) {
-      title = "I'm now connected with " + numberOfConnections + " user";
-      titleId = "user_relation";
-    }
     activity.setTitle(title);
     activity.setTitleId(null);
     activity.setTemplateParams(params);
