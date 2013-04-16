@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Default message bundle
+-->
+<messageBundle>
+  <msg name="loading">Cargando... Espere...</msg>
+  <msg name="just_now">Justo ahora</msg>
+  <msg name="less_than_a_minute_ago">Hace menos de un minuto.</msg>
+  <msg name="about_a_minute_ago">Hace unos minutos.</msg>
+  <msg name="about_0_minutes_ago">Hace {0} minutos.</msg>
+  <msg name="about_an_hour_ago">Hace una hora.</msg>
+  <msg name="about_0_hours_ago">Hace {0} horas.</msg>
+  <msg name="sunday">Domingo</msg>
+  <msg name="monday">Lunes</msg>
+  <msg name="tuesday">Martes</msg>
+  <msg name="wednesday">Miércoles</msg>
+  <msg name="thursday">Jueves</msg>
+  <msg name="friday">Viernes</msg>
+  <msg name="saturday">Sábado</msg>
+  <msg name="january">Enero</msg>
+  <msg name="february">Febrero</msg>
+  <msg name="march">Marzo</msg>
+  <msg name="april">Abril</msg>
+  <msg name="may">Mayo</msg>
+  <msg name="june">Junio</msg>
+  <msg name="july">Julio</msg>
+  <msg name="august">Agosto</msg>
+  <msg name="september">Septiembre</msg>
+  <msg name="october">Octubre</msg>
+  <msg name="november">Noviembre</msg>
+  <msg name="december">Diciembre</msg>
+  <msg name="am">AM</msg>
+  <msg name="pm">PM</msg>
+  <msg name="day_date_month_year_at_hour_min_ap">{0} {1} {2} {3} at {4} : {5} : {6}.</msg>
+  <msg name="my_connections">Mis conexiones</msg>
+  <msg name="no_user_connection_activities_update">No hay actualizaciones de las actividades de conexión del usuario</msg>
+  <msg name="back_to_list">Volver a la lista</msg>
+  <msg name="people_directory">Directorio de personas</msg>
+  <msg name="quick_search">Búsqueda rápida</msg>
+  <msg name="more">Más</msg>
+  <msg name="load_more">Cargar más...</msg>
+  <msg name="view_type">Tipo de vista</msg>
+  <msg name="icon_list">Lista de ícono</msg>
+  <msg name="text_list">Lista de texto</msg>
+  <msg name="update_time">Update Time</msg>
+  <msg name="every_5_mins">Cada 5 minutos</msg>
+  <msg name="every_30_mins">Cada 30 minutos</msg>
+  <msg name="every_60_mins">Cada 60 minutos</msg>
+  <msg name="no_update">No actualizar</msg>
+  <msg name="item_sort_by">Elemento ordenado por</msg>
+  <msg name="randomize">Randomize</msg>
+  <msg name="user_name_a_z">Nombre de usuario (A-Z)</msg>
+  <msg name="user_name_z_a">Nombre de usuario (Z-A)</msg>
+  <msg name="activity_update">Actualización de la actividad</msg>
+  <msg name="number_item_per_view">Número de items por vista</msg>
+  <msg name="save">Guardar</msg>
+  <msg name="cancel">Cancelar</msg>
+  <msg name="profile_page">Página de perfil</msg>
+  <msg name="share">Compartir</msg>
+  <msg name="comment_here">Haga su comentario aquí</msg>
+</messageBundle>
