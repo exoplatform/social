@@ -28,7 +28,8 @@
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.service.LinkProvider;
-
+  import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+  
   def pcontext = Util.getPortalRequestContext();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
@@ -144,14 +145,16 @@
 
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
-  
+  def spaceCreatorIdentity = null;
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
     ownerName = profile.fullName;
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else if(uicomponent.isSpaceActivity()){
-    Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
+    Space space = Utils.getSpaceService().getSpaceByUrl(Utils.getSpaceUrlByContext());
+    managers = space.getManagers();
+    spaceCreatorIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, managers[0], false);
     ownerUri = Utils.getSpaceHomeURL(space);
     ownerAvatar = space.avatarUrl;
     ownerName = space.displayName;
@@ -165,7 +168,6 @@
   }
   def currentTime = System.currentTimeMillis();
   
-  def spaceCreatorIdentity = uicomponent.getSpaceCreatorIdentity();
   def spaceCreatorUri, spaceCreatorAvatar, spaceCreatorName;
     
   if ( spaceCreatorIdentity != null ) {
