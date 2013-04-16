@@ -27,6 +27,10 @@ import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage.TimestampType;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
+
+@FixMethodOrder(MethodSorters.DEFAULT)
 
 public class ActiviyBuilderWhereTest extends TestCase {
   Identity demoIdentity = null;
@@ -82,7 +86,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   
   
   public void testFeedNewerOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -103,25 +107,8 @@ public class ActiviyBuilderWhereTest extends TestCase {
     assertEquals(DIRECTION.ASC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
   }
   
-  public void testFeedWithMentions() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
-    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
-
-    //
-    List<Identity> identities = new ArrayList<Identity>(2);
-    identities.add(demoIdentity);
-    identities.add(rootIdentity);
-    where.owners(identities);
-    where.mentioner(maryIdentity);
-    
-    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' OR CONTAINS (soc:mentioners, 'mary123456') ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
-    String actualWhere =  where.build(filter);
-    assertEquals(expectedWhere, actualWhere);
-    
-  }
-  
   public void testFeedOlderOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -142,6 +129,23 @@ public class ActiviyBuilderWhereTest extends TestCase {
     assertEquals(DIRECTION.DESC, filter.get(ActivityFilter.POSTED_TIME_ORDERBY).getDirection());
   }
   
+  public void testFeedWithMentions() throws Exception {
+    ActivityFilter filter = ActivityFilter.older();
+    ActivityBuilderWhere where = ActivityBuilderWhere.simple();
+
+    //
+    List<Identity> identities = new ArrayList<Identity>(2);
+    identities.add(demoIdentity);
+    identities.add(rootIdentity);
+    where.owners(identities);
+    where.mentioner(maryIdentity);
+    
+    String expectedWhere = "(soc:identity = 'demo123456' OR soc:identity = 'root123456' OR CONTAINS (soc:mentioners, 'mary123456') ) AND soc:isComment = 'false' AND (soc:isHidden = 'false' OR soc:isHidden Is NULL ) ";
+    String actualWhere =  where.build(filter);
+    assertEquals(expectedWhere, actualWhere);
+    
+  }
+  
   private class InvokeBuildMethods implements Runnable {
     ActivityBuilderWhere where = null;
     ActivityFilter filter = null;
@@ -157,7 +161,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testFeedWithMultiThread() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     ActivityBuilderWhere where = ActivityBuilderWhere.viewedRange();
     long accessPoint = Calendar.getInstance().getTime().getTime();
     //
@@ -184,7 +188,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testUserNewerOwner() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -205,7 +209,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testUserOlderOwner() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -226,7 +230,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testUserSpaceOwner() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+    ActivityFilter filter = ActivityFilter.space();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     Identity spaceIdentity = new Identity("space_new1");
@@ -247,7 +251,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testUserSpaceNewerOwner() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceNewer();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -269,7 +273,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testUserSpaceOlderOwner() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceOlder();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -291,7 +295,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testConnectionNewerOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
@@ -313,7 +317,7 @@ public class ActiviyBuilderWhereTest extends TestCase {
   }
   
   public void testConnectionOlderOwners() throws Exception {
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     ActivityBuilderWhere where = ActivityBuilderWhere.simple();
 
     long accessPoint = Calendar.getInstance().getTime().getTime();
