@@ -470,14 +470,14 @@
           return;
         }
         var text = after.substr(info.from, info.to);
-        var nt = text.replace(new RegExp("(<[a-z0-9].*?>)(.*)(</[a-z0-9].*?>)", "gi"), "$2");
-        if (nt.length < text.length) {
-          after = after.substr(0, info.from) + $('<div/>').html(text).text() + ' ' + cursor + after.substr(info.to);
-          text = after;
+        var textValidated = $('<div/>').html(text).text();
+        if (textValidated.length < text.length) {
+          textValidated = textValidated.replace(/</gi, '&lt;').replace(/>/gi, '&gt;');
+          after = after.substr(0, info.from) + textValidated + ' ' + cursor + after.substr(info.to);
           elmInputBox.val(after);
           setCaretPosition(elmInputBox);
         }
-        autoAddLink(text);
+        autoAddLink(textValidated);
         elmInputBox.css('cursor', 'text');
         disabledPlaceholder();
       });
@@ -520,7 +520,7 @@
     }
 
     function onInputBoxInput(e) {
-			
+      
       if(isInput) return;
       isInput = true;
       updateValues();
@@ -779,7 +779,7 @@
 
     function backspceBroswerFix(e) {
       if (utils.isFirefox) {
-				var selection = getSelection();
+        var selection = getSelection();
         var node = $(selection.focusNode);
         if (node.is('i') && node.hasClass('uiIconClose')) {
           node.trigger('click');
@@ -1051,6 +1051,7 @@
         if (v === null || typeof v === "undefined") {
           var temp = $(this).clone();
           temp.find('span').find('i').remove();
+          temp.find('.cursorText').remove();
           return utils.getSimpleValue(temp.html());
         } else {
           if (typeof v === 'object') {
