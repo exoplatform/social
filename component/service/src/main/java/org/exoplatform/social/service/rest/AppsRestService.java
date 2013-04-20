@@ -40,18 +40,10 @@ import org.exoplatform.services.rest.resource.ResourceContainer;
 
 
 /**
- * AppsRestService.java
- * <br/>
- * Provides rest services for application registry gadget: shows application list.
- * <br />
- * GET: /{restContextName}/social/apps/show.{format}
- * <br />
- * ex: GET: http://localhost:8080/rest/social/apps/show.json
+ * Provides services for application registry gadget: shows application list.
  *
  * @anchor AppsRestService
  *
- * @since      Jan 6, 2010
- * 
  */
 @Path("social/apps")
 public class AppsRestService implements ResourceContainer {

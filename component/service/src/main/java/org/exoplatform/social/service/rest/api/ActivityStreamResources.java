@@ -41,12 +41,10 @@ import java.util.List;
 import static org.exoplatform.social.service.rest.RestChecker.*;
 
 /**
- * This service allows accessing to:
- * - activity stream (list of activities) of an owner identity.
- * - activity feed (all activities of the authenticated identity, his connections and his spaces).
- * - activity stream of the authenticated identity's connections.
- * - activity stream of the authenticated identity's spaces.
- *
+ * Provides an access to the activity stream (list of activities) of an owner identity, 
+ * activity feed (all activities of the authenticated identity, his connections and his spaces), 
+ * activity stream of the authenticated identity's connections,
+ * activity stream of the authenticated identity's spaces.
  * @anchor ActivityStreamResources
  *
  * @since 1.2.3

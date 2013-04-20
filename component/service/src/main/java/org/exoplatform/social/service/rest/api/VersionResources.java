@@ -37,12 +37,10 @@ import org.exoplatform.social.service.rest.api.models.Version;
 import org.exoplatform.social.service.rest.api.models.Versions;
 
 /**
- * <p>The version <tt>public</tt> rest service to gets the current latest rest service version and supported
- * versions.</p> <p> Url template: <tt>{rest_context_name}/api/social/version</tt> </p>
+ * Provides the latest rest service version and provides the supported one.
  *
  * @anchor VersionResources
  * 
- * @since Jun 9, 2011.
  */
 @Path("api/social/version")
 public class VersionResources implements ResourceContainer {

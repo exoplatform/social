@@ -58,8 +58,7 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
  * Activity Resources end point.
  * 
  * @anchor ActivityResources
- * 
- * @since Jun 15, 2011
+ *
  */
 @Path("api/social/" + VersionResources.LATEST_VERSION+ "/{portalContainerName}/")
 public class ActivityResources implements ResourceContainer {
