@@ -29,8 +29,7 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
 /**
- * LinkShareRestService: gets information from a provided link.<br />
- * POST: /rest/social/linkshare <br />
+ * Gets information from a provided link.
  * 
  * @anchor LinkShareRestService
  */
