@@ -110,29 +110,15 @@ public class UIPageNodeForm extends UIFormTabPane {
 
   private static final String          LABEL                  = "label";
   
-  /** Html attribute title. */
-  private static final String          HTML_ATTRIBUTE_TITLE   = "title";
-
   public UIPageNodeForm() throws Exception {
     super("UIPageNodeForm");
 
-    WebuiRequestContext requestContext = WebuiRequestContext.getCurrentInstance();
-    ResourceBundle resourceBundle = requestContext.getApplicationResourceBundle();
-    
     UIFormInputSet uiSettingSet = new UIFormInputSet("PageNodeSetting");
-    UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(SHOW_PUBLICATION_DATE,
-                                                                                     null,
-                                                                                     false);
-    uiDateInputCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.showPublicationDate"));
-    UICheckBoxInput uiVisibleCheck = new UICheckBoxInput(VISIBLE,
-                                                                                   null,
-                                                                                   true);
-    uiVisibleCheck.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.visible"));
-    UICheckBoxInput uiSwitchLabelMode = new UICheckBoxInput(SWITCH_MODE,
-                                                                                      null,
-                                                                                      true);
-    uiSwitchLabelMode.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.switchMode"));
 
+    UICheckBoxInput uiDateInputCheck = new UICheckBoxInput(SHOW_PUBLICATION_DATE, null, false);
+    UICheckBoxInput uiVisibleCheck = new UICheckBoxInput(VISIBLE, null, true);
+    UICheckBoxInput uiSwitchLabelMode = new UICheckBoxInput(SWITCH_MODE, null, true);
+    
     uiDateInputCheck.setOnChange("SwitchPublicationDate");
     uiVisibleCheck.setOnChange("SwitchVisible");
     uiSwitchLabelMode.setOnChange(SWITCH_MODE_ONCHANGE);
@@ -141,26 +127,19 @@ public class UIPageNodeForm extends UIFormTabPane {
     initLanguageSelectBox(uiFormLanguagesSelectBox);
     uiFormLanguagesSelectBox.setOnChange(LANGUAGES_ONCHANGE);
 
-    UIFormStringInput uri = new UIFormStringInput("URI", "URI", null);
-    uri.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.uri"));
-    uiSettingSet.addUIFormInput(uri.setEditable(false));
-    UIFormStringInput name = new UIFormStringInput("name", "name", null);
-    name.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.name"));
-    uiSettingSet.addUIFormInput(name.addValidator(MandatoryValidator.class)
+    uiSettingSet.addUIFormInput(new UIFormStringInput("URI", "URI", null).setDisabled(true))
+                .addUIFormInput(new UIFormStringInput("name", "name", null).addValidator(MandatoryValidator.class)
                                                                            .addValidator(StringLengthValidator.class,
                                                                                          3,
                                                                                          30)
                                                                            .addValidator(IdentifierValidator.class))
-                .addUIFormInput(uiSwitchLabelMode);
-    UIFormStringInput label = new UIFormStringInput(LABEL, LABEL, null);
-    label.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.label"));
-    uiSettingSet.addUIFormInput(label.addValidator(StringLengthValidator.class,
+                .addUIFormInput(uiSwitchLabelMode)
+                .addUIFormInput(new UIFormStringInput(LABEL, LABEL, null).addValidator(StringLengthValidator.class, 
                                                                                        3,
                                                                                        120))
-                .addUIFormInput(uiFormLanguagesSelectBox);
-    UIFormStringInput i18nLabel = new UIFormStringInput(I18N_LABEL, null, null);
-    i18nLabel.setHTMLAttribute(HTML_ATTRIBUTE_TITLE, resourceBundle.getString("UIPageNodeForm.label.i18nLabel"));
-    uiSettingSet.addUIFormInput(i18nLabel.setMaxLength(255).addValidator(StringLengthValidator.class,
+                .addUIFormInput(uiFormLanguagesSelectBox)
+                .addUIFormInput(new UIFormStringInput(I18N_LABEL, null, null).setMaxLength(255)
+                                                                             .addValidator(StringLengthValidator.class, 
                                                                                            3,
                                                                                            120))
                 .addUIFormInput(uiVisibleCheck.setChecked(true))
@@ -189,13 +168,13 @@ public class UIPageNodeForm extends UIFormTabPane {
     selectedLocale = getUIFormSelectBox(LANGUAGES).getValue();
     cachedLabels = new HashMap<String, Described.State>();
     if (pageNode == null) {
-      getUIStringInput("name").setEditable(UIFormStringInput.ENABLE);
+      getUIStringInput("name").setReadOnly(false);
       getChild(UIFormInputIconSelector.class).setSelectedIcon("Default");
       setShowPublicationDate(false);
-      switchLabelMode(false);
+      switchLabelMode(true);
       return;
     }
-    getUIStringInput("name").setEditable(UIFormStringInput.DISABLE);
+    getUIStringInput("name").setReadOnly(true);
     invokeGetBindingBean(pageNode_);
   }
 
@@ -285,10 +264,8 @@ public class UIPageNodeForm extends UIFormTabPane {
     Map<Locale, Described.State> i18nizedLabels = pageNode.getI18nizedLabels();
     if (i18nizedLabels != null) {
       for (Locale key : i18nizedLabels.keySet()) {
-        String locale = (key.getCountry() != null && !key.getCountry().isEmpty()) ? key.getLanguage()
-                                                                                     + "_"
-                                                                                     + key.getCountry()
-                                                                                 : key.getLanguage();
+        String locale = key.getCountry() != "" ? key.getLanguage() + "_" + key.getCountry()
+                                               : key.getLanguage(); 
         cachedLabels.put(locale, i18nizedLabels.get(key));
       }
     }
@@ -339,7 +316,7 @@ public class UIPageNodeForm extends UIFormTabPane {
     if (node.getVisibility() != Visibility.SYSTEM) {
       Visibility visibility;
       if (getUICheckBoxInput(VISIBLE).isChecked()) {
-        UICheckBoxInput showPubDate = getUICheckBoxInput(SHOW_PUBLICATION_DATE);
+        UICheckBoxInput showPubDate = getUICheckBoxInput(SHOW_PUBLICATION_DATE); 
         visibility = showPubDate.isChecked() ? Visibility.TEMPORAL : Visibility.DISPLAYED;
       } else {
         visibility = Visibility.HIDDEN;
@@ -517,13 +494,16 @@ public class UIPageNodeForm extends UIFormTabPane {
 
       UIFormInputIconSelector uiIconSelector = uiPageNodeForm.getChild(UIFormInputIconSelector.class);
       if (uiIconSelector.getSelectedIcon().equals("Default"))
-        pageNode.setIcon("DefaultPageIcon");
+        pageNode.setIcon(null);
       else
         pageNode.setIcon(uiIconSelector.getSelectedIcon());
 
       UIPopupWindow uiPopup = uiPageNodeForm.getParent();
       UISpaceNavigationManagement uiSpaceNav = uiPopup.getParent();
       UISpaceNavigationNodeSelector uiNodeSelector = uiSpaceNav.getChild(UISpaceNavigationNodeSelector.class);
+      if (pageNode != null) {
+        uiNodeSelector.getUserNodeLabels().put(pageNode.getId(), pageNode.getI18nizedLabels());
+      } 
       uiNodeSelector.save();
       uiSpaceNav.setOwner(contextNavigation.getKey().getName());
       uiSpaceNav.setOwnerType(contextNavigation.getKey().getTypeName());
@@ -551,6 +531,7 @@ public class UIPageNodeForm extends UIFormTabPane {
 
       uiForm.setSelectedLocale(languageSelection.getValue());
       label.setValue(uiForm.getLabelOnLocale(uiForm.getSelectedLocale()));
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm); 
     }
   }
 
@@ -692,6 +673,7 @@ public class UIPageNodeForm extends UIFormTabPane {
       }
 
       pageSelector.setValue(page.getId());
+      event.getRequestContext().addUIComponentToUpdateByAjax(pageSelector); 
     }
   }
 
@@ -700,4 +682,12 @@ public class UIPageNodeForm extends UIFormTabPane {
     getUIStringInput(I18N_LABEL).setRendered(isExtendedMode);
     getUIFormSelectBox(LANGUAGES).setRendered(isExtendedMode);
   }
+  
+  static public class SelectTabActionListener extends UIFormTabPane.SelectTabActionListener {
+    public void execute(Event<UIFormTabPane> event) throws Exception {
+      super.execute(event);
+      PortalRequestContext pcontext = Util.getPortalRequestContext();
+      pcontext.setResponseComplete(true);
+    }
+  } 
 }
