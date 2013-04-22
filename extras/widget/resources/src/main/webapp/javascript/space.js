@@ -2,17 +2,18 @@
 /*global alert: false, confirm: false, console: false, prompt: false, window: true */
 (function () {
     //We set default configuration values
+    var portalENV = parent.eXo.env.portal;
     var configuration = {
         //Do not include a trailing /
-        serverURL: "http://localhost:8080",
+        serverURL: top.location.host,
 
         //start and end by a /
-        spaceServicePath: "/rest/private/spaces/",
+        spaceServicePath: "/" + ((portalENV.rest) ? portalENV.rest : "rest") + "/spaces/",
 
         // This is default values work with eXo Platform 3.0.x
         // This can be configured using space.setContainerName and space.setPortalName
-        containerName: "portal",
-        portalName: "intranet",
+        containerName: (portalENV.context).replace('/', ''), 
+        portalName: portalENV.portalName,
 
         linkElId: "exoSpacesLink",
         spaceInfoTmpl: '<div style="height:200px;overflow:hidden;width:220px;border:medium none;"><a href="javascript:void(0)" rel="close" style="float:right;">Close</a><br /><%= iframe %></div>'
