@@ -38,11 +38,9 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.filters.DefaultFilter;
 import org.cyberneko.html.filters.ElementRemover;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.social.common.embedder.EmbedderFactory;
 import org.exoplatform.social.common.embedder.ExoSocialMedia;
-import org.exoplatform.social.common.embedder.OembedEmbedder;
 
 /**
  * LinkShare - gets preview information of a link including: 
@@ -370,10 +368,9 @@ public class LinkShare extends DefaultFilter {
     LinkShare linkShare = new LinkShare();
     linkShare.link = link;
     LinkShare.lang = lang;
-    // get media object from link
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    OembedEmbedder embedder = (OembedEmbedder) container.getComponentInstanceOfType(OembedEmbedder.class);
-    linkShare.mediaObject = embedder.getExoSocialMedia(link);
+    
+    linkShare.mediaObject = EmbedderFactory.getInstance(link).getExoSocialMedia();  
+    
     // if there is no media object, processes link to get page metadata
     if(linkShare.mediaObject == null) {
       String mimeType = org.exoplatform.social.service.rest.Util.getMimeTypeOfURL(link);

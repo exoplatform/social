@@ -39,7 +39,7 @@ import org.json.JSONObject;
  * @since 4.0.0-GA  
  */
 
-public class OembedEmbedder {
+public class OembedEmbedder implements Embedder {
   
   private static final String EMBED_TITLE = "title";
   private static final String EMBED_DESC = "description";
@@ -50,6 +50,7 @@ public class OembedEmbedder {
   
   // <urlscheme,endpoint> mapping
   private Map<Pattern,String> schemeEndpointMap;
+  private String url;
   
   private static final Log LOG = ExoLogger.getLogger(OembedEmbedder.class); 
   
@@ -66,13 +67,29 @@ public class OembedEmbedder {
       schemeEndpointMap.put(Pattern.compile(valueParam.getName()), valueParam.getValue());
     }
   }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  /**
+   * processes input link and returns data wrapped into a model called ExoSocialMedia.
+   * 
+   * @param url Link to get oembed data.
+   * @return ExoSocialMedia object that corresponds to the link.
+   * @deprecated Should use {@link OembedEmbedder#getExoSocialMedia()} instead.
+   */
+  public ExoSocialMedia getExoSocialMedia(String url) {
+    setUrl(url);
+    return getExoSocialMedia();
+  }
   
   /**
    * processes input link and returns data wrapped into a model called ExoSocialMedia.
-   * @param url
+   * 
    * @return ExoSocialMedia object that corresponds to the link.
    */
-  public ExoSocialMedia getExoSocialMedia(String url) {
+  public ExoSocialMedia getExoSocialMedia() {
     
     URL urlObj = getOembedUrl(url);
     if(urlObj == null)

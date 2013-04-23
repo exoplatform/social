@@ -94,6 +94,17 @@
       </init-params>
   </component>
   
+  <component>
+    <key>org.exoplatform.social.common.embedder.YoutubeEmbedder</key>
+    <type>org.exoplatform.social.common.embedder.YoutubeEmbedder</type>
+      <init-params>
+        <value-param>
+          <name>(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&amp;v=))((\w|-){11})(?:\S+)?$</name>
+          <value>http://gdata.youtube.com/feeds/api/videos/%s?v=2&amp;alt=json</value>
+        </value-param>
+      </init-params>
+  </component>
+  
   <external-component-plugins>
      <target-component>org.exoplatform.services.rest.impl.provider.JAXBContextResolver</target-component>
      <component-plugin>
