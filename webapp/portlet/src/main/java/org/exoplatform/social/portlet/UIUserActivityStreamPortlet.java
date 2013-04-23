@@ -48,7 +48,6 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   private String ownerName;
   private String viewerName;
   private UIComposer uiComposer;
-  private PopupContainer hiddenContainer;
   private boolean composerDisplayed = false;
   UIUserActivitiesDisplay uiUserActivitiesDisplay;
   /**
@@ -59,7 +58,7 @@ public class UIUserActivityStreamPortlet extends UIPortletApplication {
   public UIUserActivityStreamPortlet() throws Exception {
     viewerName = Utils.getViewerRemoteId();
     ownerName = Utils.getOwnerRemoteId();
-    hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
+    PopupContainer hiddenContainer = addChild(PopupContainer.class, null, "HiddenContainer");
     uiComposer = addChild(UIComposer.class, null, null);
     uiComposer.setPostContext(PostContext.USER);
     uiComposer.setOptionContainer(hiddenContainer);

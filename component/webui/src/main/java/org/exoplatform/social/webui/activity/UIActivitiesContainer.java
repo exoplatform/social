@@ -27,9 +27,11 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.UIPortletApplication;
 
 /**
  * UIActivitiesContainer.java
@@ -52,25 +54,22 @@ public class UIActivitiesContainer extends UIContainer {
   private Space space;
   private String ownerName;
   private String selectedDisplayMode;
-  private UIPopupWindow popupWindow;
   private long lastVisited = 0;
 
   /**
    * constructor
    */
   public UIActivitiesContainer() {
-    try {
-      popupWindow = addChild(UIPopupWindow.class, null, "OptionPopupWindow");
-      popupWindow.setShow(false);
-    } catch (Exception e) {
-      LOG.error(e);
-    } 
+  }
+
+  public PopupContainer getPopupContainer() {
+    return getAncestorOfType(UIPortletApplication.class).findFirstComponentOfType(PopupContainer.class);
   }
 
   public UIPopupWindow getPopupWindow() {
-    return popupWindow;
+    return getPopupContainer().getChild(UIPopupWindow.class).setRendered(true);
   }
-
+  
   public List<ExoSocialActivity> getActivityList() {
     return activityList;
   }
