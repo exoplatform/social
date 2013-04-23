@@ -17,8 +17,6 @@
 package org.exoplatform.social.core.processor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,19 +24,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import junit.framework.TestCase;
+
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.configuration.ConfigurationManagerImpl;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ObjectParameter;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.container.xml.ValuesParam;
+import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.services.resources.Query;
 import org.exoplatform.services.resources.ResourceBundleData;
 import org.exoplatform.services.resources.impl.BaseResourceBundlePlugin;
 import org.exoplatform.services.resources.impl.BaseResourceBundleService;
+import org.exoplatform.services.resources.impl.LocaleConfigServiceImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-
-import junit.framework.TestCase;
 
 /**
  * Unit Test for {@link org.exoplatform.social.core.processor.I18NActivityProcessor}.
@@ -284,8 +286,9 @@ public class I18NActivityProcessorTest extends TestCase {
   }
 
 
-  private FakeResourceBundleService getResourceBundleService() {
-    FakeResourceBundleService fakeResourceBundleService = new FakeResourceBundleService();
+  private FakeResourceBundleService getResourceBundleService() throws Exception {
+    FakeResourceBundleService fakeResourceBundleService = new FakeResourceBundleService(createService());
+    
 
     //register resource bundle plugin
     ValuesParam valuesParam = new ValuesParam();
@@ -323,11 +326,28 @@ public class I18NActivityProcessorTest extends TestCase {
     activityResourceBundlePlugin = new ActivityResourceBundlePlugin(initParams);
     activityResourceBundlePlugin.setName("fake-type");
   }
+  
+  private LocaleConfigService createService() throws Exception {
+    ConfigurationManagerImpl cm = new ConfigurationManagerImpl();
+    InitParams params = new InitParams();
+    ValueParam param = new ValueParam();
+    param.setName("locale.config.file");
+    param.setValue("classpath:/conf/locales-config.xml");
+    params.addParameter(param);
+
+    //
+    LocaleConfigService service = new LocaleConfigServiceImpl(params, cm);
+    return service;
+  }
 
   /**
    * The fake ResourceBundleService implementation for testing purpose.
    */
   private class FakeResourceBundleService extends BaseResourceBundleService {
+    
+    public FakeResourceBundleService(LocaleConfigService localeService) {
+      this.localeService_ = localeService;
+    }
 
     @Override
     protected ResourceBundle getResourceBundleFromDb(String id, ResourceBundle parent, Locale locale) throws Exception {
