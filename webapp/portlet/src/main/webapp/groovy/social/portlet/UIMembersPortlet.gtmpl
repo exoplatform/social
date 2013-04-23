@@ -119,7 +119,7 @@
         <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
             <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotLeaderYet")%></div>-->
         <div class="uiFilterList">
-            <div class="result"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
+            <div class="result clearfix"><span class="number">0</span><%=_ctx.appRes(uicomponent.getId() + ".label.Number_Member_In_Space")%></div>
         </div>
       <% } %>
       
@@ -132,7 +132,7 @@
           <% if(memberList.size() > 0)  { %>
             <!--div class="DirectoryNormalBox"-->
             <div class="uiFilterList">
-                <div class="result"><span class="number"><%=uicomponent.memberNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+                <div class="result clearfix"><span class="number"><%=uicomponent.memberNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
                 <ul class="letterList"> 
                      <li>
                      <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
@@ -217,7 +217,7 @@
         <!-- NEED TO BE ADD CODE HERE INSTEAD OF STATIC TEXT  
             <div class="noneContentSpace"><%=_ctx.appRes(uicomponent.getId() + ".label.NotMemberYet")%></div>-->
         <div class="uiFilterList">
-            <div class="result"><span class="number">0 </span><%=_ctx.appRes(uicomponent.getId() + ".label.NoneResultFound")%></div>
+            <div class="result clearfix"><span class="number">0 </span><%=_ctx.appRes(uicomponent.getId() + ".label.NoneResultFound")%></div>
         </div>
       <% } %>
        </div>

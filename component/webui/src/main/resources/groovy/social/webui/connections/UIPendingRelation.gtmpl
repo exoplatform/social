@@ -85,7 +85,7 @@
 	        <h4 class="titleWithBorder">$contactsDirectory</h4>
 	        <!--div class="DirectoryNormalBox"-->
 	        <div class="uiFilterList">
-	            <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+	            <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 	            <ul class="letterList"> 
 	                 <li>
 	                 <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
