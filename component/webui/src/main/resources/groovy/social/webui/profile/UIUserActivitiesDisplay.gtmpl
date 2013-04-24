@@ -103,7 +103,7 @@
     //jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
   } 
   
-  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 0;
   
   //
   def welcomeActivityAvatar = LinkProvider.STARTER_ACTIVITY_AVATAR;
