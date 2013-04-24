@@ -152,7 +152,7 @@
     ownerName = profile.fullName;
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else if(uicomponent.isSpaceActivity()){
-    Space space = Utils.getSpaceService().getSpaceByUrl(Utils.getSpaceUrlByContext());
+    Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
     managers = space.getManagers();
     spaceCreatorIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, managers[0], false);
     ownerUri = Utils.getSpaceHomeURL(space);
