@@ -105,8 +105,9 @@ public class SpaceSearchConnector extends AbstractSocialSearchConnector {
   protected String getSpaceUrl(SearchContext context, Space space, String portalName) {
 
     try {
+      String permanentSpaceName = space.getPrettyName();
+      
       String groupId = space.getGroupId();
-      String permanentSpaceName = groupId.split("/")[2];
 
       //
       String siteName = groupId.replaceAll("/", ":");
