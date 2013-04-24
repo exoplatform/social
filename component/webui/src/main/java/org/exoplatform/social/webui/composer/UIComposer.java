@@ -52,7 +52,6 @@ public class UIComposer extends UIForm {
     USER
   }
 
-  private UIContainer optionContainer;
   private PostContext postContext;
   private UIActivityComposerContainer composerContainer;
   private UIActivityComposerManager activityComposerManager;
@@ -153,14 +152,6 @@ public class UIComposer extends UIForm {
 
   public void setPostContext(PostContext postContext) {
     this.postContext = postContext;
-  }
-
-  public void setOptionContainer(UIContainer optionContainer) {
-    this.optionContainer = optionContainer;
-  }
-
-  public UIContainer getOptionContainer() {
-    return optionContainer;
   }
 
   public String getActivateEvent(String activityComposerId){

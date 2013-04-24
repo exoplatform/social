@@ -27,12 +27,31 @@ public class PopupContainer extends UIPopupContainer {
 
   public PopupContainer() throws Exception {
     UIPopupWindow popupWindow = addChild(UIPopupWindow.class, null, null);
-    popupWindow.setRendered(false).setId("UISocialPopupWindow");
+    popupWindow.setRendered(false);
   }
   
   @Override
   public void activate(UIComponent uiComponent, int width, int height, boolean isResizeable) throws Exception {
+    activate(uiComponent, width, height, isResizeable, null);
+  }
+
+  @Override
+  public void activate(UIComponent uiComponent, int width, int height) throws Exception {
+    activate(uiComponent, width, height, true);
+  }
+
+  public <T extends UIComponent> T activate(Class<T> type, int width, String popupWindowId) throws Exception {
+    T comp = createUIComponent(type, null, null);
+    activate(comp, width, 0, true, popupWindowId);
+    return comp;
+  }
+
+  public void activate(UIComponent uiComponent, int width, int height, boolean isResizeable, String popupId) throws Exception {
     UIPopupWindow popup = getChild(UIPopupWindow.class);
+    if (popupId == null || popupId.trim().length() == 0) {
+      popupId = "UISocialPopupWindow";
+    }
+    popup.setId(popupId);
     popup.setUIComponent(uiComponent);
     popup.setWindowSize(width, height);
     popup.setRendered(true);

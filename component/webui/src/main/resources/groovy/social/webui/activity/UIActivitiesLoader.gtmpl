@@ -54,13 +54,13 @@
 	} """
   
   jsManager.require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($labels);");
+	String clearClass = "clearBG";
+	if(Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {
+	  clearClass = "clearfix";
+	}
 %>
 
-<% if ( Utils.isHomePage() && hasActivities && uicomponent.isUIUserActivityDisplay()) {%>
-<div class="uiActivityStream clearfix" id="$uicomponent.id">
-<% } else { %>
-<div class="uiActivityStream clearBG" id="$uicomponent.id">
-<% } %>
+<div class="uiActivityStream $clearClass" id="$uicomponent.id">
 <% if ( hasActivities ) {
      uicomponent.renderChild(uicomponent.getActivitiesContainer());
      uicomponent.renderChild(uicomponent.getExtendContainer());
@@ -88,4 +88,5 @@
   %>
 <%} %>
 <div class="bottomContainer"></div>
+<% _ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl"); %>
 </div>
