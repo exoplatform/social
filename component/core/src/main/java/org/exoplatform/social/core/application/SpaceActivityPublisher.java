@@ -365,6 +365,8 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
         if (! "Has left the space.".equals(activityMessage)) {
           ExoSocialActivity comment = createComment(activityMessage, titleId, null, SPACE_APP_ID, identity, templateParams);
           ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+          activity.setTitle(space.getMembers().length + "Member");
+          activityManager.updateActivity(activity);
           activityManager.saveComment(activity, comment);
         }
       } catch (Exception e) {
@@ -375,7 +377,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId == null) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setType(SPACE_PROFILE_ACTIVITY);
-      activity.setTitle(space.getDisplayName() + " was created by @" + event.getTarget() + " .");
+      activity.setTitle("1 Member");
       if (Space.HIDDEN.equals(space.getVisibility())) {
         activity.isHidden(true);
       }
