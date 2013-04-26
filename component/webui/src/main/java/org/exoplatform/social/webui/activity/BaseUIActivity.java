@@ -619,6 +619,9 @@ public class BaseUIActivity extends UIForm {
       uiActivity.refresh();
       uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+      
+      event.getRequestContext().getJavascriptManager()
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
     }
   }
 
@@ -636,6 +639,9 @@ public class BaseUIActivity extends UIForm {
       boolean isLiked = Boolean.parseBoolean(isLikedStr);
       uiActivity.setLike(isLiked, requestContext.getRemoteUser());
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      
+      event.getRequestContext().getJavascriptManager()
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
     }
   }
 
@@ -662,6 +668,9 @@ public class BaseUIActivity extends UIForm {
       }
       uiActivity.setCommentFormDisplayed(false);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+      
+      event.getRequestContext().getJavascriptManager()
+        .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
     }
   }
 
@@ -702,6 +711,10 @@ public class BaseUIActivity extends UIForm {
       uiActivity.saveComment(requestContext.getRemoteUser(), message);
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      
+      event.getRequestContext().getJavascriptManager()
+      .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+      
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
   }
@@ -724,6 +737,10 @@ public class BaseUIActivity extends UIForm {
       } else {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
       }
+      
+      event.getRequestContext().getJavascriptManager()
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+      
     }
   }
 
@@ -742,6 +759,10 @@ public class BaseUIActivity extends UIForm {
                                                requestContext.getRequestParameter(OBJECTID));
       uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
+      
+      event.getRequestContext().getJavascriptManager()
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+      
     }
   }
 
