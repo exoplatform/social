@@ -70,7 +70,7 @@ public class BaseUIActivity extends UIForm {
 
   private static final int DEFAULT_LIMIT = 10;
   
-  protected static final int LIKES_NUM_DEFAULT = 15;
+  protected static final int LIKES_NUM_DEFAULT = 14;
   
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
