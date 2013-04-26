@@ -365,8 +365,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
         if (! "Has left the space.".equals(activityMessage)) {
           ExoSocialActivity comment = createComment(activityMessage, titleId, null, SPACE_APP_ID, identity, templateParams);
           ExoSocialActivity activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-          activity.setTitle(space.getMembers().length + "Member");
-          activityManager.updateActivity(activity);
           activityManager.saveComment(activity, comment);
         }
       } catch (Exception e) {
