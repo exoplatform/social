@@ -180,8 +180,8 @@
       }
       return info;
     },
-    isIE : ($.browser.msie),
-    isFirefox : ($.browser.mozilla),
+    isIE : ($.browser.msie === true),
+    isFirefox : ($.browser.mozilla === true),
     brVersion : $.browser.version
   };
 
@@ -661,7 +661,7 @@
 
       checkAutoAddLink(e);
 
-      if(getInputBoxValue().length === 0) {
+      if(elmInputBox.val().length === 0) {
         enabledPlaceholder();
       } else {
         disabledPlaceholder();
@@ -1208,7 +1208,7 @@
         // add placeholder
         var title = jElmTarget.attr('title');
         if ($.trim(title).length > 0) {
-          var placeholder = $('<div class="placeholder">' + title + '</div>').removeAttr("title");
+          var placeholder = $('<div class="placeholder">' + title + '</div>');
           placeholder.on('click', function() {
             elmInputBox.focus();
           });
