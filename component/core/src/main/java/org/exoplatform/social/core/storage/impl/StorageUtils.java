@@ -1,17 +1,24 @@
 package org.exoplatform.social.core.storage.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
@@ -31,6 +38,9 @@ public class StorageUtils {
   public static final String SLASH_STR = "/";
   public static final String SOC_ACTIVITY_INFO = "soc:activityInfo";
   public static final String SOC_PREFIX = "soc:";
+  
+  //
+  private static List<String> userInPlatformGroups = null;
   
   public static void applyFilter(final WhereExpression whereExpression, final ProfileFilter profileFilter) {
     //
@@ -171,6 +181,73 @@ public class StorageUtils {
                               append(chromatticSession.getJCRSession().getWorkspace().getName()).
                               append(path.replaceAll("%", "%25"));
     return encodedUrl.toString();
+  }
+  
+  /**
+   * Checks Identity in Social is activated or not
+   * @param identity
+   * @return TRUE activated otherwise FALSE
+   * @throws IdentityStorageException
+   */
+  public static boolean isUserActivated(String remoteId) throws IdentityStorageException {
+
+    try {
+      //
+      if (userInPlatformGroups == null) {
+        OrganizationService orgService = (OrganizationService) PortalContainer.getInstance().getComponentInstanceOfType(OrganizationService.class);
+        
+        //
+        ListAccess<User> listAccess = orgService.getUserHandler()
+                                                .findUsersByGroupId(SpaceUtils.PLATFORM_USERS_GROUP);
+
+        int offset = 0;
+        int limit = 20;
+
+        userInPlatformGroups = new ArrayList<String>();
+        limit = Math.min(limit, listAccess.getSize());
+        int loaded = 0;
+        
+        loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
+        
+        if (limit != listAccess.getSize()) {
+          while (loaded == limit) {
+            loaded = loadUserRange(listAccess, offset, Math.min(offset + limit, listAccess.getSize()), userInPlatformGroups);
+            offset += limit;
+          }
+        }
+      }
+      
+      //
+      return userInPlatformGroups.contains(remoteId);
+    } catch (Exception e) {
+      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER,
+                                         e.getMessage());
+    }
+  }
+  
+  /**
+   * Gets User range for given group
+   * @param listAccess
+   * @param offset
+   * @param limit
+   * @param userList
+   * @return
+   * @throws Exception
+   */
+  private static int loadUserRange(ListAccess<User> listAccess, int  offset, int limit, List<String> userList) throws Exception {
+    User[] gotList = listAccess.load(offset, limit);
+    for(User item : gotList) {
+      userList.add(item.getUserName());
+    }
+    //
+    return gotList.length;
+  }
+  
+  /**
+   * there is any update in platform/users group, we need to take care.
+   */
+  public static void clearUsersPlatformGroup() {
+    userInPlatformGroups = null;
   }
   
 }
