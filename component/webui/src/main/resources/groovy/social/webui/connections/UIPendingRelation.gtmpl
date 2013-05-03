@@ -142,7 +142,7 @@
 			    </div>
 		       <% if (isEditable) {%>
 				       	<div class="connectionBtn clearfix">
-				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" rel="tooltip" data-placement="bottom" title="$cancelRequestLabel">$cancelRequestLabel</button>
+				          <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$cancelRequestLabel</button>
 				        </div>
 		      <% } %>
 		    </div>

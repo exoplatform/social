@@ -146,7 +146,7 @@
 	          
 		        <% if (isEditable) {%>
 		        <div class="connectionBtn clearfix">
-	              <button class="btn pull-right" onclick="$removeConnectionAction" rel="tooltip" data-placement="bottom" title="$removeTitle">$removeTitle</button>
+	              <button class="btn pull-right" onclick="$removeConnectionAction">$removeTitle</button>
 	          </div>
 		        <% } %>	         
 	        </div>

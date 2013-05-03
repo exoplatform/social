@@ -159,8 +159,8 @@
 		
 		      <% if (isEditable) {%>
 		      <div class="connectionBtn clearfix">
-			      <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" data-placement="bottom" title="$ignoreLabel">$ignoreLabel</button>
-			      <button class="btn pull-right btn-primary" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" data-placement="bottom" title="$confirmLabel">$confirmLabel</button>    
+			      <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$ignoreLabel</button>
+			      <button class="btn pull-right btn-primary" onclick="<%=uicomponent.event("Confirm",identity.getId())%>">$confirmLabel</button>    
 		      </div>
 		      <% } %>
       

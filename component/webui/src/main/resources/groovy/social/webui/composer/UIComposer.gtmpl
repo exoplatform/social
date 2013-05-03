@@ -101,7 +101,7 @@
     %>
     
 		<div  class="blastShare clearfix">
-		 <button class="pull-right btn btn-primary" rel="tooltip" data-placement="bottom" title="$shareLabel" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
+		 <button class="pull-right btn btn-primary" id="ShareButton" type="submit" onclick="<%= uicomponent.event("PostMessage");%>; UIComposer.post()">$shareLabel</button>
 		  <div id="ActivityComposerExt" class="attachMents pull-left">
 		  <%
 			  def simpleName, labelSimpleName, actionEvent, clazz;
