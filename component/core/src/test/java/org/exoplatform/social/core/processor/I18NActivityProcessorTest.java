@@ -225,6 +225,25 @@ public class I18NActivityProcessorTest extends TestCase {
 
   }
   
+  public void testProcessKeyForTitle() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Title has been updated: ";
+    String value = "hello, where are you?";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title", value);
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Title has been updated: hello, where are you?", newActivity.getTitle());
+
+  }
+  
   public void testCompoundSingleQuote() throws Exception {
     Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
     activityKeyTypeMapping.put("add_topic", "add_topic");

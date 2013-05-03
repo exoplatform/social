@@ -33,6 +33,9 @@ public class I18NActivityUtils {
   private final static String RESOURCE_BUNDLE_ESCAPE_CHARACTER = "${_}";
   
   /** */
+  private final static String RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER = "${-}";
+  
+  /** */
   private final static String RESOURCE_BUNDLE_KEYS_CHARACTER = ",";
   
   /**
@@ -90,7 +93,7 @@ public class I18NActivityUtils {
     String[] got = v.split(RESOURCE_BUNDLE_KEYS_CHARACTER);
     
     for(int i = 0; i<got.length; i++) {
-      got[i] = got[i].trim();
+      got[i] = postKeyProcess(got[i].trim());
     }
     
     //
@@ -146,6 +149,24 @@ public class I18NActivityUtils {
   }
   
   /**
+   * Escape , character into values by ${-}
+   * @param value
+   * @return
+   */
+  private static String preKeyProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_KEYS_CHARACTER, RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER);
+  }
+  
+  /**
+   * Escape , character into values
+   * @param value
+   * @return
+   */
+  private static String postKeyProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER, RESOURCE_BUNDLE_KEYS_CHARACTER);
+  }
+  
+  /**
    * Escapse # character into values by ${_}
    * @param value
    * @return
@@ -173,6 +194,7 @@ public class I18NActivityUtils {
         sb.append(" ");
       } else {
         s = preProcess(s);
+        s = preKeyProcess(s);
         sb.append(s);
       }
       
