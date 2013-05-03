@@ -1,26 +1,4 @@
 <%
-/*
-<!--
-
-  Copyright (C) 2003-2011 eXo Platform SAS.
- 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
- 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
--->
-*/
-%>
-<%
   import org.exoplatform.social.webui.Utils
   import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.social.core.space.model.Space
@@ -29,27 +7,25 @@
   import org.exoplatform.social.webui.space.UISpaceSearch
   import org.exoplatform.social.core.service.LinkProvider;
 
-  def uicomponentId = uicomponent.id
+  def uicomponentId = uicomponent.id;
   
-  def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space");
+  def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation");
+  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space");
+  def ignoreSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.ignore_invitation");
+  def labelMembers = _ctx.appRes("${uicomponentId}.label.Members");
+  def mySpaceIdx = 0;
+  def style="display:none;";
   
-  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
-  def acceptSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.accept_invitation")
-  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.received_invitation_to_join_space")
-  def ignoreSpaceActionLabel = _ctx.appRes("${uicomponentId}.label.ignore_invitation")
-  def labelMembers = _ctx.appRes("${uicomponentId}.label.Members")
-  def mySpaceIdx = 0
-  def style="display:none;"
-  
-  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More")
-  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members")
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.label.members");
   def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
   
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
   }
 
-  def invitedSpaces = uicomponent.getInvitedSpacesList()
+  def invitedSpaces = uicomponent.getInvitedSpacesList();
   def selectedChar = uicomponent.getSelectedChar();
   def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
   def allSpacesURL = Utils.getURI("all-spaces");
@@ -63,7 +39,7 @@
   def selectedNode = Utils.getSelectedNode();
   
   if (invitedSpaces.size() == uicomponent.getInvitedSpacesNum()) {
-    uicomponent.setLoadAtEnd(true)
+    uicomponent.setLoadAtEnd(true);
   }
   
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
@@ -88,24 +64,23 @@
 					    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
 					    <!--div class="DirectoryNormalBox"-->
 					    <div class="uiFilterList">
-					        <div class="result clearfix"><span class="number"><%=uicomponent.getInvitedSpacesNum(); %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
+					        <div class="result clearfix"><span class="number"><%=uicomponent.getInvitedSpacesNum() %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 					        <ul class="letterList"> 
-					            <li>
-					            <% if ((selectedChar != null) && (selectedChar == "All")) { %>
-					                    <a href="javascript:void(0);" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-					            <%} else {%>
-					                    <a href="javascript:void(0);" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-					            <% } %>
-					            </li>
-					            <% for (ch in alphabets) { %>
-					            <li>
-					            <% if ((selectedChar != null) && (selectedChar == ch)) { %>
-					                <a href="javascript:void(0);" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-					            <%} else {%>
-					                <a href="javascript:void(0);" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-					            <% } %>
-					            </li>
-					            <% } %>
+					       <% 
+		               	String cssClassSelected = (selectedChar.equals(uicomponent.SEARCH_ALL)) ? "selected allSpace" : "allSpace";
+		             %>
+		                <li>
+		                	<a href="javascript:void(0);" class="$cssClassSelected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", uicomponent.SEARCH_ALL)%>">$searchAll</a>
+		                </li>
+		             <%
+		             		String[] alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+		                for (ch in alphabets) {
+		                  cssClassSelected = (selectedChar.equals(ch)) ? "selected" : "";
+		        	   %>
+		                <li>
+		                    <a href="javascript:void(0);" class="$cssClassSelected" onclick="<%=uicomponent.event("Search", ch)%>">$ch</a>
+		                </li>
+		             <% } %>
 					        </ul>
 					    </div>
 					    
@@ -113,17 +88,17 @@
 				  <div class="spaceList clearfix">
 				
 				  <%for (space in invitedSpaces) {
-				      def spaceUrl = Utils.getSpaceHomeURL(space)
-				      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false"
-				      def ignoreSpaceAction = uicomponent.event("Ignore", space.id) + "; return false"
+				      def spaceUrl = Utils.getSpaceHomeURL(space);
+				      def acceptSpaceAction = uicomponent.event("Accept", space.id) + "; return false";
+				      def ignoreSpaceAction = uicomponent.event("Ignore", space.id) + "; return false";
 				      def imageSource = uicomponent.getImageSource(space);
 				      if (imageSource == null) {
 				        imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 				      }
 				      def spaceAvatarTitle = _ctx.appRes("${uicomponentId}.title.SpaceAvatar");
-				      def visibility = space.visibility
+				      def visibility = space.visibility;
 				       //trick, temporary use private as visible
-				      if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+				      if (visibility.equals(Space.PRIVATE)) visibility = "visible";
 				      mySpaceIdx += 1;
 				  %>
 				
@@ -141,7 +116,7 @@
                     <% if (space.description != null && space.description.length() > 0) { %>
                       $space.description<br/>
                     <% } else { %>
-                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description"); %>
+                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description")%>
                     <% } %>
 				        </div>
 				        </div>
@@ -157,15 +132,18 @@
 			    <%
 			   if(uicomponent.isEnableLoadNext()) {
 			  %>
-			      <div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+			      <div id="LoadMoreReceivedInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 			        $labelShowMoreSpace
 			      </div>
 			    <%
 			   } else {
 			   %>
-			        <script type="text/javascript">
-			          try{document.getElementById("LoadMoreReceivedInvitationButton").style.display = "none";}catch(e){};
-			        </script>
+<script type="text/javascript">
+	var loadMore = document.getElementById("LoadMoreReceivedInvitationButton");
+	if (loadMore) {
+		loadMore.style.display = "none";
+	}
+</script>
 			    <%
 			    }
 			    %>
