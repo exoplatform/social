@@ -30,6 +30,12 @@ public class I18NActivityUtils {
   private final static String RESOURCE_BUNDLE_VALUES_CHARACTER = "#";
   
   /** */
+  private final static String RESOURCE_BUNDLE_ESCAPE_CHARACTER = "${_}";
+  
+  /** */
+  private final static String RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER = "${-}";
+  
+  /** */
   private final static String RESOURCE_BUNDLE_KEYS_CHARACTER = ",";
   
   /**
@@ -53,7 +59,7 @@ public class I18NActivityUtils {
     }
     String[] got = valueParam.split(RESOURCE_BUNDLE_VALUES_CHARACTER);
     for(int i = 0; i<got.length; i++) {
-      got[i] = got[i].trim();
+      got[i] = postProcess(got[i].trim());
     }
     
     return got;
@@ -87,7 +93,7 @@ public class I18NActivityUtils {
     String[] got = v.split(RESOURCE_BUNDLE_KEYS_CHARACTER);
     
     for(int i = 0; i<got.length; i++) {
-      got[i] = got[i].trim();
+      got[i] = postKeyProcess(got[i].trim());
     }
     
     //
@@ -134,6 +140,42 @@ public class I18NActivityUtils {
   }
   
   /**
+   * Escapse # character into values
+   * @param value
+   * @return
+   */
+  private static String postProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_ESCAPE_CHARACTER, RESOURCE_BUNDLE_VALUES_CHARACTER);
+  }
+  
+  /**
+   * Escape , character into values by ${-}
+   * @param value
+   * @return
+   */
+  private static String preKeyProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_KEYS_CHARACTER, RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER);
+  }
+  
+  /**
+   * Escape , character into values
+   * @param value
+   * @return
+   */
+  private static String postKeyProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_ESCAPE_KEY_CHARACTER, RESOURCE_BUNDLE_KEYS_CHARACTER);
+  }
+  
+  /**
+   * Escapse # character into values by ${_}
+   * @param value
+   * @return
+   */
+  private static String preProcess(String value) {
+    return value.replace(RESOURCE_BUNDLE_VALUES_CHARACTER, RESOURCE_BUNDLE_ESCAPE_CHARACTER);
+  }
+  
+  /**
    * 
    * @param values
    * @return
@@ -151,6 +193,8 @@ public class I18NActivityUtils {
       if (s == null || s.length() == 0) {
         sb.append(" ");
       } else {
+        s = preProcess(s);
+        s = preKeyProcess(s);
         sb.append(s);
       }
       

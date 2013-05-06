@@ -27,12 +27,11 @@ public class EmbedderTest extends AbstractCommonTest {
   
   private static final Log LOG = ExoLogger.getLogger(EmbedderTest.class);
   
-  private OembedEmbedder embedder;
+  private Embedder embedder;
   
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    embedder = (OembedEmbedder) getContainer().getComponentInstanceOfType(OembedEmbedder.class);
   }
   
   @Override
@@ -43,21 +42,35 @@ public class EmbedderTest extends AbstractCommonTest {
    * Test youtube link
    */
   public void testYoutube() {
+    String youTubeURL = "http://www.youtube.com/watch?v=CZUXUjhXzDo";
     // youtube video link, exist media object
-    ExoSocialMedia videoObj = embedder.getExoSocialMedia("http://www.youtube.com/watch?v=CZUXUjhXzDo");
+    embedder = EmbedderFactory.getInstance(youTubeURL);
+    ExoSocialMedia videoObj = embedder.getExoSocialMedia();
     if(videoObj == null) {
       LOG.warn("Can't connect to youtube");
-    } else {
-      assertEquals("YouTube",videoObj.getProvider());
-    }
+      return;
+    } 
+    
+    assertRetrurnedData("http://www.youtube.com/watch?v=CZUXUjhXzDo");
+    assertRetrurnedData("http://www.youtube.com/watch?feature=player_embedded&v=mhu0cNjWE8I");
+    assertRetrurnedData("http://youtu.be/mhu0cNjWE8I");
+    assertRetrurnedData("http://www.youtube.com/embed/mhu0cNjWE8I");
+    assertRetrurnedData("http://m.youtube.com/watch?v=mhu0cNjWE8I");
+    assertRetrurnedData("https://www.youtube.com/watch?v=CZUXUjhXzDo");
+    assertRetrurnedData("https://www.youtube.com/watch?feature=player_embedded&v=mhu0cNjWE8I");
+    assertRetrurnedData("https://youtu.be/mhu0cNjWE8I");
+    assertRetrurnedData("https://www.youtube.com/embed/mhu0cNjWE8I");
+    assertRetrurnedData("https://m.youtube.com/watch?v=mhu0cNjWE8I");
   } 
   
   /**
    * test slideshare link
    */
   public void testSlideShare() {
+    String slideShareURL = "http://www.slideshare.net/sh1mmer/using-nodejs-to-make-html5-work-for-everyone";
     // slideshare oembed response
-    ExoSocialMedia slideObj = embedder.getExoSocialMedia("http://www.slideshare.net/sh1mmer/using-nodejs-to-make-html5-work-for-everyone");
+    embedder = EmbedderFactory.getInstance(slideShareURL);
+    ExoSocialMedia slideObj = embedder.getExoSocialMedia();
     if(slideObj == null) {
       LOG.warn("Can't connect to slideshare");
     } else {
@@ -69,10 +82,22 @@ public class EmbedderTest extends AbstractCommonTest {
    * test links that dont match any url schemes
    */
   public void testNonMediaLink() {
+    String googleSiteURL = "www.google.com";
     // whatever link that does not match any url schemes
-    assertNull(embedder.getExoSocialMedia("www.google.com"));
+    embedder = EmbedderFactory.getInstance(googleSiteURL);
+    assertNull(embedder.getExoSocialMedia());
     
     // youtube homepage, get no media object
-    assertNull(embedder.getExoSocialMedia("www.youtube.com"));
+    String youtubeSiteURL = "www.youtube.com";
+    embedder = EmbedderFactory.getInstance(youtubeSiteURL);
+    assertNull(embedder.getExoSocialMedia());
+  }
+  
+  private void assertRetrurnedData(String youTubeURL) {
+    embedder = EmbedderFactory.getInstance(youTubeURL);
+    ExoSocialMedia videoObj = embedder.getExoSocialMedia();
+    assertNotNull(videoObj.getTitle());
+    assertNotNull(videoObj.getHtml());
+    assertNotNull(videoObj.getDescription());
   }
 }

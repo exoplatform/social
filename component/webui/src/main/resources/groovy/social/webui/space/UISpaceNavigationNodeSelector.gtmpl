@@ -10,7 +10,7 @@
 	jsManager.require("SHARED/jquery", "jq")
 	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
 %>
-<div id="UISpaceNavigationNodeSelector" class="uiTreeExplorer">
+<div id="UISpaceNavigationNodeSelector" class="uiSpaceNavigationNodeSelector">
 <%
   if(uiPopupMenu != null && uiPopupMenu.isRendered()) {
     String id = uicomponent.getParent().getId();
@@ -28,87 +28,11 @@
   }
 %>
 
-<div class="MiddleLeftContainerOptions" $popupMenu>
-		<div class="UISpaceNavigationNodeSelector">
-					<div class="UIVerticalSlideTabs ItemList CategoryContainer" style="padding: 1px;">
-						<%
-							uicomponent.renderChild(UITree.class);
-						%>
-					</div>
-		</div>
-</div>
-
-<!-- 	
-<ul class="nodeGroup"> 
-	<li class="lastNode node">   
-		<div class="uiIconExpand">    
-			<div class="page treeNodeType node node">        
-				<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfdg</a>   
-			</div>  
-		</div>
-		<ul class="nodeGroup"> 
-			<li class="">   
-				<div class="uiIconExpand">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-			</li>
-			<li class="">  
-				<div class="uiIconCollapse">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-			</li>
-			<li class="">  
-				<div class="uiIconExpand">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-			</li>
-			<li class="">  
-				<div class="uiIconCollapse">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-			</li>
-			<li class="">  
-				<div class="uiIconCollapse">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-			</li>
-			<li class="">  
-				<div class="uiIconExpand">    
-					<div class="page treeNodeType node node ">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-					</div>  
-				</div> 
-				<ul class="nodeGroup"> 
-					<li class="">   
-						<div class="uiIconCollapse">    
-							<div class="page treeNodeType node node ">        
-								<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdfg</a>
-							</div>  
-						</div> 
-					</li>
-				</ul>
-			</li> 
-			<li class="lastNode node">   
-				<div class="uiIconEmpty">    
-					<div class="page treeNodeType node selected">        
-						<a href="" data-placement="bottom" rel="tooltip" data-original-title="">dfgdh</a>
-					</div>
-				</div>
-			</li>
-		</ul> 
-	</li>
-</ul>
--->
+	<div $popupMenu style="padding: 10px 0;">
+		<%
+			uicomponent.renderChild(UITree.class);
+		%>
+	</div>
 </div>
 
 

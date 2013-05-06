@@ -46,10 +46,10 @@
   <% uiform.begin() %>
 	<div class="changeAccount clearfix">
 		<div class="changeAvatar pull-left">
-			<a href="javascript:void(0);" class="avatarXLargeWithBorder" title="$clickChangeAvatar">
+			<a href="javascript:void(0);" class="avatarXLargeWithBorder">
 				<img src="$imageSource" rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"/>
 			</a>
-			<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$changePictureLabel" onclick="$changeAvatar">$changePictureLabel</button>
+			<button class="btn" type="button" onclick="$changeAvatar">$changePictureLabel</button>
 		</div>
 		<div class="form-horizontal pull-left">
 			<div class="control-group">
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="uiAction uiActionBorder"><button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$saveLabel" onclick="$saveAction">$saveLabel</button></div>
+	<div class="uiAction uiActionBorder"><button class="btn" type="button" onclick="$saveAction">$saveLabel</button></div>
   <% uiform.end(); %>
   <div class="uiAvatarUploader"><% uicomponent.renderChild(UIPopupWindow.class) %></div>
 </div>

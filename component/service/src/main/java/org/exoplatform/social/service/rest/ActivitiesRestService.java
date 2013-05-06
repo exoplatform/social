@@ -58,19 +58,10 @@ import org.exoplatform.social.service.rest.api.models.CommentRestOut;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
- * ActivitiesRestService.java <br />
  *
- * Provide rest services for activity gadget: like/unlike; comment; delete activity. <br />
- * apis: <br />
- * GET:  /restContextName/social/activities/{activityId}/likes/show.{format} <br />
- * POST: /restContextName/social/activities/{activityId}/likes/update.{format} <br />
- * POST: /restContextName/social/activities/{activityId}/likes/destroy/{identity}.{format} <br />
- * ... <br />
- * See methods for more api details.
- * 
+ * Provides services for activity gadget: like/unlike, comment and delete activity. 
  * @anchor ActivitiesRestService
  *
- * @since      Dec 29, 2009
  */
 @Path("{portalName}/social/activities")
 public class ActivitiesRestService implements ResourceContainer {

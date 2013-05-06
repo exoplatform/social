@@ -320,6 +320,14 @@
                     <value><string>SpaceActivityPublisher.manager_role_revoked</string></value>
                   </entry>
                   <entry>
+                    <key><string>has_joined</string></key>
+                    <value><string>SpaceActivityPublisher.has_joined</string></value>
+                  </entry>
+                  <entry>
+                    <key><string>has_left</string></key>
+                    <value><string>SpaceActivityPublisher.has_left</string></value>
+                  </entry>
+                  <entry>
                     <key><string>user_joined</string></key>
                     <value><string>SpaceActivityPublisher.user_joined</string></value>
                   </entry>
@@ -476,10 +484,6 @@
     <type>org.exoplatform.social.common.embedder.OembedEmbedder</type>
       <init-params>
         <value-param>
-          <name>http://(www|de)\.youtube\.com/watch\?v=.*</name>
-          <value>http://www.youtube.com/oembed?url=%s&amp;format=json</value>
-        </value-param>
-        <value-param>
           <name>http://www\.dailymotion\.com/video/.*</name>
           <value>http://www.dailymotion.com/services/oembed?format=json&amp;url=%s</value>
         </value-param>
@@ -494,6 +498,17 @@
       </init-params>
   </component>
   
+  <component>
+    <key>org.exoplatform.social.common.embedder.YoutubeEmbedder</key>
+    <type>org.exoplatform.social.common.embedder.YoutubeEmbedder</type>
+      <init-params>
+        <value-param>
+          <name>(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&amp;v=))((\w|-){11})(?:\S+)?$</name>
+          <value>http://gdata.youtube.com/feeds/api/videos/%s?v=2&amp;alt=json</value>
+        </value-param>
+      </init-params>
+  </component> 
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
     <component-plugin>

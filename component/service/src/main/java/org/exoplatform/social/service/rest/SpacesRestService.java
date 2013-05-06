@@ -65,13 +65,8 @@ import org.exoplatform.web.controller.router.RouterConfigException;
 import org.exoplatform.web.controller.router.URIWriter;
 
 /**
- * SpacesRestService.java <br />
- * <p/>
- * Provides rest services for space gadget to display user's spaces and pending spaces. <br />
- * <p/>
- * GET: /restContextName/social/spaces/{userId}/mySpaces/show.{format} <br /> GET:
- * /restContextName/social/spaces/{userId}/pendingSpaces/show.{format} <br /> Example:<br /> GET:
- * http://localhost:8080/rest/portal/social/spaces/mySpaces/show.json
+ *
+ * Provides services for space gadget to display user's spaces and pending spaces.
  *
  * @anchor SpacesRestService
  *

@@ -71,20 +71,28 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
   private ExoSocialActivity createNewActivity(Identity identity, int nbOfConnections) {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setType(USER_ACTIVITIES_FOR_RELATIONSHIP);
-    activity.setTitle("I'm now connected with " + nbOfConnections + " users");
-    activity.setUserId(identity.getId());
-    I18NActivityUtils.addResourceKey(activity, "user_relations", "" + nbOfConnections);
+    updateActivity(activity, nbOfConnections);
     return activity;
   }
   
   private ExoSocialActivity createNewComment(Identity userIdenity, String fullName) {
     ExoSocialActivityImpl comment = new ExoSocialActivityImpl();
     comment.setType(USER_COMMENTS_ACTIVITY_FOR_RELATIONSHIP);
-    String message = "I'm now connected with " + fullName;
+    String message = String.format("I'm now connected with %s", fullName);
     comment.setTitle(message);
     comment.setUserId(userIdenity.getId());
     I18NActivityUtils.addResourceKey(comment, "user_relation_confirmed", fullName);
     return comment;
+  }
+  
+  private void updateActivity(ExoSocialActivity activity, int numberOfConnections) {
+    String title = String.format("I'm now connected with %s user(s)", numberOfConnections);
+    String titleId = "user_relations";
+    Map<String,String> params = new HashMap<String,String>();
+    activity.setTitle(title);
+    activity.setTitleId(null);
+    activity.setTemplateParams(params);
+    I18NActivityUtils.addResourceKey(activity, titleId, "" + numberOfConnections);
   }
 
   /**
@@ -105,15 +113,11 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       ExoSocialActivity senderComment = createNewComment(sender, fullNameReceiver);
       String fullNameSender = sender.getProfile().getFullName();
       ExoSocialActivity receiverComment = createNewComment(receiver, fullNameSender);
-      Map<String,String> params = new HashMap<String,String>();
       
       if (activityIdSender != null) {
         ExoSocialActivity activitySender = activityManager.getActivity(activityIdSender);
         if (activitySender != null) {
-          activitySender.setTitle("I'm now connected with " + nbOfSenderConnections + " users");
-          activitySender.setTemplateParams(params);
-          activitySender.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activitySender, "user_relations", "" + nbOfSenderConnections);
+          updateActivity(activitySender, nbOfSenderConnections);
           activityManager.updateActivity(activitySender);
           activityManager.saveComment(activitySender, senderComment);
         } else {
@@ -130,10 +134,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdReceiver != null) {
         ExoSocialActivity activityReceiver = activityManager.getActivity(activityIdReceiver);
         if (activityReceiver != null) {
-          activityReceiver.setTitle("I'm now connected with " + nbOfReceiverConnections + " users");
-          activityReceiver.setTemplateParams(params);
-          activityReceiver.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", "" + nbOfReceiverConnections);
+          updateActivity(activityReceiver, nbOfReceiverConnections);
           activityManager.updateActivity(activityReceiver);
           activityManager.saveComment(activityReceiver, receiverComment);
         } else {
@@ -173,15 +174,11 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       int nbOfSenderConnections = getRelationShipManager().getConnections(sender).getSize();
       String activityIdReceiver = getIdentityStorage().getProfileActivityId(receiver.getProfile(), Profile.AttachedActivityType.RELATIONSHIP);
       int nbOfReceiverConnections = getRelationShipManager().getConnections(receiver).getSize();
-      Map<String,String> params = new HashMap<String,String>();
       
       if (activityIdSender != null) {
         ExoSocialActivity activitySender = activityManager.getActivity(activityIdSender);
         if (activitySender != null) {
-          activitySender.setTitle("I'm now connected with " + nbOfSenderConnections + " users");
-          activitySender.setTemplateParams(params);
-          activitySender.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activitySender, "user_relations", "" + nbOfSenderConnections);
+          updateActivity(activitySender, nbOfSenderConnections);
           activityManager.updateActivity(activitySender);
         }
       }
@@ -189,10 +186,7 @@ public class RelationshipPublisher extends RelationshipListenerPlugin {
       if (activityIdReceiver != null) {
         ExoSocialActivity activityReceiver = activityManager.getActivity(activityIdReceiver);
         if (activityReceiver != null) {
-          activityReceiver.setTitle("I'm now connected with " + nbOfReceiverConnections + " users");
-          activityReceiver.setTemplateParams(params);
-          activityReceiver.setTitleId(null);
-          I18NActivityUtils.addResourceKey(activityReceiver, "user_relations", "" + nbOfReceiverConnections);
+          updateActivity(activityReceiver, nbOfReceiverConnections);
           activityManager.updateActivity(activityReceiver);
         }
       }

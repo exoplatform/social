@@ -106,8 +106,6 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
     List<ExoSocialActivity> activities = activityManager.getActivities(identity);
     assertEquals(1, activities.size());
     tearDownActivityList.add(activities.get(0));
-    assertTrue(activities.get(0).getTitle().contains(space.getDisplayName()));
-    assertTrue(activities.get(0).getTitle().contains("root"));
 
     ActivityStream activityStream = activities.get(0).getActivityStream();
 

@@ -77,7 +77,7 @@
 
   jsmanager.require("SHARED/jquery", "jq")
            .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup($labels);")
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('$uicomponentId', $labels);")
            .require("SHARED/social-ui-user-search", "socialUIUserSearch").addScripts("socialUIUserSearch.init($params);")
 	         .require("SHARED/uiForm");
 	
@@ -98,7 +98,7 @@
 		<% uiform.renderField(childs.get(0));%>&nbsp;&nbsp;
 		<% uiform.renderField(childs.get(1))%>&nbsp;&nbsp;
 		<% uiform.renderField(childs.get(2))%>&nbsp;&nbsp;
-		<button type="button" class="btn btn-primary" rel="tooltip" title="$searchActionLabel" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></button>
+		<button type="button" class="btn btn-primary" id="SearchButton" onclick="<%=uicomponent.event("Search")%>" ><%= searchActionLabel %></button>
    </div>
  <% uiform.end() %>
 </div>

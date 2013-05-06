@@ -27,6 +27,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
 
 /**
  * Listens to user updating events.
@@ -50,6 +51,9 @@ public class SocialUserEventListenerImpl extends UserEventListener {
     if (isNew && identity != null) {
       throw new RuntimeException("Unable to create a previously deleted user : " + user.getUserName());
     }
+    
+    //
+    StorageUtils.clearUsersPlatformGroup();
 
     RequestLifeCycle.end();
   }
@@ -128,6 +132,9 @@ public class SocialUserEventListenerImpl extends UserEventListener {
       // Nothing executed (user not deleted) when facing this case now with code commit by SOC-1507.
       // Will be implemented by SOC-2276.
     }
+    
+    //
+    StorageUtils.clearUsersPlatformGroup();
 
     RequestLifeCycle.end();
 

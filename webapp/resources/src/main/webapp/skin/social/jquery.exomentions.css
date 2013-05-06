@@ -130,7 +130,7 @@
 }
 
 .exo-mentions .placeholder {
-  color: gray;
+  color: #333;
   position: absolute;
   top: 10px;
   left: 10px;

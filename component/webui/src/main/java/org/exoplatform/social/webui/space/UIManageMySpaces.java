@@ -230,7 +230,7 @@ public class UIManageMySpaces extends UIContainer {
    * @return Character is selected.
    */
   public String getSelectedChar() {
-    return selectedChar;
+    return (selectedChar == null || selectedChar.length() == 0) ? SEARCH_ALL : selectedChar;
   }
 
   /**

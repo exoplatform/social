@@ -1,5 +1,6 @@
 (function($) { 
 var UIProfile = {
+  labels: {},
   KEYS : {
     ENTER : 13
   },
@@ -20,12 +21,17 @@ var UIProfile = {
       });
     }
   },
-  initUserProfilePopup : function(labels) {
+  initUserProfilePopup : function(uicomponentId, labels) {
+    //
+    labels = labels || UIProfile.labels;
+    UIProfile.labels = labels;
+    
     // User Profile Popup initialize
 	  var portal = eXo.social.portal;
 	  var restUrl = 'http://' + window.location.host + portal.context + '/' + portal.rest + '/social/people' + '/getPeopleInfo/{0}.json';
     
-    var userLinks = $('a:[href*="/profile/"]');
+    var container = $('#' + uicomponentId).closest('.PORTLET-FRAGMENT');
+    var userLinks = $(container).find('a:[href*="/profile/"]');
     $.each(userLinks, function (idx, el) {
         var userUrl = $(el).attr('href');
         var userId = userUrl.substring(userUrl.lastIndexOf('/') + 1);

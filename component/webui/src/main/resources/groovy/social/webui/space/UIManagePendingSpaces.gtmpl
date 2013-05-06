@@ -1,26 +1,4 @@
 <%
-/*
-<!--
-
-  Copyright (C) 2003-2011 eXo Platform SAS.
- 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
- 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-
--->
-*/
-%>
-<%
   import org.exoplatform.social.webui.Utils
   import org.exoplatform.portal.webui.util.Util
   import org.exoplatform.social.core.space.model.Space
@@ -29,26 +7,24 @@
   import org.exoplatform.social.webui.space.UISpaceSearch
   import org.exoplatform.social.core.service.LinkProvider;
 
-  def uicomponentId = uicomponent.id
+  def uicomponentId = uicomponent.id;
   
-  def alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-
   def spacesFoundLabel = _ctx.appRes("${uicomponentId}.label.SpaceListing");
-  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space")
-  def cancelInvitationActionLabel= _ctx.appRes("${uicomponentId}.label.cancel_invitation")
-  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending")
-  def labelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
-  def mySpaceIdx = 0
-  def style="display:none;"
+  def labelActionLeaveSpace = _ctx.appRes("${uicomponentId}.label.action_leave_space");
+  def cancelInvitationActionLabel= _ctx.appRes("${uicomponentId}.label.cancel_invitation");
+  def iconImgLabel = _ctx.appRes("${uicomponentId}.label.request_pending");
+  def labelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members");
+  def mySpaceIdx = 0;
+  def style="display:none;";
   
-  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More")
-  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members")
+  def labelShowMoreSpace = _ctx.appRes("${uicomponentId}.label.Show_More");
+  def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members");
   
   if (uicomponent.isLoadAtEnd()) {
     uicomponent.init();
   }
 
-  def pendingSpaces = uicomponent.getPendingSpacesList()
+  def pendingSpaces = uicomponent.getPendingSpacesList();
   def selectedChar = uicomponent.getSelectedChar();
   def searchAll = _ctx.appRes("${uicomponentId}.label.SearchAll");
   def allSpacesURL = Utils.getURI("all-spaces");
@@ -61,7 +37,7 @@
   def labelRequestsPending = _ctx.appRes("${uicomponent.id}.label.Requests_Pending");
   def selectedNode = Utils.getSelectedNode();
   if (pendingSpaces.size() == uicomponent.getPendingSpacesNum()) {
-    uicomponent.setLoadAtEnd(true)
+    uicomponent.setLoadAtEnd(true);
   }
   
   
@@ -87,24 +63,23 @@
 				    <h4 class="titleWithBorder">$spacesFoundLabel</h4>
 				    <!--div class="DirectoryNormalBox"-->
 				    <div class="uiFilterList">
-				        <div class="result"><span class="number"><%=uicomponent.getPendingSpacesNum(); %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+				        <div class="result clearfix"><span class="number"><%=uicomponent.getPendingSpacesNum()%></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 				        <ul class="letterList"> 
-				            <li>
-				            <% if ((selectedChar != null) && (selectedChar == "All")) { %>
-				                    <a href="javascript:void(0);" class="selected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				            <%} else {%>
-				                    <a href="javascript:void(0);" id="searchAllSpace" onclick="<%=uicomponent.event("Search", ""+"All")%>">$searchAll</a>
-				            <% } %>
-				            </li>
-				            <% for (ch in alphabets) { %>
-				            <li>
-				            <% if ((selectedChar != null) && (selectedChar == ch)) { %>
-				                <a href="javascript:void(0);" class="selected" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				            <%} else {%>
-				                <a href="javascript:void(0);" onclick="<%=uicomponent.event("Search", ""+ch)%>">$ch</a>
-				            <% } %>
-				            </li>
-				            <% } %>
+				         <% 
+		               	String cssClassSelected = (selectedChar.equals(uicomponent.SEARCH_ALL)) ? "selected allSpace" : "allSpace";
+		             %>
+		                <li>
+		                	<a href="javascript:void(0);" class="$cssClassSelected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", uicomponent.SEARCH_ALL)%>">$searchAll</a>
+		                </li>
+		             <%
+		             		String[] alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+		                for (ch in alphabets) {
+		                  cssClassSelected = (selectedChar.equals(ch)) ? "selected" : "";
+		        	   %>
+		                <li>
+		                    <a href="javascript:void(0);" class="$cssClassSelected" onclick="<%=uicomponent.event("Search", ch)%>">$ch</a>
+		                </li>
+		             <% } %>
 				        </ul>
 				    </div>
 				    
@@ -114,10 +89,10 @@
 			
 			    <%for (space in pendingSpaces) {
 			        def spaceUrl = Utils.getSpaceHomeURL(space)
-			        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false"
-			        def visibility = space.visibility
+			        def revokeSpaceAction = uicomponent.event("RevokePending", space.id) + "; return false";
+			        def visibility = space.visibility;
 			        //trick, temporary use private as visible
-			        if (visibility.equals(Space.PRIVATE)) visibility = "visible"
+			        if (visibility.equals(Space.PRIVATE)) visibility = "visible";
 			        def imageSource = uicomponent.getImageSource(space);
 			        if (imageSource == null) {
 			          imageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
@@ -140,7 +115,7 @@
                     <% if (space.description != null && space.description.length() > 0) { %>
                       $space.description<br/>
                     <% } else { %>
-                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description"); %>
+                      <%=_ctx.appRes("${uicomponent.id}.msg.default_space_description") %>
                     <% } %>
 			        </div>
 			        </div>
@@ -154,15 +129,18 @@
 			    <%
 			   if(uicomponent.isEnableLoadNext()) {
 			  %>
-			      <div id="LoadMoreSentInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event('LoadMoreSpace')%>" >
+			      <div id="LoadMoreSentInvitationButton" class="MoreSpace" onclick="<%=uicomponent.event("LoadMoreSpace")%>" >
 			        $labelShowMoreSpace
 			      </div>
 			    <%
 			   } else {
 			   %>
-			        <script type="text/javascript">
-			          try{document.getElementById("LoadMoreSentInvitationButton").style.display = "none";}catch(e){};
-			        </script>
+<script type="text/javascript">
+	var loadMore = document.getElementById("LoadMoreSentInvitationButton");
+	if (loadMore) {
+		loadMore.style.display = "none";
+	}
+</script>
 			    <%
 			    }
 			    %>

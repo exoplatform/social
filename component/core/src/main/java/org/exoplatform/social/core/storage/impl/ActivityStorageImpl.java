@@ -723,7 +723,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getPostedTime()));
     
     //
@@ -742,7 +742,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
     
     //
@@ -760,7 +760,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
@@ -778,7 +778,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
     
     //
@@ -830,7 +830,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
@@ -846,7 +846,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
@@ -861,7 +861,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     connectionList.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
@@ -879,7 +879,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceNewer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
@@ -900,7 +900,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -920,7 +920,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -941,7 +941,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -961,7 +961,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     identities.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1028,7 +1028,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     connectionList.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1047,7 +1047,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     connectionList.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1065,7 +1065,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     connectionList.add(ownerIdentity);
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1084,7 +1084,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     connectionList.add(ownerIdentity);
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1145,7 +1145,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1167,7 +1167,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       return Collections.emptyList();
     }
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.newer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1188,7 +1188,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1210,7 +1210,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.older();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1222,22 +1222,24 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public List<ExoSocialActivity> getComments(ExoSocialActivity existingActivity, int offset, int limit) {
 
-    List<ExoSocialActivity> activities = new ArrayList<ExoSocialActivity>();
+    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
 
-    //
-    List<String> commentIds = Arrays.asList(getStorage().getActivity(existingActivity.getId()).getReplyToId());
-
-    //
-    limit = (limit > commentIds.size() ? commentIds.size() : limit);
-    int maxIndex = ((limit + offset) > commentIds.size() ? commentIds.size() : (limit + offset));
-    for(String commentId : commentIds.subList(offset, maxIndex)) {
-      ExoSocialActivity comment = getActivity(commentId);
+    long totalSize = commentIds.length;
+    
+    ActivityIterator activityIt = new ActivityIterator(offset, limit, totalSize);
+    
+    int i = 0;
+    while (i < totalSize) {
+      ExoSocialActivity comment = getActivity(commentIds[i]);
       if (!comment.isHidden())
-        activities.add(getStorage().getActivity(commentId));
+        activityIt.add(comment);
+      if (activityIt.addMore() == false) {
+        break;
+      }
+      i++;
     }
-
-    //
-    return activities;
+    
+    return activityIt.result();
   }
 
   /**
@@ -1517,7 +1519,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+    ActivityFilter filter = ActivityFilter.space();
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceIdentity), filter).objects().size();
@@ -1531,7 +1533,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_FILTER;
+    ActivityFilter filter = ActivityFilter.space();
 
     //
     return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, 0, limit);
@@ -1546,7 +1548,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceNewer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1562,7 +1564,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceNewer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1582,7 +1584,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceOlder();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1598,7 +1600,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
 
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_OLDER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceOlder();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(baseActivity.getUpdated().getTime()));
 
     //
@@ -1613,7 +1615,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     //
-    ActivityFilter filter = ActivityFilter.ACTIVITY_SPACE_NEWER_FILTER;
+    ActivityFilter filter = ActivityFilter.spaceNewer();
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //

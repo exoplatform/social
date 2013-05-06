@@ -104,20 +104,21 @@
     def nodeUri = node.getURI();
     def uriParts = nodeUri.split("/");
     def nodeName = uriParts[uriParts.length - 1];
-    def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
     if ( node.getPageRef() != null ) {
       appName = node.getPageRef().getName();
     }
     
   %>
-  <% if(nodeName.equals(appSelected) && uicomponent.hasSettingPermission()) {%>
+  <% if(nodeName.equals(appSelected)) {%>
        <li class="active">
          <a data-toggle="tab" href="javascript:void(0);">
            <i class="uiIconApp<%=appName%> uiIconDefaultApp"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
-  <% } else {%>
+  <% } else {
+     def pageURI = Utils.getSpaceHomeURL(space) + "/" + nodeName;
+  %>
        <li class="">
          <a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="javascript:void(0);">
            <i class="uiIconApp<%=appName%> uiIconDefaultApp"></i>

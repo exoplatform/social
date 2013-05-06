@@ -40,14 +40,9 @@
             <%
                if(fieldName != null && fieldName.length() > 0 && !fieldName.equals(uicomponent.getId())) {
             %>
-          <label class="control-label">
-              <%/*if(fieldName != null && fieldName.length() > 0) {*/%> 
-              <%=uicomponent.getLabel(field.getName()) %>
-              <%/*}*/%>
-          </label>
-          <div class="controls"><% uiform.renderField(field) %></div>
+          <div class="control-group"><% uiform.renderField(field) %></div>
              <% } else { %>
-          <div class="controls" colspan="2"><% uiform.renderField(field) %></div>
+          <div class="control-group" colspan="2"><% uiform.renderField(field) %></div>
              <% } %>
           <%
               }

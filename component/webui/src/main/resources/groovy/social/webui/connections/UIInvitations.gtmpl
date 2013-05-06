@@ -95,7 +95,7 @@
 		        <h4 class="titleWithBorder">$contactsDirectory</h4>
 		        <!--div class="DirectoryNormalBox"-->
 		        <div class="uiFilterList">
-		            <div class="result"><span class="number"><%=uicomponent.peopleNum; %></span>(<%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%>)</div>
+		            <div class="result clearfix"><span class="number"><%=uicomponent.peopleNum; %></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 		            <ul class="letterList"> 
                  <li>
                  <% if ((selectedStartChar != null) && (selectedStartChar == "All")) { %>
@@ -159,8 +159,8 @@
 		
 		      <% if (isEditable) {%>
 		      <div class="connectionBtn clearfix">
-			      <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",identity.getId())%>" data-placement="bottom" title="$ignoreLabel">$ignoreLabel</button>
-			      <button class="btn pull-right btn-primary" rel="tooltip" onclick="<%=uicomponent.event("Confirm",identity.getId())%>" data-placement="bottom" title="$confirmLabel">$confirmLabel</button>    
+			      <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",identity.getId())%>">$ignoreLabel</button>
+			      <button class="btn pull-right btn-primary" onclick="<%=uicomponent.event("Confirm",identity.getId())%>">$confirmLabel</button>    
 		      </div>
 		      <% } %>
       

@@ -16,38 +16,47 @@ package org.exoplatform.social.webui.composer;
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
 
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.UIPopupWindow;
+import org.exoplatform.webui.core.lifecycle.Lifecycle;
 
-@ComponentConfig(
-  template = "classpath:groovy/social/webui/composer/PopupContainer.gtmpl"
-)
-public class PopupContainer extends UIContainer{
-  private static final Log LOG = ExoLogger.getLogger(PopupContainer.class);
-  private UIPopupWindow popupWindow;
+@ComponentConfig(lifecycle = Lifecycle.class)
+public class PopupContainer extends UIPopupContainer {
 
-  public PopupContainer() {
-    try {
-      popupWindow = addChild(UIPopupWindow.class, null, "UIPopupWindow");
-
-    } catch (Exception e) {
-      LOG.error("Failed to add popup window", e);
-    }
+  public PopupContainer() throws Exception {
+    UIPopupWindow popupWindow = addChild(UIPopupWindow.class, null, null);
+    popupWindow.setRendered(false);
   }
-
-  public UIPopupWindow getPopupWindow() {
-    return popupWindow;
+  
+  @Override
+  public void activate(UIComponent uiComponent, int width, int height, boolean isResizeable) throws Exception {
+    activate(uiComponent, width, height, isResizeable, null);
   }
 
   @Override
-  public void processRender(WebuiRequestContext context) throws Exception {
-    if(!popupWindow.isRendered()){
-      popupWindow.setRendered(true);
-    }
-    super.processRender(context);
+  public void activate(UIComponent uiComponent, int width, int height) throws Exception {
+    activate(uiComponent, width, height, true);
   }
+
+  public <T extends UIComponent> T activate(Class<T> type, int width, String popupWindowId) throws Exception {
+    T comp = createUIComponent(type, null, null);
+    activate(comp, width, 0, true, popupWindowId);
+    return comp;
+  }
+
+  public void activate(UIComponent uiComponent, int width, int height, boolean isResizeable, String popupId) throws Exception {
+    UIPopupWindow popup = getChild(UIPopupWindow.class);
+    if (popupId == null || popupId.trim().length() == 0) {
+      popupId = "UISocialPopupWindow";
+    }
+    popup.setId(popupId);
+    popup.setUIComponent(uiComponent);
+    popup.setWindowSize(width, height);
+    popup.setRendered(true);
+    popup.setShow(true);
+    popup.setResizable(isResizeable);
+  }
+
 }

@@ -18,6 +18,7 @@
 package org.exoplatform.social.webui.space;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -123,6 +124,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
   private UserNodeFilterConfig filterConfig;
 
+  private Map<String, Map<Locale, State>> userNodeLabels; 
+  
   private static final Scope   NODE_SCOPE = Scope.GRANDCHILDREN;
   
   private static final String CHILDNODES_DELIMITER = "/";
@@ -147,6 +150,15 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
     uiPopupMenu.setActions(new String[] { "AddNode", "EditPageNode", "EditSelectedNode",
         "CopyNode", "CloneNode", "CutNode", "DeleteNode", "MoveUp", "MoveDown" });
     uiTree.setUIRightClickPopupMenu(uiPopupMenu);
+    userNodeLabels = new HashMap<String, Map<Locale,State>>();
+  }
+
+  public Map<String, Map<Locale, State>> getUserNodeLabels() {
+    return userNodeLabels;
+  }
+
+  public void setUserNodeLabels(Map<String, Map<Locale, State>> userNodeLabels) {
+    this.userNodeLabels = userNodeLabels;
   }
 
   /**
@@ -232,7 +244,19 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
   public void save() {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     try {
-      userPortal.saveNode(getRootNode().getNode(), null);
+      userPortal.saveNode(getRootNode().getNode(), getRootNode());
+      DescriptionService descriptionService = getApplicationComponent(DescriptionService.class);
+      Map<String, Map<Locale, State>> i18nizedLabels = this.userNodeLabels;
+      for (String treeNodeId : i18nizedLabels.keySet()) {
+        TreeNode node = findNode(treeNodeId);
+        if (node != null) {
+          Map<Locale, State> labels = i18nizedLabels.get(treeNodeId);
+          node.setI18nizedLabels(labels);
+          if (labels != null && labels.size() > 0) {
+            descriptionService.setDescriptions(node.getNode().getId(), labels);
+          }
+        }
+      } 
     } catch (NavigationServiceException ex) {
       context.getUIApplication().addMessage(new ApplicationMessage("UINavigationNodeSelector.msg."
           + ex.getError().name(), null, ApplicationMessage.ERROR));
@@ -288,6 +312,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       TreeNode rebased = selector.rebaseNode(node, scope);
       if (rebased == null) {
+        selector.getUserNodeLabels().remove(node.getId()); 
         context.getUIApplication()
                .addMessage(new ApplicationMessage("UINavigationNodeSelector.msg.staleData",
                                                   null,
@@ -300,6 +325,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
 
     protected void handleError(NavigationError error, UISpaceNavigationNodeSelector selector) throws Exception {
       selector.initTreeData();
+      selector.getUserNodeLabels().clear(); 
       if (selector.getRootNode() != null) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         UIApplication uiApp = context.getUIApplication();
@@ -677,6 +703,9 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
         pasteNode(child, node, isClone);
       }
 
+      node.setI18nizedLabels(sourceNode.getI18nizedLabels());
+      uiNodeSelector.getUserNodeLabels().put(node.getId(), node.getI18nizedLabels());
+      
       return node;
     }
 
@@ -826,6 +855,8 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
                                                 null));
         return;
       }
+      
+      uiNodeSelector.getUserNodeLabels().remove(childNode.getId()); 
       
       parentNode.removeChild(childNode);
       uiNodeSelector.selectNode(parentNode);

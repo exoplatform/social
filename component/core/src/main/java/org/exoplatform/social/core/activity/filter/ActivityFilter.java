@@ -95,91 +95,101 @@ public class ActivityFilter extends JCRFilterLiteral {
   
   
   //DEFINE FILTER
-  public static ActivityFilter ACTIVITY_SPACE_FILTER = new ActivityFilter() {
-    @Override
-    protected void start() {
-      try {
-        super.start();
+  public static ActivityFilter space() {
+    return new ActivityFilter() {
+      @Override
+      protected void start() {
+        try {
+          super.start();
 
-        //
-        this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
-      } catch (Exception ex) {
-        LOG.warn(ex);
+          //
+          this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+          .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+          .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
+        } catch (Exception ex) {
+          LOG.warn(ex);
+        }
       }
-    }
-  };
+    };
+  }
   
-  public static ActivityFilter ACTIVITY_SPACE_NEWER_FILTER = new ActivityFilter() {
-    
-    @Override
-    protected void start() {
-      try {
-        super.start();
-        this.remove(POSTED_TIME_ORDERBY.clone());
-        
-        //
-        this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC)
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
-      } catch (Exception ex) {
-        LOG.warn(ex);
+  public static ActivityFilter spaceNewer() {
+    return new ActivityFilter() {
+
+      @Override
+      protected void start() {
+        try {
+          super.start();
+          this.remove(POSTED_TIME_ORDERBY.clone());
+
+          //
+          this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+              .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC)
+              .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC);
+        } catch (Exception ex) {
+          LOG.warn(ex);
+        }
       }
-    }
-  };
+    };
+  }
   
-  public static ActivityFilter ACTIVITY_SPACE_OLDER_FILTER = new ActivityFilter() {
-    
-    @Override
-    protected void start() {
-      try {
-        super.start();
-        this.remove(POSTED_TIME_ORDERBY);
-        
-        //
-        this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
-        .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
-      } catch (Exception ex) {
-        LOG.warn(ex);
+  public static ActivityFilter spaceOlder() {
+    return new ActivityFilter() {
+      
+      @Override
+      protected void start() {
+        try {
+          super.start();
+          this.remove(POSTED_TIME_ORDERBY);
+          
+          //
+          this.append(ACTIVITY_UPDATED_POINT_FIELD.clone())
+          .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC)
+          .with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC);
+        } catch (Exception ex) {
+          LOG.warn(ex);
+        }
       }
-    }
-  };
+    };
+  }
   
-  //DEFINE FILTER
-  public static ActivityFilter ACTIVITY_NEWER_FILTER = new ActivityFilter() {
-    @Override
-    protected void start() {
-      try {
-        super.start();
-        //destroy old value;
-        super.destroy();
-        
-        this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
-        
-      } catch (Exception ex) {
-        LOG.warn(ex);
+  public static ActivityFilter newer() {
+    return new ActivityFilter() {
+      @Override
+      protected void start() {
+        try {
+          super.start();
+          //destroy old value;
+          super.destroy();
+          
+          this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.ASC)
+          .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.ASC);
+          
+        } catch (Exception ex) {
+          LOG.warn(ex);
+        }
       }
-    }
-  };
+    };
+  }
+
+  public static ActivityFilter older() {
+    return new ActivityFilter() {
+
+      @Override
+      protected void start() {
+        try {
+          super.start();
+          super.destroy();
+          //
+          this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
+              .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
+        } catch (Exception ex) {
+          LOG.warn(ex);
+        }
+      }
+    };
+  }
   
-  public static ActivityFilter ACTIVITY_OLDER_FILTER = new ActivityFilter() {
-    
-    @Override
-    protected void start() {
-      try {
-        super.start();
-        super.destroy();
-        //
-        this.with(LAST_UPDATED_ORDERBY.clone()).direction(DIRECTION.DESC)
-        .with(POSTED_TIME_ORDERBY.clone()).direction(DIRECTION.DESC);
-      } catch (Exception ex) {
-        LOG.warn(ex);
-      }
-    }
-  };
   
  public static JCRFilterLiteral ACTIVITY_NEW_UPDATED_FILTER = new JCRFilterLiteral() {
     

@@ -156,16 +156,11 @@
     actions : [],
     title : '',
     message : '',
+
     makeTemplate : function() {
       $('#UISocialPopupConfirmation').remove();
-      var popup = $('#UIPopupWindow').clone();
+      var popup = $('#UISocialConfirmation').clone();
       popup.attr('id', 'UISocialPopupConfirmation');
-      popup.find('a.uiIconClose').removeAttr('onclick').on('click', PopupConfirmation.hiden);
-      var popupContent = popup.find('.popupContent');
-      var ul = $('<ul class="singleMessage popupMessage resizable"><ul>');
-      ul.append($('<li><span class="confirmationIcon contentMessage"></span></li>'));
-      popupContent.append(ul);
-      popupContent.append($('<div class="uiAction uiActionBorder"></div>'));
       return popup;
     },
   

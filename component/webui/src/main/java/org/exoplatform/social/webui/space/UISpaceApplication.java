@@ -88,6 +88,7 @@ public class UISpaceApplication extends UIForm {
    */
   @SuppressWarnings("unchecked")
   public List<Application> getApplications() throws Exception {
+    setValue(this.space);
     return iterator.getCurrentPageData();
   }
 
@@ -296,7 +297,6 @@ public class UISpaceApplication extends UIForm {
       }
 
       spaceService.removeApplication(uiSpaceApp.space.getId(), appId, appName);
-      uiSpaceApp.setValue(spaceService.getSpaceById(uiSpaceApp.space.getId()));
       UIPopupContainer uiPopup = uiSpaceApp.getChild(UIPopupContainer.class);
 
       // hanhvq. add removed application into uipopup container if it is displayed
@@ -318,6 +318,8 @@ public class UISpaceApplication extends UIForm {
       //refresh
       UISpaceApplication uiSpaceApplication = event.getSource();
       uiSpaceApplication.setValue(uiSpaceApplication.space);
+      UISpaceSetting uiSpaceSetting = uiSpaceApplication.getAncestorOfType(UISpaceSetting.class);
+      uiSpaceSetting.setValues(uiSpaceApplication.space); 
       SpaceUtils.updateWorkingWorkSpace();
     }
   }

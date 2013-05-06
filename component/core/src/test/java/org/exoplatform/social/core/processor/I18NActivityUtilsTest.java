@@ -95,6 +95,26 @@ public class I18NActivityUtilsTest extends TestCase {
     assertEquals("key3", keys[2]);
   }
   
+  public void testSpecialCharacters() throws Exception {
+    ExoSocialActivity a = createActivity();
+    //
+    I18NActivityUtils.addResourceKey(a, "key3", "val1", "#val2");
+    
+    String[] values = I18NActivityUtils.getResourceValues(a);
+    assertEquals(1, values.length);
+    assertEquals("val1#${_}val2", values[0]);
+    assertEquals(a.getTitleId(), "key3");
+    
+    String[] keys = I18NActivityUtils.getResourceKeys(a);
+    assertEquals(1, keys.length);
+    assertEquals("key3", keys[0]);
+    
+    values = I18NActivityUtils.getParamValues(values[0]);
+    assertEquals(2, values.length);
+    assertEquals("val1", values[0]);
+    assertEquals("#val2", values[1]);
+  }
+  
   public void testAddResourceKeyWithNullValue() throws Exception {
     ExoSocialActivity a = createActivity();
     I18NActivityUtils.addResourceKey(a, "key1", "");

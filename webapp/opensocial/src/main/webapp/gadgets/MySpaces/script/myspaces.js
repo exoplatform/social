@@ -4,7 +4,11 @@
   var SocialUtil = eXo.social.SocialUtil;
   
   //When run in socialdemo, need to change this config to /classsic/all-spaces
-  ALL_SPACES_URL = "/private/intranet/spaces";
+  var domain = top.location.protocol + "//" + top.location.host; 
+  function getAllSpacesURL() {
+   var portalEnv = (eXo.env) ? eXo.env.portal : parent.eXo.env.portal;
+   return (domain + portalEnv.context + "/" + portalEnv.portalName) + ((portalEnv.context.indexOf('social') > 0) ? "/all-spaces" : "/spaces");
+  } 
 
 	function MySpaces() {
 	  this.viewer = null;
@@ -39,8 +43,7 @@
 	      
 	      this.context = hostName + "/" + portalName;
 	      
-	      //TODO hardcode
-	      this.moreSpaces = this.context + ALL_SPACES_URL;
+	      this.moreSpaces = getAllSpacesURL();
 	      
 	      titleContent += '<div class="TitGad ClearFix">';
 	      titleContent += '<a id="MoreAllSpaces" href="' + this.moreSpaces + '" target="_parent" class="IconDropDown">' + Locale.getMsg('more_link_label') + '</a>'
@@ -85,7 +88,7 @@
 	  if (!resp) {
 	    //alert('response is invalid');
 	  } else {
-	  	this.moreSpaces = this.context + resp.data.moreSpacesUrl;
+	  	this.moreSpaces = getAllSpacesURL(); 
 	  	document.getElementById("MoreAllSpaces").href = this.moreSpaces;
 	  	
 	    var spaceData = resp.data.spaces;

@@ -48,6 +48,10 @@ public class ResourceBundleUtil {
       messageArguments = EMPTY_MESSAGE_ARGUMENTS;
     }
     final MessageFormat messageFormat = messageFormatRef.get();
+    //pre-process single quote
+    message = processSingleQuote(message);
+    
+    //
     messageFormat.applyPattern(message);
     return messageFormat.format(messageArguments);
   }
@@ -61,6 +65,27 @@ public class ResourceBundleUtil {
    */
   public static String replaceArguments(String message, List<String> messageArguments) {
     return replaceArguments(message, messageArguments.toArray(new String[0]));
+  }
+  /**
+   * With single quote in resource bundle, MessageFormat will be escape single quote
+   * then it needs to replace single quote by double single quotes
+   * 
+   * Sample:
+   *      I'm connected with {0} => I''m connected with {0}
+   * @param message given message replacement
+   * @return add double single quotes.
+   */
+  public static String processSingleQuote(String message) {
+    String temp = message;
+    while(true) {
+      if (temp.indexOf("''") < 0) {
+        break;
+      }
+      
+      temp = temp.replace("''", "'");
+    }
+    
+    return temp.replaceAll("'", "''");
   }
 
 }

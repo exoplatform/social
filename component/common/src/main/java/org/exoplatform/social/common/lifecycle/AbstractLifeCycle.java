@@ -112,7 +112,7 @@ public abstract class AbstractLifeCycle<T extends LifeCycleListener<E>, E extend
           dispatchEvent(listener, event);
         }
         catch (Exception e) {
-          LOG.error(e);
+          LOG.debug(e);
         }
       }
     }

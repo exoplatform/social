@@ -224,6 +224,56 @@ public class I18NActivityProcessorTest extends TestCase {
     assertEquals("Content has been updated: ", newActivity.getTitle());
 
   }
+  
+  public void testProcessKeyForTitle() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    final String title = "Title has been updated: ";
+    String value = "hello, where are you?";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "update_topic_title", value);
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("Title has been updated: hello, where are you?", newActivity.getTitle());
+
+  }
+  
+  public void testCompoundSingleQuote() throws Exception {
+    Map<String, String> activityKeyTypeMapping = new LinkedHashMap<String, String>();
+    activityKeyTypeMapping.put("add_topic", "add_topic");
+    activityKeyTypeMapping.put("update_topic_title", "FakeResourceBundle.update_topic_title");
+    activityKeyTypeMapping.put("update_topic_content", "FakeResourceBundle.update_topic_content");
+    activityKeyTypeMapping.put("test_single_quote", "FakeResourceBundle.test_single_quote");
+    activityKeyTypeMapping.put("test_three_quote", "FakeResourceBundle.test_three_quote");
+    initActivityResourceBundlePlugin(activityKeyTypeMapping);
+    i18NActivityProcessor.addActivityResourceBundlePlugin(activityResourceBundlePlugin);
+
+    String title = "I'm connected mary";
+    ExoSocialActivity activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "test_single_quote", "mary");
+    
+    Locale enLocale = new Locale("en");
+
+    ExoSocialActivity newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+
+    assertEquals("I'm connected to mary", newActivity.getTitle());
+    
+    //
+    title = "I'm connected 'mary'";
+    activity = createActivity(title);
+    I18NActivityUtils.addResourceKey(activity, "test_three_quote", "mary");
+    
+    //
+    newActivity = i18NActivityProcessor.processKeys(activity, enLocale);
+    assertEquals("I'm connected to 'mary'", newActivity.getTitle());
+
+  }
 
   public void testNoRegisteredActivityKeyType() throws Exception {
     Map<String, String> activityKeyTypeMapping = new HashMap<String, String>();

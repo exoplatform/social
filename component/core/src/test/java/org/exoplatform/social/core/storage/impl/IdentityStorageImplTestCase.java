@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -574,7 +575,7 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     assertNull(storage.getType(null, null));
   }
 
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(128)
   public void testUpdateProfileProperties() throws Exception {
    Identity newIdentity = new Identity("organization", "checksaveprofile");
 
@@ -616,6 +617,33 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
    // No avatar saved
    assertNull(toLoadProfile.getAvatarUrl());
 
+   { // test case url property is modified when update other fields
+     Identity got = storage._findIdentity(newIdentity.getProviderId(), newIdentity.getRemoteId()); 
+     profile = got.getProfile();
+     ArrayList<HashMap<String, String>> profileMap = new ArrayList<HashMap<String, String>>();
+     HashMap<String, String> uiMap = new HashMap<String, String>();
+     uiMap.put("key", "url");
+     uiMap.put("value", StringEscapeUtils.escapeHtml("http://google.com"));
+     profileMap.add(uiMap);
+     profile.setProperty(Profile.CONTACT_URLS, profileMap);
+     storage._saveProfile(profile);
+     
+     //
+     Identity got1 = storage._findIdentity(newIdentity.getProviderId(), newIdentity.getRemoteId());
+     ArrayList<HashMap<String, String>> pr = (ArrayList<HashMap<String, String>>)got1.getProfile().getProperty(Profile.CONTACT_URLS);
+     assertEquals("http://google.com", pr.get(0).get("value"));
+     
+     //
+     Profile profile1 = got1.getProfile();
+     profile1.setProperty(Profile.POSITION, "CEO");
+     storage._saveProfile(profile1);
+     
+     //
+     Identity got2 = storage._findIdentity(newIdentity.getProviderId(), newIdentity.getRemoteId());
+     pr = (ArrayList<HashMap<String, String>>)got2.getProfile().getProperty(Profile.CONTACT_URLS);
+     assertEquals("http://google.com", pr.get(0).get("value"));
+   }
+   
    //
    Profile updaterProfile = new Profile(newIdentity);
    updaterProfile.setId(toLoadProfile.getId());
@@ -790,10 +818,10 @@ public class IdentityStorageImplTestCase extends AbstractCoreTest {
     // urls
     List<Map<String, String>> urls = new ArrayList<Map<String, String>>();
     Map<String, String> url1 = new HashMap<String, String>();
-    url1.put("key", "http://www.toto.com");
+    url1.put("key", "url");
     url1.put("value", "http://www.toto.com");
     Map<String, String> url2 = new HashMap<String, String>();
-    url2.put("key", "http://www.tata.com");
+    url2.put("key", "url");
     url2.put("value", "http://www.tata.com");
     urls.add(url1);
     urls.add(url2);

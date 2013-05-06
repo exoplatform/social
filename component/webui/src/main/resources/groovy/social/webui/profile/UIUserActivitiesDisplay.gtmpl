@@ -103,7 +103,7 @@
     //jsManager.require("SHARED/social-ui-activity-updates", "activityUpdates").addScripts("activityUpdates.init($inputs);");
   } 
   
-  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+  def hasActivities = uicomponent.getActivitiesLoader().getActivitiesContainer().getChildren().size() > 0;
   
   //
   def welcomeActivityAvatar = LinkProvider.STARTER_ACTIVITY_AVATAR;
@@ -197,10 +197,12 @@
 	    <% } %>
       <% } %>
     -->
+    <% if (hasActivities) { %>
     <div class="activityStreamStatus pull-left">
       <div class="arrowBottom"></div>
-        <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
-      </div>
+      <a class="uiIconRefresh uiIconLightGray" href="javascript:void(0);" rel="tooltip" title="$refreshTooltipButton" id="RefreshButton" onclick="<%=uicomponent.event("RefreshStream")%>" ></a>
+    </div>
+    <% } %>
   </div>
  <% } %>
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>

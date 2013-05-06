@@ -34,10 +34,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.manager.IdentityManager;
 
 /**
- * The class <code>IdentityRestService</code> provides API to work with identity.
- * Url template: <tt>{rest_context_name}/social/identity/{username}/id</tt>
- * <br />
- * GET: /{rest_context_name}/social/identity/{username}/id/show.{format}
+ * Allows to work with identity.
  * 
  * @anchor IdentityRestService
  */

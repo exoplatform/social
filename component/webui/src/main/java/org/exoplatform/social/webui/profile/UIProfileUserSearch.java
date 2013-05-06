@@ -437,15 +437,15 @@ public class UIProfileUserSearch extends UIForm {
       String pos = filter.getPosition();
       String skills = filter.getSkills();
       
-      if (name != null & name.length() > 0) {
+      if (name != null && name.length() > 0) {
         filter.setName(Utils.normalizeString(name));
       }
       
-      if (pos != null & pos.length() > 0) {
+      if (pos != null && pos.length() > 0) {
         filter.setPosition(Utils.normalizeString(pos));
       }
       
-      if (skills != null & skills.length() > 0) {
+      if (skills != null && skills.length() > 0) {
         filter.setSkills(Utils.normalizeString(skills));
       }
     }

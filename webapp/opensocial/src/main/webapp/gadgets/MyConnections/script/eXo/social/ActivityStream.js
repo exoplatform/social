@@ -72,22 +72,17 @@
       Configuration.setViewer(viewer);
       
       var configPeopleRestUrl = viewer.getField('hostName') + "/" + 
-      													viewer.getField('restContextName') + "/" + 
-      													"social/people/" + 
-      													viewer.getField('portalName') + "/" + 
-      													"getConnections.json";
+      													viewer.getField('restContextName') +
+      													"/social/people/" + 
+      													viewer.getField('portalName') +
+      													"/getConnections.json";
       
        var configActivitiesRestUrl = viewer.getField('hostName') + "/" + 
        															 viewer.getField('restContextName') + "/" +
        															 viewer.getField('portalName') + "/" +
        															 "social/activities/";
       
-       var peopleDirectory = '';
-       if (viewer.getField('peopleUri') === '') {
-       	peopleDirectory = viewer.getField('hostName') + '/portal/intranet/people';
-       } else {
-       	peopleDirectory = viewer.getField('hostName') + viewer.getField('peopleUri');
-       } 
+      var peopleDirectory = viewer.getField('hostName') + parent.eXo.env.portal.context + "/" + parent.eXo.env.portal.portalName + '/people'; 
        
       Configuration.portalEnvironment = {
         'portalName': viewer.getField('portalName'),

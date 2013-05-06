@@ -24,7 +24,7 @@ def labelNotAnyUpdatesPostedYet = _ctx.appRes("UIActivitiesLoader.label.Not_Any_
 
 %>
 <div class="$uicomponent.id" id="$uicomponent.id">
-<% if (uicomponent.getChildren().size() > 1) {
+<% if (uicomponent.getChildren().size() > 0) {
      uicomponent.renderChildren();
    } else {
 %>

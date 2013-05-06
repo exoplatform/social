@@ -203,14 +203,19 @@ public class UISpaceInfo extends UIForm {
       boolean nameChanged = (!space.getDisplayName().equals(name));
       if (nameChanged) {
 
-        renamedNode = uiSpaceInfo.renamePageNode(name, space);
-        if (renamedNode == null) {
+        String cleanedString = SpaceUtils.cleanString(name);
+        if (spaceService.getSpaceByUrl(cleanedString) != null) {
+          // reset to origin values
+          uiSpaceInfo.getUIStringInput(SPACE_DISPLAY_NAME).setValue(oldDisplayName);
+          uiSpaceInfo.getUIFormTextAreaInput(SPACE_DESCRIPTION).setValue(existingDescription);
+
+          // 
+          uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
           return;
         }
         
-        String cleanedString = SpaceUtils.cleanString(name);
-        if (spaceService.getSpaceByUrl(cleanedString) != null) {
-          uiApp.addMessage(new ApplicationMessage("UISpaceInfo.msg.current-name-exist", null, ApplicationMessage.INFO));
+        renamedNode = uiSpaceInfo.renamePageNode(name, space);
+        if (renamedNode == null) {
           return;
         }
         

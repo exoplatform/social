@@ -23,14 +23,11 @@ import java.util.List;
 import org.exoplatform.application.registry.Application;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.mop.user.UserPortal;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -54,11 +51,6 @@ import org.exoplatform.webui.event.EventListener;
 )
 
 public class UISpaceMenu extends UIContainer {
-
-  /**
-   * The logger.
-   */
-  private static final Log LOG = ExoLogger.getLogger(UISpaceMenu.class);
 
   /**
    * NEW SPACE APPLICATION NAME.
@@ -122,6 +114,9 @@ public class UISpaceMenu extends UIContainer {
     }
     
     List<UserNode> userNodeArraySorted = new ArrayList<UserNode>(spaceUserNode.getChildren());
+    
+    removeNonePageNodes(userNodeArraySorted); 
+    
     //SOC-2290 Need to comment the bellow line, sort by in configuration XML file.
     //Collections.sort(userNodeArraySorted, new ApplicationComparator());
     return userNodeArraySorted;
@@ -157,7 +152,6 @@ public class UISpaceMenu extends UIContainer {
       }
 
       String oldName = selectedNode.getName();
-      String oldUri = selectedNode.getURI();
       if (selectedNode.getResolvedLabel().equals(newSpaceAppName)) {
         prContext.getResponse().sendRedirect(Utils.getSpaceURL(selectedNode));
         return;
@@ -199,7 +193,6 @@ public class UISpaceMenu extends UIContainer {
       UserNode renamedNode = homeNode.getChild(oldName);
       renamedNode.setName(newNodeName);
       renamedNode.setLabel(newSpaceAppName);
-      UserPortalConfigService configService = spaceMenu.getApplicationComponent(UserPortalConfigService.class);
       DataStorage dataService = spaceMenu.getApplicationComponent(DataStorage.class);
       Page page = dataService.getPage(renamedNode.getPageRef().format());
       if (page != null) {
@@ -383,4 +376,23 @@ public class UISpaceMenu extends UIContainer {
   protected Space getSpace(String spaceUrl) {
     return getSpaceService().getSpaceByUrl(spaceUrl);
   }
+  
+/**
+ * Removes nodes that have no page.
+ * 
+ * @param nodes
+ * @since 4.0.1-GA
+ */
+private void removeNonePageNodes(List<UserNode> nodes) {
+  
+  List<UserNode> nonePageNodes = new ArrayList<UserNode>();
+  
+  for (UserNode node : nodes) {
+    if (node.getPageRef() == null) {
+      nonePageNodes.add(node);
+    }
+  }
+  
+  nodes.removeAll(nonePageNodes);
+} 
 }

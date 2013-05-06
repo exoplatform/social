@@ -28,7 +28,8 @@
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
   import org.exoplatform.social.core.service.LinkProvider;
-
+  import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+  
   def pcontext = Util.getPortalRequestContext();
   def labelActivityHasBeenDeleted = _ctx.appRes("UIActivity.label.Activity_Has_Been_Deleted");
   def activity = uicomponent.getActivity();
@@ -144,7 +145,7 @@
 
   def ownerIdentity = uicomponent.ownerIdentity;
   def profile = ownerIdentity.profile;
-  
+  def spaceCreatorIdentity = null;
   if (uicomponent.isUserActivity()) {
     ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
     ownerAvatar = profile.avatarUrl;
@@ -152,6 +153,9 @@
     if (!ownerAvatar) ownerAvatar= LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
   } else if(uicomponent.isSpaceActivity()){
     Space space = Utils.getSpaceService().getSpaceByPrettyName(ownerIdentity.remoteId);
+    if (space == null) return;
+    managers = space.getManagers();
+    spaceCreatorIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, managers[0], false);
     ownerUri = Utils.getSpaceHomeURL(space);
     ownerAvatar = space.avatarUrl;
     ownerName = space.displayName;
@@ -165,7 +169,6 @@
   }
   def currentTime = System.currentTimeMillis();
   
-  def spaceCreatorIdentity = uicomponent.getSpaceCreatorIdentity();
   def spaceCreatorUri, spaceCreatorAvatar, spaceCreatorName;
     
   if ( spaceCreatorIdentity != null ) {
@@ -205,8 +208,8 @@
 		<div class="uiBox roundedBottom introBox contentShare">	
 			<div class="clearfix">
 				<div class="pull-left">					
-					<a  href="$ownerUri"  data-placement="bottom" rel="tooltip">
-						  <img  src="$ownerAvatar" alt="$ownerName" />
+					<a href="$ownerUri" class="avatarXMedium">
+						  <img src="$ownerAvatar" alt="$ownerName" />
 					</a>
 				</div>
 				<div class="text">
@@ -376,7 +379,7 @@
 	            </div><!--end commentLeft--> 
 	            <div class="commentRight">
 	                <div class="commentInputBox ">
-	                    <button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
+	                    <button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" id="CommentButton${activity.id}">$labelComment</button>
 	                    <div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
 	                </div>
 	            </div><!--end commentRight-->        

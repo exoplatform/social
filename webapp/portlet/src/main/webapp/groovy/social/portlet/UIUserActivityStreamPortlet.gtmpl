@@ -39,13 +39,10 @@
   jsManager.require("SHARED/base", "base").addScripts("base.Browser.fillUpFreeSpace('" + uicomponent.id + "');");
 
   uicomponent.refresh();
+  String uiTabClazz = (Utils.isHomePage() == true) ? "uiTabPaneHomePage" : "";
 %>
 <div class="uiUserActivityStreamPortlet" id="$uicomponent.id">
-  <% if ( Utils.isHomePage() ) { %>
-  <div class="uiTabPane uiTabPaneHomePage">
-  <% } else { %>
-  <div class="uiTabPane">
-  <% } %>
+  <div class="uiTabPane $uiTabClazz">
  	 <div class="uiUserActivitiesContainer">
       <% uicomponent.renderChild(PopupContainer.class); %>
       <% uicomponent.renderChild(UIComposer.class); %>

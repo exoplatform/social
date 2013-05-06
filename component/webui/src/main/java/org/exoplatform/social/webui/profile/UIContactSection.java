@@ -374,10 +374,9 @@ public class UIContactSection extends UIProfileSection {
       String key = null;
       if (uiStringType.equals(URL)) {
         UIFormStringInput uiStringInput = (UIFormStringInput) listUIComp.get(i+1);
-        key = uiStringInput.getValue();
+        key = Profile.URL_POSTFIX.toLowerCase();
         value = uiStringInput.getValue();
         if (!value.matches("^(https?|ftp)://.*$")) {
-          key = HTTP_PROTOCOL + key;
           value = HTTP_PROTOCOL + value;
         }
       } else {

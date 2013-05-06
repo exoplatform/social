@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.social.core.chromattic.entity.ActivityProfileEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
@@ -61,7 +61,6 @@ import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.search.Sorting;
 import org.exoplatform.social.core.service.LinkProvider;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -87,6 +86,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
   private RelationshipStorage relationshipStorage;
   private SpaceStorage spaceStorage;
   private OrganizationService organizationService;
+  
 
   static enum PropNs {
 
@@ -166,7 +166,12 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   private void putParam(ProfileEntity profileEntity, Object value, String key) {
     Map<String, List<String>> params = createEntityParamMap(value);
-    profileEntity.setProperty(key, new ArrayList<String>(params.keySet()));
+    Iterator<List<String>> valuesItr = params.values().iterator();
+    List<String> values = null;
+    if (valuesItr.hasNext()) {
+      values = (List<String>) valuesItr.next();
+    }
+    profileEntity.setProperty(key, values);
   }
 
   private IdentityStorage getStorage() {
@@ -1050,14 +1055,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
+    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      remoteId = profileEntity.getIdentity().getRemoteId();
       
-      if (isUserActivated(identity) == false) continue;
+      if (StorageUtils.isUserActivated(remoteId) == false) continue;
+      
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
@@ -1102,14 +1110,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityResult identityResult = new IdentityResult(results.size());
     
+    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      remoteId = profileEntity.getIdentity().getRemoteId();
       
-      if (isUserActivated(identity) == false) continue;
+      if (StorageUtils.isUserActivated(remoteId) == false) continue;
+      
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       identityResult.add(identity);
     }
@@ -1146,14 +1157,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityResult identityResult = new IdentityResult(results.size());
     
+    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
 
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      remoteId = profileEntity.getIdentity().getRemoteId();
       
-      if (isUserActivated(identity) == false) continue;
+      if (StorageUtils.isUserActivated(remoteId) == false) continue;
+      
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       identityResult.add(identity);
     }
@@ -1190,14 +1204,17 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     //
     IdentityResult identityResult = new IdentityResult(offset, limit, results.size());
     
+    String remoteId = null;
     //
     while (results.hasNext()) {
 
       ProfileEntity profileEntity = results.next();
-
-      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
-      if (isUserActivated(identity) == false) continue;
+      remoteId = profileEntity.getIdentity().getRemoteId();
+      
+      if (StorageUtils.isUserActivated(remoteId) == false) continue;
+      
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
       
       Profile profile = getStorage().loadProfile(new Profile(identity));
       identity.setProfile(profile);
@@ -1216,23 +1233,7 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
 
   }
   
-  /**
-   * Checks Identity in Social is activated or not
-   * @param identity
-   * @return TRUE activated otherwise FALSE
-   * @throws IdentityStorageException
-   */
-  private boolean isUserActivated(Identity identity) throws IdentityStorageException {
-    //
-    OrganizationService orgService = getOrganizationService();
-    try {
-      Collection<?> got = orgService.getMembershipHandler().findMembershipsByUserAndGroup(identity.getRemoteId(), SpaceUtils.PLATFORM_USERS_GROUP);
-      
-      return got != null && got.size() > 0;
-    } catch (Exception e) {
-      throw new IdentityStorageException(IdentityStorageException.Type.FAIL_TO_GET_IDENTITY_BY_PROFILE_FILTER, e.getMessage());
-    }
-  }
+  
 
   /**
    * {@inheritDoc}

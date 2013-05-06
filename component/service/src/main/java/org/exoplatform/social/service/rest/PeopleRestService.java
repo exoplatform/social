@@ -62,12 +62,8 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.utils.TimeConvertUtils;
 
 /**
- * PeopleRestService.java < /br>
  * 
  * Provides REST Services for manipulating jobs relates to people.
- * Url template: <tt>{rest_context_name}/social/people</tt>
- * <br />
- * GET: /{rest_context_name}/social/people/suggest.{format}
  * 
  * @anchor PeopleRestService
  */

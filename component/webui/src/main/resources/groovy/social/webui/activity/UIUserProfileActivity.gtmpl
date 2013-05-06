@@ -200,7 +200,7 @@
 			<div class="uiBox roundedBottom introBox userProfileShare">	
 				<div class="clearfix">
 					<div class="pull-left">
-						<a  href="$ownerUri">
+						<a href="$ownerUri" class="avatarXMedium">
 							<img alt="$ownerName" src="$ownerAvatar"/>
 						</a>
 					</div>
@@ -384,7 +384,7 @@
 					</div><!--end commentLeft--> 
 					<div class="commentRight">
 						<div class="commentInputBox ">
-							<button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
+							<button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" id="CommentButton${activity.id}">$labelComment</button>
 							<div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
 						</div>
 					</div><!--end commentRight-->        

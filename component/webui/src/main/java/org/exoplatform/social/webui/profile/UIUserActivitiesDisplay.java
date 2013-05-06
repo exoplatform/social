@@ -293,7 +293,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
   protected boolean hasActivities() {
     UIActivitiesLoader uiActivitiesLoader = getChild(UIActivitiesLoader.class);
     UIActivitiesContainer activitiesContainer = uiActivitiesLoader.getChild(UIActivitiesContainer.class);
-    return activitiesContainer.getChildren().size() > 1; 
+    return activitiesContainer.getChildren().size() > 0; 
   }
   
   public static class ChangeOptionActionListener extends EventListener<UIDropDownControl> {
@@ -438,7 +438,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
     viewerName = PortalRequestContext.getCurrentInstance().getRemoteUser();
     if ( !viewerName.equals(ownerName) ) return false;
     
-    boolean hasActivities = getActivitiesLoader().getActivitiesContainer().getChildren().size() > 1;
+    boolean hasActivities = getActivitiesLoader().getActivitiesContainer().getChildren().size() > 0;
     boolean isAllActivitiesModeOnHomePage = DisplayMode.ALL_ACTIVITIES.equals(getSelectedDisplayMode());
     
     return Utils.isHomePage() ? !hasActivities && isAllActivitiesModeOnHomePage : !hasActivities;
