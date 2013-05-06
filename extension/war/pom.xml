@@ -72,11 +72,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-config</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
       <artifactId>social-extension-config</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -103,32 +98,5 @@
   </dependencies>
   <build>
     <finalName>social-extension</finalName>
-    <plugins>
-      <plugin>
-        <groupId>com.github.goldin</groupId>
-        <artifactId>copy-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <resource>
-                <zipEntry>**/*-configuration.xml</zipEntry>
-                <targetPath>${project.build.directory}/social-extension/WEB-INF/conf/social-extension/social/</targetPath>
-                <dependency>
-                  <groupId>org.exoplatform.social</groupId>
-                  <artifactId>social-config</artifactId>
-                  <version>${project.version}</version>
-                </dependency>
-                <unpack>true</unpack>
-              </resource>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 </project>

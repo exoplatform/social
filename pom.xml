@@ -36,7 +36,6 @@
     <module>component</module>
     <module>webapp</module>
     <module>extras</module>
-    <module>config</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/social.git</connection>
@@ -113,11 +112,6 @@
       <dependency>
         <groupId>org.exoplatform.social</groupId>
         <artifactId>social-component-webui</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social-config</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
