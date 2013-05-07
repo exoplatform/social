@@ -55,7 +55,7 @@
 		</div>
 	</div>
 	<div class="uiAction uiActionBorder">
-		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$labelSave" onclick="$saveAction">$labelSave</button>
-		<button class="btn" type="button" rel="tooltip" data-placement="bottom" title="$labelCancel" onclick="$cancelAction">$labelCancel</button>
+		<button class="btn" type="button" onclick="$saveAction">$labelSave</button>
+		<button class="btn" type="button" onclick="$cancelAction">$labelCancel</button>
 	</div>
 </div>
