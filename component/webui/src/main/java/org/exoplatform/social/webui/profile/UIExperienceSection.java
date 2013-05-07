@@ -64,8 +64,7 @@ import org.exoplatform.webui.form.validator.PersonalNameValidator;
       @EventConfig(listeners = UIExperienceSection.EditActionListener.class, phase=Phase.DECODE),
       @EventConfig(listeners = UIExperienceSection.SaveActionListener.class),
       @EventConfig(listeners = UIExperienceSection.AddActionListener.class),
-      @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class,
-                   confirm = "UIExperienceSection.msg.confirmDeleteExp", phase=Phase.DECODE),
+      @EventConfig(listeners = UIExperienceSection.RemoveActionListener.class),
       @EventConfig(listeners = UIProfileSection.CancelActionListener.class, phase=Phase.DECODE)
     }
   ),

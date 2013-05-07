@@ -119,6 +119,18 @@
       }
     },
     
+    applyConfirmPopup : function(id) { 
+      $('#' + id).find('.confirmPopup').on('click', function() {
+          var thizz = $(this);
+          var action_ = thizz.attr('data-onclick'); 
+          var label_ = thizz.attr('data-labelAction') || 'OK';
+          var close_ = thizz.attr('data-labelClose') || 'Close'; 
+          var title_ = thizz.attr('data-title') || 'Confirmation';
+          var message_ = thizz.attr('data-message');
+          eXo.social.PopupConfirmation.confirm('demo', [{action: action_, label : label_}], title_, message_, close_);
+        }); 
+      },
+    
     /**
      * Get current Browser
      */
@@ -159,7 +171,7 @@
 
     makeTemplate : function() {
       $('#UISocialPopupConfirmation').remove();
-      var popup = $('#UISocialConfirmation').clone();
+      var popup = $('.UISocialConfirmation:first').clone();
       popup.attr('id', 'UISocialPopupConfirmation');
       return popup;
     },

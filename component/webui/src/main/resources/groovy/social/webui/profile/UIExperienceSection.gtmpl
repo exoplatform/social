@@ -35,6 +35,7 @@
   def uicomponentId = uicomponent.id;
   def addActionLabel = _ctx.appRes("${uicomponentId}.label.AddAction");
   def removeActionLabel = _ctx.appRes("${uicomponentId}.label.RemoveAction");
+  def deleteMessagePopup = _ctx.appRes("UIExperienceSection.msg.confirmDeleteExp");
   //
   def organizationLabel = _ctx.appRes("${uicomponentId}.label.company");
   def positionLabel = _ctx.appRes("${uicomponentId}.label.position");
@@ -45,7 +46,10 @@
   
   def addExperience = uicomponent.event("Add") + "; return false";
   def expCounter = 0;
-  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+  def requireJS = _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+  
+  requireJS.addScripts("eXo.social.SocialUtil.applyConfirmPopup('" + uicomponent.id + "');");
+  
 %>
 <div class="uiExperienceSection">
 <%uiform.begin()%>
@@ -71,10 +75,10 @@
                   }%>
                 
                 <% if ((i + 7) >= childSize) {%>
-                    <a href="javascript:void(0)" onclick="<%= removeExperience%>"><i class="uiIconClose uiIconLightGray"></i></a>
+                    <a class="confirmPopup" href="javascript:void(0)" data-onclick="<%=removeExperience%>" data-message="$deleteMessagePopup"><i class="uiIconClose uiIconLightGray"></i></a>
                     <a href="javascript:void(0)" onclick="<%= addExperience%>"><i class="uiIconPlus uiIconLightGray"></i></a>
 				 <% } else {%>
-					<a href="javascript:void(0)" onclick="<%= removeExperience%>"><i class="uiIconClose uiIconLightGray"></i></a>
+					<a class="confirmPopup" href="javascript:void(0)" data-onclick="<%=removeExperience%>" data-message="$deleteMessagePopup"><i class="uiIconClose uiIconLightGray"></i></a>
                   
                 <% } %>
 				</div>
@@ -219,4 +223,5 @@
   %>
   </div>
   <% uiform.end() %>
+  <% _ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl"); %>
 </div>
