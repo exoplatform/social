@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.webui.space;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
@@ -52,7 +56,8 @@ import org.exoplatform.webui.event.EventListener;
     events = {
       @EventConfig(listeners = UISpaceNavigationManagement.AddRootNodeActionListener.class),
       @EventConfig(listeners = UISpaceNavigationManagement.AddNodeActionListener.class),
-      @EventConfig(listeners = UISpaceNavigationManagement.SaveActionListener.class)
+      @EventConfig(listeners = UISpaceNavigationManagement.SaveActionListener.class),
+      @EventConfig(listeners = UISpaceNavigationManagement.SelectNodeActionListener.class)
     }
   ),
   @ComponentConfig(
@@ -113,6 +118,43 @@ public class UISpaceNavigationManagement extends UIContainer {
     return super.<T> setRendered(b);
   }
 
+  protected String getBreadcrumb() throws Exception {
+    UISpaceNavigationNodeSelector selector = getChild(UISpaceNavigationNodeSelector.class);
+    UITree uiTree = selector.getChild(UITree.class);
+    TreeNode selectedNode = uiTree.getSelected();
+    TreeNode rootNode = selector.getRootNode();
+    List<TreeNode> nodes = new ArrayList<TreeNode>();
+    
+    while (selectedNode.getId() != rootNode.getId()) {
+      nodes.add(selectedNode);
+      selectedNode = selectedNode.getParent();
+    }
+    
+    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
+
+    String spaceLabel = resourceBudle.getString("UISpaceNavigationManagement.action.Space");
+    
+    StringBuffer sb = new StringBuffer();
+    sb.append("<li>");
+    sb.append("<a href='javascript:void(0);'>").append(spaceLabel).append("</a>");
+    sb.append("</li>");
+    
+    for (int idx = nodes.size() - 1; idx >= 0; idx--) {
+      sb.append("<li>");
+      sb.append("<span class='uiIconMiniArrowRight'>&nbsp;</span>");
+      sb.append("</li>");
+      if (idx == 0) {
+        sb.append("<li class=\"active\">");
+      } else {
+        sb.append("<li>");
+      }
+      sb.append("<a href=\"javascript:void(0);\" onclick=\"").append(this.event("SelectNode", nodes.get(idx).getId())).append("\"");
+      sb.append(">").append(nodes.get(idx).getResolvedLabel()).append("</a>");
+      sb.append("</li>");
+    }
+    
+    return sb.toString();
+  }
 
   public void reloadTreeData() throws Exception {
     UserPortal userPortal = Util.getUIPortalApplication().getUserPortalConfig().getUserPortal();
@@ -216,6 +258,20 @@ public class UISpaceNavigationManagement extends UIContainer {
       }
 
       uiNodeSelector.save();
+    }
+  }
+  
+  static public class SelectNodeActionListener extends EventListener<UISpaceNavigationManagement> {
+
+    public void execute(Event<UISpaceNavigationManagement> event) throws Exception {
+      //
+      UISpaceNavigationManagement uiSNM = event.getSource();
+      UISpaceNavigationNodeSelector uiNodeSelector = uiSNM.getChild(UISpaceNavigationNodeSelector.class);
+
+      String nodeID = event.getRequestContext().getRequestParameter(OBJECTID);
+      TreeNode node = uiNodeSelector.findNode(nodeID);
+      uiNodeSelector.selectNode(node);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiNodeSelector.getParent());
     }
   }
   

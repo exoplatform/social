@@ -358,7 +358,7 @@ public class UISpaceNavigationNodeSelector extends UIContainer {
       }
 
       uiNodeSelector.selectNode(node);
-      context.addUIComponentToUpdateByAjax(uiNodeSelector);
+      context.addUIComponentToUpdateByAjax(uiNodeSelector.getParent());
     }
   }
 

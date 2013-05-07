@@ -17,11 +17,7 @@
 	-->	
 	<div class="addNodeCont">
 		<ul class="breadcrumb">  
-			<li>
-				<a href="javascript:void(0);">Space</a>
-				<span class="uiIconMiniArrowRight">&nbsp;</span>
-			</li>
-			<li class="active"><%=uicomponent.getSpace().getDisplayName(); %></li>
+			<%=uicomponent.getBreadcrumb(); %>
 		</ul>
 			
 	  <%
