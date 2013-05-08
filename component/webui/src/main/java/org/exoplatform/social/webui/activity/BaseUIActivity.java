@@ -621,7 +621,9 @@ public class BaseUIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
     }
   }
 
@@ -641,7 +643,9 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
     }
   }
 
@@ -670,7 +674,9 @@ public class BaseUIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+        .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+        .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+        .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
     }
   }
 
@@ -683,6 +689,9 @@ public class BaseUIActivity extends UIForm {
       } else {
         uiActivity.setCommentFormDisplayed(true);
       }
+      event.getRequestContext().getJavascriptManager()
+      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+      .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
     }
   }
 
@@ -713,7 +722,9 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
-      .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+      .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+      .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
       
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
@@ -739,7 +750,9 @@ public class BaseUIActivity extends UIForm {
       }
       
       event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
       
     }
   }
@@ -761,7 +774,9 @@ public class BaseUIActivity extends UIForm {
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);");
+           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
       
     }
   }
