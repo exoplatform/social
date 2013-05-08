@@ -160,17 +160,13 @@ import org.exoplatform.social.core.service.LinkProvider;
 	          </a>
 	        <%} else { %>
 	          <div class="avatarXLarge pull-left">
-	             <img title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+	             <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
 	          </div>
 	        <%} %>
 		
 		        <div class="contentBox">
 		          <h4 class="spaceTitle">
-		            <% if (uicomponent.hasAccessPermission(space))  { %>
 		            <a href="<%= spaceUrl %>"><%=Utils.trunc(space.displayName, 15) %></a>
-		            <% } else {%>
-		            <a href="javascript:void(0)">$space.displayName</a>
-		            <% } %> 
 		            <% if (iconImgLabel) {%>
 		            	<span class="subTxt">($iconImgLabel)</span>
 		            <% } %>
