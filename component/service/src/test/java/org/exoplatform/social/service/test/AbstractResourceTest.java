@@ -260,6 +260,8 @@ public abstract class AbstractResourceTest extends AbstractServiceTest {
                   activity.getPostedTime() == null ? 0 : activity.getPostedTime(),
                   (Long) entity.get("postedTime"));
     
+    assertEquals(activity.getUpdated().getTime(), ((Long) entity.get("lastUpdated")).longValue());
+    
     assertNotNull("entity.get(\"createdAt\"): ", entity.get("createdAt"));
     
     Float expectedPriority;

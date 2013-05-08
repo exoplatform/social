@@ -70,6 +70,10 @@ public class ActivityRestOut extends HashMap<String, Object>{
      */
     CREATED_AT("createdAt"),
     /**
+     * The last updated timestamp.
+     */
+    LAST_UPDATED("lastUpdated"),
+    /**
      * The title id.
      */
     TITLE_ID("titleId"),
@@ -149,6 +153,7 @@ public class ActivityRestOut extends HashMap<String, Object>{
     this.setAppId(activity.getAppId());
     this.setType(activity.getType());
     this.setPostedTime(activity.getPostedTime());
+    this.setLastUpdatedTime(activity.getUpdated().getTime());
     this.setCreatedAt(Util.convertTimestampToTimeString(getPostedTime()));
     this.setTitleId(activity.getTitleId());
     this.setTemplateParams(activity.getTemplateParams());
@@ -251,12 +256,24 @@ public class ActivityRestOut extends HashMap<String, Object>{
   public Long getPostedTime() {
     return (Long) this.get(Field.POSTED_TIME.toString());
   }
+  
+  public Long getLastUpdatedTime() {
+    return (Long) this.get(Field.LAST_UPDATED.toString());
+  }
 
   public void setPostedTime(final Long postedTime) {
     if(postedTime != null){
       this.put(Field.POSTED_TIME.toString(), postedTime);
     } else {
       this.put(Field.POSTED_TIME.toString(), new Long(0));
+    }
+  }
+  
+  public void setLastUpdatedTime(final Long updatedTime) {
+    if(updatedTime != null){
+      this.put(Field.LAST_UPDATED.toString(), updatedTime);
+    } else {
+      this.put(Field.LAST_UPDATED.toString(), new Long(0));
     }
   }
 

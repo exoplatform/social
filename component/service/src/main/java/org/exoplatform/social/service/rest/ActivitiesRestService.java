@@ -354,6 +354,7 @@ public class ActivitiesRestService implements ResourceContainer {
     model.setAppId(activity.getAppId());
     model.setType(activity.getType());
     model.setPostedTime(activity.getPostedTime());
+    model.setLastUpdatedTime(activity.getUpdated().getTime());
     model.setCreatedAt(Util.convertTimestampToTimeString(activity.getPostedTime()));
     model.setTitleId(activity.getTitleId());
     model.setTemplateParams(activity.getTemplateParams());
