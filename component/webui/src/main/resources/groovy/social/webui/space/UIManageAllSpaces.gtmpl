@@ -18,6 +18,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 	def acceptInvitationLabel  = _ctx.appRes("${uicomponentId}.label.accept_invitation_to_join_space");
 	def ignoreInvitationLabel  = _ctx.appRes("${uicomponentId}.label.ignore_invitation_to_join_space");
 	def cancelInvitationLabel  = _ctx.appRes("${uicomponentId}.label.cancel_invitation");
+	def deleteMessagePopup = _ctx.appRes("UIManageAllSpaces.msg.confirm_space_delete");
 	
 	def fieldLabelMembers = _ctx.appRes("${uicomponentId}.fieldLabel.members");
 	def visibleStatus = _ctx.appRes("${uicomponentId}.status.visible");
@@ -50,7 +51,8 @@ import org.exoplatform.social.core.service.LinkProvider;
 	def selectedNode = Utils.getSelectedNode();
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")
-	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();");
+	         .require("SHARED/bts_tooltip").addScripts("jq('*[rel=\"tooltip\"]').tooltip();")
+	         .require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.applyConfirmPopup('" + uicomponent.id + "');")
 %>
 <div class="uiManageSpace" id="$uicomponent.id">
     <% uicomponent.renderChild(UISpaceSearch.class); %>
@@ -184,11 +186,11 @@ import org.exoplatform.social.core.service.LinkProvider;
 		        </div>
 		        <div class="connectionBtn clearfix">
    		        <% if ("MANAGER".equals(typeOfSpace.toString())) {  %>
-                  <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>">$deleteSpaceLabel</button>
+                  <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
                   <button type="button" class="btn pull-right" onclick="location.href='<%= editSpaceLink %>'">$editSpaceLabel</button>                  
 		          <% } else if (uicomponent.isSuperUser(space)) { %>
-		              <button type="button" class="btn pull-right" onclick="<%= deleteSpaceAction %>">$deleteSpaceLabel</button>
+		              <button type="button" class="confirmPopup btn pull-right" data-onclick="<%= deleteSpaceAction %>" data-message="$deleteMessagePopup">$deleteSpaceLabel</button>
 		             <% if ("MEMBER".equals(typeOfSpace.toString())) { %>
                   <button type="button" class="btn pull-right" onclick="<%= leaveSpaceAction %>">$leaveSpaceLabel</button>
 		             <% } %>
@@ -234,5 +236,6 @@ import org.exoplatform.social.core.service.LinkProvider;
                 
       </div>
     </div>
-  </div>  
+  </div>
+  <% _ctx.include("classpath:groovy/social/webui/UISocialConfirmation.gtmpl"); %>  
 </div>

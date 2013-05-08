@@ -56,8 +56,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
     @EventConfig(listeners = UIManageAllSpaces.AcceptInvitationActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.IgnoreInvitationActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.LeaveSpaceActionListener.class),
-    @EventConfig(listeners = UIManageAllSpaces.DeleteSpaceActionListener.class,
-                 confirm = "UIManageAllSpaces.msg.confirm_space_delete"),
+    @EventConfig(listeners = UIManageAllSpaces.DeleteSpaceActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.SearchActionListener.class),
     @EventConfig(listeners = UIManageAllSpaces.LoadMoreSpaceActionListener.class)
   }

@@ -47,8 +47,7 @@
   def addExperience = uicomponent.event("Add") + "; return false";
   def expCounter = 0;
   def requireJS = _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
-  
-  requireJS.addScripts("eXo.social.SocialUtil.applyConfirmPopup('" + uicomponent.id + "');");
+  requireJS.require("SHARED/socialUtil", "socialUtil").addScripts("socialUtil.applyConfirmPopup('" + uicomponent.id + "');")
   
 %>
 <div class="uiExperienceSection">

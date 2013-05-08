@@ -45,8 +45,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 @ComponentConfig(
   template="classpath:groovy/social/webui/space/UIManageMySpaces.gtmpl",
   events = {
-    @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class,
-                 confirm = "UIManageMySpaces.msg.confirm_space_delete"),
+    @EventConfig(listeners = UIManageMySpaces.DeleteSpaceActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.LeaveSpaceActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.SearchActionListener.class),
     @EventConfig(listeners = UIManageMySpaces.LoadMoreSpaceActionListener.class)
