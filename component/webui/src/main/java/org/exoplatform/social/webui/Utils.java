@@ -561,14 +561,19 @@ public class Utils {
 
   private static Space getSpaceByContext() {
     //
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     PortalRequestContext pcontext = Util.getPortalRequestContext();
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     Route route = ExoRouter.route(requestPath);
-    if (route == null) return null;
+    
+    if (route == null) {
+      String groupId = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_SITE_NAME);
+      return spaceService.getSpaceByGroupId(groupId);
+    }
 
     //
     String spacePrettyName = route.localArgs.get("spacePrettyName");
-    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    
     return spaceService.getSpaceByPrettyName(spacePrettyName);
   }
 }
