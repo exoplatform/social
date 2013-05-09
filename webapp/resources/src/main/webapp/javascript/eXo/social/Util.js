@@ -122,9 +122,9 @@
 
         $(results).addClass('suggestions')
                     .css({
-                      'top': (input.position().top + input.height() + 5) + 'px',
+                      'top': input.position().top + input.outerHeight() + 'px',
                       'left': input.position().left + 'px',
-                      'width': options.width || (input.width() + 'px')
+                      'width': input.outerWidth() + 'px'
                     })
                     .hide();
 
@@ -148,7 +148,7 @@
 	           })
 	           .focus(function(e) {
 	                $(results).css({
-	                  'top': (input.position().top + input.height() + 5) + 'px',
+	                  'top': input.position().top + input.outerHeight() + 'px',
 	                  'left': input.position().left + 'px'
 	                });
 

@@ -23,6 +23,7 @@ div.suggestions {
 	max-height: 150px;
 	overflow-y: auto;
 	overflow-y: hidden;
+	z-index: 1000;
 }
 
 div.suggestions div.resultItem.hover {
