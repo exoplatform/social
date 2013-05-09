@@ -670,13 +670,23 @@ public class BaseUIActivity extends UIForm {
       if (commentListStatus != null) {
         uiActivity.setCommentListStatus(commentListStatus);
       }
-      uiActivity.setCommentFormDisplayed(false);
+      uiActivity.setCommentFormDisplayed(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
+      
+      //
+      String inputContainerId = "InputContainer" + activityId;
+      StringBuffer script = new StringBuffer("$(function() {");
+      script.append("var inputContainer = $('#").append(inputContainerId).append("');");
+      script.append("inputContainer.addClass('inputContainerShow').show();");
+      script.append("});");
       
       event.getRequestContext().getJavascriptManager()
         .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
         .require("SHARED/platform-left-navigation", "platformLeftNavigation")
         .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      
+      event.getRequestContext().getJavascriptManager()
+        .addJavascript(script.toString());
     }
   }
 
