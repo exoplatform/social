@@ -168,7 +168,7 @@ link
                  <div id="LinkDescription" class="content editable">$description</div>
             <% } %>
             <div id="LinkUrl" class="source">
-             $link
+             <a hreft="$link">$link</a>
             </div>
             <% if (embedHtml != null) { %>
                  <div id="embedHtml">$embedHtml</div>

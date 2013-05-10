@@ -137,9 +137,9 @@
 	
 	    function showThumbnail() {
 	      for (var i = 0, l = this.images.length; i < l; i++) {
-	        this.images[i].style.display = 'none';
+	        $(this.images[i]).css({'display': 'none', 'height': '100px','width': '100px', 'padding': '10px'});
 	      }
-	      this.images[this.shownThumbnailIndex].style.display = 'block';
+	      $(this.images[this.shownThumbnailIndex]).css({'display': 'block', 'height': '100px','width': '100px', 'padding': '10px'});
 	      doStats.apply(this);
 	    }
 	    
