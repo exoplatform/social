@@ -89,7 +89,8 @@ import org.exoplatform.webui.event.EventListener;
  * Editor : hanhvq@exoplatfor.com Jun 22, 2011 
  */
 public class UISpaceNavigationManagement extends UIContainer {
-
+  private static final String SPACE_LABEL = "Space";
+  
   private String owner;
 
   private String ownerType;
@@ -130,13 +131,9 @@ public class UISpaceNavigationManagement extends UIContainer {
       selectedNode = selectedNode.getParent();
     }
     
-    ResourceBundle resourceBudle = PortalRequestContext.getCurrentInstance().getApplicationResourceBundle();
-
-    String spaceLabel = resourceBudle.getString("UISpaceNavigationManagement.action.Space");
-    
     StringBuffer sb = new StringBuffer();
     sb.append("<li>");
-    sb.append("<a href='javascript:void(0);'>").append(spaceLabel).append("</a>");
+    sb.append("<a href='javascript:void(0);'>").append(SPACE_LABEL).append("</a>");
     sb.append("</li>");
     
     for (int idx = nodes.size() - 1; idx >= 0; idx--) {
