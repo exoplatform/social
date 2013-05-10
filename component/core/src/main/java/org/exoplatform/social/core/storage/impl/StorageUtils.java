@@ -201,18 +201,26 @@ public class StorageUtils {
                                                 .findUsersByGroupId(SpaceUtils.PLATFORM_USERS_GROUP);
 
         int offset = 0;
-        int limit = 20;
+        int limit = 100;
+        int totalSize = listAccess.getSize();
 
         userInPlatformGroups = new ArrayList<String>();
-        limit = Math.min(limit, listAccess.getSize());
+        limit = Math.min(limit, totalSize);
         int loaded = 0;
         
         loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
         
-        if (limit != listAccess.getSize()) {
-          while (loaded == limit) {
-            loaded = loadUserRange(listAccess, offset, Math.min(offset + limit, listAccess.getSize()), userInPlatformGroups);
+        if (limit != totalSize) {
+          while (loaded == 100) {
             offset += limit;
+            
+            //prevent to over totalSize
+            if (offset + limit > totalSize) {
+              limit = totalSize - offset;
+            }
+            
+            //
+            loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
           }
         }
       }
