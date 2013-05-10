@@ -368,7 +368,7 @@ public class SpaceServiceImpl implements SpaceService {
     // Creates new space by creating new group
     String groupId = null;
     try {
-      groupId = SpaceUtils.createGroup(space.getPrettyName(), creator);
+      groupId = SpaceUtils.createGroup(space.getDisplayName(), space.getPrettyName(), creator);
     } catch (SpaceException e) {
       LOG.error("Error while creating group", e);
     }
