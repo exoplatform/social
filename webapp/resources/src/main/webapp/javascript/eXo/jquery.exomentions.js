@@ -1208,11 +1208,18 @@
         // add placeholder
         var title = jElmTarget.attr('title');
         if ($.trim(title).length > 0) {
-          var placeholder = $('<div class="placeholder">' + title + '</div>');
-          placeholder.on('click', function() {
+          
+          var placeholder = elmInputBox.parent().find('.placeholder');
+          if(placeholder.length == 0) {
+            placeholder = $('<div class="placeholder">' + title + '</div>');
+            placeholder.appendTo(elmInputBox.parent());
+          } else {
+            placeholder.html(title);
+          }
+          placeholder.off('click').on('click', function() {
             elmInputBox.focus();
-          });
-          placeholder.appendTo(elmInputBox.parent());
+          }); 
+          
           if(getInputBoxValue().length > 0) {
             disabledPlaceholder();
           } else {
