@@ -57,7 +57,7 @@
 				 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
 				 String link = uicomponent.event(action);
 		%>
-			<button class="btn" rel="tooltip" data-placement="bottom" title="$actionLabel" onclick="$link">$actionLabel</button>
+			<button class="btn" onclick="$link">$actionLabel</button>
 		<%}%>
 	</div>
 	<%uiform.end()%>

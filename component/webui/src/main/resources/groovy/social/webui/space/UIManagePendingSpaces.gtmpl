@@ -120,7 +120,7 @@
 			        </div>
 			        </div>
 			        <div class="connectionBtn clearfix">
-				      <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>" rel="tooltip" data-placement="bottom" title="<%= cancelInvitationActionLabel %>">$cancelInvitationActionLabel</button>
+				      <button type="button" class="btn pull-right" onclick="<%= revokeSpaceAction %>">$cancelInvitationActionLabel</button>
 			      </div>
 			    </div>
 			  <%}%>
