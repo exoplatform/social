@@ -73,7 +73,7 @@
 <div class="uiMyConnections" id="$uicomponent.id">
   <% uicomponent.renderChild(UIProfileUserSearch.class); %>
   
-  <% if (uicomponent.isHasPeopleTab()) {%>
+
   <div class="uiTabNormal uiTabInPage">
      <ul class="nav nav-tabs">
           <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
@@ -171,7 +171,5 @@
   </div>
  </div>
   </div>
-  <% } %>
-  
   
 </div>
