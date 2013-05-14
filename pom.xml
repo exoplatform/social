@@ -296,11 +296,6 @@
       </dependency>
       <dependency>
         <groupId>org.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.core</artifactId>
-        <version>${org.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.dashboard</artifactId>
         <version>${org.gatein.portal.version}</version>
       </dependency>
