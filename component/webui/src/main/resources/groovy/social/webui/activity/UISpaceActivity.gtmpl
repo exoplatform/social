@@ -79,7 +79,6 @@
   def totalLikesNum = uicomponent.getIdentityLikes().length;
   def labelLikes = null;
   def loadLikesAction = uicomponent.event("LoadLikes");
-  def hasMore = (totalLikesNum > uicomponent.LIKES_NUM_DEFAULT) && !uicomponent.isAllLoaded();
   if (displayedIdentityLikes != null) {
     identityLikesNum = displayedIdentityLikes.length;
   }
@@ -278,9 +277,7 @@
 	              <img src="$personLikeAvatarImageSource" alt="$personLikeFullName" />
 	            </a>
 	         <% })%>
-	         <% if ( hasMore ) { %>
-	     <button onclick="$loadLikesAction" class="btn">...</button>
-	   <% } %>
+	            <button onclick="$loadLikesAction" class="btn">...</button>
 	        </div> <!-- end listLiked -->
 	        <% }%>
 	      </div> <!-- end listPeopleContent -->             

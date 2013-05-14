@@ -149,6 +149,61 @@ var UIActivity = {
 				}
 			);
     }
+    
+    //
+    
+    function hideMoreBtn() {
+      var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked');
+      var moreBtn = listLiked.find('.btn').hide();
+      moreBtn.hide();
+    }
+    
+    function reset() {
+      var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked');
+      if (listLiked.length == 0) {
+        listLiked = $(contentBoxEl).find('.listLikedBox'); 
+      }
+      var moreBtn = listLiked.find('.btn').hide();
+      var listLikedWidth = listLiked.outerWidth();
+      
+      //
+      var elWidth = listLiked.find('a:first-child').outerWidth() + 8;
+      var displayedNum = Math.floor(listLikedWidth/elWidth) - 1;
+      
+      //
+      var likedEl = listLiked.find('a');
+      var hasMore = (displayedNum < likedEl.length);
+      
+      likedEl.hide();
+      $.each(likedEl, function(idx, el) {
+        if (idx < displayedNum) {
+          $(el).show();
+        }
+      });
+      
+      if (hasMore) {
+        moreBtn.show();
+      }
+    }
+    
+    hideMoreBtn();
+    
+    $(window).load(function() {
+      reset();
+    });
+    
+    // process with like list
+    $(window).resize(function() {
+      reset();
+    });
+    
+	},
+	loadLikes : function () {
+	    var contentBoxEl = $('#'+UIActivity.contentBoxId);
+      var listLiked = $(contentBoxEl).find('.listLiked').find('a').show();
+      UIActivity.isLoadLike = true;
 	},
 	removeActivity : function () {
 		var jElm = $('.currentDeleteActivity:first');

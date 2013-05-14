@@ -70,7 +70,7 @@ public class BaseUIActivity extends UIForm {
 
   private static final int DEFAULT_LIMIT = 10;
   
-  protected static final int LIKES_NUM_DEFAULT = 14;
+  protected static final int LIKES_NUM_DEFAULT = 0;
   
   public static enum CommentStatus {
     LATEST("latest"),    ALL("all"),    NONE("none");
@@ -265,9 +265,6 @@ public class BaseUIActivity extends UIForm {
     List<String> likes = Arrays.asList(identityLikes);
     Collections.reverse(likes);
     identityLikes = (String[])likes.toArray();
-    if ( (identityLikes.length > LIKES_NUM_DEFAULT) && !isAllLoaded() ) {
-      return (String[]) ArrayUtils.subarray(identityLikes, 0, LIKES_NUM_DEFAULT);
-    }
     
     return identityLikes;
   }
@@ -621,6 +618,7 @@ public class BaseUIActivity extends UIForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
       event.getRequestContext().getJavascriptManager()
+           .require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes();")
            .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
            .require("SHARED/platform-left-navigation", "platformLeftNavigation")
            .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
