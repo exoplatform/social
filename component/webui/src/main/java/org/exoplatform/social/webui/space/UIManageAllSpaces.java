@@ -240,7 +240,7 @@ public class UIManageAllSpaces extends UIContainer {
    * @return Character is selected.
    */
   public String getSelectedChar() {
-    return (selectedChar == null || selectedChar.length() == 0) ? SEARCH_ALL : selectedChar;
+    return selectedChar;
   }
 
   /**
@@ -344,16 +344,13 @@ public class UIManageAllSpaces extends UIContainer {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     String userId = Util.getPortalRequestContext().getRemoteUser();
-    if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+    
+    if (SEARCH_ALL.equals(charSearch)) {
       setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, null));
+    } else if (searchCondition != null) {
+      setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, new SpaceFilter(searchCondition)));
     } else {
-      SpaceFilter spaceFilter = null;
-      if (charSearch != null) {
-        spaceFilter = new SpaceFilter(charSearch.charAt(0));
-      } else {
-        spaceFilter = new SpaceFilter(searchCondition);
-      }
-      setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, spaceFilter));
+      setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, new SpaceFilter(charSearch.charAt(0))));
     }
     
     setSpacesNum(getSpacesListAccess().getSize());
@@ -400,6 +397,7 @@ public class UIManageAllSpaces extends UIContainer {
         String defaultSpaceNameAndDesc = resApp.getString(uiManageAllSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
         ((UIFormStringInput) uiManageAllSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
         uiManageAllSpaces.setSelectedChar(charSearch);
+        uiManageAllSpaces.uiSpaceSearch.setSpaceNameSearch(null);
       }
       
       uiManageAllSpaces.loadSearch();

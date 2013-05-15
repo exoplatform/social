@@ -76,7 +76,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 		            <div class="result clearfix"><span class="number"><%=uicomponent.spacesNum%></span><%=_ctx.appRes(uicomponent.getId() + ".label.DisplayInOrderOfAlphabet")%></div>
 		            <ul class="letterList"> 
 		             <% 
-		               	String cssClassSelected = (selectedChar.equals(uicomponent.SEARCH_ALL)) ? "selected allSpace" : "allSpace";
+		               	String cssClassSelected = (uicomponent.SEARCH_ALL.equals(selectedChar)) ? "selected allSpace" : "allSpace";
 		             %>
 		                <li>
 		                	<a href="javascript:void(0);" class="$cssClassSelected" id="searchAllSpace" onclick="<%=uicomponent.event("Search", uicomponent.SEARCH_ALL)%>">$searchAll</a>
