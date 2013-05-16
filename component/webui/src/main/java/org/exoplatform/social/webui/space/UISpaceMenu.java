@@ -99,8 +99,8 @@ public class UISpaceMenu extends UIContainer {
    */
   public List<UserNode> getApps() throws Exception {
     String spaceUrl = Utils.getSpaceUrlByContext();
-    SpaceService spaceSrc = getApplicationComponent(SpaceService.class);
-    space = spaceSrc.getSpaceByUrl(spaceUrl);
+    space = spaceService.getSpaceByUrl(spaceUrl);
+    
     if (space == null) {
       return new ArrayList<UserNode>(0);
     }
@@ -122,6 +122,17 @@ public class UISpaceMenu extends UIContainer {
     return userNodeArraySorted;
   }
 
+  protected String getAppIdByAppName(String appName) {
+    String[] appInfos = space.getApp().split(",");
+    for (String appInfo : appInfos) {
+      String[] appInfoParts = appInfo.split(":");
+      if (appInfoParts[0].equals(appName) || appInfoParts[1].equals(appName)) {
+        return appInfoParts[0];
+      }
+    }
+    return null;
+  }
+  
   /**
    * Renames space application name.<br> - Gets selected node and selected page navigation.<br> -
    * Changes selected node information.<br> - Updates new information for selected page
