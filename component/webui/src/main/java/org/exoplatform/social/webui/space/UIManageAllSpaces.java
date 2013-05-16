@@ -345,11 +345,11 @@ public class UIManageAllSpaces extends UIContainer {
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
     String userId = Util.getPortalRequestContext().getRemoteUser();
     
-    if (SEARCH_ALL.equals(charSearch)) {
+    if (SEARCH_ALL.equals(charSearch) || (charSearch == null && searchCondition == null)) {
       setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, null));
     } else if (searchCondition != null) {
       setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, new SpaceFilter(searchCondition)));
-    } else {
+    } else if(charSearch != null) {
       setSpacesListAccess(getSpaceService().getVisibleSpacesWithListAccess(userId, new SpaceFilter(charSearch.charAt(0))));
     }
     
