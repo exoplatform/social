@@ -756,11 +756,18 @@ public class BaseUIActivity extends UIForm {
       } else {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
       }
+      StringBuilder script = new StringBuilder("setTimeout(function() {")
+      .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
+      .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
+      .append("platformLeftNavigation.resize();")
+      .append("}, 200);");
+      
       
       event.getRequestContext().getJavascriptManager()
            .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
+           .require("SHARED/jquery", "jq")
            .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+           .addScripts(script.toString());
       
     }
   }

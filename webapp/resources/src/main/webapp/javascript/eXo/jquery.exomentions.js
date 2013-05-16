@@ -1079,7 +1079,7 @@
       var isLinked = ($('#LinkTitle').length > 0);
       var action = $('#' + settings.idAction);
       if(isLinked === false && action.length > 0 && action.attr('disabled') === undefined) {
-        $('#' + settings.idAction).attr('disabled', 'disabled').removeAttr('onclick').addClass('DisableButton');
+        $('#' + settings.idAction).attr('disabled', 'disabled').addClass('DisableButton');
       }
     }
     
@@ -1088,7 +1088,6 @@
       var action = $('#' + settings.idAction);
       if (action.length > 0 && action.attr('disabled') === 'disabled') {
         action.removeAttr('disabled').removeClass('DisableButton');
-        action.attr('onclick', action.data('actionLink').action);        
       }
     }
 
@@ -1185,6 +1184,10 @@
         initTextarea();
         initAutocomplete();
         updateCacheData();
+        
+        // set tabindex for input-box and action-button
+        var tabIndex = String(new Date().getTime()).substring(10)*1+ 1;
+        elmInputBox.attr('tabindex', tabIndex);
 
         // prefill mentions
         if (settings.prefillMention) {
@@ -1193,16 +1196,37 @@
 
         // action submit
         if (settings.idAction && settings.idAction.length > 0) {
-          var actionLink = $('#' + settings.idAction).on('mousedown', function() {
+          
+          var actionLink = $('#' + settings.idAction);
+          actionLink.on('mousedown keydown', function(evt) {
+            evt.stopPropagation();
+            if ($(this).hasClass('DisableButton')) {
+              return;
+            }
+            if (evt.type === 'keydown') {
+              var number = (evt.which || evt.keyCode);
+              if (number !== KEY.RETURN && number !== KEY.SPACE) {
+                return;
+              }
+            }
+            if (evt.type === 'mousedown' && evt.button === 2) {
+              return;
+            }
+            evt.preventDefault();
             var value = mentionsCollection.length ? elmInputBox.data('messageText') : getInputBoxValue();
             value = value.replace(/<br\/?>/gi, '\n').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
             jElmTarget.val(value);
-            $(this).click();
             clearCacheData();
             resetInput();
+            $.globalEval($(this).data('actionLink'));
           });
+          
           actionLink.attr('disabled', 'disabled').addClass('DisableButton');
-          actionLink.data('actionLink', {action: actionLink.attr('onclick')});
+          var actionClick = String(actionLink.attr('onclick')).replace('javascript:', '');
+          actionLink.attr('data-action-link', actionClick);
+          actionLink.removeAttr('onclick');
+          actionLink.data('actionLink', actionClick);
+          actionLink.attr('tabindex', tabIndex+1);
         }
 
         // add placeholder
@@ -1290,7 +1314,6 @@
         var action = $('#' + settings.idAction);
         if (action.length > 0 && action.attr('disabled') === 'disabled') {
           action.removeAttr('disabled').removeClass('DisableButton');
-          action.attr('onclick', action.data('actionLink').action);        
         }
       },
 
