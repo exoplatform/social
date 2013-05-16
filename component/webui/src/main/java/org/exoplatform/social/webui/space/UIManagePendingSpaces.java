@@ -220,7 +220,7 @@ public class UIManagePendingSpaces extends UIContainer {
    * @return Character is selected.
    */
   public String getSelectedChar() {
-    return (selectedChar == null || selectedChar.length() == 0) ? SEARCH_ALL : selectedChar;
+    return selectedChar;
   }
 
   /**
@@ -294,16 +294,13 @@ public class UIManagePendingSpaces extends UIContainer {
   private List<Space> loadPendingSpaces(int index, int length) throws Exception {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
-    if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+    
+    if (SEARCH_ALL.equals(charSearch) || (charSearch == null && searchCondition == null)) {
       setPendingSpacesListAccess(getSpaceService().getPendingSpacesWithListAccess(getUserId()));
-    } else {
-      SpaceFilter spaceFilter = null;
-      if (charSearch != null) {
-        spaceFilter = new SpaceFilter(charSearch.charAt(0));
-      } else {
-        spaceFilter = new SpaceFilter(searchCondition);
-      }
-      setPendingSpacesListAccess(getSpaceService().getPendingSpacesByFilter(getUserId(), spaceFilter));
+    } else if (searchCondition != null) {
+      setPendingSpacesListAccess(getSpaceService().getPendingSpacesByFilter(getUserId(), new SpaceFilter(searchCondition)));
+    } else if(charSearch != null) {
+      setPendingSpacesListAccess(getSpaceService().getPendingSpacesByFilter(getUserId(), new SpaceFilter(charSearch.charAt(0))));
     }
     
     setPendingSpacesNum(getPendingSpacesListAccess().getSize());
@@ -347,6 +344,7 @@ public class UIManagePendingSpaces extends UIContainer {
         String defaultSpaceNameAndDesc = resApp.getString(uiManagePendingSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
         ((UIFormStringInput) uiManagePendingSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
         uiManagePendingSpaces.setSelectedChar(charSearch);
+        uiManagePendingSpaces.uiSpaceSearch.setSpaceNameSearch(null);
       }
       
       uiManagePendingSpaces.loadSearch();

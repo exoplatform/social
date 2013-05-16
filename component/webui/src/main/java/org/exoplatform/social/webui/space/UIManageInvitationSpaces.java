@@ -235,7 +235,7 @@ public class UIManageInvitationSpaces extends UIContainer {
    * @return Character is selected.
    */
   public String getSelectedChar() {
-    return (selectedChar == null || selectedChar.length() == 0) ? SEARCH_ALL : selectedChar;
+    return selectedChar;
   }
 
   /**
@@ -300,16 +300,13 @@ public class UIManageInvitationSpaces extends UIContainer {
   private List<Space> loadInvitedSpaces(int index, int length) throws Exception {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
-    if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+    
+    if (SEARCH_ALL.equals(charSearch) || (charSearch == null && searchCondition == null)) {
       setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesWithListAccess(getUserId()));
-    } else {
-      SpaceFilter spaceFilter = null;
-      if (charSearch != null) {
-        spaceFilter = new SpaceFilter(charSearch.charAt(0));
-      } else {
-        spaceFilter = new SpaceFilter(searchCondition);
-      }
-      setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesByFilter(getUserId(), spaceFilter));
+    } else if (searchCondition != null) {
+      setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesByFilter(getUserId(), new SpaceFilter(searchCondition)));
+    } else if(charSearch != null) {
+      setInvitedSpacesListAccess(getSpaceService().getInvitedSpacesByFilter(getUserId(), new SpaceFilter(charSearch.charAt(0))));
     }
     
     setInvitedSpacesNum(getInvitedSpacesListAccess().getSize());
@@ -353,6 +350,7 @@ public class UIManageInvitationSpaces extends UIContainer {
         String defaultSpaceNameAndDesc = resApp.getString(uiManageInvitedSpaces.getId() + ".label.DefaultSpaceNameAndDesc");
         ((UIFormStringInput) uiManageInvitedSpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
         uiManageInvitedSpaces.setSelectedChar(charSearch);
+        uiManageInvitedSpaces.uiSpaceSearch.setSpaceNameSearch(null);
       }
       
       uiManageInvitedSpaces.loadSearch();

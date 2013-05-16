@@ -229,7 +229,7 @@ public class UIManageMySpaces extends UIContainer {
    * @return Character is selected.
    */
   public String getSelectedChar() {
-    return (selectedChar == null || selectedChar.length() == 0) ? SEARCH_ALL : selectedChar;
+    return selectedChar;
   }
 
   /**
@@ -303,17 +303,13 @@ public class UIManageMySpaces extends UIContainer {
   private List<Space> loadMySpaces(int index, int length) throws Exception {
     String charSearch = getSelectedChar();
     String searchCondition = uiSpaceSearch.getSpaceNameSearch();
-    if ((charSearch == null && searchCondition == null) || (charSearch != null && charSearch.equals(SEARCH_ALL))) {
+    
+    if (SEARCH_ALL.equals(charSearch) || (charSearch == null && searchCondition == null)) {
       setMySpacesListAccess(getSpaceService().getMemberSpaces(getUserId()));
-    } else {
-      SpaceFilter spaceFilter = null;
-      if (charSearch != null) {
-        spaceFilter = new SpaceFilter(charSearch.charAt(0));
-      } else {
-        spaceFilter = new SpaceFilter(searchCondition);
-      }
-      setMySpacesListAccess(getSpaceService().getMemberSpacesByFilter(getUserId(), spaceFilter));
-
+    } else if (searchCondition != null) {
+      setMySpacesListAccess(getSpaceService().getMemberSpacesByFilter(getUserId(), new SpaceFilter(searchCondition)));
+    } else if(charSearch != null) {
+      setMySpacesListAccess(getSpaceService().getMemberSpacesByFilter(getUserId(), new SpaceFilter(charSearch.charAt(0))));
     }
     
     setMySpacesNum(getMySpacesListAccess().getSize());
@@ -357,6 +353,7 @@ public class UIManageMySpaces extends UIContainer {
         String defaultSpaceNameAndDesc = resApp.getString(uiManageMySpaces.getId() + ".label.DefaultSpaceNameAndDesc");
         ((UIFormStringInput) uiManageMySpaces.uiSpaceSearch.getUIStringInput(SPACE_SEARCH)).setValue(defaultSpaceNameAndDesc);
         uiManageMySpaces.setSelectedChar(charSearch);
+        uiManageMySpaces.uiSpaceSearch.setSpaceNameSearch(null);
       }
       
       uiManageMySpaces.loadSearch();
