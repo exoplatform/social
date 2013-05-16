@@ -100,14 +100,14 @@
 		            %>
 		            <div class="connectionBtn clearfix">
 		            <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
-		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
+		                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
 		                <button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
 		            <% } else if (contactStatus == Relationship.Type.PENDING) { %>
-		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
+		                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
 		            <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-		                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
+		                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
 		            <% } else if (contactStatus == null) { %>
-		                <button class="btn pull-right" rel="tooltip" onclick="$connectAction">$connectTitle</button>
+		                <button class="btn pull-right" onclick="$connectAction">$connectTitle</button>
 		            <% } %>
 		            </div>
 		          <% } %>
@@ -200,14 +200,14 @@
             %>
             <div class="connectionBtn clearfix">
             <% if (contactStatus == Relationship.Type.PENDING && relationship.isSender(user)) { %>
-                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
-                <button class="btn btn-primary pull-right" rel="tooltip" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
+                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$ignoreTitle</button>
+                <button class="btn btn-primary pull-right" onclick="<%=uicomponent.event("Confirm",user.getId())%>">$confirmTitle</button>
             <% } else if (contactStatus == Relationship.Type.PENDING) { %>
-                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
+                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$cancelRequestTitle</button>
             <% } else if (contactStatus == Relationship.Type.CONFIRMED) { %>
-                <button class="btn pull-right" rel="tooltip" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
+                <button class="btn pull-right" onclick="<%=uicomponent.event("Ignore",user.getId())%>">$removeTitle</button>
             <% } else if (contactStatus == null) { %>
-                <button class="btn pull-right" rel="tooltip" onclick="$connectAction">$connectTitle</button>
+                <button class="btn pull-right" onclick="$connectAction">$connectTitle</button>
             <% } %>
             </div>
           <% } %>

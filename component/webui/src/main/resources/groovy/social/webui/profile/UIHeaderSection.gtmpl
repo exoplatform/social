@@ -74,18 +74,18 @@
   <h3><%=profile.getPropertyValue(Profile.FULL_NAME)%>
 	<% if (contactStatus == null) { %>
 	  <% if (!Utils.isOwner()) { %>
-	     <button class="btn btn-primary" title="$inviteToConnectTitle" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</button>
+	     <button class="btn btn-primary" onclick="<%=uicomponent.event("AddContact")%>;return false;" >$inviteToConnectLabel</button>
 	  <% } %>
 	<% } else if (contactStatus == Type.PENDING && relationship.isReceiver(viewerIdentity)) { %>
 	     <i class="uiIconGrayCircleTick"></i>
-	     <button class="btn" title="$denyTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</button>
-         <button class="btn btn-primary" title="$connectTitle" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</button>	     
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$denyLabel</button>
+       <button class="btn btn-primary" onclick="<%=uicomponent.event("AcceptContact")%>;return false;" >$connectLabel</button>	     
 	<% } else if (contactStatus == Type.PENDING && relationship.isSender(viewerIdentity)) { %>
 	     <i class="uiIconGrayCircleTick"></i>
-	     <button class="btn" title="$revokeTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</button> 
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$revokeLabel</button> 
 	<% } else if (contactStatus == Type.CONFIRMED) { %>
 	     <i class="uiIconGreenTick"></i>
-	     <button class="btn" title="$disconnectTitle" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</button>
+	     <button class="btn" onclick="<%=uicomponent.event("DenyContact")%>;return false;" >$disconnectLabel</button>
 	<% } %>
   </h3>
   

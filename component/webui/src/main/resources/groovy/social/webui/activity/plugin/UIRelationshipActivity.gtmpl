@@ -370,7 +370,7 @@
                     </div><!--end commentLeft--> 
                     <div class="commentRight">
                         <div class="commentInputBox ">
-                            <button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" title="$labelComment" id="CommentButton${activity.id}">$labelComment</button>
+                            <button class="btn pull-right btn-primary" onclick="<%= uicomponent.event("PostComment") %>" id="CommentButton${activity.id}">$labelComment</button>
                             <div class="commentInput"><% uicomponent.renderChild(UIFormTextAreaInput.class); %></div>
                         </div>
                     </div><!--end commentRight-->        
