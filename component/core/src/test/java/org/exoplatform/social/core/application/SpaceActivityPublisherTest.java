@@ -31,7 +31,6 @@ import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.model.AvatarAttachment;
-import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
@@ -229,81 +228,11 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
    }
    
    //clean up
-   String userSpaceActivityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
    activityManager.deleteActivity(activityId);
-   activityManager.deleteActivity(userSpaceActivityId);
    spaceService.deleteSpace(space);
    identityManager.deleteIdentity(rootIdentity);
    
    
- }
- 
- /**
-  * @throws Exception
-  */
- public void testUserSpaceJoined() throws Exception {
-   Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,"demo",false);
-   Space space = createOpenSpace(1);
-   space.setVisibility(Space.HIDDEN);
-   spaceService.saveSpace(space, true);
-   spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-   
-   String activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
-   assertNull(activityId);
-   
-   Space space2 = createOpenSpace(2);
-   
-   spaceService.addPendingUser(space2, "demo");
-   activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
-   assertNotNull(activityId);
-   ExoSocialActivity activity = activityManager.getActivity(activityId);
-   // Number of comments must be 1
-   assertEquals(1, activityManager.getCommentsWithListAccess(activity).getSize());
-   assertEquals("I now member of 1 space",activity.getTitle());
-   
-   Space space3 = createOpenSpace(3);
-   spaceService.addPendingUser(space3, "demo");
-   activity = activityManager.getActivity(activityId);
-   // Number of comments must be 2
-   assertEquals(2, activityManager.getCommentsWithListAccess(activity).getSize());
-   assertEquals("I now member of 2 spaces", activity.getTitle());
-   assertEquals("I joined Toto3 space",activityManager.getCommentsWithListAccess(activity).loadAsList(0, 20).get(1).getTitle());
-   
-   {// leave space
-     spaceService.removeMember(space2, "demo");
-     
-     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
-     assertNotNull(activityId);
-     activity = activityManager.getActivity(activityId);
-     assertEquals("I now member of 1 space", activity.getTitle());
-     
-     spaceService.removeMember(space3, "demo");
-     
-     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
-     assertNotNull(activityId);
-     activity = activityManager.getActivity(activityId);
-     assertEquals("I now member of 0 space", activity.getTitle());
-   }
-   
-   { // re-join space
-     spaceService.addPendingUser(space2, "demo");
-     activityId = identityStorage.getProfileActivityId(demoIdentity.getProfile(),Profile.AttachedActivityType.RELATION);
-     assertNotNull(activityId);
-     activity = activityManager.getActivity(activityId);
-     assertEquals(3, activityManager.getCommentsWithListAccess(activity).getSize());
-     assertEquals("I now member of 1 space", activity.getTitle());
-   }
- }
-
- private Space createOpenSpace(int i) throws SpaceException{
-   Space space = new Space();
-   space.setDisplayName("Toto"+i);
-   space.setPrettyName(space.getDisplayName());
-   space.setGroupId("/platform/users");
-   space.setVisibility(Space.PRIVATE);
-   space.setRegistration(Space.OPEN);
-   spaceService.saveSpace(space, true);
-   return space;
  }
 
 }

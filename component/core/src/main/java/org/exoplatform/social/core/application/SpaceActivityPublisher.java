@@ -130,9 +130,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     Space space = event.getSpace();
     final String activityMessage = "Has joined the space.";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    final String userSpaceActivityMessage = "I joined " + space.getDisplayName() + " space";
-    //
-    recordActivityForUserSpace(event, userSpaceActivityMessage, USER_SPACE_JOINED_TITLE_ID, templateParams, true);
     
     templateParams.put(SPACE_DISPLAY_NAME_PARAM, space.getDisplayName());
     templateParams.put(USER_NAME_PARAM, "@" + event.getTarget());
@@ -211,11 +208,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
   @Override
   public void joined(SpaceLifeCycleEvent event) {
     final String activityMessage ="Has joined the space.";
-    final String userSpaceActivityMessage = "I joined " + event.getSpace().getDisplayName() + " space";
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    
-    //
-    recordActivityForUserSpace(event, userSpaceActivityMessage, USER_SPACE_JOINED_TITLE_ID, templateParams, true);
     
     //
     recordActivity(event, activityMessage, USER_JOINED_TITLE_ID, templateParams);
