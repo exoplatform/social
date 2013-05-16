@@ -145,6 +145,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setReplyToId(new String[]{});
     activity.setUpdated(activityMillis);
     activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), true));
+    activity.setPosterId(activity.getUserId() != null ? activity.getUserId() : owner.getId());
       
     //
     fillActivityEntityFromActivity(activity, activityEntity);
@@ -210,6 +211,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setUrl(activityEntity.getUrl());
     activity.setPriority(activityEntity.getPriority());
     activity.isComment(activityEntity.isComment());
+    activity.setPosterId(activityEntity.getPosterIdentity().getId());
 
     //
     List<String> computeCommentid = new ArrayList<String>();
@@ -1748,6 +1750,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   }
   //
   
+  @Override
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit) {
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(posterIdentity).poster(posterIdentity), filter, offset, limit);
+  }
+  
+  @Override
+  public int getNumberOfActivitiesByPoster(Identity posterIdentity) {
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(posterIdentity).poster(posterIdentity), filter).objects().size();
+  }
   
   @Override
   public int getNumberOfUpdatedOnActivityFeed(Identity owner, ActivityUpdateFilter filter) {

@@ -243,6 +243,17 @@ public interface ActivityManager {
   RealtimeListAccess<ExoSocialActivity> getActivityFeedWithListAccess(Identity identity);
 
   /**
+   * Gets activities by an individual given poster.
+   * Returned result with type is <code>ListAccess<code> then it can be lazy loaded.
+   * 
+   * @param poster The identity who posted activities.
+   * @return Activities of user who is poster. 
+   * @LevelAPI Platform
+   * @since 4.0.1-GA
+   */
+  RealtimeListAccess<ExoSocialActivity> getActivitiesByPoster(Identity poster);
+  
+  /**
    * Adds a new activity processor.
    *
    * @param activityProcessor Activity processor

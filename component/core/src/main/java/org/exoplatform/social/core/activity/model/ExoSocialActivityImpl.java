@@ -89,6 +89,8 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
    */
   private String[] commentedIds;
   
+  private String posterId;
+  
   /**
    * constructor.
    */
@@ -481,4 +483,13 @@ public class ExoSocialActivityImpl extends ActivityImpl implements ExoSocialActi
     activityStream = new ActivityStreamImpl();
   }
 
+  @Override
+  public String getPosterId() {
+    return posterId;
+  }
+
+  @Override
+  public void setPosterId(String posterId) {
+    this.posterId = posterId;
+  }
 }

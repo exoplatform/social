@@ -616,6 +616,54 @@ public class ActivityStorageTest extends AbstractCoreTest {
   }
 
   /**
+   * Test {@link ActivityStorage#getActivitiesByPoster(Identity, int, int)}
+   */
+  @MaxQueryNumber(300)
+  public void testGetActivitiesByPoster() {
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+    
+    Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    relationshipManager.confirm(demoIdentity, rootIdentity);
+    
+    //
+    ExoSocialActivity rootActivity = new ExoSocialActivityImpl();
+    rootActivity.setTitle("Activity of root.");
+    activityStorage.saveActivity(rootIdentity, rootActivity);
+    
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("Activity of demo.");
+    activityStorage.saveActivity(demoIdentity, demoActivity);
+    
+    //
+    List<ExoSocialActivity> activities = activityStorage.getActivitiesByPoster(demoIdentity, 0, 10);
+    assertNotNull(activities);
+    assertEquals("Activity of demo.", activities.get(0).getTitle());
+    
+    // demo add comment on activity of root
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("Demo add comment on activity of Root.");
+    comment.setUserId(demoIdentity.getId());
+    activityStorage.saveComment(rootActivity, comment);
+    
+    // 
+    activities = activityStorage.getUserActivities(demoIdentity, 0, 10);
+    assertNotNull(activities);
+    assertEquals(2, activities.size());
+    assertEquals("Activity of root.", activities.get(0).getTitle());
+    
+    //
+    activities = activityStorage.getActivitiesByPoster(demoIdentity, 0, 10);
+    assertNotNull(activities);
+    assertEquals(1, activities.size());
+    assertEquals("Activity of demo.", activities.get(0).getTitle());
+    
+    //
+    tearDownActivityList.add(rootActivity);
+    tearDownActivityList.add(demoActivity);
+    relationshipManager.delete(rootDemoRelationship);
+  }
+  
+  /**
    * Test {@link ActivityStorage#getActivitiesOfConnections(Identity, int, int)} for issue SOC-1995
    * 
    * @throws Exception

@@ -572,6 +572,28 @@ public interface ActivityStorage {
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit);
 
   /**
+   * Gets activities by poster.
+   * 
+   * @param posterIdentity The identity of given poster.
+   * @param offsset The start point to load.
+   * @param limit The range to load.
+   *  
+   * @return The activities that match the given poster.
+   * @since 4.0.1-GA
+   */
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit);
+  
+  /**
+   * Gets the number of activities of poster.
+   * 
+   * @param posterIdentity The given poster identity information.
+   * 
+   * @return The size of return results.
+   * @since 4.0.1-GA
+   */
+  public int getNumberOfActivitiesByPoster(Identity posterIdentity);
+  
+  /**
    * Gets list of newer activities of spaces where the identity can
    * access
    * @param spaceIdentity

@@ -246,5 +246,18 @@ public interface ExoSocialActivity extends org.apache.shindig.social.opensocial.
      * @param updated last update datetime
      */
   public void setUpdated(Long updated);
+  
+  /**
+   * Gets id of identity who is poster.
+   * 
+   * @return Id of poster.
+   */
+  String getPosterId();
 
+  /**
+   * Sets poster id.
+   * 
+   * @param posterId
+   */
+  void setPosterId(String posterId);
 }

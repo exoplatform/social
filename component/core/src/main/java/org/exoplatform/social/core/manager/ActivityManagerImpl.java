@@ -245,7 +245,13 @@ public class ActivityManagerImpl implements ActivityManager {
     return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.ACTIVITY_FEED, existingIdentity);
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
+  public RealtimeListAccess<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity) {
+    return new ActivitiesRealtimeListAccess(activityStorage, ActivityType.POSTER_ACTIVITIES, posterIdentity);
+  }
+  
   /**
    * {@inheritDoc}
    */

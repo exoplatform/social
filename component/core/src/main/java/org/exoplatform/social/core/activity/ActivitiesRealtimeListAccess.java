@@ -41,7 +41,8 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
     VIEW_USER_ACTIVITIES,
     CONNECTIONS_ACTIVITIES,
     USER_SPACE_ACTIVITIES,
-    SPACE_ACTIVITIES
+    SPACE_ACTIVITIES,
+    POSTER_ACTIVITIES
   }
 
   /**
@@ -122,6 +123,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       case SPACE_ACTIVITIES: {
         return activityStorage.getSpaceActivities(ownerIdentity, index, limit);
       }
+      case POSTER_ACTIVITIES: {
+        return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit);
+      }
     }
     return Collections.emptyList();
   }
@@ -152,6 +156,9 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
       }
       case SPACE_ACTIVITIES: {
         return activityStorage.getNumberOfSpaceActivities(ownerIdentity);
+      }
+      case POSTER_ACTIVITIES: {
+        return activityStorage.getNumberOfActivitiesByPoster(ownerIdentity);
       }
     }
     return 0;
