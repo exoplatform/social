@@ -20,6 +20,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -36,6 +37,7 @@ import org.exoplatform.social.core.manager.IdentityManager;
 public class URLUtils {
 
   private static Log LOG = ExoLogger.getLogger(UISocialGroupSelector.class);
+  private static String ROOT_NODE_NAME = "default";
   
   /**
    * Gets current user name base on analytic the current url.<br>
@@ -66,6 +68,26 @@ public class URLUtils {
       return null;
     }
     return null;
+  }
+  
+  /**
+   * Gets current requested node.
+   * 
+   * @return
+   * @throws Exception
+   */
+  public static String getRequestedNode() throws Exception {
+    UserNode selectedUserNode = Util.getUIPortal().getSelectedUserNode();
+    UserNode prevParent = selectedUserNode.getParent();
+    UserNode parent = prevParent;
+    boolean isRoot = true;
+    while (!ROOT_NODE_NAME.equals(parent.getName())) {
+      prevParent = parent;
+      parent = prevParent.getParent();
+      isRoot = false;
+    } 
+    
+    return isRoot ? selectedUserNode.getName() : prevParent.getName();  
   }
   
   

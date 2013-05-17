@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -33,7 +33,6 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.profile.UIProfileUserSearch;
 import org.exoplatform.web.application.ApplicationMessage;
-import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -105,21 +104,6 @@ public class UIPendingRelation extends UIContainer {
    */
   public final void setSelectedChar(final String selectedChar) {
     this.selectedChar = selectedChar;
-  }
-  
-  /**
-   * Returns the current selected node.<br>
-   *
-   * @return selected node.
-   * @since 1.2.2
-   */
-  public String getSelectedNode() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
-    if (currentPath.split("/").length >= 2) {
-      return  currentPath.split("/")[1];
-    }
-    return currentPath;
   }
   
   /**

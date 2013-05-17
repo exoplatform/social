@@ -22,6 +22,7 @@
 %>
 <%
   import org.exoplatform.social.webui.Utils;
+  import org.exoplatform.social.webui.URLUtils;
   import org.exoplatform.social.core.model.AvatarAttachment;
   import org.exoplatform.portal.application.PortalRequestContext;
   import org.exoplatform.social.webui.profile.UIProfileUserSearch;
@@ -57,11 +58,13 @@
 	def portalURI = Utils.getURI("");
 	def ownerIdentity = Utils.getOwnerIdentity();
 	def ownerId = ownerIdentity.getRemoteId();
-	def allPeopleURL = "${portalURI}connections/all-people/${ownerId}";
-	def networkURL = "${portalURI}connections/network/${ownerId}";
-	def receivedInvitationsURL = "${portalURI}connections/receivedInvitations/${ownerId}";
-	def sentInvitationURL = "${portalURI}connections/pendingRequests/${ownerId}";
-	def selectedNode = uicomponent.getSelectedNode();
+  def selectedNode = URLUtils.getRequestedNode();
+
+	def allPeopleURL = "${portalURI}${selectedNode}/all-people/${ownerId}";
+	def networkURL = "${portalURI}${selectedNode}/network/${ownerId}";
+	def receivedInvitationsURL = "${portalURI}${selectedNode}/receivedInvitations/${ownerId}";
+	def sentInvitationURL = "${portalURI}${selectedNode}/pendingRequests/${ownerId}";
+	
 	def selectedStartChar = uicomponent.getSelectedChar();
 	def jsManager = _ctx.getRequestContext().getJavascriptManager();
 	jsManager.require("SHARED/jquery", "jq")
@@ -74,10 +77,10 @@
 	  <% if (uicomponent.isHasPeopleTab()) {%>
 	  <div class="uiTabNormal uiTabInPage">
 	     <ul class="nav nav-tabs">
-	          <li class='<%= selectedNode.equals("all-people")? "active" : "" %>'><a href='$allPeopleURL'>$labelEveryone</a></li>
-	          <li class='<%= selectedNode.equals("network")? "active" : "" %>'><a href='$networkURL'>$myConnectionsLabel</a></li>
-	          <li class='<%= selectedNode.equals("receivedInvitations")? "active" : "" %>'><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
-	          <li class='<%= selectedNode.equals("pendingRequests")? "active" : "" %>'><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
+	          <li><a href='$allPeopleURL'>$labelEveryone</a></li>
+	          <li><a href='$networkURL'>$myConnectionsLabel</a></li>
+	          <li><a href='$receivedInvitationsURL'>$labelRequestsReceived</a></li>
+	          <li class="active"><a href='$sentInvitationURL'>$labelRequestsSent</a></li>
 	     </ul>
 		  <div class="tab-content">
    <div class="tab-pane active">

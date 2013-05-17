@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -134,15 +135,11 @@ public class UIDisplayProfileList extends UIContainer {
    * Returns the current selected node.<br>
    *
    * @return selected node.
+   * @throws Exception 
    * @since 1.2.2
    */
-  public String getSelectedNode() {
-    PortalRequestContext pcontext = Util.getPortalRequestContext();
-    String currentPath = pcontext.getControllerContext().getParameter(QualifiedName.parse("gtn:path"));
-    if (currentPath.split("/").length >= 2) {
-      return  currentPath.split("/")[1];
-    }
-    return currentPath;
+  public String getSelectedNode() throws Exception {
+    return Util.getUIPortal().getSelectedUserNode().getName();
   }
 
   /**
