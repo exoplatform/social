@@ -26,6 +26,7 @@
 	  BLACK_COLOR: "black",
 	  SINGLE_COMMA: "single_comma",
     DOUBLE_COMMA: "double_comma",
+    ENTER_KEY_CODE: 13,
 	  changeLinkContent: function () {
 	    var link = decodeURI(this.linkData.link),
 	    title = this.linkData.title;
@@ -218,6 +219,7 @@
 	      this.inputLink.css('color', UIComposerLinkExtension.GRAY_COLOR);
 	      var UIComposerLinkExtension = this;
 	      var inputLink = this.inputLink;
+	      var attachBtn = this.attachButton;
 	      inputLink.on('focus', function(evt) {
 	        if (inputLink.val() === UIComposerLinkExtension.HTTP) {
 	          inputLink.val('');
@@ -234,7 +236,11 @@
 	      
 	      this.inputLink.on('keypress', function(evt) {
 	        //if enter submit link
+	        if (UIComposerLinkExtension.ENTER_KEY_CODE == (evt.which ? evt.which : evt.keyCode)) {
+	          $(attachBtn).click();
+	        }
 	      });
+	      
 	      this.attachButton.removeAttr('disabled');
 	      this.attachButton.on( 'click', function(evt) {
 	        if (inputLink.val() === '' || inputLink.val() === UIComposerLinkExtension.HTTP) {
