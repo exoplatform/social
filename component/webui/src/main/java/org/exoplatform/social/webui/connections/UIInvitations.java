@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -113,9 +111,6 @@ public class UIInvitations extends UIContainer {
    * @throws Exception
    */
   public UIInvitations() throws Exception {
-    UserNode selectedUserNode = Util.getUIPortal().getSelectedUserNode();
-    System.out.println("selectedUserNode: " + selectedUserNode);
-    
     uiProfileUserSearch = createUIComponent(UIProfileUserSearch.class, null, "UIProfileUserSearch");
     setHasPeopleTab(true);
     uiProfileUserSearch.setHasConnectionLink(false);
