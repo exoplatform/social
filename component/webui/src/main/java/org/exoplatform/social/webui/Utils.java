@@ -42,10 +42,13 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 
 /**
  * Contains some common methods for using as utility.<br>
@@ -559,6 +562,39 @@ public class Utils {
     return (space != null ? space.getUrl() : null);
   }
 
+  /**
+   * Resizes the height of Home page.
+   * 
+   * @since 4.0.1-GA
+   */
+  public static void resizeHomePage() {
+    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = pContext.getJavascriptManager();
+
+    StringBuilder script = new StringBuilder("setTimeout(function() {")
+      .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
+      .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
+      .append("platformLeftNavigation.resize();")
+      .append("}, 200);");
+    
+    jm.require("SHARED/jquery", "jq")
+      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
+      .addScripts(script.toString());
+  }
+  
+  /**
+   * Initializes user profile popup.
+   * 
+   * @param uiActivityId Id of activity component.
+   * @since 4.0.0-GA
+   */
+  public static void initUserProfilePopup(String uiActivityId) {
+    PortletRequestContext pContext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
+    JavascriptManager jm = pContext.getJavascriptManager();
+    jm.require("SHARED/social-ui-profile", "profile")
+      .addScripts("profile.initUserProfilePopup('" + uiActivityId + "', null);");
+  }
+  
   private static Space getSpaceByContext() {
     //
     SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);

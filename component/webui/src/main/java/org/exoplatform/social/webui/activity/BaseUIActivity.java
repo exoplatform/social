@@ -28,12 +28,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.RealtimeListAccess;
-import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.processor.I18NActivityProcessor;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.space.SpaceException;
@@ -45,6 +45,7 @@ import org.exoplatform.social.webui.composer.UIComposer.PostContext;
 import org.exoplatform.social.webui.profile.UIUserActivitiesDisplay;
 import org.exoplatform.social.webui.space.UISpaceActivitiesDisplay;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIApplication;
@@ -617,11 +618,11 @@ public class BaseUIActivity extends UIForm {
       uiActivity.setAllLoaded(true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiActivity);
       
-      event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes();")
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      JavascriptManager jm = event.getRequestContext().getJavascriptManager();
+      jm.require("SHARED/social-ui-activity", "activity").addScripts("activity.loadLikes();");
+      
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
     }
   }
 
@@ -640,10 +641,8 @@ public class BaseUIActivity extends UIForm {
       uiActivity.setLike(isLiked, requestContext.getRemoteUser());
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
-      event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
     }
   }
 
@@ -678,13 +677,12 @@ public class BaseUIActivity extends UIForm {
       script.append("inputContainer.addClass('inputContainerShow').show();");
       script.append("});");
       
-      event.getRequestContext().getJavascriptManager()
-        .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-        .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-        .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      JavascriptManager jm = event.getRequestContext().getJavascriptManager();
       
-      event.getRequestContext().getJavascriptManager()
-        .addJavascript(script.toString());
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
+      
+      jm.addJavascript(script.toString());
     }
   }
 
@@ -697,9 +695,9 @@ public class BaseUIActivity extends UIForm {
       } else {
         uiActivity.setCommentFormDisplayed(true);
       }
-      event.getRequestContext().getJavascriptManager()
-      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-      .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
     }
   }
 
@@ -729,10 +727,8 @@ public class BaseUIActivity extends UIForm {
       uiActivity.setCommentFormFocused(true);
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
-      event.getRequestContext().getJavascriptManager()
-      .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-      .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-      .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
       
       uiActivity.getParent().broadcast(event, event.getExecutionPhase());
     }
@@ -756,22 +752,12 @@ public class BaseUIActivity extends UIForm {
       } else {
         event.getRequestContext().addUIComponentToUpdateByAjax(activitiesContainer);
       }
-      StringBuilder script = new StringBuilder("setTimeout(function() {")
-      .append("jq('.LeftNavigationTDContainer:first').css('height', 'auto');")
-      .append("jq('#UIUserActivityStreamPortlet').css('height', 'auto');")
-      .append("platformLeftNavigation.resize();")
-      .append("}, 200);");
       
-      
-      event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-           .require("SHARED/jquery", "jq")
-           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-           .addScripts(script.toString());
-      
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
     }
-  }
 
+  }
 
   public static class DeleteCommentActionListener extends EventListener<BaseUIActivity> {
 
@@ -788,11 +774,8 @@ public class BaseUIActivity extends UIForm {
       uiActivity.refresh();
       requestContext.addUIComponentToUpdateByAjax(uiActivity);
       
-      event.getRequestContext().getJavascriptManager()
-           .require("SHARED/social-ui-profile", "profile").addScripts("profile.initUserProfilePopup('" + uiActivity.getId() + "', null);")
-           .require("SHARED/platform-left-navigation", "platformLeftNavigation")
-           .addScripts("setTimeout(function() {platformLeftNavigation.resize();}, 200);");
-      
+      Utils.initUserProfilePopup(uiActivity.getId());
+      Utils.resizeHomePage();
     }
   }
 

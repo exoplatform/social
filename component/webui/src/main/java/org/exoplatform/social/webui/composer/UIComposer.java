@@ -20,6 +20,7 @@ package org.exoplatform.social.webui.composer;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.social.webui.Utils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -197,6 +198,8 @@ public class UIComposer extends UIForm {
 
       //post activity via the current activity composer
       activityComposerManager.getCurrentActivityComposer().postActivity(postContext, uiComposer, event.getRequestContext(), message);
+      
+      Utils.resizeHomePage();
     }
   }
 }
