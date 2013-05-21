@@ -49,23 +49,14 @@ public class IdentityResources implements ResourceContainer {
   
   /**
    * Gets the identity and its associated profile by the activity ID.
-   *
    * @param uriInfo The uri request uri.
    * @param portalContainerName The associated portal container name.
    * @param identityId The specified  ID of identity.
    * @param format The expected returned format.
-   * 
-   * @anchor IdentityResources.getIdentityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
-   *{code}
-   *
+   * GET http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
    * @response
-   *{code:json}
    * {
    *   "id" : "123456789",
    *   "providerId": "organization",
@@ -75,11 +66,9 @@ public class IdentityResources implements ResourceContainer {
    *     "avatarUrl": "http://localhost:8080/profile/avatar/demo.jpg"
    *   }
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor IdentityResources.getIdentityById
    */
   @GET
   @Path("{identityId}.{format}")
@@ -125,21 +114,10 @@ public class IdentityResources implements ResourceContainer {
    * @param providerId The providerId of Identity.
    * @param remoteId The remoteId of Identity.
    * @param format The expected returned format.
-   * 
-   * @anchor IdentityResources.getIdentityProviderIdAndRemoteId
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json
-   *{code}
-   * *user identities*: _providerId_ = organization; _remoteId_ = portal user name.
-   *
-   * *space identities:* _providerId_ = space; _remoteId_ = space's pretty name.
-   *
+   * GET http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json
    * @response
-   *{code:json}
    * {
    *   "id" : "123456789",
    *   "providerId": "organization",
@@ -149,13 +127,12 @@ public class IdentityResources implements ResourceContainer {
    *     "avatarUrl": "http://localhost:8080/portal/demo/profile/avatar/demo.jpg"
    *   }
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
-   * 
+   * @anchor IdentityResources.getIdentityProviderIdAndRemoteId
    * @since 1.2.2
+   * *user identities*: _providerId_ = organization; _remoteId_ = portal user name.
+   * *space identities:* _providerId_ = space; _remoteId_ = space's pretty name.
    */
   @GET
   @Path("{providerId}/{remoteId}.{format}")

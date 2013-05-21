@@ -118,16 +118,15 @@ public class PeopleRestService implements ResourceContainer{
    * Gets and returns list of user's name that match the input string for suggesting.
    * 
    * @param uriInfo The request URI information.
-   * @param format The response format type, for example: JSON, or XML.
    * @param name The provided characters to be searched.
-   * 
-   * @anchor PeopleRestService.suggestUsernames
-   * 
+   * @param currentUser The user  who sends request.
+   * @param typeOfRelation Relationship status such as "confirmed", "pending", "incoming", "member_of_space" or "user_to_invite"
+   * @param spaceURL URL of the related space.
+   * @param format The response format type, for example: JSON, or XML.
    * @return list of user's name match the input string.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor PeopleRestService.suggestUsernames
    */
   @GET
   @Path("suggest.{format}")
@@ -178,16 +177,11 @@ public class PeopleRestService implements ResourceContainer{
    * Gets and returns list of user's name that match the input string for suggesting.
    * 
    * @param uriInfo The request URI information.
-   * @param format The response format type, for example: JSON, or XML.
-   * @param name The provided characters to be searched.
-   * 
-   * @anchor PeopleRestService.suggestUsernames
-   * 
+   * @param query The name of the user to filter
    * @return list of user's name that matched the input string.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor PeopleRestService.suggestUsernames
    */
   @GET
   @Path("getprofile/data.json")
@@ -228,14 +222,10 @@ public class PeopleRestService implements ResourceContainer{
    * @param offset Start point of returned result.
    * @param limit End point of returned result.
    * @param lang The locale type.
-   * 
-   * @anchor PeopleRestService.searchConnection
-   * 
    * @return list people's information.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor PeopleRestService.searchConnection
    */
   @GET
   @Path("{portalName}/getConnections.{format}")
@@ -294,16 +284,11 @@ public class PeopleRestService implements ResourceContainer{
    * @param currentUserName The name of user who sends request.
    * @param userId Id of user is specified.
    * @param update
-   * 
-   * @anchor PeopleRestService.getPeopleInfo
-   * 
    * @return Information of people appropriate focus user.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Provisional
-   * 
    * @deprecated Will be removed by 4.0.x
+   * @anchor PeopleRestService.getPeopleInfo
    */
   @GET
   @Path("{portalName}/{currentUserName}/getPeopleInfo/{userId}.{format}")
@@ -364,14 +349,10 @@ public class PeopleRestService implements ResourceContainer{
    * @param formatThe response format type, for example: JSON, or XML.
    * @param currentUserName The user name  who sends request.
    * @param updatedType The provided type of update.
-   * 
-   * @anchor PeopleRestService.getPeopleInfo
-   * 
    * @return Information of people appropriate focus user.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor PeopleRestService.getPeopleInfo
    */
   @GET
   @Path("/getPeopleInfo/{userId}.{format}")

@@ -142,7 +142,7 @@ public class SpacesRestService implements ResourceContainer {
    * @param portalName The name of current container.
    * @param format The type of returned result.
    * 
-   * @anchor SpacesRestService
+   * @anchor SpacesRestService.showMySpaceList
    * 
    * @return response
    * 
@@ -186,18 +186,9 @@ public class SpacesRestService implements ResourceContainer {
    * @param offset Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
    * @param limit Specify the number of spaces to retrieve. It must be less than or equal to 10.
    * @param appId AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
-   * 
-   * @anchor SpacesRestService
-   * 
-   * @authenticated
-   * 
-   * @request
-   *{code}
-   * GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
-   *{code}
-   *
+   * @authentication
+   * @request GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
    * @response
-   *{code:json}
    * {
    * "spaces":[
    *        {"groupId":"/spaces/space_2","spaceUrl":null,"name":"space_2","displayName":"space 2","url":"space_2"},
@@ -205,11 +196,10 @@ public class SpacesRestService implements ResourceContainer {
    *       ],
    * "moreSpacesUrl":null
    * }
-   *{code}
-   *
    * @return the response
-   * 
    * @LevelAPI Platform
+   * @anchor SpacesRestService.getLastVisitedSpace
+   *
    */
   @GET
   @Path("lastVisitedSpace/list.{format}")
@@ -261,7 +251,7 @@ public class SpacesRestService implements ResourceContainer {
    * @param portalContainerName The portal container name.
    * @param format The response format type, for example: JSON, or XML.
    * 
-   * @anchor SpacesRestService
+   * @anchor SpacesRestService.showPendingSpaceList
    * 
    * @return response
    * 
@@ -293,14 +283,11 @@ public class SpacesRestService implements ResourceContainer {
    * @param typeOfRelation The type of relationship of user and space.
    * @param userId Id of current user.
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor SpacesRestService
-   * 
    * @return
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor SpacesRestService.suggestSpacenames
+   *
    */
   @GET
   @Path("suggest.{format}")

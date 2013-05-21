@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
@@ -81,19 +81,16 @@ public class ActivitiesRestService implements ResourceContainer {
 
 
   /**
-   * Destroy activity and return the JSON/XML format.
+   * Destroys activity and return the JSON/XML format.
    * 
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity to be destroyed.
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor ActivitiesRestService.destroyActivity
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.destroyActivity
    */
   @POST
   @Path("destroy/{activityId}.{format}")
@@ -108,19 +105,16 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Show list of like by activityId and return the JSON/XML format.
-   * 
+   * Shows list of like by activityId and return the JSON/XML format.
+   *
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity that the like to be showed.
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor ActivitiesRestService.showLikes
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.showLikes
    */
   @GET
   @Path("{activityId}/likes/show.{format}")
@@ -136,20 +130,17 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Update like by the JSON/XML format.
-   * 
+   * Updates like by the JSON/XML format.
+   *
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity that like to be updated.
    * @param format The response format type, for example: JSON, or XML.
    * @param like The like to be updated.
-   * 
-   * @anchor ActivitiesRestService.updateLike
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.updateLike
    */
   @POST
   @Path("{activityId}/likes/update.{format}")
@@ -166,20 +157,17 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Destroy like by identityId and return the JSON/XML format.
-   * 
+   * Destroys like by identityId and return the JSON/XML format.
+   *
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity that like to be destroyed.
    * @param identityId
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor ActivitiesRestService.destroyLike
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.destroyLike
    */
   @POST
   @Path("{activityId}/likes/destroy/{identityId}.{format}")
@@ -196,19 +184,16 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Show comment list by the JSON/XML format.
+   * Shows comment list by the JSON/XML format.
    * 
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity that comments to be showed.
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor ActivitiesRestService.showComments
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.showComments
    */
   @GET
   @Path("{activityId}/comments/show.{format}")
@@ -224,21 +209,18 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Show comment list by the JSON/XML format with limit and offset.
+   * Shows comment list by the JSON/XML format with limit and offset.
    * 
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target activity that comments to be showed.
    * @param format The response format type, for example: JSON, or XML.
    * @param offset Specify the from number of comment to be showed. It must be greater than or equal to 0.
    * @param limit Specify the number of spaces to be showed.
-   * 
-   * @anchor ActivitiesRestService.showComments
-   * 
    * @return The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.showComments
    */
   @GET
   @Path("{activityId}/comments.{format}")
@@ -303,18 +285,16 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * Get an activity by its Id.
+   * Gets an activity by its Id.
    *
    * @param uriInfo  The URI request information.
+   * @param portalName The name of current portal.
    * @param portalContainerName The associated portal container name.
    * @param activityId The id of target activity.
    * @param format The response format type, for example: JSON, or XML.
-   * 
-   * @anchor ActivitiesRestService.getActivityById
-   * 
    * @return The response contains returned result.
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.getActivityById
    */
   @GET
   @Path("{activityId}.{format}")
@@ -400,17 +380,14 @@ public class ActivitiesRestService implements ResourceContainer {
    * Update comment by the JSON/XML format.
    * 
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of target comment to be updated.
    * @param format The response format type, for example: JSON, or XML.
    * @param comment The comment to be updated.
-   * 
-   * @anchor ActivitiesRestService.updateComment
-   * 
    * @return response The response contains returned result.
-   * 
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.updateComment
    */
   @POST
   @Path("{activityId}/comments/update.{format}")
@@ -428,19 +405,16 @@ public class ActivitiesRestService implements ResourceContainer {
   }
 
   /**
-   * Comment an existing activity from a specified activity Id. Just returns the created comment.
+   * Comments an existing activity from a specified activity Id and returns the created comment.
    *
    * @param uriInfo The request URI information.
    * @param portalName The associated portal container name.
    * @param activityId The id of target comment to be created.
    * @param format The response format type, for example: JSON, or XML.
    * @param text The content of comment.
-   * 
-   * @anchor ActivitiesRestService.createCommentActivityById
-   * 
    * @return The response contains returned result.
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.createCommentActivityById
    */
   @GET
   @Path("{activityId}/comments/create.{format}")
@@ -484,20 +458,17 @@ public class ActivitiesRestService implements ResourceContainer {
   }
   
   /**
-   * Destroy comments and return the JSON/XML format.
+   * Destroys comments and return the JSON/XML format.
    * 
    * @param uriInfo The request URI information.
+   * @param portalName The name of current portal.
    * @param activityId The id of activity that contain target comment.
    * @param commentId The id of target comment to be destroyed.
    * @param format The response format type, for example: JSON, or XML.
-   *
-   * @anchor ActivitiesRestService.destroyComment
-   * 
-   * @return response The response contains returned result. 
-   *
+   * @return response The response contains returned result.
    * @throws Exception
-   * 
    * @LevelAPI Platform
+   * @anchor ActivitiesRestService.destroyComment
    */
   @POST
   @Path("{activityId}/comments/destroy/{commentId}.{format}")

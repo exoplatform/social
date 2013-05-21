@@ -60,33 +60,20 @@ public class VersionResources implements ResourceContainer {
   }
 
   /**
-   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable
-   * version that is considered to include all new features and updates of eXo Social REST services.
-   *
+   * Gets the latest eXo Social REST API version. This version number should be used as the latest and stable version that is considered to include all new features and updates of eXo Social REST services.
    * @param uriInfo The URI information.
    * @param format  The expected returned format.
-   * 
-   * @anchor VersionResources.getLatestVersion
-   * 
-   * @request
-   *{code}
-   * GET: http://localhost:8080/rest/api/social/version/latest.json
+   * @request 
+   * GET http://localhost:8080/rest/api/social/version/latest.json
    * or
-   * GET: http://localhost:8080/rest/api/social/version/latest.xml
-   *{code}
-   *
+   * GET http://localhost:8080/rest/api/social/version/latest.xml
    * @response
-   *{code:json}
    * {"version": "v1-alpha3"}
-   *{code}
    * or
-   *{code:xml}
    * <version>v1-alpha3</version>
-   *{code}
-   *
    * @return response of the request, the type bases on the format param
-   * 
    * @LevelAPI Platform
+   * @anchor VersionResources.getLatestVersion
    */
   @GET
   @Path("latest.{format}")
@@ -106,33 +93,22 @@ public class VersionResources implements ResourceContainer {
    * application is using an older eXo Social REST APIs version, all APIs of the version still can work. The array MUST
    * have the latest to oldest order. For example, {{{[v2, v1, v1-beta3]}}}, but not
    * {{{[v1, v2, v1-beta3]}}}.
-   *
    * @param uriInfo The URI information.
-   * @param format  The expected returned format.
-   * 
-   * @anchor VersionResources.getSupportedVersions
-   * 
+   * @param format The expected returned format.
    * @request
-   *{code}
-   * GET: http://localhost:8080/rest/api/social/version/supported.json
+   * GET http://localhost:8080/rest/api/social/version/supported.json
    * or
-   * GET: http://localhost:8080/rest/api/social/version/supported.xml
-   *{code}
-   *
+   * GET http://localhost:8080/rest/api/social/version/supported.xml
    * @response
-   *{code:json}
    * {"versions": ["v1-alpha3"]}
-   *{code}
    * or
-   *{code:xml}
    * <versions>
    *   <version>v1-alpha3</version>
    * </versions>
-   *{code}
-   *
    * @return response of the request, the type bases on the format param
-   * 
    * @LevelAPI Platform
+   * @anchor VersionResources.getSupportedVersions
+   *
    */
   @GET
   @Path("supported.{format}")

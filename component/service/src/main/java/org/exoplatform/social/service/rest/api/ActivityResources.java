@@ -56,7 +56,6 @@ import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
  * Activity Resources end point.
- * 
  * @anchor ActivityResources
  *
  */
@@ -87,18 +86,10 @@ public class ActivityResources implements ResourceContainer {
    * use _activity/\:activityId/likes.format_ instead.
    * @param showActivityStream When this parameter is set to true, t or 1, the returned activity will provide more
    * information for the activity stream that this activity belongs to.
-   * 
-   * @anchor ActivityResource.getActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
-   * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
-   *{code}
-   *
+   * GET http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
    * @response
-   *{code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
    *   "title": "Hello World!!!",
@@ -116,18 +107,16 @@ public class ActivityResources implements ResourceContainer {
    *   "comments": [{}, {}, {}], //optional
    *   "totalNumberOfComments": 1234,
    *   "activityStream": {
-   *   "type": "user", // or "space"
-   *   "prettyId": "root", // or space_abcde
-   *   "faviconURL": "http://demo3.exoplatform.org/favicons/exo-default.jpg",
-   *   "title": "Activity Stream of Root Root",
-   *   "permaLink": "http://localhost:8080/profile/root"
-   * } //optional
+   *   	"type": "user", // or "space"
+   *   	"prettyId": "root", // or space_abcde
+   *   	"faviconURL": "http://demo3.exoplatform.org/favicons/exo-default.jpg",
+   *   	"title": "Activity Stream of Root Root",
+   *   	"permaLink": "http://localhost:8080/profile/root"
+   * 	} //optional
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.getActivityById
    */
   @GET
   @Path("activity/{activityId}.{format}")
@@ -201,19 +190,11 @@ public class ActivityResources implements ResourceContainer {
    * @param format The expected returned format.
    * @param identityIdStream The optional identity stream to post this new activity to.
    * @param newActivity A new activity instance.
-   * 
-   * @anchor ActivityResource.createNewActivity
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
-   * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity.json
+   * http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity.json
    * BODY: {"title": "Hello World!!!"}
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
    *   "title": "Hello World!!!",
@@ -226,11 +207,9 @@ public class ActivityResources implements ResourceContainer {
    *   "titleId": "",
    *   "identityId": "123456789abcdefghi" //the identity id of the user who created this activity
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.createNewActivity
    */
   @POST
   @Path("activity.{format}")
@@ -285,25 +264,15 @@ public class ActivityResources implements ResourceContainer {
   }
 
   /**
-   * Deletes an existing activity by its Id using the DELETE method. The deleted activity information will be returned
-   * in the JSON format.
-   *
+   * Deletes an existing activity by its Id using the DELETE method. The deleted activity information will be returned in the JSON format.
    * @param uriInfo the uri request uri
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.deleteExistingActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e6f7g8h9i.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
    *   "title": "Hello World!!!",
@@ -328,11 +297,10 @@ public class ActivityResources implements ResourceContainer {
    *     "permaLink": "http://localhost:8080/profile/root"
    *   } //optional
    * }
-   *{code}
    *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.deleteExistingActivityById
    */
   @DELETE
   @Path("activity/{activityId}.{format}")
@@ -379,18 +347,10 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.postToDeleteActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/destroy/1a2b3c4d5e6f7g8h9i.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "1a2b3c4d5e6f7g8h9j",
    *   "title": "Hello World!!!",
@@ -415,11 +375,9 @@ public class ActivityResources implements ResourceContainer {
    *     "permaLink": "http://localhost:8080/profile/root"
    *   } //optional
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.postToDeleteActivityById
    */
   @POST
   @Path("activity/destroy/{activityId}.{format}")
@@ -438,18 +396,10 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.getCommentsByActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comments.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   total: 10,
    *   comments: [
@@ -469,11 +419,9 @@ public class ActivityResources implements ResourceContainer {
    *   }
    *   ]
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.getCommentsByActivityById
    */
   @GET
   @Path("activity/{activityId}/comments.{format}")
@@ -533,19 +481,11 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.createCommentActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment.json
    * BODY: {"text": "My comment here!!!"}
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "123456"
    *   "identityId": "12345abcde",
@@ -553,11 +493,9 @@ public class ActivityResources implements ResourceContainer {
    *   "postedTime": 123456789,
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011"
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.createCommentActivityById
    */
   @POST
   @Path("activity/{activityId}/comment.{format}")
@@ -615,18 +553,10 @@ public class ActivityResources implements ResourceContainer {
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
    * @param commentId The specified comment Id.
-   * 
-   * @anchor ActivityResource.deleteCommentById
-   * 
-   * @authenticated
-   * 
+   * @authentication
    * @request
-   *{code}
    * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/123456.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "123456"
    *   "identityId": "12345abcde",
@@ -634,11 +564,9 @@ public class ActivityResources implements ResourceContainer {
    *   "postedTime": 123456789,
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011"
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.deleteCommentById
    */
   @DELETE
   @Path("activity/{activityId}/comment/{commentId}.{format}")
@@ -694,18 +622,10 @@ public class ActivityResources implements ResourceContainer {
    * @param activityId The specified activity Id.
    * @param commentId The specified comment Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.postDeleteCommentById
-   * 
-   * @authenticated
-   * 
+   * @authentication
    * @request
-   *{code}
    * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/comment/destroy/123456.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "id": "123456"
    *   "identityId": "12345abcde",
@@ -713,11 +633,9 @@ public class ActivityResources implements ResourceContainer {
    *   "postedTime": 123456789,
    *   "createdAt": "Fri Jun 17 06:42:26 +0000 2011"
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.postDeleteCommentById
    */
   @POST
   @Path("activity/{activityId}/comment/destroy/{commentId}.{format}")
@@ -738,18 +656,10 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.getLikesFromIdentityId
-   * 
-   * @authenticated
-   * 
+   * @authentication
    * @request
-   *{code}
    * GET: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/likes.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   totalNumberOfLikes: 2,
    *   likesByIdentities: [
@@ -773,11 +683,9 @@ public class ActivityResources implements ResourceContainer {
    *     },
    *   ]
    * }
-   *{code}
-   *
    * @return
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.getLikesFromIdentityId
    */
   @GET
   @Path("activity/{activityId}/likes.{format}")
@@ -841,25 +749,16 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.createLikeActivityById
-   * 
+
    * @authentication
-   * 
    * @request
-   *{code}
    * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "liked": true
    * }
-   *{code}
-   *
    * @return a response object
-   * 
+   * @anchor ActivityResource.createLikeActivityById
    * @LevelAPI Platform
    */
   @POST
@@ -904,26 +803,16 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.deleteLikeActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * DELETE: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "liked": false
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.deleteLikeActivityById
    */
   @DELETE
   @Path("activity/{activityId}/like.{format}")
@@ -971,26 +860,16 @@ public class ActivityResources implements ResourceContainer {
    * @param portalContainerName The associated portal container name.
    * @param activityId The specified activity Id.
    * @param format The expected returned format.
-   * 
-   * @anchor ActivityResource.postDeleteLikeActivityById
-   * 
    * @authentication
-   * 
    * @request
-   *{code}
    * POST: http://localhost:8080/rest/private/api/social/v1-alpha3/portal/activity/1a2b3c4d5e/like/destroy.json
-   *{code}
-   *
    * @response
-   *{code:json}
    * {
    *   "liked": false
    * }
-   *{code}
-   *
    * @return a response object
-   * 
    * @LevelAPI Platform
+   * @anchor ActivityResource.postDeleteLikeActivityById
    */
   @POST
   @Path("activity/{activityId}/like/destroy.{format}")
