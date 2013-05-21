@@ -1948,6 +1948,529 @@ public class ActivityStorageTest extends AbstractCoreTest {
     assertEquals("Comment 2",newCommentsList.get(0).getTitle());
     assertEquals("Comment 4",newCommentsList.get(1).getTitle());
   }
+  
+  /**
+   * Tests {@link ActivityStorage#getNewerOnUserActivities(Identity, Long, int)}
+   */
+  @MaxQueryNumber(350)
+  public void testGetNewerOnUserActivitiesWithTimestamp() {
+    checkCleanData();
+    createActivities(2, demoIdentity);
+    Long sinceTime = activityStorage.getUserActivities(demoIdentity, 0, 10).get(0).getUpdated().getTime();
+    assertEquals(0, activityStorage.getNewerUserActivities(demoIdentity, sinceTime, 10).size());
+    createActivities(2, maryIdentity);
+    assertEquals(0, activityStorage.getNewerUserActivities(demoIdentity, sinceTime, 10).size());
+    createActivities(2, demoIdentity);
+    assertEquals(2, activityStorage.getNewerUserActivities(demoIdentity, sinceTime, 10).size());
+
+    // Delete the activity at this sinceTime will don't change the result
+    // We just add 2 more activities of demoIdentity so the position of the
+    // activity that we get the sinceTime has
+    // changed from 0 to 2
+    String id = activityStorage.getUserActivities(demoIdentity, 0, 10).get(2).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals(2, activityStorage.getNewerUserActivities(demoIdentity, sinceTime, 10).size());
+  }
+
+  /**
+   * Tests {@link ActivityStorage#getOlderOnUserActivities(Identity, Long, int)}
+   */
+  @MaxQueryNumber(350)
+  public void testGetOlderOnUserActivitiesWithTimestamp() {
+    checkCleanData();
+    createActivities(2, demoIdentity);
+    Long maxTime = activityStorage.getUserActivities(demoIdentity, 0, 10).get(0).getUpdated().getTime();
+    assertEquals(1, activityStorage.getOlderUserActivities(demoIdentity, maxTime, 10).size());
+    createActivities(2, maryIdentity);
+    assertEquals(1, activityStorage.getOlderUserActivities(demoIdentity, maxTime, 10).size());
+    createActivities(2, demoIdentity);
+    assertEquals(1, activityStorage.getOlderUserActivities(demoIdentity, maxTime, 10).size());
+    maxTime = activityStorage.getUserActivities(demoIdentity, 0, 10).get(0).getUpdated().getTime();
+    assertEquals(3, activityStorage.getOlderUserActivities(demoIdentity, maxTime, 10).size());
+
+    // Delete the activity at this maxTime will don't change the result
+    String id = activityStorage.getUserActivities(demoIdentity, 0, 10).get(0).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals(3, activityStorage.getOlderUserActivities(demoIdentity, maxTime, 10).size());
+  }
+
+  /**
+   * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
+   */
+  @MaxQueryNumber(500)
+  public void testGetNewerOnActivityFeedWithTimestamp() {
+    checkCleanData();
+    createActivities(3, demoIdentity);
+    Long sinceTime = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(0).getUpdated().getTime();
+    assertEquals(0, activityStorage.getNewerFeedActivities(demoIdentity, sinceTime, 10).size());
+    createActivities(1, demoIdentity);
+    assertEquals(1, activityStorage.getNewerFeedActivities(demoIdentity, sinceTime, 10).size());
+    createActivities(2, maryIdentity);
+    relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    assertEquals(1, activityStorage.getNewerFeedActivities(demoIdentity, sinceTime, 10).size());
+    relationshipManager.confirm(demoIdentity, maryIdentity);
+    createActivities(2, maryIdentity);
+    assertEquals(5, activityStorage.getNewerFeedActivities(demoIdentity, sinceTime, 10).size());
+
+    // Delete the activity at this sinceTime will don't change the result
+    String id = activityStorage.getUserActivities(demoIdentity, 0, 10).get(1).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals(5, activityStorage.getNewerFeedActivities(demoIdentity, sinceTime, 10).size());
+  }
+
+  /**
+   * Tests {@link ActivityStorage#getOlderOnActivityFeed(Identity, Long, int)}.
+   */
+  @MaxQueryNumber(500)
+  public void testGetOlderOnActivityFeedWithTimestamp() {
+    checkCleanData();
+    createActivities(5, demoIdentity);
+    Long maxTime = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(2).getUpdated().getTime();
+    assertEquals(2, activityStorage.getOlderFeedActivities(demoIdentity, maxTime, 10).size());
+    
+    // Update an older activity, this activity must be newer than maxTime
+    ExoSocialActivity act = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(3);
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("demo comment ");
+    comment.setUserId(demoIdentity.getId());
+    activityStorage.saveComment(act, comment);
+    assertEquals(1, activityStorage.getOlderFeedActivities(demoIdentity, maxTime, 10).size());
+
+    // Delete the activity at this maxTime will don't change the result
+    String id = activityStorage.getUserActivities(demoIdentity, 0, 10).get(2).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals(1, activityStorage.getOlderFeedActivities(demoIdentity, maxTime, 10).size());
+  }
+
+  /**
+   * Test
+   * {@link ActivityStorage#getNewerOnActivitiesOfConnections(Identity, Long, int)}
+   */
+  @MaxQueryNumber(900)
+  public void testGetNewerOnActivitiesOfConnectionsWithTimestamp() {
+    checkCleanData();
+    List<Relationship> relationships = new ArrayList<Relationship>();
+    this.createActivities(3, maryIdentity);
+    this.createActivities(1, demoIdentity);
+    this.createActivities(2, johnIdentity);
+    this.createActivities(2, rootIdentity);
+
+    List<ExoSocialActivity> maryActivities = activityStorage.getActivitiesOfIdentity(maryIdentity,0,10);
+    assertNotNull("maryActivities must not be null", maryActivities);
+    assertEquals("maryActivities.size() must return: 3", 3, maryActivities.size());
+
+    Long sinceTime = maryActivities.get(2).getUpdated().getTime();
+
+    List<ExoSocialActivity> activities = activityStorage.getNewerActivitiesOfConnections(johnIdentity,sinceTime,10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 0", 0, activities.size());
+
+    activities = activityStorage.getNewerActivitiesOfConnections(demoIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 0", 0, activities.size());
+
+    activities = activityStorage.getNewerActivitiesOfConnections(maryIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 0", 0, activities.size());
+
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+    Relationship maryDemoRelationship = relationshipManager.inviteToConnect(maryIdentity,demoIdentity);
+    relationshipManager.confirm(maryIdentity, demoIdentity);
+    relationships.add(maryDemoRelationship);
+
+    activities = activityStorage.getNewerActivitiesOfConnections(maryIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 1", 1, activities.size());
+
+    activities = activityStorage.getNewerActivitiesOfConnections(demoIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 2", 2, activities.size());
+
+    // Delete the activity at this sinceTime will don't change the result
+    String id = activityStorage.getUserActivities(maryIdentity, 0, 10).get(2).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals("activities.size() must return: 2", 2, 
+                 activityStorage.getNewerActivitiesOfConnections(demoIdentity, sinceTime, 10).size());
+
+    Relationship maryJohnRelationship = relationshipManager.inviteToConnect(maryIdentity,johnIdentity);
+    relationshipManager.confirm(maryIdentity, johnIdentity);
+    relationships.add(maryJohnRelationship);
+
+    activities = activityStorage.getNewerActivitiesOfConnections(maryIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 3", 3, activities.size());
+
+    Relationship maryRootRelationship = relationshipManager.inviteToConnect(maryIdentity,rootIdentity);
+    relationshipManager.confirm(maryIdentity, rootIdentity);
+    relationships.add(maryRootRelationship);
+
+    activities = activityStorage.getNewerActivitiesOfConnections(maryIdentity, sinceTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 5", 5, activities.size());
+
+    for (Relationship rel : relationships) {
+      relationshipManager.delete(rel);
+    }
+  }
+
+  /**
+   * Test
+   * {@link ActivityStorage#getOlderOnActivitiesOfConnections(Identity, Long, int)}
+   */
+  @MaxQueryNumber(900)
+  public void testGetOlderOnActivitiesOfConnectionsWithTimestamp() {
+    checkCleanData();
+    List<Relationship> relationships = new ArrayList<Relationship>();
+
+    this.createActivities(3, maryIdentity);
+    this.createActivities(1, demoIdentity);
+    this.createActivities(2, johnIdentity);
+    this.createActivities(2, rootIdentity);
+
+    List<ExoSocialActivity> rootActivities = activityStorage.getActivitiesOfIdentity(rootIdentity,0,10);
+    assertNotNull("rootActivities must not be null", rootActivities);
+    assertEquals("rootActivities.size() must return: 2", 2, rootActivities.size());
+
+    Long maxTime = rootActivities.get(1).getUpdated().getTime();
+
+    List<ExoSocialActivity> activities;
+
+    activities = activityStorage.getOlderActivitiesOfConnections(rootIdentity, maxTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 0", 0, activities.size());
+
+    activities = activityStorage.getOlderActivitiesOfConnections(johnIdentity, maxTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 0", 0, activities.size());
+
+    RelationshipManager relationshipManager = this.getRelationshipManager();
+
+    Relationship rootJohnRelationship = relationshipManager.inviteToConnect(rootIdentity,johnIdentity);
+    relationshipManager.confirm(rootIdentity, johnIdentity);
+    relationships.add(rootJohnRelationship);
+
+    activities = activityStorage.getOlderActivitiesOfConnections(rootIdentity, maxTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 2", 2, activities.size());
+
+    // Delete the activity at this maxTime will don't change the result
+    String id = activityStorage.getUserActivities(rootIdentity, 0, 10).get(1).getId();
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    activityStorage.deleteActivity(id);
+    assertEquals("activities.size() must return: 2", 2, 
+                 activityStorage.getOlderActivitiesOfConnections(rootIdentity, maxTime, 10).size());
+
+    Relationship rootDemoRelationship = relationshipManager.inviteToConnect(rootIdentity,demoIdentity);
+    relationshipManager.confirm(rootIdentity, demoIdentity);
+    relationships.add(rootDemoRelationship);
+
+    activities = activityStorage.getOlderActivitiesOfConnections(rootIdentity, maxTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 3", 3, activities.size());
+
+    Relationship rootMaryRelationship = relationshipManager.inviteToConnect(rootIdentity,maryIdentity);
+    relationshipManager.confirm(rootIdentity, maryIdentity);
+    relationships.add(rootMaryRelationship);
+
+    activities = activityStorage.getOlderActivitiesOfConnections(rootIdentity, maxTime, 10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 6", 6, activities.size());
+
+    for (Relationship rel : relationships) {
+      relationshipManager.delete(rel);
+    }
+  }
+
+  /**
+   * Test
+   * {@link ActivityStorage#getNewerOnUserSpacesActivities(Identity, Long, int)}
+   * 
+   * @throws Exception
+   */
+  @MaxQueryNumber(1500)
+  public void testGetNewerOnUserSpacesActivitiesWithTimestamp() throws Exception {
+    checkCleanData();
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = 
+        this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
+
+    int totalNumber = 10;
+
+    long sinceTime = 0;
+
+    String id="";
+    // demo posts activities to space
+    for (int i = 0; i < totalNumber; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+      if (i == 0) {
+        sinceTime = activity.getUpdated().getTime();
+        id=activity.getId();
+      }
+    }
+
+    space = spaceService.getSpaceByDisplayName(space.getDisplayName());
+    assertNotNull("space must not be null", space);
+    assertEquals("space.getDisplayName() must return: my space 0","my space 0",space.getDisplayName());
+    assertEquals("space.getDescription() must return: add new space 0","add new space 0",space.getDescription());
+
+    List<ExoSocialActivity> activities = activityStorage.getNewerUserSpacesActivities(demoIdentity,sinceTime,10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 9", 9, activities.size());
+
+    Space space2 = this.getSpaceInstance(spaceService, 1);
+    Identity spaceIdentity2 = 
+        this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space2.getPrettyName(),false);
+
+    // demo posts activities to space2
+    for (int i = 0; i < totalNumber; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity2, activity);
+      tearDownActivityList.add(activity);
+    }
+
+    space2 = spaceService.getSpaceByDisplayName(space2.getDisplayName());
+    assertNotNull("space2 must not be null", space2);
+    assertEquals("space2.getDisplayName() must return: my space 1","my space 1",space2.getDisplayName());
+    assertEquals("space2.getDescription() must return: add new space 1","add new space 1",space2.getDescription());
+
+    activities = activityStorage.getNewerUserSpacesActivities(demoIdentity, sinceTime, 20);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 19", 19, activities.size());
+    
+    // Delete the activity at this sinceTime will don't change the result
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        break;
+      }
+    }
+    assertEquals("activities.size() must return: 19", 19, 
+                 activityStorage.getNewerUserSpacesActivities(demoIdentity, sinceTime, 20).size());
+
+    spaceService.deleteSpace(space);
+    spaceService.deleteSpace(space2);
+  }
+
+  /**
+   * Test
+   * {@link ActivityStorage#getOlderOnUserSpacesActivities(Identity, Long, int)}
+   * 
+   * @throws Exception
+   */
+  @MaxQueryNumber(1500)
+  public void testGetOlderOnUserSpacesActivitiesWithTimestamp() throws Exception {
+    checkCleanData();
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = 
+        this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space.getPrettyName(),false);
+
+    int totalNumber = 10;
+
+    long maxTime = 0;
+    
+    String id="";
+
+    // demo posts activities to space
+    for (int i = 0; i < totalNumber; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
+      tearDownActivityList.add(activity);
+      if (i == totalNumber - 1) {
+        maxTime = activity.getUpdated().getTime();
+        id = activity.getId();
+      }
+    }
+
+    space = spaceService.getSpaceByDisplayName(space.getDisplayName());
+    assertNotNull("space must not be null", space);
+    assertEquals("space.getDisplayName() must return: my space 0","my space 0",space.getDisplayName());
+    assertEquals("space.getDescription() must return: add new space 0","add new space 0",space.getDescription());
+
+    List<ExoSocialActivity> activities = activityStorage.getOlderUserSpacesActivities(demoIdentity,maxTime,10);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 9", 9, activities.size());
+
+    Space space2 = this.getSpaceInstance(spaceService, 1);
+    Identity spaceIdentity2 = 
+        this.identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,space2.getPrettyName(),false);
+
+    // demo posts activities to space2
+    for (int i = 0; i < totalNumber; i++) {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title " + i);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity2, activity);
+      tearDownActivityList.add(activity);
+      if (i == totalNumber - 1) {
+        maxTime = activity.getUpdated().getTime();
+      }
+    }
+
+    space2 = spaceService.getSpaceByDisplayName(space2.getDisplayName());
+    assertNotNull("space2 must not be null", space2);
+    assertEquals("space2.getDisplayName() must return: my space 1","my space 1",space2.getDisplayName());
+    assertEquals("space2.getDescription() must return: add new space 1","add new space 1",space2.getDescription());
+
+    activities = activityStorage.getOlderUserSpacesActivities(demoIdentity, maxTime, 20);
+    assertNotNull("activities must not be null", activities);
+    assertEquals("activities.size() must return: 19", 19, activities.size());
+    
+    // Delete the activity at this maxTime will don't change the result
+    for (ExoSocialActivity activity : tearDownActivityList) {
+      if (id == activity.getId()) {
+        tearDownActivityList.remove(activity);
+        activityStorage.deleteActivity(activity.getId());
+        break;
+      }
+    }
+    assertEquals("activities.size() must return: 18", 18, 
+                 activityStorage.getOlderUserSpacesActivities(demoIdentity, maxTime, 20).size());
+
+    spaceService.deleteSpace(space);
+    spaceService.deleteSpace(space2);
+  }
+
+  /**
+   * Test {@link ActivityStorage#getNewerComments(ExoSocialActivity, Long, int)}
+   */
+  @MaxQueryNumber(1000)
+  public void testGetNewerCommentsWithTimestamp() {
+    checkCleanData();
+    int totalNumber = 10;
+    String activityTitle = "activity title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    for (int i = 0; i < totalNumber; i++) {
+      // John comments on Root's activity
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("john comment " + i);
+      comment.setUserId(johnIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+    }
+
+    for (int i = 0; i < totalNumber; i++) {
+      // John comments on Root's activity
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("demo comment " + i);
+      comment.setUserId(demoIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+    }
+
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    assertNotNull("comments must not be null", comments);
+    assertEquals("comments.size() must return: 10", 10, comments.size());
+
+    Long sinceTime = comments.get(0).getUpdated().getTime();
+    List<ExoSocialActivity> newerComments = activityStorage.getNewerComments(activity,sinceTime,10);
+    assertNotNull("newerComments must not be null", newerComments);
+    assertEquals("newerComments.size() must return: 10", 10, newerComments.size());
+
+    sinceTime = activityStorage.getComments(activity, 0, 20).get(10).getUpdated().getTime();
+    newerComments = activityStorage.getNewerComments(activity, sinceTime, 20);
+    assertNotNull("newerComments must not be null", newerComments);
+    assertEquals("newerComments.size() must return: 9", 9, newerComments.size());
+
+    sinceTime = activityStorage.getComments(activity, 0, 20).get(19).getUpdated().getTime();
+    newerComments = activityStorage.getNewerComments(activity, sinceTime, 20);
+    assertNotNull("newerComments must not be null", newerComments);
+    assertEquals("newerComments.size() must return: 0", 0, newerComments.size());
+  }
+
+  /**
+   * Test {@link ActivityStorage#getOlderComments(ExoSocialActivity, Long, int)}
+   */
+  @MaxQueryNumber(500)
+  public void testGetOlderCommentsWithTimestamp() {
+    checkCleanData();
+    int totalNumber = 10;
+    String activityTitle = "activity title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    for (int i = 0; i < totalNumber; i++) {
+      // John comments on Root's activity
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("john comment " + i);
+      comment.setUserId(johnIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+    }
+
+    List<ExoSocialActivity> comments = activityStorage.getComments(activity, 0, 10);
+    assertNotNull("comments must not be null", comments);
+    assertEquals("comments.size() must return: 10", 10, comments.size());
+
+    Long maxTime = comments.get(0).getUpdated().getTime();
+
+    List<ExoSocialActivity> olderComments = activityStorage.getOlderComments(activity, maxTime, 10);
+    assertNotNull("olderComments must not be null", olderComments);
+    assertEquals("olderComments.size() must return: 0", 0, olderComments.size());
+
+    maxTime = comments.get(9).getUpdated().getTime();
+
+    olderComments = activityStorage.getOlderComments(activity, maxTime, 10);
+    assertNotNull("olderComments must not be null", olderComments);
+    assertEquals("olderComments.size() must return: 9", 9, olderComments.size());
+
+    maxTime = comments.get(5).getUpdated().getTime();
+
+    olderComments = activityStorage.getOlderComments(activity, maxTime, 10);
+    assertNotNull("olderComments must not be null", olderComments);
+    assertEquals("olderComments.size() must return: 5", 5, olderComments.size());
+  }
 
   /**
    * Creates activities.

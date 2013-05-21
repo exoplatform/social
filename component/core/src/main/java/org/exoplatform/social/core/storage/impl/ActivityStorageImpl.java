@@ -1152,7 +1152,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
-
+    
   }
 
   /**
@@ -1631,7 +1631,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     List<String> activityIds = new ArrayList<String>();
     
     if ( sinceTimes.get("CONNECTIONS") != null ) {
-      List<ExoSocialActivity> connectionsActivities =  getActivitiesOfConnections(owner, sinceTimes.get("CONNECTIONS"));
+      List<ExoSocialActivity> connectionsActivities =  getNewerActivitiesOfConnections(owner, sinceTimes.get("CONNECTIONS"), 100);
       activities.addAll(connectionsActivities);
       for ( ExoSocialActivity connectionsActivity : connectionsActivities ) {
         activityIds.add(connectionsActivity.getId());
@@ -1639,7 +1639,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     if ( sinceTimes.get("MY_SPACE") != null ) {
-      List<ExoSocialActivity> mySpaceActivities = getUserSpacesActivities(owner, sinceTimes.get("MY_SPACE"));  
+      List<ExoSocialActivity> mySpaceActivities = getNewerUserSpacesActivities(owner, sinceTimes.get("MY_SPACE"), 100);  
       for ( ExoSocialActivity mySpaceActivity : mySpaceActivities ) {
         if ( !activityIds.contains(mySpaceActivity.getId()) ) {
           activities.add(mySpaceActivity);
@@ -1649,7 +1649,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     if ( sinceTimes.get("MY_ACTIVITIES") != null ) {
-      List<ExoSocialActivity> myActivities = getUserActivities(owner, sinceTimes.get("MY_ACTIVITIES"));
+      List<ExoSocialActivity> myActivities = getNewerUserActivities(owner, sinceTimes.get("MY_ACTIVITIES"), 100);
       for ( ExoSocialActivity myActivity : myActivities ) {
         if ( !activityIds.contains(myActivity.getId()) ) {
           activities.add(myActivity);
@@ -1663,12 +1663,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   //
   @Override
-  public List<ExoSocialActivity> getFeedActivities(Identity owner, Long sinceTime) {
+  public List<ExoSocialActivity> getNewerFeedActivities(Identity owner, Long sinceTime, int limit) {
     //
     List<Identity> identities = new ArrayList<Identity>();
 
     identities.addAll(relationshipStorage.getConnections(owner));
     identities.addAll(getSpacesId(owner));
+    identities.add(owner);
     
     if ( identities.size() == 0 ) {
       return Collections.emptyList();
@@ -1679,23 +1680,23 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
     
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
-      .updated().owners(identities), filter).objects());
+      .updated().owners(identities), filter).objects((long)0, (long)limit));
   }
   
   //
   @Override
-  public List<ExoSocialActivity> getUserActivities(Identity owner, Long sinceTime) {
+  public List<ExoSocialActivity> getNewerUserActivities(Identity owner, Long sinceTime, int limit) {
     //
     JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
-      ActivityBuilderWhere.updated().mentioner(owner), filter).objects((long)0, (long)100));
+      ActivityBuilderWhere.updated().mentioner(owner).owners(owner), filter).objects((long)0, (long)limit));
   }
   
   @Override
-  public List<ExoSocialActivity> getUserSpacesActivities(Identity owner, Long sinceTime) {
+  public List<ExoSocialActivity> getNewerUserSpacesActivities(Identity owner, Long sinceTime, int limit) {
     //
     List<Identity> spaceList = getSpacesId(owner);
     
@@ -1707,11 +1708,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
-      ActivityBuilderWhere.updated().owners(spaceList), filter).objects((long)0, (long)100));
+      ActivityBuilderWhere.updated().owners(spaceList), filter).objects((long)0, (long)limit));
   }
   
   @Override
-  public List<ExoSocialActivity> getActivitiesOfConnections(Identity owner, Long sinceTime) {
+  public List<ExoSocialActivity> getNewerActivitiesOfConnections(Identity owner, Long sinceTime, int limit) {
     List<Identity> connectionList = relationshipStorage.getConnections(owner);
 
     if (connectionList.size() == 0) {
@@ -1724,19 +1725,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
     //
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
-      ActivityBuilderWhere.updated().owners(connectionList), filter).objects((long)0, (long)100));
+      ActivityBuilderWhere.updated().owners(connectionList), filter).objects((long)0, (long)limit));
   }
   
   //
   @Override
-  public List<ExoSocialActivity> getSpaceActivities(Identity owner, Long sinceTime) {
+  public List<ExoSocialActivity> getNewerSpaceActivities(Identity owner, Long sinceTime, int limit) {
     //
     JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
     filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.NEWER.from(sinceTime));
 
     //
     return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
-      .updated().owners(owner), filter).objects());
+      .updated().owners(owner), filter).objects((long)0, (long)limit));
   }
   
   private List<ExoSocialActivity> getActivitiesFromQueryResults(QueryResult<ActivityEntity> results) {
@@ -2121,5 +2122,246 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     return activityIt.result();
   }
   
+  //
+  @Override
+  public List<ExoSocialActivity> getOlderFeedActivities(Identity owner, Long sinceTime, int limit) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(owner));
+    identities.addAll(getSpacesId(owner));
+    identities.add(owner);
+    
+    if ( identities.size() == 0 ) {
+      return Collections.emptyList();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+    
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .updated().owners(identities), filter).objects((long)0, (long)limit));
+  }
   
+  //
+  @Override
+  public List<ExoSocialActivity> getOlderUserActivities(Identity owner, Long sinceTime, int limit) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.updated().mentioner(owner).owners(owner), filter).objects((long)0, (long)limit));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getOlderUserSpacesActivities(Identity owner, Long sinceTime, int limit) {
+    //
+    List<Identity> spaceList = getSpacesId(owner);
+    
+    if (spaceList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.updated().owners(spaceList), filter).objects((long)0, (long)limit));
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getOlderActivitiesOfConnections(Identity owner, Long sinceTime, int limit) {
+    List<Identity> connectionList = relationshipStorage.getConnections(owner);
+
+    if (connectionList.size() == 0) {
+      return new ArrayList<ExoSocialActivity>();
+    }
+    
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(
+      ActivityBuilderWhere.updated().owners(connectionList), filter).objects((long)0, (long)limit));
+  }
+  
+  //
+  @Override
+  public List<ExoSocialActivity> getOlderSpaceActivities(Identity owner, Long sinceTime, int limit) {
+    //
+    JCRFilterLiteral filter = ActivityFilter.ACTIVITY_NEW_UPDATED_FILTER;
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesFromQueryResults(getActivitiesOfIdentitiesQuery(ActivityBuilderWhere
+      .updated().owners(owner), filter).objects((long)0, (long)limit));
+  }
+  
+  @Override
+  public int getNumberOfOlderOnActivityFeed(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+
+    //
+    ActivityFilter filter = ActivityFilter.newer();
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter).objects().size();
+
+  }
+  
+  @Override
+  public int getNumberOfOlderOnUserActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    if (ownerIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.newer();
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery (ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(ownerIdentity), filter).objects().size();
+                                      
+  }
+
+  @Override
+  public int getNumberOfOlderOnActivitiesOfConnections(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+    connectionList.add(ownerIdentity);
+
+    //
+    ActivityFilter filter = ActivityFilter.newer();
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(connectionList), filter).objects().size();
+  }
+
+  @Override
+  public int getNumberOfOlderOnUserSpacesActivities(Identity ownerIdentity, Long sinceTime) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+
+    //
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.spaceOlder();
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceList), filter).objects().size();
+  }
+  
+  @Override
+  public int getNumberOfOlderOnSpaceActivities(Identity spaceIdentity, Long sinceTime) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+    
+    //
+    ActivityFilter filter = ActivityFilter.spaceOlder();
+    filter.with(ActivityFilter.ACTIVITY_UPDATED_POINT_FIELD).value(TimestampType.OLDER.from(sinceTime));
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceIdentity), filter).objects().size();
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getNewerComments(ExoSocialActivity existingActivity,
+                                                  Long sinceTime,
+                                                  int limit) {
+    
+    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
+
+    long totalSize = commentIds.length;
+    
+    ActivityIterator activityIt = new ActivityIterator(0, limit, totalSize);
+    
+    int i = 0;
+    while (i < totalSize) {
+      ExoSocialActivity comment = getActivity(commentIds[i]);
+      if (!comment.isHidden() && comment.getUpdated().getTime() > sinceTime)
+        activityIt.add(comment);
+      if (activityIt.addMore() == false) {
+        break;
+      }
+      i++;
+    }
+    
+    return activityIt.result();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getOlderComments(ExoSocialActivity existingActivity,
+                                                  Long sinceTime,
+                                                  int limit) {
+    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
+
+    long totalSize = commentIds.length;
+    
+    ActivityIterator activityIt = new ActivityIterator(0, limit, totalSize);
+    
+    int i = 0;
+    while (i < totalSize) {
+      ExoSocialActivity comment = getActivity(commentIds[i]);
+      if (!comment.isHidden() && comment.getUpdated().getTime() < sinceTime)
+        activityIt.add(comment);
+      if (activityIt.addMore() == false) {
+        break;
+      }
+      i++;
+    }
+    
+    return activityIt.result();
+  }
+  
+  @Override
+  public int getNumberOfNewerComments(ExoSocialActivity existingActivity, Long sinceTime) {
+    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
+    int nb = 0;
+    long totalSize = commentIds.length;
+    
+    int i = 0;
+    while (i < totalSize) {
+      ExoSocialActivity comment = getActivity(commentIds[i]);
+      if (!comment.isHidden() && comment.getUpdated().getTime() > sinceTime)
+        nb++;
+      i++;
+    }
+    
+    return nb;
+  }
+
+  @Override
+  public int getNumberOfOlderComments(ExoSocialActivity existingActivity, Long sinceTime) {
+    String[] commentIds = getStorage().getActivity(existingActivity.getId()).getReplyToId();
+    int nb = 0;
+    long totalSize = commentIds.length;
+    
+    int i = 0;
+    while (i < totalSize) {
+      ExoSocialActivity comment = getActivity(commentIds[i]);
+      if (!comment.isHidden() && comment.getUpdated().getTime() < sinceTime)
+        nb++;
+      i++;
+    }
+    
+    return nb;
+  }
 }
