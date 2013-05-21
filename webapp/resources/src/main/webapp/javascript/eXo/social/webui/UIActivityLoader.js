@@ -20,13 +20,11 @@
 	      $(window).scroll(function(e) {
 	        var distanceToBottom = UIActivityLoader.scrollBottom();
 	        var loadAnimation = $('#UIActivitiesLoader').find('div.ActivityIndicator'); 
-	        loadAnimation.stop();
-	        var isLoading = loadAnimation.css('display') != 'none';
+	        var isLoading = loadAnimation.css("display") != "none";
 	        if (distanceToBottom <= UIActivityLoader.delta && !isLoading) {
 	          if (UIActivityLoader.hasMore === true) {
-	            loadAnimation
-	              .animate({'display': 'block'}, 
-	                500, function() {
+	            $(loadAnimation).stop(true, true).fadeIn(
+                    500, function() {
 	                  $(this).show();
 	                  $('div.bottomContainer:last')[0].scrollIntoView(true);
 	                  $('#ActivitiesLoader').click();
