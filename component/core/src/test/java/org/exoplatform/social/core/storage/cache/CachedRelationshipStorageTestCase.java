@@ -149,5 +149,32 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
 
   }
+  
+  @MaxQueryNumber(200)
+  public void testGetRelationshipIdentity() throws Exception {
+
+    Identity i1 = new Identity("p", "i1");
+    identityStorage.saveIdentity(i1);
+    tearDownIdentityList.add(i1.getId());
+    Identity i2 = new Identity("p", "i2");
+    identityStorage.saveIdentity(i2);
+    tearDownIdentityList.add(i2.getId());
+
+    assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
+    Relationship r = relationshipStorage.saveRelationship(new Relationship(i1, i2));
+    assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
+    cacheService.getRelationshipCache().clearCache();
+    cacheService.getRelationshipCacheByIdentity().clearCache();
+    assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
+
+    relationshipStorage.getRelationship(i1, i2);
+    assertEquals(1, cacheService.getRelationshipCache().getCacheSize());
+    assertEquals(1, cacheService.getRelationshipCacheByIdentity().getCacheSize());
+
+    
+    relationshipStorage.removeRelationship(r);
+    assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
+    assertEquals(0, cacheService.getRelationshipCacheByIdentity().getCacheSize());
+  }
 
 }
