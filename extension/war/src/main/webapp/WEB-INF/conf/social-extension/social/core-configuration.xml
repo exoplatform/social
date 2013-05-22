@@ -572,7 +572,7 @@
           <name>workspace-name</name>
           <value>social</value>
         </value-param>
-        <value-param profiles="all,default,minimal">
+        <value-param profiles="all,minimal">
           <name>workspace-name</name>
           <value>social</value>
         </value-param>
