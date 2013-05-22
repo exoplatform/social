@@ -129,7 +129,7 @@
 			      	iconImgLabel = _ctx.appRes("${uicomponentId}.label.manager_of_space");
 			      %>
 			        <a href="<%= spaceUrl %>" class="avatarXLarge pull-left">
-			          <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
+			          <img alt="$spaceAvatarTitle" src="$imageSource" />
 			        </a>
 			        <div class="contentBox">
 			          <h4 class="spaceTitle">

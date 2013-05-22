@@ -104,7 +104,7 @@
 				
 				    <div class="spaceBox pull-left">
 				      <div class="avatarXLarge pull-left">
-				        <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" src="$imageSource" />
+				        <img alt="$spaceAvatarTitle" src="$imageSource" />
 				      </div>
 				      <div class="contentBox">
 				        <h4 class="spaceTitle">

@@ -156,11 +156,11 @@ import org.exoplatform.social.core.service.LinkProvider;
 		      <div class="$checkedBox spaceBox pull-left">       
 	        <% if (isPublic) { %>
 	          <a href="$spaceUrl" class="avatarXLarge pull-left">
-	            <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle"  alt="$spaceAvatarTitle" src="$imageSource" />
+	            <img alt="$spaceAvatarTitle" src="$imageSource" />
 	          </a>
 	        <%} else { %>
 	          <div class="avatarXLarge pull-left">
-	             <img rel="tooltip" data-placement="bottom" title="$spaceAvatarTitle" alt="$spaceAvatarTitle" src="$imageSource" />
+	             <img alt="$spaceAvatarTitle" src="$imageSource" />
 	          </div>
 	        <%} %>
 		

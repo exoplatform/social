@@ -142,8 +142,8 @@
 
 .MoreSpace {
 	background: #f8f8f8;
-	border-top: 1px solid #e1e1e1;
-	border-bottom: 1px solid #e1e1e1;
+  border: 1px solid #E1E1E1;
+  border-radius: 5px;
 	color: #535656;
 	cursor: pointer;
 	padding: 4px 0px;
