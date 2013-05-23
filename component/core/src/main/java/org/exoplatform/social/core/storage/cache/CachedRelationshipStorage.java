@@ -199,12 +199,14 @@ public class CachedRelationshipStorage implements RelationshipStorage {
     //
     exoRelationshipCache.remove(new RelationshipKey(relationship.getId()));
     
-    //
-    RelationshipIdentityKey identityKey = new RelationshipIdentityKey(relationship.getSender().getId(), relationship.getReceiver().getId());
-    relationshipCacheIdentity.remove(identityKey);
-    
-    identityKey = new RelationshipIdentityKey(relationship.getReceiver().getId(), relationship.getSender().getId());
-    relationshipCacheIdentity.remove(identityKey);
+    // clear caching.
+    if (relationship.getSender() != null && relationship.getReceiver() != null) {
+      RelationshipIdentityKey identityKey = new RelationshipIdentityKey(relationship.getSender().getId(), relationship.getReceiver().getId());
+      relationshipCacheIdentity.remove(identityKey);
+      
+      identityKey = new RelationshipIdentityKey(relationship.getReceiver().getId(), relationship.getSender().getId());
+      relationshipCacheIdentity.remove(identityKey);
+    }
     
     //
     clearCacheFor(relationship);
