@@ -69,7 +69,7 @@ public class UISpaceMenu extends UIContainer {
   
   public static final String HIDDEN = "HIDDEN";
   
-  private static final String DEFAULT_APP_ID = "DefaultApp";
+  private static final String DEFAULT_APP_ID = "DefaultAppId";
   
   /**
    * Stores SpaceService object.

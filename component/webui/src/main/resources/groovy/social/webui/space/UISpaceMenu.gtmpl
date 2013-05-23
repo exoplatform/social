@@ -113,7 +113,7 @@
   <% if(nodeName.equals(appSelected)) {%>
        <li class="active">
          <a data-toggle="tab" href="javascript:void(0);">
-           <i class="uiIcon<%=pName%>"></i>
+           <i class="uiIcon<%=pName%> uiIconDefaultApp"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
@@ -122,7 +122,7 @@
   %>
        <li class="">
          <a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="javascript:void(0);">
-           <i class="uiIconApp<%=pName%>"></i>
+           <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
