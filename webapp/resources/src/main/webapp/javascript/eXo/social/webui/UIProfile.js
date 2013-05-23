@@ -45,6 +45,13 @@ var UIProfile = {
           maxWidth: "240px"
         });
     });
+  },
+  addLabelToCheckBoxes: function(uicomponentId, label) {
+    var component = $('#' + uicomponentId);
+    var checkBoxes = component.find('span.uiCheckbox');
+    $.each(checkBoxes, function(idx, checkBox) {
+      $(checkBox).find('span').text(label);
+    });
   }
 };
 
