@@ -25,12 +25,12 @@
   <parent>
     <artifactId>exo.social.extension</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>1.2.13-SNAPSHOT</version>
+    <version>1.2.13</version>
   </parent>
 
   <groupId>org.exoplatform.social</groupId>
   <artifactId>exo.social.extension.config</artifactId>
-  <version>1.2.13-SNAPSHOT</version>
+  <version>1.2.13</version>
   <packaging>jar</packaging>
   <name>eXo Social Extension Portal Container Definition</name>
   <description>eXo Social Extension Portal Container Definition</description>
