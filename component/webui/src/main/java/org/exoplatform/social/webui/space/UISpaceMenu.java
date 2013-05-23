@@ -69,6 +69,8 @@ public class UISpaceMenu extends UIContainer {
   
   public static final String HIDDEN = "HIDDEN";
   
+  private static final String DEFAULT_APP_ID = "DefaultApp";
+  
   /**
    * Stores SpaceService object.
    */
@@ -122,6 +124,13 @@ public class UISpaceMenu extends UIContainer {
     return userNodeArraySorted;
   }
 
+  /**
+   * Gets AppId to build class name of applications in space.
+   * Returns default id in case of not matching.
+   * 
+   * @param appName The application name.
+   * @return The id of application.
+   */
   protected String getAppIdByAppName(String appName) {
     String[] appInfos = space.getApp().split(",");
     for (String appInfo : appInfos) {
@@ -130,7 +139,8 @@ public class UISpaceMenu extends UIContainer {
         return appInfoParts[0];
       }
     }
-    return null;
+    
+    return DEFAULT_APP_ID;
   }
   
   /**

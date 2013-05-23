@@ -109,12 +109,11 @@
     }
     
     def pName = uicomponent.getAppIdByAppName(appName);
-    if (pName == null) continue;
   %>
   <% if(nodeName.equals(appSelected)) {%>
        <li class="active">
          <a data-toggle="tab" href="javascript:void(0);">
-           <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
+           <i class="uiIcon<%=pName%>"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
@@ -123,7 +122,7 @@
   %>
        <li class="">
          <a data-toggle="tab" onclick="location.href='<%= pageURI %>'" href="javascript:void(0);">
-           <i class="uiIconApp<%=pName%> uiIconDefaultApp"></i>
+           <i class="uiIconApp<%=pName%>"></i>
            <span id='$nodeName' class="tabName">$nodeLabel</span>
          </a>
        </li>
