@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.SpaceUtils;
-import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.IdentityStorageException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
@@ -41,6 +40,9 @@ public class StorageUtils {
   
   //
   private static List<String> userInPlatformGroups = null;
+  
+  //
+  private static final Log LOG = ExoLogger.getLogger(StorageUtils.class.getName());
   
   public static void applyFilter(final WhereExpression whereExpression, final ProfileFilter profileFilter) {
     //
@@ -194,6 +196,9 @@ public class StorageUtils {
     try {
       //
       if (userInPlatformGroups == null) {
+        
+        LOG.info("userInPlatformGroups is NULL");
+        
         OrganizationService orgService = (OrganizationService) PortalContainer.getInstance().getComponentInstanceOfType(OrganizationService.class);
         
         //
@@ -223,7 +228,12 @@ public class StorageUtils {
             loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
           }
         }
+        
+        LOG.info("userInPlatformGroups size = " + userInPlatformGroups.size());
       }
+      
+      //
+      LOG.info(String.format("userInPlatformGroups contains remoteId: %s == %s", remoteId, userInPlatformGroups.contains(remoteId)));
       
       //
       return userInPlatformGroups.contains(remoteId);
