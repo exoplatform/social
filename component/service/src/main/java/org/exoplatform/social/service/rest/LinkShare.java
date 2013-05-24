@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.xerces.xni.Augmentations;
@@ -546,18 +548,13 @@ public class LinkShare extends DefaultFilter {
         }
       }
     } else if ((imageSrc == null) && ("img".equalsIgnoreCase(element.rawname))) { //process img tag
-      String width = attributes.getValue("width");
-      String height = attributes.getValue("height");
-      if (width != null && height != null) {
-        int w = getNumber(width);
-        int h = getNumber(height);
-        if (w > MIN_WIDTH || h > MIN_HEIGHT) {
-          String src = attributes.getValue("src");
-          if (src == null) return;
-          src = getAbsLink(src);
-          if (images == null) images = new ArrayList<String>();
-          images.add(src);
-        }
+      String src = attributes.getValue("src");
+      if (src == null) return;
+      
+      if (isAcceptableImg(src)) {
+        src = getAbsLink(src);
+        if (images == null) images = new ArrayList<String>();
+        images.add(src);
       }
     }
   }
@@ -627,30 +624,6 @@ public class LinkShare extends DefaultFilter {
   }
   
   /**
-   * Scans and gets numbers only from a string
-   * and convert that numbers to int type;
-   * very convenient for string like: 50px; 50pt...
-   * @param str
-   * @return integer number
-   */
-  private int getNumber(String str) {
-    str = str.trim();
-    //matches one or more digits
-    String regex = "\\d+";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(str);
-    String strNum = null;
-    Integer intVal = 0;
-    while(matcher.find()) {
-      strNum = matcher.group();
-    }
-    if (strNum != null) {
-      intVal = Integer.parseInt(strNum);
-    }
-    return intVal;
-  }
-  
-  /**
    * Escapes the special characters.
    * 
    * @param str
@@ -662,6 +635,20 @@ public class LinkShare extends DefaultFilter {
       return str.replaceAll("\r\n|\n\r|\n|\r", "");
     } else {
       return "";
+    }
+  }
+  
+  private boolean isAcceptableImg(String src) {
+    BufferedImage img = null;
+    try {
+       img = ImageIO.read(new URL(src));
+       int width = img.getWidth();
+       int height = img.getHeight();
+       return (width > MIN_WIDTH && height > MIN_HEIGHT);
+    } catch (MalformedURLException e) {
+      return false;
+    } catch (IOException e) {
+      return false;
     }
   }
 }
