@@ -25,6 +25,7 @@ import java.util.Map;
 import org.chromattic.api.query.Ordering;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
+import org.chromattic.core.query.QueryImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -199,9 +200,13 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     StorageUtils.applyFilter(whereExpression, filter);
 
     //
-    QueryResult<ProfileEntity> result = builder.where(whereExpression.toString())
-                                               .orderBy(ProfileEntity.lastName.getName(), Ordering.ASC)
-                                               .get().objects(offset, limit);
+    builder.where(whereExpression.toString()).orderBy(ProfileEntity.fullName.getName(), Ordering.ASC);
+    
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    ((org.exoplatform.services.jcr.impl.core.query.QueryImpl) queryImpl.getNativeQuery()).setCaseInsensitiveOrder(true);
+    
+    QueryResult<ProfileEntity> result = queryImpl.objects(offset, limit);
+    
     while(result.hasNext()) {
       IdentityEntity current = result.next().getIdentity();
       Identity i = new Identity(current.getProviderId(), current.getRemoteId());
