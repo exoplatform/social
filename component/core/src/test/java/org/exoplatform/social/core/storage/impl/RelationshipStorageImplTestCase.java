@@ -711,6 +711,7 @@ public class RelationshipStorageImplTestCase extends AbstractCoreTest {
     Identity identity = new Identity("organization", remoteId);
     identityStorage.saveIdentity(identity);
     identity.getProfile().setProperty(Profile.LAST_NAME, remoteId);
+    identity.getProfile().setProperty(Profile.FULL_NAME, remoteId);
     identityStorage._createProfile(identity.getProfile());
     tearDownIdentityList.add(identity.getId());
     
