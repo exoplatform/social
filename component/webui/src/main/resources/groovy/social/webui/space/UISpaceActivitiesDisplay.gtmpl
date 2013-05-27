@@ -34,6 +34,7 @@
 <div class="uiDisplaySpaceActivities" id="$uicomponent.id">
   <% uicomponent.renderChild(UIActivitiesLoader.class);%>
     <% if ( hasActivities ) { %>
+    <% Utils.resizeHomePage();%>
   	<div class="activityBottom"><span></span></div>
   <% } %>
 </div>
