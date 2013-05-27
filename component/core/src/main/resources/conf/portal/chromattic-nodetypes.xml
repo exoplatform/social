@@ -95,6 +95,26 @@
           <requiredPrimaryType>soc:activitylist</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
+      <childNodeDefinition name="soc:allstream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <childNodeDefinition name="soc:connectionstream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <childNodeDefinition name="soc:spacestream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+       <childNodeDefinition name="soc:mystream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
       <childNodeDefinition name="soc:spacemember" defaultPrimaryType="soc:spaceslist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>soc:spaceslist</requiredPrimaryType>
@@ -346,6 +366,44 @@
       </childNodeDefinition>
     </childNodeDefinitions>
   </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity -->
+  <nodeType name="soc:activityrefday" isMixin="false" hasOrderableChildNodes="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:number" requiredType="Long" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>0</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="soc:activity" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityref</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRef -->
+  <nodeType name="soc:activityref" isMixin="false" hasOrderableChildNodes="false">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:lastUpdated" requiredType="Long" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="soc:target" requiredType="Reference" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions/>
+  </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityMonthEntity -->
   <nodeType name="soc:activitymonth" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
@@ -364,6 +422,28 @@
       <childNodeDefinition name="*" defaultPrimaryType="soc:activityday" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>soc:activityday</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity -->
+  <nodeType name="soc:activityrefmonth" isMixin="false" hasOrderableChildNodes="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:number" requiredType="Long" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>0</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="soc:activityrefday" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityrefday</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
     </childNodeDefinitions>
@@ -390,6 +470,29 @@
       </childNodeDefinition>
     </childNodeDefinitions>
   </nodeType>
+  
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity -->
+  <nodeType name="soc:activityrefyear" isMixin="false" hasOrderableChildNodes="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:number" requiredType="Long" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>0</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="soc:activityrefmonth" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityrefmonth</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityListEntity -->
   <nodeType name="soc:activitylist" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
@@ -408,6 +511,29 @@
       <childNodeDefinition name="*" defaultPrimaryType="soc:activityyear" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>soc:activityyear</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+  
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity -->
+  <nodeType name="soc:activityreflist" isMixin="false" hasOrderableChildNodes="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions>
+      <propertyDefinition name="soc:number" requiredType="Long" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+        <defaultValues>
+          <defaultValue>0</defaultValue>
+        </defaultValues>
+      </propertyDefinition>
+    </propertyDefinitions>
+    <childNodeDefinitions>
+      <childNodeDefinition name="*" defaultPrimaryType="soc:activityrefyear" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityrefyear</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
     </childNodeDefinitions>
