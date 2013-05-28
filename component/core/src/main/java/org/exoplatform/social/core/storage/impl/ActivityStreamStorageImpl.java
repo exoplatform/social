@@ -122,40 +122,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
-    List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
-    try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
-      ActivityRefListEntity refList = ActivityRefType.FEED.refsOf(identityEntity);
-      ActivityRefList list = new ActivityRefList(refList);
-      
-      int nb = 0;
-      
-      Iterator<ActivityRef> it = list.iterator();
-
-      _skip(it, offset);
-
-      while (it.hasNext()) {
-        ActivityRef current = it.next();
-
-        //take care in the case, current.getActivityEntity() = null the same SpaceRef, need to remove it out
-        if (current.getActivityEntity() == null) {
-          current.getDay().getActivityRefs().remove(current.getName());
-          continue;
-        }
-        
-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
-
-        if (++nb == limit) {
-          break;
-        }
-
-      }
-      
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to getFeed()");
-    }
-    
-    return got;
+    return getActivities(ActivityRefType.FEED, owner, offset, limit);
   }
 
   @Override
@@ -165,42 +132,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
-    List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
-    try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
-      ActivityRefListEntity refList = ActivityRefType.CONNECTION.refsOf(identityEntity);
-      ActivityRefList list = new ActivityRefList(refList);
-      
-      int nb = 0;
-      
-      Iterator<ActivityRef> it = list.iterator();
-
-      _skip(it, offset);
-
-      while (it.hasNext()) {
-        ActivityRef current = it.next();
-
-        //take care in the case, current.getActivityEntity() = null the same SpaceRef, need to remove it out
-        if (current.getActivityEntity() == null) {
-          current.getDay().getActivityRefs().remove(current.getName());
-          continue;
-        }
-        
-        //
-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
-
-        if (++nb == limit) {
-          break;
-        }
-
-      }
-      
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to getFeed()");
-    }
-    
-    return got;
+    return getActivities(ActivityRefType.CONNECTION, owner, offset, limit);
   }
+  
+  
+  
+  
 
   @Override
   public int getNumberOfConnections(Identity owner) {
@@ -209,7 +146,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit) {
-    return null;
+    return getActivities(ActivityRefType.MY_SPACES, owner, offset, limit);
   }
 
   @Override
@@ -219,7 +156,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
-    return null;
+    return getActivities(ActivityRefType.MY_ACTIVITIES, owner, offset, limit);
   }
 
   @Override
@@ -309,6 +246,44 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     };
 
     public abstract ActivityRefListEntity refsOf(IdentityEntity identityEntity);
+  }
+  
+  private List<ExoSocialActivity> getActivities(ActivityRefType type, Identity owner, int offset, int limit) {
+    List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      ActivityRefList list = new ActivityRefList(refList);
+      
+      int nb = 0;
+      
+      Iterator<ActivityRef> it = list.iterator();
+
+      _skip(it, offset);
+
+      while (it.hasNext()) {
+        ActivityRef current = it.next();
+
+        //take care in the case, current.getActivityEntity() = null the same SpaceRef, need to remove it out
+        if (current.getActivityEntity() == null) {
+          current.getDay().getActivityRefs().remove(current.getName());
+          continue;
+        }
+        
+        //
+        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
+
+        if (++nb == limit) {
+          break;
+        }
+
+      }
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to getActivities()");
+    }
+    
+    return got;
   }
   
   /**
