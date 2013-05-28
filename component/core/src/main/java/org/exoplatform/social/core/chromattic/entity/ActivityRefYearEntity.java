@@ -35,7 +35,7 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.ext.format.BaseEncodingObjectFormatter;
 
-PrimaryType(name = "soc:activityrefyear", orderable = true)
+@PrimaryType(name = "soc:activityrefyear", orderable = true)
 @FormattedBy(BaseEncodingObjectFormatter.class)
 @NamingPrefix("soc")
 public abstract class ActivityRefYearEntity implements NamedEntity, IndexNumber {
