@@ -16,8 +16,68 @@
  */
 package org.exoplatform.social.core.storage.synchronization;
 
+import java.util.List;
+
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl {
+
+  public SynchronizedActivityStreamStorage(IdentityStorageImpl identityStorage,
+                                           RelationshipStorage relationshipStorage) {
+    
+    super(identityStorage, relationshipStorage);
+  }
+  
+  @Override
+  public void save(Identity owner, ExoSocialActivity activity) {
+    
+    boolean created = startSynchronization();
+    try {
+      super.save(owner, activity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
+    
+    boolean created = startSynchronization();
+    try {
+      return super.getFeed(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public void connect(Identity sender, Identity receiver) {
+    boolean created = startSynchronization();
+    try {
+      super.connect(sender, receiver);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
+  }
+  
+  @Override
+  public void deleteConnect(Identity sender, Identity receiver) {
+    
+    boolean created = startSynchronization();
+    try {
+      super.deleteConnect(sender, receiver);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
 }

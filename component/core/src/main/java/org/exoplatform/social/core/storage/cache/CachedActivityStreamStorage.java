@@ -16,8 +16,84 @@
  */
 package org.exoplatform.social.core.storage.cache;
 
+import java.util.List;
+
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
+import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
 
 public class CachedActivityStreamStorage implements ActivityStreamStorage {
+  
+  private final ActivityStreamStorageImpl storage;
+  
+  public CachedActivityStreamStorage(final ActivityStreamStorageImpl storage, final SocialStorageCacheService cacheService) {
+    this.storage = storage;
+  }
+
+  @Override
+  public void save(Identity owner, ExoSocialActivity activity) {
+    this.storage.save(owner, activity);
+  }
+
+  @Override
+  public void delete(Identity owner, ExoSocialActivity activity) {
+    
+  }
+
+  @Override
+  public void update(Identity owners) {
+    
+  }
+
+  @Override
+  public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
+    return storage.getFeed(owner, offset, limit);
+  }
+
+  @Override
+  public void getNumberOfFeed(Identity owners) {
+    
+  }
+
+  @Override
+  public List<ExoSocialActivity> getConnections(Identity owners, int offset, int limit) {
+    return null;
+  }
+
+  @Override
+  public int getNumberOfConnections(Identity owners) {
+    return 0;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getSpaces(Identity owners, int offset, int limit) {
+    return null;
+  }
+
+  @Override
+  public int getNumberOfSpaces(Identity owners) {
+    return 0;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getMyActivities(Identity owners, int offset, int limit) {
+    return null;
+  }
+
+  @Override
+  public int getNumberOfMyActivities(Identity owners) {
+    return 0;
+  }
+
+  @Override
+  public void connect(Identity sender, Identity receiver) {
+    this.storage.connect(sender, receiver);
+  }
+
+  @Override
+  public void deleteConnect(Identity sender, Identity receiver) {
+    this.storage.deleteConnect(sender, receiver);
+  }
 
 }

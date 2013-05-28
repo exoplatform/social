@@ -35,6 +35,7 @@ import org.exoplatform.social.core.space.SpaceLifeCycleTest;
 import org.exoplatform.social.core.space.SpaceUtilsRestTest;
 import org.exoplatform.social.core.space.spi.SpaceServiceTest;
 import org.exoplatform.social.core.storage.ActivityStorageTest;
+import org.exoplatform.social.core.storage.ActivityStreamStorageTest;
 import org.exoplatform.social.core.storage.IdentityStorageTest;
 import org.exoplatform.social.core.storage.RelationshipStorageTest;
 import org.exoplatform.social.core.storage.SpaceStorageTest;
@@ -53,6 +54,7 @@ import org.junit.runners.Suite.SuiteClasses;
   SpaceLastVisitedTest.class,
   WhatsHotTest.class,
   ActivityManagerTest.class,
+  ActivityStreamStorageTest.class,
   ActivityStorageTest.class,
   ActivityStorageImplTestCase.class,
   CachedActivityStorageTestCase.class,

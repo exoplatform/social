@@ -16,28 +16,46 @@
  */
 package org.exoplatform.social.core.storage.api;
 
+import java.util.List;
+
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * May 27, 2013  
- */
 public interface ActivityStreamStorage {
-  public enum StreamType {
-    ALL,
-    CONNECTION,
-    MY_ACTIVITY,
-    SPACE
-  }
+  /**
+   * 
+   * @param owner
+   * @param activity
+   */
+  public void save(Identity owner, ExoSocialActivity activity);
   
-  public void save(StreamType type, Identity owner, ExoSocialActivity activity);
+  /**
+   * 
+   * @param owner
+   * @param activity
+   */
+  public void delete(Identity owner, ExoSocialActivity activity);
   
-  public void delete(StreamType type, Identity owner, ExoSocialActivity activity);
+  public void connect(Identity sender, Identity receiver);
   
-  public void update(StreamType type, Identity owners);
+  public void deleteConnect(Identity sender, Identity receiver);
   
+  public void update(Identity owners);
+  
+  public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
+  
+  public void getNumberOfFeed(Identity owner);
+  
+  public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit);
+  
+  public int getNumberOfConnections(Identity owner);
+  
+  public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit);
+  
+  public int getNumberOfSpaces(Identity owner);
+  
+  public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
+  
+  public int getNumberOfMyActivities(Identity owner);
   
 }

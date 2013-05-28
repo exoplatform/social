@@ -69,6 +69,7 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
@@ -92,15 +93,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private final RelationshipStorage relationshipStorage;
   private final IdentityStorage identityStorage;
   private final SpaceStorage spaceStorage;
+  private final ActivityStreamStorage streamStorage;
 
   public ActivityStorageImpl(
       final RelationshipStorage relationshipStorage,
       final IdentityStorage identityStorage,
-      final SpaceStorage spaceStorage) {
+      final SpaceStorage spaceStorage,
+      final ActivityStreamStorage streamStorage) {
 
     this.relationshipStorage = relationshipStorage;
     this.identityStorage = identityStorage;
     this.spaceStorage = spaceStorage;
+    this.streamStorage = streamStorage;
     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
 
   }
@@ -514,6 +518,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
         _createActivity(owner, activity);
         
+        //create refs
+        streamStorage.save(owner, activity);
       }
       else {
 
