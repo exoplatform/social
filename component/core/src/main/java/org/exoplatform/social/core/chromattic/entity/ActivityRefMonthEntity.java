@@ -54,10 +54,10 @@ public abstract class ActivityRefMonthEntity implements NamedEntity, IndexNumber
    * All the days containing activities in the month.
    */
   @OneToMany
-  public abstract Map<String, ActivityDayEntity> getDays();
+  public abstract Map<String, ActivityRefDayEntity> getDays();
 
   @OneToMany
-  public abstract List<ActivityDayEntity> getDaysList();
+  public abstract List<ActivityRefDayEntity> getDaysList();
 
   @ManyToOne
   public abstract ActivityRefYearEntity getYear();

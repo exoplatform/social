@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.Property;
 
 
 @PrimaryType(name = "soc:activityref")
-public abstract class ActivityRef {
+public abstract class ActivityRef implements NamedEntity {
 
   @Name
   public abstract String getName();
@@ -39,13 +39,16 @@ public abstract class ActivityRef {
   @Property(name = "soc:lastUpdated")
   public abstract Long getLastUpdated();
   public abstract void setLastUpdated(Long lastUpdated);
+  
+  @ManyToOne
+  public abstract ActivityRefDayEntity getDay();
 
   /**
-   * Refer to a space entity.
+   * Refer to a activity entity.
    */
   @Owner
   @MappedBy("soc:target")
   @ManyToOne(type = RelationshipType.REFERENCE)
-  public abstract ActivityEntity getActivityRef();
-  public abstract void setActivityRef(ActivityEntity activityRef);
+  public abstract ActivityEntity getActivityEntity();
+  public abstract void setActivityEntity(ActivityEntity activityRef);
 }

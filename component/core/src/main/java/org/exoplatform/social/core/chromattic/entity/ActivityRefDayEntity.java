@@ -16,14 +16,17 @@
  */
 package org.exoplatform.social.core.chromattic.entity;
 
-import java.util.List;
+import java.util.Map;
 
+import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.DefaultValue;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.ManyToOne;
+import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.NamingPrefix;
 import org.chromattic.api.annotations.OneToMany;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
@@ -48,11 +51,14 @@ public abstract class ActivityRefDayEntity implements NamedEntity, IndexNumber {
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
 
-  /**
-   * All the activities in the day.
-   */
+ 
   @OneToMany
-  public abstract List<ActivityRef> getActivityRefs();
+  @Owner
+  @MappedBy("soc:refs")
+  public abstract Map<String, ActivityRef> getActivityRefs();
+  
+  @Create
+  public abstract ActivityRef createRef();
 
   @ManyToOne
   public abstract ActivityRefMonthEntity getMonth();
