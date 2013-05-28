@@ -57,8 +57,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public List<ExoSocialActivity> getConnections(Identity owners, int offset, int limit) {
-    return null;
+  public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
+    return storage.getConnections(owner, offset, limit);
   }
 
   @Override
@@ -67,8 +67,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public List<ExoSocialActivity> getSpaces(Identity owners, int offset, int limit) {
-    return null;
+  public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit) {
+    return storage.getSpaces(owner, offset, limit);
   }
 
   @Override
@@ -77,8 +77,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public List<ExoSocialActivity> getMyActivities(Identity owners, int offset, int limit) {
-    return null;
+  public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
+    return storage.getMyActivities(owner, offset, limit);
   }
 
   @Override

@@ -135,8 +135,14 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     got = streamStorage.getFeed(maryIdentity, 0, 1);
     assertEquals(0, got.size());
     
+    got = streamStorage.getConnections(maryIdentity, 0, 1);
+    assertEquals(0, got.size());
+    
     got = streamStorage.getFeed(demoIdentity, 0, 1);
     assertEquals(1, got.size());
+    
+    got = streamStorage.getConnections(demoIdentity, 0, 1);
+    assertEquals(0, got.size());
   }
   
   public void testConnectionsExistActivities() throws ActivityStorageException {
