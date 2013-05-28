@@ -79,5 +79,39 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
       stopSynchronization(created);
     }
   }
+  
+  @Override
+  public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getConnections(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getMyActivities(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaces(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
 }
