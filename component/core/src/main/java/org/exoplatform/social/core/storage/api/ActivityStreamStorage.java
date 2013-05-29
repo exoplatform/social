@@ -59,10 +59,8 @@ public interface ActivityStreamStorage {
   
   public int getNumberOfMyActivities(Identity owner);
   
-  public void createSpace(Space space);
+  public void addSpaceMember(Space space, Identity member);
   
-  public void addSpaceMember(Space space,Identity member);
-  
-  public void removeSpaceMember(Space space,Identity member);
+  public void removeSpaceMember(Space space, Identity member);
   
 }

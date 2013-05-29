@@ -40,11 +40,13 @@ import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 public class ActivityStreamStorageImpl extends AbstractStorage implements ActivityStreamStorage {
@@ -53,6 +55,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
    * The identity storage
    */
   private final IdentityStorageImpl identityStorage;
+  
+  /**
+   * The space storage
+   */
+  private final SpaceStorage spaceStorage;
   
 
   /**
@@ -68,9 +75,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   /** Logger */
   private static final Log LOG = ExoLogger.getLogger(ActivityStreamStorageImpl.class);
   
-  public ActivityStreamStorageImpl(IdentityStorageImpl identityStorage, RelationshipStorage relationshipStorage) {
+  public ActivityStreamStorageImpl(IdentityStorageImpl identityStorage, RelationshipStorage relationshipStorage, SpaceStorage spaceStorage) {
     this.identityStorage = identityStorage;
     this.relationshipStorage = relationshipStorage;
+    this.spaceStorage = spaceStorage;
   }
   
   private ActivityStorage getStorage() {
@@ -85,45 +93,47 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void save(Identity owner, ExoSocialActivity activity) {
     try {
       //
-      //TODO Failed here need take care to record Space'activity, make activity of member's space stream
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());     
-      createOwnerRefs(owner, activityEntity);
-      
-      //
-      List<Identity> got = relationshipStorage.getConnections(owner);
-      if (got.size() > 0) {
-        createConnectionsRefs(got, activityEntity);
+      if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
+        user(owner, activityEntity);
+      } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
+        space(owner, activityEntity);
       }
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references.");
     }
   }
   
-  @Override
-  public void createSpace(Space space) {
+  private void user(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
+    createOwnerRefs(owner, activityEntity);
+
+    //
+    List<Identity> got = relationshipStorage.getConnections(owner);
+    if (got.size() > 0) {
+      createConnectionsRefs(got, activityEntity);
+    }
+  }
+
+  private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
+    
+    //Space space = this.spaceStorage.getSpaceByGroupId(SpaceUtils.SPACE_GROUP + "/" + owner.getRemoteId());
+    Space space = this.spaceStorage.getSpaceByPrettyName(owner.getRemoteId());
+    
     if (space == null) return;
     
+    List<Identity> identities = getMemberIdentities(space);
+    createSpaceRefs(identities, activityEntity);
+    
+  }
+
+  
+  private List<Identity> getMemberIdentities(Space space) {
     List<Identity> identities = new ArrayList<Identity>();
     for(String remoteId : space.getMembers()) {
       identities.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId));
     }
     
-    
-    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
-    int limit  = activityStorage.getNumberOfActivitiesByPoster(spaceIdentity);
-    
-    
-    List<ExoSocialActivity> got = activityStorage.getActivitiesByPoster(spaceIdentity, 0, limit);
-    
-    try {
-      for(ExoSocialActivity activity : got) {
-        ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
-        createSpaceRefs(identities, entity);
-      }
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to add Space's Activities references.");
-    }
-    
+    return identities;
   }
   
   @Override
