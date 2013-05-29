@@ -45,6 +45,17 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
+  public void delete(String activityId) {
+    boolean created = startSynchronization();
+    try {
+      super.delete(activityId);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     
     boolean created = startSynchronization();

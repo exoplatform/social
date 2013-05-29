@@ -97,11 +97,15 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   @Override
-  public void delete(Identity owner, ExoSocialActivity activity) {
+  public void delete(String activityId) {
     
     try {
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());     
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
+      
+      IdentityEntity identityEntity = activityEntity.getPosterIdentity();
+      Identity owner = identityStorage.findIdentityById(identityEntity.getId());
+      
       removeOwnerRefs(owner, activityEntity);
       
       //
@@ -113,11 +117,10 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.warn("Failed to delete Activity references.");
     }
   }
-  
-  
 
   @Override
   public void update(Identity owner) {
+    
   }
 
   @Override
@@ -126,22 +129,18 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   @Override
-  public void getNumberOfFeed(Identity owner) {
-    
+  public int getNumberOfFeed(Identity owner) {
+    return getNumberOfActivities(ActivityRefType.FEED, owner);
   }
 
   @Override
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit) {
     return getActivities(ActivityRefType.CONNECTION, owner, offset, limit);
   }
-  
-  
-  
-  
 
   @Override
   public int getNumberOfConnections(Identity owner) {
-    return 0;
+    return getNumberOfActivities(ActivityRefType.CONNECTION, owner);
   }
 
   @Override
@@ -151,7 +150,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public int getNumberOfSpaces(Identity owner) {
-    return 0;
+    return getNumberOfActivities(ActivityRefType.MY_SPACES, owner);
   }
 
   @Override
@@ -161,7 +160,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public int getNumberOfMyActivities(Identity owner) {
-    return 0;
+    return getNumberOfActivities(ActivityRefType.MY_ACTIVITIES, owner);
   }
 
   @Override
@@ -200,7 +199,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
         
-        removeConnectionsRefs(receiver, entity);
+        removeRelationshipRefs(receiver, entity);
       }
       
       //
@@ -209,7 +208,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
         
-        removeConnectionsRefs(sender, entity);
+        removeRelationshipRefs(sender, entity);
       }
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to delete Activity references when delete relationship.");
@@ -286,6 +285,19 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return got;
   }
   
+  private int getNumberOfActivities(ActivityRefType type, Identity owner) {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      
+      return refList.getNumber().intValue();
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to getNumberOfActivities()");
+    }
+    
+    return 0;
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -350,7 +362,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.CONNECTION);
   }
   
-  private void removeConnectionsRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
+  private void removeRelationshipRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.CONNECTION);
   }
@@ -361,6 +373,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   private void removeConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
+    manageRefList(new UpdateContext(null, identities), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(null, identities), activityEntity, ActivityRefType.CONNECTION);
   }
   
@@ -383,6 +396,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ref.setActivityEntity(activityEntity);
 
       }
+    }
+    
+    if (context.getRemoved() != null) {
 
       for (Identity identity : context.getRemoved()) {
         try {

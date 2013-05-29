@@ -34,17 +34,17 @@ public interface ActivityStreamStorage {
    * @param owner
    * @param activity
    */
-  public void delete(Identity owner, ExoSocialActivity activity);
+  public void delete(String activityId);
   
   public void connect(Identity sender, Identity receiver);
   
   public void deleteConnect(Identity sender, Identity receiver);
   
-  public void update(Identity owners);
+  public void update(Identity owner);
   
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
   
-  public void getNumberOfFeed(Identity owner);
+  public int getNumberOfFeed(Identity owner);
   
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit);
   
