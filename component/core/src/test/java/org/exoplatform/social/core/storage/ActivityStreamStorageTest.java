@@ -98,6 +98,25 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     assertNotNull("activity.getId() must not be null", activity.getId());
 
     tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 1));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+
+  }
+  
+  public void testDeleteActivity() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activity = activityStorage.saveActivity(rootIdentity, activity);
+
+    assertNotNull("activity.getId() must not be null", activity.getId());
+
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    
+    //
+    activityStorage.deleteActivity(activity.getId());
+    assertEquals(0, streamStorage.getNumberOfFeed(rootIdentity));
 
   }
 
@@ -127,11 +146,15 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     List<ExoSocialActivity> got = streamStorage.getFeed(demoIdentity, 0, 1);
     assertEquals(1, got.size());
     
+    got = streamStorage.getConnections(demoIdentity, 0, 1);
+    assertEquals(0, got.size());
+    
     got = streamStorage.getFeed(maryIdentity, 0, 1);
     assertEquals(1, got.size());
     
     relationshipManager.delete(demoMaryConnection);
     
+    //
     got = streamStorage.getFeed(maryIdentity, 0, 1);
     assertEquals(0, got.size());
     
@@ -143,6 +166,35 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     
     got = streamStorage.getConnections(demoIdentity, 0, 1);
     assertEquals(0, got.size());
+  }
+  
+  public void testConnectionsActivityCounter() throws ActivityStorageException {
+    
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoMaryConnection);
+    
+    final String activityTitle = "activity title";
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activityStorage.saveActivity(demoIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(0, streamStorage.getNumberOfConnections(demoIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfConnections(maryIdentity));
+
+    
+    relationshipManager.delete(demoMaryConnection);
+    
+    //
+    
+    assertEquals(0, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(0, streamStorage.getNumberOfConnections(maryIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(0, streamStorage.getNumberOfConnections(demoIdentity));
   }
   
   public void testConnectionsExistActivities() throws ActivityStorageException {
@@ -161,7 +213,25 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     
     got = streamStorage.getFeed(maryIdentity, 0, 1);
     assertEquals(1, got.size());
-
+    
+    relationshipManager.delete(demoMaryConnection);
+  }
+  
+  public void testConnectionsExistActivitiesCounter() throws ActivityStorageException {
+    
+    final String activityTitle = "activity title";
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activityStorage.saveActivity(demoIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+    relationshipManager.confirm(demoMaryConnection);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    
+    relationshipManager.delete(demoMaryConnection);
 
   }
  
