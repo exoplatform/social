@@ -246,7 +246,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
    Space space = this.getSpaceInstance(spaceService, 0);
    Identity spaceIdentity = this.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
    
-   int totalNumber = 10;
+   int totalNumber = 1;
    
    //demo posts activities to space
    for (int i = 0; i < totalNumber; i ++) {
@@ -256,6 +256,8 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
      activityStorage.saveActivity(spaceIdentity, activity);
      tearDownActivityList.add(activity);
    }
+   
+   assertEquals(1, streamStorage.getNumberOfSpaces(demoIdentity));
    spaceService.deleteSpace(space);
   }
  
@@ -296,7 +298,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     space.setVisibility(Space.PUBLIC);
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
-    space.setGroupId("/space/space" + number);
+    space.setGroupId("/spaces/my_space_" + number);
     space.setUrl(space.getPrettyName());
     String[] managers = new String[] {"demo"};
     String[] members = new String[] {"demo"};
