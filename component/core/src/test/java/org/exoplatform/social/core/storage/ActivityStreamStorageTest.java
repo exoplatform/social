@@ -25,8 +25,13 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
@@ -233,6 +238,76 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     
     relationshipManager.delete(demoMaryConnection);
 
+  }
+  
+ public void testSpaceActivities() throws Exception {
+    
+   SpaceService spaceService = this.getSpaceService();
+   Space space = this.getSpaceInstance(spaceService, 0);
+   Identity spaceIdentity = this.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+   
+   int totalNumber = 10;
+   
+   //demo posts activities to space
+   for (int i = 0; i < totalNumber; i ++) {
+     ExoSocialActivity activity = new ExoSocialActivityImpl();
+     activity.setTitle("activity title " + i);
+     activity.setUserId(demoIdentity.getId());
+     activityStorage.saveActivity(spaceIdentity, activity);
+     tearDownActivityList.add(activity);
+   }
+   spaceService.deleteSpace(space);
+  }
+ 
+  /**
+   * Gets the space service.
+   * 
+   * @return the space service
+   */
+  private SpaceService getSpaceService() {
+    return (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
+  }
+  
+  /**
+   * Gets the identity manager.
+   * 
+   * @return the identity manager
+   */
+  private IdentityManager getIdentityManager() {
+    return (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+  }
+  
+  /**
+   * Gets an instance of the space.
+   * 
+   * @param spaceService
+   * @param number
+   * @return
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space" + number);
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] {"demo"};
+    String[] members = new String[] {"demo"};
+    String[] invitedUsers = new String[] {"mary"};
+    String[] pendingUsers = new String[] {"john",};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceService.saveSpace(space, true);
+    return space;
   }
  
 }
