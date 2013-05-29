@@ -22,15 +22,16 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
+import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl {
 
   public SynchronizedActivityStreamStorage(IdentityStorageImpl identityStorage,
-                                           RelationshipStorage relationshipStorage) {
+                                           RelationshipStorage relationshipStorage, SpaceStorage spaceStorage) {
     
-    super(identityStorage, relationshipStorage);
+    super(identityStorage, relationshipStorage, spaceStorage);
   }
   
   @Override
@@ -50,17 +51,6 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
     boolean created = startSynchronization();
     try {
       super.delete(activityId);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-  }
-  
-  @Override
-  public void createSpace(Space space) {
-    boolean created = startSynchronization();
-    try {
-      super.createSpace(space);
     }
     finally {
       stopSynchronization(created);

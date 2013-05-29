@@ -100,12 +100,6 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void createSpace(Space space) {
-    this.storage.createSpace(space);
-    
-  }
-
-  @Override
   public void addSpaceMember(Space space, Identity member) {
     this.storage.addSpaceMember(space, member);
   }
