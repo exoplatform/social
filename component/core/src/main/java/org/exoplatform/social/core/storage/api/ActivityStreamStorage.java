@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.space.model.Space;
 
 public interface ActivityStreamStorage {
   /**
@@ -57,5 +58,11 @@ public interface ActivityStreamStorage {
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   
   public int getNumberOfMyActivities(Identity owner);
+  
+  public void createSpace(Space space);
+  
+  public void addSpaceMember(Space space,Identity member);
+  
+  public void removeSpaceMember(Space space,Identity member);
   
 }

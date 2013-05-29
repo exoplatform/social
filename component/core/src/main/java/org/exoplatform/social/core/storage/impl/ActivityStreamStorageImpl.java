@@ -39,6 +39,8 @@ import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
@@ -83,6 +85,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   public void save(Identity owner, ExoSocialActivity activity) {
     try {
       //
+      //TODO Failed here need take care to record Space'activity, make activity of member's space stream
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());     
       createOwnerRefs(owner, activityEntity);
       
@@ -94,6 +97,45 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references.");
     }
+  }
+  
+  @Override
+  public void createSpace(Space space) {
+    if (space == null) return;
+    
+    List<Identity> identities = new ArrayList<Identity>();
+    for(String remoteId : space.getMembers()) {
+      identities.add(identityStorage.findIdentity(OrganizationIdentityProvider.NAME, remoteId));
+    }
+    
+    
+    Identity spaceIdentity = identityStorage.findIdentity(SpaceIdentityProvider.NAME, space.getPrettyName());
+    int limit  = activityStorage.getNumberOfActivitiesByPoster(spaceIdentity);
+    
+    
+    List<ExoSocialActivity> got = activityStorage.getActivitiesByPoster(spaceIdentity, 0, limit);
+    
+    try {
+      for(ExoSocialActivity activity : got) {
+        ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
+        createSpaceRefs(identities, entity);
+      }
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to add Space's Activities references.");
+    }
+    
+  }
+  
+  @Override
+  public void addSpaceMember(Space space, Identity owner) {
+    if (space == null) return; 
+    
+  }
+  
+  @Override
+  public void removeSpaceMember(Space space, Identity member) {
+    if (space == null) return; 
+    
   }
   
   @Override
@@ -349,7 +391,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void createOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.FEED);
-    manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
+    
+    if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
+      manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
+    } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
+      manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_SPACES);
+    }
+    
   }
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -369,12 +417,22 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void removeOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.FEED);
-    manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.MY_ACTIVITIES);
+    
+    //
+    if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
+      manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.MY_ACTIVITIES);
+    } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
+      manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.MY_SPACES);
+    }
   }
   
   private void removeConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(null, identities), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(null, identities), activityEntity, ActivityRefType.CONNECTION);
+  }
+  
+  private void createSpaceRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
+    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.MY_SPACES);
   }
   
   private void manageRefList(UpdateContext context, ActivityEntity activityEntity, ActivityRefType type) throws NodeNotFoundException {
