@@ -597,6 +597,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), false));
       }
       
+      //create refs
+      streamStorage.delete(activityId);
+
       //
       _removeById(ActivityEntity.class, activityId);
 

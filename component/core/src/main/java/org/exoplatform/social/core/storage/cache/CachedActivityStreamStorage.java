@@ -26,9 +26,11 @@ import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
 public class CachedActivityStreamStorage implements ActivityStreamStorage {
   
   private final ActivityStreamStorageImpl storage;
+  private final SocialStorageCacheService cacheService;
   
   public CachedActivityStreamStorage(final ActivityStreamStorageImpl storage, final SocialStorageCacheService cacheService) {
     this.storage = storage;
+    this.cacheService = cacheService;
   }
 
   @Override
@@ -37,12 +39,12 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void delete(Identity owner, ExoSocialActivity activity) {
-    
+  public void delete(String activityId) {
+    this.storage.delete(activityId);
   }
 
   @Override
-  public void update(Identity owners) {
+  public void update(Identity owner) {
     
   }
 
@@ -52,8 +54,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void getNumberOfFeed(Identity owners) {
-    
+  public int getNumberOfFeed(Identity owner) {
+    return storage.getNumberOfFeed(owner);
   }
 
   @Override
@@ -62,8 +64,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public int getNumberOfConnections(Identity owners) {
-    return 0;
+  public int getNumberOfConnections(Identity owner) {
+    return storage.getNumberOfConnections(owner);
   }
 
   @Override
@@ -72,8 +74,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public int getNumberOfSpaces(Identity owners) {
-    return 0;
+  public int getNumberOfSpaces(Identity owner) {
+    return storage.getNumberOfSpaces(owner);
   }
 
   @Override
@@ -82,8 +84,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public int getNumberOfMyActivities(Identity owners) {
-    return 0;
+  public int getNumberOfMyActivities(Identity owner) {
+    return storage.getNumberOfMyActivities(owner);
   }
 
   @Override
