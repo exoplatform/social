@@ -274,25 +274,31 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     FEED() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        return identityEntity.getAllStream();
+        return identityEntity.getStreams().getAll();
       }
     },
     CONNECTION() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        return identityEntity.getConnectionStream();
+        return identityEntity.getStreams().getConnections();
       }
     },
     MY_SPACES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        return identityEntity.getSpaceStream();
+        return identityEntity.getStreams().getMySpaces();
+      }
+    },
+    SPACE_STREAM() {
+      @Override
+      public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        return identityEntity.getStreams().getSpace();
       }
     },
     MY_ACTIVITIES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
-        return identityEntity.getMyStream();
+        return identityEntity.getStreams().getOwner();
       }
     };
 

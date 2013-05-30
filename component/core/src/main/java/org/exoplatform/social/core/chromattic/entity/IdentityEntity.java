@@ -76,6 +76,15 @@ public abstract class IdentityEntity {
   @Owner
   public abstract ProfileEntity getProfile();
   public abstract void setProfile(ProfileEntity profile);
+  
+  /**
+   * Store the detailed information of an identity.
+   */
+  @MappedBy("soc:streams")
+  @OneToOne
+  @Owner
+  public abstract StreamsEntity getStreams();
+  public abstract void setStreams(StreamsEntity streams);
 
   /**
    * Store all activities in the activity stream of an identity.
@@ -86,43 +95,6 @@ public abstract class IdentityEntity {
   public abstract ActivityListEntity getActivityList();
   public abstract void setActivityList(ActivityListEntity activityListEntity);
   
-  /**
-   * Store all connection activities in the all stream of an identity.
-   */
-  @MappedBy("soc:connectionstream")
-  @OneToOne
-  @Owner
-  public abstract ActivityRefListEntity getConnectionStream();
-  public abstract void setConnectionStream(ActivityRefListEntity activityRefListEntity);
-  
-  /**
-   * Store all space activities in the all stream of an identity.
-   */
-  @MappedBy("soc:spacestream")
-  @OneToOne
-  @Owner
-  public abstract ActivityRefListEntity getSpaceStream();
-  public abstract void setSpaceStream(ActivityRefListEntity activityRefListEntity);
-  
-  /**
-   * Store all the activities in the my stream of an identity.
-   */
-  @MappedBy("soc:mystream")
-  @OneToOne
-  @Owner
-  public abstract ActivityRefListEntity getMyStream();
-  public abstract void setMyStream(ActivityRefListEntity activityRefListEntity);
-  
-
-  /**
-   * Store all activities in the all stream of an identity.
-   */
-  @MappedBy("soc:allstream")
-  @OneToOne
-  @Owner
-  public abstract ActivityRefListEntity getAllStream();
-  public abstract void setAllStream(ActivityRefListEntity activityRefListEntity);
-
   /**
    * Store all the relationships which contain an identity inviting other identities to connect with himself.
    */
