@@ -196,9 +196,6 @@ public class StorageUtils {
     try {
       //
       if (userInPlatformGroups == null) {
-        
-        LOG.info("userInPlatformGroups is NULL");
-        
         OrganizationService orgService = (OrganizationService) PortalContainer.getInstance().getComponentInstanceOfType(OrganizationService.class);
         
         //
@@ -228,12 +225,7 @@ public class StorageUtils {
             loaded = loadUserRange(listAccess, offset, limit, userInPlatformGroups);
           }
         }
-        
-        LOG.info("userInPlatformGroups size = " + userInPlatformGroups.size());
       }
-      
-      //
-      LOG.info(String.format("userInPlatformGroups contains remoteId: %s == %s", remoteId, userInPlatformGroups.contains(remoteId)));
       
       //
       return userInPlatformGroups.contains(remoteId);
