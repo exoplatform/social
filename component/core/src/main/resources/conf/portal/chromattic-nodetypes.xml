@@ -95,24 +95,9 @@
           <requiredPrimaryType>soc:activitylist</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
-      <childNodeDefinition name="soc:allstream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+      <childNodeDefinition name="soc:streams" defaultPrimaryType="soc:streamsdefinition" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
-          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
-        </requiredPrimaryTypes>
-      </childNodeDefinition>
-      <childNodeDefinition name="soc:connectionstream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
-        <requiredPrimaryTypes>
-          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
-        </requiredPrimaryTypes>
-      </childNodeDefinition>
-      <childNodeDefinition name="soc:spacestream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
-        <requiredPrimaryTypes>
-          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
-        </requiredPrimaryTypes>
-      </childNodeDefinition>
-       <childNodeDefinition name="soc:mystream" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
-        <requiredPrimaryTypes>
-          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+          <requiredPrimaryType>soc:streamsdefinition</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
       <childNodeDefinition name="soc:spacemember" defaultPrimaryType="soc:spaceslist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
@@ -133,6 +118,41 @@
       <childNodeDefinition name="soc:spacemanagermember" defaultPrimaryType="soc:spaceslist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
         <requiredPrimaryTypes>
           <requiredPrimaryType>soc:spaceslist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions>
+  </nodeType>
+  <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.StreamsEntity -->
+  <nodeType name="soc:streamsdefinition" isMixin="false" hasOrderableChildNodes="false">
+    <supertypes>
+      <supertype>nt:base</supertype>
+      <supertype>mix:referenceable</supertype>
+    </supertypes>
+    <propertyDefinitions/>
+    <childNodeDefinitions>
+       <childNodeDefinition name="soc:all" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <childNodeDefinition name="soc:connections" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <childNodeDefinition name="soc:myspaces" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+      <childNodeDefinition name="soc:space" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+       <childNodeDefinition name="soc:owner" defaultPrimaryType="soc:activityreflist" autoCreated="true" mandatory="true" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>soc:activityreflist</requiredPrimaryType>
         </requiredPrimaryTypes>
       </childNodeDefinition>
     </childNodeDefinitions>
