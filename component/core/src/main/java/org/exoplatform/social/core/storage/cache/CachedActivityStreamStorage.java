@@ -45,7 +45,7 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void update(Identity owner) {
+  public void update(ExoSocialActivity activity) {
     
   }
 
@@ -98,15 +98,4 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void deleteConnect(Identity sender, Identity receiver) {
     this.storage.deleteConnect(sender, receiver);
   }
-
-  @Override
-  public void addSpaceMember(Space space, Identity member) {
-    this.storage.addSpaceMember(space, member);
-  }
-
-  @Override
-  public void removeSpaceMember(Space space, Identity member) {
-    this.storage.removeSpaceMember(space, member);
-  }
-
 }
