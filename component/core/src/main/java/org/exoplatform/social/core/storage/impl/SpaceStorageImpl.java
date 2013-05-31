@@ -49,6 +49,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
+import org.exoplatform.social.core.storage.exception.NodeAlreadyExistsException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
@@ -898,7 +899,7 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
         identityStorage.saveProfile(profileSpace);
         
         identitySpace.setRemoteId(space.getPrettyName());
-        identityStorage.saveIdentity(identitySpace);
+        renameIdentity(identitySpace);
       }
       
       //
@@ -911,6 +912,20 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     } catch (NodeNotFoundException e) {
       throw new SpaceStorageException(SpaceStorageException.Type.FAILED_TO_RENAME_SPACE, e.getMessage(), e);
     }
+  }
+  
+  /**
+   * Add this method to resolve SOC-3439
+   * @param identity
+   * @throws NodeNotFoundException
+   */
+  private void renameIdentity(Identity identity) throws NodeNotFoundException {
+    ProviderEntity providerEntity = getProviderRoot().getProvider(identity.getProviderId());
+    // Move identity
+    IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
+    providerEntity.getIdentities().put(identity.getRemoteId(), identityEntity);
+    
+    identityEntity.setRemoteId(identity.getRemoteId());
   }
   
   /**
