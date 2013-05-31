@@ -886,7 +886,11 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
    * @throws NodeNotFoundException
    */
   private void renameIdentity(Identity identity) throws NodeNotFoundException {
+    ProviderEntity providerEntity = getProviderRoot().getProvider(identity.getProviderId());
+    // Move identity
     IdentityEntity identityEntity = _findById(IdentityEntity.class, identity.getId());
+    providerEntity.getIdentities().put(identity.getRemoteId(), identityEntity);
+    
     identityEntity.setRemoteId(identity.getRemoteId());
   }
   
