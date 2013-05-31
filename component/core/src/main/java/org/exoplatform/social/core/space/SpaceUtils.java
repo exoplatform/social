@@ -365,7 +365,7 @@ public class SpaceUtils {
    */
   static class PortletCategoryComparator implements Comparator<ApplicationCategory> {
     public int compare(ApplicationCategory cat1, ApplicationCategory cat2) {
-      return cat1.getDisplayName().compareTo(cat2.getDisplayName());
+      return cat1.getDisplayName(true).compareTo(cat2.getDisplayName(true));
     }
   }
 
