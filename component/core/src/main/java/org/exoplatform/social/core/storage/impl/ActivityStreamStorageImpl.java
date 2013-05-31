@@ -40,7 +40,6 @@ import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
@@ -115,8 +114,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
-    
-    //Space space = this.spaceStorage.getSpaceByGroupId(SpaceUtils.SPACE_GROUP + "/" + owner.getRemoteId());
     Space space = this.spaceStorage.getSpaceByPrettyName(owner.getRemoteId());
     
     if (space == null) return;
@@ -134,18 +131,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     }
     
     return identities;
-  }
-  
-  @Override
-  public void addSpaceMember(Space space, Identity owner) {
-    if (space == null) return; 
-    
-  }
-  
-  @Override
-  public void removeSpaceMember(Space space, Identity member) {
-    if (space == null) return; 
-    
   }
   
   @Override
@@ -171,7 +156,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   @Override
-  public void update(Identity owner) {
+  public void update(ExoSocialActivity activity) {
     
   }
 

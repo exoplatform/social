@@ -41,7 +41,7 @@ public interface ActivityStreamStorage {
   
   public void deleteConnect(Identity sender, Identity receiver);
   
-  public void update(Identity owner);
+  public void update(ExoSocialActivity activity);
   
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
   
@@ -58,9 +58,5 @@ public interface ActivityStreamStorage {
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   
   public int getNumberOfMyActivities(Identity owner);
-  
-  public void addSpaceMember(Space space, Identity member);
-  
-  public void removeSpaceMember(Space space, Identity member);
   
 }

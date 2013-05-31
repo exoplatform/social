@@ -609,11 +609,12 @@
           <value>org.exoplatform.social.core.chromattic.entity.ActivityYearEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityParameters</value>
           
-          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
+          <value>org.exoplatform.social.core.chromattic.entity.StreamsEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityRefMonthEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.ActivityRefYearEntity</value>
+          <value>org.exoplatform.social.core.chromattic.entity.ActivityRef</value>
 
           <value>org.exoplatform.social.core.chromattic.entity.SpaceRootEntity</value>
           <value>org.exoplatform.social.core.chromattic.entity.SpaceEntity</value>
