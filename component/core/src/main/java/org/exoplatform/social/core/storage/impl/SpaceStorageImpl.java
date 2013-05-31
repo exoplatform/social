@@ -1809,8 +1809,8 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       }
       ref.setSpaceRef(spaceEntity);
 
-      getSession().save();
-      
+//      getSession().save();
+
     } catch (NodeNotFoundException e) {
       LOG.warn(e.getMessage(), e);
     }
