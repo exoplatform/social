@@ -58,28 +58,6 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
-  public void addSpaceMember(Space space, Identity owner) {
-    boolean created = startSynchronization();
-    try {
-      super.addSpaceMember(space, owner);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-  }
-  
-  @Override
-  public void removeSpaceMember(Space space, Identity member) {
-    boolean created = startSynchronization();
-    try {
-      super.removeSpaceMember(space, member);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-  }
-  
-  @Override
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     
     boolean created = startSynchronization();
