@@ -19,7 +19,7 @@ package org.exoplatform.social.core.application;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -37,7 +37,6 @@ import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -257,9 +256,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void spaceDescriptionEdited(SpaceLifeCycleEvent event) {
-    final String activityMessage = "Description has been updated to: "+event.getSpace().getDescription();
+    String spaceDescription = StringEscapeUtils.unescapeHtml(event.getSpace().getDescription());
+    final String activityMessage = "Description has been updated to: "+ spaceDescription;
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    templateParams.put(SPACE_DESCRIPTION_PARAM, event.getSpace().getDescription());
+    templateParams.put(SPACE_DESCRIPTION_PARAM, spaceDescription);
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DESCRIPTION_PARAM);
     recordActivity(event, activityMessage, SPACE_DESCRIPTION_EDITED_TITLE_ID, templateParams);
     LOG.debug("Description has been updated ");
@@ -395,13 +395,8 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     
     //
     ExoSocialActivity activity = null;
-    if (activityId != null) {
-      activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
-    } 
     
-    if (activity == null) {
-      return;
-    }
+    activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
     
     templateParams.put(NUMBER_OF_PUBLIC_SPACE, String.valueOf(numberOfSpacesOfMember));
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
