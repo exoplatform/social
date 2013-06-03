@@ -227,6 +227,17 @@ public class SpaceActivityPublisherTest extends  AbstractCoreTest {
      assertEquals("Description has been updated to: " + space.getDescription(), comments.get(4).getTitle());
    }
    
+   {
+     assertEquals("new description", space.getDescription());
+     
+     space.setDescription("Cet espace est à chercher des bugs");
+     space.setField(UpdatedField.DESCRIPTION);
+     spaceService.updateSpace(space);
+     comments = activityManager.getCommentsWithListAccess(newActivity).loadAsList(0, 20);
+     assertEquals(6, comments.size());
+     assertEquals("Description has been updated to: Cet espace est &agrave; chercher des bugs", comments.get(5).getTitle());
+   }
+   
    //clean up
    activityManager.deleteActivity(activityId);
    spaceService.deleteSpace(space);
