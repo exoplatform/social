@@ -19,6 +19,7 @@ package org.exoplatform.social.core.application;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -270,9 +271,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void spaceDescriptionEdited(SpaceLifeCycleEvent event) {
-    final String activityMessage = "Description has been updated to: "+event.getSpace().getDescription();
+    String spaceDescription = StringEscapeUtils.unescapeHtml(event.getSpace().getDescription());
+    final String activityMessage = "Description has been updated to: "+ spaceDescription;
     Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    templateParams.put(SPACE_DESCRIPTION_PARAM, event.getSpace().getDescription());
+    templateParams.put(SPACE_DESCRIPTION_PARAM, spaceDescription);
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, SPACE_DESCRIPTION_PARAM);
     recordActivity(event, activityMessage, SPACE_DESCRIPTION_EDITED_TITLE_ID, templateParams);
     LOG.debug("Description has been updated ");
@@ -401,9 +403,10 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     
     //
     ExoSocialActivity activity = null;
-    if (activityId != null) {
-      activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
+    if (activityId == null) {
+      return;
     } 
+    activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
     if (activity == null) {
       activity = new ExoSocialActivityImpl();  
       activity.setType(USER_ACTIVITIES_FOR_SPACE);
