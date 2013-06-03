@@ -199,11 +199,7 @@
 				      </script>
 			  <%  }	%>
 			  
-  <% 
-  if (uicomponent.isHasPeopleTab()) { // if has tab 
-  %>
 		  </div>
 		</div>
 	</div>
-	<% } %>
 </div>

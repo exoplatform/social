@@ -102,16 +102,7 @@ public class UIDisplayProfileList extends UIContainer {
   private List<Identity> peopleList;
   private ListAccess<Identity> peopleListAccess;
   private int peopleNum;
-  private boolean hasPeopleTab;
   String selectedChar = null;
-
-  public boolean isHasPeopleTab() {
-    return hasPeopleTab;
-  }
-
-  public void setHasPeopleTab(boolean hasPeopleTab) {
-    this.hasPeopleTab = hasPeopleTab;
-  }
 
   /**
    * Gets selected character when search by alphabet.
@@ -149,7 +140,6 @@ public class UIDisplayProfileList extends UIContainer {
    */
   public UIDisplayProfileList() throws Exception {
     uiProfileUserSearch = addChild(UIProfileUserSearch.class, null, null);
-    setHasPeopleTab(false);
     uiProfileUserSearch.setHasConnectionLink(false);
     setSelectedChar(ALL_FILTER);
     init();
