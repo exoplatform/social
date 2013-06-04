@@ -1091,6 +1091,50 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
     return identityResult.result();
   }
   
+
+  /**
+   * {@inheritDoc}
+   */
+  public List<Identity> getIdentitiesForUnifiedSearch(final String providerId, 
+                                                      ProfileFilter profileFilter,
+                                                      long offset, long limit) throws IdentityStorageException {
+    if (offset < 0) {
+      offset = 0;
+    }
+    
+    List<Identity> listIdentity = new ArrayList<Identity>();
+
+    QueryBuilder<ProfileEntity> builder = getSession().createQueryBuilder(ProfileEntity.class);
+    WhereExpression whereExpression = new WhereExpression();
+    //
+    whereExpression
+        .like(JCRProperties.path, getProviderRoot().getProviders().get(providerId).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR)
+        .and()
+        .not().equals(ProfileEntity.deleted, "true");
+    
+    //apply unified search
+    _applyUnifiedSearchFilter(whereExpression, profileFilter);
+    
+    builder.where(whereExpression.toString());
+    applyOrder(builder, profileFilter);
+
+    QueryImpl<ProfileEntity> queryImpl = (QueryImpl<ProfileEntity>) builder.get();
+    
+    QueryResult<ProfileEntity> results = queryImpl.objects(offset, limit);
+    while (results.hasNext()) {
+
+      ProfileEntity profileEntity = results.next();
+
+      Identity identity = createIdentityFromEntity(profileEntity.getIdentity());
+      Profile profile = getStorage().loadProfile(new Profile(identity));
+      identity.setProfile(profile);
+      listIdentity.add(identity);
+
+    }
+
+    return listIdentity;
+  }
+  
   /**
    * {@inheritDoc}
    */
@@ -1355,4 +1399,67 @@ public class IdentityStorageImpl extends AbstractStorage implements IdentityStor
       return null;
     }
   }
+  
+  private void _applyUnifiedSearchFilter(WhereExpression whereExpression, ProfileFilter profileFilter) {
+
+    String searchCondition = profileFilter.getAll();
+
+    if (searchCondition != null && searchCondition.length() != 0) {
+      if (this.isValidInput(searchCondition)) {
+
+        List<String> unifiedSearchConditions = StorageUtils.processUnifiedSearchCondition(searchCondition);
+        boolean first = true;
+        for(String condition : unifiedSearchConditions) {
+          //
+          if (first == false) {
+            whereExpression.or();
+          } else {
+            whereExpression.and().startGroup();
+            first = false;
+          }
+          //
+          if (condition.contains(StorageUtils.PERCENT_STR)) {
+            whereExpression.startGroup();
+            whereExpression
+                .like(ProfileEntity.fullName, condition)
+                .or().like(ProfileEntity.firstName, condition)
+                .or().like(ProfileEntity.lastName, condition)
+                .or().like(ProfileEntity.position, condition)
+                .or().like(ProfileEntity.skills, condition)
+                .or().like(ProfileEntity.positions, condition)
+                .or().like(ProfileEntity.organizations, condition)
+                .or().like(ProfileEntity.jobsDescription, condition);
+            whereExpression.endGroup();
+          }
+          else {
+            whereExpression.startGroup();
+            whereExpression
+                .contains(ProfileEntity.fullName, condition)
+                .or().contains(ProfileEntity.firstName, condition)
+                .or().contains(ProfileEntity.lastName, condition)
+                .or().contains(ProfileEntity.position, condition)
+                .or().contains(ProfileEntity.skills, condition)
+                .or().contains(ProfileEntity.positions, condition)
+                .or().contains(ProfileEntity.organizations, condition)
+                .or().contains(ProfileEntity.jobsDescription, condition);
+            whereExpression.endGroup();
+          }
+        } //end for
+        whereExpression.endGroup();
+      }
+    }
+  }
+  
+  private boolean isValidInput(String input) {
+    if (input == null || input.length() == 0) {
+      return false;
+    }
+    String cleanString = input.replaceAll("\\*", "");
+    cleanString = cleanString.replaceAll("\\%", "");
+    if (cleanString.length() == 0) {
+       return false;
+    }
+    return true;
+  }
+
 }
