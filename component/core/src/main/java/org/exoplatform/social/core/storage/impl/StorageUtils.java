@@ -309,6 +309,33 @@ public class StorageUtils {
   }
   
   /**
+   * Process Unified Search Condition
+   * @param searchCondition the input search condition
+   * @return List of conditions
+   * @since 4.0.x
+   */
+  public static List<String> processUnifiedSearchCondition(String searchCondition) {
+    String[] spaceConditions = searchCondition.split(" ");
+    List<String> result = new ArrayList<String>(spaceConditions.length);
+    //
+    StringBuffer searchConditionBuffer = null;
+    for (String conditionValue : spaceConditions) {
+      //
+      searchConditionBuffer = new StringBuffer();
+      //
+      if (!conditionValue.contains(ASTERISK_STR) && !conditionValue.contains(PERCENT_STR)) {
+        searchConditionBuffer.append(ASTERISK_STR).append(conditionValue).append(ASTERISK_STR);
+      } else {
+        conditionValue = conditionValue.replace(ASTERISK_STR, PERCENT_STR);
+        searchConditionBuffer.append(PERCENT_STR).append(conditionValue).append(PERCENT_STR);
+      }
+      //
+      result.add(searchConditionBuffer.toString());
+    }
+    return result;
+  }
+  
+  /**
    * Gets sub list from the provided list with start and end index.
    * @param list the identity list
    * @param startIndex start index to get
@@ -327,7 +354,4 @@ public class StorageUtils {
     
     return list.subList(startIndex, toIndex);
   }
-  
-  
-  
 }
