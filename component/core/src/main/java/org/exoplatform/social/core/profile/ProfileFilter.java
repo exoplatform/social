@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.search.Sorting;
+import org.exoplatform.social.core.space.SpaceUtils;
 
 /**
  * This class using for filter profile of identity
@@ -156,7 +157,7 @@ public class ProfileFilter {
   }
 
   public void setAll(String all) {
-    this.all = all;
+    this.all = SpaceUtils.removeSpecialCharacterInSpaceFilter(all);
   }
 
   public Sorting getSorting() {
