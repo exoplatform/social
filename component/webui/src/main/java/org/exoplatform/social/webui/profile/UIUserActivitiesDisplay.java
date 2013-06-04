@@ -231,8 +231,7 @@ public class UIUserActivitiesDisplay extends UIContainer {
      break;
     case OWNER_STATUS :
     	if (isActivityStreamOwner == false) {
-    	  Identity viewerIdentity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, viewerName, false);
-        activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity, viewerIdentity);
+        activitiesListAccess = activityManager.getActivitiesByPoster(ownerIdentity);
     	  activitiesLoader.setActivityListAccess(activitiesListAccess);
     	} else {
     	  activitiesListAccess = activityManager.getActivitiesWithListAccess(ownerIdentity);
