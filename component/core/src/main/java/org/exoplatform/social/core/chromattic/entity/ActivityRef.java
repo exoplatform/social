@@ -50,5 +50,5 @@ public abstract class ActivityRef implements NamedEntity {
   @MappedBy("soc:target")
   @ManyToOne(type = RelationshipType.REFERENCE)
   public abstract ActivityEntity getActivityEntity();
-  public abstract void setActivityEntity(ActivityEntity activityRef);
+  public abstract void setActivityEntity(ActivityEntity entity);
 }
