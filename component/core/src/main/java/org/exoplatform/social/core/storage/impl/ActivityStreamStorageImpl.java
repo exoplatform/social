@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -156,7 +157,40 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   @Override
-  public void update(ExoSocialActivity activity) {
+  public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {
+    try {
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      Collection<ActivityRef> references = activityEntity.getActivityRefs();
+      
+      List<ActivityRefListEntity> refList = new ArrayList<ActivityRefListEntity>(); 
+      //
+      for(ActivityRef ref : references) {
+        if (ref.getLastUpdated() == activity.getUpdated().getTime()) continue;
+        
+        //
+        refList.add(ref.getDay().getMonth().getYear().getList());
+      }
+      
+      //
+      for(ActivityRefListEntity list : refList) {
+        ActivityRef ref = list.get(oldUpdated);
+        if (list.isOnlyUpdate(oldUpdated, activity.getUpdated().getTime())) {
+          ref.setName("" + activity.getUpdated().getTime());
+          ref.setLastUpdated(activity.getUpdated().getTime());
+          ref.setActivityEntity(activityEntity);
+        } else {
+          ActivityRef newRef = list.update(oldUpdated, activity.getUpdated().getTime());
+          newRef.setActivityEntity(activityEntity);
+        }
+      }
+      
+      if (save) {
+        getSession().save();
+      }
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to update Activity references.");
+    }
     
   }
 
@@ -306,14 +340,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       while (it.hasNext()) {
         ActivityRef current = it.next();
 
-        //take care in the case, current.getActivityEntity() = null the same SpaceRef, need to remove it out
+        //take care in the case, current.getActivityEntity() = null the same ActivityRef, need to remove it out
         if (current.getActivityEntity() == null) {
           current.getDay().getActivityRefs().remove(current.getName());
           continue;
         }
         
         //
-        got.add(getStorage().getActivity(current.getActivityEntity().getId()));
+        ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
+            
+        got.add(a);
+        LOG.warn(String.format("ActivityRef: lastUpdated = %s and title = %s", current.getName(), a.getTitle()));
 
         if (++nb == limit) {
           break;
@@ -324,6 +361,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to getActivities()");
     }
+    
+    Collections.reverse(got);
     
     return got;
   }

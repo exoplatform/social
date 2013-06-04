@@ -18,6 +18,8 @@ package org.exoplatform.social.core.storage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
+import java.util.Locale;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -108,6 +110,8 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
 
   }
   
+  
+  
   public void testDeleteActivity() throws ActivityStorageException {
     final String activityTitle = "activity Title";
 
@@ -135,6 +139,51 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     List<ExoSocialActivity> got = streamStorage.getFeed(demoIdentity, 0, 1);
     assertEquals(1, got.size());
 
+  }
+  
+  public void testUpdateActivity() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity1 = new ExoSocialActivityImpl();
+    activity1.setTitle(activityTitle + " 1");
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    ExoSocialActivity activity2 = new ExoSocialActivityImpl();
+    activity2.setTitle(activityTitle + " 2");
+    activityStorage.saveActivity(rootIdentity, activity2);
+    
+    { //checks what's hot
+      List<ExoSocialActivity> list = streamStorage.getFeed(rootIdentity, 0, 2);
+      assertEquals(2, list.size());
+      
+      ExoSocialActivity ac2 = list.get(0);
+      assertEquals(activity2.getTitle(), ac2.getTitle());
+      
+      ExoSocialActivity ac1 = list.get(1);
+      assertEquals(activity1.getTitle(), ac1.getTitle());
+    }
+    
+    //update
+    Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+    //calendar.add(Calendar.DAY_OF_MONTH, 2);
+    long updated = calendar.getTimeInMillis();
+    
+    activity1.setUpdated(updated);
+    activityStorage.saveActivity(rootIdentity, activity1);
+    
+    { //checks what's hot
+      List<ExoSocialActivity> list = streamStorage.getFeed(rootIdentity, 0, 2);
+      assertEquals(2, list.size());
+      
+      ExoSocialActivity ac1 = list.get(0);
+      assertEquals(activity1.getTitle(), ac1.getTitle());
+      
+      ExoSocialActivity ac2 = list.get(1);
+      assertEquals(activity2.getTitle(), ac2.getTitle()); 
+    }
+    
+    
+    tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 2));
   }
   
   public void testConnectionsActivity() throws ActivityStorageException {

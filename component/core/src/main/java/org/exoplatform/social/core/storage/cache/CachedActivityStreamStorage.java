@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
 
@@ -45,8 +44,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void update(ExoSocialActivity activity) {
-    
+  public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {
+    this.storage.update(activity, oldUpdated, save);
   }
 
   @Override
