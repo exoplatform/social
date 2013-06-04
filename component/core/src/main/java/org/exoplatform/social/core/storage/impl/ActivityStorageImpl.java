@@ -159,7 +159,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
 
     ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+    long oldUpdated = activityEntity.getLastUpdated();
     fillActivityEntityFromActivity(activity, activityEntity);
+    streamStorage.update(activity, oldUpdated, false);
 
   }
 
@@ -450,6 +452,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), true));
       
       //
+      long oldUpdated = activityEntity.getLastUpdated();
       activityEntity.getComments().add(commentEntity);
       activityEntity.setLastUpdated(currentMillis);
       commentEntity.setTitle(comment.getTitle());
@@ -483,12 +486,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
       listIds.add(commentEntity.getId());
       activity.setReplyToId(listIds.toArray(new String[]{}));
+      
+      //
+      activity.setUpdated(currentMillis);
+      streamStorage.update(activity, oldUpdated, false);
 
-    }
+    }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
     }
     getSession().save();
+    
+    
     //
     LOG.debug(String.format(
         "Comment %s by %s (%s) created",
@@ -524,7 +533,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       else {
 
         _saveActivity(activity);
-
+        
       }
 
       //
