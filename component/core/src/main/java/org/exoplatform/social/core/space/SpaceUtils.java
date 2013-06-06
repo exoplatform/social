@@ -1367,7 +1367,7 @@ public class SpaceUtils {
     String[] appPart;
     for (int idx = 0; idx < apps.length; idx++) {
       appPart = apps[idx].split(":");
-      if (appPart[0].equals(appId)) {
+      if (appPart[0].equals(appId) || appPart[1].equals(appId)) {
         return true;
       }
     }
