@@ -271,8 +271,7 @@ public class ActivityManagerImpl implements ActivityManager {
    * {@inheritDoc}
    */
   public ExoSocialActivity saveActivity(Identity streamOwner, ExoSocialActivity newActivity) {
-    saveActivityNoReturn(streamOwner, newActivity);
-    return newActivity;
+    return activityStorage.saveActivity(streamOwner, newActivity);
   }
 
   /**

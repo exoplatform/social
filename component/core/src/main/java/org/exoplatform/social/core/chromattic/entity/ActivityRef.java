@@ -24,6 +24,7 @@ import org.chromattic.api.annotations.Name;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
+import org.exoplatform.social.core.storage.query.PropertyLiteralExpression;
 
 
 @PrimaryType(name = "soc:activityref")
@@ -42,6 +43,8 @@ public abstract class ActivityRef implements NamedEntity {
   
   @ManyToOne
   public abstract ActivityRefDayEntity getDay();
+  
+  private boolean isNew = false;
 
   /**
    * Refer to a activity entity.
@@ -51,4 +54,23 @@ public abstract class ActivityRef implements NamedEntity {
   @ManyToOne(type = RelationshipType.REFERENCE)
   public abstract ActivityEntity getActivityEntity();
   public abstract void setActivityEntity(ActivityEntity entity);
+  public static final PropertyLiteralExpression<String> target =
+      new PropertyLiteralExpression<String>(String.class, "soc:target");
+  
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
+  }
+  
+  public boolean isNew() {
+    return this.isNew;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("ActRef{name=%s,lastUpdated=%s,target='%s',%s}",
+                         getName(),
+                         getLastUpdated(),
+                         getActivityEntity().getId(),
+                         getActivityEntity().toString());
+  }
 }
