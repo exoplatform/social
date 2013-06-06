@@ -242,4 +242,14 @@ public abstract class ActivityEntity implements NamedEntity {
     }
     
   }
+  
+  @Override
+  public String toString() {
+    return String.format("\nAct{id=%s,type=%s,lastUpdated=%s,title='%s',poster=%s}",
+                         getId(),
+                         getTitleId(),
+                         getLastUpdated(),
+                         getTitle(),
+                         getPosterIdentity().getRemoteId());
+  }
 }

@@ -21,8 +21,9 @@ import java.util.List;
 
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.SpaceStorageException;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
+import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.storage.impl.SpaceStorageImpl;
 
 /**
@@ -39,8 +40,8 @@ public class SynchronizedSpaceStorage extends SpaceStorageImpl {
    *
    * @param identityStorage the identity storage
    */
-  public SynchronizedSpaceStorage(final IdentityStorageImpl identityStorage) {
-    super(identityStorage);
+  public SynchronizedSpaceStorage(final IdentityStorageImpl identityStorage, final ActivityStreamStorage streamStorage) {
+    super(identityStorage, streamStorage);
   }
 
   /**
