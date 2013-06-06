@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.space.model.Space;
 
 /**
  * Unit Test for {@link SpaceUtilsTest}
@@ -72,5 +73,16 @@ public class SpaceUtilsTest extends TestCase {
     */
   }
   
+  public void testIsInstalledApp() {
+    Space space = new Space();
+    String apps = "ForumPortlet:Forums:true:active,WikiPortlet:Wiki:true:active,FileExplorerPortlet:Documents:true:active,"
+                + "CalendarPortlet:Agenda:true:active,SpaceSettingPortlet:Space Settings:false:active,"
+                + "AnswersPortlet:Answer:true:active,FAQPortlet:FAQ:true:active,MembersPortlet:Members:true:active";
+    space.setApp(apps);
+    boolean isInstalledApp = SpaceUtils.isInstalledApp(space, "Agenda");
+    assertTrue(isInstalledApp);
+    isInstalledApp = SpaceUtils.isInstalledApp(space, "CalendarPortlet");
+    assertTrue(isInstalledApp);
+  }
  
 }
