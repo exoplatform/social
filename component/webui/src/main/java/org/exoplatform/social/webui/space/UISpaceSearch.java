@@ -271,7 +271,7 @@ public class UISpaceSearch extends UIForm {
       String searchCondition = (((UIFormStringInput) uiSpaceSearch.getChildById(SPACE_SEARCH)).getValue());
       if (searchCondition == null || searchCondition.equals(defaultSpaceNameAndDesc) || ASTERIK_STR
           .equals(searchCondition) || PERCENTAGE_STR.equals(searchCondition)) {
-        uiSpaceSearch.setSpaceNameSearch(defaultSpaceNameAndDesc);
+        uiSpaceSearch.setSpaceNameSearch(null);
         uiSpaceSearch.setNewSearch(true);
       } else {
         if (searchCondition != null) {
@@ -280,11 +280,11 @@ public class UISpaceSearch extends UIForm {
         
         uiSpaceSearch.setSpaceNameSearch(searchCondition);
         uiSpaceSearch.setNewSearch(true);
+      }
 
-        Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
-        if (searchEvent != null) {
-          searchEvent.broadcast();
-        }
+      Event<UIComponent> searchEvent = uiSpaceSearch.<UIComponent>getParent().createEvent(SEARCH, Event.Phase.PROCESS, ctx);
+      if (searchEvent != null) {
+        searchEvent.broadcast();
       }
     }
   }
