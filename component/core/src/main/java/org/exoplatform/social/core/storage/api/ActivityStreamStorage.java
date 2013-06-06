@@ -19,8 +19,9 @@ package org.exoplatform.social.core.storage.api;
 import java.util.List;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.space.model.Space;
+
 
 public interface ActivityStreamStorage {
   /**
@@ -43,6 +44,10 @@ public interface ActivityStreamStorage {
   
   public void update(ExoSocialActivity activity, long oldUpdated, boolean save);
   
+  public void addSpaceMember(Identity identity, Identity space);
+  
+  public void removeSpaceMember(Identity identity, Identity space);
+  
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
   
   public int getNumberOfFeed(Identity owner);
@@ -51,9 +56,13 @@ public interface ActivityStreamStorage {
   
   public int getNumberOfConnections(Identity owner);
   
-  public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit);
+  public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit);
   
-  public int getNumberOfSpaces(Identity owner);
+  public int getNumberOfMySpaces(Identity owner);
+  
+  public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit);
+  
+  public int getNumberOfSpaceStream(Identity owner);
   
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   

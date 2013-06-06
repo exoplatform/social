@@ -20,18 +20,14 @@ import java.util.List;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.storage.api.RelationshipStorage;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 
 public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl {
 
-  public SynchronizedActivityStreamStorage(IdentityStorageImpl identityStorage,
-                                           RelationshipStorage relationshipStorage, SpaceStorage spaceStorage) {
+  public SynchronizedActivityStreamStorage(IdentityStorageImpl identityStorage) {
     
-    super(identityStorage, relationshipStorage, spaceStorage);
+    super(identityStorage);
   }
   
   @Override
@@ -117,10 +113,21 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
-  public List<ExoSocialActivity> getSpaces(Identity owner, int offset, int limit) {
+  public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit) {
     boolean created = startSynchronization();
     try {
-      return super.getSpaces(owner, offset, limit);
+      return super.getMySpaces(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceStream(owner, offset, limit);
     }
     finally {
       stopSynchronization(created);
