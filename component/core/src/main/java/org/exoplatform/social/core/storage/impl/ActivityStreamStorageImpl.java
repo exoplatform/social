@@ -120,6 +120,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //records to Space Streams for SpaceIdentity
         space(owner, activityEntity);
+        
       }
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references.", e);
@@ -139,10 +140,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
+    //
+    manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
+
+    //
+    Identity ownerPosterOnSpace = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
+    ownerSpaceMembersRefs(ownerPosterOnSpace, activityEntity);
+    
+    //
     Space space = getSpaceStorage().getSpaceByPrettyName(owner.getRemoteId());
     
     if (space == null) return;
-    
     //Don't create ActivityRef on space stream for given SpaceIdentity
     List<Identity> identities = getMemberIdentities(space);
     createSpaceMembersRefs(identities, activityEntity);
@@ -329,7 +337,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       QueryResult<ActivityEntity> activities = getActivitiesOfConnections(sender);
       
       
-      IdentityEntity receiverEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, receiver.getRemoteId());
+      IdentityEntity receiverEntity = identityStorage._findIdentityEntity(receiver.getProviderId(), receiver.getRemoteId());
       
       if (activities != null) {
         while(activities.hasNext()) {
@@ -344,7 +352,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       }
       
       //
-      IdentityEntity senderEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, sender.getRemoteId());
+      IdentityEntity senderEntity = identityStorage._findIdentityEntity(sender.getProviderId(), sender.getRemoteId());
       activities = getActivitiesOfConnections(receiver);
       if (activities != null) {
         while(activities.hasNext()) {
@@ -433,7 +441,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private List<ExoSocialActivity> getActivities(ActivityRefType type, Identity owner, int offset, int limit) {
     List<ExoSocialActivity> got = new LinkedList<ExoSocialActivity>();
     try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       ActivityRefListEntity refList = type.refsOf(identityEntity);
       ActivityRefList list = new ActivityRefList(refList);
       
@@ -476,7 +484,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private int getNumberOfActivities(ActivityRefType type, Identity owner) {
     try {
-      IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, owner.getRemoteId());
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       ActivityRefListEntity refList = type.refsOf(identityEntity);
       
       return refList.getNumber().intValue();
@@ -588,7 +596,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private void createSpaceMembersRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.FEED);
     manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.MY_SPACES);
-    manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.SPACE_STREAM);
+    //manageRefList(new UpdateContext(identities, null), activityEntity, ActivityRefType.SPACE_STREAM);
+  }
+  
+  private void ownerSpaceMembersRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
+    manageRefList(new UpdateContext(identity, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
   }
   
   private void createSpaceMembersRefs(Identity identity, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -627,7 +639,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
     if (context.getAdded() != null) {
       for (Identity identity : context.getAdded()) {
-        IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
+        IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
 
         //
         if (mustCheck) {
@@ -658,7 +670,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     if (context.getRemoved() != null) {
 
       for (Identity identity : context.getRemoved()) {
-        IdentityEntity identityEntity = identityStorage._findIdentityEntity(OrganizationIdentityProvider.NAME, identity.getRemoteId());
+        IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
           
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         listRef.remove(activityEntity);
