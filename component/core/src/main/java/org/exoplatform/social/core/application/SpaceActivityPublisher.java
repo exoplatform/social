@@ -142,11 +142,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
    */
   @Override
   public void spaceRemoved(SpaceLifeCycleEvent event) {
-    Map<String, String> templateParams = new LinkedHashMap<String, String>();
-    
-    // update user space activity for space
-    recordActivityForUserSpace(event, null, USER_SPACE_JOINED_TITLE_ID, templateParams, false);
-    
     LOG.debug("space " + event.getSpace().getDisplayName() + " was removed!");
   }
 
@@ -227,6 +222,7 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     
     // update user space activity for space
     final String userSpaceActivityMessage = "I left " + event.getSpace().getDisplayName() + " space";
+    // keep to process with old already existing activities when users left spaces
     recordActivityForUserSpace(event, userSpaceActivityMessage, USER_SPACE_JOINED_TITLE_ID, templateParams, false);
     
     LOG.debug("user " + event.getTarget() + " has left of space " + event.getSpace().getDisplayName());
@@ -397,6 +393,12 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     }
     Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, event.getTarget(), false);
     String activityId = getStorage().getProfileActivityId(identity.getProfile(), Profile.AttachedActivityType.RELATION);
+    
+    // not go to create new with these kind of activities
+    if (activityId == null) {
+      return;
+    }
+    
     int numberOfSpacesOfMember = getSpaceStorage().getNumberOfMemberPublicSpaces(identity.getRemoteId());
     
     //
@@ -404,10 +406,11 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
     if (activityId != null) {
       activity = (ExoSocialActivityImpl) activityManager.getActivity(activityId);
     } 
+    
     if (activity == null) {
-      activity = new ExoSocialActivityImpl();  
-      activity.setType(USER_ACTIVITIES_FOR_SPACE);
+      return;
     }
+    
     templateParams.put(NUMBER_OF_PUBLIC_SPACE, String.valueOf(numberOfSpacesOfMember));
     templateParams.put(BaseActivityProcessorPlugin.TEMPLATE_PARAM_TO_PROCESS, NUMBER_OF_PUBLIC_SPACE);
     activity.setTemplateParams(templateParams);
@@ -435,15 +438,6 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
         //
         activityManager.updateActivity(activity);
       }
-    }
-    
-    //
-    if (activityId == null) {
-      activityManager.saveActivityNoReturn(identity, activity);
-      getStorage().updateProfileActivityId(identity, activity.getId(), Profile.AttachedActivityType.RELATION);
-      activity = (ExoSocialActivityImpl) activityManager.getActivity(activity.getId());
-      ExoSocialActivity comment = createComment(userSpaceActivityMessage, titleId, event.getSpace().getDisplayName(), USER_ACTIVITIES_FOR_SPACE, identity, new LinkedHashMap<String, String>());
-      activityManager.saveComment(activity, comment);
     }
   }
   
