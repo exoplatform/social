@@ -109,7 +109,8 @@ public abstract class ActivityRefListEntity {
     
     if (ref == null) {
       ref = dayEntity.createRef();
-      dayEntity.getActivityRefs().put("" + lastUpdated, ref);
+      ref.setName("" + lastUpdated);
+      dayEntity.getActivityRefList().add(ref);
       ref.setNew(true);
       dayEntity.inc();
     }

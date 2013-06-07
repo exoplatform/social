@@ -163,16 +163,37 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     long oldUpdated = activityEntity.getLastUpdated();
     activity.setUpdated(System.currentTimeMillis());
     
+    //process likes activity
+    String[] removedLikes = StorageUtils.sub(activityEntity.getLikes(), activity.getLikeIdentityIds());
+    String[] addedLikes = StorageUtils.sub(activity.getLikeIdentityIds(), activityEntity.getLikes());
+    
+    manageActivityLikes(addedLikes, removedLikes, activity);
+    
     //
     fillActivityEntityFromActivity(activity, activityEntity);
     streamStorage.update(activity, oldUpdated, false);
+  }
+  
+  private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
 
+    if (addedLikes != null) {
+      for (String id : addedLikes) {
+        Identity identity = identityStorage.findIdentityById(id);
+        streamStorage.save(identity, activity);
+      }
+    }
+
+    if (removedLikes != null) {
+      for (String id : removedLikes) {
+        Identity removedLiker = identityStorage.findIdentityById(id);
+        streamStorage.unLike(removedLiker, activity);
+      }
+    }
   }
 
   /*
    * Private
    */
-
   private void fillActivityEntityFromActivity(ExoSocialActivity activity, ActivityEntity activityEntity) {
 
     activityEntity.setTitle(activity.getTitle());
@@ -500,7 +521,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       if (activity.getPosterId() != comment.getUserId()) {
-        //streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+        streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
       }
       
       //

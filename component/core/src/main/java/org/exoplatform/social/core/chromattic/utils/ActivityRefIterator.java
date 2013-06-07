@@ -16,7 +16,10 @@
  */
 package org.exoplatform.social.core.chromattic.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefDayEntity;
@@ -46,11 +49,17 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
       if (monthIterator.hasNext()) {
         this.dayIterator = monthIterator.next().getDays().values().iterator();
         if (dayIterator.hasNext()) {
-          this.entityIterator = dayIterator.next().getActivityRefs().values().iterator();
+          this.entityIterator = orderRefs();
         }
       }
     }
 
+  }
+  
+  private Iterator<ActivityRef> orderRefs() {
+    List<ActivityRef> got = new ArrayList<ActivityRef>(dayIterator.next().getActivityRefList());
+    Collections.reverse(got);
+    return got.iterator();
   }
 
   public boolean hasNext() {
@@ -61,7 +70,7 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
       return true;
     }
     else if (dayIterator != null && dayIterator.hasNext()) {
-      entityIterator = dayIterator.next().getActivityRefs().values().iterator();
+      entityIterator = orderRefs();
       nothing = false;
       if (entityIterator.hasNext()) {
         return true;
@@ -83,7 +92,7 @@ public class ActivityRefIterator implements Iterator<ActivityRef> {
       if (monthIterator.hasNext()) {
         dayIterator = monthIterator.next().getDays().values().iterator();
         if (dayIterator.hasNext()) {
-          entityIterator = dayIterator.next().getActivityRefs().values().iterator();
+          entityIterator = orderRefs();
           if (entityIterator.hasNext()) {
             return true;
           }

@@ -43,6 +43,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void delete(String activityId) {
     this.storage.delete(activityId);
   }
+  
+  @Override
+  public void unLike(Identity removedLike, ExoSocialActivity activity) {
+    this.storage.unLike(removedLike, activity);
+  }
 
   @Override
   public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {

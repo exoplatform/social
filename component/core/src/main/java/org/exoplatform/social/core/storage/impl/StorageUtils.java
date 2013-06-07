@@ -1,10 +1,14 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+=======
+import java.util.Arrays;
+>>>>>>> SOC-3430 | PLF 4.0: slowness in UIActivitiesLoader init - like/unlike activity
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -328,6 +332,24 @@ public class StorageUtils {
     return list.subList(startIndex, toIndex);
   }
   
-  
-  
+   * Gets added element when compares between l1 and l2
+   * @param l1
+   * @param l2
+   * @return
+   */
+  public static String[] sub(String[] l1, String[] l2) {
+
+    if (l1 == null) {
+      return new String[]{};
+    }
+
+    if (l2 == null) {
+      return l1;
+    }
+
+    List<String> l = new ArrayList(Arrays.asList(l1));
+    l.removeAll(Arrays.asList(l2));
+    return l.toArray(new String[]{});
+  }
+
 }
