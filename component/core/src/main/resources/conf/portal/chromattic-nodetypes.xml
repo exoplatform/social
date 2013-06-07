@@ -409,7 +409,7 @@
     </childNodeDefinitions>
   </nodeType>
   <!-- Node type generated for the class org.exoplatform.social.core.chromattic.entity.ActivityRef -->
-  <nodeType name="soc:activityref" isMixin="false" hasOrderableChildNodes="false">
+  <nodeType name="soc:activityref" isMixin="false" hasOrderableChildNodes="true">
     <supertypes>
       <supertype>nt:base</supertype>
       <supertype>mix:referenceable</supertype>

@@ -1,7 +1,13 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.chromattic.api.ChromatticSession;
@@ -286,5 +292,88 @@ public class StorageUtils {
     }
     return result;
   }
+  /**
+   * Gets common item number from two list
+   * @param m the first list
+   * @param n the second list
+   * @return number of common item
+   */
+  public static <T> int getCommonItemNumber(final List<T> m, final List<T> n) {
+    if (m == null || n == null) {
+      return 0;
+    }
+    List<T> copy = new ArrayList<T>(m);
+    copy.removeAll(n);
+    
+    return (m.size() - copy.size());
+  }
   
+  /**
+   * Sort one map by its value
+   * @param map the input map
+   * @param asc indicate sort by ASC (true) or DESC (false)
+   * @return the sorted map
+   * @since 4.0.x
+   */
+  public static <K, V extends Comparable<? super V>> Map<K, V> sortMapByValue( Map<K, V> map , final boolean asc) {
+    //
+    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>( map.entrySet() );
+    //
+    Collections.sort( list, new Comparator<Map.Entry<K, V>>() {
+      public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 ) {
+        if (asc)
+          return (o1.getValue()).compareTo( o2.getValue() );
+        else
+          return (o1.getValue()).compareTo( o2.getValue() )/-1;
+      }
+    });
+
+    Map<K, V> result = new LinkedHashMap<K, V>();
+    for (Map.Entry<K, V> entry : list) {
+      result.put(entry.getKey(), entry.getValue());
+    }
+    return result;
+  }
+
+  /**
+   * Gets sub list from the provided list with start and end index.
+   * @param list the identity list
+   * @param startIndex start index to get
+   * @param toIndex end index to get
+   * @return sub list of the provided list
+   */
+  public static <T> List<T> subList(List<T> list, int startIndex, int toIndex) {
+    int totalSize = list.size();
+    
+    if (startIndex >= totalSize) return Collections.emptyList();
+    
+    //
+    if ( toIndex >= totalSize ) {
+      toIndex = totalSize;
+    }
+    
+    return list.subList(startIndex, toIndex);
+  }
+  
+  /*
+   * Gets added element when compares between l1 and l2
+   * @param l1
+   * @param l2
+   * @return
+   */
+  public static String[] sub(String[] l1, String[] l2) {
+
+    if (l1 == null) {
+      return new String[]{};
+    }
+
+    if (l2 == null) {
+      return l1;
+    }
+
+    List<String> l = new ArrayList(Arrays.asList(l1));
+    l.removeAll(Arrays.asList(l2));
+    return l.toArray(new String[]{});
+  }
+
 }

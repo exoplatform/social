@@ -19,7 +19,6 @@ package org.exoplatform.social.core.storage.api;
 import java.util.List;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 
 
@@ -37,6 +36,8 @@ public interface ActivityStreamStorage {
    * @param activity
    */
   public void delete(String activityId);
+  
+  public void unLike(Identity removedLike, ExoSocialActivity activity);
   
   public void connect(Identity sender, Identity receiver);
   

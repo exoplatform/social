@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.util.List;
 import java.util.Map;
 
 import org.chromattic.api.annotations.Create;
@@ -56,6 +57,11 @@ public abstract class ActivityRefDayEntity implements NamedEntity, IndexNumber {
   @Owner
   @MappedBy("soc:refs")
   public abstract Map<String, ActivityRef> getActivityRefs();
+  
+  @OneToMany
+  @Owner
+  @MappedBy("soc:refs")
+  public abstract List<ActivityRef> getActivityRefList();
   
   @Create
   public abstract ActivityRef createRef();
