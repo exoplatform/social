@@ -110,8 +110,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   @Override
   public void save(Identity owner, ExoSocialActivity activity) {
     LOG.info("save(" + owner.getRemoteId() +")::BEGIN");
-    //LOG.warn("Stacktrace", new Throwable());
-             
     try {
       //
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());     
@@ -191,10 +189,24 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.warn("Failed to delete Activity references.");
     }
   }
+  
+  @Override
+  public void unLike(Identity removedLike, ExoSocialActivity activity) {
+    try {
+      //
+      ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
+      
+      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.FEED);
+      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.MY_ACTIVITIES);
+      
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to unLike");
+    }
+  }
 
   @Override
   public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {
-    
     LOG.info("update()::BEGIN");
     
     try {
@@ -215,16 +227,16 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       //
       for(ActivityRefListEntity list : refList) {
-        LOG.info("update()::BEFORE");
-        printDebug(list, oldUpdated);
+        //LOG.info("update()::BEFORE");
+        //printDebug(list, oldUpdated);
         
         list.remove(oldUpdated);
         ActivityRef ref = list.get(activity.getUpdated().getTime());
         ref.setLastUpdated(activity.getUpdated().getTime());
         ref.setActivityEntity(activityEntity);
         
-        LOG.info("update()::AFTER");
-        printDebug(list, oldUpdated);
+        //LOG.info("update()::AFTER");
+        //printDebug(list, oldUpdated);
       }
       
       if (save) {
@@ -235,14 +247,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to update Activity references.");
     }
-    
   }
   
   @Override
   public void addSpaceMember(Identity identity, Identity spaceIdentity) {
-    
     LOG.info("addSpaceMember()::BEGIN");
-    
     try {
       createSpaceMemberRefs(identity, spaceIdentity);
       
@@ -255,7 +264,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   @Override
   public void removeSpaceMember(Identity removedIdentity, Identity spaceIdentity) {
-    
     LOG.info("removeSpaceMember()::BEGIN");
     
     try {
@@ -477,7 +485,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.warn("Failed to getActivities()");
     }
     
-    Collections.reverse(got);
+    //Collections.reverse(got);
     
     return got;
   }
@@ -650,8 +658,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         ActivityRef ref = listRef.get(activityEntity);
-        //LOG.info("manageRefList()::BEFORE");
-        //printDebug(listRef, activityEntity.getLastUpdated());
+        LOG.info("manageRefList()::BEFORE");
+        printDebug(listRef, activityEntity.getLastUpdated());
         if (ref.getName() == null) {
           ref.setName(activityEntity.getName());
         }
@@ -662,8 +670,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
         ref.setActivityEntity(activityEntity);
 
-        //LOG.info("manageRefList()::AFTER");
-        //printDebug(listRef, activityEntity.getLastUpdated());
+        LOG.info("manageRefList()::AFTER");
+        printDebug(listRef, activityEntity.getLastUpdated());
       }
     }
     

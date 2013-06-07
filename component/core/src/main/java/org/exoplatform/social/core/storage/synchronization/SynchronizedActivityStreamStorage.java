@@ -54,6 +54,18 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
+  public void unLike(Identity removedLike, ExoSocialActivity activity) {
+    
+    boolean created = startSynchronization();
+    try {
+      super.unLike(removedLike, activity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  @Override
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
     
     boolean created = startSynchronization();
