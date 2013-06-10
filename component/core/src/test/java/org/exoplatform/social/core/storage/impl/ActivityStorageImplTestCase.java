@@ -146,7 +146,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    *  For example: templateParams = {"key1": "value1", "key2": "value2"} => message bundle arguments = ["value1", "value2"].
    * </pre>
    */
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(58)
   public void testTemplateParams() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
@@ -167,7 +167,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(62)
+  @MaxQueryNumber(80)
   public void testUpdateActivity() throws Exception {
 
     //
@@ -192,7 +192,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(62)
+  @MaxQueryNumber(80)
   public void testUpdateActivityForLike() throws Exception {
 
     //
@@ -226,7 +226,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(62)
+  @MaxQueryNumber(80)
   public void testUpdateActivityForWrong() throws Exception {
 
     //
@@ -251,7 +251,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(62)
+  @MaxQueryNumber(80)
   public void testUpdateActivityForUnLike() throws Exception {
 
     //
@@ -285,7 +285,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
    * before invokes: activityStorage.updateActivity(got);
    * @throws Exception
    */
-  @MaxQueryNumber(62)
+  @MaxQueryNumber(80)
   public void testUpdateActivityForUnLikeWrong() throws Exception {
 
     //
@@ -612,7 +612,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
     }
   }
 
-  @MaxQueryNumber(350)
+  @MaxQueryNumber(366)
   public void testDeleteComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
@@ -876,7 +876,7 @@ public class ActivityStorageImplTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(50)
+  @MaxQueryNumber(55)
   public void testRelationshipActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("I am now connected with @receiverRemoteId");
