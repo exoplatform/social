@@ -1402,7 +1402,10 @@ public class SpaceServiceImpl implements SpaceService {
         space.setManagers(managers);
         this.updateSpace(space);
         SpaceUtils.removeUserFromGroupWithManagerMembership(userId, space.getGroupId());
-        spaceLifeCycle.revokedLead(space, userId);
+        Space updatedSpace = getSpaceById(space.getId()); 
+        if (isMember(updatedSpace, userId)) {
+          spaceLifeCycle.revokedLead(space, userId);
+        }
       }
     }
   }
