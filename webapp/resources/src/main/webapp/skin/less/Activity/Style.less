@@ -357,7 +357,11 @@
 				li {
 					display: inline;
 					margin: 0 5px;
+					a:hover {
+						color: @linkColorHover;
+					}
 				}
+				
 			}
 		}
 		
@@ -473,6 +477,12 @@
 				right: 0px;
 				display:none;
 				cursor: pointer;
+				&:hover {
+					color: @linkColorHover;
+				}
+			}
+			.uiIconClose {
+				top: 3px;
 			}
 			.uiIconClose + .viewComment {
 				right: 25px;
