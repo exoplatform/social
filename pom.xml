@@ -33,6 +33,7 @@
   <description>eXo Social - Enterprise Social Networking</description>
   <modules>
     <module>extension</module>
+		<module>commons-api</module>
     <module>component</module>
     <module>webapp</module>
     <module>extras</module>

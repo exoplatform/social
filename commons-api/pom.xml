@@ -24,18 +24,16 @@
     <groupId>org.exoplatform.social</groupId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>social-component</artifactId>
+  <artifactId>social-commons-api</artifactId>
   <version>4.1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>eXo Social Component</name>
-  <description>eXo Social Component</description>
-  <modules>
-    <module>common</module>
-    <module>core</module>
-    <module>service</module>
-    <module>opensocial</module>
-    <module>webui</module>
-    <module>notification</module>
-  </modules>
+  <packaging>jar</packaging>
+  <name>eXo Social Commons-api</name>
+  <description>eXo Social Commons-api</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.component.common</artifactId>
+    </dependency>
+	</dependencies>
 </project>
 
