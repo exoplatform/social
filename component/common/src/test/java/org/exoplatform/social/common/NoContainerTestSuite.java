@@ -17,6 +17,8 @@
 package org.exoplatform.social.common;
 
 import org.exoplatform.social.common.jcr.filter.FilterLiteralTest;
+import org.exoplatform.social.common.service.AsyncProcessorTest;
+import org.exoplatform.social.common.service.SessionAsynProcessorTest;
 import org.exoplatform.social.common.xmlprocessor.DOMParserTest;
 import org.exoplatform.social.common.xmlprocessor.TokenizerTest;
 import org.exoplatform.social.common.xmlprocessor.filters.DOMContentEscapeFilterPluginTest;
@@ -45,7 +47,9 @@ import org.junit.runners.Suite.SuiteClasses;
   URLConverterFilterPluginTest.class,
   XMLBalancerFilterPluginTest.class,
   XMLTagFilterPluginTest.class,
-  FilterLiteralTest.class
+  FilterLiteralTest.class,
+  AsyncProcessorTest.class,
+  SessionAsynProcessorTest.class
   })
 public class NoContainerTestSuite {
   
