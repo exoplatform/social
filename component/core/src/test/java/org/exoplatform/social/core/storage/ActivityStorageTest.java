@@ -2501,6 +2501,59 @@ public class ActivityStorageTest extends AbstractCoreTest {
     
     spaceService.deleteSpace(space);
   }
+  
+  @MaxQueryNumber(222)
+  public void testCommentedActivity() throws Exception {
+    
+    //root creates an activity
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity title");
+    activity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    List<ExoSocialActivity> rootActivities = activityStorage.getActivityFeed(rootIdentity, 0, 10);
+    assertEquals(1, rootActivities.size());
+    List<ExoSocialActivity> demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(0, demoActivities.size());
+    
+    //demo comments on root's activity
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("demo comment");
+    comment.setUserId(demoIdentity.getId());
+    activityStorage.saveComment(activity, comment);
+    
+    demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(1, demoActivities.size());
+    
+    //root creates another activity
+    ExoSocialActivity newActivity = new ExoSocialActivityImpl();
+    newActivity.setTitle("new activity title");
+    newActivity.setUserId(rootIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, newActivity);
+    tearDownActivityList.add(newActivity);
+    
+    demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(1, demoActivities.size());
+    
+    //demo likes root's new activity
+    newActivity = activityStorage.getActivity(newActivity.getId());
+    newActivity.setLikeIdentityIds(new String[]{ demoIdentity.getId() });
+    activityStorage.updateActivity(newActivity);
+    
+    demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(2, demoActivities.size());
+    
+    //demo creates an activity on root's stream
+    ExoSocialActivity demoActivity = new ExoSocialActivityImpl();
+    demoActivity.setTitle("new activity title");
+    demoActivity.setUserId(demoIdentity.getId());
+    activityStorage.saveActivity(rootIdentity, demoActivity);
+    tearDownActivityList.add(demoActivity);
+    
+    demoActivities = activityStorage.getActivityFeed(demoIdentity, 0, 10);
+    assertEquals(3, demoActivities.size());
+  }
 
   /**
    * Creates activities.

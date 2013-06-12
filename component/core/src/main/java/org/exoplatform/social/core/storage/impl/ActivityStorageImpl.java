@@ -809,7 +809,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     ActivityFilter filter = new ActivityFilter(){};
     //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().poster(ownerIdentity).commenter(ownerIdentity).liker(ownerIdentity).mentioner(ownerIdentity).owners(identities), filter, offset, limit);
   }
 
   /**
