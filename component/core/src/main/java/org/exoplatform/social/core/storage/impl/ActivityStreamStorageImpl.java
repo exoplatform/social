@@ -186,7 +186,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       
     } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to delete Activity references.");
+      LOG.warn("Failed to delete Activities references.");
     }
   }
   
@@ -503,9 +503,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return 0;
   }
   
-  /**
-   * {@inheritDoc}
-   */
+  
   private QueryResult<ActivityEntity> getActivitiesOfConnections(Identity ownerIdentity) {
 
     List<Identity> connections = new ArrayList<Identity>();
@@ -523,9 +521,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, 0, -1);
   }
   
-  /**
-   * {@inheritDoc}
-   */
   private QueryResult<ActivityEntity> getActivitiesOfSpace(Identity spaceIdentity) {
 
     if (spaceIdentity == null) {
