@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.social.opensocial.model.Activity;
 import org.exoplatform.container.ExoContainer;
@@ -417,7 +418,7 @@ public class PeopleRestService implements ResourceContainer{
       
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
       if (activities.size() > 0) {
-        peopleInfo.setActivityTitle(activities.get(0).getTitle());
+        peopleInfo.setActivityTitle(StringEscapeUtils.unescapeHtml(activities.get(0).getTitle()));
       }
       
       Profile userProfile = identity.getProfile();
