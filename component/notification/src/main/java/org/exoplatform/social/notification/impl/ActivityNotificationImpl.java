@@ -16,70 +16,46 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import java.util.regex.Pattern;
+
+import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
+import org.exoplatform.social.core.activity.ActivityListener;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.listeners.SocialActivityListener;
+import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.notification.task.ActivityTask;
 
-public class ActivityNotificationImpl implements SocialActivityListener {
+public class ActivityNotificationImpl implements ActivityListener {
+
+  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+  
+  @Override
+  public void saveActivity(ActivityLifeCycleEvent event) {
+    ExoSocialActivity activity = event.getSource();    
+    NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
+    ActivityTask saveTask = ActivityTask.POST_ACTIVITY;
+    
+    // check if activity contain mentions then create mention task
+    ActivityTask mentionTask;
+    if (hasContainMentions(activity)) {
+      mentionTask = ActivityTask.MENTION_ACTIVITY;
+    }
+    
+  }
 
   @Override
-  public void saveActivity(Identity streamOwner, ExoSocialActivity activity) {
+  public void updateActivity(ActivityLifeCycleEvent event) {
     // TODO Auto-generated method stub
     
   }
 
   @Override
-  public void saveActivity(ExoSocialActivity activity) {
+  public void saveComment(ActivityLifeCycleEvent event) {
     // TODO Auto-generated method stub
     
   }
-
-  @Override
-  public void updateActivity(ExoSocialActivity activity) {
-    // TODO Auto-generated method stub
-    
+  
+  private boolean hasContainMentions(ExoSocialActivity activity) {
+    return MENTION_PATTERN.matcher(activity.getTitle()).find();
   }
-
-  @Override
-  public void deleteActivity(ExoSocialActivity activity) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void deleteActivity(String activityId) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void saveComment(ExoSocialActivity activity, ExoSocialActivity newComment) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void deleteComment(String activityId, String commentId) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void deleteComment(ExoSocialActivity activity, ExoSocialActivity comment) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void saveLike(ExoSocialActivity activity, Identity identity) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void deleteLike(ExoSocialActivity activity, Identity identity) {
-    // TODO Auto-generated method stub
-    
-  }
-
 }

@@ -14,27 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.core.listeners;
+package org.exoplatform.social.core.activity;
 
-import org.exoplatform.social.common.lifecycle.LifeCycleEvent;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.common.lifecycle.LifeCycleListener;
 
-public class ActivityLifeCycleEvent extends LifeCycleEvent<String, ExoSocialActivity> {
-  private ExoSocialActivity activity;
+public interface ActivityListener extends LifeCycleListener<ActivityLifeCycleEvent> {
+  
+  void saveActivity(ActivityLifeCycleEvent event);
 
-  private String            activityId;
+  void updateActivity(ActivityLifeCycleEvent event);
 
-  public ActivityLifeCycleEvent(String activityId, ExoSocialActivity activity) {
-    super(activityId, activity);
-    this.activity = activity;
-  }
-
-  public ExoSocialActivity getActivity() {
-    return activity;
-  }
-
-  public String getActivityId() {
-    return activityId;
-  }
-
+  void saveComment(ActivityLifeCycleEvent event);
 }

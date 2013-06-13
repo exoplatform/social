@@ -16,11 +16,26 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import java.util.Map;
+
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.RelationshipPublisher;
+import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListener;
+import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.notification.task.RelationshipTask;
 
 public class RelationshipNotifictionImpl implements RelationshipListener {
 
+  private static final Log LOG = ExoLogger.getLogger(RelationshipNotifictionImpl.class);
+  
   @Override
   public void confirmed(RelationshipEvent event) {
     // TODO Auto-generated method stub
@@ -41,7 +56,16 @@ public class RelationshipNotifictionImpl implements RelationshipListener {
 
   @Override
   public void requested(RelationshipEvent event) {
-    // TODO Auto-generated method stub
+    RelationshipManager relationshipManager = event.getSource();
+    Relationship relationship = event.getPayload();
+    try {
+      Identity sender = relationship.getSender();
+      Identity receiver = relationship.getReceiver();
+      
+      NotificationContext ctx = NotificationContext.makeRelationshipNofification(relationshipManager, relationship);
+    } catch (Exception e) {
+      LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
+    }
 
   }
 

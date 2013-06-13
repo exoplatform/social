@@ -33,7 +33,10 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
   }
   
-  public static ActivityTask CREATE_ACTIVITY = new ActivityTask() {
+  /**
+   * Someone @mentions the user in an activity.
+   */
+  public static ActivityTask MENTION_ACTIVITY = new ActivityTask() {
 
     @Override
     public SocialMessage execute(NotificationContext ctx) {
@@ -43,5 +46,42 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
   };
 
+  /**
+   * Someone comments on an activity posted by the user.
+   */
+  public static ActivityTask COMMENT_ACTIVITY = new ActivityTask() {
 
+    @Override
+    public SocialMessage execute(NotificationContext ctx) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+    
+  };
+  
+  /**
+   * Someone posts an activity on the User's stream.
+   */
+  public static ActivityTask POST_ACTIVITY = new ActivityTask() {
+
+    @Override
+    public SocialMessage execute(NotificationContext ctx) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+    
+  };
+
+  /**
+   * Someone posts an activity on a space where the user is a member.
+   */
+  public static ActivityTask POST_ACTIVITY_ON_SPACE = new ActivityTask() {
+
+    @Override
+    public SocialMessage execute(NotificationContext ctx) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+    
+  };
 }
