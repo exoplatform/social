@@ -14,11 +14,41 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification;
+package org.exoplatform.commons.api.notification.plugin;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
+public class MailParameter {
+  private String key;
 
-public class SocialMessage extends EmailMessage {
-  
-  
+  private String value;
+
+  public MailParameter() {
+  }
+
+  /**
+   * @return the key
+   */
+  public String getKey() {
+    return key;
+  }
+
+  /**
+   * @param key the key to set
+   */
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  /**
+   * @return the value
+   */
+  public String getValue() {
+    return value;
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

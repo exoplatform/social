@@ -31,14 +31,18 @@ public class SocialEmailStorage {
     ACTIVITY, PROFILE, RELATIONSHIP, SPACE
   }
   
-  final Map<CONNECTOR_TYPE, Queue<SocialMessage>> pendingMessages = new LinkedHashMap<CONNECTOR_TYPE, Queue<SocialMessage>>();
+  final Map<CONNECTOR_TYPE, Queue<EmailMessage>> pendingMessages = new LinkedHashMap<CONNECTOR_TYPE, Queue<EmailMessage>>();
 
-  public void addEmailNotification(SocialMessage message, CONNECTOR_TYPE type) {
+  public void add(EmailMessage message, CONNECTOR_TYPE type) {
     pendingMessages.get(type).add(message);
   }
 
+  public void addAll(Collection<EmailMessage> messages, CONNECTOR_TYPE type) {
+    pendingMessages.get(type).addAll(messages);
+  }
+
   public Collection<EmailMessage> getEmailNotification(CONNECTOR_TYPE type) {
-    Queue<SocialMessage> messagesQueue = pendingMessages.get(type);
+    Queue<EmailMessage> messagesQueue = pendingMessages.get(type);
     Collection<EmailMessage> pending = new ArrayList<EmailMessage>(messagesQueue);
     //
     messagesQueue.clear();

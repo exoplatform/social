@@ -16,7 +16,8 @@
  */
 package org.exoplatform.social.notification.task;
 
-import org.exoplatform.social.notification.SocialMessage;
+import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ProfileTask implements NotificationTask<NotificationContext>{
@@ -31,7 +32,16 @@ public abstract class ProfileTask implements NotificationTask<NotificationContex
   
   public static ProfileTask UPDATE_AVATAR = new ProfileTask() {
     @Override
-    public SocialMessage execute(NotificationContext ctx) {
+    public EmailMessage execute(NotificationContext ctx) {
+//      Profile profile = ctx.getProfile();
+      // TODO continue..
+      return null;
+    }
+  };
+
+  public static ProfileTask UPDATE_DISPLAY_NAME = new ProfileTask() {
+    @Override
+    public EmailMessage execute(NotificationContext ctx) {
 //      Profile profile = ctx.getProfile();
       // TODO continue..
       return null;

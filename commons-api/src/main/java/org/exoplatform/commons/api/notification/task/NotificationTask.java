@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.task;
+package org.exoplatform.commons.api.notification.task;
 
-import org.exoplatform.social.notification.SocialMessage;
+import org.exoplatform.commons.api.notification.EmailMessage;
 
 public interface NotificationTask <T> {
   void start(T ctx);
-  SocialMessage execute(T ctx);
+  EmailMessage execute(T ctx);
   void end(T ctx);
 }

@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListener;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.task.ActivityTask;
 
@@ -58,4 +57,6 @@ public class ActivityNotificationImpl implements ActivityListener {
   private boolean hasContainMentions(ExoSocialActivity activity) {
     return MENTION_PATTERN.matcher(activity.getTitle()).find();
   }
+
+  
 }

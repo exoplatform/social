@@ -16,7 +16,8 @@
  */
 package org.exoplatform.social.notification.task;
 
-import org.exoplatform.social.notification.SocialMessage;
+import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ActivityTask implements NotificationTask<NotificationContext>{
@@ -39,7 +40,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   public static ActivityTask MENTION_ACTIVITY = new ActivityTask() {
 
     @Override
-    public SocialMessage execute(NotificationContext ctx) {
+    public EmailMessage execute(NotificationContext ctx) {
       // TODO Auto-generated method stub
       return null;
     }
@@ -52,7 +53,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   public static ActivityTask COMMENT_ACTIVITY = new ActivityTask() {
 
     @Override
-    public SocialMessage execute(NotificationContext ctx) {
+    public EmailMessage execute(NotificationContext ctx) {
       // TODO Auto-generated method stub
       return null;
     }
@@ -65,7 +66,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   public static ActivityTask POST_ACTIVITY = new ActivityTask() {
 
     @Override
-    public SocialMessage execute(NotificationContext ctx) {
+    public EmailMessage execute(NotificationContext ctx) {
       // TODO Auto-generated method stub
       return null;
     }
@@ -78,7 +79,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   public static ActivityTask POST_ACTIVITY_ON_SPACE = new ActivityTask() {
 
     @Override
-    public SocialMessage execute(NotificationContext ctx) {
+    public EmailMessage execute(NotificationContext ctx) {
       // TODO Auto-generated method stub
       return null;
     }

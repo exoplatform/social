@@ -14,25 +14,21 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.connector;
+package org.exoplatform.commons.api.notification.plugin;
 
-import java.util.Collection;
+import java.util.List;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
-import org.exoplatform.commons.api.notification.MailConnector;
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.social.notification.SocialEmailStorage.CONNECTOR_TYPE;
-import org.exoplatform.social.notification.SocialEmailUtils;
 
-public class ActivityConnector extends MailConnector {
+public class EmailProviderPlugin extends BaseComponentPlugin {
+  private List<ConnectorProvider> providers;
 
-  public ActivityConnector(InitParams initParams) {
-    super(initParams);
+  public EmailProviderPlugin(InitParams initParams) {
+    providers = initParams.getObjectParamValues(ConnectorProvider.class);
   }
 
-  @Override
-  public Collection<EmailMessage> emails() {
-    return SocialEmailUtils.getSocialEmailStorage().getEmailNotification(CONNECTOR_TYPE.ACTIVITY);
+  public List<ConnectorProvider> getAllConnectorProvider() {
+    return providers;
   }
-
 }

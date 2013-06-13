@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.notification.task;
 
+import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class RelationshipTask implements NotificationTask<NotificationContext>{

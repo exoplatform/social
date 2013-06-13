@@ -21,8 +21,8 @@ import java.util.Collection;
 import org.exoplatform.commons.api.notification.EmailMessage;
 import org.exoplatform.commons.api.notification.MailConnector;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.social.notification.SocialEmailUtils;
 import org.exoplatform.social.notification.SocialEmailStorage.CONNECTOR_TYPE;
+import org.exoplatform.social.notification.SocialEmailUtils;
 
 public class RelationshipConnector extends MailConnector {
 
