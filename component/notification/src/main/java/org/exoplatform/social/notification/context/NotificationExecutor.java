@@ -19,19 +19,19 @@ package org.exoplatform.social.notification.context;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 
 
 public class NotificationExecutor {
 
   
-  public static EmailMessage execute(NotificationTask<NotificationContext> task, NotificationContext ctx) {
+  public static NotificationMessage execute(NotificationTask<NotificationContext> task, NotificationContext ctx) {
     
     task.start(ctx);
     
     //
-    EmailMessage got = task.execute(ctx);
+    NotificationMessage got = task.execute(ctx);
     
     //
     task.end(ctx);
@@ -41,8 +41,8 @@ public class NotificationExecutor {
   }
 
 
-  public static Collection<EmailMessage> executor(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
-    Collection<EmailMessage> gots = new ArrayList<EmailMessage>();
+  public static Collection<NotificationMessage> executor(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
+    Collection<NotificationMessage> gots = new ArrayList<NotificationMessage>();
 
     for (int i = 0; i < tasks.length; ++i) {
       gots.add(execute(tasks[i], ctx));

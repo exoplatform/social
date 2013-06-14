@@ -16,15 +16,10 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import java.util.Collection;
-
-import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListener;
-import org.exoplatform.social.notification.SocialEmailStorage.CONNECTOR_TYPE;
-import org.exoplatform.social.notification.SocialEmailStorage;
-import org.exoplatform.social.notification.SocialEmailUtils;
 import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ProfileTask;
@@ -36,13 +31,10 @@ public class ProfileNotificationImpl implements ProfileListener {
     Profile profile = event.getProfile();
     NotificationContext ctx = NotificationContext.makeProfileNofification(profile);
     ProfileTask task = ProfileTask.UPDATE_AVATAR;
-    EmailMessage msg = NotificationExecutor.execute(task, ctx);
+    NotificationMessage msg = NotificationExecutor.execute(task, ctx);
+    NotificationExecutor.executor(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME);
     
-    SocialEmailStorage storage = SocialEmailUtils.getSocialEmailStorage();
     
-    storage.add(msg, CONNECTOR_TYPE.PROFILE);
-    
-    storage.addAll(NotificationExecutor.executor(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME), CONNECTOR_TYPE.PROFILE);
     
   }
 

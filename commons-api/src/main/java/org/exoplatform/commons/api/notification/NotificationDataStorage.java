@@ -14,26 +14,14 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.connector;
+package org.exoplatform.commons.api.notification;
 
 import java.util.Collection;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
-import org.exoplatform.commons.api.notification.MailConnector;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.social.notification.SocialEmailStorage.CONNECTOR_TYPE;
-import org.exoplatform.social.notification.SocialEmailUtils;
+public class NotificationDataStorage {
 
-public class SpaceConnector extends MailConnector {
-
-  public SpaceConnector(InitParams initParams) {
-    super(initParams);
-    // TODO Auto-generated constructor stub
+  
+  public Collection<NotificationMessage> emails() {
+    return null;
   }
-
-  @Override
-  public Collection<EmailMessage> emails() {
-    return SocialEmailUtils.getSocialEmailStorage().getEmailNotification(CONNECTOR_TYPE.SPACE);
-  }
-
 }

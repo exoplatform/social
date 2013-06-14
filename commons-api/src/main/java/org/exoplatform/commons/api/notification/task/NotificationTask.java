@@ -16,10 +16,11 @@
  */
 package org.exoplatform.commons.api.notification.task;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 
 public interface NotificationTask <T> {
+  void initSupportProvider();
   void start(T ctx);
-  EmailMessage execute(T ctx);
+  NotificationMessage execute(T ctx);
   void end(T ctx);
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ConnectorProvider {
+public class NotificationProvider {
   private String              id;
 
   private String              name;
@@ -29,9 +29,9 @@ public class ConnectorProvider {
 
   private String              template;
 
-  private List<MailParameter> mailParameters = new ArrayList<MailParameter>();
+  private List<NotificationParameter> mailParameters = new ArrayList<NotificationParameter>();
 
-  public ConnectorProvider() {
+  public NotificationProvider() {
   }
 
   /**
@@ -100,14 +100,14 @@ public class ConnectorProvider {
   /**
    * @return the mailParameters
    */
-  public List<MailParameter> getMailParameters() {
+  public List<NotificationParameter> getMailParameters() {
     return mailParameters;
   }
 
   /**
    * @param mailParameters the mailParameters to set
    */
-  public void setMailParameters(List<MailParameter> mailParameters) {
+  public void setMailParameters(List<NotificationParameter> mailParameters) {
     this.mailParameters = mailParameters;
   }
 

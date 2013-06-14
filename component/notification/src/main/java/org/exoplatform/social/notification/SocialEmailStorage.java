@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 
-import org.exoplatform.commons.api.notification.EmailMessage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 
 
 public class SocialEmailStorage {
@@ -31,19 +31,19 @@ public class SocialEmailStorage {
     ACTIVITY, PROFILE, RELATIONSHIP, SPACE
   }
   
-  final Map<CONNECTOR_TYPE, Queue<EmailMessage>> pendingMessages = new LinkedHashMap<CONNECTOR_TYPE, Queue<EmailMessage>>();
+  final Map<CONNECTOR_TYPE, Queue<NotificationMessage>> pendingMessages = new LinkedHashMap<CONNECTOR_TYPE, Queue<NotificationMessage>>();
 
-  public void add(EmailMessage message, CONNECTOR_TYPE type) {
+  public void add(NotificationMessage message, CONNECTOR_TYPE type) {
     pendingMessages.get(type).add(message);
   }
 
-  public void addAll(Collection<EmailMessage> messages, CONNECTOR_TYPE type) {
+  public void addAll(Collection<NotificationMessage> messages, CONNECTOR_TYPE type) {
     pendingMessages.get(type).addAll(messages);
   }
 
-  public Collection<EmailMessage> getEmailNotification(CONNECTOR_TYPE type) {
-    Queue<EmailMessage> messagesQueue = pendingMessages.get(type);
-    Collection<EmailMessage> pending = new ArrayList<EmailMessage>(messagesQueue);
+  public Collection<NotificationMessage> getEmailNotification(CONNECTOR_TYPE type) {
+    Queue<NotificationMessage> messagesQueue = pendingMessages.get(type);
+    Collection<NotificationMessage> pending = new ArrayList<NotificationMessage>(messagesQueue);
     //
     messagesQueue.clear();
     return pending;

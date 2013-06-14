@@ -16,39 +16,19 @@
  */
 package org.exoplatform.commons.api.notification.plugin;
 
-public class MailParameter {
-  private String key;
+import java.util.List;
 
-  private String value;
+import org.exoplatform.container.component.BaseComponentPlugin;
+import org.exoplatform.container.xml.InitParams;
 
-  public MailParameter() {
+public class NotificationProviderPlugin extends BaseComponentPlugin {
+  private List<NotificationProvider> providers;
+
+  public NotificationProviderPlugin(InitParams initParams) {
+    providers = initParams.getObjectParamValues(NotificationProvider.class);
   }
 
-  /**
-   * @return the key
-   */
-  public String getKey() {
-    return key;
-  }
-
-  /**
-   * @param key the key to set
-   */
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  /**
-   * @return the value
-   */
-  public String getValue() {
-    return value;
-  }
-
-  /**
-   * @param value the value to set
-   */
-  public void setValue(String value) {
-    this.value = value;
+  public List<NotificationProvider> getAllConnectorProvider() {
+    return providers;
   }
 }
