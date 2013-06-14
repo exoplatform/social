@@ -18,6 +18,8 @@ package org.exoplatform.social.common.service;
 
 import java.util.Map;
 
+import org.exoplatform.social.common.service.utils.TraceElement;
+
 public interface ProcessContext {
 
   Object getProperty(String name);
@@ -61,5 +63,9 @@ public interface ProcessContext {
   void trace(String processorName, String trace);
   
   StringBuffer getTracer();
+  
+  String getTraceLog();
+  
+  TraceElement getTraceElement();
   
 }

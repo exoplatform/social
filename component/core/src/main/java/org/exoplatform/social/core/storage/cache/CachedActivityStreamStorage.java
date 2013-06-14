@@ -18,8 +18,8 @@ package org.exoplatform.social.core.storage.cache;
 
 import java.util.List;
 
+import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
@@ -35,8 +35,8 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void save(Identity owner, ExoSocialActivity activity) {
-    this.storage.save(owner, activity);
+  public void save(ProcessContext ctx) {
+    this.storage.save(ctx);
   }
 
   @Override
@@ -50,18 +50,18 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
 
   @Override
-  public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {
-    this.storage.update(activity, oldUpdated, save);
+  public void update(ProcessContext ctx) {
+    this.storage.update(ctx);
   }
   
   @Override
-  public void addSpaceMember(Identity identity, Identity space) {
-    this.storage.addSpaceMember(identity, space);
+  public void addSpaceMember(ProcessContext ctx) {
+    this.storage.addSpaceMember(ctx);
   }
   
   @Override
-  public void removeSpaceMember(Identity identity, Identity space) {
-    this.storage.removeSpaceMember(identity, space);
+  public void removeSpaceMember(ProcessContext ctx) {
+    this.storage.removeSpaceMember(ctx);
   }
 
   @Override

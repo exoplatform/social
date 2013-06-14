@@ -75,6 +75,7 @@ import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -171,7 +172,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     fillActivityEntityFromActivity(activity, activityEntity);
-    streamStorage.update(activity, oldUpdated, false);
+    
+    //streamStorage.update(activity, oldUpdated, false);
+    StreamInvocationHelper.update(activity, oldUpdated);
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
@@ -179,14 +182,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     if (addedLikes != null) {
       for (String id : addedLikes) {
         Identity identity = identityStorage.findIdentityById(id);
-        streamStorage.save(identity, activity);
+        //streamStorage.save(identity, activity);
+        StreamInvocationHelper.save(identity, activity);
       }
     }
 
     if (removedLikes != null) {
       for (String id : removedLikes) {
         Identity removedLiker = identityStorage.findIdentityById(id);
-        streamStorage.unLike(removedLiker, activity);
+        //streamStorage.unLike(removedLiker, activity);
+        StreamInvocationHelper.unLike(removedLiker, activity);
       }
     }
   }
@@ -518,11 +523,13 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       if (activity.getPosterId() != comment.getUserId()) {
-        streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+        //streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+        StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity);
       }
       
       //
-      streamStorage.update(activity, oldUpdated, false);
+      //streamStorage.update(activity, oldUpdated, false);
+      StreamInvocationHelper.update(activity, oldUpdated);
 
     }  
     catch (NodeNotFoundException e) {
@@ -560,14 +567,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
         _createActivity(owner, activity);
         //create refs
-        streamStorage.save(owner, activity);
+        //streamStorage.save(owner, activity);
+        StreamInvocationHelper.save(owner, activity);
       }
       else {
         _saveActivity(activity);
       }
 
-      //
-      getSession().save();
+      StorageUtils.persist();
 
       //
       LOG.debug(String.format(
@@ -645,7 +652,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
 
       //
-      getSession().save();
+      //getSession().save();
+      StorageUtils.persist();
 
       //
       LOG.debug(String.format(

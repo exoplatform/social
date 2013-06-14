@@ -16,25 +16,35 @@
  */
 package org.exoplatform.social.common.service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Jun
- * 10, 2013
- */
-public interface SocialServiceExecutor {
+import org.exoplatform.social.common.service.utils.TraceElement;
 
-  SocialServiceContext getSocialServiceContext();
+public class LogWatchCallable<V> implements Callable<V> {
 
-  ProcessContext execute(ServiceContext<ProcessContext> serviceContext,
-                           ProcessContext processContext);
+  private Callable<V> wrappedTask;
 
-  void setExecutorService(ExecutorService executorService);
+  private TraceElement trace;
 
-  Future<ProcessContext> asyncProcess(AsyncProcessor asyncProcessor,
-                                        ProcessContext processContext);
-  
-  ProcessContext async(AsyncProcessor asyncProcessor,
-                                      ProcessContext processContext);
+  public LogWatchCallable(Callable<V> task, TraceElement trace) {
+    this.wrappedTask = task;
+    this.trace = trace;
+  }
+
+  public Callable<V> getWrappedTask() {
+    return wrappedTask;
+  }
+
+  public TraceElement getTraceElement() {
+    return trace;
+  }
+
+  public V call() throws Exception {
+    try {
+      trace.start();
+      return wrappedTask.call();
+    } finally {
+      trace.end();
+    }
+  }
 }

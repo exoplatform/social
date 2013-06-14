@@ -18,23 +18,30 @@ package org.exoplatform.social.core.storage.api;
 
 import java.util.List;
 
+import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 
 
 public interface ActivityStreamStorage {
-  /**
-   * 
-   * @param owner
-   * @param activity
-   */
-  public void save(Identity owner, ExoSocialActivity activity);
   
   /**
+   * Saves the activity into a streams.
    * 
-   * @param owner
-   * @param activity
+   * @param ctx 
+   * 1. ctx.getIdentity()  
+   * Owner is User Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
+   * to Connections's Feed and Connections streams.
+   * 
+   * Owner is Space Identity: Adds given {@link org.exoplatform.social.core.activity.model.ExoSocialActivity}
+   * to Space's Member's Feed and My Spaces streams.
+   * 2. ctx.getActivity() given activity to records the stream
+   * 
+   * @since 4.0.2, 4.1.0
    */
+  public void save(ProcessContext ctx);
+  
+
   public void delete(String activityId);
   
   public void unLike(Identity removedLike, ExoSocialActivity activity);
@@ -43,11 +50,37 @@ public interface ActivityStreamStorage {
   
   public void deleteConnect(Identity sender, Identity receiver);
   
-  public void update(ExoSocialActivity activity, long oldUpdated, boolean save);
+  /**
+   * Updates the activity when has actions such as like, mentions, unlike, or add comment
+   * 
+   * @param ctx 
+   * 1. ctx.getActivity() given activity to records the streams
+   * 2. ctx.getOldUpdated() oldUpdated of given the Activity. 
+   * @since 4.0.2, 4.1.0
+   */
+  public void update(ProcessContext ctx);
   
-  public void addSpaceMember(Identity identity, Identity space);
+  /**
+   * Adds new member for existing space
+   * 
+   * @param ctx 
+   * 1. ctx.getIdentity() the member is added to Space as member
+   * 2. ctx.getIdentitySpace() Space Identity
+   * 
+   * @since 4.0.2, 4.1.0
+   */
+  public void addSpaceMember(ProcessContext ctx);
   
-  public void removeSpaceMember(Identity identity, Identity space);
+  /**
+   * Removes the member from existing space
+   * 
+   * @param ctx 
+   * 1. ctx.getIdentity() the member is removed from the Space.
+   * 2. ctx.getIdentitySpace() Space Identity
+   * 
+   * @since 4.0.2, 4.1.0
+   */
+  public void removeSpaceMember(ProcessContext ctx);
   
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
   
