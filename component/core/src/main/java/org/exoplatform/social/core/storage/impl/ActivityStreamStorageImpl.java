@@ -18,7 +18,6 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +31,8 @@ import org.chromattic.api.query.QueryResult;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.common.service.ProcessContext;
+import org.exoplatform.social.common.service.utils.ObjectHelper;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
@@ -52,6 +53,7 @@ import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
 public class ActivityStreamStorageImpl extends AbstractStorage implements ActivityStreamStorage {
   
@@ -108,11 +110,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
 
   @Override
-  public void save(Identity owner, ExoSocialActivity activity) {
-    LOG.info("save(" + owner.getRemoteId() +")::BEGIN");
+  public void save(ProcessContext ctx) {
     try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      Identity owner = streamCtx.getIdentity();
       //
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());     
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
@@ -123,8 +126,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references.", e);
     }
-    
-    LOG.info("save()::END");
   }
   
   private void user(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -140,11 +141,9 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     //
     manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.SPACE_STREAM);
-
     //
     Identity ownerPosterOnSpace = identityStorage.findIdentityById(activityEntity.getPosterIdentity().getId());
     ownerSpaceMembersRefs(ownerPosterOnSpace, activityEntity);
-    
     //
     Space space = getSpaceStorage().getSpaceByPrettyName(owner.getRemoteId());
     
@@ -152,7 +151,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     //Don't create ActivityRef on space stream for given SpaceIdentity
     List<Identity> identities = getMemberIdentities(space);
     createSpaceMembersRefs(identities, activityEntity);
-    
   }
 
   private List<Identity> getMemberIdentities(Space space) {
@@ -186,7 +184,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       
     } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to delete Activities references.");
+      LOG.warn("Failed to delete Activities references.", e);
     }
   }
   
@@ -201,19 +199,20 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       
     } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to unLike");
+      LOG.warn("Failed to unLike Activity References");
     }
   }
 
   @Override
-  public void update(ExoSocialActivity activity, long oldUpdated, boolean save) {
-    LOG.info("update()::BEGIN");
+  public void update(ProcessContext ctx) {
     
     try {
-      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
-      LOG.warn(String.format("%s|oldUpdated=%s|newUpdated=%s", activityEntity.toString(), oldUpdated, activity.getUpdated().getTime()));
-      //LOG.warn("Stacktrace", new Throwable());
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      ExoSocialActivity activity = streamCtx.getActivity();
+      long oldUpdated = streamCtx.getOldUpdated();
 
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       Collection<ActivityRef> references = activityEntity.getActivityRefs();
       
       List<ActivityRefListEntity> refList = new ArrayList<ActivityRefListEntity>(); 
@@ -238,24 +237,18 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         //LOG.info("update()::AFTER");
         //printDebug(list, oldUpdated);
       }
-      
-      if (save) {
-        getSession().save();
-      }
-      
-      LOG.info("update()::END");
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to update Activity references.");
     }
   }
   
   @Override
-  public void addSpaceMember(Identity identity, Identity spaceIdentity) {
-    LOG.info("addSpaceMember()::BEGIN");
+  public void addSpaceMember(ProcessContext ctx) {
     try {
-      createSpaceMemberRefs(identity, spaceIdentity);
       
-      LOG.info("addSpaceMember()::END");
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      createSpaceMemberRefs(streamCtx.getIdentity(), streamCtx.getSpaceIdentity());
+      
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to addSpaceMember Activity references.");
     }
@@ -263,29 +256,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   @Override
-  public void removeSpaceMember(Identity removedIdentity, Identity spaceIdentity) {
-    LOG.info("removeSpaceMember()::BEGIN");
-    
+  public void removeSpaceMember(ProcessContext ctx) {
     try {
-      removeSpaceMemberRefs(removedIdentity, spaceIdentity);
-      
-      LOG.info("removeSpaceMember()::END");
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      removeSpaceMemberRefs(streamCtx.getIdentity(), streamCtx.getSpaceIdentity());
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to removeSpaceMember Activity references.");
     }
     
   }
 
-  private void printDebug(ActivityRefListEntity list, long oldUpdated) {
-    LOG.info("printDebug::SIZE = " + list.refs(oldUpdated).size());
-    LOG.info("printDebug::path = " + list.getPath());
-    
-    Map<String, ActivityRef> refs = list.refs(oldUpdated);
-    for(Entry<String, ActivityRef> entry : refs.entrySet()) {
-      if (entry.getValue() != null && entry.getValue().getActivityEntity() != null )
-      LOG.info(String.format("printDebug::KEY = %s| %s", entry.getKey(), entry.getValue().toString()));
-    }
-  }
+  
 
   @Override
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit) {
@@ -339,7 +320,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
   @Override
   public void connect(Identity sender, Identity receiver) {
-    LOG.warn("connect(sender = "+ sender.getRemoteId() +", reciever = " + receiver.getRemoteId() + ")::BEGIN");
     try {
       //
       QueryResult<ActivityEntity> activities = getActivitiesOfConnections(sender);
@@ -377,8 +357,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references when create relationship.");
     }
-    
-    LOG.warn("connect::END");
   }
   
   @Override
@@ -472,7 +450,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ExoSocialActivity a = getStorage().getActivity(current.getActivityEntity().getId());
             
         got.add(a);
-        LOG.warn(current.toString());
+        //LOG.warn(current.toString());
         
 
         if (++nb == limit) {
@@ -653,8 +631,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         ActivityRef ref = listRef.get(activityEntity);
-        LOG.info("manageRefList()::BEFORE");
-        printDebug(listRef, activityEntity.getLastUpdated());
+        //LOG.info("manageRefList()::BEFORE");
+        //printDebug(listRef, activityEntity.getLastUpdated());
         if (ref.getName() == null) {
           ref.setName(activityEntity.getName());
         }
@@ -665,8 +643,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
 
         ref.setActivityEntity(activityEntity);
 
-        LOG.info("manageRefList()::AFTER");
-        printDebug(listRef, activityEntity.getLastUpdated());
+        //LOG.info("manageRefList()::AFTER");
+        //printDebug(listRef, activityEntity.getLastUpdated());
       }
     }
     
@@ -678,6 +656,17 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ActivityRefListEntity listRef = type.refsOf(identityEntity);
         listRef.remove(activityEntity);
       }
+    }
+  }
+  
+  private void printDebug(ActivityRefListEntity list, long oldUpdated) {
+    LOG.info("printDebug::SIZE = " + list.refs(oldUpdated).size());
+    LOG.info("printDebug::path = " + list.getPath());
+    
+    Map<String, ActivityRef> refs = list.refs(oldUpdated);
+    for(Entry<String, ActivityRef> entry : refs.entrySet()) {
+      if (entry.getValue() != null && entry.getValue().getActivityEntity() != null )
+      LOG.info(String.format("printDebug::KEY = %s| %s", entry.getKey(), entry.getValue().toString()));
     }
   }
   

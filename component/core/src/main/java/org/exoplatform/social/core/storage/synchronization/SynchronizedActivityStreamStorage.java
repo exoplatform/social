@@ -18,6 +18,7 @@ package org.exoplatform.social.core.storage.synchronization;
 
 import java.util.List;
 
+import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
@@ -31,27 +32,17 @@ public class SynchronizedActivityStreamStorage extends ActivityStreamStorageImpl
   }
   
   @Override
-  public void save(Identity owner, ExoSocialActivity activity) {
+  public void save(ProcessContext ctx) {
     
     boolean created = startSynchronization();
     try {
-      super.save(owner, activity);
+      super.save(ctx);
     }
     finally {
       stopSynchronization(created);
     }
   }
   
-  @Override
-  public void delete(String activityId) {
-    boolean created = startSynchronization();
-    try {
-      super.delete(activityId);
-    }
-    finally {
-      stopSynchronization(created);
-    }
-  }
   
   @Override
   public void unLike(Identity removedLike, ExoSocialActivity activity) {

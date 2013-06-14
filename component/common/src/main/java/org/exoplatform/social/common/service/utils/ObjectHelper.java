@@ -17,17 +17,18 @@
 package org.exoplatform.social.common.service.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Jun 11, 2013  
- */
 public class ObjectHelper {
+  
+  @SuppressWarnings("unchecked")
+  private static final List<?> PRIMITIVE_ARRAY_TYPES = Arrays.asList(byte[].class, short[].class, int[].class, long[].class,
+                                                                     float[].class, double[].class, char[].class, boolean[].class);
+  
+  
   
   /**
    * Retrieves the given exception type from the exception.
@@ -69,6 +70,99 @@ public class ObjectHelper {
    */
   public static Iterator<Throwable> createExceptionIterator(Throwable exception) {
       return new ExceptionIterator(exception);
+  }
+  
+  /**
+   * Turns the given object arrays into a meaningful string
+   *
+   * @param objects an array of objects or null
+   * @return a meaningful string
+   */
+  public static String asString(Object[] objects) {
+      if (objects == null) {
+          return "null";
+      } else {
+          StringBuilder buffer = new StringBuilder("{");
+          int counter = 0;
+          for (Object object : objects) {
+              if (counter++ > 0) {
+                  buffer.append(", ");
+              }
+              String text = (object == null) ? "null" : object.toString();
+              buffer.append(text);
+          }
+          buffer.append("}");
+          return buffer.toString();
+      }
+  }
+
+  /**
+   * Returns true if a class is assignable from another class like the
+   * {@link Class#isAssignableFrom(Class)} method but which also includes
+   * coercion between primitive types to deal with Java 5 primitive type
+   * wrapping
+   */
+  public static boolean isAssignableFrom(Class<?> a, Class<?> b) {
+      a = convertPrimitiveTypeToWrapperType(a);
+      b = convertPrimitiveTypeToWrapperType(b);
+      return a.isAssignableFrom(b);
+  }
+
+  /**
+   * Returns if the given {@code clazz} type is a Java primitive array type.
+   * 
+   * @param clazz the Java type to be checked
+   * @return {@code true} if the given type is a Java primitive array type
+   */
+  public static boolean isPrimitiveArrayType(Class<?> clazz) {
+      return PRIMITIVE_ARRAY_TYPES.contains(clazz);
+  }
+  
+  /**
+   * Converts the given value to the required type or throw a meaningful exception
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T cast(Class<T> toType, Object value) {
+      if (toType == boolean.class) {
+          return (T)cast(Boolean.class, value);
+      } else if (toType.isPrimitive()) {
+          Class<?> newType = convertPrimitiveTypeToWrapperType(toType);
+          if (newType != toType) {
+              return (T)cast(newType, value);
+          }
+      }
+      try {
+          return toType.cast(value);
+      } catch (ClassCastException e) {
+          throw new IllegalArgumentException("Failed to convert: " 
+              + value + " to type: " + toType.getName() + " due to: " + e, e);
+      }
+  }
+  
+  /**
+   * Converts primitive types such as int to its wrapper type like
+   * {@link Integer}
+   */
+  public static Class<?> convertPrimitiveTypeToWrapperType(Class<?> type) {
+      Class<?> rc = type;
+      if (type.isPrimitive()) {
+          if (type == int.class) {
+              rc = Integer.class;
+          } else if (type == long.class) {
+              rc = Long.class;
+          } else if (type == double.class) {
+              rc = Double.class;
+          } else if (type == float.class) {
+              rc = Float.class;
+          } else if (type == short.class) {
+              rc = Short.class;
+          } else if (type == byte.class) {
+              rc = Byte.class;
+          } else if (type == boolean.class) {
+              rc = Boolean.class;
+          }
+      }
+      return rc;
   }
   
   private static final class ExceptionIterator implements Iterator<Throwable> {

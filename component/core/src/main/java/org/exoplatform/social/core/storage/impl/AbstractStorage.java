@@ -22,8 +22,10 @@ import java.util.Iterator;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-
+import javax.jcr.RepositoryException;
+import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
@@ -32,6 +34,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
+import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 /**
@@ -123,7 +126,14 @@ public abstract class AbstractStorage {
   protected void _removeById(final Class<?> clazz, final String nodeId) {
     getSession().remove(getSession().findById(clazz, nodeId));
   }
-
+  
+  protected <T> Status getStatus(final Class<T> clazz, final Object entity) throws IllegalArgumentException {
+    if (clazz != entity.getClass()) {
+      throw new IllegalArgumentException("Entity argument is wrong.");
+    }
+    return getSession().getStatus(entity);
+  }
+  
   protected boolean isJcrProperty(String name) {
     return !name.startsWith(NS_JCR);
   }
@@ -181,7 +191,7 @@ public abstract class AbstractStorage {
     }
   }
 
-  private static SocialChromatticLifeCycle lifecycleLookup() {
+  public static SocialChromatticLifeCycle lifecycleLookup() {
 
     PortalContainer container = PortalContainer.getInstance();
     ChromatticManager manager = (ChromatticManager) container.getComponentInstanceOfType(ChromatticManager.class);

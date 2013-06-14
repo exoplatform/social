@@ -17,11 +17,16 @@
 package org.exoplatform.social.common.service.impl;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.exoplatform.social.common.service.AsyncProcessor;
+import org.exoplatform.social.common.service.LogWatchCallable;
 import org.exoplatform.social.common.service.ProcessContext;
+import org.exoplatform.social.common.service.Processor;
 import org.exoplatform.social.common.service.ServiceContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
@@ -57,12 +62,18 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   }
   
   @Override
-  public Future<ProcessContext> asyncExecute(final AsyncProcessor asyncProcessor, final ProcessContext processorContext) {
+  public Future<ProcessContext> asyncProcess(final AsyncProcessor asyncProcessor, final ProcessContext processorContext) {
     Callable<ProcessContext> task = new Callable<ProcessContext>() {
       public ProcessContext call() throws Exception {
           return process(asyncProcessor, processorContext);
       }
     };
+    
+    if (this.context.isTraced()) {
+      task = new LogWatchCallable<ProcessContext>(task, processorContext.getTraceElement());
+    }
+    
+    
     return getExecutorService().submit(task);
   }
   
@@ -89,5 +100,25 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     return executor;
   }
 
-  
+  @Override
+  public ProcessContext async(AsyncProcessor asyncProcessor, ProcessContext processContext) {
+    Future<ProcessContext> future = asyncProcess(asyncProcessor, processContext);
+    //
+    try {
+      
+      future.get(10, TimeUnit.SECONDS);
+      
+      //
+      return future.get();
+    } catch (InterruptedException e) {
+      processContext.setException(e);
+    } catch (ExecutionException e) {
+      processContext.setException(e);
+    } catch (TimeoutException e) {
+      processContext.setException(e);
+    }
+    
+    return processContext;
+  }
+
 }

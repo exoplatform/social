@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class ThreadHelper {
-  public static final String DEFAULT_PATTERN = "Social Thread ##counter# - #name#";
+  public static final String DEFAULT_PATTERN = "Social-Thread ##counter# - #name#";
   private static final Pattern INVALID_PATTERN = Pattern.compile(".*#\\w+#.*");
 
   private static AtomicLong threadCounter = new AtomicLong();

@@ -65,7 +65,11 @@ public abstract class TestSocialServiceContext extends TestCase {
   protected abstract AsyncProcessor createAsyncProcessor();
   
   protected ProcessContext serviceExecute(ProcessContext processContext) throws ExecutionException, InterruptedException, TimeoutException {
-    Future<ProcessContext> future = getExecutor().asyncExecute(createAsyncProcessor(), processContext);
+    return getExecutor().async(createAsyncProcessor(), processContext);
+  }
+  
+  protected ProcessContext serviceProcess(ProcessContext processContext) throws ExecutionException, InterruptedException, TimeoutException {
+    Future<ProcessContext> future = getExecutor().asyncProcess(createAsyncProcessor(), processContext);
     //
     future.get(10, TimeUnit.SECONDS);
     

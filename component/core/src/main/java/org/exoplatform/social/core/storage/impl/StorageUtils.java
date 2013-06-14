@@ -1,17 +1,16 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-=======
 import java.util.Arrays;
->>>>>>> SOC-3430 | PLF 4.0: slowness in UIActivitiesLoader init - like/unlike activity
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.jcr.Session;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
@@ -351,5 +350,16 @@ public class StorageUtils {
     l.removeAll(Arrays.asList(l2));
     return l.toArray(new String[]{});
   }
-
+  
+  public static boolean persist() {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      if (chromatticSession.getJCRSession().hasPendingChanges()) {
+        chromatticSession.save();
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
 }

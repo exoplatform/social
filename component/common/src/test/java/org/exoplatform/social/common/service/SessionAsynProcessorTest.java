@@ -48,6 +48,7 @@ public class SessionAsynProcessorTest extends TestSocialServiceContext {
       protected ProcessContext execute(ProcessContext processContext) throws Exception {
         processContext.trace(getName(), "execute()");
         processContext.done(true);
+        Thread.sleep(1200);
         processContext.setProperty("result", "done");
         return processContext;
       }
@@ -63,7 +64,7 @@ public class SessionAsynProcessorTest extends TestSocialServiceContext {
     params.setProperty("test1", "test1");
 
     ProcessContext got = serviceExecute(params);
-    System.out.print(got.getTracer().toString());
+    System.out.print(got.getTraceLog());
 
     assertEquals("done", got.getProperty("result", String.class));
   }
