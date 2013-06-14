@@ -17,7 +17,13 @@
 package org.exoplatform.social.notification.task;
 
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ActivityTask implements NotificationTask<NotificationContext> {
@@ -39,6 +45,9 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   public void initSupportProvider() {
   }
 
+  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
+  public static final Pattern USER_NAME_VALIDATOR_REGEX = Pattern.compile("^[\\p{L}][\\p{L}._\\-\\d]+$");
+  
   @Override
   public void start(NotificationContext ctx) {
     // TODO Auto-generated method stub
@@ -61,6 +70,10 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       NotificationMessage message = new NotificationMessage();
       // TODO Auto-generated
       // method stub
+      ExoSocialActivity activity = ctx.getActivity();
+      if (hasContainMentions(activity)) {
+        //return emailMsg
+      }
       return null;
     }
 
@@ -107,4 +120,25 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     }
 
   };
+  
+  
+  private static boolean hasContainMentions(ExoSocialActivity activity) {
+    Matcher matcher = MENTION_PATTERN.matcher(activity.getTitle());
+    
+    while (matcher.find()) {
+      String remoteId = matcher.group().substring(1);
+      if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
+        continue;
+      }
+      
+//      Identity identity = idm.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
+      
+//      if (identity != null) {
+//        return true;
+//      }
+      
+    }
+    
+    return false;
+  }
 }

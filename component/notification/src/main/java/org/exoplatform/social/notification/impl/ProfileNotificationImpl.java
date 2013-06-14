@@ -32,10 +32,7 @@ public class ProfileNotificationImpl implements ProfileListener {
     NotificationContext ctx = NotificationContext.makeProfileNofification(profile);
     ProfileTask task = ProfileTask.UPDATE_AVATAR;
     NotificationMessage msg = NotificationExecutor.execute(task, ctx);
-    NotificationExecutor.executor(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME);
-    
-    
-    
+    NotificationExecutor.execute(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME);
   }
 
   @Override

@@ -40,11 +40,14 @@ public class NotificationExecutor {
     return got;
   }
 
-
-  public static Collection<NotificationMessage> executor(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
+  public static Collection<NotificationMessage> execute(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
     Collection<NotificationMessage> gots = new ArrayList<NotificationMessage>();
 
     for (int i = 0; i < tasks.length; ++i) {
+      if (tasks[i] == null) { 
+        continue;
+      }
+      //
       gots.add(execute(tasks[i], ctx));
     }
     //

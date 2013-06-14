@@ -16,47 +16,44 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import java.util.regex.Pattern;
-
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListener;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.notification.SocialEmailStorage;
+import org.exoplatform.social.notification.SocialEmailStorage.CONNECTOR_TYPE;
+import org.exoplatform.social.notification.SocialEmailUtils;
 import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ActivityTask;
 
 public class ActivityNotificationImpl implements ActivityListener {
 
-  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-  
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
-    ActivityTask saveTask = ActivityTask.POST_ACTIVITY;
     
     // check if activity contain mentions then create mention task
-    ActivityTask mentionTask;
-    if (hasContainMentions(activity)) {
-      mentionTask = ActivityTask.MENTION_ACTIVITY;
-    }
+    SocialEmailStorage storage = SocialEmailUtils.getSocialEmailStorage();
     
+    // add all available types and will be ignored if value is null
+    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.POST_ACTIVITY, 
+      ActivityTask.POST_ACTIVITY_ON_SPACE, ActivityTask.MENTION_ACTIVITY), CONNECTOR_TYPE.ACTIVITY);
   }
 
   @Override
   public void updateActivity(ActivityLifeCycleEvent event) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
-    // TODO Auto-generated method stub
+    ExoSocialActivity activity = event.getSource();    
+    NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
     
+    // check if activity contain mentions then create mention task
+    SocialEmailStorage storage = SocialEmailUtils.getSocialEmailStorage();
+    
+    // add all available types and will be ignored if value is null
+    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY), CONNECTOR_TYPE.ACTIVITY);
   }
-  
-  private boolean hasContainMentions(ExoSocialActivity activity) {
-    return MENTION_PATTERN.matcher(activity.getTitle()).find();
-  }
-
-  
 }
