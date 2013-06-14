@@ -18,6 +18,8 @@ package org.exoplatform.social.common.service;
 
 import java.util.List;
 
+import org.exoplatform.social.common.service.utils.TraceList;
+
 public interface SocialServiceContext {
 
   /**
@@ -37,4 +39,10 @@ public interface SocialServiceContext {
   SocialServiceExecutor getServiceExecutor();
   
   ExecutorServiceManager getExecutorServiceManager();
+  
+  TraceList getTraceList();
+  
+  boolean isTraced();
+  
+  boolean isAsync();
 }

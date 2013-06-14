@@ -17,21 +17,19 @@
 package org.exoplatform.social.common.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.ExecutorServiceManager;
 import org.exoplatform.social.common.service.LifecycleService;
 import org.exoplatform.social.common.service.ProcessContext;
-import org.exoplatform.social.common.service.Processor;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
+import org.exoplatform.social.common.service.TraceFactory;
+import org.exoplatform.social.common.service.utils.TraceList;
 
 public class SocialServiceContextImpl implements SocialServiceContext {
   
-  private static final String NAME = "DefaultSocialServiceContext";
+  private static final String NAME = "SocialServiceContext";
   
   private ExecutorServiceManager executorServiceManager;
   
@@ -41,9 +39,14 @@ public class SocialServiceContextImpl implements SocialServiceContext {
   
   private static SocialServiceContext instance;
   
+  private final TraceFactory traceFactory;
+  
+  private TraceList traceList;
+  
   private SocialServiceContextImpl() {
     this.executorServiceManager = new ExecutorServiceManagerImpl(this);
     this.serviceExecutor = new SocialServiceExecutorImpl(this, executorServiceManager.newDefaultThreadPool("Social"));
+    this.traceFactory = TraceFactory.defaultFactory;
   }
   
   public static SocialServiceContext getInstance() {
@@ -76,5 +79,23 @@ public class SocialServiceContextImpl implements SocialServiceContext {
   public ExecutorServiceManager getExecutorServiceManager() {
     return this.executorServiceManager;
 }
+
+  @Override
+  public TraceList getTraceList() {
+    if (traceList == null) {
+      traceList = traceFactory.make();
+    }
+    return traceList;
+  }
+
+  @Override
+  public boolean isTraced() {
+    return true;
+  }
+  
+  @Override
+  public boolean isAsync() {
+    return true;
+  }
   
 }

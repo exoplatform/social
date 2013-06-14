@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
+import org.exoplatform.social.common.service.utils.TraceElement;
 
 public class ProcessorContextImpl implements ProcessContext {
 
@@ -30,11 +31,18 @@ public class ProcessorContextImpl implements ProcessContext {
   private Exception exception;
   private boolean isDone;
   private StringBuffer tracer;
+  private TraceElement traceElement;
+  private String name;
   private Object lock = new Object();
   
   public ProcessorContextImpl(SocialServiceContext context) {
+    this("DefaultProcessor", context);
+  }
+  
+  public ProcessorContextImpl(String name, SocialServiceContext context) {
     this.context = context;
     this.tracer = new StringBuffer();
+    this.name = name;
   }
   
   public ProcessorContextImpl(ProcessContext parent) {
@@ -203,15 +211,32 @@ public class ProcessorContextImpl implements ProcessContext {
   @Override
   public void trace(String processorName, String trace) {
     synchronized (lock) {
-      tracer.append(String.format("%s::%s\n", processorName, trace));
+      tracer.append(String.format("%s::%s-", processorName, trace));
     }
   }
 
+  @Override
+  public String getTraceLog() {
+    return new StringBuffer().append(tracer.toString())
+                             .append(getTraceElement().toString())
+                             .toString();
+  }
+  
   @Override
   public StringBuffer getTracer() {
     return tracer;
   }
   
+  @Override
+  public TraceElement getTraceElement() {
+    if (traceElement == null) {
+      traceElement = TraceElement.getInstance(this.name);
+    }
+    return traceElement;
+  }
   
+  public void setTraceElement(TraceElement traceElement) {
+    this.traceElement = traceElement;
+  }
 
 }

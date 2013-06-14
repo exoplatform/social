@@ -53,6 +53,7 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.QueryFunction;
 import org.exoplatform.social.core.storage.query.WhereExpression;
+import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
 /**
  * Space storage layer.
@@ -300,7 +301,6 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     String[] addedInvited = sub(space.getInvitedUsers(), spaceEntity.getInvitedMembersId());
     String[] addedPending = sub(space.getPendingUsers(), spaceEntity.getPendingMembersId());
 
-    
     manageRefList(new UpdateContext(addedMembers, removedMembers), spaceEntity, RefType.MEMBER);
     manageActivityRefList(new UpdateContext(addedMembers, removedMembers), spaceEntity, RefType.MEMBER);
     
@@ -387,14 +387,16 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
     if (context.getAdded() != null) {
       for (String userName : context.getAdded()) {
         Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
-        streamStorage.addSpaceMember(identity, spaceIdentity);
+        //streamStorage.addSpaceMember(identity, spaceIdentity);
+        StreamInvocationHelper.addSpaceMember(identity, spaceIdentity);
       }
     }
 
     if (context.getRemoved() != null) {
       for (String userName : context.getRemoved()) {
         Identity identity = identityStorage.findIdentity(OrganizationIdentityProvider.NAME, userName);
-        streamStorage.removeSpaceMember(identity, spaceIdentity);
+        //streamStorage.removeSpaceMember(identity, spaceIdentity);
+        StreamInvocationHelper.removeSpaceMember(identity, spaceIdentity);
       }
     }
   }

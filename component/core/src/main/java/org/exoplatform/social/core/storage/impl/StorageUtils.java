@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.jcr.Session;
+
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.ListAccess;
@@ -375,5 +377,20 @@ public class StorageUtils {
     l.removeAll(Arrays.asList(l2));
     return l.toArray(new String[]{});
   }
+<<<<<<< HEAD
 
+=======
+  
+  public static boolean persist() {
+    try {
+      ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
+      if (chromatticSession.getJCRSession().hasPendingChanges()) {
+        chromatticSession.save();
+      }
+    } catch (Exception e) {
+      return false;
+    }
+    return true;
+  }
+>>>>>>> SOC-3430 | PLF 4.0: slowness in UIActivitiesLoader init - integration storage
 }

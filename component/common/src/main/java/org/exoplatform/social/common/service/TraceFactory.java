@@ -16,25 +16,17 @@
  */
 package org.exoplatform.social.common.service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import org.exoplatform.social.common.service.utils.TraceList;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Jun
- * 10, 2013
- */
-public interface SocialServiceExecutor {
+public interface TraceFactory {
 
-  SocialServiceContext getSocialServiceContext();
+  TraceList make();
 
-  ProcessContext execute(ServiceContext<ProcessContext> serviceContext,
-                           ProcessContext processContext);
+  public static TraceFactory defaultFactory = new TraceFactory() {
+                                              @Override
+                                              public TraceList make() {
+                                                return TraceList.getInstance();
+                                              }
+                                            };
 
-  void setExecutorService(ExecutorService executorService);
-
-  Future<ProcessContext> asyncProcess(AsyncProcessor asyncProcessor,
-                                        ProcessContext processContext);
-  
-  ProcessContext async(AsyncProcessor asyncProcessor,
-                                      ProcessContext processContext);
 }
