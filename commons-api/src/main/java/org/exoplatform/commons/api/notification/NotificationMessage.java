@@ -32,4 +32,44 @@ public class NotificationMessage {
 
   public NotificationMessage() {
   }
+
+  public String getProviderType() {
+    return providerType;
+  }
+
+  public void setProviderType(String providerType) {
+    this.providerType = providerType;
+  }
+
+  public String getFrom() {
+    return from;
+  }
+
+  public void setFrom(String from) {
+    this.from = from;
+  }
+
+  public String getOwnerId() {
+    return ownerId;
+  }
+
+  public void setOwnerId(String ownerId) {
+    this.ownerId = ownerId;
+  }
+
+  public String getMessageType() {
+    return messageType;
+  }
+
+  public void setMessageType(String messageType) {
+    this.messageType = messageType;
+  }
+
+  public List<String> getSendToUserIds() {
+    return sendToUserIds;
+  }
+
+  public void setSendToUserIds(List<String> sendToUserIds) {
+    this.sendToUserIds = sendToUserIds;
+  }
 }

@@ -38,15 +38,15 @@ public class ActivityLifeCycle extends AbstractLifeCycle<ActivityListener, Activ
     }
   }
   
-  void saveActivity(ExoSocialActivity activity) {
+  public void saveActivity(ExoSocialActivity activity) {
     broadcast(new ActivityLifeCycleEvent(Type.SAVE_ACTIVITY, activity));
   }
 
-  void updateActivity(ExoSocialActivity activity) {
+  public void updateActivity(ExoSocialActivity activity) {
     broadcast(new ActivityLifeCycleEvent(Type.UPDATE_ACTIVITY, activity));
   }
 
-  void saveComment(ExoSocialActivity activity) {
+  public void saveComment(ExoSocialActivity activity) {
     broadcast(new ActivityLifeCycleEvent(Type.SAVE_COMMENT, activity));
   }
 }

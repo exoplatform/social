@@ -17,13 +17,20 @@
 package org.exoplatform.social.notification.task;
 
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ActivityTask implements NotificationTask<NotificationContext> {
@@ -41,13 +48,13 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     }
   };
   
+  private static IdentityManager idm;
+  private static SpaceService spaceSrv;
+  
   @Override
   public void initSupportProvider() {
   }
 
-  private static final Pattern MENTION_PATTERN = Pattern.compile("@([^\\s]+)|@([^\\s]+)$");
-  public static final Pattern USER_NAME_VALIDATOR_REGEX = Pattern.compile("^[\\p{L}][\\p{L}._\\-\\d]+$");
-  
   @Override
   public void start(NotificationContext ctx) {
     // TODO Auto-generated method stub
@@ -68,12 +75,26 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       NotificationMessage message = new NotificationMessage();
-      // TODO Auto-generated
       // method stub
       ExoSocialActivity activity = ctx.getActivity();
-      if (hasContainMentions(activity)) {
-        //return emailMsg
+      String[] mentionerIds = activity.getMentionedIds();
+      if (mentionerIds.length > 0) {
+        //
+        message.setProviderType(PROVIDER_TYPE.MENTION.toString());
+        
+        //
+        message.setFrom(activity.getPosterId());
+        
+        //
+        message.setOwnerId(activity.getStreamOwner());
+        
+        //
+        message.setSendToUserIds(Arrays.asList(mentionerIds));
+        
+        //
+        return message;
       }
+      
       return null;
     }
 
@@ -86,9 +107,22 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      // TODO Auto-generated
-      // method stub
-      return null;
+      NotificationMessage message = new NotificationMessage();
+      
+      // which? activity or comment
+      ExoSocialActivity activity = ctx.getActivity();
+      
+      //
+      message.setFrom(activity.getPosterId());
+      
+      //
+      message.setSendToUserIds(toListUserIds(activity.getStreamOwner()));
+      
+      //
+      message.setProviderType(PROVIDER_TYPE.COMMENT.toString());
+      
+      //
+      return message;
     }
 
   };
@@ -100,9 +134,19 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      // TODO Auto-generated
-      // method stub
-      return null;
+      NotificationMessage message = new NotificationMessage();
+
+      //
+      ExoSocialActivity activity = ctx.getActivity();
+      
+      //
+      message.setFrom(activity.getPosterId());
+      
+      message.setSendToUserIds(toListUserIds(activity.getStreamOwner()));
+      
+      message.setProviderType(PROVIDER_TYPE.POST.toString());
+      
+      return message;
     }
 
   };
@@ -114,31 +158,61 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      // TODO Auto-generated
-      // method stub
+      NotificationMessage message = new NotificationMessage();
+      
+      //
+      ExoSocialActivity activity = ctx.getActivity();
+      
+      //
+      message.setFrom(activity.getPosterId());
+      
+      //
+      String ownerStream = activity.getStreamOwner();
+      
+      Identity id = getIdentityManager().getIdentity(ownerStream, false);
+      
+      if (getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
+      
+        Space space = getSpaceService().getSpaceByPrettyName(id.getRemoteId());
+        message.setSendToUserIds(Arrays.asList(space.getMembers()));
+        
+        //
+        message.setProviderType(PROVIDER_TYPE.POST_SPACE.toString());
+        
+        return message;
+        
+      }
+      
       return null;
     }
 
   };
   
-  
-  private static boolean hasContainMentions(ExoSocialActivity activity) {
-    Matcher matcher = MENTION_PATTERN.matcher(activity.getTitle());
-    
-    while (matcher.find()) {
-      String remoteId = matcher.group().substring(1);
-      if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
-        continue;
-      }
-      
-//      Identity identity = idm.findIdentity(OrganizationIdentityProvider.NAME, remoteId);
-      
-//      if (identity != null) {
-//        return true;
-//      }
-      
+  private static List<String> toListUserIds(String... userIds) {
+    List<String> ids = new ArrayList<String>();
+
+    for (String userId : userIds) {
+      ids.add(userId);
     }
     
-    return false;
+    return ids;
+  }
+  
+  private static IdentityManager getIdentityManager() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    if (idm == null) {
+      idm = (IdentityManager) container.getComponentInstance(IdentityManager.class);
+    }
+
+    return idm;
+  }
+  
+  private static SpaceService getSpaceService() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    if (spaceSrv == null) {
+      spaceSrv = (SpaceService) container.getComponentInstance(SpaceService.class);
+    }
+
+    return spaceSrv;
   }
 }
