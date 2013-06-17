@@ -150,7 +150,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(270)
+  @MaxQueryNumber(294)
   public void testRelationshipActivity() throws Exception {
 
     //
@@ -256,7 +256,7 @@ public class CachedActivityStorageTestCase extends AbstractCoreTest {
 
   }
   
-  @MaxQueryNumber(730)
+  @MaxQueryNumber(920)
   public void testUpdateActivity() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("hello");
