@@ -27,6 +27,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.RelationshipPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -277,9 +278,14 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     relationshipManager.delete(demoMaryConnection);
     relationshipManager.delete(demoJohnConnection);
     relationshipManager.delete(maryJohnConnection);
+    
+    relationshipManager.unregisterListener(relationshipPublisher);
   }
   
   public void testConnectionsExistActivitiesCounter() throws ActivityStorageException {
+    
+    RelationshipPublisher relationshipPublisher = (RelationshipPublisher) getContainer().getComponentInstanceOfType(RelationshipPublisher.class);
+    relationshipManager.addListenerPlugin(relationshipPublisher);
     
     final String activityTitle = "activity title";
     ExoSocialActivity activity = new ExoSocialActivityImpl();
@@ -295,6 +301,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     
     relationshipManager.delete(demoMaryConnection);
 
+    relationshipManager.unregisterListener(relationshipPublisher);
   }
   
  public void testSpaceActivities() throws Exception {
@@ -326,6 +333,8 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
       assertEquals(0, streamStorage.getMySpaces(maryIdentity, 0, -1).size());
     }
    
+    String activityId = identityStorage.getProfileActivityId(spaceIdentity.getProfile(), Profile.AttachedActivityType.SPACE);
+    activityStorage.deleteActivity(activityId);
    spaceService.deleteSpace(space);
   }
  
