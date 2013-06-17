@@ -223,7 +223,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(750)
+  @MaxQueryNumber(1026)
   public void testGetAllSpaces() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -241,7 +241,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetSpaces() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -270,7 +270,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetAllSpacesCount() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -288,7 +288,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetSpacesByFilter() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -331,7 +331,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetAllSpacesByFilterCount() throws Exception {
     int totalSpaces = 10;
     for (int i = 1; i <= totalSpaces; i++) {
@@ -367,7 +367,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetAccessibleSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -387,7 +387,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(1400)
+  @MaxQueryNumber(2026)
   public void testGetAccessibleSpacesByFilter() throws Exception {
     int countSpace = 20;
     Space []listSpace = new Space[countSpace];
@@ -448,7 +448,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(1400)
+  @MaxQueryNumber(2026)
   public void testGetAccessibleSpacesByFilterCount() throws Exception {
     int countSpace = 20;
     Space []listSpace = new Space[countSpace];
@@ -488,7 +488,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testgetAccessibleSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -513,7 +513,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetAccessibleSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -533,7 +533,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetEditableSpaces () throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -561,7 +561,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetEditableSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -625,7 +625,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetEditableSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -677,7 +677,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetEditableSpacesWithListAccess() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -705,7 +705,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetInvitedSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -737,7 +737,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetInvitedSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -781,7 +781,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetInvitedSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -818,7 +818,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetInvitedSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -850,7 +850,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetInvitedSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -875,7 +875,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPendingSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -911,7 +911,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPendingSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -971,7 +971,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPendingSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1020,7 +1020,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPendingSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1052,7 +1052,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPendingSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1080,7 +1080,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetPublicSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1104,7 +1104,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPublicSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1156,7 +1156,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPublicSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1199,7 +1199,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetPublicSpacesWithOffset() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1231,7 +1231,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @since 1.20.-GA
    * @throws Exception
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1006)
   public void testGetPublicSpacesCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1259,7 +1259,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetMemberSpaces() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1292,7 +1292,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetMemberSpacesByFilter() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1345,7 +1345,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetMemberSpacesByFilterCount() throws Exception {
     int countSpace = 10;
     Space []listSpace = new Space[10];
@@ -1389,7 +1389,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.0-GA
    */
-  @MaxQueryNumber(700)
+  @MaxQueryNumber(1026)
   public void testGetMemberSpacesWithListAccess() throws Exception {
     int countSpace = 10;
     for (int i = 0; i < countSpace; i++) {
@@ -1420,7 +1420,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(108)
   public void testGetSpaceById() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -1446,7 +1446,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(108)
   public void testGetSpaceByGroupId() throws Exception {
     Space space = getSpaceInstance(1);
     spaceStorage.saveSpace(space, true);
@@ -1465,7 +1465,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(108)
   public void testGetSpaceByUrl() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -1510,7 +1510,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(100)
+  @MaxQueryNumber(108)
   public void testGetSpaceByPrettyName() throws Exception {
     // number for method getSpaceInstance(int number)
     int number = 1;
@@ -1626,7 +1626,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(150)
+  @MaxQueryNumber(174)
   public void testSaveSpaceAvatar() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
@@ -1670,7 +1670,7 @@ public class SpaceStorageTest extends AbstractCoreTest {
    *
    * @throws Exception
    */
-  @MaxQueryNumber(200)
+  @MaxQueryNumber(226)
   public void testUpdateSpace() throws Exception {
     int number = 1;
     Space space = this.getSpaceInstance(number);
