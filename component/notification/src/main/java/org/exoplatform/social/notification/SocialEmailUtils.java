@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.notification;
 
+import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.container.PortalContainer;
 
 public class SocialEmailUtils {
@@ -25,8 +26,8 @@ public class SocialEmailUtils {
     return (T) PortalContainer.getInstance().getComponentInstanceOfType(clazz);
   }
   
-  public static SocialEmailStorage getSocialEmailStorage() {
-    return getService(SocialEmailStorage.class);
+  public static NotificationDataStorage getSocialEmailStorage() {
+    return getService(NotificationDataStorage.class);
   }
 
 }

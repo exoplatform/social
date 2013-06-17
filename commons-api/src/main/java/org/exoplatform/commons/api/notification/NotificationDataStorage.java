@@ -16,12 +16,54 @@
  */
 package org.exoplatform.commons.api.notification;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.exoplatform.commons.api.notification.impl.NotificationServiceImpl;
+import org.exoplatform.commons.api.notification.plf.AddCallBackImpl;
+import org.exoplatform.commons.api.notification.service.AddCallBack;
+import org.exoplatform.commons.api.notification.service.NotificationContext;
+import org.exoplatform.commons.api.notification.service.NotificationService;
 
 public class NotificationDataStorage {
+  AddCallBack<NotificationContext> callBack;
 
+  NotificationService              notificationService;
+
+  Queue<NotificationMessage>       queue = new ConcurrentLinkedQueue<NotificationMessage>();
+
+  public NotificationDataStorage() {
+    callBack = new AddCallBackImpl();
+    notificationService = new NotificationServiceImpl();
+  }
+  
+  public NotificationDataStorage add(NotificationMessage notificationMessage) {
+    queue.add(notificationMessage);
+    makeCallback(notificationMessage);
+    return this;
+  }
+
+  public NotificationDataStorage addAll(Collection<NotificationMessage> notificationMessages) {
+    queue.addAll(notificationMessages);
+    return this;
+  }
+  
+  public int size() {
+    return queue.size();
+  }
   
   public Collection<NotificationMessage> emails() {
-    return null;
+    Collection<NotificationMessage> messages = new ArrayList<NotificationMessage>(queue);
+    queue.clear();
+    return messages;
+  }
+  
+  private void makeCallback(NotificationMessage notificationMessage) {
+    NotificationContext ctx = new NotificationContext(size());
+    notificationService.start();
+    notificationService.addCallBack(ctx, callBack);
+    notificationService.end();
   }
 }
