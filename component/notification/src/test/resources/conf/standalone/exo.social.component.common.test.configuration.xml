@@ -33,6 +33,11 @@
   </component>
 
   <component>
+    <key>org.exoplatform.commons.api.notification.service.NotificationServiceListener</key>
+    <type>org.exoplatform.commons.api.notification.plf.NotificationServiceListenerImpl</type>
+  </component>
+
+  <component>
     <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
     <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
   </component>

@@ -17,6 +17,6 @@
 package org.exoplatform.commons.api.notification.service;
 
 
-public interface AddCallBack<T> {
-  void processCallback(T ctx);
+public interface NotificationServiceListener<T> {
+  void processListener(T ctx);
 }

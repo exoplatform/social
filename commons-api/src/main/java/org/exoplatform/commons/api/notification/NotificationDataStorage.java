@@ -17,36 +17,40 @@
 package org.exoplatform.commons.api.notification;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.exoplatform.commons.api.notification.impl.NotificationServiceImpl;
-import org.exoplatform.commons.api.notification.plf.AddCallBackImpl;
-import org.exoplatform.commons.api.notification.service.AddCallBack;
+import org.exoplatform.commons.api.notification.service.NotificationServiceListener;
 import org.exoplatform.commons.api.notification.service.NotificationContext;
 import org.exoplatform.commons.api.notification.service.NotificationService;
 
 public class NotificationDataStorage {
-  AddCallBack<NotificationContext> callBack;
+  
+  private long time = 0;
+
+  NotificationServiceListener<NotificationContext> listener;
 
   NotificationService              notificationService;
 
   Queue<NotificationMessage>       queue = new ConcurrentLinkedQueue<NotificationMessage>();
 
-  public NotificationDataStorage() {
-    callBack = new AddCallBackImpl();
+  public NotificationDataStorage(NotificationServiceListener<NotificationContext> listener) {
+    this.listener = listener;
     notificationService = new NotificationServiceImpl();
   }
   
   public NotificationDataStorage add(NotificationMessage notificationMessage) {
     queue.add(notificationMessage);
-    makeCallback(notificationMessage);
+    initNotificationServiceListener();
     return this;
   }
 
   public NotificationDataStorage addAll(Collection<NotificationMessage> notificationMessages) {
     queue.addAll(notificationMessages);
+    initNotificationServiceListener();
     return this;
   }
   
@@ -60,10 +64,25 @@ public class NotificationDataStorage {
     return messages;
   }
   
-  private void makeCallback(NotificationMessage notificationMessage) {
-    NotificationContext ctx = new NotificationContext(size());
+  private void initNotificationServiceListener() {
+    NotificationContext ctx = new NotificationContext(size(), getTime());
     notificationService.start();
-    notificationService.addCallBack(ctx, callBack);
+    notificationService.addNotificationServiceListener(ctx, listener);
     notificationService.end();
+    setTime(Calendar.getInstance().getTimeInMillis());
+  }
+  
+  /**
+   * @return the time
+   */
+  public long getTime() {
+    return time;
+  }
+
+  /**
+   * @param time the time to set
+   */
+  public void setTime(long time) {
+    this.time = time;
   }
 }

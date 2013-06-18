@@ -14,23 +14,35 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.commons.api.notification.plf;
+package org.exoplatform.platform.common.notification;
 
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Callable;
 
-import org.exoplatform.commons.api.notification.service.AddCallBack;
 import org.exoplatform.commons.api.notification.service.NotificationContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
-public class AddCallBackImpl implements AddCallBack<NotificationContext> {
-
+public class CallBackExecutor implements Callable<NotificationContext>{
+  private static final Log LOG = ExoLogger.getExoLogger(CallBackExecutor.class);
+  
+  private static CallBackExecutor  instance;
+  
   @Override
-  public void processCallback(NotificationContext ctx) {
-    ExecutorService es = Executors.newFixedThreadPool(1);
-    CompletionService<NotificationContext> cs = new ExecutorCompletionService<NotificationContext>(es);
-    cs.submit(CallBackExecutor.getInstance());
+  public NotificationContext call() throws Exception {
+    LOG.info("The callback successfully ... ");
+    return null;
+  }
+  
+  public static CallBackExecutor getInstance() {
+    if (instance == null) {
+      synchronized (CallBackExecutor.class) {
+        if (instance == null) {
+          instance = new CallBackExecutor();
+        }
+      }
+    }
+
+    return instance;
   }
 
 }

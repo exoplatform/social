@@ -20,6 +20,6 @@ package org.exoplatform.commons.api.notification.service;
 
 public interface NotificationService {
   void start();
-  void addCallBack(NotificationContext ctx, AddCallBack<NotificationContext> callBack);
+  void addNotificationServiceListener(NotificationContext ctx, NotificationServiceListener<NotificationContext> callBack);
   void end();
 }

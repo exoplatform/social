@@ -18,20 +18,41 @@ package org.exoplatform.commons.api.notification.service;
 
 
 public class NotificationContext {
-  private int size;
-  public NotificationContext(int size) {
+  private int  size;
+
+  private long time;
+
+  public NotificationContext(int size, long time) {
     this.size = size;
+    this.time = time;
   }
+
   /**
    * @return the size
    */
   public int getSize() {
     return size;
   }
+
   /**
    * @param size the size to set
    */
   public void setSize(int size) {
     this.size = size;
   }
+
+  /**
+   * @return the time
+   */
+  public long getTime() {
+    return time;
+  }
+
+  /**
+   * @param time the time to set
+   */
+  public void setTime(long time) {
+    this.time = time;
+  }
+
 }

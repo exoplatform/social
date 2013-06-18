@@ -16,7 +16,7 @@
  */
 package org.exoplatform.commons.api.notification.impl;
 
-import org.exoplatform.commons.api.notification.service.AddCallBack;
+import org.exoplatform.commons.api.notification.service.NotificationServiceListener;
 import org.exoplatform.commons.api.notification.service.NotificationContext;
 import org.exoplatform.commons.api.notification.service.NotificationService;
 
@@ -27,8 +27,8 @@ public class NotificationServiceImpl implements NotificationService {
   }
   
   @Override
-  public void addCallBack(NotificationContext ctx, AddCallBack<NotificationContext> callBack) {
-    callBack.processCallback(ctx);
+  public void addNotificationServiceListener(NotificationContext ctx, NotificationServiceListener<NotificationContext> callBack) {
+    callBack.processListener(ctx);
   }
 
   @Override
