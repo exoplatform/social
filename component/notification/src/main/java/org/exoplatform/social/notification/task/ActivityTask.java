@@ -80,16 +80,13 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       String[] mentionerIds = activity.getMentionedIds();
       if (mentionerIds.length > 0) {
         //
-        message.setProviderType(PROVIDER_TYPE.MENTION.toString());
+        message.setProviderType(PROVIDER_TYPE.MENTION.getName())
         
-        //
-        message.setFrom(activity.getPosterId());
+               .setFrom(activity.getPosterId())
         
-        //
-        message.setOwnerId(activity.getStreamOwner());
-        
-        //
-        message.setSendToUserIds(Arrays.asList(mentionerIds));
+               .setSendToUserIds(Arrays.asList(mentionerIds))
+
+               .addOwnerParameter("activityId", activity.getId());
         
         //
         return message;

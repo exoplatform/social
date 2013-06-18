@@ -17,14 +17,16 @@
 package org.exoplatform.commons.api.notification;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotificationMessage {
   private String       providerType;// 
 
   private String       from;
 
-  private String       ownerId;
+  private Map<String, String> ownerParameter = new HashMap<String, String>();
 
   private String       messageType;
 
@@ -37,39 +39,63 @@ public class NotificationMessage {
     return providerType;
   }
 
-  public void setProviderType(String providerType) {
+  public NotificationMessage setProviderType(String providerType) {
     this.providerType = providerType;
+    return this;
   }
 
   public String getFrom() {
     return from;
   }
 
-  public void setFrom(String from) {
+  public NotificationMessage setFrom(String from) {
     this.from = from;
-  }
-
-  public String getOwnerId() {
-    return ownerId;
-  }
-
-  public void setOwnerId(String ownerId) {
-    this.ownerId = ownerId;
+    return this;
   }
 
   public String getMessageType() {
     return messageType;
   }
 
-  public void setMessageType(String messageType) {
+  public NotificationMessage setMessageType(String messageType) {
     this.messageType = messageType;
+    return this;
   }
 
   public List<String> getSendToUserIds() {
     return sendToUserIds;
   }
 
-  public void setSendToUserIds(List<String> sendToUserIds) {
+  public NotificationMessage setSendToUserIds(List<String> sendToUserIds) {
     this.sendToUserIds = sendToUserIds;
+    return this;
+  }
+
+  public NotificationMessage addSendToUserId(String sendToUserId) {
+    this.sendToUserIds.add(sendToUserId);
+    return this;
+  }
+
+  /**
+   * @return the ownerParameter
+   */
+  public Map<String, String> getOwnerParameter() {
+    return ownerParameter;
+  }
+
+  /**
+   * @param ownerParameter the ownerParameter to set
+   */
+  public NotificationMessage setOwnerParameter(Map<String, String> ownerParameter) {
+    this.ownerParameter = ownerParameter;
+    return this;
+  }
+
+  /**
+   * @param ownerParameter the ownerParameter to set
+   */
+  public NotificationMessage addOwnerParameter(String key, String value) {
+    this.ownerParameter.put(key, value);
+    return this;
   }
 }
