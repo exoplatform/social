@@ -22,10 +22,10 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.1.x-social-notifications-SNAPSHOT</version>
   </parent>
   <artifactId>social-commons-api</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <version>4.1.x-social-notifications-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>eXo Social Commons-api</name>
   <description>eXo Social Commons-api</description>
