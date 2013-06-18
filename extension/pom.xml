@@ -24,7 +24,7 @@
   <parent>
     <artifactId>social</artifactId>
     <groupId>org.exoplatform.social</groupId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.1.x-social-commons-ckeditor-upgrade-SNAPSHOT</version>
   </parent>
   <artifactId>social-extension</artifactId>
   <packaging>pom</packaging>
