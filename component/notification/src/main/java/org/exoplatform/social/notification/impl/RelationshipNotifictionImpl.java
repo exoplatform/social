@@ -16,14 +16,17 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.task.RelationshipTask;
 
 public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
 
@@ -52,10 +55,11 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
     RelationshipManager relationshipManager = event.getSource();
     Relationship relationship = event.getPayload();
     try {
-      Identity sender = relationship.getSender();
-      Identity receiver = relationship.getReceiver();
-      
       NotificationContext ctx = NotificationContext.makeRelationshipNofification(relationshipManager, relationship);
+      
+      NotificationDataStorage storage = Utils.getSocialEmailStorage();
+      
+      storage.addAll(NotificationExecutor.execute(ctx, RelationshipTask.CONNECTION_REQUEST_RECEIVED));
     } catch (Exception e) {
       LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
     }

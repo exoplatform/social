@@ -141,9 +141,10 @@ public class NotificationContext {
     return ctx;
   }
   
-  public static NotificationContext makeSpaceNofification(Space space) {
+  public static NotificationContext makeSpaceNofification(Space space, String userId) {
     NotificationContext ctx = new NotificationContext();
     ctx.setSpace(space);
+    ctx.setRemoteId(userId);
     return ctx;
   }
 

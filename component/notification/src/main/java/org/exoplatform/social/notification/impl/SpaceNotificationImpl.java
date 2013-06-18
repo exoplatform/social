@@ -16,10 +16,16 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.spi.SpaceLifeCycleListener;
+import org.exoplatform.social.core.space.SpaceListenerPlugin;
+import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.task.SpaceTask;
 
-public class SpaceNotificationImpl implements SpaceLifeCycleListener {
+public class SpaceNotificationImpl extends SpaceListenerPlugin {
 
   @Override
   public void spaceCreated(SpaceLifeCycleEvent event) {
@@ -103,5 +109,27 @@ public class SpaceNotificationImpl implements SpaceLifeCycleListener {
   public void spaceAccessEdited(SpaceLifeCycleEvent event) {
     // TODO Auto-generated method stub
 
+  }
+  
+  @Override
+  public void addInvitedUser(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
+    String userId = event.getTarget();
+    
+    NotificationContext ctx = NotificationContext.makeSpaceNofification(space, userId);
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
+    
+    storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_INVITATION));
+  }
+  
+  @Override
+  public void addPendingUser(SpaceLifeCycleEvent event) {
+    Space space = event.getSpace();
+    String userId = event.getTarget();
+    
+    NotificationContext ctx = NotificationContext.makeSpaceNofification(space, userId);
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
+    
+    storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_JOIN_REQUEST));
   }
 }

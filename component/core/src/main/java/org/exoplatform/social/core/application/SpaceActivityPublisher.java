@@ -19,7 +19,6 @@ package org.exoplatform.social.core.application;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
@@ -37,7 +36,6 @@ import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.model.Space.UpdatedField;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent.Type;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 
@@ -453,6 +451,16 @@ public class SpaceActivityPublisher extends SpaceListenerPlugin {
 
   private SpaceStorage getSpaceStorage() {
     return (SpaceStorage) PortalContainer.getInstance().getComponentInstanceOfType(SpaceStorage.class);
+  }
+
+  @Override
+  public void addInvitedUser(SpaceLifeCycleEvent event) {
+    
+  }
+
+  @Override
+  public void addPendingUser(SpaceLifeCycleEvent event) {
+    
   }
 
 }

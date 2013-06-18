@@ -76,7 +76,7 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
       Space space = ctx.getSpace();
       String userId = ctx.getRemoteId();
       
-      message.setProviderType(PROVIDER_TYPE.INVITED_JOIN_SPACE.getName())
+      message.setProviderType(PROVIDER_TYPE.REQUEST_JOIN_SPACE.getName())
              .setFrom(userId)
              .addOwnerParameter("spaceGroupId", space.getGroupId())
              .setSendToUserIds(Arrays.asList(space.getManagers()));

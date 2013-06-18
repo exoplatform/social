@@ -23,6 +23,9 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
+import org.exoplatform.social.core.manager.RelationshipManagerImpl;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
@@ -31,6 +34,8 @@ import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.MaxQueryNumber;
 import org.exoplatform.social.notification.QueryNumberTest;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.impl.RelationshipNotifictionImpl;
+import org.exoplatform.social.notification.impl.SpaceNotificationImpl;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -42,7 +47,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private RelationshipStorageImpl relationshipStorage;
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
-  private SpaceStorage spaceStorage;
+  private SpaceServiceImpl spaceService;
+  private RelationshipManagerImpl relationshipManager;
 
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -56,7 +62,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     identityStorage = Utils.getService(IdentityStorage.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
     relationshipStorage = Utils.getService(RelationshipStorageImpl.class);
-    spaceStorage = Utils.getService(SpaceStorage.class);
+    spaceService = Utils.getService(SpaceServiceImpl.class);
+    relationshipManager = (RelationshipManagerImpl) getContainer().getComponentInstanceOfType(RelationshipManagerImpl.class);
     
     assertNotNull(identityStorage);
     assertNotNull(activityManager);
@@ -89,7 +96,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     }
 
     for (Space sp : tearDownSpaceList) {
-      spaceStorage.deleteSpace(sp.getId());
+      spaceService.deleteSpace(sp);
     }
 
     identityStorage.deleteIdentity(rootIdentity);
@@ -124,5 +131,54 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     
     
+  }
+  
+  public void testInviteToConnect() throws Exception {
+    
+    RelationshipNotifictionImpl relationshipNotifiction = (RelationshipNotifictionImpl) getContainer().getComponentInstanceOfType(RelationshipNotifictionImpl.class);
+    relationshipManager.addListenerPlugin(relationshipNotifiction);
+    
+    relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
+    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    
+    relationshipManager.unregisterListener(relationshipNotifiction);
+  }
+  
+  public void testInvitedToJoinSpace() throws Exception {
+    Space space = getSpaceInstance(1);
+    spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
+    
+    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+  }
+  
+  public void testAddPendingUser() throws Exception {
+    Space space = getSpaceInstance(1);
+    spaceService.addPendingUser(space, maryIdentity.getRemoteId());
+    
+    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+  }
+  
+  private Space getSpaceInstance(int number) throws Exception {
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/space/space" + number);
+    String[] managers = new String[] {"root"};
+    String[] members = new String[] {"demo"};
+    String[] invitedUsers = new String[] {};
+    String[] pendingUsers = new String[] {};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    this.spaceService.saveSpace(space, true);
+    return space;
   }
 }

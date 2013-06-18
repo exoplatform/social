@@ -92,6 +92,11 @@
     <key>org.exoplatform.social.core.application.RelationshipPublisher</key>
     <type>org.exoplatform.social.core.application.RelationshipPublisher</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</key>
+    <type>org.exoplatform.social.notification.impl.RelationshipNotifictionImpl</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
@@ -445,6 +450,15 @@
       <name>ActivityNotificationImpl</name>
       <set-method>addActivityEventListener</set-method>
       <type>org.exoplatform.social.notification.impl.ActivityNotificationImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
+    <component-plugin>
+      <name>SpaceNotificationImpl</name>
+      <set-method>addSpaceListener</set-method>
+      <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
 
