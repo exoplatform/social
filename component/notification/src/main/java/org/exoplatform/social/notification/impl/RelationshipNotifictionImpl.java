@@ -16,23 +16,16 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import java.util.Map;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
-import org.exoplatform.social.core.application.RelationshipPublisher;
-import org.exoplatform.social.core.application.RelationshipPublisher.TitleId;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
-import org.exoplatform.social.core.relationship.RelationshipListener;
+import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.notification.context.NotificationContext;
-import org.exoplatform.social.notification.task.RelationshipTask;
 
-public class RelationshipNotifictionImpl implements RelationshipListener {
+public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
 
   private static final Log LOG = ExoLogger.getLogger(RelationshipNotifictionImpl.class);
   

@@ -18,14 +18,14 @@ package org.exoplatform.social.notification.impl;
 
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
-import org.exoplatform.social.core.activity.ActivityListener;
+import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ActivityTask;
 
-public class ActivityNotificationImpl implements ActivityListener {
+public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {

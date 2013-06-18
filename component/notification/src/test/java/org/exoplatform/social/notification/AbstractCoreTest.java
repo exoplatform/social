@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.social.notification.test;
+package org.exoplatform.social.notification;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -44,8 +44,6 @@ import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.core.test.MaxQueryNumber;
-import org.exoplatform.social.core.test.QueryNumberTest;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),

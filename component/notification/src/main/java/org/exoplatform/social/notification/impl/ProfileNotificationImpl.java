@@ -19,12 +19,12 @@ package org.exoplatform.social.notification.impl;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
-import org.exoplatform.social.core.profile.ProfileListener;
+import org.exoplatform.social.core.profile.ProfileListenerPlugin;
 import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ProfileTask;
 
-public class ProfileNotificationImpl implements ProfileListener {
+public class ProfileNotificationImpl extends ProfileListenerPlugin {
 
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {

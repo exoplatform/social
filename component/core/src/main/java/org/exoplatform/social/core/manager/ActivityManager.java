@@ -21,6 +21,7 @@ import java.util.List;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.BaseActivityProcessorPlugin;
+import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
@@ -269,6 +270,8 @@ public interface ActivityManager {
    */
   void addProcessorPlugin(BaseActivityProcessorPlugin activityProcessorPlugin);
 
+  void addActivityEventListener(ActivityListenerPlugin activityListenerPlugin);
+  
   /**
    * Saves a new created activity to a stream. Note that the Activity.userId will be set to the owner's identity if it
    * has not already set.

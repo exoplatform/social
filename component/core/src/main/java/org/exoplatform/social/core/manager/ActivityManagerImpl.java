@@ -18,7 +18,6 @@ package org.exoplatform.social.core.manager;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -32,6 +31,8 @@ import org.exoplatform.social.core.BaseActivityProcessorPlugin;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess;
 import org.exoplatform.social.core.activity.ActivitiesRealtimeListAccess.ActivityType;
 import org.exoplatform.social.core.activity.ActivityLifeCycle;
+import org.exoplatform.social.core.activity.ActivityListener;
+import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.CommentsRealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
@@ -204,6 +205,25 @@ public class ActivityManagerImpl implements ActivityManager {
     } else {
       LOG.warn("activity is not liked by identity: " + identity);
     }
+  }
+
+  @Override
+  public void addActivityEventListener(ActivityListenerPlugin activityListenerPlugin) {
+    registerActivityListener(activityListenerPlugin);   
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public void registerActivityListener(ActivityListener listener) {
+    activityLifeCycle.addListener(listener);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void unregisterActivityListener(ActivityListener listener) {
+    activityLifeCycle.removeListener(listener);
   }
 
 
@@ -460,4 +480,5 @@ public class ActivityManagerImpl implements ActivityManager {
     Validate.notNull(newActivity.getUserId(), "activity.getUserId() must not be null!");
     return identityManager.getIdentity(newActivity.getUserId(), false);
   }
+
 }

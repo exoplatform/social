@@ -26,6 +26,11 @@
     <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
     <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.notification.NotificationDataStorage</key>
+    <type>org.exoplatform.commons.api.notification.NotificationDataStorage</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>

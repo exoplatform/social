@@ -21,21 +21,28 @@ import java.util.Collection;
 
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 
 public class NotificationExecutor {
-
+  private static final Log LOG = ExoLogger.getLogger(NotificationExecutor.class);
   
   public static NotificationMessage execute(NotificationTask<NotificationContext> task, NotificationContext ctx) {
-    
+    NotificationMessage got = null;
+
+    //
     task.start(ctx);
-    
+
     //
-    NotificationMessage got = task.execute(ctx);
-    
-    //
-    task.end(ctx);
-    
+    try {
+      got = task.execute(ctx);
+    } catch (Exception e) {
+      LOG.debug("Can not execute task...", e);
+    } finally {
+      task.end(ctx);
+    }
+
     //
     return got;
   }
@@ -43,12 +50,18 @@ public class NotificationExecutor {
   public static Collection<NotificationMessage> execute(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
     Collection<NotificationMessage> gots = new ArrayList<NotificationMessage>();
 
+    NotificationMessage got;
+
     for (int i = 0; i < tasks.length; ++i) {
-      if (tasks[i] == null) { 
+      if (tasks[i] == null) {
         continue;
       }
+
       //
-      gots.add(execute(tasks[i], ctx));
+      got = execute(tasks[i], ctx);
+      if (got != null) {
+        gots.add(got);
+      }
     }
     //
     return gots;
