@@ -1,0 +1,70 @@
+<%
+/*
+<!--
+
+  Copyright (C) 2003-2013 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  def componentId = uicomponent.id;
+  def notificationLabel = _ctx.appRes(componentId + ".label.Notifications");
+  def notificationsDescriptionLabel = _ctx.appRes(componentId + ".label.NotificationsDescription");
+  def notificationsChoseLabel = _ctx.appRes(componentId + ".label.NotificationsChose");
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+%>
+<div class="uiEmailNotification">
+  <% uiform.begin() %>
+  <div class="uiSocTitleBar clearfix">
+    <h4 class="titleWithBorder">
+      <%=notificationLabel%>
+    </h4>
+    <%=notificationsDescriptionLabel%>
+  </div>
+  <div class="form-horizontal">
+    <strong><%=notificationsChoseLabel%>:</strong>
+    <% 
+      for(field in uiform.getChildren()) {
+        if (field.getName().equals(uicomponent.FREQUENCY)) {
+          String label = _ctx.appRes(uicomponent.getId() + ".label." + field.getName());
+    %>
+      <div class="control-group">
+        <div class="controls">
+          <%=label%>: <% uiform.renderField(field) %>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="control-group">
+        <div class="controls">
+          <% uiform.renderField(field) %>
+        </div>
+      </div>    
+      <% } %>
+    <% } %>
+  </div>
+  
+  <div class="uiAction uiActionBorder">
+  <% for(action in uicomponent.getActions()) { 
+     String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action); 
+     String link = uicomponent.event(action) ;
+  %>
+    <button onclick="$link" class="btn" type="button">$actionLabel</button>
+  <%}%>
+  </div>
+  
+  <% uiform.end(); %>
+</div>
