@@ -16,10 +16,31 @@
  */
 package org.exoplatform.social.notification.task;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class RelationshipTask implements NotificationTask<NotificationContext> {
+  
+  public enum PROVIDER_TYPE {
+    NEW_USER("NewUserJoinSocialIntranet"), CONNECTION_REQUEST("ReceiceConnectionRequest");
+    private final String name;
+
+    PROVIDER_TYPE(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
+  };
+  
   @Override
   public void initSupportProvider() {
     // TODO Auto-generated method stub
@@ -37,5 +58,43 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
     // TODO Auto-generated method stub
 
   }
-
+  
+  public static RelationshipTask NEW_USER_JOIN_INTRANET = new RelationshipTask() {
+    
+    @Override
+    public NotificationMessage execute(NotificationContext ctx) {
+      NotificationMessage message = new NotificationMessage();
+      
+      Profile profile = ctx.getProfile();
+      
+      //This type of notification need to get all users of the system
+      List<String> allUsers = new ArrayList<String>();
+      
+      message.setProviderType(PROVIDER_TYPE.NEW_USER.getName())
+             .setFrom(profile.getId())
+             .setSendToUserIds(allUsers);
+      
+      return message;
+    }
+  
+  };
+  
+  public static RelationshipTask CONNECTION_REQUEST_RECEIVED = new RelationshipTask() {
+    
+    @Override
+    public NotificationMessage execute(NotificationContext ctx) {
+      NotificationMessage message = new NotificationMessage();
+      
+      Relationship relation = ctx.getRelationship();
+      
+      message.setProviderType(PROVIDER_TYPE.CONNECTION_REQUEST.getName())
+             .setFrom(relation.getSender().getProviderId())
+             .setSendToUserIds(Arrays.asList(relation.getReceiver().getProviderId()))
+             .addOwnerParameter("relationShipId", relation.getId());
+      
+      return message;
+    }
+  
+  };
+  
 }
