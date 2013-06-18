@@ -38,6 +38,7 @@ public class NotificationExecutor {
     try {
       got = task.execute(ctx);
     } catch (Exception e) {
+      e.printStackTrace();
       LOG.debug("Can not execute task...", e);
     } finally {
       task.end(ctx);

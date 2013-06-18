@@ -145,31 +145,34 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      NotificationMessage message = new NotificationMessage();
-      
-      //
-      ExoSocialActivity activity = ctx.getActivity();
-      
-      //
-      message.setFrom(Utils.getUserId(activity.getPosterId()));
-      
-      //
-      String ownerStream = activity.getStreamOwner();
-      
-      Identity id = Utils.getIdentityManager().getIdentity(ownerStream, false);
-      
-      if (Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
-      
-        Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
-        message.setSendToUserIds(Arrays.asList(space.getMembers()));
+      try {
+        NotificationMessage message = new NotificationMessage();
         
         //
-        message.setProviderType(PROVIDER_TYPE.POST_SPACE.toString());
+        ExoSocialActivity activity = ctx.getActivity();
         
-        return message;
+        //
+        message.setFrom(Utils.getUserId(activity.getPosterId()));
         
+        //
+        String ownerStream = activity.getStreamOwner();
+        
+        Identity id = Utils.getIdentityManager().getIdentity(ownerStream, false);
+        
+        if (Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
+        
+          Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
+          message.setSendToUserIds(Arrays.asList(space.getMembers()));
+          
+          //
+          message.setProviderType(PROVIDER_TYPE.POST_SPACE.toString());
+          
+          return message;
+          
+        }
+      } catch (Exception e) {
+        return null;
       }
-      
       return null;
     }
 
