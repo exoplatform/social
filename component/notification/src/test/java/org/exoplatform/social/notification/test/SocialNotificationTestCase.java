@@ -30,7 +30,7 @@ import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.MaxQueryNumber;
 import org.exoplatform.social.notification.QueryNumberTest;
-import org.exoplatform.social.notification.SocialEmailUtils;
+import org.exoplatform.social.notification.Utils;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -53,10 +53,10 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
 
-    identityStorage = SocialEmailUtils.getService(IdentityStorage.class);
-    activityManager = SocialEmailUtils.getService(ActivityManagerImpl.class);
-    relationshipStorage = SocialEmailUtils.getService(RelationshipStorageImpl.class);
-    spaceStorage = SocialEmailUtils.getService(SpaceStorage.class);
+    identityStorage = Utils.getService(IdentityStorage.class);
+    activityManager = Utils.getService(ActivityManagerImpl.class);
+    relationshipStorage = Utils.getService(RelationshipStorageImpl.class);
+    spaceStorage = Utils.getService(SpaceStorage.class);
     
     assertNotNull(identityStorage);
     assertNotNull(activityManager);
@@ -109,7 +109,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveActivity(rootIdentity, activity);
     assertNotNull(activity.getId());
     
-    assertEquals(3, SocialEmailUtils.getSocialEmailStorage().emails().size());
+    assertEquals(3, Utils.getSocialEmailStorage().emails().size());
     
     //
     ExoSocialActivity got = activityManager.getActivity(activity.getId());
