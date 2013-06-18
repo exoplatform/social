@@ -20,7 +20,7 @@ import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListener;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.notification.SocialEmailUtils;
+import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ActivityTask;
@@ -33,7 +33,7 @@ public class ActivityNotificationImpl implements ActivityListener {
     NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
     
     // check if activity contain mentions then create mention task
-    NotificationDataStorage storage = SocialEmailUtils.getSocialEmailStorage();
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
     // add all available types and will be ignored if value is null
     storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.POST_ACTIVITY, 
@@ -50,7 +50,7 @@ public class ActivityNotificationImpl implements ActivityListener {
     NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
     
     // check if activity contain mentions then create mention task
-    NotificationDataStorage storage = SocialEmailUtils.getSocialEmailStorage();
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
     // add all available types and will be ignored if value is null
     storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY));

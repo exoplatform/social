@@ -18,19 +18,14 @@ package org.exoplatform.social.notification.task;
 
 import org.exoplatform.commons.api.notification.NotificationMessage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.exoplatform.commons.api.notification.task.NotificationTask;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ActivityTask implements NotificationTask<NotificationContext> {
@@ -47,9 +42,6 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       return name;
     }
   };
-  
-  private static IdentityManager idm;
-  private static SpaceService spaceSrv;
   
   @Override
   public void initSupportProvider() {
@@ -82,7 +74,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         //
         message.setProviderType(PROVIDER_TYPE.MENTION.getName())
         
-               .setFrom(activity.getPosterId())
+               .setFrom(Utils.getUserId(activity.getPosterId()))
         
                .setSendToUserIds(Arrays.asList(mentionerIds))
 
@@ -110,13 +102,11 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.getActivity();
       
       //
-      message.setFrom(activity.getPosterId());
+      message.setFrom(Utils.getUserId(activity.getPosterId()))
       
-      //
-      message.setSendToUserIds(toListUserIds(activity.getStreamOwner()));
+             .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
       
-      //
-      message.setProviderType(PROVIDER_TYPE.COMMENT.toString());
+             .setProviderType(PROVIDER_TYPE.COMMENT.toString());
       
       //
       return message;
@@ -137,11 +127,11 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.getActivity();
       
       //
-      message.setFrom(activity.getPosterId());
+      message.setFrom(Utils.getUserId(activity.getPosterId()))
       
-      message.setSendToUserIds(toListUserIds(activity.getStreamOwner()));
+             .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
       
-      message.setProviderType(PROVIDER_TYPE.POST.toString());
+             .setProviderType(PROVIDER_TYPE.POST.toString());
       
       return message;
     }
@@ -161,16 +151,16 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.getActivity();
       
       //
-      message.setFrom(activity.getPosterId());
+      message.setFrom(Utils.getUserId(activity.getPosterId()));
       
       //
       String ownerStream = activity.getStreamOwner();
       
-      Identity id = getIdentityManager().getIdentity(ownerStream, false);
+      Identity id = Utils.getIdentityManager().getIdentity(ownerStream, false);
       
-      if (getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
+      if (Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
       
-        Space space = getSpaceService().getSpaceByPrettyName(id.getRemoteId());
+        Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
         message.setSendToUserIds(Arrays.asList(space.getMembers()));
         
         //
@@ -184,32 +174,4 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     }
 
   };
-  
-  private static List<String> toListUserIds(String... userIds) {
-    List<String> ids = new ArrayList<String>();
-
-    for (String userId : userIds) {
-      ids.add(userId);
-    }
-    
-    return ids;
-  }
-  
-  private static IdentityManager getIdentityManager() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    if (idm == null) {
-      idm = (IdentityManager) container.getComponentInstance(IdentityManager.class);
-    }
-
-    return idm;
-  }
-  
-  private static SpaceService getSpaceService() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    if (spaceSrv == null) {
-      spaceSrv = (SpaceService) container.getComponentInstance(SpaceService.class);
-    }
-
-    return spaceSrv;
-  }
 }
