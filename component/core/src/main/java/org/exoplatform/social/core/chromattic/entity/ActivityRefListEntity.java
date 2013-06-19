@@ -61,7 +61,10 @@ public abstract class ActivityRefListEntity {
 
   @Create
   public abstract ActivityRefYearEntity newYear();
-
+  
+  @Create
+  public abstract ActivityRefYearEntity newYear(String name);
+  
   public void inc() {
     setNumber(getNumber() + 1);
   }
@@ -71,8 +74,12 @@ public abstract class ActivityRefListEntity {
   }
 
   public ActivityRefYearEntity getYear(String year) {
-
-    ActivityRefYearEntity yearEntity = getYears().get(year);
+    ActivityRefYearEntity yearEntity = null;
+    if (getYears() == null) {
+      yearEntity = newYear(year);
+    } else {
+      yearEntity = getYears().get(year);
+    }
 
     if (yearEntity == null) {
       yearEntity = newYear();
@@ -91,7 +98,9 @@ public abstract class ActivityRefListEntity {
   }
   
   public ActivityRef get(ActivityEntity entity) {
-    return get(entity.getLastUpdated());
+    //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
+    Long key = entity.getLastUpdated() != null ? entity.getLastUpdated() : entity.getPostedTime(); 
+    return get(key.longValue());
   }
   
   public ActivityRef get(long lastUpdated) {
@@ -111,7 +120,6 @@ public abstract class ActivityRefListEntity {
       ref = dayEntity.createRef();
       ref.setName("" + lastUpdated);
       dayEntity.getActivityRefList().add(ref);
-      ref.setNew(true);
       dayEntity.inc();
     }
     

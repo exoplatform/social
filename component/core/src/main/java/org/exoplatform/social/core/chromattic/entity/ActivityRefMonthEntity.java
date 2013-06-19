@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.chromattic.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +65,9 @@ public abstract class ActivityRefMonthEntity implements NamedEntity, IndexNumber
   
   @Create
   public abstract ActivityRefDayEntity newDay();
+  
+  @Create
+  public abstract ActivityRefDayEntity newDay(String day);
 
   public void inc() {
     getYear().inc();
@@ -74,7 +78,7 @@ public abstract class ActivityRefMonthEntity implements NamedEntity, IndexNumber
     getYear().desc();
     setNumber(getNumber() - 1);
   }
-
+  
   public ActivityRefDayEntity getDay(String day) {
 
     ActivityRefDayEntity dayEntity = getDays().get(day);

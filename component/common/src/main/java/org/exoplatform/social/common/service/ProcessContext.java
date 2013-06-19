@@ -66,6 +66,11 @@ public interface ProcessContext {
   
   String getTraceLog();
   
+  void setTraceElement(TraceElement traceElement);
+  
   TraceElement getTraceElement();
   
+  void totalProcesses(int total);
+  
+  int getTotalProcesses();
 }

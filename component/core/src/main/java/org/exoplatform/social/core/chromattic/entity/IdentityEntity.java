@@ -78,7 +78,7 @@ public abstract class IdentityEntity {
   public abstract void setProfile(ProfileEntity profile);
   
   /**
-   * Store the detailed information of an identity.
+   * Store activities's streams
    */
   @MappedBy("soc:streams")
   @OneToOne
@@ -178,4 +178,8 @@ public abstract class IdentityEntity {
 
   @Create
   public abstract RelationshipEntity createRelationship();
+  
+  @Create
+  public abstract StreamsEntity createStreams();
+  
 }

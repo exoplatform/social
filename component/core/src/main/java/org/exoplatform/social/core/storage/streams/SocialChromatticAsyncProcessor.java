@@ -36,8 +36,6 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   protected ChromatticLifeCycle lifeCycle;
   private AtomicBoolean startedRequest = new AtomicBoolean(false);
 
-  
-  
   public SocialChromatticAsyncProcessor(SocialServiceContext socialContext) {
     this("SocialChromatticAsyncProcessor", socialContext);
   }
@@ -73,14 +71,18 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   public ProcessContext process(ProcessContext processContext, AsyncCallback callback) {
     //execute
     try {
+      start(processContext);
+      //execute
       processContext = execute(processContext);
       
-      if (processContext.isDone()) {
+      if (processContext.isFailed() == false) {
         callback.done(processContext);
       }
     } catch (Exception e) {
       processContext.setException(e);
       return processContext;
+    } finally {
+      end(processContext);
     }
     //end Session
     return processContext;

@@ -23,10 +23,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.LogWatchCallable;
 import org.exoplatform.social.common.service.ProcessContext;
-import org.exoplatform.social.common.service.Processor;
 import org.exoplatform.social.common.service.ServiceContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
@@ -77,7 +77,13 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     return getExecutorService().submit(task);
   }
   
-  
+  /**
+   * Processes Async Processor with ProcessContext
+   * @param asyncProcessor
+   * @param processorContext
+   * @return
+   * @throws Exception
+   */
   protected ProcessContext process(AsyncProcessor asyncProcessor,
                                      ProcessContext processorContext) throws Exception {
     AsyncProcessorTool.process(asyncProcessor, processorContext);
@@ -103,11 +109,8 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   @Override
   public ProcessContext async(AsyncProcessor asyncProcessor, ProcessContext processContext) {
     Future<ProcessContext> future = asyncProcess(asyncProcessor, processContext);
-    //
     try {
-      
       future.get(10, TimeUnit.SECONDS);
-      
       //
       return future.get();
     } catch (InterruptedException e) {
@@ -121,4 +124,36 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     return processContext;
   }
 
+  @Override
+  public ProcessContext async(final AsyncProcessor asyncProcessor,
+                              final ProcessContext processContext,
+                              final AsyncCallback callback) {
+    Callable<ProcessContext> task = new Callable<ProcessContext>() {
+      public ProcessContext call() throws Exception {
+          return asyncProcessor.process(processContext, callback);
+      }
+    };
+    
+    if (this.context.isTraced()) {
+      task = new LogWatchCallable<ProcessContext>(task, processContext.getTraceElement());
+    }
+    
+    
+    Future<ProcessContext> future =  getExecutorService().submit(task);
+    
+    try {
+      future.get(10, TimeUnit.SECONDS);
+      //
+      return future.get();
+    } catch (InterruptedException e) {
+      processContext.setException(e);
+    } catch (ExecutionException e) {
+      processContext.setException(e);
+    } catch (TimeoutException e) {
+      processContext.setException(e);
+    }
+    
+    return processContext;
+  }
+ 
 }

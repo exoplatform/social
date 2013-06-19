@@ -95,6 +95,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private final IdentityStorage identityStorage;
   private final SpaceStorage spaceStorage;
   private final ActivityStreamStorage streamStorage;
+  //sets value to tell this storage to inject Streams or not
+  private boolean mustInjectStreams = true;
 
   public ActivityStorageImpl(
       final RelationshipStorage relationshipStorage,
@@ -107,7 +109,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     this.spaceStorage = spaceStorage;
     this.streamStorage = streamStorage;
     this.activityProcessors = new TreeSet<ActivityProcessor>(processorComparator());
-
+  }
+  
+  /**
+   * Sets value to tell this storage to inject Streams or not
+   * @param mustInject
+   */
+  public void setInjectStreams(boolean mustInject) {
+    this.mustInjectStreams = mustInject;
   }
 
   /*
@@ -174,7 +183,10 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     fillActivityEntityFromActivity(activity, activityEntity);
     
     //streamStorage.update(activity, oldUpdated, false);
-    StreamInvocationHelper.update(activity, oldUpdated);
+    if (mustInjectStreams) {
+      StreamInvocationHelper.update(activity, oldUpdated);
+    }
+    
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
@@ -183,7 +195,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       for (String id : addedLikes) {
         Identity identity = identityStorage.findIdentityById(id);
         //streamStorage.save(identity, activity);
-        StreamInvocationHelper.save(identity, activity);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.save(identity, activity);
+        }
       }
     }
 
@@ -191,7 +205,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       for (String id : removedLikes) {
         Identity removedLiker = identityStorage.findIdentityById(id);
         //streamStorage.unLike(removedLiker, activity);
-        StreamInvocationHelper.unLike(removedLiker, activity);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.unLike(removedLiker, activity);
+        }
       }
     }
   }
@@ -527,13 +543,17 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       if (activity.getPosterId() != comment.getUserId()) {
         //streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
-        StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+        }
+        
       }
       
       //
       //streamStorage.update(activity, oldUpdated, false);
-      StreamInvocationHelper.update(activity, oldUpdated);
-
+      if (mustInjectStreams) {
+        StreamInvocationHelper.update(activity, oldUpdated);
+      }
     }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
@@ -571,7 +591,9 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         _createActivity(owner, activity);
         //create refs
         //streamStorage.save(owner, activity);
-        StreamInvocationHelper.save(owner, activity);
+        if (mustInjectStreams) {
+          StreamInvocationHelper.save(owner, activity);
+        }
       }
       else {
         _saveActivity(activity);
@@ -1623,6 +1645,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 //    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceIdentity), filter).objects().size();
     return streamStorage.getNumberOfSpaceStream(spaceIdentity);
   }
+  
+  @Override
+  public int getNumberOfSpaceActivitiesForUpgrade(Identity spaceIdentity) {
+    //
+    if (spaceIdentity == null) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = ActivityFilter.space();
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceIdentity), filter).objects().size();
+  }
 
   @Override
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
@@ -1638,6 +1674,21 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 //    return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, 0, limit);
     
     return streamStorage.getSpaceStream(spaceIdentity, index, limit);
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {
+    //
+    if (spaceIdentity == null) {
+      return Collections.emptyList();
+    }
+  
+    //
+    ActivityFilter filter = ActivityFilter.space();
+  
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, 0, limit);
+  
   }
 
   @Override
@@ -2462,5 +2513,128 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     return nb;
+  }
+
+  @Override
+  public List<ExoSocialActivity> getUserActivitiesForUpgrade(Identity owner, long offset, long limit) throws ActivityStorageException {
+    if (owner == null) {
+      return Collections.emptyList();
+    }
+
+
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().poster(owner).mentioner(owner).commenter(owner).liker(owner).owners(owner), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfUserActivitiesForUpgrade(Identity owner) throws ActivityStorageException {
+    if (owner == null) {
+      return 0;
+    }
+
+    ActivityFilter filter = new ActivityFilter() {
+    };
+    //
+    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().mentioner(owner).owners(owner), filter, 0, 0).size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivityFeedForUpgrade(Identity ownerIdentity,
+                                                           int offset,
+                                                           int limit) {
+  
+    
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+    
+    ActivityFilter filter = new ActivityFilter(){};
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfActivitesOnActivityFeedForUpgrade(Identity ownerIdentity) {
+    //
+    List<Identity> identities = new ArrayList<Identity>();
+
+    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
+    identities.addAll(getSpacesId(ownerIdentity));
+    identities.add(ownerIdentity);
+    
+    ActivityFilter filter = new ActivityFilter(){};
+
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnectionsForUpgrade(Identity ownerIdentity,
+                                                                      int offset,
+                                                                      int limit) {
+    List<Identity> connections = relationshipStorage.getConnections(ownerIdentity);
+
+    if (connections.size() <= 0) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter() {};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(connections), filter, offset, limit);
+  }
+
+  @Override
+  public int getNumberOfActivitiesOfConnectionsForUpgrade(Identity ownerIdentity) {
+    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+  
+    if (connectionList.size() <= 0) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(connectionList), filter).objects().size();
+  }
+
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivitiesForUpgrade(Identity ownerIdentity,
+                                                                   int offset,
+                                                                   int limit) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+
+    //
+    if (spaceList.size() == 0) {
+      return Collections.emptyList();
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+
+    //
+    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(spaceList), filter, 0, limit);
+  }
+
+  @Override
+  public int getNumberOfUserSpacesActivitiesForUpgrade(Identity ownerIdentity) {
+    //
+    List<Identity> spaceList = getSpacesId(ownerIdentity);
+  
+    //
+    if (spaceList.size() == 0) {
+      return 0;
+    }
+
+    //
+    ActivityFilter filter = new ActivityFilter(){};
+  
+    //
+    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
   }
 }

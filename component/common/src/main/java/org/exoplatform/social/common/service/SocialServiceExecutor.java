@@ -19,10 +19,6 @@ package org.exoplatform.social.common.service;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Jun
- * 10, 2013
- */
 public interface SocialServiceExecutor {
 
   SocialServiceContext getSocialServiceContext();
@@ -37,4 +33,7 @@ public interface SocialServiceExecutor {
   
   ProcessContext async(AsyncProcessor asyncProcessor,
                                       ProcessContext processContext);
+  
+  ProcessContext async(AsyncProcessor asyncProcessor,
+                       ProcessContext processContext, AsyncCallback callback);
 }

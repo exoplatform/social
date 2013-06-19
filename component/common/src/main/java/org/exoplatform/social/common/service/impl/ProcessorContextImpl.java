@@ -18,6 +18,7 @@ package org.exoplatform.social.common.service.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
@@ -34,6 +35,8 @@ public class ProcessorContextImpl implements ProcessContext {
   private TraceElement traceElement;
   private String name;
   private Object lock = new Object();
+  
+  private AtomicInteger currentProcesses = new AtomicInteger(0);
   
   public ProcessorContextImpl(SocialServiceContext context) {
     this("DefaultProcessor", context);
@@ -235,8 +238,19 @@ public class ProcessorContextImpl implements ProcessContext {
     return traceElement;
   }
   
+  @Override
   public void setTraceElement(TraceElement traceElement) {
     this.traceElement = traceElement;
   }
 
+  @Override
+  public void totalProcesses(int total) {
+    currentProcesses.set(total);
+  }
+
+  @Override
+  public int getTotalProcesses() {
+    return currentProcesses.get();
+  }
+  
 }

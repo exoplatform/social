@@ -62,9 +62,14 @@ public abstract class ActivityRefDayEntity implements NamedEntity, IndexNumber {
   @Owner
   @MappedBy("soc:refs")
   public abstract List<ActivityRef> getActivityRefList();
+  public abstract void setActivityRefList(List<ActivityRef> refList);
   
   @Create
   public abstract ActivityRef createRef();
+  
+  @Create
+  public abstract ActivityRef createRef(String name);
+
 
   @ManyToOne
   public abstract ActivityRefMonthEntity getMonth();
