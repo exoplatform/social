@@ -16,6 +16,7 @@
  */
 package org.exoplatform.social.core.chromattic.entity;
 
+import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.FormattedBy;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.Name;
@@ -82,4 +83,47 @@ public abstract class StreamsEntity {
   @Owner
   public abstract ActivityRefListEntity getAll();
   public abstract void setAll(ActivityRefListEntity activityRefListEntity);
+  
+  @Create
+  public abstract ActivityRefListEntity createStream(String name);
+  
+  /**
+   * Creates All Stream node with node's name = "soc:all"
+   * @return
+   */
+  public ActivityRefListEntity createAllStream() {
+    return createStream("soc:all");
+  }
+  
+  /**
+   * Creates Owner Stream node with node's name = "soc:owner"
+   * @return
+   */
+  public ActivityRefListEntity createOwnerStream() {
+    return createStream("soc:owner");
+  }
+  
+  /**
+   * Creates Space Stream node with node's name = "soc:space"
+   * @return
+   */
+  public ActivityRefListEntity createSpaceStream() {
+    return createStream("soc:space");
+  }
+  
+  /**
+   * Creates My Spaces Stream node with node's name = "soc:myspaces"
+   * @return
+   */
+  public ActivityRefListEntity createMySpacesStream() {
+    return createStream("soc:myspaces");
+  }
+  
+  /**
+   * Creates Connections Stream node with node's name = "soc:connections"
+   * @return
+   */
+  public ActivityRefListEntity createConnectionsStream() {
+    return createStream("soc:connections");
+  }
 }

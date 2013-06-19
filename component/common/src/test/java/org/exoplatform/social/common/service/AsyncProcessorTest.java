@@ -16,11 +16,16 @@
  */
 package org.exoplatform.social.common.service;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.exoplatform.social.common.TestSocialServiceContext;
 import org.exoplatform.social.common.service.impl.ProcessorContextImpl;
+import org.exoplatform.social.common.service.utils.ConsoleUtils;
 
 public class AsyncProcessorTest extends TestSocialServiceContext {
 
+  private static AtomicInteger currentNumber = new AtomicInteger(0);
+  
   @Override
   protected void setUp() throws Exception {
     super.setUp();
@@ -58,6 +63,9 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
         ProcessContext got = processorContext;
         try {
           got = process(processorContext);
+          
+          Thread.sleep(500);
+          
           if (got.isDone()) {
             callback.done(got); 
           }
@@ -108,5 +116,32 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
     ProcessContext got = serviceExecute(params);
     
     assertEquals("done", got.getProperty("result", String.class));
+  }
+  
+  public void testAysncCallback() throws Exception {
+
+    ProcessContext params = new ProcessorContextImpl(getContext());
+    params.setProcessorName("AsyncProcessorTest");
+    params.setProperty("test0", "test0");
+    params.setProperty("test1", "test1");
+    params.totalProcesses(80);
+    
+    for(int i = 0; i < 80; i++) {
+      ProcessContext got = serviceExecute(params, createAsyncCallback());
+      assertEquals("done", got.getProperty("result", String.class));
+    }
+
+    
+  }
+
+  private AsyncCallback createAsyncCallback() {
+    return new AsyncCallback() {
+      @Override
+      public void done(ProcessContext processContext) {
+        int value = currentNumber.incrementAndGet();
+        int percent = (value *100) / processContext.getTotalProcesses();
+        ConsoleUtils.consoleProgBar(percent);
+      }
+    };
   }
 }

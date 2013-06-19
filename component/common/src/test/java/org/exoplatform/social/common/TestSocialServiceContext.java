@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import junit.framework.TestCase;
 
+import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
@@ -66,6 +67,10 @@ public abstract class TestSocialServiceContext extends TestCase {
   
   protected ProcessContext serviceExecute(ProcessContext processContext) throws ExecutionException, InterruptedException, TimeoutException {
     return getExecutor().async(createAsyncProcessor(), processContext);
+  }
+  
+  protected ProcessContext serviceExecute(ProcessContext processContext, AsyncCallback callback) throws ExecutionException, InterruptedException, TimeoutException {
+    return getExecutor().async(createAsyncProcessor(), processContext, callback);
   }
   
   protected ProcessContext serviceProcess(ProcessContext processContext) throws ExecutionException, InterruptedException, TimeoutException {

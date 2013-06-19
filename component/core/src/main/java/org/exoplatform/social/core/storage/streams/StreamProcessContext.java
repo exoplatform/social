@@ -31,6 +31,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public static String DELETE_CONNECT_ACTIVITY_PROCESS = "DELETE_CONNECT_ACTIVITY";
   public static String ADD_SPACE_MEMBER_ACTIVITY_PROCESS = "ADD_SPACE_MEMBER_ACTIVITY";
   public static String REMOVE_SPACE_MEMBER_ACTIVITY_PROCESS = "REMOVE_SPACE_MEMBER_ACTIVITY";
+  public static String UPGRADE_STREAM_PROCESS = "UPGRADE_STREAM_ACTIVITY";
   
   public final static String OWNER = "OWNER";
   public final static String ACTIVITY = "ACTIVITY";
@@ -40,7 +41,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public final static String RECEIVER = "RECEIVER";
   public final static String SPACE_IDENTITY = "SPACE_IDENTITY";
   
-
+  
   public StreamProcessContext(String name, SocialServiceContext context) {
     super(name, context);
   }
@@ -112,5 +113,4 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public Identity getSpaceIdentity() {
     return getProperty(SPACE_IDENTITY, Identity.class);
   }
-
 }
