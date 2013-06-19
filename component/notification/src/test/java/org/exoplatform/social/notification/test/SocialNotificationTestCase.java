@@ -130,7 +130,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertNotNull(act.getId());
     assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     
-    
+    // user post activity on space
   }
   
   public void testInviteToConnect() throws Exception {

@@ -106,7 +106,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
       
-             .setProviderType(PROVIDER_TYPE.COMMENT.toString());
+             .setProviderType(PROVIDER_TYPE.COMMENT.getName());
       
       //
       return message;
@@ -131,7 +131,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
       
-             .setProviderType(PROVIDER_TYPE.POST.toString());
+             .setProviderType(PROVIDER_TYPE.POST.getName());
       
       return message;
     }
@@ -165,7 +165,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
           message.setSendToUserIds(Arrays.asList(space.getMembers()));
           
           //
-          message.setProviderType(PROVIDER_TYPE.POST_SPACE.toString());
+          message.setProviderType(PROVIDER_TYPE.POST_SPACE.getName());
           
           return message;
           
