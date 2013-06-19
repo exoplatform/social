@@ -23,6 +23,7 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl;
+import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 
 public class CachedActivityStreamStorage implements ActivityStreamStorage {
   
@@ -122,5 +123,23 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   @Override
   public void deleteConnect(Identity sender, Identity receiver) {
     this.storage.deleteConnect(sender, receiver);
+  }
+
+  @Override
+  public void createActivityRef(UpdateContext context,
+                                ExoSocialActivity activity,
+                                ActivityRefType type) {
+    
+    this.storage.createActivityRef(context, activity, type);
+    
+  }
+  
+  @Override
+  public void createActivityRef(UpdateContext context,
+                                List<ExoSocialActivity> activities,
+                                ActivityRefType type) {
+    
+    this.storage.createActivityRef(context, activities, type);
+    
   }
 }

@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
@@ -39,6 +38,7 @@ import org.exoplatform.social.core.chromattic.entity.ActivityEntity;
 import org.exoplatform.social.core.chromattic.entity.ActivityRef;
 import org.exoplatform.social.core.chromattic.entity.ActivityRefListEntity;
 import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
+import org.exoplatform.social.core.chromattic.entity.StreamsEntity;
 import org.exoplatform.social.core.chromattic.filter.JCRFilterLiteral;
 import org.exoplatform.social.core.chromattic.utils.ActivityRefList;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -395,11 +395,40 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getStreams().getAll();
       }
+      
+      @Override
+      public ActivityRefListEntity create(IdentityEntity identityEntity) {
+        StreamsEntity streams = identityEntity.getStreams();
+        
+        if (streams == null) {
+          streams = identityEntity.createStreams();
+          identityEntity.setStreams(streams);
+          
+        }
+        
+        ActivityRefListEntity refList = streams.getAll() == null ?  streams.createAllStream() : streams.getAll();
+        return refList;
+      }
+
     },
     CONNECTION() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getStreams().getConnections();
+      }
+      
+      @Override
+      public ActivityRefListEntity create(IdentityEntity identityEntity) {
+        StreamsEntity streams = identityEntity.getStreams();
+        
+        if (streams == null) {
+          streams = identityEntity.createStreams();
+          identityEntity.setStreams(streams);
+          
+        }
+        
+        ActivityRefListEntity refList = streams.getConnections() == null ?  streams.createConnectionsStream() : streams.getConnections();
+        return refList;
       }
     },
     MY_SPACES() {
@@ -407,11 +436,39 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getStreams().getMySpaces();
       }
+      
+      @Override
+      public ActivityRefListEntity create(IdentityEntity identityEntity) {
+        StreamsEntity streams = identityEntity.getStreams();
+        
+        if (streams == null) {
+          streams = identityEntity.createStreams();
+          identityEntity.setStreams(streams);
+          
+        }
+        
+        ActivityRefListEntity refList = streams.getMySpaces() == null ?  streams.createMySpacesStream() : streams.getMySpaces();
+        return refList;
+      }
     },
     SPACE_STREAM() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getStreams().getSpace();
+      }
+      
+      @Override
+      public ActivityRefListEntity create(IdentityEntity identityEntity) {
+        StreamsEntity streams = identityEntity.getStreams();
+        
+        if (streams == null) {
+          streams = identityEntity.createStreams();
+          identityEntity.setStreams(streams);
+          
+        }
+        
+        ActivityRefListEntity refList = streams.getSpace() == null ?  streams.createSpaceStream() : streams.getSpace();
+        return refList;
       }
     },
     MY_ACTIVITIES() {
@@ -419,9 +476,25 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
         return identityEntity.getStreams().getOwner();
       }
+
+      @Override
+      public ActivityRefListEntity create(IdentityEntity identityEntity) {
+        StreamsEntity streams = identityEntity.getStreams();
+        
+        if (streams == null) {
+          streams = identityEntity.createStreams();
+          identityEntity.setStreams(streams);
+          
+        }
+        
+        ActivityRefListEntity refList = streams.getOwner() == null ?  streams.createOwnerStream() : streams.getOwner();
+        return refList;
+      }
     };
 
     public abstract ActivityRefListEntity refsOf(IdentityEntity identityEntity);
+    
+    public abstract ActivityRefListEntity create(IdentityEntity identityEntity);
   }
   
   private List<ExoSocialActivity> getActivities(ActivityRefType type, Identity owner, int offset, int limit) {
@@ -669,36 +742,47 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.info(String.format("printDebug::KEY = %s| %s", entry.getKey(), entry.getValue().toString()));
     }
   }
-  
-  private class UpdateContext {
-    private List<Identity> added;
-    private List<Identity> removed;
 
-    private UpdateContext(List<Identity> added, List<Identity> removed) {
-      this.added = added;
-      this.removed = removed;
-    }
-    
-    private UpdateContext(Identity added, Identity removed) {
-      if (added != null) {
-        this.added = new CopyOnWriteArrayList<Identity>();
-        this.added.add(added);
-      }
-      
-      //
-      if (removed != null) {
-        this.removed = new CopyOnWriteArrayList<Identity>();
-        this.removed.add(removed);
-      }
-    }
-
-    public List<Identity> getAdded() {
-      return added == null ? new ArrayList<Identity>() : added;
-    }
-
-    public List<Identity> getRemoved() {
-      return removed == null ? new ArrayList<Identity>() : removed;
+  @Override
+  public void createActivityRef(UpdateContext context,
+                                ExoSocialActivity activity,
+                                ActivityRefType type) {
+    ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, activity.getId());
+    if (activityEntity == null) return;
+    try {
+      manageRefList(context, activityEntity, type);
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to create Activity references.");
     }
   }
-
+  
+  @Override
+  public void createActivityRef(UpdateContext context,
+                                List<ExoSocialActivity> activities,
+                                ActivityRefType type) {
+    
+    if (context.getAdded() != null) {
+      try {
+        for (Identity identity : context.getAdded()) {
+          IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
+          ActivityRefListEntity listRef = type.create(identityEntity);
+          getSession().save();
+          //
+          for(ExoSocialActivity a : activities) {
+            ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, a.getId());
+            
+            //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
+            ActivityRef ref = listRef.get(activityEntity);
+            ref.setActivityEntity(activityEntity);
+          }
+        }
+      } catch (NodeNotFoundException e) {
+        LOG.warn("Failed to create Activity references.");
+      } finally {
+        
+      }
+      
+    }
+    
+  }
 }

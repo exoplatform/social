@@ -38,8 +38,7 @@ import org.exoplatform.social.core.storage.impl.ActivityStorageImpl;
  */
 public class SynchronizedActivityStorage extends ActivityStorageImpl {
 
-  public SynchronizedActivityStorage(
-      final RelationshipStorage relationshipStorage,
+  public SynchronizedActivityStorage( final RelationshipStorage relationshipStorage,
       final IdentityStorage identityStorage,
       final SpaceStorage spaceStorage,
       final ActivityStreamStorage streamStorage) {
@@ -95,6 +94,18 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getUserActivitiesForUpgrade(Identity owner, long offset, long limit) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserActivitiesForUpgrade(owner, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
   }
 
   /**
@@ -226,6 +237,17 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+  
+  @Override
+  public int getNumberOfUserActivitiesForUpgrade(Identity owner) throws ActivityStorageException {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUserActivitiesForUpgrade(owner);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -308,6 +330,20 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+  
+  @Override
+  public List<ExoSocialActivity> getActivityFeedForUpgrade(final Identity ownerIdentity,
+                                                           final int offset,
+                                                           final int limit) {
+    
+    boolean created = startSynchronization();
+    try {
+      return super.getActivityFeedForUpgrade(ownerIdentity, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -323,6 +359,18 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  @Override
+  public int getNumberOfActivitesOnActivityFeedForUpgrade(Identity ownerIdentity) {
+    
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
   }
 
   /**
@@ -469,6 +517,19 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesOfConnectionsForUpgrade(Identity ownerIdentity,
+                                                                      int offset,
+                                                                      int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getActivitiesOfConnectionsForUpgrade(ownerIdentity, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -484,6 +545,17 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  @Override
+  public int getNumberOfActivitiesOfConnectionsForUpgrade(Identity ownerIdentity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
   }
 
   /**
@@ -584,6 +656,20 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
     }
 
   }
+  
+  @Override
+  public List<ExoSocialActivity> getUserSpacesActivitiesForUpgrade(Identity ownerIdentity,
+                                                                   int offset,
+                                                                   int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getUserSpacesActivitiesForUpgrade(ownerIdentity, offset, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+    
+  }
 
   /**
    * {@inheritDoc}
@@ -599,6 +685,17 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
       stopSynchronization(created);
     }
 
+  }
+  
+  @Override
+  public int getNumberOfUserSpacesActivitiesForUpgrade(Identity ownerIdentity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
   }
 
   /**
@@ -815,7 +912,35 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
    * {@inheritDoc}
    */
   @Override
+  public int getNumberOfSpaceActivitiesForUpgrade(Identity spaceIdentity) {
+    boolean created = startSynchronization();
+    try {
+      return super.getNumberOfSpaceActivities(spaceIdentity);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
+    boolean created = startSynchronization();
+    try {
+      return super.getSpaceActivities(spaceIdentity, index, limit);
+    }
+    finally {
+      stopSynchronization(created);
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {
     boolean created = startSynchronization();
     try {
       return super.getSpaceActivities(spaceIdentity, index, limit);

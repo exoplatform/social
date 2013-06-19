@@ -108,7 +108,7 @@ public class TraceElement {
   
   @Override
   public String toString() {
-    return String.format("%s - %s ", this.traceName, logWatch.toString(getElapsedTime(), TimeUnit.SECONDS));
+    return String.format("%s - %s ", this.traceName, logWatch.toString(getElapsedTime(), TimeUnit.MILLISECONDS));
   }
   
   public String toReport() {

@@ -57,14 +57,6 @@ public abstract class ActivityRef implements NamedEntity {
   public static final PropertyLiteralExpression<String> target =
       new PropertyLiteralExpression<String>(String.class, "soc:target");
   
-  public void setNew(boolean isNew) {
-    this.isNew = isNew;
-  }
-  
-  public boolean isNew() {
-    return this.isNew;
-  }
-  
   @Override
   public String toString() {
     return String.format("ActRef{name=%s,lastUpdated=%s,target='%s',%s}",

@@ -16,15 +16,48 @@
  */
 package org.exoplatform.social.core.storage.api;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 
 
 public interface ActivityStreamStorage {
   
+  public static class UpdateContext {
+    private List<Identity> added;
+    private List<Identity> removed;
+
+    public UpdateContext(List<Identity> added, List<Identity> removed) {
+      this.added = added;
+      this.removed = removed;
+    }
+    
+    public UpdateContext(Identity added, Identity removed) {
+      if (added != null) {
+        this.added = new CopyOnWriteArrayList<Identity>();
+        this.added.add(added);
+      }
+      
+      //
+      if (removed != null) {
+        this.removed = new CopyOnWriteArrayList<Identity>();
+        this.removed.add(removed);
+      }
+    }
+
+    public List<Identity> getAdded() {
+      return added == null ? new ArrayList<Identity>() : added;
+    }
+
+    public List<Identity> getRemoved() {
+      return removed == null ? new ArrayList<Identity>() : removed;
+    }
+  }
   /**
    * Saves the activity into a streams.
    * 
@@ -102,4 +135,7 @@ public interface ActivityStreamStorage {
   
   public int getNumberOfMyActivities(Identity owner);
   
+  void createActivityRef(UpdateContext context, ExoSocialActivity activity, ActivityRefType type);
+  
+  void createActivityRef(UpdateContext context, List<ExoSocialActivity> activities, ActivityRefType type);
 }

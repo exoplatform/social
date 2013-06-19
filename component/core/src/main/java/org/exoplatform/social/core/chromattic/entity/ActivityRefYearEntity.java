@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.chromattic.entity;
 
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +74,9 @@ public abstract class ActivityRefYearEntity implements NamedEntity, IndexNumber 
   
   @Create
   public abstract ActivityRefMonthEntity newMonth();
+  
+  @Create
+  public abstract ActivityRefMonthEntity newMonth(String month);
 
   public void inc() {
     getList().inc();
