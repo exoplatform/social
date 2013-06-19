@@ -28,14 +28,11 @@ import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.api.SpaceStorage;
-import org.exoplatform.social.core.storage.impl.RelationshipStorageImpl;
 import org.exoplatform.social.notification.AbstractCoreTest;
 import org.exoplatform.social.notification.MaxQueryNumber;
 import org.exoplatform.social.notification.QueryNumberTest;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.impl.RelationshipNotifictionImpl;
-import org.exoplatform.social.notification.impl.SpaceNotificationImpl;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
@@ -44,7 +41,6 @@ import org.junit.runners.MethodSorters;
 public class SocialNotificationTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
-  private RelationshipStorageImpl relationshipStorage;
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
   private SpaceServiceImpl spaceService;
@@ -61,13 +57,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
 
     identityStorage = Utils.getService(IdentityStorage.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
-    relationshipStorage = Utils.getService(RelationshipStorageImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
     relationshipManager = (RelationshipManagerImpl) getContainer().getComponentInstanceOfType(RelationshipManagerImpl.class);
     
     assertNotNull(identityStorage);
     assertNotNull(activityManager);
-    assertNotNull(relationshipStorage);
 
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");

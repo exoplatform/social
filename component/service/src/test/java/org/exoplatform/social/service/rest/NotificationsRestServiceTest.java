@@ -16,31 +16,69 @@
  */
 package org.exoplatform.social.service.rest;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.exoplatform.services.rest.impl.ContainerResponse;
-import org.exoplatform.services.rest.impl.MultivaluedMapImpl;
-import org.exoplatform.services.rest.tools.ByteArrayContainerResponseWriter;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.manager.ActivityManagerImpl;
+import org.exoplatform.social.core.manager.RelationshipManagerImpl;
+import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
+import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
 public class NotificationsRestServiceTest extends AbstractResourceTest {
 
   static private NotificationsRestService notificationsRestService;
+  
+  private IdentityStorage identityStorage;
+  private ActivityManagerImpl activityManager;
+  private SpaceServiceImpl spaceService;
+  private RelationshipManagerImpl relationshipManager;
+  
+  private Identity rootIdentity;
+  private Identity johnIdentity;
+  private Identity maryIdentity;
+  private Identity demoIdentity;
 
   public void setUp() throws Exception {
     super.setUp();
+    
+    identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
+    activityManager = (ActivityManagerImpl) getContainer().getComponentInstanceOfType(ActivityManagerImpl.class);
+    spaceService = (SpaceServiceImpl) getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
+    relationshipManager = (RelationshipManagerImpl) getContainer().getComponentInstanceOfType(RelationshipManagerImpl.class);
+    
+    rootIdentity = new Identity("organization", "root");
+    johnIdentity = new Identity("organization", "john");
+    maryIdentity = new Identity("organization", "mary");
+    demoIdentity = new Identity("organization", "demo");
+    
+    identityStorage.saveIdentity(rootIdentity);
+    identityStorage.saveIdentity(johnIdentity);
+    identityStorage.saveIdentity(maryIdentity);
+    identityStorage.saveIdentity(demoIdentity);
 
     notificationsRestService = new NotificationsRestService();
     registry(notificationsRestService);
   }
 
   public void tearDown() throws Exception {
+    
+    identityStorage.deleteIdentity(rootIdentity);
+    identityStorage.deleteIdentity(johnIdentity);
+    identityStorage.deleteIdentity(maryIdentity);
+    identityStorage.deleteIdentity(demoIdentity);
+    
     super.tearDown();
 
     unregistry(notificationsRestService);
   }
 
   public void testJsonRightLink() throws Exception {
-    assertNotNull("abc");
+    assertNotNull(notificationsRestService);
+  }
+  
+  public void testInviteToConnect() throws Exception {
+    ContainerResponse response = service("POST", "/social/notifications/inviteToConnect/" + rootIdentity.getRemoteId() +"/" + johnIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    //assertEquals(200, response.getStatus());
   }
 }

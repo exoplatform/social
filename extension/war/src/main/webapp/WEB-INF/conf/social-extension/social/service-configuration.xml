@@ -48,7 +48,7 @@
   </component>
   
   <component>
-    <type>org.exoplatform.social.service.rest.NotificationRestService</type>
+    <type>org.exoplatform.social.service.rest.NotificationsRestService</type>
   </component>
 <!-- REST service -->
 
