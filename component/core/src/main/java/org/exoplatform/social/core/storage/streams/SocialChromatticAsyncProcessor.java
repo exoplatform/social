@@ -71,8 +71,6 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
   public ProcessContext process(ProcessContext processContext, AsyncCallback callback) {
     //execute
     try {
-      start(processContext);
-      //execute
       processContext = execute(processContext);
       
       if (processContext.isFailed() == false) {
@@ -81,8 +79,6 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
     } catch (Exception e) {
       processContext.setException(e);
       return processContext;
-    } finally {
-      end(processContext);
     }
     //end Session
     return processContext;
