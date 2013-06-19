@@ -35,6 +35,7 @@
     <module>extension</module>
 		<module>commons-api</module>
     <module>component</module>
+    <module>platform</module>
     <module>webapp</module>
     <module>extras</module>
   </modules>

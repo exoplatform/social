@@ -16,10 +16,11 @@
  */
 package org.exoplatform.social.notification.task;
 
-import org.exoplatform.commons.api.notification.NotificationMessage;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -40,6 +41,15 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     public String getName() {
       return name;
+    }
+
+    public List<String> getValues() {
+      List<String> values = new ArrayList<String>();
+      PROVIDER_TYPE[] array = values();
+      for (int i = 0; i < array.length; i++) {
+        values.add(array[i].getName());
+      }
+      return values;
     }
   };
   

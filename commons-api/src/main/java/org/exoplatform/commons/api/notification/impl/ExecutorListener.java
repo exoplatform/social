@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.commons.api.notification.plf;
+package org.exoplatform.commons.api.notification.impl;
 
 import java.util.concurrent.Callable;
 
@@ -22,25 +22,31 @@ import org.exoplatform.commons.api.notification.service.NotificationContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-public class CallBackExecutor implements Callable<NotificationContext>{
-  private static final Log LOG = ExoLogger.getExoLogger(CallBackExecutor.class);
+public class ExecutorListener implements Callable<NotificationContext>{
+  private static final Log LOG = ExoLogger.getExoLogger(ExecutorListener.class);
   
-  private static CallBackExecutor  instance;
+  private static ExecutorListener  instance;
+  private NotificationContext  ctx;
   
   @Override
   public NotificationContext call() throws Exception {
-    LOG.info("The callback successfully ... ");
-    return null;
+    // get all notification
+    
+    // process email notification
+    // + get users and process for each user.
+    LOG.info("The callback successfully ... " + ctx.getSize());
+    return ctx;
   }
   
-  public static CallBackExecutor getInstance() {
+  public static ExecutorListener getInstance(NotificationContext ctx) {
     if (instance == null) {
-      synchronized (CallBackExecutor.class) {
+      synchronized (ExecutorListener.class) {
         if (instance == null) {
-          instance = new CallBackExecutor();
+          instance = new ExecutorListener();
         }
       }
     }
+    instance.ctx = ctx;
 
     return instance;
   }

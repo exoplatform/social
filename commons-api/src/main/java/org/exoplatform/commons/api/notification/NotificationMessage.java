@@ -17,22 +17,40 @@
 package org.exoplatform.commons.api.notification;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NotificationMessage {
-  private String       providerType;// 
+  private Date                createData;
 
-  private String       from;
+  private String              providerType; //
+
+  private String              from;
 
   private Map<String, String> ownerParameter = new HashMap<String, String>();
 
-  private String       messageType;
+  private String              messageType;
 
-  private List<String> sendToUserIds = new ArrayList<String>();
+  private List<String>        sendToUserIds  = new ArrayList<String>();
 
   public NotificationMessage() {
+  }
+
+  /**
+   * @return the createData
+   */
+  public Date getCreateData() {
+    return createData;
+  }
+
+  /**
+   * @param createData the createData to set
+   */
+  public NotificationMessage setCreateData(Date createData) {
+    this.createData = createData;
+    return this;
   }
 
   public String getProviderType() {

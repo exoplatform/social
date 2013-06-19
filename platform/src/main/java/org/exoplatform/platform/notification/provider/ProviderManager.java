@@ -14,29 +14,19 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.commons.api.notification.service;
+package org.exoplatform.platform.notification.provider;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.platform.notification.Provider;
 
+public interface ProviderManager {
 
+  void saveProvier(Provider provider);
 
-public interface NotificationService {
-  
-  void addNotificationServiceListener(NotificationContext ctx);
+  Provider getProvier(String providerType);
 
-  void addSendNotificationListener(NotificationMessage  message);
+  List<Provider> getActiveProvier(boolean isAdmin);
 
-  void processNotificationMessage(NotificationMessage  message) ;
-  
-  void processNotificationMessages(Collection<NotificationMessage> messages);
-
-  void saveNotificationMessage(NotificationMessage  message);
-  
-  NotificationMessage getNotificationMessageByProviderType(String providerType);
-  
-  List<NotificationMessage> getNotificationMessagesByUser(String userId);
-
+  List<Provider> getAddProvier();
 }

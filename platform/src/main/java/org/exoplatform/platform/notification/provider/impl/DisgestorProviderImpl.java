@@ -14,29 +14,36 @@
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.commons.api.notification.service;
+package org.exoplatform.platform.notification.provider.impl;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.platform.notification.MessageInfo;
+import org.exoplatform.platform.notification.provider.AbstractNotificationProvider;
 
+public class DisgestorProviderImpl extends AbstractNotificationProvider {
 
+  public DisgestorProviderImpl() {
+    // TODO Auto-generated constructor stub
+  }
 
-public interface NotificationService {
-  
-  void addNotificationServiceListener(NotificationContext ctx);
+  @Override
+  public MessageInfo buildMessageInfo(NotificationMessage message, String language) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-  void addSendNotificationListener(NotificationMessage  message);
+  @Override
+  public List<String> getSupportType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-  void processNotificationMessage(NotificationMessage  message) ;
-  
-  void processNotificationMessages(Collection<NotificationMessage> messages);
-
-  void saveNotificationMessage(NotificationMessage  message);
-  
-  NotificationMessage getNotificationMessageByProviderType(String providerType);
-  
-  List<NotificationMessage> getNotificationMessagesByUser(String userId);
+  @Override
+  protected String processBody(String body) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

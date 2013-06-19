@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.exoplatform.commons.api.notification.impl.NotificationServiceImpl;
-import org.exoplatform.commons.api.notification.service.NotificationServiceListener;
 import org.exoplatform.commons.api.notification.service.NotificationContext;
 import org.exoplatform.commons.api.notification.service.NotificationService;
 
@@ -31,15 +29,14 @@ public class NotificationDataStorage {
   
   private long time = 0;
 
-  NotificationServiceListener<NotificationContext> listener;
+  
 
   NotificationService              notificationService;
 
   Queue<NotificationMessage>       queue = new ConcurrentLinkedQueue<NotificationMessage>();
 
-  public NotificationDataStorage(NotificationServiceListener<NotificationContext> listener) {
-    this.listener = listener;
-    notificationService = new NotificationServiceImpl();
+  public NotificationDataStorage(NotificationService notificationService) {
+    this.notificationService = notificationService;
   }
   
   public NotificationDataStorage add(NotificationMessage notificationMessage) {
@@ -66,9 +63,7 @@ public class NotificationDataStorage {
   
   private void initNotificationServiceListener() {
     NotificationContext ctx = new NotificationContext(size(), getTime());
-    notificationService.start();
-    notificationService.addNotificationServiceListener(ctx, listener);
-    notificationService.end();
+    notificationService.addNotificationServiceListener(ctx);
     setTime(Calendar.getInstance().getTimeInMillis());
   }
   
