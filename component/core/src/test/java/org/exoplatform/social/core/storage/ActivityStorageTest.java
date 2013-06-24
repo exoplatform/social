@@ -540,7 +540,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfOlderOnActivityFeed(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(378)
+  @MaxQueryNumber(400)
   public void testGetNumberOfOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -1266,7 +1266,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(506)
+  @MaxQueryNumber(520)
   public void testGetNumberOfNewerOnActivityFeedByTimestamp() {
     createActivities(3, demoIdentity);
     Long sinceTime = activityStorage.getActivityFeed(demoIdentity, 0, 10).get(0).getPostedTime();
@@ -1298,7 +1298,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.12
    */
-  @MaxQueryNumber(874)
+  @MaxQueryNumber(900)
   public void testGetNumberOfNewerOnActivitiesOfConnectionsByTimestamp() {
     List<Relationship> relationships = new ArrayList<Relationship>();
     this.createActivities(3, maryIdentity);
@@ -2009,7 +2009,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNewerOnActivityFeed(Identity, Long, int)}.
    */
-  @MaxQueryNumber(506)
+  @MaxQueryNumber(520)
   public void testGetNewerOnActivityFeedWithTimestamp() {
     checkCleanData();
     createActivities(3, demoIdentity);

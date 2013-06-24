@@ -102,14 +102,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
           loadProfile(receiver);
         }
 
-        if (relationshipEntity.isSender()) {
-          relationship.setSender(sender);
-          relationship.setReceiver(receiver);
-        }
-        else {
-          relationship.setSender(receiver);
-          relationship.setReceiver(sender);
-        }
+        relationship.setSender(sender);
+        relationship.setReceiver(receiver);
 
         if (SENDER.equals(entry.getValue().getParent().getName()) ||
             RECEIVER.equals(entry.getValue().getParent().getName())) {
@@ -256,36 +250,53 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     IdentityEntity identity2 = _findById(IdentityEntity.class, identityId2);
 
     RelationshipEntity createdRelationship = identity1.createRelationship();
-    RelationshipEntity symmetricalRelationship = identity1.createRelationship();
-
+    RelationshipEntity symmetricalRelationship = identity2.createRelationship();
+    
     switch (relationship.getStatus()) {
 
       case PENDING:
         identity1.getSender().getRelationships().put(identity2.getRemoteId(), createdRelationship);
         identity2.getReceiver().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity1);
+        symmetricalRelationship.setTo(identity2);
+        
         break;
 
       case CONFIRMED:
         identity1.getRelationship().getRelationships().put(identity2.getRemoteId(), createdRelationship);
         identity2.getRelationship().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity2);
+        symmetricalRelationship.setTo(identity1);
+        
         break;
 
       case IGNORED:
         identity1.getIgnore().getRelationships().put(identity2.getRemoteId(), createdRelationship);
-        identity2.getIgnored().getRelationships().put(identity2.getRemoteId(), symmetricalRelationship);
+        identity2.getIgnored().getRelationships().put(identity1.getRemoteId(), symmetricalRelationship);
+        
+        createdRelationship.setFrom(identity1);
+        createdRelationship.setTo(identity2);
+        
+        symmetricalRelationship.setFrom(identity1);
+        symmetricalRelationship.setTo(identity2);
+        
         break;
 
     }
 
     long createdTimeStamp = System.currentTimeMillis();
-    createdRelationship.setFrom(identity1);
-    createdRelationship.setTo(identity2);
     createdRelationship.setReciprocal(symmetricalRelationship);
     createdRelationship.setStatus(relationship.getStatus().toString());
     createdRelationship.setCreatedTime(createdTimeStamp);
     
-    symmetricalRelationship.setFrom(identity2);
-    symmetricalRelationship.setTo(identity1);
     symmetricalRelationship.setReciprocal(createdRelationship);
     symmetricalRelationship.setStatus(relationship.getStatus().toString());
     symmetricalRelationship.setCreatedTime(createdTimeStamp);
@@ -321,6 +332,9 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
 
     RelationshipEntity savedRelationship = _findById(RelationshipEntity.class, relationship.getId());
     RelationshipEntity symmetricalRelationship = savedRelationship.getReciprocal();
+    
+    IdentityEntity sender = _findById(IdentityEntity.class, relationship.getSender().getId());
+    IdentityEntity receiver = _findById(IdentityEntity.class, relationship.getReceiver().getId());
 
     savedRelationship.setStatus(relationship.getStatus().toString());
     symmetricalRelationship.setStatus(relationship.getStatus().toString());
@@ -337,6 +351,13 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         
         break;
       case CONFIRMED:
+        
+        //measure the relationship is two ways when relationship is confirmed
+        savedRelationship.setFrom(sender);
+        savedRelationship.setTo(receiver);
+        
+        symmetricalRelationship.setFrom(receiver);
+        symmetricalRelationship.setTo(sender);
 
         // Move to relationship
         savedRelationship.getParent().getParent().getRelationship().getRelationships()
@@ -481,7 +502,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
     IdentityEntity identityEntity2 = _findById(IdentityEntity.class, identity2.getId());
 
     // CONFIRMED
-    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identityEntity2.getName());
+    RelationshipEntity got = identityEntity1.getRelationship().getRelationships().get(identityEntity2.getName());    
 
     // PENDING
     if (got == null) {
@@ -759,7 +780,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
       IdentityEntity receiverEntity = _findById(IdentityEntity.class, receiver.getId());
 
       Iterator<RelationshipEntity> it = receiverEntity.getReceiver().getRelationships().values().iterator();
-      return getIdentitiesFromRelationship(it, Origin.TO, offset, limit);
+      return getIdentitiesFromRelationship(it, Origin.FROM, offset, limit);
 
     }
     catch (NodeNotFoundException e) {
