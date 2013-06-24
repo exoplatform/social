@@ -112,7 +112,7 @@ public class SpaceActivityStreamUpdaterPlugin  extends UpgradeProductPlugin {
       ctx.getServiceExecutor().async(upgradeProcessor(), processCtx, createAsyncCallback());
     } finally {
       if (processCtx.isFailed()) {
-        LOG.warn("Failed to migration for Activity Stream.", processCtx.getException());
+        LOG.warn("Failed to migration for Space Activity Stream.", processCtx.getException());
       } else {
         LOG.info(processCtx.getTraceLog());
       }

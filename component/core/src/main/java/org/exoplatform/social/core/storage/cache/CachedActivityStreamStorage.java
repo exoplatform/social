@@ -56,6 +56,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   }
   
   @Override
+  public void deleteComment(ProcessContext ctx) {
+    this.storage.deleteComment(ctx);
+  }
+  
+  @Override
   public void addSpaceMember(ProcessContext ctx) {
     this.storage.addSpaceMember(ctx);
   }

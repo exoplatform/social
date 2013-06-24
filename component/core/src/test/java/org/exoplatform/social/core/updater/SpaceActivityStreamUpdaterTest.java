@@ -24,11 +24,16 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
-public class ActivityStreamUpdaterTest extends AbstractCoreTest {
+public class SpaceActivityStreamUpdaterTest extends AbstractCoreTest {
   
   private IdentityStorage identityStorage;
   private ActivityStorage activityStorage;
@@ -45,7 +50,6 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorage.class);
-    
     activityStorage.setInjectStreams(false);
     
     //
@@ -84,58 +88,105 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
   }
 
   
-  public void testFeedUpdater() throws Exception {
+  public void testSpaceStreamUpdater() throws Exception {
+    
+    
     final String activityTitle = "activity Title";
     
+    SpaceService spaceService = this.getSpaceService();
+    Space space = this.getSpaceInstance(spaceService, 0);
+    Identity spaceIdentity = this.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
-      activityStorage.saveActivity(rootIdentity, activity);
+      activity.setUserId(rootIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
-      activityStorage.saveActivity(demoIdentity, activity);
+      activity.setUserId(demoIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
-      activityStorage.saveActivity(maryIdentity, activity);
+      activity.setUserId(maryIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
-      activityStorage.saveActivity(johnIdentity, activity);
+      activity.setUserId(johnIdentity.getId());
+      activityStorage.saveActivity(spaceIdentity, activity);
     }
     
     
     
-    assertEquals(100, activityStorage.getNumberOfActivitesOnActivityFeedForUpgrade(rootIdentity));
+    assertEquals(400, activityStorage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
     
-    UserActivityStreamUpdaterPlugin updaterPlugin = new UserActivityStreamUpdaterPlugin(new InitParams());
+    SpaceActivityStreamUpdaterPlugin updaterPlugin = new SpaceActivityStreamUpdaterPlugin(new InitParams());
     
     assertNotNull(updaterPlugin);
     updaterPlugin.processUpgrade("1.2.x", "4.0");
     
-    List<ExoSocialActivity> got = activityStorage.getActivityFeed(rootIdentity, 0, 100);
-    assertEquals(100, got.size());
+    List<ExoSocialActivity> got = activityStorage.getSpaceActivities(spaceIdentity, 0, 450);
+    assertEquals(400, got.size());
     tearDownActivityList.addAll(got);
-    got = activityStorage.getActivityFeed(demoIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    
-    got = activityStorage.getActivityFeed(maryIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    
-    got = activityStorage.getActivityFeed(johnIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    
-    
-    
+  }
+  
+  /**
+   * Gets an instance of the space.
+   * 
+   * @param spaceService
+   * @param number
+   * @return
+   * @throws Exception
+   * @since 1.2.0-GA
+   */
+  private Space getSpaceInstance(SpaceService spaceService, int number) throws Exception {
+    Space space = new Space();
+    space.setDisplayName("my space " + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setRegistration(Space.VALIDATION);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/my_space_" + number);
+    space.setUrl(space.getPrettyName());
+    String[] managers = new String[] {"demo"};
+    String[] members = new String[] {"demo"};
+    String[] invitedUsers = new String[] {"mary"};
+    String[] pendingUsers = new String[] {"john",};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    spaceService.saveSpace(space, true);
+    return space;
+  }
+  
+  /**
+   * Gets the identity manager.
+   * 
+   * @return the identity manager
+   */
+  private IdentityManager getIdentityManager() {
+    return (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
+  }
+  
+  /**
+   * Gets the space service.
+   * 
+   * @return the space service
+   */
+  private SpaceService getSpaceService() {
+    return (SpaceService) getContainer().getComponentInstanceOfType(SpaceService.class);
   }
 }

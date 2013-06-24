@@ -118,10 +118,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       ActivityEntity activityEntity = _findById(ActivityEntity.class, streamCtx.getActivity().getId());     
       if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
         user(owner, activityEntity);
+        //mention case
+        addMentioner(streamCtx.getMentioners(), activityEntity);
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //records to Space Streams for SpaceIdentity
         space(owner, activityEntity);
-        
       }
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to add Activity references.", e);
@@ -137,6 +138,42 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       createConnectionsRefs(got, activityEntity);
     }
   }
+  
+  private void removeMentioner(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
+   if (identityIds != null && identityIds.length > 0) {
+     for(String identityId : identityIds) {
+       Identity identity = identityStorage.findIdentityById(identityId);
+       removeOwnerRefs(identity, activityEntity);
+     }
+   }
+  }
+  
+  private void removeCommenter(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
+    if (identityIds != null && identityIds.length > 0) {
+      for(String identityId : identityIds) {
+        Identity identity = identityStorage.findIdentityById(identityId);
+        removeOwnerRefs(identity, activityEntity);
+      }
+    }
+  }
+  
+  private void addMentioner(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
+    if (identityIds != null && identityIds.length > 0) {
+      for(String identityId : identityIds) {
+        Identity identity = identityStorage.findIdentityById(identityId);
+        createOwnerRefs(identity, activityEntity);
+      }
+    }
+   }
+   
+   private void addCommenter(String[] identityIds, ActivityEntity activityEntity) throws NodeNotFoundException {
+     if (identityIds != null && identityIds.length > 0) {
+       for(String identityId : identityIds) {
+         Identity identity = identityStorage.findIdentityById(identityId);
+         createOwnerRefs(identity, activityEntity);
+       }
+     }
+   }
 
   private void space(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     //
@@ -237,8 +274,32 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         //LOG.info("update()::AFTER");
         //printDebug(list, oldUpdated);
       }
+      
+      //mentioners
+      addMentioner(streamCtx.getMentioners(), activityEntity);
+      //commenter
+      addCommenter(streamCtx.getCommenters(), activityEntity);
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to update Activity references.");
+    }
+  }
+  
+  @Override
+  public void deleteComment(ProcessContext ctx) {
+    
+    try {
+      StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, ctx);
+      ExoSocialActivity activity = streamCtx.getActivity();
+
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
+      
+      //mentioners
+      removeMentioner(streamCtx.getMentioners(), activityEntity);
+      //commenter
+      removeCommenter(streamCtx.getCommenters(), activityEntity);
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to delete Activity references for mentioner and commenter.");
     }
   }
   
@@ -623,13 +684,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   
   private void createOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
     manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.FEED);
-    
-    if (OrganizationIdentityProvider.NAME.equals(owner.getProviderId())) {
-      manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
-    } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
-      manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_SPACES);
-    }
-    
+    manageRefList(new UpdateContext(owner, null), activityEntity, ActivityRefType.MY_ACTIVITIES);
+  }
+  
+  private void removeOwnerRefs(Identity owner, ActivityEntity activityEntity) throws NodeNotFoundException {
+    manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.FEED);
+    manageRefList(new UpdateContext(null, owner), activityEntity, ActivityRefType.MY_ACTIVITIES);
   }
   
   private void createConnectionsRefs(List<Identity> identities, ActivityEntity activityEntity) throws NodeNotFoundException {
@@ -766,7 +826,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         for (Identity identity : context.getAdded()) {
           IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
           ActivityRefListEntity listRef = type.create(identityEntity);
-          getSession().save();
+          StorageUtils.persist();
           //
           for(ExoSocialActivity a : activities) {
             ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, a.getId());
@@ -779,7 +839,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       } catch (NodeNotFoundException e) {
         LOG.warn("Failed to create Activity references.");
       } finally {
-        
+        StorageUtils.persist();
       }
       
     }

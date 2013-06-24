@@ -64,6 +64,22 @@ public class StreamProcessorFactory {
   }
   
   /**
+   * Build Delete comment Stream processor
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor deleteCommentStream() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        getStreamStorage().deleteComment(processContext);
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
    * Build Unlike processor
    * @return
    */

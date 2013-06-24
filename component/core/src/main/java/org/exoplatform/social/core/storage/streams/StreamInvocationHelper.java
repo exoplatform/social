@@ -31,11 +31,19 @@ public class StreamInvocationHelper {
   
   private static SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
 
-  public static ProcessContext save(Identity owner, ExoSocialActivity activity) {
+  /**
+   * Invokes to records the activity to Stream
+   * 
+   * @param owner
+   * @param activity
+   * @param mentioners NULL is empty mentioner.
+   * @return
+   */
+  public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
-    processCtx.identity(owner).activity(activity);
+    processCtx.identity(owner).activity(activity).mentioners(mentioners);
     
     try {
       beforeAsync();
@@ -56,15 +64,31 @@ public class StreamInvocationHelper {
     return false;
   }
   
-  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated) {
+  public static ProcessContext update(ExoSocialActivity activity, long oldUpdated, String[] mentioners, String[] commenters) {
     //
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.UPDATE_ACTIVITY_PROCESS, ctx);
-    processCtx.oldUpdate(oldUpdated).activity(activity);
+    processCtx.oldUpdate(oldUpdated).activity(activity).mentioners(mentioners).commenters(commenters);
     
     try {
       beforeAsync();
       //
       ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext deleteComment(String[] mentioners, String[] commenters) {
+    //
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.DELETE_COMMENT_PROCESS, ctx);
+    processCtx.mentioners(mentioners).commenters(commenters);
+    
+    try {
+      beforeAsync();
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.deleteCommentStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }

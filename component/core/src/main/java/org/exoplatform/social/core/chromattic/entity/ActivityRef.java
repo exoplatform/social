@@ -44,8 +44,6 @@ public abstract class ActivityRef implements NamedEntity {
   @ManyToOne
   public abstract ActivityRefDayEntity getDay();
   
-  private boolean isNew = false;
-
   /**
    * Refer to a activity entity.
    */
