@@ -113,6 +113,90 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
 
   }
   
+  public void testSaveMentionActivity() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle + " @demo ");
+    activityStorage.saveActivity(rootIdentity, activity);
+
+    assertNotNull("activity.getId() must not be null", activity.getId());
+
+    tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 1));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(demoIdentity));
+    
+    {
+      activity = new ExoSocialActivityImpl();
+      activity.setTitle(activityTitle + " @mary ");
+      activityStorage.saveActivity(maryIdentity, activity);
+      
+      assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+      assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    }
+    
+    {
+      activity = new ExoSocialActivityImpl();
+      activity.setTitle(activityTitle + " @mary @john");
+      activityStorage.saveActivity(maryIdentity, activity);
+      
+      assertEquals(2, streamStorage.getNumberOfFeed(maryIdentity));
+      assertEquals(2, streamStorage.getNumberOfMyActivities(maryIdentity));
+      
+      assertEquals(1, streamStorage.getNumberOfFeed(johnIdentity));
+      assertEquals(1, streamStorage.getNumberOfMyActivities(johnIdentity));
+    }
+    
+    tearDownActivityList.addAll(activityStorage.getUserActivities(maryIdentity, 0, 10));
+
+  }
+  
+  public void testSaveCommentActivity() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle + " @demo ");
+    activityStorage.saveActivity(rootIdentity, activity);
+
+    assertNotNull("activity.getId() must not be null", activity.getId());
+
+    tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 1));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(demoIdentity));
+    
+    {
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle(activityTitle);
+      comment.isComment(true);
+      comment.setUserId(maryIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+      
+      assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+      assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    }
+    
+    {
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle(activityTitle  + " @mary @john");
+      comment.isComment(true);
+      comment.setUserId(maryIdentity.getId());
+      activityStorage.saveComment(activity, comment);
+      
+      assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+      assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+      
+      assertEquals(1, streamStorage.getNumberOfFeed(johnIdentity));
+      assertEquals(1, streamStorage.getNumberOfMyActivities(johnIdentity));
+    }
+    
+  }
+  
   public void testDeleteActivity() throws ActivityStorageException {
     final String activityTitle = "activity Title";
 

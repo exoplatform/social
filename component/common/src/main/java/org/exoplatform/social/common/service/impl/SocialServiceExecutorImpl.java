@@ -142,6 +142,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     Future<ProcessContext> future =  getExecutorService().submit(task);
     
     try {
+      //Change timeout for Future when run debug mode
       future.get(10, TimeUnit.SECONDS);
       //
       return future.get();
