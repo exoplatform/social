@@ -26,6 +26,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public static String NEW_ACTIVITY_PROCESS = "NEW_ACTIVITY";
   public static String UPDATE_ACTIVITY_PROCESS = "UPDATE_ACTIVITY";
   public static String DELETE_ACTIVITY_PROCESS = "DELETE_ACTIVITY";
+  public static String DELETE_COMMENT_PROCESS = "DELETE_COMMENT";
   public static String UNLIKE_ACTIVITY_PROCESS = "UNLIKE_ACTIVITY";
   public static String CONNECT_ACTIVITY_PROCESS = "CONNECT_ACTIVITY";
   public static String DELETE_CONNECT_ACTIVITY_PROCESS = "DELETE_CONNECT_ACTIVITY";
@@ -40,6 +41,8 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public final static String SENDER = "SENDER";
   public final static String RECEIVER = "RECEIVER";
   public final static String SPACE_IDENTITY = "SPACE_IDENTITY";
+  public final static String MENTIONERS = "MENTIONERS";
+  public final static String COMMENTERS = "COMMENTERS";
   
   
   public StreamProcessContext(String name, SocialServiceContext context) {
@@ -112,5 +115,23 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public Identity getSpaceIdentity() {
     return getProperty(SPACE_IDENTITY, Identity.class);
+  }
+  
+  public StreamProcessContext mentioners(String...mentioner) {
+    setProperty(MENTIONERS, mentioner);
+    return this;
+  }
+  
+  public String[] getMentioners() {
+    return getProperty(MENTIONERS, String[].class);
+  }
+  
+  public StreamProcessContext commenters(String...commenter) {
+    setProperty(COMMENTERS, commenter);
+    return this;
+  }
+  
+  public String[] getCommenters() {
+    return getProperty(COMMENTERS, String[].class);
   }
 }

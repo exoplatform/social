@@ -122,7 +122,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   /*
    * Internal
    */
-  protected void _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
+  protected String[] _createActivity(Identity owner, ExoSocialActivity activity) throws NodeNotFoundException {
 
     IdentityEntity identityEntity = _findById(IdentityEntity.class, owner.getId());
 
@@ -158,11 +158,18 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     activity.setPostedTime(activityMillis);
     activity.setReplyToId(new String[]{});
     activity.setUpdated(activityMillis);
-    activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), true));
+    
+    //records activity for mention case.
+    
+    List<String> mentioners = new ArrayList<String>();
+    activity.setMentionedIds(processMentions(activity.getMentionedIds(), activity.getTitle(), mentioners, true));
+    
+    //
     activity.setPosterId(activity.getUserId() != null ? activity.getUserId() : owner.getId());
       
     //
     fillActivityEntityFromActivity(activity, activityEntity);
+    return mentioners.toArray(new String[0]);
   }
 
   protected void _saveActivity(ExoSocialActivity activity) throws NodeNotFoundException {
@@ -184,7 +191,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //streamStorage.update(activity, oldUpdated, false);
     if (mustInjectStreams) {
-      StreamInvocationHelper.update(activity, oldUpdated);
+      StreamInvocationHelper.update(activity, oldUpdated, null, null);
     }
     
   }
@@ -196,7 +203,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         Identity identity = identityStorage.findIdentityById(id);
         //streamStorage.save(identity, activity);
         if (mustInjectStreams) {
-          StreamInvocationHelper.save(identity, activity);
+          StreamInvocationHelper.save(identity, activity, null);
         }
       }
     }
@@ -495,8 +502,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       ActivityEntity activityEntity = _findById(ActivityEntity.class, activity.getId());
       ActivityEntity commentEntity = activityEntity.createComment(String.valueOf(commentMillis));
 
-      activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), true));
-      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), true));
+      //
+      List<String> mentioners = new ArrayList<String>();
+      activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), mentioners, true));
+      
+      //activityEntity.setMentioners(processMentions(activity.getMentionedIds(), comment.getTitle(), true));
+      
+      //
+      
+      List<String> commenters = new ArrayList<String>();
+      activityEntity.setCommenters(processCommenters(activity.getCommentedIds(), comment.getUserId(), commenters, true));
       
       //
       long oldUpdated = activityEntity.getLastUpdated();
@@ -541,7 +556,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       if (activity.getPosterId() != comment.getUserId()) {
         //streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
         if (mustInjectStreams) {
-          StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity);
+          StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity, null);
         }
         
       }
@@ -549,14 +564,14 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       //
       //streamStorage.update(activity, oldUpdated, false);
       if (mustInjectStreams) {
-        StreamInvocationHelper.update(activity, oldUpdated);
+        StreamInvocationHelper.update(activity, oldUpdated, mentioners.toArray(new String[0]), commenters.toArray(new String[0]));
       }
     }  
     catch (NodeNotFoundException e) {
       throw new ActivityStorageException(ActivityStorageException.Type.FAILED_TO_SAVE_COMMENT, e.getMessage(), e);
     }
-    getSession().save();
     
+    StorageUtils.persist();
     
     //
     LOG.debug(String.format(
@@ -585,11 +600,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
       if (activity.getId() == null) {
 
-        _createActivity(owner, activity);
+        String[] mentioners = _createActivity(owner, activity);
         //create refs
         //streamStorage.save(owner, activity);
         if (mustInjectStreams) {
-          StreamInvocationHelper.save(owner, activity);
+          StreamInvocationHelper.save(owner, activity, mentioners);
         }
       }
       else {
@@ -654,12 +669,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       // remove mentions information
       if (activityEntity.isComment()) {
         ActivityEntity activityEntityOfComment = activityEntity.getParentActivity();
-        activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), false));
         
         //
-        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), false));
+        List<String> mentioners = new ArrayList<String>();
+        activityEntityOfComment.setMentioners(processMentions(activityEntityOfComment.getMentioners(), activityEntity.getTitle(), mentioners, false));
+        
+        
+        //
+        List<String> commenters = new ArrayList<String>();
+        activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), commenters, false));
+        
       } else {
-        activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), false));
+        List<String> mentioners = new ArrayList<String>();
+        activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), mentioners, false));
       }
       
       //create refs
@@ -1559,14 +1581,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     this.activityStorage = storage;
   }
 
-  //
-  private String[] processMentions(String[] mentionerIds, String title, boolean isAdded) {
+  /**
+   * Processes Mentioners who mention via the Activity.
+   * 
+   * @param mentionerIds
+   * @param title
+   * @param isAdded
+   * @return list of added IdentityIds who mentioned
+   */
+  private String[] processMentions(String[] mentionerIds, String title, List<String> addedOrRemovedIds, boolean isAdded) {
     if (title == null || title.length() == 0) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
     Matcher matcher = MENTION_PATTERN.matcher(title);
-    
     while (matcher.find()) {
       String remoteId = matcher.group().substring(1);
       if (!USER_NAME_VALIDATOR_REGEX.matcher(remoteId).matches()) {
@@ -1576,25 +1604,26 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       // if not the right mention then ignore
       if (identity != null) { 
         String mentionStr = identity.getId() + MENTION_CHAR; // identityId@
-        mentionerIds = isAdded ? add(mentionerIds, mentionStr) : remove(mentionerIds, mentionStr);
+        mentionerIds = isAdded ? add(mentionerIds, mentionStr, addedOrRemovedIds) : remove(mentionerIds, mentionStr, addedOrRemovedIds);
       }
     }
     return mentionerIds;
   }
   
-  private String[] processCommenters(String[] commenters, String commenter, boolean isAdded) {
+  private String[] processCommenters(String[] commenters, String commenter, List<String> addedOrRemovedIds, boolean isAdded) {
     if (commenter == null || commenter.length() == 0) {
       return ArrayUtils.EMPTY_STRING_ARRAY;
     }
     
-    commenter += MENTION_CHAR; 
-    commenters = isAdded ? add(commenters, commenter) : remove(commenters, commenter);
+    String newCommenter = commenter + MENTION_CHAR; 
+    commenters = isAdded ? add(commenters, newCommenter, addedOrRemovedIds) : remove(commenters, newCommenter, addedOrRemovedIds);
     
     return commenters;
   }
 
-  private String[] add(String[] mentionerIds, String mentionStr) {
+  private String[] add(String[] mentionerIds, String mentionStr, List<String> addedOrRemovedIds) {
     if (ArrayUtils.toString(mentionerIds).indexOf(mentionStr) == -1) { // the first mention
+      addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
       return (String[]) ArrayUtils.add(mentionerIds, mentionStr + 1);
     }
     
@@ -1607,21 +1636,25 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       }
     }
     
+
+    addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
     mentionerIds = (String[]) ArrayUtils.add(mentionerIds, storedId);
     return mentionerIds;
   }
 
-  private String[] remove(String[] mentionerIds, String mentionStr) {
+  private String[] remove(String[] mentionerIds, String mentionStr, List<String> addedOrRemovedIds) {
     for (String mentionerId : mentionerIds) {
       if (mentionerId.indexOf(mentionStr) != -1) {
         int numStored = Integer.parseInt(mentionerId.split(MENTION_CHAR)[1]) - 1;
         
         if (numStored == 0) {
+          addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
           return (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
         }
 
         mentionerIds = (String[]) ArrayUtils.removeElement(mentionerIds, mentionerId);
         mentionerIds = (String[]) ArrayUtils.add(mentionerIds, mentionStr + numStored);
+        addedOrRemovedIds.add(mentionStr.replace(MENTION_CHAR, ""));
         break;
       }
     }

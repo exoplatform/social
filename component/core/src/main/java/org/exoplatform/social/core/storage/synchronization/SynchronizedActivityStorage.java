@@ -915,7 +915,7 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   public int getNumberOfSpaceActivitiesForUpgrade(Identity spaceIdentity) {
     boolean created = startSynchronization();
     try {
-      return super.getNumberOfSpaceActivities(spaceIdentity);
+      return super.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity);
     }
     finally {
       stopSynchronization(created);
@@ -943,7 +943,7 @@ public class SynchronizedActivityStorage extends ActivityStorageImpl {
   public List<ExoSocialActivity> getSpaceActivitiesForUpgrade(Identity spaceIdentity, int index, int limit) {
     boolean created = startSynchronization();
     try {
-      return super.getSpaceActivities(spaceIdentity, index, limit);
+      return super.getSpaceActivitiesForUpgrade(spaceIdentity, index, limit);
     }
     finally {
       stopSynchronization(created);

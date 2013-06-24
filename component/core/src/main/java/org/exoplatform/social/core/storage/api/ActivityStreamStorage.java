@@ -89,9 +89,20 @@ public interface ActivityStreamStorage {
    * @param ctx 
    * 1. ctx.getActivity() given activity to records the streams
    * 2. ctx.getOldUpdated() oldUpdated of given the Activity. 
+   * 3. ctx.getMentioner() mentioners of given the Activity.
+   * 4. ctx.getCommenters() commenters of given the Activity. 
    * @since 4.0.2, 4.1.0
    */
   public void update(ProcessContext ctx);
+  
+  /**
+   * Deletes the activity ref when has actions such as delete comment, check has any mentioner and commenter were removed
+   * @param ctx
+   * 1. ctx.getMentioner() removed mentioners of given the Activity.
+   * 2. ctx.getCommenters() removed commenters of given the Activity. 
+   * @since 4.0.2, 4.1.0
+   */
+  void deleteComment(ProcessContext ctx);
   
   /**
    * Adds new member for existing space
