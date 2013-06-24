@@ -1075,7 +1075,7 @@ public class CachedActivityStorage implements ActivityStorage {
     return activitiesCountCache.get(
         new ServiceContext<IntegerData>() {
           public IntegerData execute() {
-            return new IntegerData(storage.getNumberOfSpaceActivities(spaceIdentity));
+            return new IntegerData(storage.getNumberOfSpaceActivitiesForUpgrade(spaceIdentity));
           }
         },
         key)
@@ -1112,7 +1112,7 @@ public class CachedActivityStorage implements ActivityStorage {
     ListActivitiesData keys = activitiesCache.get(
         new ServiceContext<ListActivitiesData>() {
           public ListActivitiesData execute() {
-            List<ExoSocialActivity> got = storage.getSpaceActivities(ownerIdentity, offset, limit);
+            List<ExoSocialActivity> got = storage.getSpaceActivitiesForUpgrade(ownerIdentity, offset, limit);
             return buildIds(got);
           }
         },
