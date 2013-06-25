@@ -19,9 +19,12 @@ package org.exoplatform.platform.notification.provider;
 import java.util.List;
 
 import org.exoplatform.platform.notification.Provider;
+import org.exoplatform.platform.notification.plugin.ProviderPlugin;
 
 public interface ProviderManager {
 
+  void registerProviderPlugin(ProviderPlugin providerPlugin);
+  
   void saveProvier(Provider provider);
 
   Provider getProvier(String providerType);

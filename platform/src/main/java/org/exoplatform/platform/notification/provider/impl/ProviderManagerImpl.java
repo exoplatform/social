@@ -16,14 +16,21 @@
  */
 package org.exoplatform.platform.notification.provider.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.platform.notification.Provider;
+import org.exoplatform.platform.notification.plugin.ProviderModel;
+import org.exoplatform.platform.notification.plugin.ProviderPlugin;
 import org.exoplatform.platform.notification.provider.ProviderManager;
 import org.picocontainer.Startable;
 
 public class ProviderManagerImpl implements ProviderManager, Startable {
 
+  List<ProviderPlugin> providerPlugins = new ArrayList<ProviderPlugin>();
+  Map<String, ProviderModel> providers = new HashMap<String, ProviderModel>(); 
   
   public ProviderManagerImpl() {
     // TODO Auto-generated constructor stub
@@ -32,7 +39,7 @@ public class ProviderManagerImpl implements ProviderManager, Startable {
   @Override
   public void start() {
     // TODO Auto-generated method stub
-
+    initProviders();
   }
 
   @Override
@@ -41,6 +48,22 @@ public class ProviderManagerImpl implements ProviderManager, Startable {
 
   }
 
+
+  @Override
+  public void registerProviderPlugin(ProviderPlugin providerPlugin) {
+    providerPlugins.add(providerPlugin);    
+  }
+  
+
+  public void initProviders() {
+    for (ProviderPlugin pp : providerPlugins) {
+      for (ProviderModel pm : pp.getProviderModels()) {
+        providers.put(pm.getType(), pm);
+      }
+    }
+    
+  }
+  
   @Override
   public void saveProvier(Provider provider) {
     // TODO Auto-generated method stub
