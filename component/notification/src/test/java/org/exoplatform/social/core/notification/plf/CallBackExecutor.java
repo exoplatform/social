@@ -18,7 +18,7 @@ package org.exoplatform.social.core.notification.plf;
 
 import java.util.concurrent.Callable;
 
-import org.exoplatform.commons.api.notification.service.NotificationContext;
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
