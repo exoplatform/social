@@ -19,6 +19,7 @@ package org.exoplatform.social.core.storage.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.cache.ExoCache;
@@ -639,4 +640,7 @@ public class CachedRelationshipStorage implements RelationshipStorage {
 
   }
 
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException {
+    return this.storage.getSuggestions(identity, offset, limit);
+  }
 }

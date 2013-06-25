@@ -19,6 +19,7 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -559,4 +560,7 @@ public class RelationshipManagerImpl implements RelationshipManager {
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) {
+    return this.storage.getSuggestions(identity, offset, limit);
+  }
 }
