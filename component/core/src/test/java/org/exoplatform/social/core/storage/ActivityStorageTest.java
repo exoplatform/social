@@ -478,7 +478,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfActivitesOnActivityFeed(Identity)}.
    */
-  @MaxQueryNumber(726)
+  @MaxQueryNumber(734)
   public void testGetNumberOfActivitesOnActivityFeed() {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -542,7 +542,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Tests {@link ActivityStorage#getNumberOfOlderOnActivityFeed(Identity, ExoSocialActivity)}.
    */
-  @MaxQueryNumber(736)
+  @MaxQueryNumber(738)
   public void testGetNumberOfOlderOnActivityFeed() {
     createActivities(3, demoIdentity);
     createActivities(2, maryIdentity);
@@ -620,7 +620,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getActivitiesByPoster(Identity, int, int)}
    */
-  @MaxQueryNumber(932)
+  @MaxQueryNumber(940)
   public void testGetActivitiesByPoster() {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -671,7 +671,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * @throws Exception
    * @since 1.2.2
    */
-  @MaxQueryNumber(608)
+  @MaxQueryNumber(624)
   public void testGetActivitiesOfConnectionsWithPosterIdentity() throws Exception {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     List<Relationship> relationships = new ArrayList<Relationship>();
@@ -818,7 +818,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(2124)
+  @MaxQueryNumber(2148)
   public void testGetNewerOnActivitiesOfConnections() {
     List<Relationship> relationships = new ArrayList<Relationship> ();
     this.createActivities(3, maryIdentity);
@@ -1300,7 +1300,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.12
    */
-  @MaxQueryNumber(2286)
+  @MaxQueryNumber(2310)
   public void testGetNumberOfNewerOnActivitiesOfConnectionsByTimestamp() {
     List<Relationship> relationships = new ArrayList<Relationship>();
     this.createActivities(3, maryIdentity);
@@ -2069,7 +2069,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * Test
    * {@link ActivityStorage#getNewerOnActivitiesOfConnections(Identity, Long, int)}
    */
-  @MaxQueryNumber(2286)
+  @MaxQueryNumber(2310)
   public void testGetNewerOnActivitiesOfConnectionsWithTimestamp() {
     checkCleanData();
     List<Relationship> relationships = new ArrayList<Relationship>();
