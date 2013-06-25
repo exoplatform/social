@@ -16,11 +16,11 @@
  */
 package org.exoplatform.social.core.updater;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+
 import org.exoplatform.commons.version.util.VersionComparator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
@@ -32,14 +32,16 @@ import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.common.service.utils.ConsoleUtils;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
+import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
+import org.exoplatform.social.core.storage.impl.StorageUtils;
+import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.streams.SocialChromatticAsyncProcessor;
 import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
-public class UserActivityStreamUpdaterPlugin extends UpgradeProductPlugin {
+public class UserActivityStreamUpdaterPlugin extends AbstractUpdaterPlugin {
   private static final Log LOG = ExoLogger.getLogger(UserActivityStreamUpdaterPlugin.class);
   
   private IdentityStorage identityStorage = null;
@@ -64,49 +66,35 @@ public class UserActivityStreamUpdaterPlugin extends UpgradeProductPlugin {
   }
   
   private void upgrade() {
+    StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
+    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+    sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
     
-    ProfileFilter profileFilter = new ProfileFilter();
+    LOG.warn("SQL : " + sb.toString());
     
-    long offset = 0;
-    long limit = 100;
-    int totalSize = getIdentityStorage().getIdentitiesByProfileFilterCount(OrganizationIdentityProvider.NAME, profileFilter);
-    
-    List<Identity> identities = new ArrayList<Identity>();
-    limit = Math.min(limit, totalSize);
-    int loaded = loadIdentityRange(profileFilter, offset, limit, identities);
-    
-    if (limit != totalSize) {
-      while (loaded == 100) {
-        offset += limit;
-        
-        //prevent to over totalSize
-        if (offset + limit > totalSize) {
-          limit = totalSize - offset;
-        }
-        
-        //
-        loaded = loadIdentityRange(profileFilter, offset, limit, identities);
+    NodeIterator it = nodes(sb.toString());
+    long totalOfIdentity = it.getSize();
+    Identity owner = null; 
+    Node node = null;
+    try {
+      while (it.hasNext()) {
+        node = (Node) it.next();
+        owner = getIdentityStorage().findIdentityById(node.getUUID());
+
+        doUpgrade(owner, totalOfIdentity);
       }
-    }
-    
-    int totalOfIdentity = identities.size();
-    for(Identity owner : identities) {
-      doUpgrade(owner, totalOfIdentity);
+    } catch (Exception e) {
+      LOG.warn("Failed to migration for Activity Stream.");
     }
   }
   
-  private int loadIdentityRange(ProfileFilter filter, long  offset, long limit, List<Identity> result) {
-    List<Identity> got = getIdentityStorage().getIdentitiesByProfileFilter(OrganizationIdentityProvider.NAME, filter, offset, limit, false);
-    result.addAll(got);
-    //
-    return got.size();
-  }
+ 
   
-  private ProcessContext doUpgrade(Identity owner, int total) {
+  private ProcessContext doUpgrade(Identity owner, long total) {
     //
     SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(String.format("%s-[%s]", StreamProcessContext.UPGRADE_STREAM_PROCESS, owner.getRemoteId()), ctx);
-    processCtx.identity(owner).totalProcesses(total);
+    processCtx.identity(owner).totalProcesses((int)total);
     
     try {
       ctx.getServiceExecutor().async(upgradeProcessor(), processCtx, createAsyncCallback());
@@ -155,5 +143,7 @@ public class UserActivityStreamUpdaterPlugin extends UpgradeProductPlugin {
   public boolean shouldProceedToUpgrade(String newVersion, String previousVersion) {
     return VersionComparator.isAfter(newVersion, previousVersion);
   }
+  
+  
 
 }

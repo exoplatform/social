@@ -18,7 +18,6 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
-
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -34,7 +33,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
-import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 
 /**
