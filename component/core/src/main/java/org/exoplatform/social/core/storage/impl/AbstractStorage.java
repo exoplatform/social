@@ -39,7 +39,6 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
  */
 public abstract class AbstractStorage {
 
-  //
   protected final SocialChromatticLifeCycle lifeCycle;
 
   //
@@ -257,5 +256,4 @@ public abstract class AbstractStorage {
     return (SocialChromatticLifeCycle) manager.getLifeCycle(SocialChromatticLifeCycle.SOCIAL_LIFECYCLE_NAME);
 
   }
-  
 }

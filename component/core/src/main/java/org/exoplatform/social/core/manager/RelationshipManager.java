@@ -17,6 +17,7 @@
 package org.exoplatform.social.core.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -644,5 +645,15 @@ public interface RelationshipManager {
    * @since  1.2.3
    */
   ListAccess<Identity> getOutgoingByFilter(Identity existingIdentity, ProfileFilter profileFilter);
+  
+  /**
+   * Gets the suggestions with number of commons users relate to provided identity
+   * @param identity the provided identity
+   * @param offset the offset position to get
+   * @param limit the limit of return result
+   * @return the map of suggestion users and number of commons users
+   * @since 4.0.x
+   */
+  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);
   
 }
