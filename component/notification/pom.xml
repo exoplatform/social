@@ -29,14 +29,7 @@
   <name>eXo Social Notification Component</name>
   <description>eXo Social Notification Component</description>
   <dependencies>
-
-    <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
-    <dependency>
-      <groupId>org.exoplatform.social</groupId>
-      <artifactId>social-platform-component-common</artifactId>
-      <version>4.1.x-social-notifications-SNAPSHOT</version>
-    </dependency>
-    
+  
     <!-- These dependency is required to compile but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>

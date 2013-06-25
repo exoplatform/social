@@ -34,12 +34,12 @@
 
   <component>
     <key>org.exoplatform.commons.api.notification.service.NotificationService</key>
-    <type>org.exoplatform.commons.api.notification.impl.NotificationServiceImpl</type>
+    <type>org.exoplatform.commons.notification.impl.NotificationServiceImpl</type>
   </component>
 
   <component>
     <key>org.exoplatform.commons.api.notification.service.NotificationServiceListener</key>
-    <type>org.exoplatform.commons.api.notification.impl.NotificationServiceListenerImpl</type>
+    <type>org.exoplatform.commons.notification.impl.NotificationServiceListenerImpl</type>
   </component>
 
   <component>
