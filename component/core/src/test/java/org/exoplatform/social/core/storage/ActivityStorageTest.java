@@ -287,7 +287,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * and {@link org.exoplatform.social.core.storage.ActivityStorage#getUserActivities(org.exoplatform.social.core.identity.model.Identity)}
    *
    */
-  @MaxQueryNumber(6834)
+  @MaxQueryNumber(6994)
   public void testGetActivities() throws ActivityStorageException {
     final int totalNumber = 20;
     final String activityTitle = "activity title";
@@ -339,7 +339,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * Test {@link org.exoplatform.social.core.storage.ActivityStorage#getNumberOfUserActivities(org.exoplatform.social.core.identity.model.Identity)}
    */
 
-  @MaxQueryNumber(10554)
+  @MaxQueryNumber(10714)
   public void testGetActivitiesCount() throws ActivityStorageException {
 
     final int totalNumber = 20;
@@ -620,7 +620,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getActivitiesByPoster(Identity, int, int)}
    */
-  @MaxQueryNumber(928)
+  @MaxQueryNumber(932)
   public void testGetActivitiesByPoster() {
     RelationshipManager relationshipManager = this.getRelationshipManager();
     
@@ -1532,7 +1532,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(15266)
+  @MaxQueryNumber(15274)
   public void testGetComments() {
     int totalNumber = 40;
     String activityTitle = "activity title";
@@ -1561,7 +1561,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(15266)
+  @MaxQueryNumber(15274)
   public void testGetNumberOfComments() {
     int totalNumber = 40;
     String activityTitle = "activity title";
@@ -1593,7 +1593,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(8754)
+  @MaxQueryNumber(8770)
   public void testGetNumberOfNewerComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1643,7 +1643,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(8756)
+  @MaxQueryNumber(8770)
   public void testGetNewerComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1696,7 +1696,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(3806)
+  @MaxQueryNumber(3814)
   public void testGetNumberOfOlderComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1740,7 +1740,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 1.2.0-Beta3
    */
-  @MaxQueryNumber(3808)
+  @MaxQueryNumber(3814)
   public void testGetOlderComments() {
     int totalNumber = 10;
     String activityTitle = "activity title";
@@ -1913,7 +1913,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
    * 
    * @since 4.0
    */
-  @MaxQueryNumber(1916)
+  @MaxQueryNumber(1924)
   public void testGetHiddenComments() {
     int totalNumber = 5;
     String activityTitle = "activity title";
@@ -2377,7 +2377,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getNewerComments(ExoSocialActivity, Long, int)}
    */
-  @MaxQueryNumber(8756)
+  @MaxQueryNumber(8772)
   public void testGetNewerCommentsWithTimestamp() {
     checkCleanData();
     int totalNumber = 10;
@@ -2428,7 +2428,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
   /**
    * Test {@link ActivityStorage#getOlderComments(ExoSocialActivity, Long, int)}
    */
-  @MaxQueryNumber(3810)
+  @MaxQueryNumber(3818)
   public void testGetOlderCommentsWithTimestamp() {
     checkCleanData();
     int totalNumber = 10;
@@ -2501,7 +2501,7 @@ public class ActivityStorageTest extends AbstractCoreTest {
     spaceService.deleteSpace(space);
   }
   
-  @MaxQueryNumber(688)
+  @MaxQueryNumber(696)
   public void testCommentedActivity() throws Exception {
     
     //root creates an activity
