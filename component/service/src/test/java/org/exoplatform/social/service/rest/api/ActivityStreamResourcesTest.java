@@ -530,6 +530,7 @@ public class ActivityStreamResourcesTest extends AbstractResourceTest {
       assertEquals("containerResponse2.getStatus() must return 200", 200, containerResponse2.getStatus());
       assertTrue("Type of response's content must be: " + MediaType.APPLICATION_JSON_TYPE,
           containerResponse2.getContentType().toString().startsWith(MediaType.APPLICATION_JSON_TYPE.toString()));
+      demoActivities = activityManager.getActivitiesWithListAccess(demoIdentity).loadAsList(0, 20);
       compareActivities(demoActivities, (ActivityRestListOut) containerResponse2.getEntity());
       compareNumberOfLikes(demoActivities, (ActivityRestListOut) containerResponse2.getEntity(), numberOfLikes);
     }
