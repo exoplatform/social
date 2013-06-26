@@ -35,11 +35,18 @@
   <component>
     <key>org.exoplatform.commons.api.notification.service.NotificationService</key>
     <type>org.exoplatform.commons.notification.impl.NotificationServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>workspace</name>
+        <description>workspace for save data of notification</description>
+        <value>portal-test</value>
+      </value-param>
+    </init-params>
   </component>
 
   <component>
-    <key>org.exoplatform.commons.api.notification.service.NotificationServiceListener</key>
-    <type>org.exoplatform.commons.notification.impl.NotificationServiceListenerImpl</type>
+    <key>org.exoplatform.commons.api.notification.service.UserNotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.UserNotificationServiceImpl</type>
   </component>
 
   <component>
