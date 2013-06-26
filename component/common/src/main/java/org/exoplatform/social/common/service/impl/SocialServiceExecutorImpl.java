@@ -143,7 +143,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     
     try {
       //Change timeout for Future when run debug mode
-      future.get(10, TimeUnit.SECONDS);
+      future.get(2, TimeUnit.MINUTES);
       //
       return future.get();
     } catch (InterruptedException e) {
