@@ -436,9 +436,9 @@ public class SpaceStorageTest extends AbstractCoreTest {
     tearDownSpaceList.add(space);
     
     SpaceFilter filter = new SpaceFilter("my space");
-    filter.setAppId("app2");
+    filter.setAppId("app1,app2");
     
-    List<Space> accessibleSpacesByFilter = spaceStorage.getAccessibleSpacesByFilter("demo", new SpaceFilter("my space"), 0, 10);
+    List<Space> accessibleSpacesByFilter = spaceStorage.getAccessibleSpacesByFilter("demo", filter, 0, 10);
     assertEquals(1, accessibleSpacesByFilter.size());
   }
 

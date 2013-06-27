@@ -1231,7 +1231,8 @@ public class SpaceServiceImpl implements SpaceService {
    * {@inheritDoc}
    */
   public ListAccess<Space> getAccessibleSpacesByFilter(String userId, SpaceFilter spaceFilter) {
-    if (userId.equals(getUserACL().getSuperUser())) {
+    if (userId.equals(getUserACL().getSuperUser()) && 
+        (spaceFilter == null || spaceFilter.getAppId() == null)) {
       return new SpaceListAccess(this.spaceStorage, spaceFilter, SpaceListAccess.Type.ALL_FILTER);
     } else {
       return new SpaceListAccess(this.spaceStorage, userId, spaceFilter, SpaceListAccess.Type.ACCESSIBLE_FILTER);
