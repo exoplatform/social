@@ -16,10 +16,10 @@
  */
 package org.exoplatform.social.notification.task;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+import org.exoplatform.commons.api.notification.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -27,99 +27,76 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class ActivityTask implements NotificationTask<NotificationContext> {
-  public enum PROVIDER_TYPE {
-    MENTION("ActivityMentionProvider"), COMMENT("ActivityCommentProvider"),
-    POST("ActivityPostProvider"), POST_SPACE("ActivityPostSpaceProvider");
-    private final String name;
-
-    PROVIDER_TYPE(String name) {
-      this.name = name;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public List<String> getValues() {
-      List<String> values = new ArrayList<String>();
-      PROVIDER_TYPE[] array = values();
-      for (int i = 0; i < array.length; i++) {
-        values.add(array[i].getName());
-      }
-      return values;
-    }
-  };
+  
+  public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
+  public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
   
   @Override
-  public void initSupportProvider() {
-  }
-
-  @Override
   public void start(NotificationContext ctx) {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public void end(NotificationContext ctx) {
-    // TODO Auto-generated method stub
 
   }
+  
 
   /**
    * Someone @mentions the user in an activity.
    */
-  public static ActivityTask MENTION_ACTIVITY       = new ActivityTask() {
+  public static ActivityTask MENTION_ACTIVITY = new ActivityTask() {
+    
+    private final String TASK_NAME = "MENTION_ACTIVITY";
 
     @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+    
+    @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      NotificationMessage message = new NotificationMessage();
-      // method stub
-      ExoSocialActivity activity = ctx.getActivity();
-      String[] mentionerIds = activity.getMentionedIds();
-      if (mentionerIds.length > 0) {
-        //
-        message.setProviderType(PROVIDER_TYPE.MENTION.getName())
-        
-               .setFrom(Utils.getUserId(activity.getPosterId()))
-        
-               .setSendToUserIds(Arrays.asList(mentionerIds))
-
-               .addOwnerParameter("activityId", activity.getId());
-        
-        //
-        return message;
-      }
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
       
-      return null;
+      return NotificationMessage.getInstance().setProviderType(TASK_NAME)
+             .setFrom(Utils.getUserId(activity.getPosterId()))
+             .setSendToUserIds(Arrays.asList(activity.getMentionedIds()))
+             .addOwnerParameter("activityId", activity.getId());
     }
 
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      return activity.getMentionedIds().length > 0;
+    }
   };
 
   /**
    * Someone comments on an activity posted by the user.
    */
-  public static ActivityTask COMMENT_ACTIVITY       = new ActivityTask() {
+  public static ActivityTask COMMENT_ACTIVITY = new ActivityTask() {
+    private final String TASK_NAME = "COMMENT_ACTIVITY";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      NotificationMessage message = new NotificationMessage();
-      
-      // which? activity or comment
-      ExoSocialActivity activity = ctx.getActivity();
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
       
       //
-      message.setFrom(Utils.getUserId(activity.getPosterId()))
-      
+      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-      
-             .setProviderType(PROVIDER_TYPE.COMMENT.getName());
-      
-      //
-      return message;
+             .setProviderType(TASK_NAME);
+    }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
+    }
+    
+    @Override
+    public String getId() {
+      return TASK_NAME;
     }
 
   };
@@ -127,23 +104,26 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
   /**
    * Someone posts an activity on the User's stream.
    */
-  public static ActivityTask POST_ACTIVITY          = new ActivityTask() {
+  public static ActivityTask POST_ACTIVITY = new ActivityTask() {
+    private final String TASK_NAME = "POST_ACTIVITY";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      NotificationMessage message = new NotificationMessage();
-
-      //
-      ExoSocialActivity activity = ctx.getActivity();
       
-      //
-      message.setFrom(Utils.getUserId(activity.getPosterId()))
-      
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-      
-             .setProviderType(PROVIDER_TYPE.POST.getName());
-      
-      return message;
+             .setProviderType(TASK_NAME);
+    }
+    
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
+    }
+    
+    @Override
+    public String getId() {
+      return TASK_NAME;
     }
 
   };
@@ -152,38 +132,37 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone posts an activity on a space where the user is a member.
    */
   public static ActivityTask POST_ACTIVITY_ON_SPACE = new ActivityTask() {
+    
+    private final String TASK_NAME = "POST_ACTIVITY_ON_SPACE";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       try {
-        NotificationMessage message = new NotificationMessage();
+        ExoSocialActivity activity = ctx.value(ACTIVITY);
         
-        //
-        ExoSocialActivity activity = ctx.getActivity();
+        Identity id = Utils.getIdentityManager().getIdentity(activity.getStreamOwner(), false);
+        Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
         
-        //
-        message.setFrom(Utils.getUserId(activity.getPosterId()));
         
-        //
-        String ownerStream = activity.getStreamOwner();
-        
-        Identity id = Utils.getIdentityManager().getIdentity(ownerStream, false);
-        
-        if (Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, id.getRemoteId(), false) != null) {
-        
-          Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
-          message.setSendToUserIds(Arrays.asList(space.getMembers()));
-          
-          //
-          message.setProviderType(PROVIDER_TYPE.POST_SPACE.getName());
-          
-          return message;
-          
-        }
+        return NotificationMessage.getInstance().setProviderType(TASK_NAME)
+                                  .setFrom(Utils.getUserId(activity.getPosterId()))
+                                  .setSendToUserIds(Arrays.asList(space.getMembers()));
       } catch (Exception e) {
         return null;
       }
-      return null;
+    }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      Identity id = Utils.getIdentityManager().getIdentity(activity.getStreamOwner(), false);
+      //
+      return SpaceIdentityProvider.NAME.equals(id.getProviderId());
+    }
+    
+    @Override
+    public String getId() {
+      return TASK_NAME;
     }
 
   };

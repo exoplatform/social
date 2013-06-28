@@ -16,11 +16,11 @@
  */
 package org.exoplatform.social.notification.impl;
 
-import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
-import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ProfileTask;
 
@@ -29,9 +29,7 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
   @Override
   public void avatarUpdated(ProfileLifeCycleEvent event) {
     Profile profile = event.getProfile();
-    NotificationContext ctx = NotificationContext.makeProfileNofification(profile);
-    ProfileTask task = ProfileTask.UPDATE_AVATAR;
-    NotificationMessage msg = NotificationExecutor.execute(task, ctx);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ProfileTask.PROFILE, profile);
     NotificationExecutor.execute(ctx, ProfileTask.UPDATE_AVATAR, ProfileTask.UPDATE_DISPLAY_NAME);
   }
 

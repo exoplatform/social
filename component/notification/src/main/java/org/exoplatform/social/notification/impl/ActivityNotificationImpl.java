@@ -16,12 +16,13 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
 import org.exoplatform.social.notification.task.ActivityTask;
 
@@ -30,7 +31,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
-    NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ActivityTask.ACTIVITY, activity);
     
     // check if activity contain mentions then create mention task
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
@@ -47,7 +48,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
-    NotificationContext ctx = NotificationContext.makeActivityNofification(activity);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ActivityTask.ACTIVITY, activity);
     
     // check if activity contain mentions then create mention task
     NotificationDataStorage storage = Utils.getSocialEmailStorage();

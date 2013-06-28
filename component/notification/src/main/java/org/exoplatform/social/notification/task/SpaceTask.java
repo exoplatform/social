@@ -18,32 +18,17 @@ package org.exoplatform.social.notification.task;
 
 import java.util.Arrays;
 
+import org.exoplatform.commons.api.notification.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.core.space.model.Space;
-import org.exoplatform.social.notification.context.NotificationContext;
 
 public abstract class SpaceTask implements NotificationTask<NotificationContext> {
   
-  public enum PROVIDER_TYPE {
-    INVITED_JOIN_SPACE("InvitedJoinSpace"), REQUEST_JOIN_SPACE("RequestJoinSpace");
-    private final String name;
-
-    PROVIDER_TYPE(String name) {
-      this.name = name;
-    }
-
-    public String getName() {
-      return name;
-    }
-  };
+  public final static ArgumentLiteral<Space> SPACE = new ArgumentLiteral<Space>(Space.class, "space");
+  public final static ArgumentLiteral<String> REMOTE_ID = new ArgumentLiteral<String>(String.class, "remoteId");
   
-  @Override
-  public void initSupportProvider() {
-    // TODO Auto-generated method stub
-
-  }
-
   @Override
   public void start(NotificationContext ctx) {
   }
@@ -53,35 +38,59 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
   }
   
   public static SpaceTask SPACE_INVITATION = new SpaceTask() {
+    private final String TASK_NAME = "SPACE_INVITATION";
+
+    @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+    
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       NotificationMessage message = new NotificationMessage();
       
-      Space space = ctx.getSpace();
-      String userId = ctx.getRemoteId();
+      Space space = ctx.value(SPACE);
+      String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(PROVIDER_TYPE.INVITED_JOIN_SPACE.getName())
+      message.setProviderType(TASK_NAME)
              .setFrom(space.getId())
              .setSendToUserIds(Arrays.asList(userId));
       
       return message;
     }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
+    }
   };
   
   public static SpaceTask SPACE_JOIN_REQUEST = new SpaceTask() {
+    private final String TASK_NAME = "SPACE_JOIN_REQUEST";
+
+    @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+    
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       NotificationMessage message = new NotificationMessage();
       
-      Space space = ctx.getSpace();
-      String userId = ctx.getRemoteId();
+      Space space = ctx.value(SPACE);
+      String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(PROVIDER_TYPE.REQUEST_JOIN_SPACE.getName())
+      message.setProviderType(TASK_NAME)
              .setFrom(userId)
              .addOwnerParameter("spaceGroupId", space.getGroupId())
              .setSendToUserIds(Arrays.asList(space.getManagers()));
       
       return message;
+    }
+    
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
     }
   };
 

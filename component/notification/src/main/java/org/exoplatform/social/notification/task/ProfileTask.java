@@ -16,16 +16,16 @@
  */
 package org.exoplatform.social.notification.task;
 
+import org.exoplatform.commons.api.notification.ArgumentLiteral;
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
-import org.exoplatform.social.notification.context.NotificationContext;
+import org.exoplatform.social.core.identity.model.Profile;
 
 public abstract class ProfileTask implements NotificationTask<NotificationContext> {
-  @Override
-  public void initSupportProvider() {
-    // TODO Auto-generated method stub
-
-  }
+  
+  public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
+  
 
   @Override
   public void start(NotificationContext ctx) {
@@ -35,22 +35,48 @@ public abstract class ProfileTask implements NotificationTask<NotificationContex
   public void end(NotificationContext ctx) {
   }
 
-  public static ProfileTask UPDATE_AVATAR       = new ProfileTask() {
+  /**
+   * 
+   */
+  public static ProfileTask UPDATE_AVATAR = new ProfileTask() {
+    private final String TASK_NAME = "UPDATE_AVATAR";
+
+    @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+    
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      // TODO Auto-generated
-      // method stub
       return null;
+    }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
     }
 
   };
 
+  /**
+   * 
+   */
   public static ProfileTask UPDATE_DISPLAY_NAME = new ProfileTask() {
+    private final String TASK_NAME = "UPDATE_DISPLAY_NAME";
+
+    @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+    
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      // TODO Auto-generated
-      // method stub
       return null;
+    }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
     }
 
   };

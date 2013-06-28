@@ -16,13 +16,15 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.notification.impl.NotificationContextImpl;
+import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
-import org.exoplatform.social.core.space.SpaceListenerPlugin;
 import org.exoplatform.social.notification.Utils;
-import org.exoplatform.social.notification.context.NotificationContext;
 import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.task.RelationshipTask;
 import org.exoplatform.social.notification.task.SpaceTask;
 
 public class SpaceNotificationImpl extends SpaceListenerPlugin {
@@ -116,9 +118,9 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContext.makeSpaceNofification(space, userId);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
+                                                             .append(SpaceTask.SPACE, space);
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    
     storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_INVITATION));
   }
   
@@ -127,7 +129,8 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     Space space = event.getSpace();
     String userId = event.getTarget();
     
-    NotificationContext ctx = NotificationContext.makeSpaceNofification(space, userId);
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
+                                                             .append(SpaceTask.SPACE, space);
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
     storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_JOIN_REQUEST));

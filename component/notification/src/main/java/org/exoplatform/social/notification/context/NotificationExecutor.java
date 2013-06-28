@@ -19,6 +19,7 @@ package org.exoplatform.social.notification.context;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.services.log.ExoLogger;
