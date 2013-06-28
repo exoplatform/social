@@ -16,7 +16,12 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.notification.UINotificationSettings;
+import javax.portlet.PortletMode;
+
+import org.exoplatform.social.webui.notification.UINotificationSettingForm;
+import org.exoplatform.webui.application.WebuiApplication;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
@@ -28,7 +33,18 @@ import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 public class UINotificationSettingsPortlet extends UIPortletApplication {
 
   public UINotificationSettingsPortlet() throws Exception {
-    addChild(UINotificationSettings.class, null, null);
+    addChild(UINotificationSettingForm.class, null, null);
   }
   
+  public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
+    PortletRequestContext portletReqContext = (PortletRequestContext) context;
+    PortletMode portletMode = portletReqContext.getApplicationMode();
+    if (portletMode == PortletMode.VIEW) {
+      UINotificationSettingForm settingForm = getChild(UINotificationSettingForm.class).setRendered(true);
+      settingForm.initSettingForm();
+    } else if (portletMode == PortletMode.EDIT) {
+      getChild(UINotificationSettingForm.class).setRendered(false);
+    }
+    super.processRender(app, context);
+  }
 }

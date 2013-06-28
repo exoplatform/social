@@ -19,11 +19,11 @@ package org.exoplatform.social.webui.notification;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.Provider;
 import org.exoplatform.commons.api.notification.UserNotificationSetting;
 import org.exoplatform.commons.api.notification.UserNotificationSetting.FREQUENCY;
-import org.exoplatform.commons.api.notification.service.ProviderManager;
+import org.exoplatform.commons.api.notification.service.ProviderSettingService;
 import org.exoplatform.commons.api.notification.service.UserNotificationService;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.services.log.ExoLogger;
@@ -42,40 +42,45 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
-  template = "classpath:groovy/social/webui/notification/UINotificationSettings.gtmpl",
+  template = "classpath:groovy/social/webui/notification/UINotificationSettingForm.gtmpl",
   events = {
-    @EventConfig(listeners = UINotificationSettings.SaveActionListener.class),
-    @EventConfig(listeners = UINotificationSettings.CancelActionListener.class) 
+    @EventConfig(listeners = UINotificationSettingForm.SaveActionListener.class),
+    @EventConfig(listeners = UINotificationSettingForm.CancelActionListener.class) 
   }
 )
-public class UINotificationSettings extends UIForm {
-  
-  private final static Log         LOG         = ExoLogger.getExoLogger(UINotificationSettings.class);
+public class UINotificationSettingForm extends UIForm {
 
-  private static final FREQUENCY[] frequencies = new FREQUENCY[] { 
-    FREQUENCY.INSTANTLY, FREQUENCY.DAILY_KEY, FREQUENCY.WEEKLY_KEY, FREQUENCY.MONTHLY_KEY
-  };
-  
-  private List<Provider> listProviders;
+  private static final Log         LOG             = ExoLogger.getLogger(UINotificationSettingForm.class);
 
-  public UINotificationSettings() throws Exception {
-    listProviders = getProviderManager().getActiveProvier(isAdmin());
-    for (Provider provider : listProviders) {
-      for (int i = 0; i < frequencies.length; ++i) {
-        addUIFormInput(new UICheckBoxInput(provider.getType() + frequencies[i].getName(), 
-                                           provider.getType() + frequencies[i].getName(),
-                                           false));
-      }
-    }
-    setActions(new String[] {"Save", "Cancel"});
+  private static final FREQUENCY[] frequencies     = FREQUENCY.values();
+
+  private List<String>             activeProviders  = new ArrayList<String>();
+
+  public UINotificationSettingForm() throws Exception {
+    setActions(new String[] { "Save", "Cancel" });
   }
   
-  private void init() {
-    UserNotificationSetting notificationSetting = getUserNotificationService().getUserNotificationSetting(Utils.getOwnerRemoteId());
-    for (Provider provider : listProviders) {
+  private String getCheckBoxId(String providerId, String frequencyType) {
+    return new StringBuffer(providerId).append(frequencyType).toString();
+  }
+  
+  public void initSettingForm() {
+    activeProviders = CommonsUtils.getService(ProviderSettingService.class).getActiveProviderIds(isAdmin());
+    String checkBoxId;
+    for (String providerId : activeProviders) {
       for (int i = 0; i < frequencies.length; ++i) {
-        UICheckBoxInput checkbox = getUICheckBoxInput(provider.getType() + frequencies[i].getName());
-        checkbox.setChecked(isCheckAcitve(notificationSetting, frequencies[i].getName(), provider.getType()));
+        checkBoxId = getCheckBoxId(providerId, frequencies[i].getName());
+        addUIFormInput(new UICheckBoxInput(checkBoxId, checkBoxId, false));
+      }
+    }
+  }
+
+  private void resetSettingForm() {
+    UserNotificationSetting notificationSetting = getUserNotificationService().getUserNotificationSetting(Utils.getOwnerRemoteId());
+    for (String providerId : activeProviders) {
+      for (int i = 0; i < frequencies.length; ++i) {
+        getUICheckBoxInput(getCheckBoxId(providerId, frequencies[i].getName()))
+        .setChecked(isCheckAcitve(notificationSetting, frequencies[i].getName(), providerId));
       }
     }
   }
@@ -118,35 +123,34 @@ public class UINotificationSettings extends UIForm {
     return false;
   }
   
-  public static class SaveActionListener extends EventListener<UINotificationSettings> {
-    public void execute(Event<UINotificationSettings> event) throws Exception {
-      UINotificationSettings notification = event.getSource();
+  private UserNotificationService getUserNotificationService() {
+    return getApplicationComponent(UserNotificationService.class);
+  }
+  
+  public static class SaveActionListener extends EventListener<UINotificationSettingForm> {
+    public void execute(Event<UINotificationSettingForm> event) throws Exception {
+      UINotificationSettingForm uiForm = event.getSource();
       UserNotificationSetting notificationSetting = new UserNotificationSetting();
-      for (Provider provider : notification.listProviders) {
+      String checkBoxId;
+      for (String providerId : uiForm.activeProviders) {
         for (int i = 0; i < frequencies.length; ++i) {
-          UICheckBoxInput checkbox = notification.getUICheckBoxInput(provider.getType() + frequencies[i].getName());
-          if (checkbox.isChecked()) {
-            notificationSetting.addProvider(provider.getType(), frequencies[i]);
+          checkBoxId = uiForm.getCheckBoxId(providerId, frequencies[i].getName());
+          if (uiForm.getUICheckBoxInput(checkBoxId).isChecked()) {
+            notificationSetting.addProvider(providerId, frequencies[i]);
           }
         }
       }
-      notification.getUserNotificationService().saveUserNotificationSetting(Utils.getOwnerRemoteId(), notificationSetting);
-      event.getRequestContext().addUIComponentToUpdateByAjax(notification);
+      uiForm.getUserNotificationService().saveUserNotificationSetting(Utils.getOwnerRemoteId(), notificationSetting);
+      uiForm.resetSettingForm();
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiForm);
     }
   }
 
-  public static class CancelActionListener extends EventListener<UINotificationSettings> {
-    public void execute(Event<UINotificationSettings> event) throws Exception {
-      UINotificationSettings notifications = event.getSource();
+  public static class CancelActionListener extends EventListener<UINotificationSettingForm> {
+    public void execute(Event<UINotificationSettingForm> event) throws Exception {
+      UINotificationSettingForm notifications = event.getSource();
+      notifications.resetSettingForm();
       event.getRequestContext().addUIComponentToUpdateByAjax(notifications);
     }
-  }
-  
-  private ProviderManager getProviderManager() {
-    return getApplicationComponent(ProviderManager.class);
-  }
-  
-  private UserNotificationService getUserNotificationService() {
-    return getApplicationComponent(UserNotificationService.class);
   }
 }

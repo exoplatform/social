@@ -1,0 +1,59 @@
+<%
+	_ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+	//uicomponent.initSettingForm();
+%>
+<div class="uiNotificationSettings">
+	<% uiform.begin(); %>
+	<div class="uiSocTitleBar clearfix">
+		<h4><%=_ctx.appRes("UINotificationSettingForm.label.NotificationSettings")%></h4>
+		<span><%=_ctx.appRes("UINotificationSettingForm.label.NotificationsDescription")%></span>
+	</div>
+	<div class="form-horizontal">
+		<table class="uiGrid table table-striped">
+			<thead>
+				<tr>
+					<th style="width:150px; text-align:center"><%=_ctx.appRes("UINotificationSettingForm.label.NotificationsChose")%></th>
+					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Instantly")%></th>
+					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Daily")%></th>
+					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Weekly")%></th>
+					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Monthly")%></th>
+				</tr>
+			</thead>
+			<tbody>
+		<% 
+			List<String> providers = uicomponent.activeProviders;
+			if (providers == null || providers.size() == 0) { 
+		%>
+				<tr>
+					<td class="empty center" colspan="5">
+					 <%=_ctx.appRes("UINotificationSettingForm.label.Empty")%>
+					</td>
+				</tr>	
+		<%} else {
+				for(String providerId : providers) {
+		%>
+				<tr>
+					<td class="left">
+						<label for="<%=providerId%>"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+					</td>
+					<% for (int i = 0; i < uicomponent.frequencies.length; i++) {
+					%>
+					<td class="center">
+						<% uiform.renderField(uicomponent.getCheckBoxId(providerId, uicomponent.frequencies[i].getName())); %>	
+					</td>
+					<% } %>
+				</tr>
+		 <% } %>
+	 <% } %>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="uiAction">
+	<% for(action in uicomponent.getActions()) { %>
+		<button onclick="<%=uicomponent.event(action)%>" class="btn" type="button"><%=_ctx.appRes("UINotificationSettingForm.action." + action)%></button>
+	<%}%>
+	</div>
+	
+	<% uiform.end(); %>
+</div>
