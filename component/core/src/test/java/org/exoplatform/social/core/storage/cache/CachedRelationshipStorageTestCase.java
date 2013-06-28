@@ -190,6 +190,12 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     Identity ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
     Identity paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul");
     
+    tearDownIdentityList.add(johnIdentity.getId());
+    tearDownIdentityList.add(maryIdentity.getId());
+    tearDownIdentityList.add(demoIdentity.getId());
+    tearDownIdentityList.add(ghostIdentity.getId());
+    tearDownIdentityList.add(paulIdentity.getId());
+    
     assertEquals(0, cacheService.getSuggestionCache().getCacheSize());
     
     relationshipStorage.getSuggestions(johnIdentity, 0, 10);
