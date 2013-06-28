@@ -37,7 +37,7 @@ import org.exoplatform.social.service.rest.Util;
 import org.exoplatform.social.service.rest.api.models.IdentityRestOut;
 
 /**
- * Identity Resources end point. 
+ * Provides API to access the identity resources.
  * 
  * @anchor IdentityResources
  * 
@@ -48,11 +48,11 @@ public class IdentityResources implements ResourceContainer {
   private static final String[] SUPPORTED_FORMAT = new String[]{"json"};
   
   /**
-   * Gets the identity and its associated profile by the activity ID.
-   * @param uriInfo The uri request uri.
+   * Gets the identity and its associated profile by the activity Id.
+   * @param uriInfo The requested URI information.
    * @param portalContainerName The associated portal container name.
-   * @param identityId The specified  ID of identity.
-   * @param format The expected returned format.
+   * @param identityId The Id of the specified identity.
+   * @param format The format of the returned result, for example, JSON or XML.
    * @authentication
    * @request
    * GET http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/123456789.json
@@ -105,15 +105,14 @@ public class IdentityResources implements ResourceContainer {
   }
 
   /**
-   * Gets the identity and its associated profile by specifying its _providerId_ and _remoteId_. Every identity has
-   * its providerId and remoteId. There could be as many identities as possible. Currently, there are 2 built-in types
-   * of identities (user identities and space identities) in Social.
+   * Gets the identity and its associated profile by specifying its provider Id and user/space Id.
+   * There can be many identities, such as, user identities, and space identities.
    *
-   * @param uriInfo The uri request uri.
+   * @param uriInfo The requested URI information.
    * @param portalContainerName The associated portal container name.
-   * @param providerId The providerId of Identity.
-   * @param remoteId The remoteId of Identity.
-   * @param format The expected returned format.
+   * @param providerId The provider Id of the identity.
+   * @param remoteId The user/space Id.
+   * @param format The format of the returned result, for example, JSON or XML.
    * @authentication
    * @request
    * GET http://localhost:8080/rest/private/api/social/v1-alpha3/portal/identity/organization/demo.json
