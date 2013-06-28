@@ -43,6 +43,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public final static String SPACE_IDENTITY = "SPACE_IDENTITY";
   public final static String MENTIONERS = "MENTIONERS";
   public final static String COMMENTERS = "COMMENTERS";
+  public final static String LIMIT = "LIMIT";
   
   
   public StreamProcessContext(String name, SocialServiceContext context) {
@@ -133,5 +134,14 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public String[] getCommenters() {
     return getProperty(COMMENTERS, String[].class);
+  }
+  
+  public StreamProcessContext limit(int limit) {
+    setProperty(LIMIT, limit);
+    return this;
+  }
+  
+  public int getLimit() {
+    return getProperty(LIMIT, int.class);
   }
 }

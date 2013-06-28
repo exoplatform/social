@@ -134,8 +134,5 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     got = activityStorage.getActivityFeed(johnIdentity, 0, 100);
     assertEquals(100, got.size());
     tearDownActivityList.addAll(got);
-    
-    
-    
   }
 }

@@ -36,6 +36,10 @@
       </value-param>
     </init-params>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
+  </component>
 
   <component>
     <key>org.exoplatform.social.core.storage.cache.SocialStorageCacheService</key>
