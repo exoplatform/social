@@ -1,3 +1,5 @@
+<%
+/*
 <!--
 
   Copyright (C) 2003-2013 eXo Platform SAS.
@@ -16,9 +18,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<webui-configuration>
-  <application>
-    <ui-component-root>org.exoplatform.social.portlet.UIEmailNotificationPortlet</ui-component-root>
-    <state-manager>org.exoplatform.webui.application.portlet.ParentAppStateManager</state-manager>
-  </application>
-</webui-configuration>
+*/
+
+%>
+<div class="uiNotificationSettingsPortlet" id="$uicomponent.id">
+  <% uicomponent.renderChildren(); %>
+</div>

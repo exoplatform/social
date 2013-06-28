@@ -16,11 +16,16 @@
  */
 package org.exoplatform.social.service.rest;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.exoplatform.services.rest.impl.ContainerResponse;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
+import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.service.test.AbstractResourceTest;
 
@@ -77,8 +82,109 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
   }
   
   public void testInviteToConnect() throws Exception {
+    startSessionAs("root");
     ContainerResponse response = service("POST", "/social/notifications/inviteToConnect/" + rootIdentity.getRemoteId() +"/" + johnIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
-    //assertEquals(200, response.getStatus());
+    assertEquals(303, response.getStatus());
+  }
+  
+  public void testConfirmInvitationToConnect() throws Exception {
+    startSessionAs("root");
+    ContainerResponse response = service("POST", "/social/notifications/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+  }
+  
+  public void testIgnoreInvitationToConnect() throws Exception {
+    startSessionAs("root");
+    ContainerResponse response = service("POST", "/social/notifications/ignoreInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+  }
+  
+  public void testAcceptInvitationToJoinSpace() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+    
+    startSessionAs("root");
+    ContainerResponse response = service("POST", "/social/notifications/acceptInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+    
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertTrue(listMembers.contains("root"));
+    listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
+    assertFalse(listInviteds.contains("root"));
+    
+    spaceService.deleteSpace(space.getId());
+  }
+  
+  public void testIgnoreInvitationToJoinSpace() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listInviteds = Arrays.asList(space.getInvitedUsers());
+    assertTrue(listInviteds.contains("root"));
+    
+    startSessionAs("root");
+    ContainerResponse response = service("POST", "/social/notifications/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+    
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertFalse(listMembers.contains("root"));
+    listInviteds = Arrays.asList(spaceService.getSpaceById(space.getId()).getInvitedUsers());
+    assertFalse(listInviteds.contains("root"));
+    
+    spaceService.deleteSpace(space.getId());
+  }
+  
+  public void testValidateRequestToJoinSpace() throws Exception {
+    Space space = getSpaceInstance(1);
+    List<String> listMembers = Arrays.asList(space.getMembers());
+    assertFalse(listMembers.contains("root"));
+    List<String> listPendings = Arrays.asList(space.getPendingUsers());
+    assertTrue(listPendings.contains("root"));
+    
+    startSessionAs("root");
+    ContainerResponse response = service("POST", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+    
+    listMembers = Arrays.asList(spaceService.getSpaceById(space.getId()).getMembers());
+    assertTrue(listMembers.contains("root"));
+    listPendings = Arrays.asList(spaceService.getSpaceById(space.getId()).getPendingUsers());
+    assertFalse(listPendings.contains("root"));
+    
+    spaceService.deleteSpace(space.getId());
+  }
+  
+  private Space getSpaceInstance(int number) throws Exception {
+    Space space = new Space();
+    space.setDisplayName("my_space_" + number);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription("add new space " + number);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/my_space_" + number);
+    String[] managers = new String[] {"john"};
+    String[] members = new String[] {};
+    String[] invitedUsers = new String[] {"root"};
+    String[] pendingUsers = new String[] {"root"};
+    space.setInvitedUsers(invitedUsers);
+    space.setPendingUsers(pendingUsers);
+    space.setManagers(managers);
+    space.setMembers(members);
+    space.setUrl(space.getPrettyName());
+    this.spaceService.saveSpace(space, true);
+    return space;
   }
 }

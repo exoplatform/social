@@ -1,0 +1,97 @@
+<%
+/*
+<!--
+
+  Copyright (C) 2003-2013 eXo Platform SAS.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+ 
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+*/
+%>
+<%
+  import org.exoplatform.commons.api.notification.Provider;
+  import org.exoplatform.commons.api.notification.UserNotificationSetting.FREQUENCY;
+  
+  def componentId = uicomponent.id;
+  def notificationLabel = _ctx.appRes(componentId + ".label.NotificationSettings");
+  def notificationsDescriptionLabel = _ctx.appRes(componentId + ".label.NotificationsDescription");
+  def notificationsChoseLabel = _ctx.appRes(componentId + ".label.NotificationsChose");
+  _ctx.getRequestContext().getJavascriptManager().require("SHARED/uiForm");
+  uicomponent.init();
+%>
+<div class="uiNotificationSettings">
+  <% uiform.begin(); %>
+  <div class="uiSocTitleBar clearfix">
+    <h4>
+      <%=notificationLabel%>
+    </h4>
+    <%=notificationsDescriptionLabel%>
+  </div>
+  <div class="form-horizontal">
+    <table class="uiGrid table table-striped">
+       <thead>
+         <tr>
+           <th style="width:100px; text-align:center"><%=_ctx.appRes(componentId + ".label.NotificationsChose")%></th>
+           <th width="20px" class="center"><%=_ctx.appRes(componentId + ".label.Instantly")%></th>
+           <th width="20px" class="center"><%=_ctx.appRes(componentId + ".label.Daily")%></th>
+           <th width="20px" class="center"><%=_ctx.appRes(componentId + ".label.Weekly")%></th>
+           <th width="20px" class="center"><%=_ctx.appRes(componentId + ".label.Monthly")%></th>
+         </tr>
+       </thead>
+       <tbody>
+    <% 
+      List<Provider> providers = uicomponent.getProviders();
+      if (providers == null || providers.size() == 0) { 
+    %>
+      <tr>
+         <td class="empty center" colspan="5">
+           <%=_ctx.appRes(componentId + ".label.Empty")%>
+         </td>
+      </tr>  
+    <%  } else {
+      for(Provider provider : providers) {
+        FREQUENCY[] frequencies = uicomponent.frequencies;
+        String label = _ctx.appRes(componentId + ".label." + provider.getName());
+    %>
+      <tr>
+        <td style="width:80px;" class="center">
+          <label for="<%=provider.getName()%>">
+            <%=label %>
+          </label>
+        </td>
+        <% for (int i = 0; i < frequencies.length; i++) {
+        %>
+        <td style="width:20px;" class="center">
+          <% uiform.renderField(provider.getType() + frequencies[i].getName()); %>  
+        </td>
+        <%} %>
+      </tr>
+      <% } %>
+    <% } %>
+    </tbody>
+   </table>
+  </div>
+  
+  <div class="uiAction">
+  <% for(action in uicomponent.getActions()) { 
+     String actionLabel = _ctx.appRes(componentId + ".action." + action); 
+     String link = uicomponent.event(action) ;
+  %>
+    <button onclick="$link" class="btn" type="button">$actionLabel</button>
+  <%}%>
+  </div>
+  
+  <% uiform.end(); %>
+</div>

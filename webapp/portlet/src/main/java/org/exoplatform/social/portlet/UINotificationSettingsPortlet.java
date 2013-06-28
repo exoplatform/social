@@ -16,19 +16,19 @@
  */
 package org.exoplatform.social.portlet;
 
-import org.exoplatform.social.webui.notification.UIEmailNotification;
+import org.exoplatform.social.webui.notification.UINotificationSettings;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIPortletApplication;
 import org.exoplatform.webui.core.lifecycle.UIApplicationLifecycle;
 
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
-  template = "app:/groovy/social/portlet/UIEmailNotificationPortlet.gtmpl"
+  template = "app:/groovy/social/portlet/UINotificationSettingsPortlet.gtmpl"
 )
-public class UIEmailNotificationPortlet extends UIPortletApplication {
+public class UINotificationSettingsPortlet extends UIPortletApplication {
 
-  public UIEmailNotificationPortlet() throws Exception {
-    addChild(UIEmailNotification.class, null, null);
+  public UINotificationSettingsPortlet() throws Exception {
+    addChild(UINotificationSettings.class, null, null);
   }
   
 }

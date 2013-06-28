@@ -21,7 +21,6 @@ import static org.exoplatform.social.service.rest.RestChecker.checkAuthenticated
 import java.net.URI;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
@@ -33,6 +32,8 @@ import javax.ws.rs.core.UriInfo;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -40,6 +41,7 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 /**
@@ -57,24 +59,12 @@ public class NotificationsRestService implements ResourceContainer {
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
+  private static final Log LOG = ExoLogger.getLogger(NotificationsRestService.class);
+  
   public NotificationsRestService() {
   }
   
   @GET
-  @Path("{action}")
-  public Response actionToInvitation(@Context UriInfo uriInfo,
-                                     @PathParam("action") String action) throws Exception {
-    // Authentication
-  
-    String targetURL = null;
-    
-    // Call services to process and create target redirected url by type of action
-  
-    // redirect to target page
-   return Response.seeOther(URI.create(targetURL)).build();
-  }
-  
-  @POST
   @Path("inviteToConnect/{senderId}/{receiverId}")
   public Response inviteToConnect(@Context UriInfo uriInfo,
                                   @PathParam("senderId") String senderId,
@@ -89,6 +79,88 @@ public class NotificationsRestService implements ResourceContainer {
     
     // redirect to target page
    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
+  public Response confirmInvitationToConnect(@Context UriInfo uriInfo,
+                                             @PathParam("senderId") String senderId,
+                                             @PathParam("receiverId") String receiverId) throws Exception {
+    checkAuthenticatedRequest();
+    
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
+    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    getRelationshipManager().confirm(sender, receiver);
+  
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(senderId);
+    
+    // redirect to target page
+   return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("ignoreInvitationToConnect/{senderId}/{receiverId}")
+  public Response ignoreInvitationToConnect(@Context UriInfo uriInfo,
+                                            @PathParam("senderId") String senderId,
+                                            @PathParam("receiverId") String receiverId) throws Exception {
+    checkAuthenticatedRequest();
+
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
+    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    getRelationshipManager().deny(sender, receiver);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserConnectionsYoursUri(receiverId);
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
+  public Response acceptInvitationToJoinSpace(@Context UriInfo uriInfo,
+                                              @PathParam("spaceId") String spaceId,
+                                              @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedRequest();
+
+    Space space = getSpaceService().getSpaceById(spaceId);
+    getSpaceService().addMember(space, userId);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}")
+  public Response ignoreInvitationToJoinSpace(@Context UriInfo uriInfo,
+                                              @PathParam("spaceId") String spaceId,
+                                              @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedRequest();
+
+    Space space = getSpaceService().getSpaceById(spaceId);
+    getSpaceService().removeInvitedUser(space, userId);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+    
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("validateRequestToJoinSpace/{spaceId}/{userId}")
+  public Response validateRequestToJoinSpace(@Context UriInfo uriInfo,
+                                             @PathParam("spaceId") String spaceId,
+                                             @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedRequest();
+
+    Space space = getSpaceService().getSpaceById(spaceId);
+    getSpaceService().addMember(space, userId);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
   }
   
   public SpaceService getSpaceService() {

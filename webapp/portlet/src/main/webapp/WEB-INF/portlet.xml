@@ -23,13 +23,13 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="1.0">
 
   <portlet>
-    <description xml:lang="EN">Email Notification Portlet</description>
-    <portlet-name>EmailNotificationPortlet</portlet-name>
-    <display-name xml:lang="EN">Email Notification</display-name>
+    <description xml:lang="EN">Notification Settings Portlet</description>
+    <portlet-name>NotificationSettingsPortlet</portlet-name>
+    <display-name xml:lang="EN">Notification Settings</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
     <init-param>
       <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/EmailNotificationPortlet/webui/configuration.xml</value>
+      <value>/WEB-INF/conf/portlet/NotificationSettingsPortlet/webui/configuration.xml</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
@@ -38,8 +38,8 @@
     <supported-locale>en</supported-locale>
     <resource-bundle>locale.portlet.Portlets</resource-bundle>
     <portlet-info>
-      <title>Email Notification</title>
-      <short-title>Email Notification</short-title>
+      <title>Notification Settings</title>
+      <short-title>Notification Settings</short-title>
       <keywords>social</keywords>
     </portlet-info>    
   </portlet>
