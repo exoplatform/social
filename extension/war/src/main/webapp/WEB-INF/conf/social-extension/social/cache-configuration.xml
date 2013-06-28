@@ -125,6 +125,16 @@
             <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
           </object>
         </object-param>
+        <object-param>
+          <name>SuggestionsCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>SuggestionsCache</string></field>
+            <field name="maxSize"><int>${cache.exo.social.SuggestionsCache.Capacity:800}</int></field>
+            <field name="liveTime"><long>${cache.exo.social.SuggestionsCache.TimeToLive:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
+          </object>
+        </object-param>
 
         <!-- Activities -->
         <object-param>
@@ -365,6 +375,20 @@
             </field>
             <field name="maxNodes">
              <int>${cache.exo.social.RelationshipsCache.Capacity:800}</int>
+            </field>
+            <field name="distributed">
+              <boolean>true</boolean>
+            </field>
+          </object>
+          <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
+            <field name="name">
+              <string>SuggestionsCache</string>
+            </field>
+            <field name="expirationTimeout">
+              <long>${cache.exo.social.SuggestionsCache.TimeToLive:-1}</long>
+            </field>
+            <field name="maxNodes">
+             <int>${cache.exo.social.SuggestionsCache.Capacity:800}</int>
             </field>
             <field name="distributed">
               <boolean>true</boolean>

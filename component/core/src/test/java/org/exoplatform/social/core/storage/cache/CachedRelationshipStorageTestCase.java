@@ -18,6 +18,9 @@
 package org.exoplatform.social.core.storage.cache;
 
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.impl.IdentityStorageImpl;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -37,6 +40,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
   private CachedRelationshipStorage relationshipStorage;
   private IdentityStorageImpl identityStorage;
   private SocialStorageCacheService cacheService;
+  private IdentityManager identityManager;
 
   private List<String> tearDownIdentityList;
 
@@ -46,6 +50,7 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
 
     relationshipStorage = (CachedRelationshipStorage) getContainer().getComponentInstanceOfType(CachedRelationshipStorage.class);
     identityStorage = (IdentityStorageImpl) getContainer().getComponentInstanceOfType(IdentityStorageImpl.class);
+    identityManager = (IdentityManager) getContainer().getComponentInstanceOfType(IdentityManager.class);
 
     cacheService = (SocialStorageCacheService) getContainer().getComponentInstanceOfType(SocialStorageCacheService.class);
     cacheService.getRelationshipCache().clearCache();
@@ -175,6 +180,58 @@ public class CachedRelationshipStorageTestCase extends AbstractCoreTest {
     relationshipStorage.removeRelationship(r);
     assertEquals(0, cacheService.getRelationshipCache().getCacheSize());
     assertEquals(0, cacheService.getRelationshipCacheByIdentity().getCacheSize());
+  }
+  
+  public void testGetSuggestion() throws Exception {
+    
+    Identity johnIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "john");
+    Identity maryIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "mary");
+    Identity demoIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "demo");
+    Identity ghostIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "ghost");
+    Identity paulIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, "paul");
+    
+    tearDownIdentityList.add(johnIdentity.getId());
+    tearDownIdentityList.add(maryIdentity.getId());
+    tearDownIdentityList.add(demoIdentity.getId());
+    tearDownIdentityList.add(ghostIdentity.getId());
+    tearDownIdentityList.add(paulIdentity.getId());
+    
+    assertEquals(0, cacheService.getSuggestionCache().getCacheSize());
+    
+    relationshipStorage.getSuggestions(johnIdentity, 0, 10);
+    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
+    relationshipStorage.getSuggestions(demoIdentity, 0, 10);
+    
+    assertEquals(3, cacheService.getSuggestionCache().getCacheSize());
+    
+    relationshipStorage.getSuggestions(ghostIdentity, 0, 10);
+    relationshipStorage.getSuggestions(paulIdentity, 0, 10);
+    
+    assertEquals(5, cacheService.getSuggestionCache().getCacheSize());
+    
+    //different offset/limit
+    relationshipStorage.getSuggestions(paulIdentity, 0, 5);
+    relationshipStorage.getSuggestions(paulIdentity, 5, 10);
+    
+    assertEquals(7, cacheService.getSuggestionCache().getCacheSize());
+    
+    // same identity and offset/limit
+    relationshipStorage.getSuggestions(paulIdentity, 0, 10);
+    
+    assertEquals(7, cacheService.getSuggestionCache().getCacheSize());
+    
+    cacheService.getSuggestionCache().clearCache();
+    
+    assertEquals(0, cacheService.getSuggestionCache().getCacheSize());
+    
+    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
+    relationshipStorage.getSuggestions(maryIdentity, 0, 10);
+    
+    assertEquals(1, cacheService.getSuggestionCache().getCacheSize());
+    
+    relationshipStorage.getSuggestions(maryIdentity, 0, 0);
+    
+    assertEquals(2, cacheService.getSuggestionCache().getCacheSize());
   }
 
 }
