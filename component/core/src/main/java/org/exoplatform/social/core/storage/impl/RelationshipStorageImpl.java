@@ -1064,6 +1064,7 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         
         StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
         sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR).append("'");
+        sb.append(" AND soc:isDeleted = 'false'");
         
         for(String id : excludeIdentities) {
           sb.append(" AND NOT ").append(JCRProperties.id.getName()).append(" = '").append(id).append("'");
