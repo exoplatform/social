@@ -102,7 +102,12 @@ public class SocialExecutorService<T> {
       Future<T> ft = this.futureCollections.get(lastId);
 
       if ( ft.get() != null ) {
-        return this.futureCollections;
+        Map<String, Future<T>> result = new HashMap<String, Future<T>>(this.futureCollections);
+        
+        //clear map
+        this.futureCollections.clear();
+        
+        return result;
       }
 
     } catch (NullPointerException e) {
