@@ -157,6 +157,15 @@ public abstract class StreamUpgradeProcessor {
 
   }
   
+  public void upgrade(int offset, int limit) {
+    if (limit == -1) {
+      upgrade();
+    } else {
+      upgradeRange(offset, limit);
+    }
+    
+  }
+  
   protected IdentityStorage getIdentityStorage() {
     if (this.identityStorage == null) {
        this.identityStorage = (IdentityStorage) PortalContainer.getInstance().getComponentInstanceOfType(IdentityStorage.class);
