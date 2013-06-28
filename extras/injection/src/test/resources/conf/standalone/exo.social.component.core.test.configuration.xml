@@ -47,6 +47,10 @@
   <component>
     <type>org.exoplatform.social.extras.injection.RelationshipInjector</type>
   </component>
+  
+  <component>
+    <type>org.exoplatform.social.extras.injection.UserStreamMigrationInjector</type>
+  </component>
 
   <component>
     <key>org.exoplatform.portal.config.UserACL</key>
@@ -195,6 +199,10 @@
   <component>
     <key>org.exoplatform.social.core.storage.impl.SpaceStorageImpl</key>
     <type>org.exoplatform.social.core.storage.synchronization.SynchronizedSpaceStorage</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.social.core.updater.UserActivityStreamMigration</type>
   </component>
 
   <component>

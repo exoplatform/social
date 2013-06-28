@@ -18,6 +18,7 @@
 package org.exoplatform.social.core.storage.impl;
 
 import java.util.Iterator;
+
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -167,6 +168,70 @@ public abstract class AbstractStorage {
       return true;
     } else {
       return false;
+    }
+  }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+  
+  /**
+   * Gets NodeIterator with Statement with offset and limit
+   * 
+   * @param statement
+   * @param offset
+   * @param limit
+   * @return
+   * @throws Exception
+   */
+  protected NodeIterator nodes(String statement, long offset, long limit) {
+    //
+    if (statement == null) return null;
+    
+    //
+    try {
+      QueryManager queryMgr = getSession().getJCRSession().getWorkspace().getQueryManager();
+      Query query = queryMgr.createQuery(statement, Query.SQL);
+      if (query instanceof QueryImpl) {
+        QueryImpl impl = (QueryImpl) query;
+        
+        //
+        impl.setOffset(offset);
+        impl.setLimit(limit);
+        
+        return impl.execute().getNodes();
+      }
+      
+      //
+      return query.execute().getNodes();
+    } catch (Exception ex) {
+      return null;
     }
   }
 

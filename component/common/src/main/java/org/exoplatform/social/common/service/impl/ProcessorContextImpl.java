@@ -80,6 +80,9 @@ public class ProcessorContextImpl implements ProcessContext {
         if (boolean.class.isAssignableFrom(type)) {
             return (T) Boolean.FALSE;
         }
+        if (int.class.isAssignableFrom(type)) {
+          return (T) new Integer(-1);
+        }
         return null;
     }
 
