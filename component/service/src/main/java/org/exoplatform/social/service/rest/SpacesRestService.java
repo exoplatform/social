@@ -66,7 +66,7 @@ import org.exoplatform.web.controller.router.URIWriter;
 
 /**
  *
- * Provides services for space gadget to display user's spaces and pending spaces.
+ * Provides services for the space gadget to display a user's spaces and pending spaces.
  *
  * @anchor SpacesRestService
  *
@@ -136,11 +136,11 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * Shows mySpaceList by json/xml format
+   * Gets the current user's spaces and pending spaces.
    *
-   * @param uriInfo The request URI information.
-   * @param portalName The name of current container.
-   * @param format The type of returned result.
+   * @param uriInfo The requested URI information.
+   * @param portalName The name of the current container.
+   * @param format The format of the returned result.
    * 
    * @anchor SpacesRestService.showMySpaceList
    * 
@@ -177,15 +177,15 @@ public class SpacesRestService implements ResourceContainer {
   
  
   /**
-   * Provides a way to get last n space ordered by last access and be able to filter on containing application
-   * of the authenticated user identity who makes this request.
+   * Provides a way to get the latest spaces ordered by last access and to be able to filter spaces, based on the application Id in the spaces.
    *
-   * @param uriInfo The request URI information.
-   * @param portalContainerName The portal container name.
-   * @param format The response format type, for example: JSON, or XML.
-   * @param offset Specify the from number of spaces to retrieve. It must be greater than or equal to 0.
-   * @param limit Specify the number of spaces to retrieve. It must be less than or equal to 10.
-   * @param appId AppId which contains in Space to filter. Such as Wiki, Discussion, Documents, Agenda ...etc
+   *
+   * @param uriInfo The requested URI information.
+   * @param portalName The portal container name.
+   * @param format The format of the returned result, for example, JSON, or XML.
+   * @param offset Specifies the staring point of the returned results. It must be greater than or equal to 0.
+   * @param limit Specifies the ending point of the returned results. It must be less than or equal to 10.
+   * @param appId The application Id which is contained in spaces to filter, such as, Wiki, Discussion, Documents, Agenda and more.
    * @authentication
    * @request GET: http://localhost:8080/rest/private/social/spaces/lastVisitedSpace/list.json?appId=Wiki&offset=0&limit=10
    * @response
@@ -245,11 +245,11 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * Shows pendingSpaceList by json/xml format
+   * Gets a user's pending spaces.
    * 
-   * @param uriInfo The request URI information.
-   * @param portalContainerName The portal container name.
-   * @param format The response format type, for example: JSON, or XML.
+   * @param uriInfo The requested URI information.
+   * @param portalName The portal container name.
+   * @param format The format of the returned result, for example, JSON, or XML.
    * 
    * @anchor SpacesRestService.showPendingSpaceList
    * 
@@ -275,14 +275,14 @@ public class SpacesRestService implements ResourceContainer {
   }
 
   /**
-   * Suggests space's name for searching.
+   * Suggests the space's name for searching.
    *
-   * @param uriInfo The request URI information.
+   * @param uriInfo The requested URI information.
    * @param portalName The name of portal.
    * @param conditionToSearch The input information to search.
-   * @param typeOfRelation The type of relationship of user and space.
-   * @param userId Id of current user.
-   * @param format The response format type, for example: JSON, or XML.
+   * @param typeOfRelation The type of relationship of the user and the space.
+   * @param userId The Id of current user.
+   * @param format The format of the returned result, for example, JSON, or XML.
    * @return
    * @throws Exception
    * @LevelAPI Platform
