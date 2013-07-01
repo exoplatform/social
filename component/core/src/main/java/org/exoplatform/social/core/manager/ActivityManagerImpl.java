@@ -148,7 +148,7 @@ public class ActivityManagerImpl implements ActivityManager {
   public void saveComment(ExoSocialActivity existingActivity, ExoSocialActivity newComment) throws
           ActivityStorageException {
     activityStorage.saveComment(existingActivity, newComment);
-    activityLifeCycle.saveComment(existingActivity);
+    activityLifeCycle.saveComment(newComment);
   }
 
   /**
@@ -189,6 +189,7 @@ public class ActivityManagerImpl implements ActivityManager {
     identityIds = (String[]) ArrayUtils.add(identityIds, identity.getId());
     existingActivity.setLikeIdentityIds(identityIds);
     updateActivity(existingActivity);
+    activityLifeCycle.likeActivity(existingActivity);
   }
 
   /**

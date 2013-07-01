@@ -108,6 +108,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
     activityManager.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
     assertNotNull(activity.getId());
     
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
@@ -121,6 +122,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     ExoSocialActivity act = new ExoSocialActivityImpl();
     act.setTitle("hello @demo");
     activityManager.saveActivity(rootIdentity, act);
+    tearDownActivityList.add(act);
     assertNotNull(act.getId());
     assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     

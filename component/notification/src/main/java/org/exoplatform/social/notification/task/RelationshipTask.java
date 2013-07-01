@@ -83,8 +83,8 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       Relationship relation = ctx.value(RELATIONSHIP);
       
       message.setProviderType(TASK_NAME)
-             .setFrom(relation.getSender().getProviderId())
-             .setSendToUserIds(Arrays.asList(relation.getReceiver().getProviderId()))
+             .setFrom(relation.getSender().getRemoteId())
+             .setSendToUserIds(Arrays.asList(relation.getReceiver().getRemoteId()))
              .addOwnerParameter("relationShipId", relation.getId());
       
       return message;

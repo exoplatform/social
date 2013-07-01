@@ -56,4 +56,17 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     // add all available types and will be ignored if value is null
     storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY));
   }
+
+  @Override
+  public void likeActivity(ActivityLifeCycleEvent event) {
+    ExoSocialActivity activity = event.getSource();    
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ActivityTask.ACTIVITY, activity);
+    
+    // check if activity contain mentions then create mention task
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
+    
+    // add all available types and will be ignored if value is null
+    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.LIKE));
+    
+  }
 }

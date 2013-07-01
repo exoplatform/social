@@ -53,7 +53,8 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
       String userId = ctx.value(REMOTE_ID);
       
       message.setProviderType(TASK_NAME)
-             .setFrom(space.getId())
+             .setFrom(space.getPrettyName())
+             .addOwnerParameter("spaceId", space.getId())
              .setSendToUserIds(Arrays.asList(userId));
       
       return message;
@@ -82,7 +83,7 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
       
       message.setProviderType(TASK_NAME)
              .setFrom(userId)
-             .addOwnerParameter("spaceGroupId", space.getGroupId())
+             .addOwnerParameter("spaceId", space.getId())
              .setSendToUserIds(Arrays.asList(space.getManagers()));
       
       return message;

@@ -23,6 +23,7 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -113,6 +114,34 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
+             .setProviderType(TASK_NAME);
+    }
+    
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
+    }
+    
+    @Override
+    public String getId() {
+      return TASK_NAME;
+    }
+
+  };
+  
+  /**
+   * Someone likes an activity on the User's stream.
+   */
+  public static ActivityTask LIKE = new ActivityTask() {
+    private final String TASK_NAME = "LIKE_ACTIVITY";
+
+    @Override
+    public NotificationMessage execute(NotificationContext ctx) {
+      
+      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      String[] likersId = activity.getLikeIdentityIds();
+      return NotificationMessage.getInstance().setFrom(Utils.getUserId(likersId[likersId.length-1]))
+             .setSendToUserIds(Utils.toListUserIds(activity.getPosterId()))
              .setProviderType(TASK_NAME);
     }
     
