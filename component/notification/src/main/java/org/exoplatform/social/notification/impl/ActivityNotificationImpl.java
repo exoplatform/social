@@ -76,7 +76,7 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
     // add all available types and will be ignored if value is null
-    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.LIKE));
+    storage.add(NotificationExecutor.execute(ctx, ActivityTask.LIKE));
     
   }
 }
