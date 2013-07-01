@@ -35,6 +35,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -61,6 +62,8 @@ public class NotificationsRestService implements ResourceContainer {
   
   private static final Log LOG = ExoLogger.getLogger(NotificationsRestService.class);
   
+  private static String ACTIVITY_ID_PREFIX = "#activityContainer";
+  
   public NotificationsRestService() {
   }
   
@@ -75,7 +78,7 @@ public class NotificationsRestService implements ResourceContainer {
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     getRelationshipManager().inviteToConnect(sender, receiver);
   
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(receiverId);
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(receiver.getRemoteId());
     
     // redirect to target page
    return Response.seeOther(URI.create(targetURL)).build();
@@ -92,7 +95,7 @@ public class NotificationsRestService implements ResourceContainer {
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     getRelationshipManager().confirm(sender, receiver);
   
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(senderId);
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(sender.getRemoteId());
     
     // redirect to target page
    return Response.seeOther(URI.create(targetURL)).build();
@@ -109,7 +112,7 @@ public class NotificationsRestService implements ResourceContainer {
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
     getRelationshipManager().deny(sender, receiver);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getUserConnectionsYoursUri(receiverId);
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserConnectionsYoursUri(receiver.getRemoteId());
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -158,6 +161,38 @@ public class NotificationsRestService implements ResourceContainer {
     getSpaceService().addMember(space, userId);
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("replyActivity/{activityId}/{userId}")
+  public Response replyActivity(@Context UriInfo uriInfo,
+                                @PathParam("userId") String userId,
+                                @PathParam("activityId") String activityId) throws Exception {
+    checkAuthenticatedRequest();
+
+    ExoSocialActivity activity = getActivityManager().getActivity(activityId);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  @GET
+  @Path("viewFullDiscussion/{activityId}/{userId}")
+  public Response viewFullDiscussion(@Context UriInfo uriInfo,
+                                     @PathParam("userId") String userId,
+                                     @PathParam("activityId") String activityId) throws Exception {
+    checkAuthenticatedRequest();
+
+    ExoSocialActivity activity = getActivityManager().getActivity(activityId);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();

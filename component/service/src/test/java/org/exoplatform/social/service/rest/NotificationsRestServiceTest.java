@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.services.rest.impl.ContainerResponse;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
@@ -81,23 +83,43 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertNotNull(notificationsRestService);
   }
   
+  public void testReplyActivity() throws Exception {
+    startSessionAs("root");
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity");
+    activityManager.saveActivity(rootIdentity, activity);
+    ContainerResponse response = service("GET", "/social/notifications/replyActivity/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+  }
+  
+  public void testViewFullDiscussion() throws Exception {
+    startSessionAs("root");
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity");
+    activityManager.saveActivity(rootIdentity, activity);
+    ContainerResponse response = service("GET", "/social/notifications/viewFullDiscussion/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    assertNotNull(response);
+    assertEquals(303, response.getStatus());
+  }
+  
   public void testInviteToConnect() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/inviteToConnect/" + rootIdentity.getRemoteId() +"/" + johnIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + rootIdentity.getRemoteId() +"/" + johnIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }
   
   public void testConfirmInvitationToConnect() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/confirmInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }
   
   public void testIgnoreInvitationToConnect() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/ignoreInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToConnect/" + johnIdentity.getRemoteId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }
@@ -110,7 +132,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertTrue(listInviteds.contains("root"));
     
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/acceptInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/acceptInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
@@ -131,7 +153,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertTrue(listInviteds.contains("root"));
     
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/ignoreInvitationToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
@@ -152,7 +174,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     assertTrue(listPendings.contains("root"));
     
     startSessionAs("root");
-    ContainerResponse response = service("POST", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/validateRequestToJoinSpace/" + space.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     
     assertNotNull(response);
     assertEquals(303, response.getStatus());
