@@ -161,4 +161,72 @@ public class StreamProcessorFactory {
 
     };
   }
+  
+  /**
+   * Build Create ActivityRef for Feed Stream
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor createFeedActivityRef() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        getStreamStorage().createFeedActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build Create ActivityRef for Connections Stream
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor createConnectionsActivityRef() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        getStreamStorage().createConnectionsActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build Create ActivityRef for My Spaces Stream
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor createMySpacesActivityRef() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        getStreamStorage().createMySpacesActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+    };
+  }
+  
+  /**
+   * Build Create ActivityRef for My Activities Stream
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor createMyActivitiesActivityRef() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        
+        getStreamStorage().createMyActivitiesActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+
+    };
+  }
 }

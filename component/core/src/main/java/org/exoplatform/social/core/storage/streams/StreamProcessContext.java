@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.storage.streams;
 
+import java.util.List;
+
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.ProcessorContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -33,6 +35,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public static String ADD_SPACE_MEMBER_ACTIVITY_PROCESS = "ADD_SPACE_MEMBER_ACTIVITY";
   public static String REMOVE_SPACE_MEMBER_ACTIVITY_PROCESS = "REMOVE_SPACE_MEMBER_ACTIVITY";
   public static String UPGRADE_STREAM_PROCESS = "UPGRADE_STREAM_ACTIVITY";
+  public static String LAZY_UPGRADE_STREAM_PROCESS = "LAZY_UPGRADE_STREAM_ACTIVITY";
   
   public final static String OWNER = "OWNER";
   public final static String ACTIVITY = "ACTIVITY";
@@ -44,6 +47,7 @@ public class StreamProcessContext extends ProcessorContextImpl {
   public final static String MENTIONERS = "MENTIONERS";
   public final static String COMMENTERS = "COMMENTERS";
   public final static String LIMIT = "LIMIT";
+  public final static String ACTIVITY_LIST = "ACTIVITY_LIST";
   
   
   public StreamProcessContext(String name, SocialServiceContext context) {
@@ -71,6 +75,16 @@ public class StreamProcessContext extends ProcessorContextImpl {
   
   public ExoSocialActivity getActivity() {
     return getProperty(ACTIVITY, ExoSocialActivity.class);
+  }
+  
+  public StreamProcessContext activities(List<ExoSocialActivity> list) {
+    setProperty(ACTIVITY_LIST, list);
+    return this;
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<ExoSocialActivity> getActivities() {
+    return getProperty(ACTIVITY, List.class);
   }
   
   public StreamProcessContext activityId(String activityId) {

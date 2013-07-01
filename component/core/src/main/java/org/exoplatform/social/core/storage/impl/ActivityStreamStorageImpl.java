@@ -125,6 +125,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         space(owner, activityEntity);
       }
     } catch (NodeNotFoundException e) {
+      ctx.setException(e);
       LOG.warn("Failed to add Activity references.", e);
     }
   }
@@ -802,47 +803,66 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       LOG.info(String.format("printDebug::KEY = %s| %s", entry.getKey(), entry.getValue().toString()));
     }
   }
-
+  
   @Override
-  public void createActivityRef(UpdateContext context,
-                                ExoSocialActivity activity,
-                                ActivityRefType type) {
-    ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, activity.getId());
-    if (activityEntity == null) return;
-    try {
-      manageRefList(context, activityEntity, type);
-    } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to create Activity references.");
-    }
+  public void createFeedActivityRef(Identity owner,
+                                List<ExoSocialActivity> activities) {
+    createActivityRef(owner, activities, ActivityRefType.FEED);
   }
   
   @Override
-  public void createActivityRef(UpdateContext context,
+  public void createConnectionsActivityRef(Identity owner,
+                                    List<ExoSocialActivity> activities) {
+    createActivityRef(owner, activities, ActivityRefType.CONNECTION);
+       
+  }
+  
+  @Override
+  public void createMySpacesActivityRef(Identity owner,
+                                           List<ExoSocialActivity> activities) {
+    createActivityRef(owner, activities, ActivityRefType.MY_SPACES);
+  }
+  
+  @Override
+  public void createMyActivitiesActivityRef(Identity owner,
+                                           List<ExoSocialActivity> activities) {
+    createActivityRef(owner, activities, ActivityRefType.MY_ACTIVITIES);
+  }
+
+  @Override
+  public void createActivityRef(Identity owner,
                                 List<ExoSocialActivity> activities,
                                 ActivityRefType type) {
     
-    if (context.getAdded() != null) {
-      try {
-        for (Identity identity : context.getAdded()) {
-          IdentityEntity identityEntity = identityStorage._findIdentityEntity(identity.getProviderId(), identity.getRemoteId());
-          ActivityRefListEntity listRef = type.create(identityEntity);
-          StorageUtils.persist();
-          //
-          for(ExoSocialActivity a : activities) {
-            ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, a.getId());
-            
-            //migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use createdDate for replacement 
-            ActivityRef ref = listRef.get(activityEntity);
-            ref.setActivityEntity(activityEntity);
-          }
-        }
-      } catch (NodeNotFoundException e) {
-        LOG.warn("Failed to create Activity references.");
-      } finally {
-        StorageUtils.persist();
+    if (activities == null || activities.size() == 0) return;
+
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(),
+                                                                          owner.getRemoteId());
+      ActivityRefListEntity listRef = type.create(identityEntity);
+      // keep last migration
+      ExoSocialActivity entity = activities.get(activities.size() - 1);
+      if (entity != null) {
+        Long value = entity.getUpdated() != null ? entity.getUpdated().getTime()
+                                                : entity.getPostedTime();
+        listRef.setLastMigration(value.longValue());
       }
-      
+
+      StorageUtils.persist();
+
+      //
+      for (ExoSocialActivity a : activities) {
+        ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, a.getId());
+
+        // migration 3.5.x => 4.x, lastUpdated of Activity is NULL, then use
+        // createdDate for replacement
+        ActivityRef ref = listRef.get(activityEntity);
+        ref.setActivityEntity(activityEntity);
+      }
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to create Activity references.");
+    } finally {
+      StorageUtils.persist();
     }
-    
   }
 }

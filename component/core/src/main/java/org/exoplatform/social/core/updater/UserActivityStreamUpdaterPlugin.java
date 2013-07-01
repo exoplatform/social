@@ -19,18 +19,35 @@ package org.exoplatform.social.core.updater;
 import org.exoplatform.commons.version.util.VersionComparator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 public class UserActivityStreamUpdaterPlugin extends AbstractUpdaterPlugin {
   
+  private static final Log LOG = ExoLogger.getLogger(UserActivityStreamUpdaterPlugin.class);
+  
   private UserActivityStreamMigration streamMigration = null;
+  
+  public int limit = -1;
   
   public UserActivityStreamUpdaterPlugin(InitParams initParams) {
     super(initParams);
+    if (initParams.containsKey("limit")) {
+      try {
+        String value = initParams.getValueParam("limit").getValue();
+        if (value != null) {
+          limit = Integer.valueOf(value);
+        }
+      } catch (NumberFormatException e) {
+        LOG.warn("Integer number expected for property " + name);
+      }
+
+    }
   }
 
   @Override
   public void processUpgrade(String oldVersion, String newVersion) {
-    getStreamMigration().upgrade();
+    getStreamMigration().upgrade(this.limit);
   }
   
   private UserActivityStreamMigration getStreamMigration() {

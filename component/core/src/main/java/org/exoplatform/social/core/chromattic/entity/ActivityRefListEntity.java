@@ -49,6 +49,15 @@ public abstract class ActivityRefListEntity {
   @DefaultValue({"0"})
   public abstract Integer getNumber();
   public abstract void setNumber(Integer number);
+  
+  /**
+   * The last migration is last updated time of migrated activity. 
+   * The default value is set to 0.
+   */
+  @Property(name = "soc:lastMigration")
+  @DefaultValue({"0"})
+  public abstract Long getLastMigration();
+  public abstract void setLastMigration(Long number);
 
   /**
    * All the years containing activities in the list.
