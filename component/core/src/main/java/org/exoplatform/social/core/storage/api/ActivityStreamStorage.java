@@ -146,7 +146,16 @@ public interface ActivityStreamStorage {
   
   public int getNumberOfMyActivities(Identity owner);
   
-  void createActivityRef(UpdateContext context, ExoSocialActivity activity, ActivityRefType type);
+  void createActivityRef(Identity owner, List<ExoSocialActivity> activities, ActivityRefType type);
   
-  void createActivityRef(UpdateContext context, List<ExoSocialActivity> activities, ActivityRefType type);
+  void createFeedActivityRef(Identity owner,
+                                List<ExoSocialActivity> activities);
+  void createConnectionsActivityRef(Identity owner,
+                                    List<ExoSocialActivity> activities);
+  
+  void createMySpacesActivityRef(Identity owner,
+                                           List<ExoSocialActivity> activities);
+  
+  void createMyActivitiesActivityRef(Identity owner,
+                                           List<ExoSocialActivity> activities);
 }

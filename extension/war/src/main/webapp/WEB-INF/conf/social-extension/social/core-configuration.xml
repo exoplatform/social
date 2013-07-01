@@ -681,6 +681,11 @@
           <description>The groupId of the product</description>
           <value>org.exoplatform.social</value>
         </value-param>
+        <value-param>
+          <name>limit</name>
+          <description>The number of activities wil be migrated</description>
+          <value>20</value>
+        </value-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>

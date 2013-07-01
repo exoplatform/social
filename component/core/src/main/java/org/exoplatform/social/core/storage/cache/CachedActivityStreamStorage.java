@@ -129,22 +129,33 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void deleteConnect(Identity sender, Identity receiver) {
     this.storage.deleteConnect(sender, receiver);
   }
-
-  @Override
-  public void createActivityRef(UpdateContext context,
-                                ExoSocialActivity activity,
-                                ActivityRefType type) {
-    
-    this.storage.createActivityRef(context, activity, type);
-    
-  }
   
   @Override
-  public void createActivityRef(UpdateContext context,
+  public void createActivityRef(Identity owner,
                                 List<ExoSocialActivity> activities,
                                 ActivityRefType type) {
     
-    this.storage.createActivityRef(context, activities, type);
+    this.storage.createActivityRef(owner, activities, type);
     
+  }
+
+  @Override
+  public void createFeedActivityRef(Identity owner, List<ExoSocialActivity> activities) {
+    this.storage.createFeedActivityRef(owner, activities);
+  }
+
+  @Override
+  public void createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> activities) {
+    this.storage.createConnectionsActivityRef(owner, activities);
+  }
+
+  @Override
+  public void createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> activities) {
+    this.storage.createMySpacesActivityRef(owner, activities);
+  }
+
+  @Override
+  public void createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> activities) {
+    this.storage.createMyActivitiesActivityRef(owner, activities);
   }
 }
