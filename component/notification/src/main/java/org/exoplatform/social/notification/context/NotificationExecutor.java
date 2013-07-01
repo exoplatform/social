@@ -29,9 +29,11 @@ import org.exoplatform.services.log.Log;
 public class NotificationExecutor {
   private static final Log LOG = ExoLogger.getLogger(NotificationExecutor.class);
   
-  public static NotificationMessage execute(NotificationTask<NotificationContext> task, NotificationContext ctx) {
+  public static NotificationMessage execute(NotificationContext ctx, NotificationTask<NotificationContext> task) {
     NotificationMessage got = null;
 
+    if (!task.isValid(ctx)) return got;
+    
     //
     task.start(ctx);
 
@@ -55,12 +57,12 @@ public class NotificationExecutor {
     NotificationMessage got;
 
     for (int i = 0; i < tasks.length; ++i) {
-      if (tasks[i] == null) {
+      if (tasks[i] == null || !tasks[i].isValid(ctx)) {
         continue;
       }
 
       //
-      got = execute(tasks[i], ctx);
+      got = execute(ctx,tasks[i]);
       if (got != null) {
         gots.add(got);
       }

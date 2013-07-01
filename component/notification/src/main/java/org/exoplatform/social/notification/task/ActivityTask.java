@@ -184,9 +184,11 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     @Override
     public boolean isValid(NotificationContext ctx) {
       ExoSocialActivity activity = ctx.value(ACTIVITY);
-      Identity id = Utils.getIdentityManager().getIdentity(activity.getStreamOwner(), false);
+      Identity id = Utils.getIdentityManager()
+          .getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
+      
       //
-      return SpaceIdentityProvider.NAME.equals(id.getProviderId());
+      return id != null;
     }
     
     @Override

@@ -58,7 +58,7 @@ public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {
     try {
       NotificationContext ctx = NotificationContextImpl.DEFAULT.append(RelationshipTask.RELATIONSHIP, relationship);
       NotificationDataStorage storage = Utils.getSocialEmailStorage();
-      storage.addAll(NotificationExecutor.execute(ctx, RelationshipTask.CONNECTION_REQUEST_RECEIVED));
+      storage.add(NotificationExecutor.execute(ctx, RelationshipTask.CONNECTION_REQUEST_RECEIVED));
     } catch (Exception e) {
       LOG.warn("Failed to get invite to connect information of " + event + ": " + e.getMessage());
     }

@@ -121,7 +121,7 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SpaceTask.REMOTE_ID, userId)
                                                              .append(SpaceTask.SPACE, space);
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_INVITATION));
+    storage.add(NotificationExecutor.execute(ctx, SpaceTask.SPACE_INVITATION));
   }
   
   @Override
@@ -133,6 +133,6 @@ public class SpaceNotificationImpl extends SpaceListenerPlugin {
                                                              .append(SpaceTask.SPACE, space);
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
-    storage.addAll(NotificationExecutor.execute(ctx, SpaceTask.SPACE_JOIN_REQUEST));
+    storage.add(NotificationExecutor.execute(ctx, SpaceTask.SPACE_JOIN_REQUEST));
   }
 }

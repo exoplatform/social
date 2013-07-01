@@ -16,8 +16,11 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import java.util.Collection;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.activity.ActivityLifeCycleEvent;
 import org.exoplatform.social.core.activity.ActivityListenerPlugin;
@@ -28,6 +31,7 @@ import org.exoplatform.social.notification.task.ActivityTask;
 
 public class ActivityNotificationImpl extends ActivityListenerPlugin {
 
+  @SuppressWarnings("unchecked")
   @Override
   public void saveActivity(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
@@ -36,9 +40,13 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     // check if activity contain mentions then create mention task
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
     
-    // add all available types and will be ignored if value is null
-    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.POST_ACTIVITY, 
-      ActivityTask.POST_ACTIVITY_ON_SPACE, ActivityTask.MENTION_ACTIVITY));
+    Collection<NotificationMessage> messages = NotificationExecutor.execute(ctx, ActivityTask.POST_ACTIVITY, 
+                                 ActivityTask.POST_ACTIVITY_ON_SPACE, ActivityTask.MENTION_ACTIVITY);
+    
+    if (messages.size() != 0) {
+      // add all available types
+      storage.addAll(messages);
+    }
   }
 
   @Override
@@ -50,11 +58,13 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ActivityTask.ACTIVITY, activity);
     
-    // check if activity contain mentions then create mention task
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
+    NotificationMessage message = NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY);
     
-    // add all available types and will be ignored if value is null
-    storage.addAll(NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY));
+    if (message != null) {
+      // add all available types and will be ignored if value is null
+      storage.add(message);
+    }
   }
 
   @Override
