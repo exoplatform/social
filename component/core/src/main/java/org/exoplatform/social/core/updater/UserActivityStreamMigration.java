@@ -115,13 +115,12 @@ public class UserActivityStreamMigration extends AbstractStorage {
     }
   }
   
-  public void upgrade() {
+  public void upgrade(int limit) {
     StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
     sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
     sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
     
     LOG.warn("SQL : " + sb.toString());
-    
     NodeIterator it = nodes(sb.toString());
     long totalOfIdentity = it.getSize();
     Identity owner = null; 
@@ -131,7 +130,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         node = (Node) it.next();
         owner = getIdentityStorage().findIdentityById(node.getUUID());
 
-        doUpgrade(owner, totalOfIdentity);
+        doUpgrade(owner, totalOfIdentity, limit);
       }
     } catch (Exception e) {
       LOG.warn("Failed to migration for Activity Stream.");

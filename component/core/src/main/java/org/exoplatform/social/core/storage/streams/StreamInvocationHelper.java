@@ -16,6 +16,8 @@
  */
 package org.exoplatform.social.core.storage.streams;
 
+import java.util.List;
+
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.ProcessContext;
@@ -175,6 +177,70 @@ public class StreamInvocationHelper {
       beforeAsync();
       //
       ctx.getServiceExecutor().async(StreamProcessorFactory.removeSpaceMemberStream(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext createFeedActivityRef(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.createFeedActivityRef(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.createConnectionsActivityRef(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.createMySpacesActivityRef(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.createMyActivitiesActivityRef(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }

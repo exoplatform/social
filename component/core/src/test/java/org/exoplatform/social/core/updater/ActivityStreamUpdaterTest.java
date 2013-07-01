@@ -20,11 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.ValueParam;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.test.AbstractCoreTest;
 
@@ -32,6 +34,7 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
   
   private IdentityStorage identityStorage;
   private ActivityStorage activityStorage;
+  private ActivityStreamStorage streamStorage;
   private List<ExoSocialActivity> tearDownActivityList;
 
   private Identity rootIdentity;
@@ -45,6 +48,7 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     super.setUp();
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorage.class);
+    streamStorage = (ActivityStreamStorage) getContainer().getComponentInstanceOfType(ActivityStreamStorage.class);
     
     activityStorage.setInjectStreams(false);
     
@@ -91,48 +95,51 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
       activityStorage.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
       activityStorage.saveActivity(demoIdentity, activity);
+      tearDownActivityList.add(activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
       activityStorage.saveActivity(maryIdentity, activity);
+      tearDownActivityList.add(activity);
     }
     
     for(int i = 0; i < 100; i++) {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle(activityTitle + i);
       activityStorage.saveActivity(johnIdentity, activity);
+      tearDownActivityList.add(activity);
     }
     
     
     
     assertEquals(100, activityStorage.getNumberOfActivitesOnActivityFeedForUpgrade(rootIdentity));
     
-    UserActivityStreamUpdaterPlugin updaterPlugin = new UserActivityStreamUpdaterPlugin(new InitParams());
+    ValueParam param = new ValueParam();
+    param.setName("limit");
+    param.setValue("20");
+    InitParams params = new InitParams();
+    params.addParameter(param);
+    
+    UserActivityStreamUpdaterPlugin updaterPlugin = new UserActivityStreamUpdaterPlugin(params);
     
     assertNotNull(updaterPlugin);
     updaterPlugin.processUpgrade("1.2.x", "4.0");
     
+    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(rootIdentity));
+    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(johnIdentity));
+    
     List<ExoSocialActivity> got = activityStorage.getActivityFeed(rootIdentity, 0, 100);
     assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    got = activityStorage.getActivityFeed(demoIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    
-    got = activityStorage.getActivityFeed(maryIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
-    
-    got = activityStorage.getActivityFeed(johnIdentity, 0, 100);
-    assertEquals(100, got.size());
-    tearDownActivityList.addAll(got);
   }
 }
