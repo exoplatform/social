@@ -23,7 +23,6 @@ import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
@@ -49,19 +48,18 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone @mentions the user in an activity.
    */
   public static ActivityTask MENTION_ACTIVITY = new ActivityTask() {
-    
-    private final String TASK_NAME = "MENTION_ACTIVITY";
+    private final String PROVIDER_TYPE = "ActivityMentionProvider";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       
-      return NotificationMessage.getInstance().setProviderType(TASK_NAME)
+      return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
              .setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Arrays.asList(activity.getMentionedIds()))
              .addOwnerParameter("activityId", activity.getId());
@@ -78,7 +76,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone comments on an activity posted by the user.
    */
   public static ActivityTask COMMENT_ACTIVITY = new ActivityTask() {
-    private final String TASK_NAME = "COMMENT_ACTIVITY";
+    private final String PROVIDER_TYPE = "ActivityCommentProvider";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
@@ -87,7 +85,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       //
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-             .setProviderType(TASK_NAME);
+             .setProviderType(PROVIDER_TYPE);
     }
 
     @Override
@@ -97,7 +95,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
 
   };
@@ -106,7 +104,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone posts an activity on the User's stream.
    */
   public static ActivityTask POST_ACTIVITY = new ActivityTask() {
-    private final String TASK_NAME = "POST_ACTIVITY";
+    private final String PROVIDER_TYPE = "ActivityPostProvider";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
@@ -114,7 +112,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-             .setProviderType(TASK_NAME);
+             .setProviderType(PROVIDER_TYPE);
     }
     
     @Override
@@ -124,7 +122,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
 
   };
@@ -133,7 +131,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone likes an activity on the User's stream.
    */
   public static ActivityTask LIKE = new ActivityTask() {
-    private final String TASK_NAME = "LIKE_ACTIVITY";
+    private final String PROVIDER_TYPE = "LikeActivityProvider";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
@@ -142,7 +140,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       String[] likersId = activity.getLikeIdentityIds();
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(likersId[likersId.length-1]))
              .setSendToUserIds(Utils.toListUserIds(activity.getPosterId()))
-             .setProviderType(TASK_NAME);
+             .setProviderType(PROVIDER_TYPE);
     }
     
     @Override
@@ -152,7 +150,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
 
   };
@@ -162,7 +160,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    */
   public static ActivityTask POST_ACTIVITY_ON_SPACE = new ActivityTask() {
     
-    private final String TASK_NAME = "POST_ACTIVITY_ON_SPACE";
+    private final String PROVIDER_TYPE = "ActivityPostSpaceProvider";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
@@ -173,7 +171,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
         
         
-        return NotificationMessage.getInstance().setProviderType(TASK_NAME)
+        return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
                                   .setFrom(Utils.getUserId(activity.getPosterId()))
                                   .setSendToUserIds(Arrays.asList(space.getMembers()));
       } catch (Exception e) {
@@ -193,7 +191,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
 
   };

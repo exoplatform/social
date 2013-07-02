@@ -38,11 +38,11 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
   }
   
   public static SpaceTask SPACE_INVITATION = new SpaceTask() {
-    private final String TASK_NAME = "SPACE_INVITATION";
+    private final String PROVIDER_TYPE = "InvitedJoinSpace";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
@@ -52,7 +52,7 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
       Space space = ctx.value(SPACE);
       String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(TASK_NAME)
+      message.setProviderType(PROVIDER_TYPE)
              .setFrom(space.getPrettyName())
              .addOwnerParameter("spaceId", space.getId())
              .setSendToUserIds(Arrays.asList(userId));
@@ -67,11 +67,11 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
   };
   
   public static SpaceTask SPACE_JOIN_REQUEST = new SpaceTask() {
-    private final String TASK_NAME = "SPACE_JOIN_REQUEST";
+    private final String PROVIDER_TYPE = "RequestJoinSpace";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
@@ -81,7 +81,7 @@ public abstract class SpaceTask implements NotificationTask<NotificationContext>
       Space space = ctx.value(SPACE);
       String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(TASK_NAME)
+      message.setProviderType(PROVIDER_TYPE)
              .setFrom(userId)
              .addOwnerParameter("spaceId", space.getId())
              .setSendToUserIds(Arrays.asList(space.getManagers()));

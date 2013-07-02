@@ -39,11 +39,11 @@ public abstract class ProfileTask implements NotificationTask<NotificationContex
    * 
    */
   public static ProfileTask UPDATE_AVATAR = new ProfileTask() {
-    private final String TASK_NAME = "UPDATE_AVATAR";
+    private final String PROVIDER_TYPE = "ProfileUpdateAvatarProvider";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
@@ -62,11 +62,11 @@ public abstract class ProfileTask implements NotificationTask<NotificationContex
    * 
    */
   public static ProfileTask UPDATE_DISPLAY_NAME = new ProfileTask() {
-    private final String TASK_NAME = "UPDATE_DISPLAY_NAME";
+    private final String PROVIDER_TYPE = "ProfileUpdateNameProvider";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override

@@ -38,11 +38,11 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
   public void end(NotificationContext ctx) {}
   
   public static RelationshipTask NEW_USER_JOIN_INTRANET = new RelationshipTask() {
-    private final String TASK_NAME = "NEW_USER_JOIN_INTRANET";
+    private final String PROVIDER_TYPE = "NewUserJoinSocialIntranet";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
@@ -54,7 +54,7 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       //This type of notification need to get all users of the system
       List<String> allUsers = new ArrayList<String>();
       
-      message.setProviderType(TASK_NAME)
+      message.setProviderType(PROVIDER_TYPE)
              .setFrom(profile.getId())
              .setSendToUserIds(allUsers);
       
@@ -69,11 +69,11 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
   };
   
   public static RelationshipTask CONNECTION_REQUEST_RECEIVED = new RelationshipTask() {
-    private final String TASK_NAME = "CONNECTION_REQUEST_RECEIVED";
+    private final String PROVIDER_TYPE = "ReceiceConnectionRequest";
 
     @Override
     public String getId() {
-      return TASK_NAME;
+      return PROVIDER_TYPE;
     }
     
     @Override
@@ -82,7 +82,7 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       
       Relationship relation = ctx.value(RELATIONSHIP);
       
-      message.setProviderType(TASK_NAME)
+      message.setProviderType(PROVIDER_TYPE)
              .setFrom(relation.getSender().getRemoteId())
              .setSendToUserIds(Arrays.asList(relation.getReceiver().getRemoteId()))
              .addOwnerParameter("relationShipId", relation.getId());
