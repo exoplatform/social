@@ -76,6 +76,9 @@ public class NotificationsRestService implements ResourceContainer {
     
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    if (sender == null || receiver == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getRelationshipManager().inviteToConnect(sender, receiver);
   
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(receiver.getRemoteId());
@@ -93,6 +96,9 @@ public class NotificationsRestService implements ResourceContainer {
     
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    if (sender == null || receiver == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getRelationshipManager().confirm(sender, receiver);
   
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(sender.getRemoteId());
@@ -110,6 +116,9 @@ public class NotificationsRestService implements ResourceContainer {
 
     Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true);
     Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    if (sender == null || receiver == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getRelationshipManager().deny(sender, receiver);
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserConnectionsYoursUri(receiver.getRemoteId());
@@ -126,6 +135,9 @@ public class NotificationsRestService implements ResourceContainer {
     checkAuthenticatedRequest();
 
     Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getSpaceService().addMember(space, userId);
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
@@ -142,6 +154,9 @@ public class NotificationsRestService implements ResourceContainer {
     checkAuthenticatedRequest();
 
     Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getSpaceService().removeInvitedUser(space, userId);
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
@@ -158,6 +173,9 @@ public class NotificationsRestService implements ResourceContainer {
     checkAuthenticatedRequest();
 
     Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
     getSpaceService().addMember(space, userId);
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
@@ -175,6 +193,9 @@ public class NotificationsRestService implements ResourceContainer {
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    if (identity == null || activity == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
 
@@ -191,6 +212,9 @@ public class NotificationsRestService implements ResourceContainer {
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
     Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    if (identity == null || activity == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
 

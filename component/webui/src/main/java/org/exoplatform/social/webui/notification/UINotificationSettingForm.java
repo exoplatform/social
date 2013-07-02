@@ -65,12 +65,13 @@ public class UINotificationSettingForm extends UIForm {
   }
   
   public void initSettingForm() {
+    UserNotificationSetting notificationSetting = getUserNotificationService().getUserNotificationSetting(Utils.getOwnerRemoteId());
     activeProviders = CommonsUtils.getService(ProviderSettingService.class).getActiveProviderIds(isAdmin());
     String checkBoxId;
     for (String providerId : activeProviders) {
       for (int i = 0; i < frequencies.length; ++i) {
         checkBoxId = getCheckBoxId(providerId, frequencies[i].getName());
-        addUIFormInput(new UICheckBoxInput(checkBoxId, checkBoxId, false));
+        addUIFormInput(new UICheckBoxInput(checkBoxId, checkBoxId, isCheckAcitve(notificationSetting, frequencies[i].getName(), providerId)));
       }
     }
   }
