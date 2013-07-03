@@ -58,6 +58,15 @@
       <type>org.exoplatform.social.notification.impl.ActivityNotificationImpl</type>
     </component-plugin>
   </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.NotificationProviderService</target-component>
+    <component-plugin>
+      <name>NotificationServiceListener</name>
+      <set-method>addSupportProviderImpl</set-method>
+      <type>org.exoplatform.social.notification.provider.SocialProviderImpl</type>
+    </component-plugin>
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
