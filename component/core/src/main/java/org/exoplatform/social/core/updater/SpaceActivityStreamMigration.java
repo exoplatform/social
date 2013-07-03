@@ -30,10 +30,9 @@ import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.common.service.utils.ConsoleUtils;
 import org.exoplatform.social.common.service.utils.ObjectHelper;
-import org.exoplatform.social.core.chromattic.entity.IdentityEntity;
 import org.exoplatform.social.core.chromattic.entity.ProfileEntity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.impl.AbstractStorage;
 import org.exoplatform.social.core.storage.impl.StorageUtils;
@@ -41,7 +40,7 @@ import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.streams.SocialChromatticAsyncProcessor;
 import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
-public class UserActivityStreamMigration extends AbstractStorage {
+public class SpaceActivityStreamMigration extends AbstractStorage {
   
  private static final Log LOG = ExoLogger.getLogger(UserActivityStreamUpdaterPlugin.class);
   
@@ -56,68 +55,10 @@ public class UserActivityStreamMigration extends AbstractStorage {
     
     return identityStorage;
   }
-  /**
-   * Upgrade base on range
-   * @param from
-   * @param to
-   * @param prefix
-   * @param numberOfActivities
-   */
-  public void upgrade(int limit, int from, int to, String prefix) {
-    StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
-    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
-    sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
-    
-    
-    
-    boolean hasGroup = false;
-    //
-    if ((to - from)> 0) {
-      sb.append(" AND (");
-      hasGroup = true;
-    }
-    
-    String name;
-    boolean hasOR = false;
-    int i = from;
-    for(;i <= to; i++) {
-      
-      
-      if (hasOR) {
-        sb.append(" OR ");
-      }
-      
-      name = prefix + i;
-      sb.append(IdentityEntity.remoteId.getName()).append(" = '").append(name).append("'");
-      
-      hasOR = true;
-    }
-    
-    if (hasGroup) {
-      sb.append(") ");
-    }
-    
-    LOG.warn("SQL : " + sb.toString());
-    
-    NodeIterator it = nodes(sb.toString());
-    long totalOfIdentity = to - from;
-    Identity owner = null; 
-    Node node = null;
-    try {
-      while (it.hasNext()) {
-        node = (Node) it.next();
-        owner = getIdentityStorage().findIdentityById(node.getUUID());
-
-        doUpgrade(owner, totalOfIdentity, limit);
-      }
-    } catch (Exception e) {
-      LOG.warn("Failed to migration for Activity Stream.");
-    }
-  }
   
   public void upgrade(int limit) {
     StringBuffer sb = new StringBuffer().append("SELECT * FROM soc:identitydefinition WHERE ");
-    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(OrganizationIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
+    sb.append(JCRProperties.path.getName()).append(" LIKE '").append(getProviderRoot().getProviders().get(SpaceIdentityProvider.NAME).getPath() + StorageUtils.SLASH_STR + StorageUtils.PERCENT_STR);
     sb.append("' AND NOT ").append(ProfileEntity.deleted.getName()).append(" = ").append("true");
     
     LOG.warn("SQL : " + sb.toString());
@@ -133,7 +74,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         doUpgrade(owner, totalOfIdentity, limit);
       }
     } catch (Exception e) {
-      LOG.warn("Failed to migration for Activity Stream.");
+      LOG.warn("Failed to migration for Space Activity Stream.");
     }
   }
   
@@ -155,7 +96,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
       processCtx.setException(e);
     } finally {
       if (processCtx.isFailed()) {
-        LOG.warn("Failed to migration for Activity Stream.", processCtx.getException());
+        LOG.warn("Failed to migration for Space Activity Stream.", processCtx.getException());
       } else {
         LOG.info(processCtx.getTraceLog());
       }
@@ -173,10 +114,7 @@ public class UserActivityStreamMigration extends AbstractStorage {
         int limit = streamCtx.getLimit();
         
         //
-        StreamUpgradeProcessor.feed(streamCtx.getIdentity()).upgrade(0, limit);
-        StreamUpgradeProcessor.connection(streamCtx.getIdentity()).upgrade(0, limit);
-        StreamUpgradeProcessor.myspaces(streamCtx.getIdentity()).upgrade(0, limit);
-        StreamUpgradeProcessor.user(streamCtx.getIdentity()).upgrade(0, limit);
+        StreamUpgradeProcessor.space(streamCtx.getIdentity()).upgrade(0, limit);
         return processContext;
       }
 
