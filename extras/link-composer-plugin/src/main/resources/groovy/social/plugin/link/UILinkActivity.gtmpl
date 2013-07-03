@@ -202,7 +202,7 @@
 					  if (linkImage.equals("")) {
 						linkClass = "";
 					  } else {
-						link = "<img width=\"110px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
+						link = "<img width=\"75px\" rel=\"tooltip\" data-placement=\"bottom\" title=\"$linkTitle\" src=\"$linkImage\" alt=\"$linkTitle\" />";
 					  }
 					  def embedHtml = uicomponent.getEmbedHtml();
 					%>
