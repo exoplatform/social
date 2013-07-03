@@ -85,6 +85,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       //
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
+             .addOwnerParameter("activityId", activity.getId())
              .setProviderType(PROVIDER_TYPE);
     }
 
@@ -112,6 +113,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
+             .addOwnerParameter("activityId", activity.getId())
              .setProviderType(PROVIDER_TYPE);
     }
     
@@ -140,6 +142,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       String[] likersId = activity.getLikeIdentityIds();
       return NotificationMessage.getInstance().setFrom(Utils.getUserId(likersId[likersId.length-1]))
              .setSendToUserIds(Utils.toListUserIds(activity.getPosterId()))
+             .addOwnerParameter("activityId", activity.getId())
              .setProviderType(PROVIDER_TYPE);
     }
     
@@ -173,6 +176,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         
         return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
                                   .setFrom(Utils.getUserId(activity.getPosterId()))
+                                  .addOwnerParameter("activityId", activity.getId())
                                   .setSendToUserIds(Arrays.asList(space.getMembers()));
       } catch (Exception e) {
         return null;
