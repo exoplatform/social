@@ -1405,11 +1405,12 @@ public class SpaceStorageImpl extends AbstractStorage implements SpaceStorage {
       if (this.isValidInput(spaceNameSearchCondition)) {
 
         List<String> unifiedSearchConditions = this.processUnifiedSearchCondition(spaceNameSearchCondition);
+        
         boolean first = true;
         for(String condition : unifiedSearchConditions) {
           //
           if (first == false) {
-            whereExpression.or();
+            whereExpression.and();
           } else {
             whereExpression.startGroup();
             first = false;

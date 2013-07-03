@@ -177,4 +177,89 @@ public class SpaceSearchConnectorTestCase extends AbstractCoreTest {
       in.close();
     }
   }
+  
+  public void testAllWordsMatchedSpaces() throws Exception {
+    setCurrentUser("demo");
+    Space space1 = this.getSpaceInstance(1, "Cluster" , "This is cluster space");
+    Space space2 = this.getSpaceInstance(2, "availability" , "This is availability space");
+    Space space3 = this.getSpaceInstance(3, "Cluster 3" , "This is cluster availability ");
+    
+    //case 1: keyword = "cluster"
+    List<SearchResult> results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(2, results.size());
+    
+    //case 2: keyword = "availability"
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(2, results.size());
+    
+    //case 3: keyword = "cluster availability"
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster availability", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(1, results.size());
+    
+    Space space4 = this.getSpaceInstance(4, "Availability 4" , "This is availability a cluster space");
+    Space space5 = this.getSpaceInstance(5, "Bla bla space" , "This is availability space bla bla bla bla bla bla cluster");
+    
+    //case 4: keyword = "Availability Cluster"
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(3, results.size());
+    
+    //case 5: keyword = "AVAILABILITY CLUSTER" (insensitive)
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "AVAILABILITY CLUSTER", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(3, results.size());
+    
+    //case 6: keyword = "Availability bla bla Cluster"
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(1, results.size());
+    
+    //case 7: keyword = "cluster bla bla Cluster"
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "cluster bla bla Cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(1, results.size());
+    
+    //case 8: keyword = "Availability clu" (uncompleted word)
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability clu", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(3, results.size());
+    
+    //case 9: keyword contains in the Space's name
+    Space space6 = this.getSpaceInstance(6, "Availability a cluster" , "This is the 6th space");
+    Space space7 = this.getSpaceInstance(7, "Availability bla bla bla cluster" , "This is the 7th space");
+    
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(5, results.size());
+    results = (List<SearchResult>) spaceSearchConnector.search(context, "Availability bla cluster", Collections.EMPTY_LIST, 0, 10, "title", "ASC");
+    assertEquals(2, results.size());
+    
+    tearDown.add(space1);
+    tearDown.add(space2);
+    tearDown.add(space3);
+    tearDown.add(space4);
+    tearDown.add(space5);
+    tearDown.add(space6);
+    tearDown.add(space7);
+    
+  }
+  
+  /**
+   * Gets an instance of Space.
+   *
+   * @param number
+   * @param displayName
+   * @param description
+   * @return an instance of space
+   */
+  private Space getSpaceInstance(int number, String displayName, String description) throws Exception {
+    Space space = new Space();
+    space.setApp("app1,app2");
+    space.setDisplayName(displayName);
+    space.setPrettyName(space.getDisplayName());
+    space.setRegistration(Space.OPEN);
+    space.setDescription(description);
+    space.setType(DefaultSpaceApplicationHandler.NAME);
+    space.setVisibility(Space.PUBLIC);
+    space.setPriority(Space.INTERMEDIATE_PRIORITY);
+    space.setGroupId("/spaces/space" + number);
+    space.setUrl(space.getPrettyName());
+    this.spaceService.saveSpace(space, true);
+    return space;
+  }
+  
 }
