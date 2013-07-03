@@ -16,137 +16,46 @@
  */
 package org.exoplatform.social.core.updater;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.commons.version.util.VersionComparator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.common.service.AsyncCallback;
-import org.exoplatform.social.common.service.ProcessContext;
-import org.exoplatform.social.common.service.SocialServiceContext;
-import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
-import org.exoplatform.social.common.service.utils.ConsoleUtils;
-import org.exoplatform.social.common.service.utils.ObjectHelper;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
-import org.exoplatform.social.core.profile.ProfileFilter;
-import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.streams.SocialChromatticAsyncProcessor;
-import org.exoplatform.social.core.storage.streams.StreamProcessContext;
 
-public class SpaceActivityStreamUpdaterPlugin  extends UpgradeProductPlugin {
+public class SpaceActivityStreamUpdaterPlugin extends UpgradeProductPlugin {
   private static final Log LOG = ExoLogger.getLogger(SpaceActivityStreamUpdaterPlugin.class);
   
-  private IdentityStorage identityStorage = null;
+  private SpaceActivityStreamMigration streamMigration = null;
   
-  private static AtomicInteger currentNumber = new AtomicInteger(0);
-
+  public int limit = -1;
+  
   public SpaceActivityStreamUpdaterPlugin(InitParams initParams) {
     super(initParams);
+    if (initParams.containsKey("limit")) {
+      try {
+        String value = initParams.getValueParam("limit").getValue();
+        if (value != null) {
+          limit = Integer.valueOf(value);
+        }
+      } catch (NumberFormatException e) {
+        LOG.warn("Integer number expected for property " + name);
+      }
+
+    }
+  }
+  
+  private SpaceActivityStreamMigration getStreamMigration() {
+    if (this.streamMigration == null) {
+       this.streamMigration = (SpaceActivityStreamMigration) PortalContainer.getInstance().getComponentInstanceOfType(SpaceActivityStreamMigration.class);
+    }
+    return streamMigration;
   }
 
   @Override
   public void processUpgrade(String oldVersion, String newVersion) {
-    upgrade();
+    getStreamMigration().upgrade(this.limit);
   }
-  
-  private IdentityStorage getIdentityStorage() {
-    if (this.identityStorage == null) {
-       this.identityStorage = (IdentityStorage) PortalContainer.getInstance().getComponentInstanceOfType(IdentityStorage.class);
-    }
-    
-    return identityStorage;
-  }
-  
-  private void upgrade() {
-    
-    ProfileFilter profileFilter = new ProfileFilter();
-    
-    long offset = 0;
-    long limit = 100;
-    int totalSize = getIdentityStorage().getIdentitiesByProfileFilterCount(SpaceIdentityProvider.NAME, profileFilter);
-    
-    List<Identity> identities = new ArrayList<Identity>();
-    limit = Math.min(limit, totalSize);
-    int loaded = loadIdentityRange(profileFilter, offset, limit, identities);
-    
-    if (limit != totalSize) {
-      while (loaded == 100) {
-        offset += limit;
-        
-        //prevent to over totalSize
-        if (offset + limit > totalSize) {
-          limit = totalSize - offset;
-        }
-        
-        //
-        loaded = loadIdentityRange(profileFilter, offset, limit, identities);
-      }
-    }
-    
-    int totalOfIdentity = identities.size();
-    for(Identity owner : identities) {
-      doUpgrade(owner, totalOfIdentity);
-    }
-  }
-  
-  private int loadIdentityRange(ProfileFilter filter, long  offset, long limit, List<Identity> result) {
-    List<Identity> got = getIdentityStorage().getIdentitiesByProfileFilter(SpaceIdentityProvider.NAME, filter, offset, limit, false);
-    result.addAll(got);
-    //
-    return got.size();
-  }
-  
-  private ProcessContext doUpgrade(Identity owner, int total) {
-    //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
-    StreamProcessContext processCtx = StreamProcessContext.getIntance(String.format("%s-[%s]", StreamProcessContext.UPGRADE_STREAM_PROCESS, owner.getRemoteId()), ctx);
-    processCtx.identity(owner).totalProcesses(total);
-    
-    try {
-      ctx.getServiceExecutor().async(upgradeProcessor(), processCtx, createAsyncCallback());
-    } finally {
-      if (processCtx.isFailed()) {
-        LOG.warn("Failed to migration for Space Activity Stream.", processCtx.getException());
-      } else {
-        LOG.info(processCtx.getTraceLog());
-      }
-    }
-    
-    return processCtx;
-  }
-  
-  private SocialChromatticAsyncProcessor upgradeProcessor() {
-    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
-
-      @Override
-      protected ProcessContext execute(ProcessContext processContext) throws Exception {
-        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
-        
-        //
-        StreamUpgradeProcessor.space(streamCtx.getIdentity()).upgrade();
-        return processContext;
-      }
-
-    };
-  }
-  
-  private AsyncCallback createAsyncCallback() {
-    return new AsyncCallback() {
-      @Override
-      public void done(ProcessContext processContext) {
-        int value = currentNumber.incrementAndGet();
-        int percent = (value*100) / processContext.getTotalProcesses();
-        ConsoleUtils.consoleProgBar(percent);
-      }
-    };
-  }
-  
   
   @Override
   public boolean shouldProceedToUpgrade(String newVersion, String previousVersion) {
