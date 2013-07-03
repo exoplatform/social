@@ -53,5 +53,10 @@
     <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
     <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.NotificationProviderService</key>
+    <type>org.exoplatform.commons.notification.impl.DigestorProviderImpl</type>
+  </component>
 
 </configuration>

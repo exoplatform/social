@@ -17,27 +17,35 @@
 package org.exoplatform.social.notification.test;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.exoplatform.commons.api.notification.MessageInfo;
+import org.exoplatform.commons.api.notification.NotificationMessage;
+import org.exoplatform.commons.api.notification.Provider;
+import org.exoplatform.commons.api.notification.plugin.ProviderPlugin;
+import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
+import org.exoplatform.commons.api.notification.service.NotificationProviderService;
+import org.exoplatform.commons.api.notification.service.ProviderService;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.notification.AbstractCoreTest;
-import org.exoplatform.social.notification.MaxQueryNumber;
-import org.exoplatform.social.notification.QueryNumberTest;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.impl.RelationshipNotifictionImpl;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+import org.exoplatform.social.notification.provider.SocialProviderImpl;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@QueryNumberTest
 public class SocialNotificationTestCase extends AbstractCoreTest {
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
@@ -50,6 +58,12 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private Identity johnIdentity;
   private Identity maryIdentity;
   private Identity demoIdentity;
+  
+  public static final String ACTIVITY_ID = "activityId";
+
+  public static final String SPACE_ID    = "spaceId";
+
+  public static final String IDENTITY_ID = "identityId";
 
   @Override
   protected void setUp() throws Exception {
@@ -80,6 +94,52 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
 
     tearDownActivityList = new ArrayList<ExoSocialActivity>();
     tearDownSpaceList = new ArrayList<Space>();
+    
+    System.setProperty("gatein.email.domain.url", "localhost");
+  }
+  
+  public MessageInfo buildMessageInfo(NotificationMessage message) {
+    
+    NotificationProviderService providerService = CommonsUtils.getService(NotificationProviderService.class);
+    
+    SocialProviderImpl providerImpl = new SocialProviderImpl(
+               activityManager,
+               CommonsUtils.getService(IdentityManager.class),
+               spaceService, new ProviderService() {
+                
+                @Override
+                public void saveProvider(Provider provider) {
+                }
+                
+                @Override
+                public void registerProviderPlugin(ProviderPlugin providerPlugin) {
+                }
+                
+                @Override
+                public Provider getProvider(String providerType) {
+                  Provider provider = new Provider();
+                  //
+                  Map<String, String> subject = new HashMap<String, String>();
+                  subject.put("subject", "$space-name $other_user_name");
+                  Map<String, String> template = new HashMap<String, String>();
+                  template.put("body", "$space-name $activity_comment");
+                  provider.setSubjects(subject);
+                  provider.setTemplates(template);
+                  provider.setType(providerType);
+                  return provider;
+                }
+                
+                @Override
+                public List<Provider> getAllProviders() {
+                  return null;
+                }
+              },
+              
+              CommonsUtils.getService(OrganizationService.class)
+    );
+    providerService.addSupportProviderImpl((AbstractNotificationProvider)providerImpl);
+
+    return  providerImpl.buildMessageInfo(message);
   }
 
   @Override
@@ -100,8 +160,26 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
 
     super.tearDown();
   }
+  
+  public void testSaveComment() throws Exception {
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title");
+    activityManager.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+    
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("comment title");
+    comment.setUserId(demoIdentity.getId());
+    activityManager.saveComment(activity, comment);
+    
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    NotificationMessage message = messages.iterator().next();
+    MessageInfo info = buildMessageInfo(message);
+    assertEquals("$space-name " + demoIdentity.getProfile().getFullName(), info.getSubject());
+    assertEquals("$space-name " + comment.getTitle(), info.getBody());
+  }
 
-  @MaxQueryNumber(100)
   public void testSaveActivity() throws Exception {
 
     //
@@ -129,6 +207,20 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     // user post activity on space
   }
   
+  public void testLikeActivity() throws Exception {
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("title ");
+    activityManager.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    
+    activityManager.saveLike(activity, demoIdentity);
+    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    
+  }
+  
   public void testInviteToConnect() throws Exception {
     
     RelationshipNotifictionImpl relationshipNotifiction = (RelationshipNotifictionImpl) getContainer().getComponentInstanceOfType(RelationshipNotifictionImpl.class);
@@ -143,8 +235,12 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   public void testInvitedToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
-    
-    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    NotificationMessage message = messages.iterator().next();
+    MessageInfo info = buildMessageInfo(message);
+    assertEquals(space.getPrettyName() + " $other_user_name", info.getSubject());
+    spaceService.deleteSpace(space);
   }
   
   public void testAddPendingUser() throws Exception {
@@ -152,6 +248,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    spaceService.deleteSpace(space);
   }
   
   private Space getSpaceInstance(int number) throws Exception {
@@ -165,6 +262,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     space.setRegistration(Space.VALIDATION);
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
+    space.setAvatarUrl("my-avatar-url");
     String[] managers = new String[] {"root"};
     String[] members = new String[] {"demo"};
     String[] invitedUsers = new String[] {};
@@ -174,6 +272,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     space.setManagers(managers);
     space.setMembers(members);
     space.setUrl(space.getPrettyName());
+    space.setAvatarLastUpdated(System.currentTimeMillis());
     this.spaceService.saveSpace(space, true);
     return space;
   }

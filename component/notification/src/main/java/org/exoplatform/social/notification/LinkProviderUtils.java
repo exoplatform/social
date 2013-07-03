@@ -1,12 +1,11 @@
 package org.exoplatform.social.notification;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.exoplatform.services.rest.impl.EnvironmentContext;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.ExoContainerContext;
 
 public class LinkProviderUtils {
   
-public static final String RESOURCE_URL = "rest/social/notifications";
+public static final String RESOURCE_URL = "social/notifications";
   
   public static final String INVITE_TO_CONNECT = RESOURCE_URL + "/inviteToConnect";
   
@@ -25,54 +24,47 @@ public static final String RESOURCE_URL = "rest/social/notifications";
   public static final String VIEW_FULL_DISCUSSION = RESOURCE_URL + "/viewFullDiscussion";
 
   public static String getInviteToConnectUrl(String senderId, String receiverId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, INVITE_TO_CONNECT, senderId, receiverId);
+    return getRestUrl(INVITE_TO_CONNECT, senderId, receiverId);
   }
   
   public static String getConfirmInvitationToConnectUrl(String senderId, String receiverId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, CONFIRM_INVITATION_TO_CONNECT, senderId, receiverId);
+    return getRestUrl(CONFIRM_INVITATION_TO_CONNECT, senderId, receiverId);
   }
   
   public static String getIgnoreInvitationToConnectUrl(String senderId, String receiverId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, IGNORE_INVITATION_TO_CONNECT, senderId, receiverId);
+    return getRestUrl(IGNORE_INVITATION_TO_CONNECT, senderId, receiverId);
   }
   
   public static String getAcceptInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getRestUrl(ACCEPT_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   public static String getIgnoreInvitationToJoinSpaceUrl(String spaceId, String userId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
+    return getRestUrl(IGNORE_INVITATION_JOIN_SPACE, spaceId, userId);
   }
   
   public static String getValidateRequestToJoinSpaceUrl(String spaceId, String userId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, VALIDATE_REQUEST_JOIN_SPACE, spaceId, userId);
+    return getRestUrl(VALIDATE_REQUEST_JOIN_SPACE, spaceId, userId);
   }
   
   public static String getReplyActivityUrl(String activityId, String userId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, REPLY_ACTIVITY, activityId, userId);
+    return getRestUrl(REPLY_ACTIVITY, activityId, userId);
   }
   
   public static String getViewFullDiscussionUrl(String activityId, String userId) {
-    String baseUrl = getBaseUrl();
-    return String.format("%s/%s/%s/%s", baseUrl, VIEW_FULL_DISCUSSION, activityId, userId);
+    return getRestUrl(VIEW_FULL_DISCUSSION, activityId, userId);
+  }
+
+  public static String getRestUrl(String type, String objectId1, String objectId2) {
+    String baseUrl = getBaseRestUrl();
+    return new StringBuffer(baseUrl).append("/").append(type)
+        .append("/").append(objectId1).append("/").append(objectId2).toString();
   }
   
-  private static String getBaseUrl() {
-    HttpServletRequest currentServletRequest = getCurrentServletRequest();
-    return currentServletRequest.getScheme() + "://" + currentServletRequest.getServerName() +
-                                                 ":" + currentServletRequest.getServerPort();
-  }
-  
-  private static HttpServletRequest getCurrentServletRequest() {
-    EnvironmentContext environmentContext = EnvironmentContext.getCurrent();
-    return (HttpServletRequest) environmentContext.get(HttpServletRequest.class);
+  private static String getBaseRestUrl() {
+    String domain = System.getProperty("gatein.email.domain.url");
+    ExoContainerContext context = CommonsUtils.getService(ExoContainerContext.class);
+    return new StringBuffer(domain).append("/").append(context.getRestContextName()).toString();
   }
 
 }

@@ -24,7 +24,6 @@ import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.Provider;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.ProviderService;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -102,8 +101,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           messageInfo.setSubject(subject.replace("$user-who-mentionned", identity.getProfile().getFullName()))
                      .setBody(body.replace("$user-who-mentionned", identity.getProfile().getFullName())
                                   .replace("$post", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser()))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser())));
+                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case ActivityCommentProvider: {
@@ -115,19 +114,19 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
                      .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
                                   .replace("$activity_comment", activity.getTitle())
                                   .replace("$original_activity_message", parentActivity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser()))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser())));
+                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case ActivityLikeProvider: {
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
-          Identity identity = identityManager.getIdentity(getFrom(message), true);
+          Identity identity = identityManager.getIdentity(message.getFrom(), true);
           messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()))
                      .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
                                   .replace("$activity", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser()))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser())));
+                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case ActivityPostProvider: {
@@ -137,8 +136,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()))
                      .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
                                   .replace("$activity_message", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser()))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser())));
+                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case ActivityPostSpaceProvider: {
@@ -150,8 +149,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
                      .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
                                   .replace("$activity_message", activity.getTitle())
                                   .replace("$space-name", spaceIdentity.getProfile().getFullName())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser()))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), Util.getPortalRequestContext().getRemoteUser())));
+                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case InvitedJoinSpace: {
@@ -160,14 +159,14 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()))
                      .setBody(body.replace("$space-name", space.getPrettyName())
                                   .replace("$space-avatar-url", space.getAvatarUrl())
-                                  .replace("$acceptAction", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), getTo(message)))
-                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), getTo(message))));
+                                  .replace("$acceptAction", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)))
+                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0))));
           break;
         }
         case RequestJoinSpace: {
           String spaceId = message.getOwnerParameter().get(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getFrom(message), true);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
           messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()).replace("$user-name", userProfile.getFullName()))
                      .setBody(body.replace("$space-name", space.getPrettyName())
@@ -181,13 +180,13 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ReceiceConnectionRequest: {
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getFrom(message), true);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
           messageInfo.setSubject(subject.replace("$user-name", userProfile.getFullName()))
                      .setBody(body.replace("$user-name", userProfile.getFullName())
                                   .replace("$user-avatar-url", userProfile.getAvatarUrl())
-                                  .replace("$confirmAction", LinkProviderUtils.getConfirmInvitationToConnectUrl(getFrom(message), getTo(message)))
-                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToConnectUrl(getFrom(message), getTo(message))));
+                                  .replace("$confirmAction", LinkProviderUtils.getConfirmInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)))
+                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0))));
           break;
         }
       }

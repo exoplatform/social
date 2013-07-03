@@ -83,7 +83,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       
       //
-      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
+      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getUserId()))
              .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
              .addOwnerParameter("activityId", activity.getId())
              .setProviderType(PROVIDER_TYPE);

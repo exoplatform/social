@@ -20,16 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.spi.SpaceService;
 
 public class Utils {
-  
-  private static IdentityManager idm;
-  private static SpaceService spaceSrv;
   
   @SuppressWarnings("unchecked")
   public static <T> T getService(Class<T> clazz) {
@@ -55,24 +50,10 @@ public class Utils {
   }
   
   public static IdentityManager getIdentityManager() {
-    if (idm != null) {
-      return idm;
-    }
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    idm = (IdentityManager) container.getComponentInstance(IdentityManager.class);
-
-    return idm;
+    return getService(IdentityManager.class);
   }
   
   public static SpaceService getSpaceService() {
-    if (spaceSrv != null) {
-      return spaceSrv;
-    }
-    
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    spaceSrv = (SpaceService) container.getComponentInstance(SpaceService.class);
-
-    return spaceSrv;
+    return getService(SpaceService.class);
   }
 }
