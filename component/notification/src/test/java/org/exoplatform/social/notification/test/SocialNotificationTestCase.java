@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.Provider;
+import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.plugin.ProviderPlugin;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.NotificationProviderService;
@@ -108,7 +108,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
                spaceService, new ProviderService() {
                 
                 @Override
-                public void saveProvider(Provider provider) {
+                public void saveProvider(ProviderData provider) {
                 }
                 
                 @Override
@@ -116,8 +116,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
                 }
                 
                 @Override
-                public Provider getProvider(String providerType) {
-                  Provider provider = new Provider();
+                public ProviderData getProvider(String providerType) {
+                  ProviderData provider = new ProviderData();
                   //
                   Map<String, String> subject = new HashMap<String, String>();
                   subject.put("subject", "$space-name $other_user_name");
@@ -130,7 +130,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
                 }
                 
                 @Override
-                public List<Provider> getAllProviders() {
+                public List<ProviderData> getAllProviders() {
                   return null;
                 }
               },
