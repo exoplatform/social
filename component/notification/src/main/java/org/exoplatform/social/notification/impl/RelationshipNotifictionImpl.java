@@ -21,13 +21,11 @@ import org.exoplatform.commons.api.notification.NotificationDataStorage;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.RelationshipEvent;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationExecutor;
-import org.exoplatform.social.notification.task.ProfileTask;
 import org.exoplatform.social.notification.task.RelationshipTask;
 
 public class RelationshipNotifictionImpl extends RelationshipListenerPlugin {

@@ -24,7 +24,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceLifeCycleEvent;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationExecutor;
-import org.exoplatform.social.notification.task.RelationshipTask;
 import org.exoplatform.social.notification.task.SpaceTask;
 
 public class SpaceNotificationImpl extends SpaceListenerPlugin {

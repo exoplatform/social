@@ -35,5 +35,6 @@
   <import>war:/conf/social-extension/social/opensocial-configuration.xml</import>
   <import>war:/conf/social-extension/social/service-configuration.xml</import>
   <import>war:/conf/social-extension/social/webui-configuration.xml</import>
+  <import>war:/conf/social-extension/social/notification-plugins-configuration.xml</import>
 
 </configuration>
