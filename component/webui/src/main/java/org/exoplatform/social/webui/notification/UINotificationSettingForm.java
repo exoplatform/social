@@ -71,7 +71,7 @@ public class UINotificationSettingForm extends UIForm {
     for (String providerId : activeProviders) {
       for (int i = 0; i < frequencies.length; ++i) {
         checkBoxId = getCheckBoxId(providerId, frequencies[i].getName());
-        addUIFormInput(new UICheckBoxInput(checkBoxId, checkBoxId, isCheckAcitve(notificationSetting, frequencies[i].getName(), providerId)));
+        addUIFormInput(new UICheckBoxInput(checkBoxId, checkBoxId, isCheckActive(notificationSetting, frequencies[i].getName(), providerId)));
       }
     }
   }
@@ -81,18 +81,18 @@ public class UINotificationSettingForm extends UIForm {
     for (String providerId : activeProviders) {
       for (int i = 0; i < frequencies.length; ++i) {
         getUICheckBoxInput(getCheckBoxId(providerId, frequencies[i].getName()))
-        .setChecked(isCheckAcitve(notificationSetting, frequencies[i].getName(), providerId));
+        .setChecked(isCheckActive(notificationSetting, frequencies[i].getName(), providerId));
       }
     }
   }
   
-  private boolean isCheckAcitve(UserNotificationSetting notificationSetting, String frequency, String providerId) {
+  private boolean isCheckActive(UserNotificationSetting notificationSetting, String frequency, String providerId) {
     if (frequency.equals(FREQUENCY.INSTANTLY.getName())) {
-      return notificationSetting.isInInstantly(providerId);
+      return notificationSetting.isInInstantly(providerId) || notificationSetting.isDefault();
     } else if (frequency.equals(FREQUENCY.DAILY_KEY.getName())) {
       return notificationSetting.isInDaily(providerId);
     } else if (frequency.equals(FREQUENCY.WEEKLY_KEY.getName())) {
-      return notificationSetting.isInWeekly(providerId);
+      return notificationSetting.isInWeekly(providerId) || notificationSetting.isDefault();
     } else if (frequency.equals(FREQUENCY.MONTHLY_KEY.getName())) {
       return notificationSetting.isInMonthly(providerId);
     }

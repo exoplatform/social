@@ -391,6 +391,10 @@ public class LinkProvider {
   private static String getBaseUri(final String portalName, String portalOwner) {
     return "/" + getPortalName(portalName) + "/" + getPortalOwner(portalOwner);
   }
+  
+  public static String getUserNotificationSettingUri(final String remoteId) {
+    return getBaseUri(null, null) + "/notifications" + ROUTE_DELIMITER + remoteId;
+  }
 
   /**
    * Gets IdentityManager instance.
