@@ -119,10 +119,6 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
       tearDownActivityList.add(activity);
     }
     
-    
-    
-    assertEquals(100, activityStorage.getNumberOfActivitesOnActivityFeedForUpgrade(rootIdentity));
-    
     ValueParam param = new ValueParam();
     param.setName("limit");
     param.setValue("20");
@@ -134,10 +130,10 @@ public class ActivityStreamUpdaterTest extends AbstractCoreTest {
     assertNotNull(updaterPlugin);
     updaterPlugin.processUpgrade("1.2.x", "4.0");
     
-    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(rootIdentity));
-    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(demoIdentity));
-    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(maryIdentity));
-    assertEquals(updaterPlugin.limit, streamStorage.getNumberOfFeed(johnIdentity));
+    assertEquals(100, streamStorage.getNumberOfFeed(rootIdentity));
+    assertEquals(100, streamStorage.getNumberOfFeed(demoIdentity));
+    assertEquals(100, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(100, streamStorage.getNumberOfFeed(johnIdentity));
     
     List<ExoSocialActivity> got = activityStorage.getActivityFeed(rootIdentity, 0, 100);
     assertEquals(100, got.size());

@@ -24,7 +24,6 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
 import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
-import org.exoplatform.social.core.storage.api.ActivityStreamStorage.UpdateContext;
 import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 
 public abstract class StreamUpgradeProcessor {
@@ -43,7 +42,9 @@ public abstract class StreamUpgradeProcessor {
    * @return
    */
   abstract int size(Identity owner);
-  
+  /**
+   * Fetches all of activities and migrate 
+   */
   public void upgrade() {
     
     int offset = 0;
@@ -69,11 +70,18 @@ public abstract class StreamUpgradeProcessor {
 
   }
   
+  /**
+   * Fetches all of activities with offset and limit and migrate
+   *  
+   * @param offset
+   * @param limit
+   */
   public void upgrade(int offset, int limit) {
     if (limit == -1) {
       upgrade();
     } else {
       upgradeRange(offset, limit);
+      upgradeStreamSize();
     }
     
   }
@@ -204,5 +212,14 @@ public abstract class StreamUpgradeProcessor {
     
     //
     return got.size();
+  }
+  
+  private int upgradeStreamSize() {
+    int got = size(this.owner);
+    if (got > 0) {
+      getStreamStorage().migrateStreamSize(owner, got, this.type);
+    }
+    //
+    return got;
   }
 }

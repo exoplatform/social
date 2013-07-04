@@ -455,6 +455,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     FEED() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        if (identityEntity.getStreams() == null) return null;
+        
         return identityEntity.getStreams().getAll();
       }
       
@@ -476,6 +478,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     CONNECTION() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        if (identityEntity.getStreams() == null) return null;
+        
         return identityEntity.getStreams().getConnections();
       }
       
@@ -496,6 +500,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     MY_SPACES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        if (identityEntity.getStreams() == null) return null;
+        
         return identityEntity.getStreams().getMySpaces();
       }
       
@@ -516,6 +522,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     SPACE_STREAM() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        if (identityEntity.getStreams() == null) return null;
+        
         return identityEntity.getStreams().getSpace();
       }
       
@@ -536,6 +544,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     MY_ACTIVITIES() {
       @Override
       public ActivityRefListEntity refsOf(IdentityEntity identityEntity) {
+        if (identityEntity.getStreams() == null) return null;
+        
         return identityEntity.getStreams().getOwner();
       }
 
@@ -607,6 +617,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     try {
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       ActivityRefListEntity refList = type.refsOf(identityEntity);
+      
+      if (refList == null) return 0;
       
       return refList.getNumber().intValue();
     } catch (NodeNotFoundException e) {
@@ -824,6 +836,12 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   @Override
+  public void createSpaceActivityRef(Identity owner,
+                                           List<ExoSocialActivity> activities) {
+    createActivityRef(owner, activities, ActivityRefType.SPACE_STREAM);
+  }
+  
+  @Override
   public void createMyActivitiesActivityRef(Identity owner,
                                            List<ExoSocialActivity> activities) {
     createActivityRef(owner, activities, ActivityRefType.MY_ACTIVITIES);
@@ -864,5 +882,60 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     } finally {
       StorageUtils.persist();
     }
+  }
+  
+  @Override
+  public void migrateStreamSize(Identity owner, int size, ActivityRefType type) {
+    
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
+      ActivityRefListEntity listRef = type.create(identityEntity);
+      listRef.setNumber(size);
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to migrateStreamSize.");
+    } finally {
+      StorageUtils.persist();
+    }
+  }
+
+  @Override
+  public boolean hasSizeOfFeed(Identity owner) {
+    return hasSizeOfActivities(ActivityRefType.FEED, owner);
+  }
+
+  @Override
+  public boolean hasSizeOfMySpaces(Identity owner) {
+    return hasSizeOfActivities(ActivityRefType.MY_SPACES, owner);
+  }
+
+  @Override
+  public boolean hasSizeOfSpaceStream(Identity owner) {
+    return hasSizeOfActivities(ActivityRefType.SPACE_STREAM, owner);
+  }
+
+  @Override
+  public boolean hasSizeOfMyActivities(Identity owner) {
+    return hasSizeOfActivities(ActivityRefType.MY_ACTIVITIES, owner);
+  }
+  
+  @Override
+  public boolean hasSizeOfConnections(Identity owner) {
+    return hasSizeOfActivities(ActivityRefType.CONNECTION, owner);
+  }
+  
+  private boolean hasSizeOfActivities(ActivityRefType type, Identity owner) {
+    try {
+      IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
+      ActivityRefListEntity refList = type.refsOf(identityEntity);
+      if (refList == null) return false;
+      //TODO only provide TQA to testing.
+      return refList.getNumber().intValue() > 0 && refList.getNumber().intValue() != 20;
+      //using this code
+      //return refList.getSize().intValue() > 0;
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to hasSizeOfActivities()");
+    }
+    
+    return false;
   }
 }

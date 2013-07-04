@@ -153,9 +153,45 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> activities) {
     this.storage.createMySpacesActivityRef(owner, activities);
   }
+  
+  @Override
+  public void createSpaceActivityRef(Identity owner, List<ExoSocialActivity> activities) {
+    this.storage.createSpaceActivityRef(owner, activities);
+  }
 
   @Override
   public void createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> activities) {
     this.storage.createMyActivitiesActivityRef(owner, activities);
+  }
+  
+  @Override
+  public boolean hasSizeOfConnections(Identity owner) {
+    return this.storage.hasSizeOfConnections(owner);
+  }
+  
+  @Override
+  public boolean hasSizeOfFeed(Identity owner) {
+    return this.storage.hasSizeOfFeed(owner);
+  }
+  
+  @Override
+  public boolean hasSizeOfMyActivities(Identity owner) {
+    return this.storage.hasSizeOfMyActivities(owner);
+  }
+  
+  @Override
+  public boolean hasSizeOfMySpaces(Identity owner) {
+    return this.storage.hasSizeOfMySpaces(owner);
+  }
+  
+  @Override
+  public boolean hasSizeOfSpaceStream(Identity owner) {
+    return this.storage.hasSizeOfSpaceStream(owner);
+  }
+  
+  @Override
+  public void migrateStreamSize(Identity owner, int size, ActivityRefType type) {
+    this.storage.migrateStreamSize(owner, size, type);
+    
   }
 }
