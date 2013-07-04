@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.Provider;
+import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.ProviderService;
 import org.exoplatform.services.log.ExoLogger;
@@ -86,7 +86,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     messageInfo.setFrom(getFrom(message)).setTo(getTo(message));
 
     //
-    Provider provider = providerService.getProvider(message.getProviderType());
+    ProviderData provider = providerService.getProvider(message.getProviderType());
     String language = getLanguage(message);
     String body = getTemplate(provider, language);
     String subject = getSubject(provider, language);
@@ -213,6 +213,11 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
   public String getIdentityId(NotificationMessage message) {
     return message.getOwnerParameter().get(IDENTITY_ID);
+  }
+
+  @Override
+  public String buildDigestMessageInfo(List<NotificationMessage> messages) {
+    return null;
   }
 
 }
