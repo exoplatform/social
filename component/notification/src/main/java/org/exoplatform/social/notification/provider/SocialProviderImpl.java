@@ -180,6 +180,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ReceiceConnectionRequest: {
+          
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
           messageInfo.setSubject(subject.replace("$user-name", userProfile.getFullName()))
@@ -217,7 +218,48 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
   @Override
   public String buildDigestMessageInfo(List<NotificationMessage> messages) {
-    return null;
+    StringBuilder sb = new StringBuilder();
+    String providerId = messages.get(0).getProviderType();
+    ProviderData providerData = providerService.getProvider(providerId);
+    PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(providerData.getType());
+    
+    for (NotificationMessage message : messages) {
+      switch (type) {
+        case ActivityMentionProvider: {
+          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          break;
+        }
+        case ActivityCommentProvider: {
+          break;
+        }
+        case ActivityLikeProvider: {
+          break;
+        }
+        case ActivityPostProvider: {
+          break;
+        }
+        case ActivityPostSpaceProvider: {
+          break;
+        }
+        case InvitedJoinSpace: {
+          break;
+        }
+        case RequestJoinSpace: {
+          break;
+        }
+        case NewUserJoinSocialIntranet: {
+          
+          break;
+        }
+        case ReceiceConnectionRequest: {
+          
+          break;
+        }
+      }
+    }
+    
+    
+    return sb.toString();
   }
 
 }
