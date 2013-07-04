@@ -229,4 +229,22 @@ public class StreamProcessorFactory {
 
     };
   }
+  
+  /**
+   * Build Create ActivityRef for Space Stream
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor createSpaceActivityRef() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext streamCtx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        
+        getStreamStorage().createSpaceActivityRef(streamCtx.getIdentity(), streamCtx.getActivities());
+        return processContext;
+      }
+
+    };
+  }
 }

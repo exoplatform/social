@@ -130,32 +130,43 @@ public interface ActivityStreamStorage {
   
   public int getNumberOfFeed(Identity owner);
   
+  public boolean hasSizeOfFeed(Identity owner);
+  
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit);
   
   public int getNumberOfConnections(Identity owner);
+  
+  public boolean hasSizeOfConnections(Identity owner);
   
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit);
   
   public int getNumberOfMySpaces(Identity owner);
   
+  public boolean hasSizeOfMySpaces(Identity owner);
+  
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit);
   
   public int getNumberOfSpaceStream(Identity owner);
+  
+  public boolean hasSizeOfSpaceStream(Identity owner);
   
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   
   public int getNumberOfMyActivities(Identity owner);
   
+  public boolean hasSizeOfMyActivities(Identity owner);
+  
   void createActivityRef(Identity owner, List<ExoSocialActivity> activities, ActivityRefType type);
   
-  void createFeedActivityRef(Identity owner,
-                                List<ExoSocialActivity> activities);
-  void createConnectionsActivityRef(Identity owner,
-                                    List<ExoSocialActivity> activities);
+  void createFeedActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
-  void createMySpacesActivityRef(Identity owner,
-                                           List<ExoSocialActivity> activities);
+  void createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
-  void createMyActivitiesActivityRef(Identity owner,
-                                           List<ExoSocialActivity> activities);
+  void createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> activities);
+  
+  void createSpaceActivityRef(Identity owner, List<ExoSocialActivity> activities);
+  
+  void createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> activities);
+  
+  void migrateStreamSize(Identity owner, int size, ActivityRefType type);
 }

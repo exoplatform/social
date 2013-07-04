@@ -74,6 +74,7 @@ import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.api.SpaceStorage;
 import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
+import org.exoplatform.social.core.storage.impl.ActivityStreamStorageImpl.ActivityRefType;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
 
@@ -491,7 +492,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
         IdentityEntity identity = _findById(IdentityEntity.class, owner.getId());
         long lastMigration = identity.getStreams() != null ? identity.getStreams()
-                                                                     .getAll()
+                                                                     .getOwner()
                                                                      .getLastMigration() : 0;
 
         if (lastMigration > 0) {
@@ -846,13 +847,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfUserActivities(Identity owner) throws ActivityStorageException {
 
-    if (owner == null) {
-      return 0;
+    boolean hasSize = streamStorage.hasSizeOfMyActivities(owner);
+    
+    //migration lazily
+    if (hasSize == false) {
+      int size = getNumberOfUserActivitiesForUpgrade(owner);
+      streamStorage.migrateStreamSize(owner, size, ActivityRefType.MY_ACTIVITIES);
+      return size;
     }
     
-    ActivityFilter filter = new ActivityFilter(){};
-    //
-    return getActivitiesOfIdentities (ActivityBuilderWhere.simple().mentioner(owner).owners(owner), filter, 0, 0).size();
+    return streamStorage.getNumberOfMyActivities(owner);
   }
 
   /**
@@ -983,18 +987,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfActivitesOnActivityFeed(Identity ownerIdentity) {
 
-    //
-    List<Identity> identities = new ArrayList<Identity>();
-
-    identities.addAll(relationshipStorage.getConnections(ownerIdentity));
-    identities.addAll(getSpacesId(ownerIdentity));
-    identities.add(ownerIdentity);
+    boolean hasSize = streamStorage.hasSizeOfFeed(ownerIdentity);
     
-    ActivityFilter filter = new ActivityFilter(){};
-
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().mentioner(ownerIdentity).owners(identities), filter).objects().size();
+    //migration lazily
+    if (hasSize == false) {
+      int size = getNumberOfActivitesOnActivityFeedForUpgrade(ownerIdentity);
+      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.FEED);
+      return size;
+    }
     
-    //return streamStorage.getNumberOfFeed(ownerIdentity);
+    return streamStorage.getNumberOfFeed(ownerIdentity);
 
   }
 
@@ -1162,7 +1164,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
         IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
         long lastMigration = identity.getStreams() != null ? identity.getStreams()
-                                                                     .getAll()
+                                                                     .getConnections()
                                                                      .getLastMigration() : 0;
 
         if (lastMigration > 0) {
@@ -1201,20 +1203,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfActivitiesOfConnections(Identity ownerIdentity) {
 
-    //
-
-    List<Identity> connectionList = relationshipStorage.getConnections(ownerIdentity);
+    boolean hasSize = streamStorage.hasSizeOfConnections(ownerIdentity);
     
-    if (connectionList.size() <= 0) {
-      return 0;
+    //migration lazily
+    if (hasSize == false) {
+      int size = getNumberOfActivitiesOfConnectionsForUpgrade(ownerIdentity);
+      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.CONNECTION);
+      return size;
     }
-
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(connectionList),
-                                          filter).objects().size();
+    
+    return streamStorage.getNumberOfConnections(ownerIdentity);
   }
 
   /**
@@ -1316,7 +1314,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
         IdentityEntity identity = _findById(IdentityEntity.class, ownerIdentity.getId());
         long lastMigration = identity.getStreams() != null ? identity.getStreams()
-                                                                     .getAll()
+                                                                     .getMySpaces()
                                                                      .getLastMigration() : 0;
 
         if (lastMigration > 0) {
@@ -1355,19 +1353,16 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    */
   public int getNumberOfUserSpacesActivities(Identity ownerIdentity) {
 
-    //
-    List<Identity> spaceList = getSpacesId(ownerIdentity);
-
-    //
-    if (spaceList.size() == 0) {
-      return 0;
+   boolean hasSize = streamStorage.hasSizeOfMySpaces(ownerIdentity);
+    
+    //migration lazily
+    if (hasSize == false) {
+      int size = getNumberOfUserSpacesActivitiesForUpgrade(ownerIdentity);
+      streamStorage.migrateStreamSize(ownerIdentity, size, ActivityRefType.MY_SPACES);
+      return size;
     }
-
-    //
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.simple().owners(spaceList), filter).objects().size();
+    
+    return streamStorage.getNumberOfMySpaces(ownerIdentity);
   }
 
   /**
@@ -1784,16 +1779,15 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public int getNumberOfSpaceActivities(Identity spaceIdentity) {
-//    //
-//    if (spaceIdentity == null) {
-//      return 0;
-//    }
-//
-//    //
-//    ActivityFilter filter = ActivityFilter.space();
-//
-//    //
-//    return getActivitiesOfIdentitiesQuery(ActivityBuilderWhere.space().owners(spaceIdentity), filter).objects().size();
+    boolean hasSize = streamStorage.hasSizeOfSpaceStream(spaceIdentity);
+    
+    //migration lazily
+    if (hasSize == false) {
+      int size = getNumberOfSpaceActivitiesForUpgrade(spaceIdentity);
+      streamStorage.migrateStreamSize(spaceIdentity, size, ActivityRefType.SPACE_STREAM);
+      return size;
+    }
+    
     return streamStorage.getNumberOfSpaceStream(spaceIdentity);
   }
   
@@ -1813,18 +1807,53 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
 
   @Override
   public List<ExoSocialActivity> getSpaceActivities(Identity spaceIdentity, int index, int limit) {
-//    //
-//    if (spaceIdentity == null) {
-//      return Collections.emptyList();
-//    }
-//
-//    //
-//    ActivityFilter filter = ActivityFilter.space();
-//
-//    //
-//    return getActivitiesOfIdentities(ActivityBuilderWhere.space().owners(spaceIdentity), filter, 0, limit);
+    //return streamStorage.getSpaceStream(spaceIdentity, index, limit);
     
-    return streamStorage.getSpaceStream(spaceIdentity, index, limit);
+    List<ExoSocialActivity> got = streamStorage.getSpaceStream(spaceIdentity, index, limit);
+
+    if (got.size() == limit) {
+      return got;
+    }
+    
+    
+    int remaind = limit - got.size();
+    try {
+      if (remaind > 0) {
+
+        IdentityEntity identity = _findById(IdentityEntity.class, spaceIdentity.getId());
+        long lastMigration = identity.getStreams() != null ? identity.getStreams()
+                                                                     .getSpace()
+                                                                     .getLastMigration() : 0;
+
+        if (lastMigration > 0) {
+          int i = remaind;
+          List<ExoSocialActivity> origin = getOlderSpaceActivities(spaceIdentity,
+                                                                  lastMigration,
+                                                                  limit);
+
+          //fill to enough limit
+          for (ExoSocialActivity activity : origin) {
+            got.add(activity);
+            if (--i == 0) {
+              break;
+            }
+          }
+
+          StreamInvocationHelper.createSpaceActivityRef(spaceIdentity, origin);
+        }
+      }
+      //Streams/Space is empty
+      if (remaind == limit) {
+        List<ExoSocialActivity> origin = getActivityFeedForUpgrade(spaceIdentity, index, limit);
+        got.addAll(origin);
+        StreamInvocationHelper.createSpaceActivityRef(spaceIdentity, origin);
+      }
+
+    } catch (NodeNotFoundException e) {
+      LOG.warn("getSpaceActivities processing failed " + e.getMessage());
+    }
+
+    return got;
   }
   
   @Override

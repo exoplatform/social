@@ -247,4 +247,20 @@ public class StreamInvocationHelper {
     
     return processCtx;
   }
+  
+  public static ProcessContext createSpaceActivityRef(Identity owner, List<ExoSocialActivity> list) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
+    processCtx.identity(owner).activities(list);
+    
+    try {
+      //
+      ctx.getServiceExecutor().async(StreamProcessorFactory.createSpaceActivityRef(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
 }
