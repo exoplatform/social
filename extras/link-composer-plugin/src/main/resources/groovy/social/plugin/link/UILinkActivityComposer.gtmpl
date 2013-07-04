@@ -25,10 +25,7 @@ link
   import org.exoplatform.social.plugin.link.UILinkUtil;
 
   def uicomponentId = uicomponent.id;
-  def labelAttachLink = _ctx.appRes("UILinkComposerPlugin.label.Attach_Link");
   def labelAttach = _ctx.appRes("UILinkComposerPlugin.label.Attach");
-  def labelCloseLinkComposer = _ctx.appRes("UILinkComposerPlugin.label.Close");
-  labelAttachLink = labelAttachLink.replace(":", "");
 
   def linkInfoDisplayed = uicomponent.isLinkInfoDisplayed();
   uicomponent.setLinkInfoDisplayed(false);
@@ -38,7 +35,6 @@ link
   def noThumbnail = _ctx.appRes("UILinkComposerPlugin.msg.No_Thumbnail"),
       previousImage = _ctx.appRes("UILinkComposerPlugin.msg.Previous_Image"),
       nextImage = _ctx.appRes("UILinkComposerPlugin.msg.Next_Image");
-      titleEditable = _ctx.appRes("UILinkComposerPlugin.msg.Editable_Title_Element");
 
   def linkShare = uicomponent.getLinkShare();
   def link, images, title, description, linkData = "{}";
@@ -92,7 +88,6 @@ link
                   "attachUrl: encodeURI(\"${uicomponent.url("Attach")}\"),"+
                   "changeLinkContentUrl: encodeURI(\"${uicomponent.url("ChangeLinkContent")}\"),"+
                   "linkData: $linkData,"+
-                  "titleEditable: encodeURI(\"$titleEditable\")"+
                 "}";
 
   jsManager.require("SHARED/jquery", "jq")
@@ -184,7 +179,7 @@ link
   </div>
 <% } else { %>
     <div id="LinkExtensionContainer" class="uiComposerLink clearfix" style="display:<%=((uicomponent.isDisplayed)?"block":"none")%>">
-      <button id="AttachButton" class="btn pull-right" >Attach</button>
+      <button id="AttachButton" class="btn pull-right" >$labelAttach</button>
       <div class="inputLink"><% uicomponent.renderChild(UIFormStringInput.class); %></div>
     </div>
 <% } %>
