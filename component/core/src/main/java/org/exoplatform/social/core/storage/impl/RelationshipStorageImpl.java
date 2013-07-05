@@ -395,6 +395,8 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
         symmetricalRelationship.getParent().getParent().getRelationship().getRelationships()
             .put(symmetricalRelationship.getName(), symmetricalRelationship);
         
+        StreamInvocationHelper.connect(relationship.getSender(), relationship.getReceiver());
+        
         break;
       
       // TODO : IGNORED
