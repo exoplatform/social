@@ -39,6 +39,7 @@ public class NotificationExecutor {
 
     //
     try {
+      LOG.info("Make message notification of " + task.getClass().getName());
       got = task.execute(ctx);
     } catch (Exception e) {
       e.printStackTrace();

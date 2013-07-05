@@ -18,9 +18,7 @@ package org.exoplatform.social.notification.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
@@ -119,12 +117,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
                 public ProviderData getProvider(String providerType) {
                   ProviderData provider = new ProviderData();
                   //
-                  Map<String, String> subject = new HashMap<String, String>();
-                  subject.put("subject", "$space-name $other_user_name");
-                  Map<String, String> template = new HashMap<String, String>();
-                  template.put("body", "$space-name $activity_comment");
-                  provider.setSubjects(subject);
-                  provider.setTemplates(template);
+                  provider.addSubject(SocialProviderImpl.DEFAULT_LANGUAGE, "$space-name $other_user_name");
+                  provider.addTemplate(SocialProviderImpl.DEFAULT_LANGUAGE, "$space-name $activity_message");
                   provider.setType(providerType);
                   return provider;
                 }
@@ -163,7 +157,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   
   public void testSaveComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle("title");
+    activity.setTitle("activity title");
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -173,11 +167,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     activityManager.saveComment(activity, comment);
     
     Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-    assertEquals(1, messages.size());
+    assertEquals(2, messages.size());
     NotificationMessage message = messages.iterator().next();
-    MessageInfo info = buildMessageInfo(message);
+    MessageInfo info = buildMessageInfo(message.setTo("demo"));
     assertEquals("$space-name " + demoIdentity.getProfile().getFullName(), info.getSubject());
-    assertEquals("$space-name " + comment.getTitle(), info.getBody());
+    assertEquals("$space-name " + activity.getTitle(), info.getBody());
   }
 
   public void testSaveActivity() throws Exception {
@@ -238,7 +232,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
     assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
-    MessageInfo info = buildMessageInfo(message);
+    MessageInfo info = buildMessageInfo(message.setTo(maryIdentity.getRemoteId()));
     assertEquals(space.getPrettyName() + " $other_user_name", info.getSubject());
     spaceService.deleteSpace(space);
   }

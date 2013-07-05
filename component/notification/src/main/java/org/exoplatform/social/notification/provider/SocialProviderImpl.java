@@ -222,10 +222,16 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
   @Override
   public String buildDigestMessageInfo(List<NotificationMessage> messages) {
+    
+    
     StringBuilder sb = new StringBuilder();
     NotificationMessage notificationMessage = messages.get(0);
     String providerId = notificationMessage.getProviderType();
     ProviderData providerData = providerService.getProvider(providerId);
+
+    LOG.info("Start building DigestMessageInfo by Provider " + providerId);
+    long startTime = System.currentTimeMillis();
+    
     String language = getLanguage(notificationMessage);
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(providerData.getType());
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
@@ -410,6 +416,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         }
       }
     }
+    
+    LOG.info("End build DigestMessageInfo by Provider " + providerId + (System.currentTimeMillis() - startTime) + " ms.");
     
     return sb.toString();
   }

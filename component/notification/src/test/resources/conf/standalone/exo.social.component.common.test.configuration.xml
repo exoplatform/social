@@ -29,7 +29,7 @@
   
   <component>
     <key>org.exoplatform.commons.api.notification.NotificationDataStorage</key>
-    <type>org.exoplatform.commons.api.notification.NotificationDataStorage</type>
+    <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
 
   <component>
