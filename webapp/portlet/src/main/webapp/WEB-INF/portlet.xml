@@ -715,28 +715,6 @@
   </portlet>
 
   <portlet>
-    <description xml:lang="EN">People Toolbar Portlet</description>
-    <portlet-name>PeopleToolbarPortlet</portlet-name>
-    <display-name xml:lang="EN">People Toolbar Portlet</display-name>
-    <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>
-    <init-param>
-      <name>webui.configuration</name>
-      <value>/WEB-INF/conf/portlet/PeopleToolbarPortlet/webui/configuration.xml</value>
-    </init-param>
-    <expiration-cache>0</expiration-cache>
-    <supports>
-      <mime-type>text/html</mime-type>
-    </supports>
-    <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.Portlets</resource-bundle>
-    <portlet-info>
-      <title>People Toolbar Portlet</title>
-      <short-title>People Toolbar Portlet</short-title>
-      <keywords>social</keywords>
-    </portlet-info>
-  </portlet>
-
-  <portlet>
     <description xml:lang="EN">Social Logo Portlet</description>
     <portlet-name>SocialLogoPortlet</portlet-name>
     <display-name xml:lang="EN">Social Logo Portlet</display-name>
