@@ -74,7 +74,7 @@
                   <%if (childs.get(i).isRendered()) {
                     uiform.renderField(childs.get(i));
                   }%>
-                
+                *
                 <% if ((i + 7) >= childSize) {%>
                     <a class="confirmPopup" href="javascript:void(0)" data-onclick="<%=removeExperience%>" data-message="$deleteMessagePopup"><i class="uiIconClose uiIconLightGray"></i></a>
                     <a href="javascript:void(0)" onclick="<%= addExperience%>"><i class="uiIconPlus uiIconLightGray"></i></a>
@@ -90,6 +90,7 @@
                 <%if (childs.get(i + 1).isRendered()) {
                   uiform.renderField(childs.get(i + 1));
                 }%>
+                *
                 </div>
               </div>
               <div class="control-group">
