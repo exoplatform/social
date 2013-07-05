@@ -82,7 +82,7 @@ public class IdentityStorageTest extends AbstractCoreTest {
    * Tests {@link IdenityStorage#deleteIdentity(Identity)}
    *
    */
-  @MaxQueryNumber(530)
+  @MaxQueryNumber(538)
   public void testDeleteIdentity() {
     final String username = "username";
     Identity tobeSavedIdentity = new Identity(OrganizationIdentityProvider.NAME, username);
