@@ -115,7 +115,7 @@ public class CachedIdentityStorageTestCase extends AbstractCoreTest {
 
   }
 
-  @MaxQueryNumber(238)
+  @MaxQueryNumber(248)
   public void testRemoveIdentity() throws Exception {
 
     assertEquals(0, cacheService.getIdentityCache().getCacheSize());

@@ -29,6 +29,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.storage.api.ActivityStorage;
+import org.exoplatform.social.core.storage.api.ActivityStreamStorage;
 
 @ConfiguredBy({
   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
@@ -45,6 +46,7 @@ public class UserStreamMigrationTestCase extends AbstractKernelTest {
   private UserStreamMigrationInjector streamInjector;
   private IdentityManager identityManager;
   private ActivityStorage activityStorage;
+  private ActivityStreamStorage streamStorage;
   private ActivityManager activityManager;
   private List<ExoSocialActivity> tearDownActivityList;
 
@@ -58,6 +60,7 @@ public class UserStreamMigrationTestCase extends AbstractKernelTest {
     activityManager = (ActivityManager) getContainer().getComponentInstanceOfType(ActivityManager.class);
     
     activityStorage = (ActivityStorage) getContainer().getComponentInstanceOfType(ActivityStorage.class);
+    streamStorage = (ActivityStreamStorage) getContainer().getComponentInstanceOfType(ActivityStreamStorage.class);
     identityInjector = (IdentityInjector) getContainer().getComponentInstanceOfType(IdentityInjector.class);
     activityInjector = (ActivityInjector) getContainer().getComponentInstanceOfType(ActivityInjector.class);
     streamInjector = (UserStreamMigrationInjector) getContainer().getComponentInstanceOfType(UserStreamMigrationInjector.class);
@@ -114,10 +117,10 @@ public class UserStreamMigrationTestCase extends AbstractKernelTest {
     Identity user5 = identityManager.getOrCreateIdentity("organization", userBaseName + "5", false);
     Identity user9 = identityManager.getOrCreateIdentity("organization", userBaseName + "9", false);
     
-    got = activityStorage.getActivityFeed(user5, 0, 100);
+    got = streamStorage.getFeed(user5, 0, 100);
     assertEquals(2, got.size());
     
-    got = activityStorage.getActivityFeed(user9, 0, 100);
+    got = streamStorage.getFeed(user9, 0, 100);
     assertEquals(2, got.size());
   }
   
