@@ -232,7 +232,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname have commented on your activity: $activity]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-commenters others have commented on your activity: $activity]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others others have commented on your activity: $activity]]></string>
                         </value>
                       </collection>
                     </field>
@@ -264,7 +264,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname have commented on your activity: $activity]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-commenters others have commented on your activity: $activity]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others others have commented on your activity: $activity]]></string>
                         </value>
                       </collection>
                     </field>
@@ -331,7 +331,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname like your activity: $activity]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-commenters others like your activity: $activity]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others others like your activity: $activity]]></string>
                         </value>
                       </collection>
                     </field>
@@ -362,7 +362,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname like your activity: $activity]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-commenters others like your activity: $activity]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others others like your activity: $activity]]></string>
                         </value>
                       </collection>
                     </field>
@@ -602,7 +602,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname have joined the social intranet.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-new-users other have joined the social intranet.]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others other have joined the social intranet.]]></string>
                         </value>
                       </collection>
                     </field>
@@ -633,7 +633,7 @@
                           <string><![CDATA[$user1-fullname, $user2-fullname and $user3-fullname have joined the social intranet.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-other-new-users other have joined the social intranet.]]></string>
+                          <string><![CDATA[$user1-fullname, $user2-fullname, $user3-fullname and $number-others other have joined the social intranet.]]></string>
                         </value>
                       </collection>
                     </field>
@@ -694,13 +694,13 @@
                     <field name="digesters">
                       <collection type="java.util.ArrayList">
                         <value>
-                          <string><![CDATA[You have received a connection request from &user1-fullname]]></string>
+                          <string><![CDATA[You have received a connection request from $user1-fullname]]></string>
                         </value>
                         <value>
                           <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname and $user3-fullname]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname, $user3-fullname and $number-other-requests other]]></string>
+                          <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname, $user3-fullname and $number-others other]]></string>
                         </value>
                       </collection>
                     </field>
@@ -731,7 +731,7 @@
                           <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname and $user3-fullname]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname, $user3-fullname and $number-other-requests other]]></string>
+                          <string><![CDATA[You have received a connection request from $user1-fullname, $user2-fullname, $user3-fullname and $number-others other]]></string>
                         </value>
                       </collection>
                     </field>
@@ -795,7 +795,7 @@
                           <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name and @space3-name.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name, @space3-name and $number-other-invitation other.]]></string>
+                          <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name, @space3-name and $number-others other.]]></string>
                         </value>
                       </collection>
                     </field>
@@ -826,7 +826,7 @@
                           <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name and @space3-name.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name, @space3-name and $number-other-invitation other.]]></string>
+                          <string><![CDATA[You have been asked to joing the following spaces: @space1-name, @space2-name, @space3-name and $number-others other.]]></string>
                         </value>
                       </collection>
                     </field>
@@ -890,7 +890,7 @@
                           <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname and $user3-fullname.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname, $user3-fullname with $number-other-requests other.]]></string>
+                          <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname, $user3-fullname with $number-others other.]]></string>
                         </value>
                       </collection>
                     </field>
@@ -921,7 +921,7 @@
                           <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname and $user3-fullname.]]></string>
                         </value>
                         <value>
-                          <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname, $user3-fullname with $number-other-requests other.]]></string>
+                          <string><![CDATA[The following users have asked to join the $space-name space: $user1-fullname, $user2-fullname, $user3-fullname with $number-others other.]]></string>
                         </value>
                       </collection>
                     </field>

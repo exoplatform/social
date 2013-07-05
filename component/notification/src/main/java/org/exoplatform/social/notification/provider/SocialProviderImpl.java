@@ -17,11 +17,16 @@
 package org.exoplatform.social.notification.provider;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.ProviderData;
+import org.exoplatform.commons.api.notification.ProviderData.DIGEST_TYPE;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.ProviderService;
 import org.exoplatform.services.log.ExoLogger;
@@ -180,7 +185,6 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ReceiceConnectionRequest: {
-          
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
           messageInfo.setSubject(subject.replace("$user-name", userProfile.getFullName()))
@@ -219,47 +223,275 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
   @Override
   public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     StringBuilder sb = new StringBuilder();
-    String providerId = messages.get(0).getProviderType();
+    NotificationMessage notificationMessage = messages.get(0);
+    String providerId = notificationMessage.getProviderType();
     ProviderData providerData = providerService.getProvider(providerId);
+    String language = getLanguage(notificationMessage);
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(providerData.getType());
+    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     
-    for (NotificationMessage message : messages) {
-      switch (type) {
-        case ActivityMentionProvider: {
+    switch (type) {
+      case ActivityMentionProvider: {
+        for (NotificationMessage message : messages) {
+          String digester = providerData.getDigester(language);
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          ExoSocialActivity activity = activityManager.getActivity(activityId);
+          Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
+          sb.append(digester.replace("$user1-fullname", identity.getProfile().getFullName())
+                            .replace("$activity", activity.getTitle()))
+            .append("</br>");
+        }
+        break;
+      }
+      case ActivityCommentProvider: {
+        for (NotificationMessage message : messages) {
+          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          ExoSocialActivity activity = activityManager.getActivity(activityId);
+          ExoSocialActivity parentActivity = activityManager.getParentActivity(activity);
+          String parentActivityId = parentActivity.getId();
+          if (map.containsKey(parentActivityId)) {
+            List<String> values = map.get(parentActivityId);
+            values.add(message.getFrom());
+            map.put(parentActivityId, values);
+          } else {
+            map.put(parentActivityId, Arrays.asList(message.getFrom()));
+          }
+        }
+        sb.append(getMessageByIds(map, providerData, language));
+        break;
+      }
+      case ActivityLikeProvider: {
+        for (NotificationMessage message : messages) {
+          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          if (map.containsKey(activityId)) {
+            List<String> values = map.get(activityId);
+            values.add(message.getFrom());
+            map.put(activityId, values);
+          } else {
+            map.put(activityId, Arrays.asList(message.getFrom()));
+          }
+        }
+        sb.append(getMessageByIds(map, providerData, language));
+        break;
+      }
+      case ActivityPostProvider: {
+        for (NotificationMessage message : messages) {
+          String digester = providerData.getDigester(language);
+          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          ExoSocialActivity activity = activityManager.getActivity(activityId);
+          Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
+          sb.append(digester.replace("$user1-fullname", identity.getProfile().getFullName())
+                            .replace("$activity", activity.getTitle()))
+            .append("</br>");
+        }
+        break;
+      }
+      case ActivityPostSpaceProvider: {
+        break;
+      }
+      case InvitedJoinSpace: {
+        int count = messages.size();
+        String digester = "";
+        switch (count) {
+          case 1: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
+            String spaceId = messages.get(0).getOwnerParameter().get(SPACE_ID);
+            Space space = spaceService.getSpaceById(spaceId);
+            sb.append(digester.replace("@space-name", space.getPrettyName())).append("</br>");
+            break;
+          }
+          case 2: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
+            Space space1 = spaceService.getSpaceById(space1Id);
+            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
+            Space space2 = spaceService.getSpaceById(space2Id);
+            sb.append(digester.replace("@space1-name", space1.getPrettyName())
+                              .replace(", @space1-name", "")
+                              .replace("@space3-name", space2.getPrettyName())).append("</br>");
+            break;
+          }
+          case 3: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
+            Space space1 = spaceService.getSpaceById(space1Id);
+            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
+            Space space2 = spaceService.getSpaceById(space2Id);
+            String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
+            Space space3 = spaceService.getSpaceById(space3Id);
+            sb.append(digester.replace("@space1-name", space1.getPrettyName())
+                              .replace("@space2-name", space2.getPrettyName())
+                              .replace("@space3-name", space3.getPrettyName())).append("</br>");
+            break;
+          }
+          default: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
+            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
+            Space space1 = spaceService.getSpaceById(space1Id);
+            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
+            Space space2 = spaceService.getSpaceById(space2Id);
+            String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
+            Space space3 = spaceService.getSpaceById(space3Id);
+            sb.append(digester.replace("@space1-name", space1.getPrettyName())
+                              .replace("@space2-name", space2.getPrettyName())
+                              .replace("@space3-name", space3.getPrettyName())
+                              .replace("$number-others", "" + (count - 3))).append("</br>");
+            break;
+          }
+        }
+      }
+      case RequestJoinSpace: {
+        for (NotificationMessage message : messages) {
+          String spaceId = messages.get(0).getOwnerParameter().get(SPACE_ID);
+          if (map.containsKey(spaceId)) {
+            List<String> values = map.get(spaceId);
+            values.add(message.getFrom());
+            map.put(spaceId, values);
+          } else {
+            map.put(spaceId, Arrays.asList(message.getFrom()));
+          }
+        }
+        sb.append(getMessageByIds(map, providerData, language));
+        break;
+      }
+      case NewUserJoinSocialIntranet: {
+        
+        break;
+      }
+      case ReceiceConnectionRequest: {
+        int count = messages.size();
+        String digester = "";
+        switch (count) {
+          case 1: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
+            Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
+            Profile userProfile = identity.getProfile();
+            sb.append(digester.replace("$user1-fullname", userProfile.getFullName())).append("</br>");
+            break;
+          }
+          case 2: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
+            Profile user1 = identity1.getProfile();
+            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
+            Profile user2 = identity2.getProfile();
+            sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                              .replace(", $user2-fullname", "")
+                              .replace("$user3-fullname", user2.getFullName())).append("</br>");
+            break;
+          }
+          case 3: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
+            Profile user1 = identity1.getProfile();
+            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
+            Profile user2 = identity2.getProfile();
+            Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(2).getFrom(), true);
+            Profile user3 = identity3.getProfile();
+            sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                              .replace("$user2-fullname", user2.getFullName())
+                              .replace("$user3-fullname", user3.getFullName())).append("</br>");
+            break;
+          }
+          default: {
+            digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
+            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
+            Profile user1 = identity1.getProfile();
+            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
+            Profile user2 = identity2.getProfile();
+            Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(2).getFrom(), true);
+            Profile user3 = identity3.getProfile();
+            sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                              .replace("$user2-fullname", user2.getFullName())
+                              .replace("$user3-fullname", user3.getFullName())
+                              .replace("$number-others", "" + (count - 3))).append("</br>");
+            break;
+          }
+        }
+      }
+    }
+    
+    return sb.toString();
+  }
+
+  private String getMessageByIds(Map<String, List<String>> map, ProviderData providerData, String language) {
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, List<String>> entry : map.entrySet()) {
+      String id = entry.getKey();
+      ExoSocialActivity activity = activityManager.getActivity(id);
+      Space space = spaceService.getSpaceById(id);
+      List<String> values = entry.getValue();
+      int count = values.size();
+      String digester = "";
+      switch (count) {
+        case 1: {
+          digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
+          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
+          Profile user1 = identity1.getProfile();
+          if (activity != null) {
+            sb.append(digester.replace("$activity", activity.getTitle()));
+          } else {
+            sb.append(digester.replace("$space-name", space.getPrettyName()));
+          }
+          sb.append(digester.replace("$user1-fullname", user1.getFullName())).append("</br>");
           break;
         }
-        case ActivityCommentProvider: {
+        case 2: {
+          digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+          if (activity != null) {
+            sb.append(digester.replace("$activity", activity.getTitle()));
+          } else {
+            sb.append(digester.replace("$space-name", space.getPrettyName()));
+          }
+          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
+          Profile user1 = identity1.getProfile();
+          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
+          Profile user2 = identity2.getProfile();
+          sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                            .replace(", $user2-fullname", "")
+                            .replace("$user3-fullname", user2.getFullName())).append("</br>");
           break;
         }
-        case ActivityLikeProvider: {
+        case 3: {
+          digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
+          if (activity != null) {
+            sb.append(digester.replace("$activity", activity.getTitle()));
+          } else {
+            sb.append(digester.replace("$space-name", space.getPrettyName()));
+          }
+          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
+          Profile user1 = identity1.getProfile();
+          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
+          Profile user2 = identity2.getProfile();
+          Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(2), true);
+          Profile user3 = identity3.getProfile();
+          sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                            .replace("$user2-fullname", user2.getFullName())
+                            .replace("$user3-fullname", user3.getFullName())).append("</br>");
           break;
         }
-        case ActivityPostProvider: {
-          break;
-        }
-        case ActivityPostSpaceProvider: {
-          break;
-        }
-        case InvitedJoinSpace: {
-          break;
-        }
-        case RequestJoinSpace: {
-          break;
-        }
-        case NewUserJoinSocialIntranet: {
-          
-          break;
-        }
-        case ReceiceConnectionRequest: {
-          
+        default: {
+          digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
+          if (activity != null) {
+            sb.append(digester.replace("$activity", activity.getTitle()));
+          } else {
+            sb.append(digester.replace("$space-name", space.getPrettyName()));
+          }
+          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
+          Profile user1 = identity1.getProfile();
+          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
+          Profile user2 = identity2.getProfile();
+          Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(2), true);
+          Profile user3 = identity3.getProfile();
+          sb.append(digester.replace("$user1-fullname", user1.getFullName())
+                            .replace("$user2-fullname", user2.getFullName())
+                            .replace("$user3-fullname", user3.getFullName())
+                            .replace("$number-others", "" + (count - 3))).append("</br>");
           break;
         }
       }
     }
     
-    
     return sb.toString();
   }
-
 }
