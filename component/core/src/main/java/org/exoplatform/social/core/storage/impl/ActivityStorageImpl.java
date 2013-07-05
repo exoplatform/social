@@ -2080,10 +2080,42 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   @Override
   public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit) {
-    ActivityFilter filter = new ActivityFilter(){};
-
-    //
-    return getActivitiesOfIdentities(ActivityBuilderWhere.simple().owners(posterIdentity).poster(posterIdentity), filter, offset, limit);
+    //make sure that limit < 10 then get 10 the lastest activites for process.
+    int newLimit = Math.max(limit, 10);
+    List<ExoSocialActivity> got = getUserActivities(posterIdentity, offset, newLimit);
+    List<ExoSocialActivity> result = new ArrayList<ExoSocialActivity>();
+    if (got.size() == 0) return result;
+    
+    int added = 0;
+    boolean loadMore = true;
+    int newOffset = offset;
+    
+    //process the code what only retrieves these activities by PosterIdentity
+    while(loadMore) {
+      //put the activity to result
+      for(ExoSocialActivity a : got) {
+        if (a.getPosterId() == posterIdentity.getId()) {
+          result.add(a);
+          if (++added == limit) {
+            loadMore = false;
+            break;
+          }
+        }
+      }
+      
+      //load more?
+      if (loadMore) {
+        newOffset = offset + newLimit;
+        got = getUserActivities(posterIdentity, newOffset, newLimit);
+        
+        //the load more is empty, break
+        if (got.size() == 0) {
+          loadMore = false;
+        }
+      }
+    }
+    
+    return result;
   }
   
   @Override
