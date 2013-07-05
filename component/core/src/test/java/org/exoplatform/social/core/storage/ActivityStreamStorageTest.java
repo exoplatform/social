@@ -422,6 +422,30 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
    spaceService.deleteSpace(space);
   }
  
+ public void testGetActivityByPoster() throws ActivityStorageException {
+   
+   Relationship demoMaryConnection = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+   relationshipManager.confirm(demoMaryConnection);
+   
+   final String activityTitle = "activity title";
+   ExoSocialActivity activity = new ExoSocialActivityImpl();
+   activity.setTitle(activityTitle);
+   activityStorage.saveActivity(demoIdentity, activity);
+   tearDownActivityList.add(activity);
+   
+   List<ExoSocialActivity> got = activityStorage.getActivitiesByPoster(demoIdentity, 0, 10);
+   assertEquals(1, got.size());
+   
+   activity = new ExoSocialActivityImpl();
+   activity.setTitle(activityTitle);
+   activity.setUserId(maryIdentity.getId());
+   activityStorage.saveActivity(demoIdentity, activity);
+   tearDownActivityList.add(activity);
+   
+   got = activityStorage.getActivitiesByPoster(maryIdentity, 0, 10);
+   assertEquals(1, got.size());
+ }
+ 
   /**
    * Gets the space service.
    * 
