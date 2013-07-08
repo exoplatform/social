@@ -2080,6 +2080,11 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   
   @Override
   public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit) {
+    return getActivitiesByPoster(posterIdentity, offset, limit, new String[0]);
+  }
+  
+  @Override
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String ...activityTypes) {
     //make sure that limit < 10 then get 10 the lastest activites for process.
     int newLimit = Math.max(limit, 10);
     List<ExoSocialActivity> got = getUserActivities(posterIdentity, offset, newLimit);
@@ -2094,7 +2099,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     while(loadMore) {
       //put the activity to result
       for(ExoSocialActivity a : got) {
-        if (a.getPosterId() == posterIdentity.getId()) {
+        if (a.getPosterId() == posterIdentity.getId() && matchActivityTypes(a, activityTypes)) {
           result.add(a);
           if (++added == limit) {
             loadMore = false;
@@ -2116,6 +2121,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     }
     
     return result;
+  }
+  
+  /**
+   * Determines the activity's type
+   * 
+   * @param a
+   * @param activityTypes
+   * @return
+   */
+  private boolean matchActivityTypes(ExoSocialActivity a, String ...activityTypes) {
+    if (activityTypes == null || activityTypes.length == 0) return true;
+    
+    return ArrayUtils.contains(activityTypes, a.getTitleId());
+        
   }
   
   @Override

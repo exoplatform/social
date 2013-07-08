@@ -17,6 +17,10 @@
 
 package org.exoplatform.social.core.storage.api;
 
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+
 import org.exoplatform.social.core.ActivityProcessor;
 import org.exoplatform.social.core.activity.filter.ActivityFilter;
 import org.exoplatform.social.core.activity.filter.ActivityUpdateFilter;
@@ -24,10 +28,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.storage.ActivityStorageException;
 import org.exoplatform.social.core.storage.impl.ActivityBuilderWhere;
-
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -690,6 +690,19 @@ public interface ActivityStorage {
    * @since 4.0.1-GA
    */
   public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit);
+  
+  /**
+   * Gets activities by poster and activity's types
+   * 
+   * @param posterIdentity The identity of given poster.
+   * @param offsset The start point to load.
+   * @param limit The range to load.
+   * @param activityTypes: type of activities
+   *  
+   * @return The activities that match the given poster.
+   * @since 4.0.2-GA
+   */
+  public List<ExoSocialActivity> getActivitiesByPoster(Identity posterIdentity, int offset, int limit, String...activityTypes);
   
   /**
    * Gets the number of activities of poster.
