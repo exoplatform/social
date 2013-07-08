@@ -27,6 +27,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -1442,6 +1443,41 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(maryToGhostRelationship);
     tearDownRelationshipList.add(ghostToJohnRelationship);
     tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+  
+  public void testGetOnlineRelationships() throws Exception {
+    Relationship ghostToMaryRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    
+    ProfileFilter filter = new ProfileFilter();
+    List<String> onlineRemoteIds = new ArrayList<String>();
+    onlineRemoteIds.add("mary");
+    onlineRemoteIds.add("demo");
+    onlineRemoteIds.add("root");
+    onlineRemoteIds.add("paul");
+    onlineRemoteIds.add("john");
+    filter.setOnlineRemoteIds(onlineRemoteIds);
+
+    List<Identity> got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 5); 
+
+    assertEquals(5, got.size());
+    
+    {
+      onlineRemoteIds = new ArrayList<String>();
+      onlineRemoteIds.add("mary");
+      onlineRemoteIds.add("demo");
+      onlineRemoteIds.add("root");
+      onlineRemoteIds.add("paul");
+      filter.setOnlineRemoteIds(onlineRemoteIds);
+      
+      got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 4);
+      assertEquals(4, got.size());
+      
+      assertEquals("mary", got.get(0).getRemoteId());
+    }
+    
+    tearDownRelationshipList.add(ghostToMaryRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
   }
   
 }
