@@ -282,30 +282,22 @@
 							            if (relationStatus == "pending") { // Viewing is not owner
 							                action = $('<div/>', {
 							                    "class": "connect btn btn-primary",
-							                    "text": "" + labels.Confirm,
+							                    "text": "" + labels.Connect,
 							                    "data-action": "Accept:" + ownerUserId,
 							                    "onclick": "takeAction(this)"
 							                });
 							            } else if (relationStatus == "waiting") { // Viewing is owner
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.CancelRequest,
-							                    "data-action": "Revoke:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": "",
+							                    "text": "" + labels.youHaveSentAnInvitation
 							                });
 							            } else if (relationStatus == "confirmed") { // Had Connection 
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.RemoveConnection,
-							                    "data-action": "Disconnect:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": ""
 							                });
 							            } else if (relationStatus == "ignored") { // Connection is removed
 							                action = $('<div/>', {
-							                    "class": "connect btn",
-							                    "text": "" + labels.Ignore,
-							                    "data-action": "Deny:" + ownerUserId,
-							                    "onclick": "takeAction(this)"
+							                    "class": ""
 							                });
 							            }
 							    
