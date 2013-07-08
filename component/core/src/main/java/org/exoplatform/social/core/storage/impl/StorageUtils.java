@@ -2,15 +2,15 @@ package org.exoplatform.social.core.storage.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.jcr.Session;
 
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
@@ -377,10 +377,11 @@ public class StorageUtils {
     l.removeAll(Arrays.asList(l2));
     return l.toArray(new String[]{});
   }
-<<<<<<< HEAD
 
-=======
-  
+  /**
+   * Make the decision to persist JCR Storage or not
+   * @return
+   */
   public static boolean persist() {
     try {
       ChromatticSession chromatticSession = AbstractStorage.lifecycleLookup().getSession();
@@ -392,5 +393,49 @@ public class StorageUtils {
     }
     return true;
   }
->>>>>>> SOC-3430 | PLF 4.0: slowness in UIActivitiesLoader init - integration storage
+  
+  /**
+   * Returns a collection containing all the elements in <code>list1</code> that
+   * are also in <code>list2</code>.
+   * 
+   * @param list1
+   * @param list2
+   * @return
+   */
+  public <T> List<T> intersection(List<T> list1, List<T> list2) {
+    List<T> list = new ArrayList<T>();
+
+    for (T t : list1) {
+      if (list2.contains(t)) {
+        list.add(t);
+      }
+    }
+
+    return list;
+  }
+  /**
+   * Returns a array containing all the elements in <code>list1</code> that
+   * @param array1
+   * @param array2
+   * @return
+   */
+  public <T> T[] intersection(T[] array1, T[] array2) {
+    List<T> got = intersection(Arrays.asList(array1), Arrays.asList(array2));
+    return (T[]) got.toArray();
+  }
+  
+  /**
+   * Returns a new {@link List} containing a - b
+   * @param a
+   * @param b
+   * @return
+   */
+  public static <T> List<T> sub(final Collection<T> a, final Collection<T> b) {
+    ArrayList<T> list = new ArrayList<T>(a);
+    for (Iterator<T> it = b.iterator(); it.hasNext();) {
+        list.remove(it.next());
+    }
+    return list;
+  }
+
 }

@@ -46,6 +46,9 @@ public class ProfileFilter {
 
   /** the list of identity to be excluded from profile filter **/
   private List<Identity> excludedIdentityList;
+  
+  /** the list of remoteId who online on system**/
+  private List<String> onlineRemoteIds;
 
   /** Filter by first character of name. */
   private char firstCharacterOfName;
@@ -59,6 +62,7 @@ public class ProfileFilter {
     this.skills = "";
     this.firstCharacterOfName = '\u0000';
     this.excludedIdentityList = new ArrayList<Identity>();
+    this.onlineRemoteIds = new ArrayList<String>();
     this.all = "";
   }
   /**
@@ -134,6 +138,25 @@ public class ProfileFilter {
    */
   public List<Identity> getExcludedIdentityList() {
     return this.excludedIdentityList;
+  }
+  
+  /**
+   * Sets the onlineRemoteIds
+   *
+   * @param onlineRemoteIds
+   * @since  4.0.2-GA & 4.1.0-GA
+   */
+  public void setOnlineRemoteIds(List<String> onlineRemoteIds) {
+    this.onlineRemoteIds = onlineRemoteIds;
+  }
+
+  /**
+   * Gets the onlineRemoteIds
+   * @return the onlineRemoteIds
+   * @since  4.0.2-GA & 4.1.0-GA
+   */
+  public List<String> getOnlineRemoteIds() {
+    return this.onlineRemoteIds;
   }
 
   /**

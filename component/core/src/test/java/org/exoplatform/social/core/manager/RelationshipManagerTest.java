@@ -25,6 +25,7 @@ import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.model.AvatarAttachment;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
 import org.exoplatform.social.core.test.AbstractCoreTest;
@@ -1389,4 +1390,86 @@ public class RelationshipManagerTest extends AbstractCoreTest {
      tearDownRelationshipList.add(johnMaryRelationship);
      tearDownRelationshipList.add(johnRootRelationship);
   }
+  
+  public void testGetSuggestions() throws Exception {
+    Relationship maryToGhostRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    Relationship maryToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, maryIdentity);
+
+    Map<Identity, Integer> suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
+
+    Object[] objs = suggestions.entrySet().toArray();
+    
+    Entry<Identity, Integer> first = (Entry<Identity, Integer>) objs[0];
+
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    //increase common users
+    Relationship johnToDemoRelationship = relationshipManager.inviteToConnect(demoIdentity, johnIdentity);
+    Relationship paulToDemoRelationship = relationshipManager.inviteToConnect(paulIdentity, maryIdentity);
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 0, 10); 
+    
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    Entry<Identity, Integer> second = (Entry<Identity, Integer>) objs[1];
+    
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    assertEquals(2, first.getValue().intValue());
+    assertEquals(demoIdentity.getRemoteId(), first.getKey().getRemoteId());
+    assertEquals(1, second.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), second.getKey().getRemoteId());
+    
+    //test with offset > 0
+    suggestions = relationshipManager.getSuggestions(ghostIdentity, 1, 10); 
+    
+    objs = suggestions.entrySet().toArray();
+    first = (Entry<Identity, Integer>) objs[0];
+    
+    assertEquals(1, first.getValue().intValue());
+    assertEquals(paulIdentity.getRemoteId(), first.getKey().getRemoteId());
+
+    tearDownRelationshipList.add(maryToDemoRelationship);
+    tearDownRelationshipList.add(johnToDemoRelationship);
+    tearDownRelationshipList.add(maryToGhostRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
+    tearDownRelationshipList.add(paulToDemoRelationship);
+  }
+  
+  public void testGetOnlineRelationships() throws Exception {
+    Relationship ghostToMaryRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
+    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
+    
+    ProfileFilter filter = new ProfileFilter();
+    List<String> onlineRemoteIds = new ArrayList<String>();
+    onlineRemoteIds.add("mary");
+    onlineRemoteIds.add("demo");
+    onlineRemoteIds.add("root");
+    onlineRemoteIds.add("paul");
+    onlineRemoteIds.add("john");
+    filter.setOnlineRemoteIds(onlineRemoteIds);
+
+    List<Identity> got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 5); 
+
+    assertEquals(5, got.size());
+    
+    {
+      onlineRemoteIds = new ArrayList<String>();
+      onlineRemoteIds.add("mary");
+      onlineRemoteIds.add("demo");
+      onlineRemoteIds.add("root");
+      onlineRemoteIds.add("paul");
+      filter.setOnlineRemoteIds(onlineRemoteIds);
+      
+      got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 4);
+      assertEquals(4, got.size());
+      
+      assertEquals("mary", got.get(0).getRemoteId());
+    }
+    
+    tearDownRelationshipList.add(ghostToMaryRelationship);
+    tearDownRelationshipList.add(ghostToJohnRelationship);
+  }
+  
 }
