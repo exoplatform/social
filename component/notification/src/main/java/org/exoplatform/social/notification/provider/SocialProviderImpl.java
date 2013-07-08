@@ -233,6 +233,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     long startTime = System.currentTimeMillis();
     
     String language = getLanguage(notificationMessage);
+    if (language == null) {
+      language = DEFAULT_LANGUAGE;
+    }
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(providerData.getType());
     Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
     
@@ -260,7 +263,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             values.add(message.getFrom());
             map.put(parentActivityId, values);
           } else {
-            map.put(parentActivityId, Arrays.asList(message.getFrom()));
+            List<String> values = new ArrayList<String>();
+            values.add(message.getFrom());
+            map.put(activityId, values);
           }
         }
         sb.append(getMessageByIds(map, providerData, language));
@@ -274,7 +279,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             values.add(message.getFrom());
             map.put(activityId, values);
           } else {
-            map.put(activityId, Arrays.asList(message.getFrom()));
+            List<String> values = new ArrayList<String>();
+            values.add(message.getFrom());
+            map.put(activityId, values);
           }
         }
         sb.append(getMessageByIds(map, providerData, language));
@@ -303,7 +310,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
             String spaceId = messages.get(0).getOwnerParameter().get(SPACE_ID);
             Space space = spaceService.getSpaceById(spaceId);
-            sb.append(digester.replace("@space-name", space.getPrettyName())).append("</br>");
+            sb.append(digester.replace("$space1-name", space.getPrettyName())).append("</br>");
             break;
           }
           case 2: {
@@ -312,9 +319,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             Space space1 = spaceService.getSpaceById(space1Id);
             String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
             Space space2 = spaceService.getSpaceById(space2Id);
-            sb.append(digester.replace("@space1-name", space1.getPrettyName())
-                              .replace(", @space1-name", "")
-                              .replace("@space3-name", space2.getPrettyName())).append("</br>");
+            sb.append(digester.replace("$space1-name", space1.getPrettyName())
+                              .replace(", $space1-name", "")
+                              .replace("$space3-name", space2.getPrettyName())).append("</br>");
             break;
           }
           case 3: {
@@ -325,9 +332,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             Space space2 = spaceService.getSpaceById(space2Id);
             String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
             Space space3 = spaceService.getSpaceById(space3Id);
-            sb.append(digester.replace("@space1-name", space1.getPrettyName())
-                              .replace("@space2-name", space2.getPrettyName())
-                              .replace("@space3-name", space3.getPrettyName())).append("</br>");
+            sb.append(digester.replace("$space1-name", space1.getPrettyName())
+                              .replace("$space2-name", space2.getPrettyName())
+                              .replace("$space3-name", space3.getPrettyName())).append("</br>");
             break;
           }
           default: {
@@ -338,13 +345,14 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             Space space2 = spaceService.getSpaceById(space2Id);
             String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
             Space space3 = spaceService.getSpaceById(space3Id);
-            sb.append(digester.replace("@space1-name", space1.getPrettyName())
-                              .replace("@space2-name", space2.getPrettyName())
-                              .replace("@space3-name", space3.getPrettyName())
+            sb.append(digester.replace("$space1-name", space1.getPrettyName())
+                              .replace("$space2-name", space2.getPrettyName())
+                              .replace("$space3-name", space3.getPrettyName())
                               .replace("$number-others", "" + (count - 3))).append("</br>");
             break;
           }
         }
+        break;
       }
       case RequestJoinSpace: {
         for (NotificationMessage message : messages) {
@@ -354,7 +362,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             values.add(message.getFrom());
             map.put(spaceId, values);
           } else {
-            map.put(spaceId, Arrays.asList(message.getFrom()));
+            List<String> values = new ArrayList<String>();
+            values.add(message.getFrom());
+            map.put(spaceId, values);
           }
         }
         sb.append(getMessageByIds(map, providerData, language));
@@ -414,6 +424,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
             break;
           }
         }
+        break;
       }
     }
     
@@ -426,8 +437,14 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     StringBuilder sb = new StringBuilder();
     for (Entry<String, List<String>> entry : map.entrySet()) {
       String id = entry.getKey();
-      ExoSocialActivity activity = activityManager.getActivity(id);
-      Space space = spaceService.getSpaceById(id);
+      ExoSocialActivity activity = null;
+      Space space = null;
+      try {
+        activity = activityManager.getActivity(id);
+      } catch (Exception e) {
+        activity = null;
+        space = spaceService.getSpaceById(id);
+      }
       List<String> values = entry.getValue();
       int count = values.size();
       String digester = "";
@@ -437,9 +454,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
           Profile user1 = identity1.getProfile();
           if (activity != null) {
-            sb.append(digester.replace("$activity", activity.getTitle()));
+            digester = digester.replace("$activity", activity.getTitle());
           } else {
-            sb.append(digester.replace("$space-name", space.getPrettyName()));
+            digester = digester.replace("$space-name", space.getPrettyName());
           }
           sb.append(digester.replace("$user1-fullname", user1.getFullName())).append("</br>");
           break;
@@ -447,9 +464,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         case 2: {
           digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
           if (activity != null) {
-            sb.append(digester.replace("$activity", activity.getTitle()));
+            digester = digester.replace("$activity", activity.getTitle());
           } else {
-            sb.append(digester.replace("$space-name", space.getPrettyName()));
+            digester = digester.replace("$space-name", space.getPrettyName());
           }
           Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
           Profile user1 = identity1.getProfile();
@@ -463,9 +480,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         case 3: {
           digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
           if (activity != null) {
-            sb.append(digester.replace("$activity", activity.getTitle()));
+            digester = digester.replace("$activity", activity.getTitle());
           } else {
-            sb.append(digester.replace("$space-name", space.getPrettyName()));
+            digester = digester.replace("$space-name", space.getPrettyName());
           }
           Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
           Profile user1 = identity1.getProfile();
@@ -481,9 +498,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         default: {
           digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
           if (activity != null) {
-            sb.append(digester.replace("$activity", activity.getTitle()));
+            digester = digester.replace("$activity", activity.getTitle());
           } else {
-            sb.append(digester.replace("$space-name", space.getPrettyName()));
+            digester = digester.replace("$space-name", space.getPrettyName());
           }
           Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
           Profile user1 = identity1.getProfile();
@@ -502,4 +519,5 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     
     return sb.toString();
   }
+  
 }
