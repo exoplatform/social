@@ -16,14 +16,18 @@
  */
 package org.exoplatform.social.notification.task;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.notification.Utils;
@@ -109,12 +113,34 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
-      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
-             .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-             .addOwnerParameter("activityId", activity.getId())
-             .setProviderType(PROVIDER_TYPE);
+      try {
+        ExoSocialActivity activity = ctx.value(ACTIVITY);
+        
+        List<String> userIds = new ArrayList<String>();
+        
+        // in case of post on another one
+        if (activity.getPosterId() != activity.getStreamOwner()) {
+          userIds.add(activity.getStreamOwner());
+        } else { // in case of post on his/her stream
+          // get connections of poster to send
+          Identity identity = Utils.getIdentityManager()
+              .getOrCreateIdentity(OrganizationIdentityProvider.NAME, activity.getPosterId(), false);
+          
+          ListAccess<Identity> connectionsListAccess = Utils.getIdentityManager().getConnectionsWithListAccess(identity);
+          List<Identity> connections = Arrays.asList(connectionsListAccess.load(0, connectionsListAccess.getSize()));
+
+          for (Identity id : connections) {
+            userIds.add(id.getRemoteId());
+          }
+        }
+        
+        return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
+            .setSendToUserIds(userIds)
+            .addOwnerParameter("activityId", activity.getId())
+            .setProviderType(PROVIDER_TYPE);
+      } catch (Exception e) {
+        return null;
+      }
     }
     
     @Override
