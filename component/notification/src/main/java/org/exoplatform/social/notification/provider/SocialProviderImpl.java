@@ -197,6 +197,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       }
     } catch (Exception e) {
       LOG.error("Can not build template of SocialProviderImpl by Provider " + provider.getType(), e );
+      return null;
     }
     
 

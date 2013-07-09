@@ -24,7 +24,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
-import org.exoplatform.social.core.manager.RelationshipManagerImpl;
 import org.exoplatform.social.core.space.impl.DefaultSpaceApplicationHandler;
 import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
@@ -38,7 +37,6 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
   private SpaceServiceImpl spaceService;
-  private RelationshipManagerImpl relationshipManager;
   
   private Identity rootIdentity;
   private Identity johnIdentity;
@@ -51,7 +49,6 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     identityStorage = (IdentityStorage) getContainer().getComponentInstanceOfType(IdentityStorage.class);
     activityManager = (ActivityManagerImpl) getContainer().getComponentInstanceOfType(ActivityManagerImpl.class);
     spaceService = (SpaceServiceImpl) getContainer().getComponentInstanceOfType(SpaceServiceImpl.class);
-    relationshipManager = (RelationshipManagerImpl) getContainer().getComponentInstanceOfType(RelationshipManagerImpl.class);
     
     rootIdentity = new Identity("organization", "root");
     johnIdentity = new Identity("organization", "john");
@@ -91,6 +88,8 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/social/notifications/replyActivity/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
+    
+    activityManager.deleteActivity(activity);
   }
   
   public void testViewFullDiscussion() throws Exception {
@@ -101,6 +100,8 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ContainerResponse response = service("GET", "/social/notifications/viewFullDiscussion/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
+    
+    activityManager.deleteActivity(activity);
   }
   
   public void testInviteToConnect() throws Exception {
@@ -184,6 +185,26 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     listPendings = Arrays.asList(spaceService.getSpaceById(space.getId()).getPendingUsers());
     assertFalse(listPendings.contains("root"));
     
+    spaceService.deleteSpace(space.getId());
+  }
+  
+  public void testRedirectUrl() throws Exception {
+    startSessionAs("root");
+    
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity");
+    activityManager.saveActivity(rootIdentity, activity);
+    ContainerResponse response = service("GET", "/social/notifications/redirectUrl/activity/" + activity.getId(), "", null, null);
+    assertEquals(303, response.getStatus());
+    
+    response = service("GET", "/social/notifications/redirectUrl/user/" + demoIdentity.getRemoteId(), "", null, null);
+    assertEquals(303, response.getStatus());
+    
+    Space space = getSpaceInstance(1);
+    response = service("GET", "/social/notifications/redirectUrl/space/" + space.getId(), "", null, null);
+    assertEquals(303, response.getStatus());
+    
+    activityManager.deleteActivity(activity);
     spaceService.deleteSpace(space.getId());
   }
   

@@ -392,8 +392,23 @@ public class LinkProvider {
     return "/" + getPortalName(portalName) + "/" + getPortalOwner(portalOwner);
   }
   
+  /**
+   * Gets the link of notification settings page
+   * 
+   * @param remoteId
+   * @return
+   */
   public static String getUserNotificationSettingUri(final String remoteId) {
     return getBaseUri(null, null) + "/notifications" + ROUTE_DELIMITER + remoteId;
+  }
+  
+  /**
+   * Gets the link of all spaces page
+   * 
+   * @return
+   */
+  public static String getAllSpacesUri() {
+    return getBaseUri(null, null) + "/all-spaces";
   }
 
   /**

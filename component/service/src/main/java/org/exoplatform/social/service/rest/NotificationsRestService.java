@@ -24,10 +24,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -60,17 +58,30 @@ public class NotificationsRestService implements ResourceContainer {
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
-  private static final Log LOG = ExoLogger.getLogger(NotificationsRestService.class);
-  
-  private static String ACTIVITY_ID_PREFIX = "#activityContainer";
+  private static final Log    LOG                = ExoLogger.getLogger(NotificationsRestService.class);
+
+  private static String       ACTIVITY_ID_PREFIX = "#activityContainer";
+
+  private static final String USER               = "user";
+
+  private static final String SPACE              = "space";
+
+  private static final String ACTIVITY           = "activity";
   
   public NotificationsRestService() {
   }
   
+  /**
+   * Process action "inviteToConnect" of sender and receiver then redirect to the page of receiver's profile
+   * 
+   * @param senderId the remote id of the sender
+   * @param receiverId the remote id of the receiver
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("inviteToConnect/{senderId}/{receiverId}")
-  public Response inviteToConnect(@Context UriInfo uriInfo,
-                                  @PathParam("senderId") String senderId,
+  public Response inviteToConnect(@PathParam("senderId") String senderId,
                                   @PathParam("receiverId") String receiverId) throws Exception {
     checkAuthenticatedRequest();
     
@@ -87,10 +98,17 @@ public class NotificationsRestService implements ResourceContainer {
    return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * The receiver accept the invitation to connect of the sender then he will be redirected to the page of sender's profile
+   * 
+   * @param senderId the remote id of the sender
+   * @param receiverId the remote id of the receiver
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("confirmInvitationToConnect/{senderId}/{receiverId}")
-  public Response confirmInvitationToConnect(@Context UriInfo uriInfo,
-                                             @PathParam("senderId") String senderId,
+  public Response confirmInvitationToConnect(@PathParam("senderId") String senderId,
                                              @PathParam("receiverId") String receiverId) throws Exception {
     checkAuthenticatedRequest();
     
@@ -107,10 +125,17 @@ public class NotificationsRestService implements ResourceContainer {
    return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * The receiver deny the invitation to connect of the sender then he will be redirected to the page of his connections
+   * 
+   * @param senderId the remote id of the sender
+   * @param receiverId the remote id of the receiver
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("ignoreInvitationToConnect/{senderId}/{receiverId}")
-  public Response ignoreInvitationToConnect(@Context UriInfo uriInfo,
-                                            @PathParam("senderId") String senderId,
+  public Response ignoreInvitationToConnect(@PathParam("senderId") String senderId,
                                             @PathParam("receiverId") String receiverId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -127,10 +152,17 @@ public class NotificationsRestService implements ResourceContainer {
     return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * The user accept the invitation to join space and he will be redirected to the space's home page
+   * 
+   * @param userId the remote id of the user who is invited to join space
+   * @param spaceId the id of space
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("acceptInvitationToJoinSpace/{spaceId}/{userId}")
-  public Response acceptInvitationToJoinSpace(@Context UriInfo uriInfo,
-                                              @PathParam("spaceId") String spaceId,
+  public Response acceptInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -146,10 +178,17 @@ public class NotificationsRestService implements ResourceContainer {
     return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * The user deny the invitation to join space and he will be redirected to the page of all spaces
+   * 
+   * @param userId the remote id of the user who is invited to join space
+   * @param spaceId the id of space
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("ignoreInvitationToJoinSpace/{spaceId}/{userId}")
-  public Response ignoreInvitationToJoinSpace(@Context UriInfo uriInfo,
-                                              @PathParam("spaceId") String spaceId,
+  public Response ignoreInvitationToJoinSpace(@PathParam("spaceId") String spaceId,
                                               @PathParam("userId") String userId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -159,16 +198,23 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().removeInvitedUser(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+    String targetURL = Util.getBaseUrl() + LinkProvider.getAllSpacesUri();
     
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * The manager of space validate the request to join space of user and he will be redirected to the space's members page
+   * 
+   * @param userId the remote id of the user who send the request to join space
+   * @param spaceId the id of space
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("validateRequestToJoinSpace/{spaceId}/{userId}")
-  public Response validateRequestToJoinSpace(@Context UriInfo uriInfo,
-                                             @PathParam("spaceId") String spaceId,
+  public Response validateRequestToJoinSpace(@PathParam("spaceId") String spaceId,
                                              @PathParam("userId") String userId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -184,10 +230,17 @@ public class NotificationsRestService implements ResourceContainer {
     return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * Redirect to the associated activity
+   * 
+   * @param userId remote id of activity's stream owner
+   * @param activityId id of the activity
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("replyActivity/{activityId}/{userId}")
-  public Response replyActivity(@Context UriInfo uriInfo,
-                                @PathParam("userId") String userId,
+  public Response replyActivity(@PathParam("userId") String userId,
                                 @PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -203,10 +256,17 @@ public class NotificationsRestService implements ResourceContainer {
     return Response.seeOther(URI.create(targetURL)).build();
   }
   
+  /**
+   * Redirect to the associated activity
+   * 
+   * @param userId remote id of activity's stream owner
+   * @param activityId id of the activity
+   * @return
+   * @throws Exception
+   */
   @GET
   @Path("viewFullDiscussion/{activityId}/{userId}")
-  public Response viewFullDiscussion(@Context UriInfo uriInfo,
-                                     @PathParam("userId") String userId,
+  public Response viewFullDiscussion(@PathParam("userId") String userId,
                                      @PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
@@ -217,6 +277,47 @@ public class NotificationsRestService implements ResourceContainer {
     }
 
     String targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(identity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  /**
+   * Depend on the type, user will be redirect to the associated activity, space, profile or notification settings
+   * 
+   * @param type the type of the page will be redirected : activity, space, profile or notification settings
+   * @param objectId id of the associated type
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("redirectUrl/{type}/{objectId}")
+  public Response redirectUrl(@PathParam("type") String type,
+                              @PathParam("objectId") String objectId) throws Exception {
+    Space space = null;
+    ExoSocialActivity activity = null;
+    Identity userIdentity = null;
+    String targetURL = null;
+    
+    try {
+      checkAuthenticatedRequest();
+      if (ACTIVITY.equals(type)) {
+        activity = getActivityManager().getActivity(objectId);
+        userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
+        targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(userIdentity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+      } else if (SPACE.equals(type)) {
+        space = getSpaceService().getSpaceById(objectId);
+        targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+      } else if (USER.equals(type)) {
+        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
+        targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(userIdentity.getRemoteId());
+      } else {
+        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
+        targetURL = Util.getBaseUrl() + LinkProvider.getUserNotificationSettingUri(userIdentity.getRemoteId());
+      }
+    } catch (Exception e) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
 
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
