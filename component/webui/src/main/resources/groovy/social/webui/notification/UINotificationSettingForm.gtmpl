@@ -4,25 +4,33 @@
 %>
 <div class="uiNotificationSettings">
 	<% uiform.begin(); %>
+	<%
+		if(uiform.isRenderConfirm()) {
+		  uiform.renderChild(org.exoplatform.webui.core.UIConfirmation.class);
+		}
+	%>
 	<div class="uiSocTitleBar clearfix">
 		<h4><%=_ctx.appRes("UINotificationSettingForm.label.NotificationSettings")%></h4>
 		<span><%=_ctx.appRes("UINotificationSettingForm.label.NotificationsDescription")%></span>
 	</div>
+	<div>
+		<%uiform.renderField(uiform.CHECK_BOX_DEACTIVATE);%>
+		<span style="margin-left:10px"><%=_ctx.appRes("UINotificationSettingForm.label.DisableEmailNotifciation")%></span>
+	</div>
+	<% if(uiform.isActiveNotification() == true) { %>
 	<div class="form-horizontal">
 		<table class="uiGrid table table-striped">
 			<thead>
 				<tr>
-					<th style="width:150px; text-align:center"><%=_ctx.appRes("UINotificationSettingForm.label.NotificationsChose")%></th>
-					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Instantly")%></th>
-					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Daily")%></th>
-					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Weekly")%></th>
-					<th width="20px" class="center"><%=_ctx.appRes("UINotificationSettingForm.label.Monthly")%></th>
+					<th class="left"><%=_ctx.appRes("UINotificationSettingForm.label.NotificationsChose")%></th>
+					<th width="200px" class="left"><%=_ctx.appRes("UINotificationSettingForm.label.SendMeAnEmailRightWay")%></th>
+					<th width="200px" class="left"><%=_ctx.appRes("UINotificationSettingForm.label.IncludeInMyDigestEmail")%></th>
 				</tr>
 			</thead>
 			<tbody>
 		<% 
-			List<String> providers = uicomponent.activeProviders;
-			if (providers == null || providers.size() == 0) { 
+			List groupProviders = uicomponent.getGroupProviders();
+			if (groupProviders == null || groupProviders.size() == 0) { 
 		%>
 				<tr>
 					<td class="empty center" colspan="5">
@@ -30,28 +38,67 @@
 					</td>
 				</tr>	
 		<%} else {
-				for(String providerId : providers) {
+		  	List providers = uicomponent.getActiveProviders();
+				for(def group : groupProviders) {
+				  
 		%>
 				<tr>
 					<td class="left">
-						<label for="<%=providerId%>"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+						<strong><%=_ctx.appRes("UINotificationSettingForm.label." + group.getName())%></strong>
 					</td>
-					<% for (int i = 0; i < uicomponent.frequencies.length; i++) {
-					%>
-					<td class="center">
-						<% uiform.renderField(uicomponent.getCheckBoxId(providerId, uicomponent.frequencies[i].getName())); %>	
-					</td>
-					<% } %>
+					<td></td>
+					<td></td>
 				</tr>
-		 <% } %>
+				<%
+					for (String providerId : group.getValues()) {
+					  providers.remove(providerId);
+				%>
+				<tr>
+					<td class="left">
+						<label for="<%=providerId%>" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+					</td>
+					<td class="center">
+						<% uiform.renderField(providerId); %>	
+					</td>
+					<td class="center">
+						<% uiform.renderField(uiform.makeSelectBoxId(providerId)); %>	
+					</td>
+				</tr>
+		 	 <% } %>
+		 <% } 
+		 		if(providers.size() > 0) {
+		 %>
+		 		<tr>
+					<td class="left">
+						<%=_ctx.appRes("UINotificationSettingForm.label.other")%>
+					</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<%
+					for (String providerId : providers) {
+				%>
+				<tr>
+					<td class="left">
+						<label for="<%=providerId%>" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+					</td>
+					<td class="center">
+						<% uiform.renderField(providerId); %>	
+					</td>
+					<td class="center">
+						<% uiform.renderField(uiform.makeSelectBoxId(providerId)); %>	
+					</td>
+				</tr>
+		 	 <% } %>
+	 	 <% } %>
 	 <% } %>
 			</tbody>
 		</table>
 	</div>
-	
+	<%} %>
 	<div class="uiAction">
 	<% for(action in uicomponent.getActions()) { %>
-		<button onclick="<%=uicomponent.event(action)%>" class="btn" type="button"><%=_ctx.appRes("UINotificationSettingForm.action." + action)%></button>
+		<button onclick="<%=uicomponent.event(action, "true")%>" class="btn" type="button"><%=_ctx.appRes("UINotificationSettingForm.action." + action)%></button>
 	<%}%>
 	</div>
 	

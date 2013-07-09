@@ -78,6 +78,82 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
+    <component-plugin>
+      <name>active.providers</name>
+      <set-method>registerGroupProviderPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.GroupProviderPlugin</type>
+      <description>Initial values for providers.</description>
+      <init-params>
+        <object-param>
+          <name>general.groups</name>
+          <description>The general group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>01.general</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>NewUserJoinSocialIntranet</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>connections.groups</name>
+          <description>The connections group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>02.connections</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>ReceiceConnectionRequest</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>spaces.groups</name>
+          <description>The spaces group of providers</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>03.spaces</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>InvitedJoinSpace</string></value>
+                <value><string>RequestJoinSpace</string></value>
+                <value><string>ActivityPostSpaceProvider</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>activity_stream.groups</name>
+          <description>The activity stream group of providers</description>            
+          <object type="org.exoplatform.commons.api.notification.plugin.GroupProviderModel">
+            <field name="name">
+              <string>04.activity_stream</string>
+            </field>
+            <field name="values">
+              <collection type="java.util.ArrayList">
+                <value><string>ActivityPostProvider</string></value>
+                <value><string>ActivityMentionProvider</string></value>
+                <value><string>ActivityCommentProvider</string></value>
+                <value><string>ActivityLikeProvider</string></value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
   
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.ProviderService</target-component>
