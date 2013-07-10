@@ -643,30 +643,5 @@ public class CachedRelationshipStorage implements RelationshipStorage {
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException {
     return this.storage.getSuggestions(identity, offset, limit);
   }
-
-  @Override
-  public List<Identity> getOnlineRelationships(final Identity existingIdentity,
-                                               final ProfileFilter profileFilter,
-                                               final int offset,
-                                               final int limit) throws RelationshipStorageException {
-    //
-    IdentityFilterKey key = new IdentityFilterKey(existingIdentity.getProviderId(), profileFilter);
-    ListRelationshipsKey<IdentityFilterKey> listKey =
-        new ListRelationshipsKey<IdentityFilterKey>(key, RelationshipType.ONLINE_WITH_FILTER, offset, limit);
-
-    //
-    ListIdentitiesData keys = relationshipsCache.get(
-        new ServiceContext<ListIdentitiesData>() {
-          public ListIdentitiesData execute() {
-            List<Identity> got = storage.getOnlineRelationships(existingIdentity, profileFilter, offset, limit);
-            return buildIds(got);
-          }
-        },
-        listKey);
-
-    //
-    return buildRelationships(keys);
-  }
-
   
 }

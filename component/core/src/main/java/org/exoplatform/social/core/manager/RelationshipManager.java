@@ -656,16 +656,4 @@ public interface RelationshipManager {
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit);
   
-  /**
-   * Gets the list access to get a list of identities who was connected by provided identity
-   * and filtered by profile filter.
-   *
-   * @param existingIdentity the provided identity
-   * @param profileFilter    the provided profile filter
-   * @return the list of identity
-   * @LevelAPI Platform
-   * @since  4.1.x - 4.0.2
-   */
-  List<Identity> getOnlineRelationships(Identity existingIdentity, ProfileFilter profileFilter, int offset, int limit);
-  
 }
