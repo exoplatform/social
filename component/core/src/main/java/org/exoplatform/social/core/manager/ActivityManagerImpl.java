@@ -85,7 +85,7 @@ public class ActivityManagerImpl implements ActivityManager {
    */
   public void saveActivityNoReturn(Identity streamOwner, ExoSocialActivity newActivity) {
     activityStorage.saveActivity(streamOwner, newActivity);
-    activityLifeCycle.saveActivity(newActivity);
+    activityLifeCycle.saveActivity(getActivity(newActivity.getId()));
   }
 
   /**

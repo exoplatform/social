@@ -17,6 +17,7 @@
 package org.exoplatform.social.notification.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
@@ -200,6 +202,7 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
   public void testSaveComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
+    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -221,6 +224,7 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
+    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     assertNotNull(activity.getId());
@@ -235,12 +239,39 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     // mentions case
     ExoSocialActivity act = new ExoSocialActivityImpl();
     act.setTitle("hello @demo");
+    act.setUserId(maryIdentity.getId());
     activityManager.saveActivity(rootIdentity, act);
     tearDownActivityList.add(act);
     assertNotNull(act.getId());
     assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     
-    // user post activity on space
+    // demo post activity on space
+    Space space = getSpaceInstance(1);
+    Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    ExoSocialActivity spaceActivity = new ExoSocialActivityImpl();
+    spaceActivity.setTitle("space activity title");
+    spaceActivity.setUserId(demoIdentity.getId());
+    activityManager.saveActivity(spaceIdentity, spaceActivity);
+    tearDownActivityList.add(spaceActivity);
+    
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    assertEquals(1, messages.iterator().next().getSendToUserIds().size());
+    
+    //add 2 more members in space
+    space.setMembers(new String[] {"mary", "john"});
+    spaceService.saveSpace(space, false);
+    ExoSocialActivity spaceActivity2 = new ExoSocialActivityImpl();
+    spaceActivity2.setTitle("space activity2 title");
+    spaceActivity2.setUserId(demoIdentity.getId());
+    activityManager.saveActivity(spaceIdentity, spaceActivity2);
+    tearDownActivityList.add(spaceActivity2);
+    
+    messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    assertEquals(3, messages.iterator().next().getSendToUserIds().size());
+    
+    spaceService.deleteSpace(space);
   }
   
   public void testLikeActivity() throws Exception {
@@ -248,6 +279,7 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
+    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());

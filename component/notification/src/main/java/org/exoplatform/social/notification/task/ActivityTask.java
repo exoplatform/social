@@ -80,18 +80,24 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity comment = ctx.value(ACTIVITY);
       
       //
-      return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getUserId()))
-             .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
-             .addOwnerParameter("activityId", activity.getId())
+      return NotificationMessage.getInstance().setFrom(Utils.getUserId(comment.getUserId()))
+             .setSendToUserIds(Utils.getDestinataires(comment))
+             .addOwnerParameter("activityId", comment.getId())
              .setProviderType(PROVIDER_TYPE);
     }
 
     @Override
     public boolean isValid(NotificationContext ctx) {
-      return true;
+      ExoSocialActivity comment = ctx.value(ACTIVITY);
+      try {
+        Identity id = Utils.getIdentityManager().getIdentity(comment.getPosterId(), true);
+        return ! id.getRemoteId().equals(comment.getStreamOwner());
+      } catch (Exception e) {
+        return false;
+      }
     }
     
     @Override
@@ -124,7 +130,14 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     @Override
     public boolean isValid(NotificationContext ctx) {
       ExoSocialActivity activity = ctx.value(ACTIVITY);
-      return activity.getPosterId() != activity.getStreamOwner();
+      try {
+        if (Utils.isSpaceActivity(activity))
+          return false;
+        Identity id = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+        return ! id.getRemoteId().equals(activity.getStreamOwner());
+      } catch (Exception e) {
+        return false;
+      }
     }
     
     @Override
@@ -175,14 +188,14 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       try {
         ExoSocialActivity activity = ctx.value(ACTIVITY);
         
-        Identity id = Utils.getIdentityManager().getIdentity(activity.getStreamOwner(), false);
+        Identity id = Utils.getIdentityManager().getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
         Space space = Utils.getSpaceService().getSpaceByPrettyName(id.getRemoteId());
         
         
         return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
                                   .setFrom(Utils.getUserId(activity.getPosterId()))
                                   .addOwnerParameter("activityId", activity.getId())
-                                  .setSendToUserIds(Arrays.asList(space.getMembers()));
+                                  .setSendToUserIds(Utils.getDestinataires(activity, space));
       } catch (Exception e) {
         return null;
       }
@@ -191,11 +204,10 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     @Override
     public boolean isValid(NotificationContext ctx) {
       ExoSocialActivity activity = ctx.value(ACTIVITY);
-      Identity id = Utils.getIdentityManager()
-          .getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), false);
-      
-      //
-      return id != null;
+      if (! Utils.isSpaceActivity(activity))
+        return false;
+      Identity id = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);
+      return ! id.getRemoteId().equals(activity.getStreamOwner());
     }
     
     @Override

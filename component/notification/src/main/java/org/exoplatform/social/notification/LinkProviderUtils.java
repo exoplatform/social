@@ -2,6 +2,9 @@ package org.exoplatform.social.notification;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
 
 public class LinkProviderUtils {
   
@@ -27,6 +30,7 @@ public static final String RESOURCE_URL = "social/notifications";
 
   /**
    * Gets the url to the user's profile page of the receiver
+   * 
    * @param senderId remoteId of the sender
    * @param receiverId remoteId of the receiver
    * @return
@@ -47,6 +51,7 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /**
    * Gets the url to the connection's tab of the current user
+   * 
    * @param senderId remoteId of the sender
    * @param receiverId remoteId of the receiver
    * @return
@@ -57,6 +62,7 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /**
    * Gets the url to the space's home page
+   * 
    * @param spaceId
    * @param userId
    * @return
@@ -67,6 +73,7 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /**
    * Gets the url to the space's home page
+   * 
    * @param spaceId
    * @param userId remoteId of the user
    * @return
@@ -87,6 +94,7 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /**
    * Gets the url to the activity with id = activityId of userId
+   * 
    * @param activityId
    * @param userId remoteId of the user
    * @return
@@ -97,6 +105,7 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /**
    * Gets the url to the activity with id = activityId of userId
+   * 
    * @param activityId
    * @param userId remoteId of the user
    * @return
@@ -115,6 +124,14 @@ public static final String RESOURCE_URL = "social/notifications";
     return getRestUrl(REDIRECT_URL, type, objectId);
   }
 
+  /**
+   * Gets full rest url
+   * 
+   * @param type
+   * @param objectId1
+   * @param objectId2
+   * @return
+   */
   public static String getRestUrl(String type, String objectId1, String objectId2) {
     String baseUrl = getBaseRestUrl();
     return new StringBuffer(baseUrl).append("/").append(type)
@@ -123,11 +140,32 @@ public static final String RESOURCE_URL = "social/notifications";
   
   /** 
    * Get base url of rest service
+   * 
    * @return base rest url like : http://localhost:8080/rest
    */
   private static String getBaseRestUrl() {
     String domain = System.getProperty("gatein.email.domain.url");
     ExoContainerContext context = CommonsUtils.getService(ExoContainerContext.class);
     return new StringBuffer(domain).append("/").append(context.getRestContextName()).toString();
+  }
+  
+  /**
+   * Gets the user's avatar url. In case this url is null, we take the default url
+   * 
+   * @param profile user profile
+   * @return
+   */
+  public static String getUserAvatarUrl(Profile profile) {
+    return profile.getAvatarUrl() != null ? profile.getAvatarUrl() : LinkProvider.PROFILE_DEFAULT_AVATAR_URL;
+  }
+  
+  /**
+   * Gets the space's avatar url. In case this url is null, we take the default url
+   * 
+   * @param space
+   * @return
+   */
+  public static String getSpaceAvatarUrl(Space space) {
+    return space.getAvatarUrl() != null ? space.getAvatarUrl() : LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
 }

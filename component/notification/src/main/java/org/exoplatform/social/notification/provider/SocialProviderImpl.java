@@ -163,7 +163,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Space space = spaceService.getSpaceById(spaceId);
           messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()))
                      .setBody(body.replace("$space-name", space.getPrettyName())
-                                  .replace("$space-avatar-url", space.getAvatarUrl())
+                                  .replace("$space-avatar-url", LinkProviderUtils.getSpaceAvatarUrl(space))
                                   .replace("$acceptAction", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)))
                                   .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0))));
           break;
@@ -176,7 +176,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()).replace("$user-name", userProfile.getFullName()))
                      .setBody(body.replace("$space-name", space.getPrettyName())
                                   .replace("$user-name", userProfile.getFullName())
-                                  .replace("$user-avatar-url", userProfile.getAvatarUrl())
+                                  .replace("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile))
                                   .replace("$validateAction", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId())));
           break;
         }
@@ -189,7 +189,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Profile userProfile = identity.getProfile();
           messageInfo.setSubject(subject.replace("$user-name", userProfile.getFullName()))
                      .setBody(body.replace("$user-name", userProfile.getFullName())
-                                  .replace("$user-avatar-url", userProfile.getAvatarUrl())
+                                  .replace("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile))
                                   .replace("$confirmAction", LinkProviderUtils.getConfirmInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)))
                                   .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0))));
           break;
