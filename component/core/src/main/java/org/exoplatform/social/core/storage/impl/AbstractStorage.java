@@ -22,12 +22,12 @@ import java.util.Iterator;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.RepositoryException;
-import org.chromattic.api.ChromatticException;
+
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.Status;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.social.common.lifecycle.SocialChromatticLifeCycle;
 import org.exoplatform.social.core.chromattic.entity.ProviderRootEntity;
 import org.exoplatform.social.core.chromattic.entity.SpaceRootEntity;
