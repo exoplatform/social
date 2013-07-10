@@ -51,6 +51,9 @@
 				</tr>
 				<%
 					for (String providerId : group.getValues()) {
+					  if(providers.contains(providerId) == false) {
+					    continue;
+					  } 
 					  providers.remove(providerId);
 				%>
 				<tr>
