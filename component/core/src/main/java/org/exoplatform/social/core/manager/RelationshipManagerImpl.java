@@ -19,6 +19,7 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -561,12 +562,6 @@ public class RelationshipManagerImpl implements RelationshipManager {
 
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) {
     return this.storage.getSuggestions(identity, offset, limit);
-  }
-
-  @Override
-  public List<Identity> getOnlineRelationships(Identity existingIdentity,
-                                                     ProfileFilter profileFilter, int offset, int limit) {
-    return storage.getOnlineRelationships(existingIdentity, profileFilter, offset, limit);
   }
   
 }

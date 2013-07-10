@@ -23,6 +23,7 @@ import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -318,17 +319,5 @@ public interface RelationshipStorage {
    * @since 4.0.x
    */
   public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) throws RelationshipStorageException;
-  
-  /**
-   * Gets the relationships for given Identity who is online on PLF
-   * @param existingIdentity the provided identity
-   * @param profileFilter the provided identity
-   * @param offset the offset position to get
-   * @param limit the limit of return result
-   * @return list of identities who has relationship with existingIdentity and online on PLF
-   * @throws RelationshipStorageException
-   * @since 4.0.2 - 4.1.0
-   */
-  public List<Identity> getOnlineRelationships(final Identity existingIdentity, final ProfileFilter profileFilter, int offset, int limit) throws RelationshipStorageException;
   
 }
