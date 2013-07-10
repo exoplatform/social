@@ -53,6 +53,7 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
   events = {
     @EventConfig(listeners = UINotificationSettingForm.SaveActionListener.class),
     @EventConfig(listeners = UINotificationSettingForm.ResetActionListener.class),
+    @EventConfig(listeners = UINotificationSettingForm.DeactivateActionListener.class),
     @EventConfig(listeners = UINotificationSettingForm.ClickActionListener.class) 
   }
 )
@@ -236,6 +237,15 @@ public class UINotificationSettingForm extends UIForm {
       confirmation.setShow(true);
       confirmation.setRendered(true);
       notifications.isRenderConfirm  = true;
+      event.getRequestContext().addUIComponentToUpdateByAjax(notifications);
+    }
+  }
+
+  public static class DeactivateActionListener extends EventListener<UINotificationSettingForm> {
+    public void execute(Event<UINotificationSettingForm> event) throws Exception {
+      UINotificationSettingForm notifications = event.getSource();
+      notifications.isActiveNotification = !notifications.isActiveNotification;
+      notifications.getUICheckBoxInput(CHECK_BOX_DEACTIVATE).setChecked((notifications.isActiveNotification == false));
       event.getRequestContext().addUIComponentToUpdateByAjax(notifications);
     }
   }

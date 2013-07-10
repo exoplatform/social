@@ -17,8 +17,13 @@
 		<%uiform.renderField(uiform.CHECK_BOX_DEACTIVATE);%>
 		<span style="margin-left:10px"><%=_ctx.appRes("UINotificationSettingForm.label.DisableEmailNotifciation")%></span>
 	</div>
-	<% if(uiform.isActiveNotification() == true) { %>
-	<div class="form-horizontal">
+	<%
+		String display = "block";
+		if(uiform.isActiveNotification() == false) {
+		  display = "none";
+		}
+	%>
+	<div class="form-horizontal" style="display:$display">
 		<table class="uiGrid table table-striped">
 			<thead>
 				<tr>
@@ -29,7 +34,7 @@
 			</thead>
 			<tbody>
 		<% 
-			List groupProviders = uicomponent.getGroupProviders();
+			List groupProviders = uiform.getGroupProviders();
 			if (groupProviders == null || groupProviders.size() == 0) { 
 		%>
 				<tr>
@@ -38,7 +43,7 @@
 					</td>
 				</tr>	
 		<%} else {
-		  	List providers = uicomponent.getActiveProviders();
+		  	List providers = uiform.getActiveProviders();
 				for(def group : groupProviders) {
 				  
 		%>
@@ -58,7 +63,7 @@
 				%>
 				<tr>
 					<td class="left">
-						<label for="<%=providerId%>" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
+						<label for="$providerId" style="padding-left:20px"><%=_ctx.appRes("UINotificationSettingForm.label." + providerId)%></label>
 					</td>
 					<td class="center">
 						<% uiform.renderField(providerId); %>	
@@ -98,7 +103,6 @@
 			</tbody>
 		</table>
 	</div>
-	<%} %>
 	<div class="uiAction">
 	<% for(action in uicomponent.getActions()) { %>
 		<button onclick="<%=uicomponent.event(action, "true")%>" class="btn" type="button"><%=_ctx.appRes("UINotificationSettingForm.action." + action)%></button>
