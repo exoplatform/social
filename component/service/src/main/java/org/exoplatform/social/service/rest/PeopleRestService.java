@@ -107,6 +107,10 @@ public class PeopleRestService implements ResourceContainer{
   /** Number of default limit activities. */
   private static final int DEFAULT_LIMIT = 20;
   
+  private static final String DEFAULT_ACTIVITY = "DEFAULT_ACTIVITY";
+  private static final String LINK_ACTIVITY = "LINK_ACTIVITY";
+  private static final String DOC_ACTIVITY = "DOC_ACTIVITY";
+  
   private IdentityManager identityManager;
   private ActivityManager activityManager;
   private RelationshipManager relationshipManager;
@@ -413,7 +417,8 @@ public class PeopleRestService implements ResourceContainer{
         }
       }
 
-      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager().getActivitiesByPoster(identity);
+      RealtimeListAccess<ExoSocialActivity> activitiesListAccess = getActivityManager()
+          .getActivitiesByPoster(identity, DEFAULT_ACTIVITY, LINK_ACTIVITY, DOC_ACTIVITY);
       
       List<ExoSocialActivity> activities = activitiesListAccess.loadAsList(0, 1);
       if (activities.size() > 0) {

@@ -147,7 +147,7 @@ public class ActivitiesRealtimeListAccess implements RealtimeListAccess<ExoSocia
         return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit);
       } 
       case POSTER_AND_TYPES_ACTIVITIES: {
-        return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit);
+        return activityStorage.getActivitiesByPoster(ownerIdentity, index, limit, activityTypes);
       }
     }
     return Collections.emptyList();
