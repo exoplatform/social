@@ -17,7 +17,7 @@
 package org.exoplatform.social.notification.provider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +26,11 @@ import java.util.Map.Entry;
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.ProviderData;
-import org.exoplatform.commons.api.notification.ProviderData.DIGEST_TYPE;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.ProviderService;
+import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -59,6 +58,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
   IdentityManager identityManager;
   SpaceService spaceService;
   
+  TemplateGenerator templateGenerator;
+  
   public enum PROVIDER_TYPE {
     ActivityMentionProvider, ActivityCommentProvider,
     ActivityPostProvider, ActivityPostSpaceProvider,
@@ -75,12 +76,12 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
   }
   
   public SocialProviderImpl(ActivityManager activityManager, IdentityManager identityManager,
-                         SpaceService spaceService, ProviderService providerService, OrganizationService organizationService) {
+                         SpaceService spaceService, ProviderService providerService, TemplateGenerator templateGenerator) {
     this.providerService = providerService;
     this.activityManager = activityManager;
     this.identityManager = identityManager;
     this.spaceService = spaceService;
-    this.organizationService = organizationService;
+    this.templateGenerator = templateGenerator;
   }
   
   @Override
@@ -93,8 +94,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     //
     ProviderData provider = providerService.getProvider(message.getProviderType());
     String language = getLanguage(message);
-    String body = getTemplate(provider, language);
-    String subject = getSubject(provider, language);
+    Map<String, String> valueables = new HashMap<String, String>();
+    String body = "";
+    String subject = "";
 
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(message.getProviderType());
     try {
@@ -103,11 +105,16 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
-          messageInfo.setSubject(subject.replace("$user-who-mentionned", identity.getProfile().getFullName()))
-                     .setBody(body.replace("$user-who-mentionned", identity.getProfile().getFullName())
-                                  .replace("$post", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
+
+          valueables.put("$user-who-mentionned", identity.getProfile().getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$post", activity.getTitle());
+          valueables.put("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+         
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case ActivityCommentProvider: {
@@ -115,34 +122,49 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           ExoSocialActivity parentActivity = activityManager.getParentActivity(activity);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
-          messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()))
-                     .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
-                                  .replace("$activity_comment", activity.getTitle())
-                                  .replace("$original_activity_message", parentActivity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$other_user_name", identity.getProfile().getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$activity_comment", activity.getTitle());
+          valueables.put("$original_activity_message", parentActivity.getTitle());
+          valueables.put("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case ActivityLikeProvider: {
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(message.getFrom(), true);
-          messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()))
-                     .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
-                                  .replace("$activity", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$other_user_name", identity.getProfile().getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+
+          valueables.put("$activity", activity.getTitle());
+          valueables.put("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case ActivityPostProvider: {
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
-          messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()))
-                     .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
-                                  .replace("$activity_message", activity.getTitle())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$other_user_name", identity.getProfile().getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$activity_message", activity.getTitle());
+          valueables.put("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case ActivityPostSpaceProvider: {
@@ -150,22 +172,32 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
-          messageInfo.setSubject(subject.replace("$other_user_name", identity.getProfile().getFullName()).replace("$space-name", spaceIdentity.getProfile().getFullName()))
-                     .setBody(body.replace("$other_user_name", identity.getProfile().getFullName())
-                                  .replace("$activity_message", activity.getTitle())
-                                  .replace("$space-name", spaceIdentity.getProfile().getFullName())
-                                  .replace("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$other_user_name", identity.getProfile().getFullName());
+          valueables.put("$space-name", spaceIdentity.getProfile().getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$activity_message", activity.getTitle());
+          valueables.put("$replyAction", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$viewAction", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case InvitedJoinSpace: {
           String spaceId = message.getOwnerParameter().get(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
-          messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()))
-                     .setBody(body.replace("$space-name", space.getPrettyName())
-                                  .replace("$space-avatar-url", LinkProviderUtils.getSpaceAvatarUrl(space))
-                                  .replace("$acceptAction", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)))
-                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$space-name", space.getPrettyName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$space-avatar-url", LinkProviderUtils.getSpaceAvatarUrl(space));
+          valueables.put("$acceptAction", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case RequestJoinSpace: {
@@ -173,11 +205,16 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Space space = spaceService.getSpaceById(spaceId);
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
-          messageInfo.setSubject(subject.replace("$space-name", space.getPrettyName()).replace("$user-name", userProfile.getFullName()))
-                     .setBody(body.replace("$space-name", space.getPrettyName())
-                                  .replace("$user-name", userProfile.getFullName())
-                                  .replace("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile))
-                                  .replace("$validateAction", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId())));
+          
+          valueables.put("$space-name", space.getPrettyName());
+          valueables.put("$user-name", userProfile.getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile));
+          valueables.put("$validateAction", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
         case NewUserJoinSocialIntranet: {
@@ -187,11 +224,16 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         case ReceiceConnectionRequest: {
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
           Profile userProfile = identity.getProfile();
-          messageInfo.setSubject(subject.replace("$user-name", userProfile.getFullName()))
-                     .setBody(body.replace("$user-name", userProfile.getFullName())
-                                  .replace("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile))
-                                  .replace("$confirmAction", LinkProviderUtils.getConfirmInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)))
-                                  .replace("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0))));
+          
+          valueables.put("$user-name", userProfile.getFullName());
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("$user-avatar-url", LinkProviderUtils.getUserAvatarUrl(userProfile));
+          valueables.put("$confirmAction", LinkProviderUtils.getConfirmInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)));
+          valueables.put("$ignoreAction", LinkProviderUtils.getIgnoreInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)));
+          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+
+          messageInfo.setSubject(subject).setBody(body);
           break;
         }
       }
@@ -242,14 +284,18 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     
     switch (type) {
       case ActivityMentionProvider: {
+        Map<String, String> valueables = new HashMap<String, String>();
         for (NotificationMessage message : messages) {
-          String digester = providerData.getDigester(language);
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
-          sb.append(digester.replace("$user1-fullname", identity.getProfile().getFullName())
-                            .replace("$activity", activity.getTitle()))
-            .append("</br>");
+
+          valueables.put("$user1-fullname", identity.getProfile().getFullName());
+          valueables.put("$activity", activity.getTitle());
+          String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, 0);
+          sb.append(digester).append("</br>");
+
+          valueables.clear();
         }
         break;
       }
@@ -289,14 +335,21 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         break;
       }
       case ActivityPostProvider: {
+        Map<String, String> valueables = new HashMap<String, String>();
         for (NotificationMessage message : messages) {
-          String digester = providerData.getDigester(language);
           String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
-          sb.append(digester.replace("$user1-fullname", identity.getProfile().getFullName())
-                            .replace("$activity", activity.getTitle()))
-            .append("</br>");
+          
+          
+          valueables.put("$user1-fullname", identity.getProfile().getFullName());
+          valueables.put("$activity", activity.getTitle());
+          String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, 0);
+          sb.append(digester).append("</br>");
+
+          valueables.clear();
+          
+          sb.append(digester).append("</br>");
         }
         break;
       }
@@ -304,55 +357,24 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         break;
       }
       case InvitedJoinSpace: {
+        Map<String, String> valueables = new HashMap<String, String>();
         int count = messages.size();
-        String digester = "";
-        switch (count) {
-          case 1: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
-            String spaceId = messages.get(0).getOwnerParameter().get(SPACE_ID);
-            Space space = spaceService.getSpaceById(spaceId);
-            sb.append(digester.replace("$space1-name", space.getPrettyName())).append("</br>");
-            break;
+
+        for (int i = 0; i < count && i <= 3; i++) {
+          String spaceId = messages.get(i).getOwnerParameter().get(SPACE_ID);
+          Space space = spaceService.getSpaceById(spaceId);
+          valueables.put("$space"+i+"-name", space.getPrettyName());
+          
+          if(i == 2) {
+            valueables.put(", $space2-name", "");
           }
-          case 2: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
-            Space space1 = spaceService.getSpaceById(space1Id);
-            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
-            Space space2 = spaceService.getSpaceById(space2Id);
-            sb.append(digester.replace("$space1-name", space1.getPrettyName())
-                              .replace(", $space1-name", "")
-                              .replace("$space3-name", space2.getPrettyName())).append("</br>");
-            break;
-          }
-          case 3: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
-            Space space1 = spaceService.getSpaceById(space1Id);
-            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
-            Space space2 = spaceService.getSpaceById(space2Id);
-            String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
-            Space space3 = spaceService.getSpaceById(space3Id);
-            sb.append(digester.replace("$space1-name", space1.getPrettyName())
-                              .replace("$space2-name", space2.getPrettyName())
-                              .replace("$space3-name", space3.getPrettyName())).append("</br>");
-            break;
-          }
-          default: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
-            String space1Id = messages.get(0).getOwnerParameter().get(SPACE_ID);
-            Space space1 = spaceService.getSpaceById(space1Id);
-            String space2Id = messages.get(1).getOwnerParameter().get(SPACE_ID);
-            Space space2 = spaceService.getSpaceById(space2Id);
-            String space3Id = messages.get(2).getOwnerParameter().get(SPACE_ID);
-            Space space3 = spaceService.getSpaceById(space3Id);
-            sb.append(digester.replace("$space1-name", space1.getPrettyName())
-                              .replace("$space2-name", space2.getPrettyName())
-                              .replace("$space3-name", space3.getPrettyName())
-                              .replace("$number-others", "" + (count - 3))).append("</br>");
-            break;
+          if(i == 3 && count > 3) {
+            valueables.put("$number-others", String.valueOf((count - 3)));
           }
         }
+
+        String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, count);
+        sb.append(digester).append("</br>");
         break;
       }
       case RequestJoinSpace: {
@@ -376,55 +398,26 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         break;
       }
       case ReceiceConnectionRequest: {
+        Map<String, String> valueables = new HashMap<String, String>();
         int count = messages.size();
-        String digester = "";
-        switch (count) {
-          case 1: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
-            Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
-            Profile userProfile = identity.getProfile();
-            sb.append(digester.replace("$user1-fullname", userProfile.getFullName())).append("</br>");
-            break;
+
+        for (int i = 0; i < count && i <= 3; i++) {
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(i).getFrom(), true);
+          Profile userProfile = identity.getProfile();
+          
+          valueables.put("$user"+i+"-fullname", userProfile.getFullName());
+          
+          if(i == 2) {
+            valueables.put(", $user2-fullname", "");
           }
-          case 2: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
-            Profile user1 = identity1.getProfile();
-            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
-            Profile user2 = identity2.getProfile();
-            sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                              .replace(", $user2-fullname", "")
-                              .replace("$user3-fullname", user2.getFullName())).append("</br>");
-            break;
-          }
-          case 3: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
-            Profile user1 = identity1.getProfile();
-            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
-            Profile user2 = identity2.getProfile();
-            Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(2).getFrom(), true);
-            Profile user3 = identity3.getProfile();
-            sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                              .replace("$user2-fullname", user2.getFullName())
-                              .replace("$user3-fullname", user3.getFullName())).append("</br>");
-            break;
-          }
-          default: {
-            digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
-            Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(0).getFrom(), true);
-            Profile user1 = identity1.getProfile();
-            Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(1).getFrom(), true);
-            Profile user2 = identity2.getProfile();
-            Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(2).getFrom(), true);
-            Profile user3 = identity3.getProfile();
-            sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                              .replace("$user2-fullname", user2.getFullName())
-                              .replace("$user3-fullname", user3.getFullName())
-                              .replace("$number-others", "" + (count - 3))).append("</br>");
-            break;
+          if(i == 3 && count > 3) {
+            valueables.put("$number-others", String.valueOf((count - 3)));
           }
         }
+
+        String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, count);
+        sb.append(digester).append("</br>");
+        
         break;
       }
     }
@@ -436,86 +429,44 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
   private String getMessageByIds(Map<String, List<String>> map, ProviderData providerData, String language) {
     StringBuilder sb = new StringBuilder();
+    ExoSocialActivity activity = null;
+    Space space = null;
     for (Entry<String, List<String>> entry : map.entrySet()) {
       String id = entry.getKey();
-      ExoSocialActivity activity = null;
-      Space space = null;
       try {
         activity = activityManager.getActivity(id);
+        space = null;
       } catch (Exception e) {
-        activity = null;
         space = spaceService.getSpaceById(id);
+        activity = null;
       }
       List<String> values = entry.getValue();
       int count = values.size();
-      String digester = "";
-      switch (count) {
-        case 1: {
-          digester = providerData.getDigester(language, DIGEST_TYPE.ONE);
-          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
-          Profile user1 = identity1.getProfile();
-          if (activity != null) {
-            digester = digester.replace("$activity", activity.getTitle());
-          } else {
-            digester = digester.replace("$space-name", space.getPrettyName());
-          }
-          sb.append(digester.replace("$user1-fullname", user1.getFullName())).append("</br>");
-          break;
+
+      Map<String, String> valueables = new HashMap<String, String>();
+      
+      if (activity != null) {
+        valueables.put("$activity", activity.getTitle());
+      } else {
+        valueables.put("$space-name", space.getPrettyName());
+      }
+      
+      for (int i = 0; i < count && i <= 3; i++) {
+        Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
+        Profile userProfile = identity.getProfile();
+        
+        valueables.put("$user"+i+"-fullname", userProfile.getFullName());
+        
+        if(i == 2) {
+          valueables.put(", $user2-fullname", "");
         }
-        case 2: {
-          digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-          if (activity != null) {
-            digester = digester.replace("$activity", activity.getTitle());
-          } else {
-            digester = digester.replace("$space-name", space.getPrettyName());
-          }
-          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
-          Profile user1 = identity1.getProfile();
-          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
-          Profile user2 = identity2.getProfile();
-          sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                            .replace(", $user2-fullname", "")
-                            .replace("$user3-fullname", user2.getFullName())).append("</br>");
-          break;
-        }
-        case 3: {
-          digester = providerData.getDigester(language, DIGEST_TYPE.THREE);
-          if (activity != null) {
-            digester = digester.replace("$activity", activity.getTitle());
-          } else {
-            digester = digester.replace("$space-name", space.getPrettyName());
-          }
-          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
-          Profile user1 = identity1.getProfile();
-          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
-          Profile user2 = identity2.getProfile();
-          Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(2), true);
-          Profile user3 = identity3.getProfile();
-          sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                            .replace("$user2-fullname", user2.getFullName())
-                            .replace("$user3-fullname", user3.getFullName())).append("</br>");
-          break;
-        }
-        default: {
-          digester = providerData.getDigester(language, DIGEST_TYPE.MORE);
-          if (activity != null) {
-            digester = digester.replace("$activity", activity.getTitle());
-          } else {
-            digester = digester.replace("$space-name", space.getPrettyName());
-          }
-          Identity identity1 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(0), true);
-          Profile user1 = identity1.getProfile();
-          Identity identity2 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(1), true);
-          Profile user2 = identity2.getProfile();
-          Identity identity3 = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(2), true);
-          Profile user3 = identity3.getProfile();
-          sb.append(digester.replace("$user1-fullname", user1.getFullName())
-                            .replace("$user2-fullname", user2.getFullName())
-                            .replace("$user3-fullname", user3.getFullName())
-                            .replace("$number-others", "" + (count - 3))).append("</br>");
-          break;
+        if(i == 3 && count > 3) {
+          valueables.put("$number-others", String.valueOf((count - 3)));
         }
       }
+
+      String digester = templateGenerator.processDigestIntoString(providerData.getType(), valueables, language, count);
+      sb.append(digester).append("</br>");
     }
     
     return sb.toString();

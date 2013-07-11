@@ -23,13 +23,29 @@
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
   <component>
-    <key>org.exoplatform.social.common.xmlprocessor.XMLProcessor</key>
-    <type>org.exoplatform.social.common.xmlprocessor.XMLProcessorImpl</type>
+    <key>org.exoplatform.commons.api.notification.NotificationDataStorage</key>
+    <type>org.exoplatform.social.notification.mock.MockNotificationDataStorage</type>
   </component>
 
   <component>
-    <key>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</key>
-    <type>org.exoplatform.social.common.xmlprocessor.model.XMLTagFilterPolicy</type>
+    <key>org.exoplatform.commons.api.notification.service.NotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.NotificationServiceImpl</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.UserNotificationService</key>
+    <type>org.exoplatform.commons.notification.impl.UserNotificationServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.NotificationProviderService</key>
+    <type>org.exoplatform.commons.notification.impl.DigestorProviderImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.TemplateGenerator</key>
+    <type>org.exoplatform.commons.notification.impl.TemplateGeneratorImpl</type>
+  </component>
+  
 
 </configuration>

@@ -17,24 +17,16 @@
 package org.exoplatform.social.notification.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.ProviderData;
-import org.exoplatform.commons.api.notification.ProviderData.DIGEST_TYPE;
-import org.exoplatform.commons.api.notification.plugin.ProviderPlugin;
-import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
-import org.exoplatform.commons.api.notification.service.NotificationProviderService;
-import org.exoplatform.commons.api.notification.service.ProviderService;
+import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.commons.utils.CommonsUtils;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManagerImpl;
@@ -43,11 +35,13 @@ import org.exoplatform.social.core.space.impl.SpaceServiceImpl;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.storage.api.IdentityStorage;
 import org.exoplatform.social.notification.AbstractCoreTest;
+import org.exoplatform.social.notification.DefaultDataTest;
 import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.impl.RelationshipNotifictionImpl;
 import org.exoplatform.social.notification.provider.SocialProviderImpl;
 
 public class SocialNotificationTestCase extends AbstractCoreTest {
+  private TemplateGenerator templateGenerator;
   private IdentityStorage identityStorage;
   private ActivityManagerImpl activityManager;
   private List<ExoSocialActivity> tearDownActivityList;
@@ -60,6 +54,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private Identity maryIdentity;
   private Identity demoIdentity;
   
+  private SocialProviderImpl socialProviderImpl;
+  
   public static final String ACTIVITY_ID = "activityId";
 
   public static final String SPACE_ID    = "spaceId";
@@ -70,6 +66,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   protected void setUp() throws Exception {
     super.setUp();
 
+    templateGenerator = Utils.getService(TemplateGenerator.class);
     identityStorage = Utils.getService(IdentityStorage.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
@@ -97,87 +94,22 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     tearDownSpaceList = new ArrayList<Space>();
     
     System.setProperty("gatein.email.domain.url", "localhost");
+    
+    if(socialProviderImpl == null) {
+      IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
+      socialProviderImpl = DefaultDataTest.getSocialProviderImpl(activityManager, identityManager, spaceService, templateGenerator);
+    }
+    
   }
   
   public MessageInfo buildMessageInfo(NotificationMessage message) {
-    
-    NotificationProviderService providerService = CommonsUtils.getService(NotificationProviderService.class);
-    
-    SocialProviderImpl providerImpl = new SocialProviderImpl(
-               activityManager,
-               CommonsUtils.getService(IdentityManager.class),
-               spaceService, new ProviderService() {
-                
-                @Override
-                public void saveProvider(ProviderData provider) {
-                }
-                
-                @Override
-                public void registerProviderPlugin(ProviderPlugin providerPlugin) {
-                }
-                
-                @Override
-                public ProviderData getProvider(String providerType) {
-                  ProviderData provider = new ProviderData();
-                  //
-                  provider.addSubject(SocialProviderImpl.DEFAULT_LANGUAGE, "$space-name $other_user_name");
-                  provider.addTemplate(SocialProviderImpl.DEFAULT_LANGUAGE, "$space-name $activity_message");
-                  provider.setType(providerType);
-                  return provider;
-                }
-                
-                @Override
-                public List<ProviderData> getAllProviders() {
-                  return null;
-                }
-              },
-              
-              CommonsUtils.getService(OrganizationService.class)
-    );
-    providerService.addSupportProviderImpl((AbstractNotificationProvider)providerImpl);
 
-    return  providerImpl.buildMessageInfo(message);
+    return  socialProviderImpl.buildMessageInfo(message);
   }
   
-public String buildDigestMessageInfo(List<NotificationMessage> messages) {
-    
-    NotificationProviderService providerService = CommonsUtils.getService(NotificationProviderService.class);
-    
-    SocialProviderImpl providerImpl = new SocialProviderImpl(
-               activityManager,
-               CommonsUtils.getService(IdentityManager.class),
-               spaceService, new ProviderService() {
-                
-                @Override
-                public void saveProvider(ProviderData provider) {
-                }
-                
-                @Override
-                public void registerProviderPlugin(ProviderPlugin providerPlugin) {
-                }
-                
-                @Override
-                public ProviderData getProvider(String providerType) {
-                  ProviderData provider = new ProviderData();
-                  //
-                  provider.addDigester(SocialProviderImpl.DEFAULT_LANGUAGE, "$user1-fullname $activity");
-                  provider.addDigester(SocialProviderImpl.DEFAULT_LANGUAGE, "$user1-fullname $user2-fullname $user3-fullname $activity $space-name", DIGEST_TYPE.THREE);
-                  provider.addDigester(SocialProviderImpl.DEFAULT_LANGUAGE, "$space1-name $space2-name $space3-name $number-others", DIGEST_TYPE.MORE);
-                  provider.setType(providerType);
-                  return provider;
-                }
-                
-                @Override
-                public List<ProviderData> getAllProviders() {
-                  return null;
-                }
-              },
-              
-              CommonsUtils.getService(OrganizationService.class)
-    );
-    providerService.addSupportProviderImpl((AbstractNotificationProvider)providerImpl);
+  public String buildDigestMessageInfo(List<NotificationMessage> messages) {
 
-    return  providerImpl.buildDigestMessageInfo(messages);
+    return  socialProviderImpl.buildDigestMessageInfo(messages);
   }
 
   @Override
@@ -199,10 +131,9 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     super.tearDown();
   }
   
-  public void testSaveComment() throws Exception {
+  public void TestSaveComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
-    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     
@@ -219,12 +150,11 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     assertEquals("$space-name " + activity.getTitle(), info.getBody());
   }
 
-  public void testSaveActivity() throws Exception {
+  public void TestSaveActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
-    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     assertNotNull(activity.getId());
@@ -239,47 +169,19 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     // mentions case
     ExoSocialActivity act = new ExoSocialActivityImpl();
     act.setTitle("hello @demo");
-    act.setUserId(maryIdentity.getId());
     activityManager.saveActivity(rootIdentity, act);
     tearDownActivityList.add(act);
     assertNotNull(act.getId());
     assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     
-    // demo post activity on space
-    Space space = getSpaceInstance(1);
-    Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
-    ExoSocialActivity spaceActivity = new ExoSocialActivityImpl();
-    spaceActivity.setTitle("space activity title");
-    spaceActivity.setUserId(demoIdentity.getId());
-    activityManager.saveActivity(spaceIdentity, spaceActivity);
-    tearDownActivityList.add(spaceActivity);
-    
-    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-    assertEquals(1, messages.size());
-    assertEquals(1, messages.iterator().next().getSendToUserIds().size());
-    
-    //add 2 more members in space
-    space.setMembers(new String[] {"mary", "john"});
-    spaceService.saveSpace(space, false);
-    ExoSocialActivity spaceActivity2 = new ExoSocialActivityImpl();
-    spaceActivity2.setTitle("space activity2 title");
-    spaceActivity2.setUserId(demoIdentity.getId());
-    activityManager.saveActivity(spaceIdentity, spaceActivity2);
-    tearDownActivityList.add(spaceActivity2);
-    
-    messages = Utils.getSocialEmailStorage().emails();
-    assertEquals(1, messages.size());
-    assertEquals(3, messages.iterator().next().getSendToUserIds().size());
-    
-    spaceService.deleteSpace(space);
+    // user post activity on space
   }
   
-  public void testLikeActivity() throws Exception {
+  public void TestLikeActivity() throws Exception {
 
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("title ");
-    activity.setUserId(demoIdentity.getId());
     activityManager.saveActivity(rootIdentity, activity);
     tearDownActivityList.add(activity);
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
@@ -300,7 +202,7 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     relationshipManager.unregisterListener(relationshipNotifiction);
   }
   
-  public void testInvitedToJoinSpace() throws Exception {
+  public void TestInvitedToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
     Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
@@ -319,7 +221,7 @@ public String buildDigestMessageInfo(List<NotificationMessage> messages) {
     spaceService.deleteSpace(space);
   }
   
-  public void testBuildDigestMessage() throws Exception {
+  public void TestBuildDigestMessage() throws Exception {
     {
       //ActivityPostProvider
       ExoSocialActivity activity1 = new ExoSocialActivityImpl();

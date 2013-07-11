@@ -60,7 +60,6 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity activity = ctx.value(ACTIVITY);
       
       return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
-             .setFrom(Utils.getUserId(activity.getPosterId()))
              .setSendToUserIds(Arrays.asList(activity.getMentionedIds()))
              .addOwnerParameter("activityId", activity.getId());
     }
@@ -83,7 +82,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       ExoSocialActivity comment = ctx.value(ACTIVITY);
       
       //
-      return NotificationMessage.getInstance().setFrom(Utils.getUserId(comment.getUserId()))
+      return NotificationMessage.getInstance()
              .setSendToUserIds(Utils.getDestinataires(comment))
              .addOwnerParameter("activityId", comment.getId())
              .setProviderType(PROVIDER_TYPE);
@@ -118,7 +117,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       try {
         ExoSocialActivity activity = ctx.value(ACTIVITY);
         
-        return NotificationMessage.getInstance().setFrom(Utils.getUserId(activity.getPosterId()))
+        return NotificationMessage.getInstance()
             .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
             .addOwnerParameter("activityId", activity.getId())
             .setProviderType(PROVIDER_TYPE);
@@ -157,8 +156,8 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
     public NotificationMessage execute(NotificationContext ctx) {
       
       ExoSocialActivity activity = ctx.value(ACTIVITY);
-      String[] likersId = activity.getLikeIdentityIds();
-      return NotificationMessage.getInstance().setFrom(Utils.getUserId(likersId[likersId.length-1]))
+
+      return NotificationMessage.getInstance()
              .setSendToUserIds(Utils.toListUserIds(activity.getPosterId()))
              .addOwnerParameter("activityId", activity.getId())
              .setProviderType(PROVIDER_TYPE);
@@ -193,7 +192,6 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         
         
         return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
-                                  .setFrom(Utils.getUserId(activity.getPosterId()))
                                   .addOwnerParameter("activityId", activity.getId())
                                   .setSendToUserIds(Utils.getDestinataires(activity, space));
       } catch (Exception e) {

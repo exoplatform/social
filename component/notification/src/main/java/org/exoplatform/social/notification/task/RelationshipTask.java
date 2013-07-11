@@ -55,7 +55,6 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       List<String> allUsers = new ArrayList<String>();
       
       message.setProviderType(PROVIDER_TYPE)
-             .setFrom(profile.getId())
              .setSendToUserIds(allUsers);
       
       return message;
@@ -83,7 +82,6 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       Relationship relation = ctx.value(RELATIONSHIP);
       
       message.setProviderType(PROVIDER_TYPE)
-             .setFrom(relation.getSender().getRemoteId())
              .setSendToUserIds(Arrays.asList(relation.getReceiver().getRemoteId()))
              .addOwnerParameter("relationShipId", relation.getId());
       
