@@ -47,5 +47,13 @@
     <type>org.exoplatform.commons.notification.impl.TemplateGeneratorImpl</type>
   </component>
   
-
+    <external-component-plugins>
+    <target-component>org.exoplatform.social.core.manager.ActivityManager</target-component>
+    <component-plugin>
+      <name>ActivityNotificationImpl</name>
+      <set-method>addActivityEventListener</set-method>
+      <type>org.exoplatform.social.notification.impl.ActivityNotificationImpl</type>
+    </component-plugin>
+  </external-component-plugins>
+  
 </configuration>
