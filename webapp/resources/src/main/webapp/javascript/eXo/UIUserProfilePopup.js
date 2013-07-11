@@ -346,7 +346,7 @@
                       
 							        if (json.activityTitle) {
 								        var blockquote = $("<blockquote/>", {
-								           "text" : stripString(json.activityTitle)
+								           "html" :json.activityTitle
 								        });
 							        }
 							        
@@ -369,25 +369,7 @@
 							        tiptip_content.html(popupContentContainer.html());
 							    }
 							    
-							    function stripString(activityTitle) {
-							      var MAX_CHAR = 100;
-							      var DOT_DOT_DOT = "...";
 
-							      if ( activityTitle.match(/<(\w+)((?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/) ) {
-                      activityTitle=activityTitle.replace(/<br>/gi, "\n");
-                      activityTitle=activityTitle.replace(/<p.*>/gi, "\n");
-                      activityTitle=activityTitle.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ");
-                      activityTitle=activityTitle.replace(/<(?:.|\s)*?>/g, "");
-                    }
-
-							      //
-							      if (activityTitle.length < MAX_CHAR) {
-							        return activityTitle;
-							      }
-							      
-							      //
-							      return activityTitle.substring(0, MAX_CHAR) + DOT_DOT_DOT;
-							    };
 							    
 							    function takeAction(el) {
 							        var dataAction = $(el).attr('data-action');
