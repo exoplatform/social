@@ -18,10 +18,12 @@ package org.exoplatform.social.notification.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
@@ -103,7 +105,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     try {
       switch (type) {
         case ActivityMentionProvider: {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
 
@@ -119,7 +121,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ActivityCommentProvider: {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           ExoSocialActivity parentActivity = activityManager.getParentActivity(activity);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
@@ -137,9 +139,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ActivityLikeProvider: {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
-          Identity identity = identityManager.getIdentity(message.getFrom(), true);
+          Identity identity = identityManager.getIdentity(message.getValueOwnerParameter("likersId"), true);
           
           valueables.put("$USER", identity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
@@ -153,7 +155,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ActivityPostProvider: {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           
@@ -169,7 +171,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ActivityPostSpaceProvider: {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
@@ -187,7 +189,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case InvitedJoinSpace: {
-          String spaceId = message.getOwnerParameter().get(SPACE_ID);
+          String spaceId = message.getValueOwnerParameter(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
           
           valueables.put("$SPACE", space.getPrettyName());
@@ -202,9 +204,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case RequestJoinSpace: {
-          String spaceId = message.getOwnerParameter().get(SPACE_ID);
+          String spaceId = message.getValueOwnerParameter(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getValueOwnerParameter("request_from"), true);
           Profile userProfile = identity.getProfile();
           
           valueables.put("$SPACE", space.getPrettyName());
@@ -223,15 +225,17 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case ReceiceConnectionRequest: {
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getFrom(), true);
+          String sender = message.getValueOwnerParameter("sender");
+          String toUser = message.getSendToUserIds().iterator().next();
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
           Profile userProfile = identity.getProfile();
           
           valueables.put("$USER", userProfile.getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
           valueables.put("$AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-          valueables.put("$ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)));
-          valueables.put("$REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(message.getFrom(), message.getSendToUserIds().get(0)));
+          valueables.put("$ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
+          valueables.put("$REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
 
           messageInfo.setSubject(subject).setBody(body);
@@ -253,15 +257,15 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
   }
 
   public String getActivityId(NotificationMessage message) {
-    return message.getOwnerParameter().get(ACTIVITY_ID);
+    return message.getValueOwnerParameter(ACTIVITY_ID);
   }
 
   public String getSpaceId(NotificationMessage message) {
-    return message.getOwnerParameter().get(SPACE_ID);
+    return message.getValueOwnerParameter(SPACE_ID);
   }
 
   public String getIdentityId(NotificationMessage message) {
-    return message.getOwnerParameter().get(IDENTITY_ID);
+    return message.getValueOwnerParameter(IDENTITY_ID);
   }
 
   @Override
@@ -287,7 +291,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       case ActivityMentionProvider: {
         Map<String, String> valueables = new HashMap<String, String>();
         for (NotificationMessage message : messages) {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
 
@@ -302,35 +306,20 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       }
       case ActivityCommentProvider: {
         for (NotificationMessage message : messages) {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           ExoSocialActivity parentActivity = activityManager.getParentActivity(activity);
-          String parentActivityId = parentActivity.getId();
-          if (map.containsKey(parentActivityId)) {
-            List<String> values = map.get(parentActivityId);
-            values.add(message.getFrom());
-            map.put(parentActivityId, values);
-          } else {
-            List<String> values = new ArrayList<String>();
-            values.add(message.getFrom());
-            map.put(activityId, values);
-          }
+          //
+          processInforSendTo(map, parentActivity.getId(), message.getValueOwnerParameter("poster"));
         }
         sb.append(getMessageByIds(map, providerData, language));
         break;
       }
       case ActivityLikeProvider: {
         for (NotificationMessage message : messages) {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
-          if (map.containsKey(activityId)) {
-            List<String> values = map.get(activityId);
-            values.add(message.getFrom());
-            map.put(activityId, values);
-          } else {
-            List<String> values = new ArrayList<String>();
-            values.add(message.getFrom());
-            map.put(activityId, values);
-          }
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
+          //
+          processInforSendTo(map, activityId, message.getValueOwnerParameter("likersId"));
         }
         sb.append(getMessageByIds(map, providerData, language));
         break;
@@ -338,7 +327,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       case ActivityPostProvider: {
         Map<String, String> valueables = new HashMap<String, String>();
         for (NotificationMessage message : messages) {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           
@@ -357,7 +346,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       case ActivityPostSpaceProvider: {
         Map<String, String> valueables = new HashMap<String, String>();
         for (NotificationMessage message : messages) {
-          String activityId = message.getOwnerParameter().get(ACTIVITY_ID);
+          String activityId = message.getValueOwnerParameter(ACTIVITY_ID);
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
@@ -382,7 +371,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         StringBuilder value = new StringBuilder();
 
         for (int i = 0; i < count && i < 3; i++) {
-          String spaceId = messages.get(i).getOwnerParameter().get(SPACE_ID);
+          String spaceId = messages.get(i).getValueOwnerParameter(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
           key = keys[i];
           value.append(space.getPrettyName());
@@ -401,16 +390,10 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       }
       case RequestJoinSpace: {
         for (NotificationMessage message : messages) {
-          String spaceId = messages.get(0).getOwnerParameter().get(SPACE_ID);
-          if (map.containsKey(spaceId)) {
-            List<String> values = map.get(spaceId);
-            values.add(message.getFrom());
-            map.put(spaceId, values);
-          } else {
-            List<String> values = new ArrayList<String>();
-            values.add(message.getFrom());
-            map.put(spaceId, values);
-          }
+          String spaceId = message.getValueOwnerParameter(SPACE_ID);
+          String fromUser = message.getValueOwnerParameter("request_from");
+          //
+          processInforSendTo(map, spaceId, fromUser);
         }
         sb.append(getMessageByIds(map, providerData, language));
         break;
@@ -427,7 +410,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         StringBuilder value = new StringBuilder();
 
         for (int i = 0; i < count && i < 3; i++) {
-          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(i).getFrom(), true);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(i).getValueOwnerParameter("sender"), true);
           Profile userProfile = identity.getProfile();
           key = keys[i];
           value.append(userProfile.getFullName());
@@ -450,6 +433,15 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     LOG.info("End build DigestMessageInfo by Provider " + providerId + (System.currentTimeMillis() - startTime) + " ms.");
     
     return sb.toString();
+  }
+
+  private void processInforSendTo(Map<String, List<String>> map, String key, String value) {
+    Set<String> set = new HashSet<String>();
+    if (map.containsKey(key)) {
+      set.addAll(map.get(key));
+    }
+    set.add(value);
+    map.put(key, new ArrayList<String>(set));
   }
 
   private String getMessageByIds(Map<String, List<String>> map, ProviderData providerData, String language) {

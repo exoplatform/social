@@ -23,10 +23,10 @@ import java.util.List;
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManagerImpl;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -44,6 +44,7 @@ import org.exoplatform.social.notification.provider.SocialProviderImpl;
 public class SocialNotificationTestCase extends AbstractCoreTest {
   private TemplateGenerator templateGenerator;
   private IdentityStorage identityStorage;
+  private IdentityManager identityManager;
   private ActivityManagerImpl activityManager;
   private List<ExoSocialActivity> tearDownActivityList;
   private List<Space>  tearDownSpaceList;
@@ -55,31 +56,31 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   private Identity maryIdentity;
   private Identity demoIdentity;
   
-  private SocialProviderImpl socialProviderImpl;
+  private SocialProviderImpl socialProviderImpl = null;
   
   public static final String ACTIVITY_ID = "activityId";
 
   public static final String SPACE_ID    = "spaceId";
 
   public static final String IDENTITY_ID = "identityId";
-
   @Override
   protected void setUp() throws Exception {
     super.setUp();
 
     templateGenerator = Utils.getService(TemplateGenerator.class);
     identityStorage = Utils.getService(IdentityStorage.class);
+    identityManager = Utils.getService(IdentityManager.class);
     activityManager = Utils.getService(ActivityManagerImpl.class);
     spaceService = Utils.getService(SpaceServiceImpl.class);
-    relationshipManager = (RelationshipManagerImpl) getContainer().getComponentInstanceOfType(RelationshipManagerImpl.class);
+    relationshipManager = Utils.getService(RelationshipManagerImpl.class);
     
     assertNotNull(identityStorage);
     assertNotNull(activityManager);
 
-    rootIdentity = new Identity("organization", "root");
-    johnIdentity = new Identity("organization", "john");
-    maryIdentity = new Identity("organization", "mary");
-    demoIdentity = new Identity("organization", "demo");
+    rootIdentity = identityManager.getOrCreateIdentity("organization", "root", true);
+    johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
+    maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
+    demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
 
     identityStorage.saveIdentity(rootIdentity);
     identityStorage.saveIdentity(johnIdentity);
@@ -95,9 +96,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     tearDownSpaceList = new ArrayList<Space>();
     
     System.setProperty("gatein.email.domain.url", "localhost");
-    
+
     if(socialProviderImpl == null) {
-      IdentityManager identityManager = CommonsUtils.getService(IdentityManager.class);
       socialProviderImpl = DefaultDataTest.getSocialProviderImpl(activityManager, identityManager, spaceService, templateGenerator);
     }
     
@@ -132,7 +132,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     super.tearDown();
   }
   
-  public void TestSaveComment() throws Exception {
+  public void testSaveComment() throws Exception {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity title");
     activity.setUserId(demoIdentity.getId());
@@ -148,8 +148,9 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(2, messages.size());
     NotificationMessage message = messages.iterator().next();
     MessageInfo info = buildMessageInfo(message.setTo("demo"));
-    assertEquals("$space-name " + demoIdentity.getProfile().getFullName(), info.getSubject());
-    assertEquals("$space-name " + activity.getTitle(), info.getBody());
+
+    assertEquals("$SPACE " + demoIdentity.getProfile().getFullName(), info.getSubject());
+    assertEquals(activity.getTitle(), info.getBody());
   }
 
   public void testSaveActivity() throws Exception {
@@ -180,7 +181,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     
     // demo post activity on space
     Space space = getSpaceInstance(1);
-    Identity spaceIdentity = CommonsUtils.getService(IdentityManager.class).getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
+    Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), false);
     ExoSocialActivity spaceActivity = new ExoSocialActivityImpl();
     spaceActivity.setTitle("space activity title");
     spaceActivity.setUserId(demoIdentity.getId());
@@ -228,19 +229,20 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     relationshipManager.addListenerPlugin(relationshipNotifiction);
     
     relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
-    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     
     relationshipManager.unregisterListener(relationshipNotifiction);
   }
   
-  public void TestInvitedToJoinSpace() throws Exception {
+  public void testInvitedToJoinSpace() throws Exception {
     Space space = getSpaceInstance(1);
     spaceService.addInvitedUser(space, maryIdentity.getRemoteId());
     Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-    assertEquals(1, messages.size());
+    assertEquals(2, messages.size());
     NotificationMessage message = messages.iterator().next();
     MessageInfo info = buildMessageInfo(message.setTo(maryIdentity.getRemoteId()));
-    assertEquals(space.getPrettyName() + " $other_user_name", info.getSubject());
+
+    assertEquals(space.getPrettyName() + " $USER", info.getSubject());
     spaceService.deleteSpace(space);
   }
   
@@ -248,11 +250,11 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     Space space = getSpaceInstance(1);
     spaceService.addPendingUser(space, maryIdentity.getRemoteId());
     
-    assertEquals(1, Utils.getSocialEmailStorage().emails().size());
+    assertEquals(2, Utils.getSocialEmailStorage().emails().size());
     spaceService.deleteSpace(space);
   }
   
-  public void TestBuildDigestMessage() throws Exception {
+  public void testBuildDigestMessage() throws Exception {
     {
       //ActivityPostProvider
       ExoSocialActivity activity1 = new ExoSocialActivityImpl();
@@ -271,10 +273,13 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       assertEquals(2, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      list.addAll(messages);
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(rootIdentity.getRemoteId()));
+      }
       String digest = buildDigestMessageInfo(list);
-      //identity.getProfile().getFullName() is not initialized, this value will return an empty string
-      assertEquals(" activity1 title 1</br> activity2 title 2</br>", digest);
+
+      assertEquals("Demo gtn activity1 title 1 $SPACE</br>Demo gtn activity1 title 1 " +
+      		"$SPACE</br>Mary Kelly activity2 title 2 $SPACE</br>Mary Kelly activity2 title 2 $SPACE</br>", digest);
     }
     
     {
@@ -285,14 +290,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       relationshipManager.inviteToConnect(rootIdentity, demoIdentity);
       relationshipManager.inviteToConnect(johnIdentity, demoIdentity);
       relationshipManager.inviteToConnect(maryIdentity, demoIdentity);
-      
       Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-      assertEquals(3, messages.size());
+      //TODO review
+      assertEquals(6, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      list.addAll(messages);
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(demoIdentity.getRemoteId()));
+      }
       String digest = buildDigestMessageInfo(list);
-      //identity.getProfile().getFullName() is not initialized, this value will return an empty string
-      assertEquals("   $activity $space-name</br>", digest);
+
+      assertEquals("$USER $ACTIVITY $SPACE</br>", digest);
       
       relationshipManager.unregisterListener(relationshipNotifiction);
     }
@@ -307,13 +314,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       spaceService.addInvitedUser(space3, maryIdentity.getRemoteId());
       Space space4 = getSpaceInstance(4);
       spaceService.addInvitedUser(space4, maryIdentity.getRemoteId());
-      
+      //TODO review
       Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-      assertEquals(4, messages.size());
+      assertEquals(8, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      list.addAll(messages);
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(maryIdentity.getRemoteId()));
+      }
       String digest = buildDigestMessageInfo(list);
-      assertEquals("my_space_1 my_space_2 my_space_3 1</br>", digest);
+      assertEquals("$USER $ACTIVITY $SPACE</br>", digest);
       
       spaceService.deleteSpace(space1);
       spaceService.deleteSpace(space2);
@@ -327,14 +336,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       spaceService.addPendingUser(space, maryIdentity.getRemoteId());
       spaceService.addPendingUser(space, johnIdentity.getRemoteId());
       spaceService.addPendingUser(space, demoIdentity.getRemoteId());
-      
+      //TODO
       Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-      assertEquals(3, messages.size());
+      assertEquals(6, messages.size());
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
-      list.addAll(messages);
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(rootIdentity.getRemoteId()));
+      }
       String digest = buildDigestMessageInfo(list);
-      //identity.getProfile().getFullName() is not initialized, this value will return an empty string
-      assertEquals("   $activity my_space_1</br>", digest);
+
+      assertEquals("$USER $ACTIVITY my_space_1</br>", digest);
       
       spaceService.deleteSpace(space);
     }
@@ -353,7 +364,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     space.setPriority(Space.INTERMEDIATE_PRIORITY);
     space.setGroupId("/space/space" + number);
     space.setAvatarUrl("my-avatar-url");
-    String[] managers = new String[] {"root"};
+    String[] managers = new String[] {rootIdentity.getRemoteId()};
     String[] members = new String[] {};
     String[] invitedUsers = new String[] {};
     String[] pendingUsers = new String[] {};

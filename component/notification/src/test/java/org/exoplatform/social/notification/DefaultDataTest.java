@@ -17,6 +17,7 @@
 package org.exoplatform.social.notification;
 
 import java.util.List;
+import java.util.Random;
 
 import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.plugin.MappingKey;
@@ -66,7 +67,7 @@ public class DefaultDataTest {
     
 
     InitParams params = new InitParams();
-    
+    Random random = new Random(System.currentTimeMillis());
     for(String providerId : providerImpl.getSupportType()) {
       
       MappingKey mappingKey = new MappingKey();
@@ -79,7 +80,7 @@ public class DefaultDataTest {
                 .addKeyMapping(MappingKey.DIGEST_THREE_KEY, "Notification.common.digestthree");
       
       ObjectParameter parameter = new ObjectParameter();
-      parameter.setName(parameter.getClass().getName());
+      parameter.setName("pr" + random.nextLong());
       parameter.setObject(mappingKey);
       parameter.setDescription("");
       params.addParam(parameter);

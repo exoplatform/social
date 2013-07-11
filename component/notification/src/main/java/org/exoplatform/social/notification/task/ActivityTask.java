@@ -61,6 +61,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       
       return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
              .setSendToUserIds(Arrays.asList(activity.getMentionedIds()))
+             .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
              .addOwnerParameter("activityId", activity.getId());
     }
 
@@ -85,6 +86,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
       return NotificationMessage.getInstance()
              .setSendToUserIds(Utils.getDestinataires(comment))
              .addOwnerParameter("activityId", comment.getId())
+             .addOwnerParameter("poster", Utils.getUserId(comment.getUserId()))
              .setProviderType(PROVIDER_TYPE);
     }
 
@@ -118,7 +120,8 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         ExoSocialActivity activity = ctx.value(ACTIVITY);
         
         return NotificationMessage.getInstance()
-            .setSendToUserIds(Utils.toListUserIds(activity.getStreamOwner()))
+            .addSendToUserId(activity.getStreamOwner())
+            .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
             .addOwnerParameter("activityId", activity.getId())
             .setProviderType(PROVIDER_TYPE);
       } catch (Exception e) {
@@ -150,16 +153,18 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
    * Someone likes an activity on the User's stream.
    */
   public static ActivityTask LIKE = new ActivityTask() {
-    private final String PROVIDER_TYPE = "LikeActivityProvider";
+    private final String PROVIDER_TYPE = "ActivityLikeProvider";
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       
       ExoSocialActivity activity = ctx.value(ACTIVITY);
-
+      Identity id = Utils.getIdentityManager().getIdentity(activity.getPosterId(), false);
+      String[] likersId = activity.getLikeIdentityIds();
       return NotificationMessage.getInstance()
-             .setSendToUserIds(Utils.toListUserIds(activity.getPosterId()))
+             .addSendToUserId(id.getRemoteId())
              .addOwnerParameter("activityId", activity.getId())
+             .addOwnerParameter("likersId", Utils.getUserId(likersId[likersId.length-1]))
              .setProviderType(PROVIDER_TYPE);
     }
     
@@ -192,6 +197,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         
         
         return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
+                                  .setFrom(Utils.getUserId(activity.getPosterId()))
                                   .addOwnerParameter("activityId", activity.getId())
                                   .setSendToUserIds(Utils.getDestinataires(activity, space));
       } catch (Exception e) {

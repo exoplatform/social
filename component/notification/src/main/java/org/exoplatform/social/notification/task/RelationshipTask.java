@@ -17,7 +17,6 @@
 package org.exoplatform.social.notification.task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
@@ -82,7 +81,8 @@ public abstract class RelationshipTask implements NotificationTask<NotificationC
       Relationship relation = ctx.value(RELATIONSHIP);
       
       message.setProviderType(PROVIDER_TYPE)
-             .setSendToUserIds(Arrays.asList(relation.getReceiver().getRemoteId()))
+             .addSendToUserId(relation.getReceiver().getRemoteId())
+             .addOwnerParameter("sender", relation.getSender().getRemoteId())
              .addOwnerParameter("relationShipId", relation.getId());
       
       return message;

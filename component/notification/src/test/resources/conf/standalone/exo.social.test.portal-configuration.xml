@@ -165,6 +165,7 @@
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Root</string></field>
                     <field  name="lastName"><string>Root</string></field>
+                    <field  name="displayName"><string>Root Root</string></field>
                     <field  name="email"><string>root@localhost</string></field>
                     <field  name="groups">
                       <string>manager:/platform/administrators,member:/platform/users</string>
@@ -200,6 +201,7 @@
                     <field  name="userName"><string>demo</string></field>
                     <field  name="password"><string>gtn</string></field>
                     <field  name="firstName"><string>Demo</string></field>
+                    <field  name="displayName"><string>Demo Demo</string></field>
                     <field  name="lastName"><string>gtn</string></field>
                     <field  name="email"><string>demo@localhost</string></field>
                     <field  name="groups">
