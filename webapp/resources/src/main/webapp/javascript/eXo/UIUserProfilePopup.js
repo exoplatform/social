@@ -318,31 +318,35 @@
 							        var img = $("<img/>",{
 							           "src" : json.avatarURL
 							        });
+							        var aAvatar = $("<a/>", {
+				                         "target" : "_parent",
+				                         "href" : json.profileUrl
+				                    });
 							        
-                      tdAvatar.append(img);
+							        tdAvatar.append(aAvatar.append(img));
                       
 							        var tdProfile = $("<td/>");
 							        var aProfile = $("<a/>", {
-                         "target" : "_parent",
-                         "href" : json.profileUrl,
-                         "text" : json.fullName
-                      });
+							        	"target" : "_parent",
+							        	"href" : json.profileUrl,
+							        	"text" : json.fullName
+							        });
 
-                      tdProfile.append(aProfile);
+							        tdProfile.append(aProfile);
 
-                      if (json.position) {
-								        var divPosition = $("<div/>", {
-								           "font-weight" : "normal",
-								           "text" : json.position
-								        });
-								        tdProfile.append(divPosition);
+							        if (json.position) {
+							        	var divPosition = $("<div/>", {
+							        		"font-weight" : "normal",
+							        		"text" : json.position
+							        	});
+							        	tdProfile.append(divPosition);
 							        }
                       
-                      tr.append(tdAvatar).append(tdProfile);
-                      
-                      tbody.append(tr);
-                      
-                      popupContent.append(tbody);
+							        tr.append(tdAvatar).append(tdProfile);
+
+							        tbody.append(tr);
+
+							        popupContent.append(tbody);
                       
 							        if (json.activityTitle) {
 								        var blockquote = $("<blockquote/>", {
