@@ -366,12 +366,6 @@
       </component-plugin>
 
       <component-plugin>
-        <name>SpaceActivityPublisher</name>
-        <set-method>addSpaceListener</set-method>
-        <type>org.exoplatform.social.core.application.SpaceActivityPublisher</type>
-      </component-plugin>
-
-      <component-plugin>
         <name>portlets.prefs.required</name>
         <set-method>setPortletsPrefsRequired</set-method>
         <type>org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin</type>
@@ -441,24 +435,6 @@
           <value>1</value>
         </value-param>
       </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.space.spi.SpaceService</target-component>
-    <component-plugin>
-      <name>SpaceNotificationImpl</name>
-      <set-method>addSpaceListener</set-method>
-      <type>org.exoplatform.social.notification.impl.SpaceNotificationImpl</type>
-    </component-plugin>
-  </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.social.core.manager.IdentityManager</target-component>
-    <component-plugin>
-      <name>ProfileUpdatesPublisher</name>
-      <set-method>addProfileListener</set-method>
-      <type>org.exoplatform.social.core.application.ProfileUpdatesPublisher</type>
     </component-plugin>
   </external-component-plugins>
 

@@ -197,7 +197,7 @@ public abstract class ActivityTask implements NotificationTask<NotificationConte
         
         
         return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
-                                  .setFrom(Utils.getUserId(activity.getPosterId()))
+                                  .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
                                   .addOwnerParameter("activityId", activity.getId())
                                   .setSendToUserIds(Utils.getDestinataires(activity, space));
       } catch (Exception e) {
