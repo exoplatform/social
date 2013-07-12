@@ -1,0 +1,15 @@
+<%
+%>
+
+<div style="">
+	<strong><%=_ctx.appRes("Notification.title.InvitedJoinSpace")%></strong><br/>
+	
+	<%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,<br/>
+	<img src="$SPACE_AVATAR" alt="$SPACE" />
+	<%=_ctx.appRes("Notification.message.InvitedJoinSpace", SPACE)%><br/>
+	
+	<a target="_blank" href="$ACCEPT_SPACE_INVITATION_ACTION_URL"><%=_ctx.appRes("Accept")%></a> | <a target="_blank" href="$REFUSE_SPACE_INVITATION_ACTION_URL"><%=_ctx.appRes("Ignore")%></a>
+	<br/>
+	<br/>
+	<%=_ctx.appRes("Notification.label.footer", USER_NOTIFICATION_SETTINGS_URL)%><br/>
+</div>

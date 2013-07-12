@@ -338,8 +338,6 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           sb.append(digester).append("</br>");
 
           valueables.clear();
-          
-          sb.append(digester).append("</br>");
         }
         break;
       }
@@ -358,22 +356,24 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           sb.append(digester).append("</br>");
 
           valueables.clear();
-          
-          sb.append(digester).append("</br>");
         }
         break;
       }
       case InvitedJoinSpace: {
         Map<String, String> valueables = new HashMap<String, String>();
         int count = messages.size();
-        String[] keys = {"SPACE", "SPACE_LIST", "SPACE_3_SPACES"};
+        String[] keys = {"$SPACE", "$SPACE_LIST", "$LAST3_SPACES"};
         String key = "";
         StringBuilder value = new StringBuilder();
 
         for (int i = 0; i < count && i < 3; i++) {
           String spaceId = messages.get(i).getValueOwnerParameter(SPACE_ID);
           Space space = spaceService.getSpaceById(spaceId);
-          key = keys[i];
+          if (i > 1 && count == 3) {
+            key = keys[i - 1];
+          } else {
+            key = keys[i];
+          }
           value.append(space.getPrettyName());
           if (count > (i + 1) && i < 2) {
             value.append(", ");
@@ -405,14 +405,18 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       case ReceiceConnectionRequest: {
         Map<String, String> valueables = new HashMap<String, String>();
         int count = messages.size();
-        String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+        String[] keys = {"$USER", "$USER_LIST", "$LAST3_USERS"};
         String key = "";
         StringBuilder value = new StringBuilder();
 
         for (int i = 0; i < count && i < 3; i++) {
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(i).getValueOwnerParameter("sender"), true);
           Profile userProfile = identity.getProfile();
-          key = keys[i];
+          if (i > 1 && count == 3) {
+            key = keys[i - 1];
+          } else {
+            key = keys[i];
+          }
           value.append(userProfile.getFullName());
           if (count > (i + 1) && i < 2) {
             value.append(", ");
@@ -468,14 +472,18 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         valueables.put("$SPACE", space.getPrettyName());
       }
       
-      String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+      String[] keys = {"$USER", "$USER_LIST", "$LAST3_USERS"};
       String key = "";
       StringBuilder value = new StringBuilder();
       
       for (int i = 0; i < count && i <= 3; i++) {
         Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
         Profile userProfile = identity.getProfile();
-        key = keys[i];
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
         value.append(userProfile.getFullName());
         if (count > (i + 1) && i < 2) {
           value.append(", ");

@@ -262,8 +262,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       }
       String digest = buildDigestMessageInfo(list);
 
-      assertEquals("Demo gtn activity1 title 1 $SPACE</br>Demo gtn activity1 title 1 " +
-      		"$SPACE</br>Mary Kelly activity2 title 2 $SPACE</br>Mary Kelly activity2 title 2 $SPACE</br>", digest);
+      assertEquals("Demo gtn posted on your activity stream : activity1 title 1.</br>Mary Kelly posted on your activity stream : activity2 title 2.</br>", digest);
     }
     
     {
@@ -281,7 +280,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       }
       String digest = buildDigestMessageInfo(list);
 
-      assertEquals("$USER $ACTIVITY $SPACE</br>", digest);
+      assertEquals("You've received a connection request from Root Root, John Anthony, Mary Kelly.</br>", digest);
     }
     
     {
@@ -302,7 +301,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         list.add(message.setTo(maryIdentity.getRemoteId()));
       }
       String digest = buildDigestMessageInfo(list);
-      assertEquals("$USER $ACTIVITY $SPACE</br>", digest);
+      assertEquals("You have been asked to joing the following spaces: my_space_1, my_space_2, my_space_3 and 1 others.</br>", digest);
       
       spaceService.deleteSpace(space1);
       spaceService.deleteSpace(space2);
@@ -325,11 +324,51 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       }
       String digest = buildDigestMessageInfo(list);
 
-      assertEquals("$USER $ACTIVITY my_space_1</br>", digest);
+      assertEquals("The following users have asked to join the my_space_1 space: Demo gtn, John Anthony, Mary Kelly.</br>", digest);
       
       spaceService.deleteSpace(space);
     }
     
+    {
+      //ActivityMentionProvider
+      ExoSocialActivity act = new ExoSocialActivityImpl();
+      act.setTitle("hello @demo");
+      activityManager.saveActivity(rootIdentity, act);
+      tearDownActivityList.add(act);
+      ExoSocialActivity act1 = new ExoSocialActivityImpl();
+      act1.setTitle("hello @demo");
+      activityManager.saveActivity(rootIdentity, act1);
+      tearDownActivityList.add(act1);
+      ExoSocialActivity act2 = new ExoSocialActivityImpl();
+      act2.setTitle("hello @demo");
+      activityManager.saveActivity(rootIdentity, act2);
+      tearDownActivityList.add(act2);
+      ExoSocialActivity act3 = new ExoSocialActivityImpl();
+      act3.setTitle("hello @demo");
+      activityManager.saveActivity(rootIdentity, act3);
+      tearDownActivityList.add(act3);
+      ExoSocialActivity act4 = new ExoSocialActivityImpl();
+      act4.setTitle("hello @demo");
+      activityManager.saveActivity(rootIdentity, act4);
+      tearDownActivityList.add(act4);
+      
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(5, messages.size());
+      
+      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(demoIdentity.getRemoteId()));
+      }
+      String digest = buildDigestMessageInfo(list);
+
+      assertEquals("Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
+                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
+                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
+                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
+                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>"
+      		         , digest);
+      
+    }
   }
   
   private Space getSpaceInstance(int number) throws Exception {

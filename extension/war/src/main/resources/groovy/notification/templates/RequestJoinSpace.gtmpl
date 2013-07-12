@@ -1,0 +1,15 @@
+<%
+%>
+
+<div style="">
+	<strong><%=_ctx.appRes("Notification.title.RequestJoinSpace")%></strong><br/>
+	
+	<%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,<br/>
+	<img src="$AVATAR" alt="$USER"/>
+	<%=_ctx.appRes("Notification.message.RequestJoinSpace", USER, SPACE)%>
+	
+	<a target="_blank" href="$VALIDATE_SPACE_REQUEST_ACTION_URL"><%=_ctx.appRes("Validate")%></a> | <a target="_blank" href="$REFUSE_SPACE_REQUEST_ACTION_URL"><%=_ctx.appRes("Refuse")%></a>
+	<br/>
+	<br/>
+	<%=_ctx.appRes("Notification.label.footer", USER_NOTIFICATION_SETTINGS_URL)%><br/>
+</div>

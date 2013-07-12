@@ -72,12 +72,12 @@ public class DefaultDataTest {
       
       MappingKey mappingKey = new MappingKey();
       mappingKey.setProviderId(providerId);
-      mappingKey.addKeyMapping(MappingKey.SUBJECT_KEY, "Notification.common.subject")
-                .addKeyMapping(MappingKey.TEMPLATE_KEY, "Notification.common.template")
-                .addKeyMapping(MappingKey.DIGEST_KEY, "Notification.common.digest")
-                .addKeyMapping(MappingKey.DIGEST_ONE_KEY, "Notification.common.digestone")
-                .addKeyMapping(MappingKey.DIGEST_MORE_KEY, "Notification.common.digestmore")
-                .addKeyMapping(MappingKey.DIGEST_THREE_KEY, "Notification.common.digestthree");
+      mappingKey.addKeyMapping(MappingKey.SUBJECT_KEY, "Notification." + providerId + ".subject")
+                .addKeyMapping(MappingKey.TEMPLATE_KEY, "Notification." + providerId + ".template")
+                .addKeyMapping(MappingKey.DIGEST_KEY, "Notification." + providerId + ".digest")
+                .addKeyMapping(MappingKey.DIGEST_ONE_KEY, "Notification." + providerId + ".digestone")
+                .addKeyMapping(MappingKey.DIGEST_MORE_KEY, "Notification." + providerId + ".digestmore")
+                .addKeyMapping(MappingKey.DIGEST_THREE_KEY, "Notification." + providerId + ".digestthree");
       
       ObjectParameter parameter = new ObjectParameter();
       parameter.setName("pr" + random.nextLong());
