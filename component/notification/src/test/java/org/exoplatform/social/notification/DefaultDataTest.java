@@ -73,7 +73,7 @@ public class DefaultDataTest {
       MappingKey mappingKey = new MappingKey();
       mappingKey.setProviderId(providerId);
       mappingKey.addKeyMapping(MappingKey.SUBJECT_KEY, "Notification." + providerId + ".subject")
-                .addKeyMapping(MappingKey.TEMPLATE_KEY, "Notification." + providerId + ".template")
+                .addKeyMapping("template", "Notification." + providerId + ".template")
                 .addKeyMapping(MappingKey.DIGEST_KEY, "Notification." + providerId + ".digest")
                 .addKeyMapping(MappingKey.DIGEST_ONE_KEY, "Notification." + providerId + ".digestone")
                 .addKeyMapping(MappingKey.DIGEST_MORE_KEY, "Notification." + providerId + ".digestmore")

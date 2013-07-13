@@ -18,11 +18,15 @@ package org.exoplatform.social.notification.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
+import org.exoplatform.groovyscript.GroovyTemplate;
+import org.exoplatform.groovyscript.TemplateCompilationException;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -89,7 +93,6 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     if(socialProviderImpl == null) {
       socialProviderImpl = DefaultDataTest.getSocialProviderImpl(activityManager, identityManager, spaceService, templateGenerator);
     }
-    
   }
   
   public MessageInfo buildMessageInfo(NotificationMessage message) {
@@ -119,6 +122,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     identityManager.deleteIdentity(demoIdentity);
 
     super.tearDown();
+  }
+  
+  public void testGroovyTemplate() throws Exception {
+    String templateText ="ifhsdiofhds ifds ifh  $abcx <%  String s= \" cong chua nho\";%> $s;";
+    GroovyTemplate template = new GroovyTemplate(templateText);
+    Map<String, String> binding = new HashMap<String, String>();
+    binding.put("abcx", "the value of abcx ...");
+    String actual = template.render(binding);
+    assertNotNull(actual);
+    assertTrue(actual.indexOf("the value of abcx") > 0);
   }
   
   public void testSaveComment() throws Exception {
