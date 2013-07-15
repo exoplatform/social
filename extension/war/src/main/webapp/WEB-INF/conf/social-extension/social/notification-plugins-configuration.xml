@@ -80,6 +80,153 @@
   </external-component-plugins>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.notification.service.TemplateGenerator</target-component>
+    <component-plugin>
+      <name>template.providers</name>
+      <set-method>registerTemplateConfigurationPlugin</set-method>
+      <type>org.exoplatform.commons.api.notification.plugin.TemplateConfigurationPlugin</type>
+      <description>Initial template for providers.</description>
+      <init-params>
+        <object-param>
+          <name>template.ActivityMentionProvider</name>
+          <description>The template of ActivityMentionProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityMentionProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityMentionProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityCommentProvider</name>
+          <description>The template of ActivityCommentProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityCommentProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityCommentProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityLikeProvider</name>
+          <description>The template of ActivityLikeProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityLikeProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityLikeProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityPostProvider</name>
+          <description>The template of ActivityPostProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityPostProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ActivityPostSpaceProvider</name>
+          <description>The template of ActivityPostSpaceProvider</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ActivityPostSpaceProvider.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.NewUserJoinSocialIntranet</name>
+          <description>The template of NewUserJoinSocialIntranet</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/NewUserJoinSocialIntranet.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.ReceiceConnectionRequest</name>
+          <description>The template of ReceiceConnectionRequest</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/ReceiceConnectionRequest.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.InvitedJoinSpace</name>
+          <description>The template of InvitedJoinSpace</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/InvitedJoinSpace.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>template.RequestJoinSpace</name>
+          <description>The template of RequestJoinSpace</description>
+          <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
+            <field name="providerId">
+              <string>ActivityPostProvider</string>
+            </field>
+            <field name="localeResouceBundle">
+              <string>locale.notification.template.Notification</string>
+            </field>
+            <field name="localeResouceTemplate">
+              <string>war:/notification/templates/RequestJoinSpace.gtmpl</string>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <target-component>org.exoplatform.commons.api.notification.service.ProviderSettingService</target-component>
     <component-plugin>
       <name>active.providers</name>
