@@ -1444,40 +1444,4 @@ public class RelationshipManagerTest extends AbstractCoreTest {
     tearDownRelationshipList.add(ghostToJohnRelationship);
     tearDownRelationshipList.add(paulToDemoRelationship);
   }
-  
-  public void testGetOnlineRelationships() throws Exception {
-    Relationship ghostToMaryRelationship = relationshipManager.inviteToConnect(ghostIdentity, maryIdentity);
-    Relationship ghostToJohnRelationship = relationshipManager.inviteToConnect(ghostIdentity, johnIdentity);
-    
-    ProfileFilter filter = new ProfileFilter();
-    List<String> onlineRemoteIds = new ArrayList<String>();
-    onlineRemoteIds.add("mary");
-    onlineRemoteIds.add("demo");
-    onlineRemoteIds.add("root");
-    onlineRemoteIds.add("paul");
-    onlineRemoteIds.add("john");
-    filter.setOnlineRemoteIds(onlineRemoteIds);
-
-//    List<Identity> got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 5); 
-//
-//    assertEquals(5, got.size());
-//    
-//    {
-//      onlineRemoteIds = new ArrayList<String>();
-//      onlineRemoteIds.add("mary");
-//      onlineRemoteIds.add("demo");
-//      onlineRemoteIds.add("root");
-//      onlineRemoteIds.add("paul");
-//      filter.setOnlineRemoteIds(onlineRemoteIds);
-//      
-//      got = relationshipManager.getOnlineRelationships(ghostIdentity, filter, 0, 4);
-//      assertEquals(4, got.size());
-//      
-//      assertEquals("mary", got.get(0).getRemoteId());
-//    }
-    
-    tearDownRelationshipList.add(ghostToMaryRelationship);
-    tearDownRelationshipList.add(ghostToJohnRelationship);
-  }
-  
 }

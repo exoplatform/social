@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.chromattic.api.query.Query;
 import org.chromattic.api.query.QueryBuilder;
 import org.chromattic.api.query.QueryResult;
@@ -153,7 +154,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     if (identityIds != null && identityIds.length > 0) {
       for(String identityId : identityIds) {
         Identity identity = identityStorage.findIdentityById(identityId);
-        removeOwnerRefs(identity, activityEntity);
+        manageRefList(new UpdateContext(null, identity), activityEntity, ActivityRefType.MY_ACTIVITIES);
       }
     }
   }
@@ -232,13 +233,27 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       //
       ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
       
-      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.FEED);
-      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.MY_ACTIVITIES);
+      //manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.FEED);
+      boolean notDelete = ArrayUtils.contains(activity.getCommentedIds(), removedLike.getId());
       
+      notDelete |= hasMentioned(removedLike, activity);
+      
+      if (notDelete) return;
+      
+      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.MY_ACTIVITIES);
       
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to unLike Activity References");
     }
+  }
+  
+  private boolean hasMentioned(Identity removedLike, ExoSocialActivity activity) {
+    for(String id : activity.getMentionedIds()) {
+      if (id.indexOf(removedLike.getId()) > -1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

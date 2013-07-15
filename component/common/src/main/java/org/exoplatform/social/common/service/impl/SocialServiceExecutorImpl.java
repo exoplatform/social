@@ -27,6 +27,7 @@ import org.exoplatform.social.common.service.AsyncCallback;
 import org.exoplatform.social.common.service.AsyncProcessor;
 import org.exoplatform.social.common.service.LogWatchCallable;
 import org.exoplatform.social.common.service.ProcessContext;
+import org.exoplatform.social.common.service.Processor;
 import org.exoplatform.social.common.service.ServiceContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
 import org.exoplatform.social.common.service.SocialServiceExecutor;
@@ -52,8 +53,25 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
   }
 
   @Override
-  public ProcessContext execute(ServiceContext<ProcessContext> serviceContext, ProcessContext processorContext) {
-    return serviceContext.execute(processorContext);
+  public ProcessContext execute(ServiceContext<ProcessContext> serviceContext, ProcessContext processContext) {
+    processContext.getTraceElement().start();
+    try {
+      return serviceContext.execute(processContext);
+    } finally {
+      processContext.getTraceElement().end();
+    }
+    
+  }
+  
+  @Override
+  public ProcessContext execute(Processor processor, ProcessContext processContext) {
+    processContext.getTraceElement().start();
+    try {
+      return processor.process(processContext);
+    } finally {
+      processContext.getTraceElement().end();
+    }
+    
   }
 
   @Override
@@ -156,5 +174,7 @@ public class SocialServiceExecutorImpl implements SocialServiceExecutor {
     
     return processContext;
   }
+
+  
  
 }
