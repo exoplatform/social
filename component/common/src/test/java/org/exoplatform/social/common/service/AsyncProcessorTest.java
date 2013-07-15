@@ -47,7 +47,7 @@ public class AsyncProcessorTest extends TestSocialServiceContext {
     return new AsyncProcessor() {
 
       @Override
-      public ProcessContext process(ProcessContext processContext) throws Exception {
+      public ProcessContext process(ProcessContext processContext) {
         processContext.setProperty("result", "done");
         processContext.done(true);
         return processContext;
