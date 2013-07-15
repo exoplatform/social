@@ -46,6 +46,10 @@
     <key>org.exoplatform.commons.api.notification.service.TemplateGenerator</key>
     <type>org.exoplatform.social.notification.mock.MockTemplateGeneratorImpl</type>
   </component>
+  <component>
+    <key>org.exoplatform.commons.api.notification.service.ProviderSettingService</key>
+    <type>org.exoplatform.social.notification.mock.MockProviderSettingService</type>
+  </component>
   
   <component>
     <type>org.exoplatform.commons.notification.NotificationConfiguration</type>

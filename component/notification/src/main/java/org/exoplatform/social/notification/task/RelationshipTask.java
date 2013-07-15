@@ -22,11 +22,11 @@ import java.util.List;
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.relationship.model.Relationship;
 
-public abstract class RelationshipTask implements NotificationTask<NotificationContext> {
+public abstract class RelationshipTask extends AbstractNotificationTask<NotificationContext> {
   
   public final static ArgumentLiteral<Relationship> RELATIONSHIP = new ArgumentLiteral<Relationship>(Relationship.class, "relationship");
   

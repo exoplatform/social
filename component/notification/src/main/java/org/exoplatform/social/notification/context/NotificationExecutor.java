@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
@@ -29,10 +29,12 @@ import org.exoplatform.services.log.Log;
 public class NotificationExecutor {
   private static final Log LOG = ExoLogger.getLogger(NotificationExecutor.class);
   
-  public static NotificationMessage execute(NotificationContext ctx, NotificationTask<NotificationContext> task) {
+  public static NotificationMessage execute(NotificationContext ctx, AbstractNotificationTask<NotificationContext> task) {
     NotificationMessage got = null;
 
-    if (!task.isValid(ctx)) return got;
+    if (task.isSuperValid(ctx) == false || task.isValid(ctx) == false) {
+      return got;
+    }
     
     //
     task.start(ctx);
@@ -52,7 +54,7 @@ public class NotificationExecutor {
     return got;
   }
 
-  public static Collection<NotificationMessage> execute(NotificationContext ctx, NotificationTask<NotificationContext>... tasks) {
+  public static Collection<NotificationMessage> execute(NotificationContext ctx, AbstractNotificationTask<NotificationContext>... tasks) {
     Collection<NotificationMessage> gots = new ArrayList<NotificationMessage>();
 
     NotificationMessage got;

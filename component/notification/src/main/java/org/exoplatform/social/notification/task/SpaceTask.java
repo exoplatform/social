@@ -21,10 +21,10 @@ import java.util.Arrays;
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
 import org.exoplatform.social.core.space.model.Space;
 
-public abstract class SpaceTask implements NotificationTask<NotificationContext> {
+public abstract class SpaceTask extends AbstractNotificationTask<NotificationContext> {
   
   public final static ArgumentLiteral<Space> SPACE = new ArgumentLiteral<Space>(Space.class, "space");
   public final static ArgumentLiteral<String> REMOTE_ID = new ArgumentLiteral<String>(String.class, "remoteId");

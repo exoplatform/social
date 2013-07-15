@@ -19,10 +19,10 @@ package org.exoplatform.social.notification.task;
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.task.NotificationTask;
+import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
 import org.exoplatform.social.core.identity.model.Profile;
 
-public abstract class ProfileTask implements NotificationTask<NotificationContext> {
+public abstract class ProfileTask extends AbstractNotificationTask<NotificationContext> {
   
   public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
   
