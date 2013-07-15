@@ -152,7 +152,7 @@
           <description>The template of ActivityPostSpaceProvider</description>
           <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
             <field name="providerId">
-              <string>ActivityPostProvider</string>
+              <string>ActivityPostSpaceProvider</string>
             </field>
             <field name="localeResouceBundle">
               <string>locale.notification.template.Notification</string>
@@ -167,7 +167,7 @@
           <description>The template of NewUserJoinSocialIntranet</description>
           <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
             <field name="providerId">
-              <string>ActivityPostProvider</string>
+              <string>NewUserJoinSocialIntranet</string>
             </field>
             <field name="localeResouceBundle">
               <string>locale.notification.template.Notification</string>
@@ -182,7 +182,7 @@
           <description>The template of ReceiceConnectionRequest</description>
           <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
             <field name="providerId">
-              <string>ActivityPostProvider</string>
+              <string>ReceiceConnectionRequest</string>
             </field>
             <field name="localeResouceBundle">
               <string>locale.notification.template.Notification</string>
@@ -197,7 +197,7 @@
           <description>The template of InvitedJoinSpace</description>
           <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
             <field name="providerId">
-              <string>ActivityPostProvider</string>
+              <string>InvitedJoinSpace</string>
             </field>
             <field name="localeResouceBundle">
               <string>locale.notification.template.Notification</string>
@@ -212,7 +212,7 @@
           <description>The template of RequestJoinSpace</description>
           <object type="org.exoplatform.commons.api.notification.plugin.MappingKey">
             <field name="providerId">
-              <string>ActivityPostProvider</string>
+              <string>RequestJoinSpace</string>
             </field>
             <field name="localeResouceBundle">
               <string>locale.notification.template.Notification</string>

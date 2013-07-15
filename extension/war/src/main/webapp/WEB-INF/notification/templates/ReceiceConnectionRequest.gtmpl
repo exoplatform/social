@@ -8,7 +8,7 @@
 	<img src="$AVATAR" alt="$USER"/>
 	<%=_ctx.appRes("Notification.message.ReceiceConnectionRequest", USER)%>
 	
-	<a target="_blank" href="$ACCEPT_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Confirm")%></a> | <a target="_blank" href="$REFUSE_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Ignore")%></a>
+	<a target="_blank" href="$ACCEPT_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Confirm")%></a> | <a target="_blank" href="$REFUSE_CONNECTION_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Ignore")%></a>
 	<br/>
 	<br/>
 	<%=_ctx.appRes("Notification.label.footer", USER_NOTIFICATION_SETTINGS_URL)%><br/>

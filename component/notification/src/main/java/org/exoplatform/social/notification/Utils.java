@@ -61,26 +61,21 @@ public class Utils {
     return (id != null);
   }
   
-  public static List<String> getDestinataires(ExoSocialActivity comment) {
+  public static List<String> getDestinataires(String[] users, String poster) {
     List<String> destinataires = new ArrayList<String>();
-    ExoSocialActivity activity = getActivityManager().getParentActivity(comment);
-    String[] commenters = activity.getCommentedIds();
-    for (String commenter : commenters) {
-      if (destinataires.contains(commenter)) {
-        destinataires.add(commenter);
+    for (String user : users) {
+      user = user.split("@")[0];
+      String userName = getUserId(user);
+      if (! destinataires.contains(userName) && ! user.equals(poster)) {
+        destinataires.add(userName);
       }
-    }
-    Identity id = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, activity.getStreamOwner(), false);
-    if (id != null && destinataires.contains(id.getId())) {
-      destinataires.add(id.getId());
     }
     return destinataires;
   }
   
   public static List<String> getDestinataires(ExoSocialActivity activity, Space space) {
     List<String> destinataires = Arrays.asList(space.getMembers());
-    Identity id = getIdentityManager().getIdentity(activity.getPosterId(), true);
-    destinataires.remove(id.getRemoteId());
+    destinataires.remove(getUserId(activity.getPosterId()));
     return destinataires;
   }
   

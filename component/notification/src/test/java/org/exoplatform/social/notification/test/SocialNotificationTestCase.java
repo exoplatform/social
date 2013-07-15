@@ -26,7 +26,6 @@ import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.groovyscript.GroovyTemplate;
-import org.exoplatform.groovyscript.TemplateCompilationException;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -135,24 +134,57 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   }
   
   public void testSaveComment() throws Exception {
-    ExoSocialActivity activity = new ExoSocialActivityImpl();
-    activity.setTitle("activity title");
-    activity.setUserId(demoIdentity.getId());
-    activityManager.saveActivity(rootIdentity, activity);
-    tearDownActivityList.add(activity);
+    {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title");
+      activity.setUserId(demoIdentity.getId());
+      activityManager.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+      
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(1, messages.size());
+      
+      ExoSocialActivity comment = new ExoSocialActivityImpl();
+      comment.setTitle("comment title");
+      comment.setUserId(demoIdentity.getId());
+      activityManager.saveComment(activity, comment);
+      
+      messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(1, messages.size());
+      NotificationMessage message = messages.iterator().next();
+      MessageInfo info = buildMessageInfo(message.setTo("demo"));
+  
+      assertEquals(demoIdentity.getProfile().getFullName() + " commented one of your activities", info.getSubject());
+      assertEquals(activity.getTitle(), info.getBody());
+    }
     
-    ExoSocialActivity comment = new ExoSocialActivityImpl();
-    comment.setTitle("comment title");
-    comment.setUserId(demoIdentity.getId());
-    activityManager.saveComment(activity, comment);
-    
-    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-    assertEquals(2, messages.size());
-    NotificationMessage message = messages.iterator().next();
-    MessageInfo info = buildMessageInfo(message.setTo("demo"));
-
-    assertEquals("$SPACE " + demoIdentity.getProfile().getFullName(), info.getSubject());
-    assertEquals(activity.getTitle(), info.getBody());
+    {
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title");
+      activityManager.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+      
+      ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment1.setTitle("comment title 1");
+      comment1.setUserId(demoIdentity.getId());
+      activityManager.saveComment(activity, comment1);
+      
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(1, messages.size());
+      assertEquals(1, messages.iterator().next().getSendToUserIds().size());
+      assertEquals(rootIdentity.getId(), messages.iterator().next().getSendToUserIds().get(0));
+      
+      ExoSocialActivity comment2 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment2.setTitle("comment title 2");
+      comment2.setUserId(maryIdentity.getId());
+      activityManager.saveComment(activity, comment2);
+      
+      messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(1, messages.size());
+      assertEquals(2, messages.iterator().next().getSendToUserIds().size());
+    }
   }
 
   public void testSaveActivity() throws Exception {
@@ -239,7 +271,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     NotificationMessage message = messages.iterator().next();
     MessageInfo info = buildMessageInfo(message.setTo(maryIdentity.getRemoteId()));
 
-    assertEquals(space.getPrettyName() + " $USER", info.getSubject());
+    assertEquals("You've been invited to join "+ space.getPrettyName() + " space", info.getSubject());
     spaceService.deleteSpace(space);
   }
   
