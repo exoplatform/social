@@ -25,6 +25,9 @@ public interface SocialServiceExecutor {
 
   ProcessContext execute(ServiceContext<ProcessContext> serviceContext,
                            ProcessContext processContext);
+  
+  ProcessContext execute(Processor processor,
+                       ProcessContext processContext);
 
   void setExecutorService(ExecutorService executorService);
 

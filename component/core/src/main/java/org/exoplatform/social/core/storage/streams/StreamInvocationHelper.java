@@ -74,7 +74,7 @@ public class StreamInvocationHelper {
     try {
       beforeAsync();
       //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.updateStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.updateStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -82,15 +82,17 @@ public class StreamInvocationHelper {
     return processCtx;
   }
   
-  public static ProcessContext deleteComment(String[] mentioners, String[] commenters) {
+  //(parentActivity, mentioners, commenters);
+  public static ProcessContext deleteComment(ExoSocialActivity activity, String[] mentioners, String[] commenters) {
     //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.DELETE_COMMENT_PROCESS, ctx);
-    processCtx.mentioners(mentioners).commenters(commenters);
+    processCtx.activity(activity).mentioners(mentioners).commenters(commenters);
     
     try {
       beforeAsync();
       //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.deleteCommentStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteCommentStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -107,8 +109,9 @@ public class StreamInvocationHelper {
     
     try {
       beforeAsync();
-      //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+      //don't use asynchronous because there is problem to get SessionProvider on Ecms side
+      //org.exoplatform.services.cms.impl.Utils
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.unLikeStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -125,7 +128,7 @@ public class StreamInvocationHelper {
     try {
       beforeAsync();
       //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.deleteConnectStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.deleteConnectStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -176,7 +179,7 @@ public class StreamInvocationHelper {
     try {
       beforeAsync();
       //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.removeSpaceMemberStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.removeSpaceMemberStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
