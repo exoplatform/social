@@ -19,7 +19,6 @@ package org.exoplatform.social.core.manager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.PortalContainer;
@@ -32,8 +31,8 @@ import org.exoplatform.social.core.relationship.RelationshipListener;
 import org.exoplatform.social.core.relationship.RelationshipListenerPlugin;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.relationship.model.Relationship.Type;
-import org.exoplatform.social.core.storage.api.RelationshipStorage;
 import org.exoplatform.social.core.storage.RelationshipStorageException;
+import org.exoplatform.social.core.storage.api.RelationshipStorage;
 
 /**
  * The Class RelationshipManager implements RelationshipManager without caching.
@@ -560,8 +559,4 @@ public class RelationshipManagerImpl implements RelationshipManager {
                                           ConnectionFilterListAccess.Type.PROFILE_FILTER_OUTGOING);
   }
 
-  public Map<Identity, Integer> getSuggestions(Identity identity, int offset, int limit) {
-    return this.storage.getSuggestions(identity, offset, limit);
-  }
-  
 }
