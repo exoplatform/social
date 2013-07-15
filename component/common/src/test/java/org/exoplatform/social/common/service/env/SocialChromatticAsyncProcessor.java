@@ -36,11 +36,16 @@ public abstract class SocialChromatticAsyncProcessor implements AsyncProcessor {
     this.name = name;
   }
   
-  @Override
-  public ProcessContext process(ProcessContext processContext) throws Exception {
-    start(processContext);
+  public ProcessContext process(ProcessContext processContext) {
     //execute
-    processContext = execute(processContext);
+    start(processContext);
+    try {
+      processContext = execute(processContext);
+      
+    } catch (Exception e) {
+      processContext.setException(e);
+      return processContext;
+    }
     
     //end Session
     end(processContext);

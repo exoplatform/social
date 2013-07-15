@@ -712,10 +712,19 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         //
         List<String> commenters = new ArrayList<String>();
         activityEntityOfComment.setCommenters(processCommenters(activityEntityOfComment.getCommenters(), activityEntity.getPosterIdentity().getId(), commenters, false));
+        //
+        if (mustInjectStreams) {
+          ExoSocialActivity parentActivity = getActivity(activityEntityOfComment.getId());
+          StreamInvocationHelper.deleteComment(parentActivity, mentioners.toArray(new String[0]), commenters.toArray(new String[0]));
+        }
         
       } else {
         List<String> mentioners = new ArrayList<String>();
         activityEntity.setMentioners(processMentions(activityEntity.getMentioners(), activityEntity.getTitle(), mentioners, false));
+        //
+        if (mustInjectStreams) {
+          StreamInvocationHelper.deleteComment(activity, mentioners.toArray(new String[0]), null);
+        }
       }
       
       //create refs
@@ -751,9 +760,29 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
    * {@inheritDoc}
    */
   public void deleteComment(String activityId, String commentId) throws ActivityStorageException {
-
     deleteActivity(commentId);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  private ExoSocialActivity getActivityById(String activityId) throws ActivityStorageException {
 
+    try {
+
+      //
+      ActivityEntity activityEntity = _findById(ActivityEntity.class, activityId);
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+
+      //
+      activity.setId(activityEntity.getId());
+      //
+      return activity;
+
+    }
+    catch (NodeNotFoundException e) {
+      return null;
+    }
   }
 
   /**
@@ -2133,7 +2162,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
   private boolean matchActivityTypes(ExoSocialActivity a, String ...activityTypes) {
     if (activityTypes == null || activityTypes.length == 0) return true;
     
-    return ArrayUtils.contains(activityTypes, a.getTitleId());
+    return ArrayUtils.contains(activityTypes, a.getType());
         
   }
   

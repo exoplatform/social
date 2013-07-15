@@ -18,7 +18,7 @@ package org.exoplatform.social.common.service;
 
 public interface Processor {
 
-  ProcessContext process(ProcessContext processContext) throws Exception;
+  ProcessContext process(ProcessContext processContext);
   
   String getName();
   
