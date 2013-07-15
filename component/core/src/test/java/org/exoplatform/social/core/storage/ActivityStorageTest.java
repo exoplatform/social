@@ -2492,12 +2492,6 @@ public class ActivityStorageTest extends AbstractCoreTest {
     activity = activityStorage.getActivity(activity.getId());
     assertEquals(spaceIdentity.getId(), activity.getStreamId());
     
-    activity.setStreamOwner(demoIdentity.getRemoteId());
-    activityStorage.updateActivity(activity);
-    
-    activity = activityStorage.getActivity(activity.getId());
-    assertEquals(demoIdentity.getId(), activity.getStreamId());
-    
     spaceService.deleteSpace(space);
   }
   

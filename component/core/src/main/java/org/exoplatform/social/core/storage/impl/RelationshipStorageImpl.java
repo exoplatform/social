@@ -48,7 +48,6 @@ import org.exoplatform.social.core.storage.exception.NodeNotFoundException;
 import org.exoplatform.social.core.storage.query.JCRProperties;
 import org.exoplatform.social.core.storage.query.WhereExpression;
 import org.exoplatform.social.core.storage.streams.StreamInvocationHelper;
-import org.exoplatform.social.core.storage.thread.SocialExecutorService;
 
 /**
  * @author <a href="mailto:alain.defrance@exoplatform.com">Alain Defrance</a>
@@ -63,7 +62,6 @@ public class RelationshipStorageImpl extends AbstractStorage implements Relation
   private RelationshipStorage relationshipStorage;
   private CachedActivityStorage cachedActivityStorage;
   private Object lock = new Object();
-  private SocialExecutorService<String[]> executorService = new SocialExecutorService<String[]>(10);
   private CachedActivityStreamStorage streamStorage;
 
   public RelationshipStorageImpl(IdentityStorage identityStorage) {
