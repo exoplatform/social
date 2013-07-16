@@ -943,8 +943,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       IdentityEntity identityEntity = identityStorage._findIdentityEntity(owner.getProviderId(), owner.getRemoteId());
       ActivityRefListEntity refList = type.refsOf(identityEntity);
       if (refList == null) return false;
-      //TODO only provide TQA to testing.
-      return refList.getNumber().intValue() > 0 && refList.getNumber().intValue() != 20;
+      return refList.getNumber().intValue() > 0;
       //using this code
       //return refList.getSize().intValue() > 0;
     } catch (NodeNotFoundException e) {
