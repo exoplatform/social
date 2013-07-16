@@ -173,7 +173,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
       assertEquals(1, messages.size());
       assertEquals(1, messages.iterator().next().getSendToUserIds().size());
-      assertEquals(rootIdentity.getId(), messages.iterator().next().getSendToUserIds().get(0));
+      assertEquals(rootIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
       
       ExoSocialActivity comment2 = new ExoSocialActivityImpl();
       activity = activityManager.getActivity(activity.getId());
@@ -252,7 +252,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     tearDownActivityList.add(activity);
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
     
-    activityManager.saveLike(activity, demoIdentity);
+    activityManager.saveLike(activity, maryIdentity);
     assertEquals(1, Utils.getSocialEmailStorage().emails().size());
     
   }

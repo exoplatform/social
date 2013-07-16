@@ -7,7 +7,7 @@
 	<%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,<br/>
 	<img src="$AVATAR" alt="$USER"/>
 	<%=_ctx.appRes("Notification.message.NewUserJoinSocialIntranet", USER, PORTAL_NAME, USER)%>
-	
+	<br/>
 	<a target="_blank" href="$CONNECT_ACTION_URL"><%=_ctx.appRes("Notification.label.ConnectNow")%></a>
 	<br/>
 	<br/>

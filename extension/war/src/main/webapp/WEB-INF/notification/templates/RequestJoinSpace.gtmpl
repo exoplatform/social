@@ -7,7 +7,7 @@
 	<%=_ctx.appRes("Notification.label.SayHello")%> $FIRSTNAME,<br/>
 	<img src="$AVATAR" alt="$USER"/>
 	<%=_ctx.appRes("Notification.message.RequestJoinSpace", USER, SPACE)%>
-	
+	<br/>
 	<a target="_blank" href="$VALIDATE_SPACE_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Validate")%></a> | <a target="_blank" href="$REFUSE_SPACE_REQUEST_ACTION_URL"><%=_ctx.appRes("Notification.label.Refuse")%></a>
 	<br/>
 	<br/>
