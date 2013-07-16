@@ -22,6 +22,8 @@ public static final String RESOURCE_URL = "social/notifications";
   
   public static final String VALIDATE_REQUEST_JOIN_SPACE = RESOURCE_URL + "/validateRequestToJoinSpace";
   
+  public static final String REFUSE_SPACE_REQUEST_ACTION = RESOURCE_URL + "/refuseRequestToJoinSpace";
+  
   public static final String REPLY_ACTIVITY = RESOURCE_URL + "/replyActivity";
   
   public static final String VIEW_FULL_DISCUSSION = RESOURCE_URL + "/viewFullDiscussion";
@@ -90,6 +92,16 @@ public static final String RESOURCE_URL = "social/notifications";
    */
   public static String getValidateRequestToJoinSpaceUrl(String spaceId, String userId) {
     return getRestUrl(VALIDATE_REQUEST_JOIN_SPACE, spaceId, userId);
+  }
+  
+  /**
+   * Gets the url to the space's members
+   * @param spaceId
+   * @param userId remoteId of the user
+   * @return
+   */
+  public static String getRefuseRequestToJoinSpaceUrl(String spaceId, String userId) {
+    return getRestUrl(REFUSE_SPACE_REQUEST_ACTION, spaceId, userId);
   }
   
   /**

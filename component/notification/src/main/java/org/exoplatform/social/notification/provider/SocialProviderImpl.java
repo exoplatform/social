@@ -31,12 +31,8 @@ import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.service.AbstractNotificationProvider;
 import org.exoplatform.commons.api.notification.service.ProviderService;
 import org.exoplatform.commons.api.notification.service.TemplateGenerator;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
@@ -109,7 +105,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getTo(), true);
     }
     valueables.put("FIRSTNAME", getFirstName(receiver.getRemoteId()));
-    valueables.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("profile", receiver.getRemoteId()));
+    valueables.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("settings", receiver.getRemoteId()));
 
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(message.getProviderType());
     try {
@@ -122,6 +118,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", identity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
@@ -139,6 +136,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", identity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("COMMENT", activity.getTitle());
           valueables.put("ACTIVITY", parentActivity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
@@ -156,6 +154,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", identity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
 
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
@@ -172,6 +171,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", identity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
@@ -185,11 +185,14 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, activity.getStreamOwner(), true);
+          Space space = spaceService.getSpaceByPrettyName(spaceIdentity.getRemoteId());
           
           valueables.put("USER", identity.getProfile().getFullName());
           valueables.put("SPACE", spaceIdentity.getProfile().getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+          valueables.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
@@ -205,6 +208,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("SPACE", space.getPrettyName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           valueables.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
           valueables.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
           valueables.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
@@ -223,8 +227,11 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", userProfile.getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
+          valueables.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
           valueables.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+          valueables.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
           messageInfo.setSubject(subject).setBody(body);
@@ -243,6 +250,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("USER", userProfile.getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
+          valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
           valueables.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
           valueables.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
@@ -266,17 +274,6 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     return PROVIDER_TYPE.toValues();
   }
   
-  private String getFirstName(String userName) {
-    User user = null;
-    try {
-      UserHandler userHandler = CommonsUtils.getService(OrganizationService.class).getUserHandler();
-      user = userHandler.findUserByName(userName);
-    } catch (Exception e) {
-      LOG.error("Failed to get user " + userName, e);
-    }
-    return user != null ? user.getFirstName() : "";
-  }
-
   public String getActivityId(NotificationMessage message) {
     return message.getValueOwnerParameter(ACTIVITY_ID);
   }

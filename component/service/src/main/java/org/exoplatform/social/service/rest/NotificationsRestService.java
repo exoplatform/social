@@ -231,6 +231,32 @@ public class NotificationsRestService implements ResourceContainer {
   }
   
   /**
+   * The manager of space refuse the request to join space of user and he will be redirected to the space's members page
+   * 
+   * @param userId the remote id of the user who send the request to join space
+   * @param spaceId the id of space
+   * @return
+   * @throws Exception
+   */
+  @GET
+  @Path("refuseRequestToJoinSpace/{spaceId}/{userId}")
+  public Response refuseRequestToJoinSpace(@PathParam("spaceId") String spaceId,
+                                           @PathParam("userId") String userId) throws Exception {
+    checkAuthenticatedRequest();
+
+    Space space = getSpaceService().getSpaceById(spaceId);
+    if (space == null) {
+      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+    getSpaceService().removePendingUser(space, userId);
+
+    String targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName()) + "/settings";
+
+    // redirect to target page
+    return Response.seeOther(URI.create(targetURL)).build();
+  }
+  
+  /**
    * Redirect to the associated activity
    * 
    * @param userId remote id of activity's stream owner

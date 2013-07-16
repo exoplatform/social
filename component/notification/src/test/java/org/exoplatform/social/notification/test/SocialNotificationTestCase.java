@@ -137,19 +137,15 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     {
       ExoSocialActivity activity = new ExoSocialActivityImpl();
       activity.setTitle("activity title");
-      activity.setUserId(demoIdentity.getId());
       activityManager.saveActivity(rootIdentity, activity);
       tearDownActivityList.add(activity);
-      
-      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-      assertEquals(1, messages.size());
       
       ExoSocialActivity comment = new ExoSocialActivityImpl();
       comment.setTitle("comment title");
       comment.setUserId(demoIdentity.getId());
       activityManager.saveComment(activity, comment);
       
-      messages = Utils.getSocialEmailStorage().emails();
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
       assertEquals(1, messages.size());
       NotificationMessage message = messages.iterator().next();
       MessageInfo info = buildMessageInfo(message.setTo("demo"));
@@ -180,6 +176,17 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       comment2.setTitle("comment title 2");
       comment2.setUserId(maryIdentity.getId());
       activityManager.saveComment(activity, comment2);
+      
+      messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(1, messages.size());
+      assertEquals(2, messages.iterator().next().getSendToUserIds().size());
+      
+      //root comment on his activity, this will send notifications to others commenters but not him
+      ExoSocialActivity comment3 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment3.setTitle("comment title 3");
+      comment3.setUserId(rootIdentity.getId());
+      activityManager.saveComment(activity, comment3);
       
       messages = Utils.getSocialEmailStorage().emails();
       assertEquals(1, messages.size());
@@ -270,7 +277,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
     MessageInfo info = buildMessageInfo(message.setTo(maryIdentity.getRemoteId()));
-
+    System.out.println("============="+info.getTo());
     assertEquals("You've been invited to join "+ space.getPrettyName() + " space", info.getSubject());
     spaceService.deleteSpace(space);
   }

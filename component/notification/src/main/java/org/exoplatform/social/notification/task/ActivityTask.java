@@ -83,7 +83,7 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
       ExoSocialActivity comment = ctx.value(ACTIVITY);
       ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
       List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
-      if (! sendToUsers.contains(activity.getStreamOwner())) {
+      if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getPosterId().equals(comment.getPosterId())) {
         sendToUsers.add(activity.getStreamOwner());
       }
       //
