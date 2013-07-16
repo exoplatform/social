@@ -12,5 +12,5 @@
 	<a target="_blank" href="$REPLY_ACTION_URL"><%=_ctx.appRes("Notification.label.Reply")%></a> | <a target="_blank" href="$VIEW_FULL_DISCUSSION_ACTION_URL"><%=_ctx.appRes("Notification.label.ViewFullDiscussion")%></a>
 	<br/>
 	<br/>
-	<%=_ctx.appRes("Notification.label.footer", USER_NOTIFICATION_SETTINGS_URL)%><br/>
+	<%=_ctx.appRes("Notification.label.footer", FOOTER_LINK)%><br/>
 </div>

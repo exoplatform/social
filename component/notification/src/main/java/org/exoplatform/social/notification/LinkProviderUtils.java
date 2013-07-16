@@ -144,7 +144,7 @@ public static final String RESOURCE_URL = "social/notifications";
    * @return base rest url like : http://localhost:8080/rest
    */
   private static String getBaseRestUrl() {
-    String domain = System.getProperty("gatein.email.domain.url");
+    String domain = System.getProperty("gatein.email.domain.url", "http://localhost:8080");
     ExoContainerContext context = CommonsUtils.getService(ExoContainerContext.class);
     return new StringBuffer(domain).append("/").append(context.getRestContextName()).toString();
   }

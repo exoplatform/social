@@ -109,7 +109,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       receiver = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, message.getTo(), true);
     }
     valueables.put("FIRSTNAME", getFirstName(receiver.getRemoteId()));
-    valueables.put("USER_NOTIFICATION_SETTINGS_URL", LinkProviderUtils.getRedirectUrl("settings", receiver.getRemoteId()));
+    valueables.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("profile", receiver.getRemoteId()));
 
     PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(message.getProviderType());
     try {
