@@ -50,7 +50,7 @@ public class StreamInvocationHelper {
     try {
       beforeAsync();
       //
-      ctx.getServiceExecutor().async(StreamProcessorFactory.saveStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.saveStream(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
