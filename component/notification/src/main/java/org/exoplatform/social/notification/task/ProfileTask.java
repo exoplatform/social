@@ -16,6 +16,9 @@
  */
 package org.exoplatform.social.notification.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
@@ -25,7 +28,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 public abstract class ProfileTask extends AbstractNotificationTask<NotificationContext> {
   
   public final static ArgumentLiteral<Profile> PROFILE = new ArgumentLiteral<Profile>(Profile.class, "profile");
-  
+  public final static ArgumentLiteral<String> REMOTE_ID = new ArgumentLiteral<String>(String.class, "remoteId");
 
   @Override
   public void start(NotificationContext ctx) {
@@ -72,6 +75,40 @@ public abstract class ProfileTask extends AbstractNotificationTask<NotificationC
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       return null;
+    }
+
+    @Override
+    public boolean isValid(NotificationContext ctx) {
+      return true;
+    }
+
+  };
+  
+  /**
+   * 
+   */
+  public static ProfileTask NEW_USER_JOIN_SOCIAL_INTRANET = new ProfileTask() {
+    private final String PROVIDER_TYPE = "NewUserJoinSocialIntranet";
+
+    @Override
+    public String getId() {
+      return PROVIDER_TYPE;
+    }
+    
+    @Override
+    public NotificationMessage execute(NotificationContext ctx) {
+      NotificationMessage message = new NotificationMessage();
+      
+      Profile profile = ctx.value(ProfileTask.PROFILE);
+      
+      //This type of notification need to get all users of the system
+      List<String> allUsers = new ArrayList<String>();
+      
+      message.key(PROVIDER_TYPE)
+             .with("remoteId", profile.getIdentity().getRemoteId())
+             .to(allUsers);
+      
+      return message;
     }
 
     @Override

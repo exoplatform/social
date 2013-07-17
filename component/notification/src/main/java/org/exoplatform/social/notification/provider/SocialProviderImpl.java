@@ -231,7 +231,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
           valueables.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-          valueables.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+          valueables.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);

@@ -461,6 +461,8 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       commentEntity.setPostedTime(commentMillis);
       commentEntity.setLastUpdated(commentMillis);
       
+      commentEntity.setMentioners(processMentions(ArrayUtils.EMPTY_STRING_ARRAY, comment.getTitle(), true));
+      
       HidableEntity hidable = _getMixin(commentEntity, HidableEntity.class, true);
       hidable.setHidden(comment.isHidden());
       

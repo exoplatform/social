@@ -19,6 +19,7 @@ package org.exoplatform.social.notification.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -131,6 +132,45 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     String actual = template.render(binding);
     assertNotNull(actual);
     assertTrue(actual.indexOf("the value of abcx") > 0);
+  }
+  
+  public void testSaveCommentWithMention() throws Exception {
+    
+    //root post an activity and mention demo
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle("activity title @demo");
+    activityManager.saveActivity(rootIdentity, activity);
+    tearDownActivityList.add(activity);
+
+    //a notification will be send to demo
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    assertEquals(demoIdentity.getRemoteId(), messages.iterator().next().getSendToUserIds().get(0));
+    
+    //demo comment on root's activity and mention mary, root and john
+    ExoSocialActivity comment = new ExoSocialActivityImpl();
+    comment.setTitle("comment title @root @john @mary");
+    comment.setUserId(demoIdentity.getId());
+    activityManager.saveComment(activity, comment);
+    
+    //2 messages will be created : 1st for root to notify a comment on his activity, 2nd for root, john, mary to notify the mention's action 
+    messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(2, messages.size());
+    Iterator<NotificationMessage> iterators = messages.iterator();
+    
+    NotificationMessage message1 = iterators.next();
+    assertEquals(1, message1.getSendToUserIds().size());
+ 
+    MessageInfo info = buildMessageInfo(message1.setTo("demo"));
+    assertEquals(demoIdentity.getProfile().getFullName() + " commented one of your activities", info.getSubject());
+    assertEquals("activity title <a href=\"/portal/classic/profile/demo\">Demo gtn</a>", info.getBody());
+    
+    NotificationMessage message2 = iterators.next();
+    List<String> users = message2.getSendToUserIds();
+    assertEquals(3, users.size());
+    assertEquals(rootIdentity.getRemoteId(), users.get(0));
+    assertEquals(johnIdentity.getRemoteId(), users.get(1));
+    assertEquals(maryIdentity.getRemoteId(), users.get(2));
   }
   
   public void testSaveComment() throws Exception {
@@ -277,7 +317,6 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertEquals(1, messages.size());
     NotificationMessage message = messages.iterator().next();
     MessageInfo info = buildMessageInfo(message.setTo(maryIdentity.getRemoteId()));
-    System.out.println("============="+info.getTo());
     assertEquals("You've been invited to join "+ space.getPrettyName() + " space", info.getSubject());
     spaceService.deleteSpace(space);
   }

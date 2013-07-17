@@ -64,7 +64,7 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     @Override
     public boolean isValid(NotificationContext ctx) {
       ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
-      return activity.getMentionedIds().length > 0;
+      return Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId()).size() > 0;
     }
   };
 

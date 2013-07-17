@@ -16,12 +16,18 @@
  */
 package org.exoplatform.social.notification.impl;
 
+import java.util.Collection;
+
 import org.exoplatform.commons.api.notification.NotificationContext;
+import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.notification.impl.NotificationContextImpl;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.profile.ProfileLifeCycleEvent;
 import org.exoplatform.social.core.profile.ProfileListenerPlugin;
+import org.exoplatform.social.notification.Utils;
 import org.exoplatform.social.notification.context.NotificationExecutor;
+import org.exoplatform.social.notification.task.ActivityTask;
 import org.exoplatform.social.notification.task.ProfileTask;
 
 public class ProfileNotificationImpl extends ProfileListenerPlugin {
@@ -55,6 +61,21 @@ public class ProfileNotificationImpl extends ProfileListenerPlugin {
   public void headerSectionUpdated(ProfileLifeCycleEvent event) {
     // TODO Auto-generated method stub
 
+  }
+
+  @Override
+  public void createProfile(ProfileLifeCycleEvent event) {
+    Profile profile = event.getProfile();
+    NotificationContext ctx = NotificationContextImpl.DEFAULT.append(ProfileTask.PROFILE, profile);
+    
+    // check if activity contain mentions then create mention task
+    NotificationDataStorage storage = Utils.getSocialEmailStorage();
+    
+    NotificationMessage message = NotificationExecutor.execute(ctx, ProfileTask.NEW_USER_JOIN_SOCIAL_INTRANET);
+    
+    if (message != null) {
+      storage.add(message);
+    }
   }
 
 }

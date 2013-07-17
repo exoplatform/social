@@ -54,17 +54,18 @@ public class ActivityNotificationImpl extends ActivityListenerPlugin {
   public void updateActivity(ActivityLifeCycleEvent event) {
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void saveComment(ActivityLifeCycleEvent event) {
     ExoSocialActivity activity = event.getSource();    
     NotificationContext ctx = NotificationContextImpl.DEFAULT.append(SocialMessageBuilder.ACTIVITY, activity);
     
     NotificationDataStorage storage = Utils.getSocialEmailStorage();
-    NotificationMessage message = NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY);
+    Collection<NotificationMessage> message = NotificationExecutor.execute(ctx, ActivityTask.COMMENT_ACTIVITY, ActivityTask.MENTION_ACTIVITY);
     
     if (message != null) {
       // add all available types and will be ignored if value is null
-      storage.add(message);
+      storage.addAll(message);
     }
   }
 

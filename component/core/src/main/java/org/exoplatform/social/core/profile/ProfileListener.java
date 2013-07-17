@@ -54,5 +54,11 @@ public interface ProfileListener extends LifeCycleListener<ProfileLifeCycleEvent
    * @param event
    */
   public void headerSectionUpdated(ProfileLifeCycleEvent event) ;
+  
+  /**
+   * new profile created
+   * @param event
+   */
+  public void createProfile(ProfileLifeCycleEvent event) ;
 
 }
