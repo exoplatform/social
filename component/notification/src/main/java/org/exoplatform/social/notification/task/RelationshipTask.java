@@ -53,8 +53,8 @@ public abstract class RelationshipTask extends AbstractNotificationTask<Notifica
       //This type of notification need to get all users of the system
       List<String> allUsers = new ArrayList<String>();
       
-      message.setProviderType(PROVIDER_TYPE)
-             .setSendToUserIds(allUsers);
+      message.key(PROVIDER_TYPE)
+             .to(allUsers);
       
       return message;
     }
@@ -80,10 +80,10 @@ public abstract class RelationshipTask extends AbstractNotificationTask<Notifica
       
       Relationship relation = ctx.value(RELATIONSHIP);
       
-      message.setProviderType(PROVIDER_TYPE)
-             .addSendToUserId(relation.getReceiver().getRemoteId())
-             .addOwnerParameter("sender", relation.getSender().getRemoteId())
-             .addOwnerParameter("relationShipId", relation.getId());
+      message.key(PROVIDER_TYPE)
+             .to(relation.getReceiver().getRemoteId())
+             .with("sender", relation.getSender().getRemoteId())
+             .with("relationShipId", relation.getId());
       
       return message;
     }

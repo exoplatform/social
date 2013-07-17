@@ -52,10 +52,10 @@ public abstract class SpaceTask extends AbstractNotificationTask<NotificationCon
       Space space = ctx.value(SPACE);
       String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(PROVIDER_TYPE)
-             .addOwnerParameter("prettyName", space.getPrettyName())
-             .addOwnerParameter("spaceId", space.getId())
-             .addSendToUserId(userId);
+      message.key(PROVIDER_TYPE)
+             .with("prettyName", space.getPrettyName())
+             .with("spaceId", space.getId())
+             .to(userId);
       
       return message;
     }
@@ -81,10 +81,10 @@ public abstract class SpaceTask extends AbstractNotificationTask<NotificationCon
       Space space = ctx.value(SPACE);
       String userId = ctx.value(REMOTE_ID);
       
-      message.setProviderType(PROVIDER_TYPE)
-             .addOwnerParameter("request_from", userId)
-             .addOwnerParameter("spaceId", space.getId())
-             .setSendToUserIds(Arrays.asList(space.getManagers()));
+      message.key(PROVIDER_TYPE)
+             .with("request_from", userId)
+             .with("spaceId", space.getId())
+             .to(Arrays.asList(space.getManagers()));
       
       return message;
     }

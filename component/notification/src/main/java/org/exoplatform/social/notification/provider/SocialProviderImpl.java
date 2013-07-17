@@ -92,10 +92,10 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     MessageInfo messageInfo = new MessageInfo();
 
     //
-    messageInfo.setFrom(getFrom(message)).setTo(getTo(message));
+    messageInfo.from(getFrom(message)).to(getTo(message));
 
     //
-    ProviderData provider = providerService.getProvider(message.getProviderType());
+    ProviderData provider = providerService.getProvider(message.getKey().getId());
     String language = getLanguage(message);
     Map<String, String> valueables = new HashMap<String, String>();
     String body = "";
@@ -107,7 +107,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     valueables.put("FIRSTNAME", getFirstName(receiver.getRemoteId()));
     valueables.put("FOOTER_LINK", LinkProviderUtils.getRedirectUrl("settings", receiver.getRemoteId()));
 
-    PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(message.getProviderType());
+    PROVIDER_TYPE type = PROVIDER_TYPE.valueOf(message.getKey().getId());
     try {
       switch (type) {
         case ActivityMentionProvider: {
@@ -124,7 +124,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
          
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case ActivityCommentProvider: {
@@ -143,7 +143,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case ActivityLikeProvider: {
@@ -160,7 +160,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case ActivityPostProvider: {
@@ -177,7 +177,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case ActivityPostSpaceProvider: {
@@ -198,7 +198,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case InvitedJoinSpace: {
@@ -214,7 +214,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case RequestJoinSpace: {
@@ -234,7 +234,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
           
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
         case NewUserJoinSocialIntranet: {
@@ -256,7 +256,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
           body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
 
-          messageInfo.setSubject(subject).setBody(body);
+          messageInfo.subject(subject).body(body);
           break;
         }
       }
@@ -292,7 +292,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
     
     StringBuilder sb = new StringBuilder();
     NotificationMessage notificationMessage = messages.get(0);
-    String providerId = notificationMessage.getProviderType();
+    String providerId = notificationMessage.getKey().getId();
     ProviderData providerData = providerService.getProvider(providerId);
 
     LOG.info("Start building DigestMessageInfo by Provider " + providerId);

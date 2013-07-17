@@ -18,20 +18,16 @@ package org.exoplatform.social.notification.task;
 
 import java.util.List;
 
-import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.SocialMessageBuilder;
 import org.exoplatform.social.notification.Utils;
 
 public abstract class ActivityTask extends AbstractNotificationTask<NotificationContext> {
-  
-  public final static ArgumentLiteral<String> ACTIVITY_ID = new ArgumentLiteral<String>(String.class, "activityId");
-  public final static ArgumentLiteral<ExoSocialActivity> ACTIVITY = new ArgumentLiteral<ExoSocialActivity>(ExoSocialActivity.class, "activity");
-  
   @Override
   public void start(NotificationContext ctx) {
 
@@ -56,18 +52,18 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       List<String> sendToUsers = Utils.getDestinataires(activity.getMentionedIds(), activity.getPosterId());
       
-      return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
-             .setSendToUserIds(sendToUsers)
-             .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
-             .addOwnerParameter("activityId", activity.getId());
+      return NotificationMessage.instance().key(PROVIDER_TYPE)
+             .to(sendToUsers)
+             .with("poster", Utils.getUserId(activity.getPosterId()))
+             .with("activityId", activity.getId());
     }
 
     @Override
     public boolean isValid(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       return activity.getMentionedIds().length > 0;
     }
   };
@@ -80,18 +76,18 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
 
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
-      ExoSocialActivity comment = ctx.value(ACTIVITY);
+      ExoSocialActivity comment = ctx.value(SocialMessageBuilder.ACTIVITY);
       ExoSocialActivity activity = Utils.getActivityManager().getParentActivity(comment);
       List<String> sendToUsers = Utils.getDestinataires(activity.getCommentedIds(), comment.getPosterId());
       if (! sendToUsers.contains(activity.getStreamOwner()) && ! Utils.isSpaceActivity(activity) && ! activity.getPosterId().equals(comment.getPosterId())) {
         sendToUsers.add(activity.getStreamOwner());
       }
       //
-      return NotificationMessage.getInstance()
-             .setSendToUserIds(sendToUsers)
-             .addOwnerParameter("activityId", comment.getId())
-             .addOwnerParameter("poster", Utils.getUserId(comment.getUserId()))
-             .setProviderType(PROVIDER_TYPE);
+      return NotificationMessage.instance()
+             .to(sendToUsers)
+             .with("activityId", comment.getId())
+             .with("poster", Utils.getUserId(comment.getUserId()))
+             .key(PROVIDER_TYPE);
     }
 
     @Override
@@ -115,13 +111,13 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       try {
-        ExoSocialActivity activity = ctx.value(ACTIVITY);
+        ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
         
-        return NotificationMessage.getInstance()
-            .addSendToUserId(activity.getStreamOwner())
-            .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
-            .addOwnerParameter("activityId", activity.getId())
-            .setProviderType(PROVIDER_TYPE);
+        return NotificationMessage.instance()
+            .to(activity.getStreamOwner())
+            .with("poster", Utils.getUserId(activity.getPosterId()))
+            .with("activityId", activity.getId())
+            .key(PROVIDER_TYPE);
       } catch (Exception e) {
         return null;
       }
@@ -129,7 +125,7 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     
     @Override
     public boolean isValid(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       try {
         if (Utils.isSpaceActivity(activity))
           return false;
@@ -155,18 +151,18 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       String[] likersId = activity.getLikeIdentityIds();
-      return NotificationMessage.getInstance()
-             .addSendToUserId(activity.getStreamOwner())
-             .addOwnerParameter("activityId", activity.getId())
-             .addOwnerParameter("likersId", Utils.getUserId(likersId[likersId.length-1]))
-             .setProviderType(PROVIDER_TYPE);
+      return NotificationMessage.instance()
+             .to(activity.getStreamOwner())
+             .with("activityId", activity.getId())
+             .with("likersId", Utils.getUserId(likersId[likersId.length-1]))
+             .key(PROVIDER_TYPE);
     }
     
     @Override
     public boolean isValid(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       String[] likers = activity.getLikeIdentityIds();
       return ! activity.getPosterId().equals(likers[likers.length - 1]);
     }
@@ -188,15 +184,15 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
     @Override
     public NotificationMessage execute(NotificationContext ctx) {
       try {
-        ExoSocialActivity activity = ctx.value(ACTIVITY);
+        ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
         
         Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
         
         
-        return NotificationMessage.getInstance().setProviderType(PROVIDER_TYPE)
-                                  .addOwnerParameter("poster", Utils.getUserId(activity.getPosterId()))
-                                  .addOwnerParameter("activityId", activity.getId())
-                                  .setSendToUserIds(Utils.getDestinataires(activity, space));
+        return NotificationMessage.instance().key(PROVIDER_TYPE)
+                                  .with("poster", Utils.getUserId(activity.getPosterId()))
+                                  .with("activityId", activity.getId())
+                                  .to(Utils.getDestinataires(activity, space));
       } catch (Exception e) {
         return null;
       }
@@ -204,7 +200,7 @@ public abstract class ActivityTask extends AbstractNotificationTask<Notification
 
     @Override
     public boolean isValid(NotificationContext ctx) {
-      ExoSocialActivity activity = ctx.value(ACTIVITY);
+      ExoSocialActivity activity = ctx.value(SocialMessageBuilder.ACTIVITY);
       if (! Utils.isSpaceActivity(activity))
         return false;
       Identity id = Utils.getIdentityManager().getIdentity(activity.getPosterId(), true);

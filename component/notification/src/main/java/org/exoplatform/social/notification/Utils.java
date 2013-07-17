@@ -21,10 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.NotificationDataStorage;
+import org.exoplatform.commons.api.notification.service.ProviderService;
+import org.exoplatform.commons.api.notification.service.TemplateGenerator;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -89,5 +90,13 @@ public class Utils {
   
   public static ActivityManager getActivityManager() {
     return getService(ActivityManager.class);
+  }
+  
+  public static TemplateGenerator getTemplateGenerator() {
+    return getService(TemplateGenerator.class);
+  }
+  
+  public static ProviderService getProviderService() {
+    return getService(ProviderService.class);
   }
 }
