@@ -64,6 +64,7 @@ public class RelationshipRecievedRequestPlugin extends AbstractNotificationPlugi
     Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
     Profile userProfile = identity.getProfile();
     
+    templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
     templateContext.put("USER", userProfile.getFullName());
     String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
     

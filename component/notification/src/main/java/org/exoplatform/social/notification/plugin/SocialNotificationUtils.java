@@ -34,6 +34,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
 
 public class SocialNotificationUtils {
@@ -150,5 +151,9 @@ public class SocialNotificationUtils {
     map.put(key, new ArrayList<String>(set));
   }
   
+  public static String buildRedirecUrl(String type, String id, String name) {
+    String link = LinkProviderUtils.getRedirectUrl(type, id);
+    return "<a href=\""+ link + "\">" + name + "</a>";
+  }
   
 }

@@ -24,15 +24,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -58,15 +59,11 @@ public class NotificationsRestService implements ResourceContainer {
   private RelationshipManager relationshipManager;
   private SpaceService spaceService;
   
-  private static final Log    LOG                = ExoLogger.getLogger(NotificationsRestService.class);
-
   private static String       ACTIVITY_ID_PREFIX = "#activityContainer";
-
-  private static final String USER               = "user";
-
-  private static final String SPACE              = "space";
-
-  private static final String ACTIVITY           = "activity";
+  
+  public enum URL_TYPE {
+    user, space, activity, portal_home, all_space, connections, notification_settings, connections_request, space_invitation;
+  }
   
   public NotificationsRestService() {
   }
@@ -80,13 +77,16 @@ public class NotificationsRestService implements ResourceContainer {
    * @throws Exception
    */
   @GET
-  @Path("inviteToConnect/{senderId}/{receiverId}")
-  public Response inviteToConnect(@PathParam("senderId") String senderId,
-                                  @PathParam("receiverId") String receiverId) throws Exception {
+  @Path("inviteToConnect/{userId}")
+  public Response inviteToConnect(@Context UriInfo uriInfo,
+                                  @PathParam("userId") String userId) throws Exception {
     checkAuthenticatedRequest();
     
-    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, senderId, true); 
-    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, receiverId, true);
+    Identity sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
+    if (sender == null) {
+      sender = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    }
+    Identity receiver = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
     if (sender == null || receiver == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
@@ -198,7 +198,7 @@ public class NotificationsRestService implements ResourceContainer {
     }
     getSpaceService().removeInvitedUser(space, userId);
 
-    String targetURL = Util.getBaseUrl() + LinkProvider.getAllSpacesUri();
+    String targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces");
     
     // redirect to target page
     return Response.seeOther(URI.create(targetURL)).build();
@@ -259,19 +259,21 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Redirect to the associated activity
    * 
-   * @param userId remote id of activity's stream owner
    * @param activityId id of the activity
    * @return
    * @throws Exception
    */
   @GET
-  @Path("replyActivity/{activityId}/{userId}")
-  public Response replyActivity(@PathParam("userId") String userId,
+  @Path("replyActivity/{activityId}")
+  public Response replyActivity(@Context UriInfo uriInfo,
                                 @PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
+    if (identity == null) {
+      identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    }
     if (identity == null || activity == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
@@ -285,19 +287,21 @@ public class NotificationsRestService implements ResourceContainer {
   /**
    * Redirect to the associated activity
    * 
-   * @param userId remote id of activity's stream owner
    * @param activityId id of the activity
    * @return
    * @throws Exception
    */
   @GET
-  @Path("viewFullDiscussion/{activityId}/{userId}")
-  public Response viewFullDiscussion(@PathParam("userId") String userId,
+  @Path("viewFullDiscussion/{activityId}")
+  public Response viewFullDiscussion(@Context UriInfo uriInfo,
                                      @PathParam("activityId") String activityId) throws Exception {
     checkAuthenticatedRequest();
 
     ExoSocialActivity activity = getActivityManager().getActivity(activityId);
-    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, true);
+    Identity identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, ConversationState.getCurrent().getIdentity().getUserId(), true);
+    if (identity == null) {
+      identity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+    }
     if (identity == null || activity == null) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
@@ -318,7 +322,8 @@ public class NotificationsRestService implements ResourceContainer {
    */
   @GET
   @Path("redirectUrl/{type}/{objectId}")
-  public Response redirectUrl(@PathParam("type") String type,
+  public Response redirectUrl(@Context UriInfo uriInfo,
+                              @PathParam("type") String type,
                               @PathParam("objectId") String objectId) throws Exception {
     Space space = null;
     ExoSocialActivity activity = null;
@@ -327,19 +332,54 @@ public class NotificationsRestService implements ResourceContainer {
     
     try {
       checkAuthenticatedRequest();
-      if (ACTIVITY.equals(type)) {
-        activity = getActivityManager().getActivity(objectId);
-        userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
-        targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(userIdentity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
-      } else if (SPACE.equals(type)) {
-        space = getSpaceService().getSpaceById(objectId);
-        targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
-      } else if (USER.equals(type)) {
-        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
-        targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(userIdentity.getRemoteId());
-      } else {
-        userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
-        targetURL = Util.getBaseUrl() + LinkProvider.getUserNotificationSettingUri(userIdentity.getRemoteId());
+      URL_TYPE urlType = URL_TYPE.valueOf(type);
+      switch (urlType) {
+        case activity: {
+          activity = getActivityManager().getActivity(objectId);
+          userIdentity = getIdentityManager().getIdentity(activity.getPosterId(), true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getUserActivityUri(userIdentity.getRemoteId()) + ACTIVITY_ID_PREFIX + activity.getId();
+          break;
+        }
+        case user: {
+          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getUserProfileUri(userIdentity.getRemoteId());
+          break;
+        }
+        case space: {
+          space = getSpaceService().getSpaceById(objectId);
+          targetURL = Util.getBaseUrl() + LinkProvider.getActivityUriForSpace(space.getGroupId().replace("/spaces/", ""), space.getPrettyName());
+          break;
+        }
+        case portal_home: {
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("");
+          break;
+        }
+        case all_space: {
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("all-spaces");
+          break;
+        }
+        case connections: {
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("connexions");
+          break;
+        }
+        case connections_request: {
+          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, Util.getViewerId(uriInfo), true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("connexions/receivedInvitations/" + userIdentity.getRemoteId());
+          break;
+        }
+        case space_invitation: {
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("invitationSpace");
+          break;
+        }
+        case notification_settings: {
+          userIdentity = getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, objectId, true);
+          targetURL = Util.getBaseUrl() + LinkProvider.getUserNotificationSettingUri(userIdentity.getRemoteId());
+          break;
+        }
+        default: {
+          targetURL = Util.getBaseUrl() + LinkProvider.getRedirectUri("");
+          break;
+        }
       }
     } catch (Exception e) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);

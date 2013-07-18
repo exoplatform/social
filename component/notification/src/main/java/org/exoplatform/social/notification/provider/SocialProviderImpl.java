@@ -44,6 +44,7 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.plugin.SocialNotificationUtils;
 
 
 public class SocialProviderImpl extends AbstractNotificationProvider {
@@ -53,7 +54,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
   public static final String SPACE_ID    = "spaceId";
 
-  public static final String IDENTITY_ID = "identityId";
+  public static final String IDENTITY_ID = "remoteId";
   
   ProviderService providerService;
 
@@ -120,8 +121,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           
           valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
-          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
           body = templateGenerator.processTemplate(provider.getType(), valueables, language);
          
           messageInfo.subject(subject).body(body);
@@ -139,8 +140,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("COMMENT", activity.getTitle());
           valueables.put("ACTIVITY", parentActivity.getTitle());
-          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
           body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
@@ -156,8 +157,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
           valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
-          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
           body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
@@ -173,8 +174,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           
           valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("ACTIVITY", activity.getTitle());
-          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
           body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
@@ -194,8 +195,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("PROFILE_URL", LinkProviderUtils.getRedirectUrl("user", identity.getRemoteId()));
           valueables.put("SPACE_URL", LinkProviderUtils.getRedirectUrl("space", space.getId()));
           valueables.put("ACTIVITY", activity.getTitle());
-          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
+          valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+          valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
           body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
@@ -238,7 +239,19 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           break;
         }
         case NewUserJoinSocialIntranet: {
+          String remoteId = message.getValueOwnerParameter(IDENTITY_ID);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+          Profile userProfile = identity.getProfile();
           
+          valueables.put("USER", userProfile.getFullName());
+          valueables.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
+          subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
+          
+          valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
+          valueables.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId()));
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
+          
+          messageInfo.subject(subject).body(body);
           break;
         }
         case ReceiceConnectionRequest: {
@@ -247,6 +260,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, sender, true);
           Profile userProfile = identity.getProfile();
           
+          valueables.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
           valueables.put("USER", userProfile.getFullName());
           subject = templateGenerator.processSubjectIntoString(provider.getType(), valueables, language);
           
@@ -313,8 +327,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
 
-          valueables.put("USER", identity.getProfile().getFullName());
-          valueables.put("ACTIVITY", activity.getTitle());
+          valueables.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+          valueables.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
           String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, 0);
           sb.append(digester).append("</br>");
 
@@ -349,9 +363,8 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           ExoSocialActivity activity = activityManager.getActivity(activityId);
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           
-          
-          valueables.put("USER", identity.getProfile().getFullName());
-          valueables.put("ACTIVITY", activity.getTitle());
+          valueables.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+          valueables.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
           String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, 0);
           sb.append(digester).append("</br>");
 
@@ -367,9 +380,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           Identity identity = identityManager.getIdentity(activity.getPosterId(), true);
           Space space = Utils.getSpaceService().getSpaceByPrettyName(activity.getStreamOwner());
           
-          valueables.put("USER", identity.getProfile().getFullName());
-          valueables.put("ACTIVITY", activity.getTitle());
-          valueables.put("SPACE", space.getPrettyName());
+          valueables.put("USER", SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+          valueables.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
+          valueables.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
           String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, 0);
           sb.append(digester).append("</br>");
 
@@ -392,14 +405,14 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           } else {
             key = keys[i];
           }
-          value.append(space.getPrettyName());
+          value.append(SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
           if (count > (i + 1) && i < 2) {
             value.append(", ");
           }
         }
         valueables.put(key, value.toString());
         if(count > 3) {
-          valueables.put("COUNT", String.valueOf((count - 3)));
+          valueables.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space_invitation", null, String.valueOf((count - 3))));
         }
 
         String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, count);
@@ -417,6 +430,33 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
         break;
       }
       case NewUserJoinSocialIntranet: {
+        Map<String, String> valueables = new HashMap<String, String>();
+        int count = messages.size();
+        String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+        String key = "";
+        StringBuilder value = new StringBuilder();
+        for (int i = 0; i < count && i < 3; i++) {
+          String remoteId = messages.get(i).getValueOwnerParameter(IDENTITY_ID);
+          Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+          //
+          if (i > 1 && count == 3) {
+            key = keys[i - 1];
+          } else {
+            key = keys[i];
+          }
+          value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
+          if (count > (i + 1) && i < 2) {
+            value.append(", ");
+          }
+        }
+        valueables.put(key, value.toString());
+        if(count > 3) {
+          valueables.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections", null, String.valueOf((count - 3))));
+        }
+        valueables.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
+
+        String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, count);
+        sb.append(digester).append("</br>");
         
         break;
       }
@@ -429,20 +469,19 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
 
         for (int i = 0; i < count && i < 3; i++) {
           Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, messages.get(i).getValueOwnerParameter("sender"), true);
-          Profile userProfile = identity.getProfile();
           if (i > 1 && count == 3) {
             key = keys[i - 1];
           } else {
             key = keys[i];
           }
-          value.append(userProfile.getFullName());
+          value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
           if (count > (i + 1) && i < 2) {
             value.append(", ");
           }
         }
         valueables.put(key, value.toString());
         if(count > 3) {
-          valueables.put("COUNT", String.valueOf((count - 3)));
+          valueables.put("COUNT", SocialNotificationUtils.buildRedirecUrl("connections_request", null, String.valueOf((count - 3))));
         }
 
         String digester = templateGenerator.processDigestIntoString(providerId, valueables, language, count);
@@ -485,9 +524,9 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       Map<String, String> valueables = new HashMap<String, String>();
       
       if (activity != null) {
-        valueables.put("ACTIVITY", activity.getTitle());
+        valueables.put("ACTIVITY", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), activity.getTitle()));
       } else {
-        valueables.put("SPACE", space.getPrettyName());
+        valueables.put("SPACE", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), space.getDisplayName()));
       }
       
       String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
@@ -496,20 +535,23 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
       
       for (int i = 0; i < count && i <= 3; i++) {
         Identity identity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, values.get(i), true);
-        Profile userProfile = identity.getProfile();
         if (i > 1 && count == 3) {
           key = keys[i - 1];
         } else {
           key = keys[i];
         }
-        value.append(userProfile.getFullName());
+        value.append(SocialNotificationUtils.buildRedirecUrl("user", identity.getRemoteId(), identity.getProfile().getFullName()));
         if (count > (i + 1) && i < 2) {
           value.append(", ");
         }
       }
       valueables.put(key, value.toString());
       if(count > 3) {
-        valueables.put("COUNT", String.valueOf((count - 3)));
+        if (activity != null) {
+          valueables.put("COUNT", SocialNotificationUtils.buildRedirecUrl("activity", activity.getId(), String.valueOf((count - 3))));
+        } else {
+          valueables.put("COUNT", SocialNotificationUtils.buildRedirecUrl("space", space.getId(), String.valueOf((count - 3))));
+        }
       }
 
       String digester = templateGenerator.processDigestIntoString(providerData.getType(), valueables, language, count);

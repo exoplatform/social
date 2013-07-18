@@ -37,8 +37,8 @@ public static final String RESOURCE_URL = "social/notifications";
    * @param receiverId remoteId of the receiver
    * @return
    */
-  public static String getInviteToConnectUrl(String senderId, String receiverId) {
-    return getRestUrl(INVITE_TO_CONNECT, senderId, receiverId);
+  public static String getInviteToConnectUrl(String userId) {
+    return getRestUrl(INVITE_TO_CONNECT, userId, null);
   }
   
   /**
@@ -108,22 +108,20 @@ public static final String RESOURCE_URL = "social/notifications";
    * Gets the url to the activity with id = activityId of userId
    * 
    * @param activityId
-   * @param userId remoteId of the user
    * @return
    */
-  public static String getReplyActivityUrl(String activityId, String userId) {
-    return getRestUrl(REPLY_ACTIVITY, activityId, userId);
+  public static String getReplyActivityUrl(String activityId) {
+    return getRestUrl(REPLY_ACTIVITY, activityId, null);
   }
   
   /**
    * Gets the url to the activity with id = activityId of userId
    * 
    * @param activityId
-   * @param userId remoteId of the user
    * @return
    */
-  public static String getViewFullDiscussionUrl(String activityId, String userId) {
-    return getRestUrl(VIEW_FULL_DISCUSSION, activityId, userId);
+  public static String getViewFullDiscussionUrl(String activityId) {
+    return getRestUrl(VIEW_FULL_DISCUSSION, activityId, null);
   }
   
   /**
@@ -146,8 +144,11 @@ public static final String RESOURCE_URL = "social/notifications";
    */
   public static String getRestUrl(String type, String objectId1, String objectId2) {
     String baseUrl = getBaseRestUrl();
-    return new StringBuffer(baseUrl).append("/").append(type)
-        .append("/").append(objectId1).append("/").append(objectId2).toString();
+    StringBuffer sb = new StringBuffer(baseUrl).append("/").append(type).append("/").append(objectId1);
+    if (objectId2 == null) {
+      return sb.toString();
+    }
+    return sb.append("/").append(objectId2).toString();
   }
   
   /** 

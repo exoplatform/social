@@ -18,13 +18,10 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
@@ -75,8 +72,8 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     
     templateContext.put("COMMENT", activity.getTitle());
     templateContext.put("ACTIVITY", parentActivity.getTitle());
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), notification.getSendToUserIds().get(0)));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), notification.getSendToUserIds().get(0)));
+    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
     String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();

@@ -138,6 +138,16 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     assertTrue(actual.indexOf("the value of abcx") > 0);
   }
   
+  public void testCreateNewUser() throws Exception {
+    Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+    
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(1, messages.size());
+    assertEquals(4, messages.iterator().next().getSendToUserIds().size());
+    
+    identityManager.deleteIdentity(ghostIdentity);
+  }
+  
   public void testSaveCommentWithMention() throws Exception {
     
     //root post an activity and mention demo
@@ -335,6 +345,37 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
   
   public void testBuildDigestMessage() throws Exception {
     {
+      //ActivityCommentProvider
+      ExoSocialActivity activity = new ExoSocialActivityImpl();
+      activity.setTitle("activity title");
+      activityManager.saveActivity(rootIdentity, activity);
+      tearDownActivityList.add(activity);
+      
+      ExoSocialActivity comment1 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment1.setTitle("comment title 1");
+      comment1.setUserId(demoIdentity.getId());
+      activityManager.saveComment(activity, comment1);
+      
+      ExoSocialActivity comment2 = new ExoSocialActivityImpl();
+      activity = activityManager.getActivity(activity.getId());
+      comment2.setTitle("comment title 2");
+      comment2.setUserId(demoIdentity.getId());
+      activityManager.saveComment(activity, comment2);
+      
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+      assertEquals(2, messages.size());
+      
+      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(rootIdentity.getRemoteId()));
+      }
+      String digest = buildDigestMessageInfo(list);
+
+      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> commented on your activity : <a href=\"localhost/rest/social/notifications/redirectUrl/activity/" + activity.getId() + "\">activity title</a>.</br>", digest);
+    }
+    
+    {
       //ActivityPostProvider
       ExoSocialActivity activity1 = new ExoSocialActivityImpl();
       activity1.setTitle("activity1 title 1");
@@ -357,7 +398,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       }
       String digest = buildDigestMessageInfo(list);
 
-      assertEquals("Demo gtn posted on your activity stream : activity1 title 1.</br>Mary Kelly posted on your activity stream : activity2 title 2.</br>", digest);
+      assertEquals("<a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a> posted on your activity stream : <a href=\"localhost/rest/social/notifications/redirectUrl/activity/" + activity1.getId() +"\">activity1 title 1</a>.</br>" + 
+                   "<a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a> posted on your activity stream : <a href=\"localhost/rest/social/notifications/redirectUrl/activity/" + activity2.getId() +"\">activity2 title 2</a>.</br>", digest);
     }
     
     {
@@ -375,7 +417,7 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       }
       String digest = buildDigestMessageInfo(list);
 
-      assertEquals("You've received a connection request from Root Root, John Anthony, Mary Kelly.</br>", digest);
+      assertEquals("You've received a connection request from <a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a>.</br>", digest);
     }
     
     {
@@ -396,7 +438,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         list.add(message.setTo(maryIdentity.getRemoteId()));
       }
       String digest = buildDigestMessageInfo(list);
-      assertEquals("You have been asked to joing the following spaces: my_space_1, my_space_2, my_space_3 and 1 others.</br>", digest);
+      String result = "You have been asked to joing the following spaces: <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space1.getId()+"\">my space 1</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space2.getId()+"\">my space 2</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space3.getId()+"\">my space 3</a> and <a href=\"localhost/rest/social/notifications/redirectUrl/space_invitation\">1</a> others.</br>";
+      assertEquals(result, digest);
       
       spaceService.deleteSpace(space1);
       spaceService.deleteSpace(space2);
@@ -418,8 +461,8 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
         list.add(message.setTo(rootIdentity.getRemoteId()));
       }
       String digest = buildDigestMessageInfo(list);
-
-      assertEquals("The following users have asked to join the my_space_1 space: Demo gtn, John Anthony, Mary Kelly.</br>", digest);
+      String result = "The following users have asked to join the <a href=\"localhost/rest/social/notifications/redirectUrl/space/"+space.getId()+"\">my space 1</a> space: <a href=\"localhost/rest/social/notifications/redirectUrl/user/demo\">Demo gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/john\">John Anthony</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/mary\">Mary Kelly</a>.</br>";
+      assertEquals(result, digest);
       
       spaceService.deleteSpace(space);
     }
@@ -434,35 +477,42 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
       act1.setTitle("hello @demo");
       activityManager.saveActivity(rootIdentity, act1);
       tearDownActivityList.add(act1);
-      ExoSocialActivity act2 = new ExoSocialActivityImpl();
-      act2.setTitle("hello @demo");
-      activityManager.saveActivity(rootIdentity, act2);
-      tearDownActivityList.add(act2);
-      ExoSocialActivity act3 = new ExoSocialActivityImpl();
-      act3.setTitle("hello @demo");
-      activityManager.saveActivity(rootIdentity, act3);
-      tearDownActivityList.add(act3);
-      ExoSocialActivity act4 = new ExoSocialActivityImpl();
-      act4.setTitle("hello @demo");
-      activityManager.saveActivity(rootIdentity, act4);
-      tearDownActivityList.add(act4);
       
       Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
-      assertEquals(5, messages.size());
+      assertEquals(2, messages.size());
       
       List<NotificationMessage> list = new ArrayList<NotificationMessage>();
       for (NotificationMessage message : messages) {
         list.add(message.setTo(demoIdentity.getRemoteId()));
       }
       String digest = buildDigestMessageInfo(list);
-
-      assertEquals("Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
-                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
-                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
-                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>" +
-                   "Root Root has mentioned you in an activity : hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></br>"
-      		         , digest);
+      String result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/activity/"+act.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br><a href=\"localhost/rest/social/notifications/redirectUrl/user/root\">Root Root</a> has mentioned you in an activity : <a href=\"localhost/rest/social/notifications/redirectUrl/activity/"+act1.getId()+"\">hello <a href=\"/portal/classic/profile/demo\">Demo gtn</a></a></br>";
+      assertEquals(result, digest);
       
+    }
+    
+    {
+      //NewUserJoinSocialIntranet
+      Identity ghostIdentity = identityManager.getOrCreateIdentity("organization", "ghost", true);
+      Identity paulIdentity = identityManager.getOrCreateIdentity("organization", "paul", true);
+      Identity raulIdentity = identityManager.getOrCreateIdentity("organization", "raul", true);
+      Identity jameIdentity = identityManager.getOrCreateIdentity("organization", "jame", true);
+      
+      Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+      
+      assertEquals(4, messages.size());
+      List<NotificationMessage> list = new ArrayList<NotificationMessage>();
+      for (NotificationMessage message : messages) {
+        list.add(message.setTo(demoIdentity.getRemoteId()));
+      }
+      String digest = buildDigestMessageInfo(list);
+      String result = "<a href=\"localhost/rest/social/notifications/redirectUrl/user/ghost\">Ghost gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/paul\">Paul gtn</a>, <a href=\"localhost/rest/social/notifications/redirectUrl/user/raul\">Raul gtn</a> and <a href=\"localhost/rest/social/notifications/redirectUrl/connections\">1</a> more have joined social intranet.</br>";
+      assertEquals(result, digest);
+      
+      identityManager.deleteIdentity(ghostIdentity);
+      identityManager.deleteIdentity(paulIdentity);
+      identityManager.deleteIdentity(raulIdentity);
+      identityManager.deleteIdentity(jameIdentity);
     }
   }
   

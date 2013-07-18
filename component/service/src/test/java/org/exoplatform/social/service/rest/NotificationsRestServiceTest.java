@@ -85,7 +85,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
     activityManager.saveActivity(rootIdentity, activity);
-    ContainerResponse response = service("GET", "/social/notifications/replyActivity/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/replyActivity/" + activity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
     
@@ -97,7 +97,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
     ExoSocialActivity activity = new ExoSocialActivityImpl();
     activity.setTitle("activity");
     activityManager.saveActivity(rootIdentity, activity);
-    ContainerResponse response = service("GET", "/social/notifications/viewFullDiscussion/" + activity.getId() +"/" + rootIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/viewFullDiscussion/" + activity.getId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
     
@@ -106,7 +106,7 @@ public class NotificationsRestServiceTest extends AbstractResourceTest {
   
   public void testInviteToConnect() throws Exception {
     startSessionAs("root");
-    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + rootIdentity.getRemoteId() +"/" + johnIdentity.getRemoteId(), "", null, null);
+    ContainerResponse response = service("GET", "/social/notifications/inviteToConnect/" + johnIdentity.getRemoteId(), "", null, null);
     assertNotNull(response);
     assertEquals(303, response.getStatus());
   }

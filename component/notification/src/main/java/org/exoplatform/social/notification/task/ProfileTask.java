@@ -17,13 +17,18 @@
 package org.exoplatform.social.notification.task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.commons.api.notification.ArgumentLiteral;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
 import org.exoplatform.commons.api.notification.task.AbstractNotificationTask;
+import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.profile.ProfileFilter;
+import org.exoplatform.social.notification.Utils;
 
 public abstract class ProfileTask extends AbstractNotificationTask<NotificationContext> {
   
@@ -101,13 +106,24 @@ public abstract class ProfileTask extends AbstractNotificationTask<NotificationC
       
       Profile profile = ctx.value(ProfileTask.PROFILE);
       
-      //This type of notification need to get all users of the system
-      List<String> allUsers = new ArrayList<String>();
-      
-      message.key(PROVIDER_TYPE)
-             .with("remoteId", profile.getIdentity().getRemoteId())
-             .to(allUsers);
-      
+      try {
+        //This type of notification need to get all users of the system, except the new created user
+        // TODO : what's the solution with a big data???
+        ProfileFilter profileFilter = new ProfileFilter();
+        profileFilter.setExcludedIdentityList(Arrays.asList(profile.getIdentity()));
+        ListAccess<Identity> list = Utils.getIdentityManager().getIdentitiesByProfileFilter(profile.getIdentity().getProviderId(), profileFilter, false);
+        List<String> allUsers = new ArrayList<String>();
+        
+        for (Identity identity : list.load(0, list.getSize())) {
+          allUsers.add(identity.getRemoteId());
+        }
+        
+        message.key(PROVIDER_TYPE)
+               .with("remoteId", profile.getIdentity().getRemoteId())
+               .to(allUsers);
+      } catch (Exception e) {
+        return null;
+      }
       return message;
     }
 

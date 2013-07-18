@@ -76,8 +76,8 @@ public class PostActivityPlugin extends AbstractNotificationPlugin {
     String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
     
     templateContext.put("ACTIVITY", activity.getTitle());
-    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), notification.getSendToUserIds().get(0)));
-    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), notification.getSendToUserIds().get(0)));
+    templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId()));
+    templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId()));
     String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();

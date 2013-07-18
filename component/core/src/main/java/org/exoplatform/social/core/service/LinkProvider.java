@@ -407,8 +407,11 @@ public class LinkProvider {
    * 
    * @return
    */
-  public static String getAllSpacesUri() {
-    return getBaseUri(null, null) + "/all-spaces";
+  public static String getRedirectUri(String type) {
+    if (type.isEmpty()) {
+      return getBaseUri(null, null);
+    }
+    return getBaseUri(null, null) + "/" + type;
   }
 
   /**

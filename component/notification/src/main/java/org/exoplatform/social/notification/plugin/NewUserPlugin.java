@@ -18,27 +18,29 @@ package org.exoplatform.social.notification.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.exoplatform.commons.api.notification.MessageInfo;
 import org.exoplatform.commons.api.notification.NotificationContext;
 import org.exoplatform.commons.api.notification.NotificationMessage;
-import org.exoplatform.commons.api.notification.ProviderData;
 import org.exoplatform.commons.api.notification.plugin.AbstractNotificationPlugin;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
-import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.profile.ProfileFilter;
 import org.exoplatform.social.notification.LinkProviderUtils;
 import org.exoplatform.social.notification.Utils;
+import org.exoplatform.social.notification.task.ProfileTask;
 
-public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
-  public final String ID = "RequestJoinSpace";
+public class NewUserPlugin extends AbstractNotificationPlugin {
 
+  public final String ID = "NewUserJoinSocialIntranet";
+  
   @Override
   public String getId() {
     return ID;
@@ -46,13 +48,27 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
 
   @Override
   public NotificationMessage makeNotification(NotificationContext ctx) {
-    Space space = ctx.value(SocialNotificationUtils.SPACE);
-    String userId = ctx.value(SocialNotificationUtils.REMOTE_ID);
+    Profile profile = ctx.value(ProfileTask.PROFILE);
     
-    return NotificationMessage.instance().key(getId())
-           .with("request_from", userId)
-           .with("spaceId", space.getId())
-           .to(Arrays.asList(space.getManagers()));
+    try {
+      
+      //This type of notification need to get all users of the system, except the new created user
+      ProfileFilter profileFilter = new ProfileFilter();
+      profileFilter.setExcludedIdentityList(Arrays.asList(profile.getIdentity()));
+      ListAccess<Identity> list = Utils.getIdentityManager().getIdentitiesByProfileFilter(profile.getIdentity().getProviderId(), profileFilter, false);
+      
+      List<String> allUsers = new ArrayList<String>();
+      
+      for (Identity identity : list.load(0, list.getSize())) {
+        allUsers.add(identity.getRemoteId());
+      }
+      
+      return NotificationMessage.instance()
+             .with("remoteId", profile.getIdentity().getRemoteId())
+             .to(allUsers);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @Override
@@ -64,18 +80,16 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     
     String language = getLanguage(notification);
     
-    String spaceId = notification.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-    Space space = Utils.getSpaceService().getSpaceById(spaceId);
-    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, notification.getValueOwnerParameter("request_from"), true);
+    String remoteId = notification.getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
+    Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
     Profile userProfile = identity.getProfile();
     
-    templateContext.put("SPACE", space.getDisplayName());
     templateContext.put("USER", userProfile.getFullName());
+    templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
     String subject = Utils.getTemplateGenerator().processSubjectIntoString(notification.getKey().getId(), templateContext, language);
     
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
-    templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-    templateContext.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
+    templateContext.put("CONNECT_ACTION_URL", LinkProviderUtils.getInviteToConnectUrl(identity.getRemoteId()));
     String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();
@@ -87,23 +101,42 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     NotificationMessage first = notifications.get(0);
 
     String language = getLanguage(first);
-    ProviderData providerData = Utils.getProviderService().getProvider(first.getKey().getId());
     
-    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-
+    Map<String, String> templateContext = new HashMap<String, String>();
+    int count = notifications.size();
+    String[] keys = {"USER", "USER_LIST", "LAST3_USERS"};
+    String key = "";
+    StringBuilder value = new StringBuilder();
+    
     try {
-      for (NotificationMessage message : notifications) {
-        String spaceId = message.getValueOwnerParameter(SocialNotificationUtils.SPACE_ID.getKey());
-        String fromUser = message.getValueOwnerParameter("request_from");
+      for (int i = 0; i < count && i < 3; i++) {
+        String remoteId = notifications.get(i).getValueOwnerParameter(SocialNotificationUtils.REMOTE_ID.getKey());
+        Identity identity = Utils.getIdentityManager().getOrCreateIdentity(OrganizationIdentityProvider.NAME, remoteId, true);
+        Profile userProfile = identity.getProfile();
         //
-        SocialNotificationUtils.processInforSendTo(map, spaceId, fromUser);
+        if (i > 1 && count == 3) {
+          key = keys[i - 1];
+        } else {
+          key = keys[i];
+        }
+        value.append(userProfile.getFullName());
+        if (count > (i + 1) && i < 2) {
+          value.append(", ");
+        }
       }
-      writer.append(SocialNotificationUtils.getMessageByIds(map, providerData, language));
+      templateContext.put(key, value.toString());
+      if(count > 3) {
+        templateContext.put("COUNT", String.valueOf((count - 3)));
+      }
+      
+      templateContext.put("PORTAL_NAME", System.getProperty("exo.notifications.portalname", "eXo"));
+      String digester = Utils.getTemplateGenerator().processDigestIntoString(first.getKey().getId(), templateContext, language, count);
+      writer.append(digester).append("</br>");
+      
     } catch (IOException e) {
       ctx.setException(e);
       return false;
     }
-    
     
     return true;
   }
