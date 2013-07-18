@@ -65,7 +65,7 @@ public class SpaceInvitationPlugin extends AbstractNotificationPlugin {
     templateContext.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
     templateContext.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), notification.getSendToUserIds().get(0)));
     templateContext.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), notification.getSendToUserIds().get(0)));
-    String body = Utils.getTemplateGenerator().processTemplateIntoString(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();
   }

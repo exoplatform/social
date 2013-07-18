@@ -71,7 +71,7 @@ public class RequestJoinSpacePlugin extends AbstractNotificationPlugin {
     
     templateContext.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
     templateContext.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-    String body = Utils.getTemplateGenerator().processTemplateIntoString(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();
   }

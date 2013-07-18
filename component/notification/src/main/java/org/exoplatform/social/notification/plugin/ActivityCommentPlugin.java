@@ -77,7 +77,7 @@ public class ActivityCommentPlugin extends AbstractNotificationPlugin {
     templateContext.put("ACTIVITY", parentActivity.getTitle());
     templateContext.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), notification.getSendToUserIds().get(0)));
     templateContext.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), notification.getSendToUserIds().get(0)));
-    String body = Utils.getTemplateGenerator().processTemplateIntoString(notification.getKey().getId(), templateContext, language);
+    String body = Utils.getTemplateGenerator().processTemplate(notification.getKey().getId(), templateContext, language);
     
     return messageInfo.subject(subject).body(body).end();
   }

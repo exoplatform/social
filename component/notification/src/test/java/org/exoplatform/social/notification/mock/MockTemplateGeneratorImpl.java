@@ -16,7 +16,6 @@
  */
 package org.exoplatform.social.notification.mock;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,7 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
   }
 
   @Override
-  public String processTemplateIntoString(String providerId, Map<String, String> valueables, String language) {
+  public String processTemplate(String providerId, Map<String, String> valueables, String language) {
     MappingKey mappingKey = generatorImpl.getMappingKey(providerId);
     String templateKey = mappingKey.getKeyValue("template", "Notification.template." + providerId);
     String template = NotificationUtils.getResourceBundle(templateKey, null, mappingKey.getLocaleResouceBundle());
@@ -59,6 +58,12 @@ public class MockTemplateGeneratorImpl implements TemplateGenerator {
   @Override
   public String processDigestIntoString(String providerId, Map<String, String> valueables, String language, int size) {
     return generatorImpl.processDigestIntoString(providerId, valueables, language, size);
+  }
+
+  @Override
+  public String processTemplateInContainer(String providerId, Map<String, String> valueables, String language) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
  

@@ -122,7 +122,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
          
           messageInfo.subject(subject).body(body);
           break;
@@ -141,7 +141,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("ACTIVITY", parentActivity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -158,7 +158,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -175,7 +175,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -196,7 +196,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("ACTIVITY", activity.getTitle());
           valueables.put("REPLY_ACTION_URL", LinkProviderUtils.getReplyActivityUrl(activity.getId(), message.getSendToUserIds().get(0)));
           valueables.put("VIEW_FULL_DISCUSSION_ACTION_URL", LinkProviderUtils.getViewFullDiscussionUrl(activity.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -212,7 +212,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("SPACE_AVATAR", LinkProviderUtils.getSpaceAvatarUrl(space));
           valueables.put("ACCEPT_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getAcceptInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
           valueables.put("REFUSE_SPACE_INVITATION_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToJoinSpaceUrl(space.getId(), message.getSendToUserIds().get(0)));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -232,7 +232,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
           valueables.put("VALIDATE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getValidateRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
           valueables.put("REFUSE_SPACE_REQUEST_ACTION_URL", LinkProviderUtils.getRefuseRequestToJoinSpaceUrl(space.getId(), identity.getRemoteId()));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
           
           messageInfo.subject(subject).body(body);
           break;
@@ -254,7 +254,7 @@ public class SocialProviderImpl extends AbstractNotificationProvider {
           valueables.put("AVATAR", LinkProviderUtils.getUserAvatarUrl(userProfile));
           valueables.put("ACCEPT_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getConfirmInvitationToConnectUrl(sender, toUser));
           valueables.put("REFUSE_CONNECTION_REQUEST_ACTION_URL", LinkProviderUtils.getIgnoreInvitationToConnectUrl(sender, toUser));
-          body = templateGenerator.processTemplateIntoString(provider.getType(), valueables, language);
+          body = templateGenerator.processTemplate(provider.getType(), valueables, language);
 
           messageInfo.subject(subject).body(body);
           break;
