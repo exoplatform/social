@@ -79,6 +79,10 @@ public class SocialNotificationTestCase extends AbstractCoreTest {
     johnIdentity = identityManager.getOrCreateIdentity("organization", "john", true);
     maryIdentity = identityManager.getOrCreateIdentity("organization", "mary", true);
     demoIdentity = identityManager.getOrCreateIdentity("organization", "demo", true);
+    
+    // each new identity created, a notification will be raised
+    Collection<NotificationMessage> messages = Utils.getSocialEmailStorage().emails();
+    assertEquals(4, messages.size());
 
     assertNotNull(rootIdentity.getId());
     assertNotNull(johnIdentity.getId());
