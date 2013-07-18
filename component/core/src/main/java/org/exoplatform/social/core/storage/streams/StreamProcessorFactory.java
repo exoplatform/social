@@ -83,13 +83,30 @@ public class StreamProcessorFactory {
    * Build Unlike processor
    * @return
    */
-  public static SocialChromatticAsyncProcessor unLikeStream() {
+  public static SocialChromatticAsyncProcessor unlikeActivity() {
     return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
 
       @Override
       protected ProcessContext execute(ProcessContext processContext) throws Exception {
         StreamProcessContext ctx = ObjectHelper.cast(StreamProcessContext.class, processContext);
         getStreamStorage().unLike(ctx.getIdentity(), ctx.getActivity());
+        return processContext;
+      }
+
+    };
+  }
+  
+  /**
+   * Build unlike processor
+   * @return
+   */
+  public static SocialChromatticAsyncProcessor likeActivity() {
+    return new SocialChromatticAsyncProcessor(SocialServiceContextImpl.getInstance()) {
+
+      @Override
+      protected ProcessContext execute(ProcessContext processContext) throws Exception {
+        StreamProcessContext ctx = ObjectHelper.cast(StreamProcessContext.class, processContext);
+        getStreamStorage().like(ctx.getIdentity(), ctx.getActivity());
         return processContext;
       }
 

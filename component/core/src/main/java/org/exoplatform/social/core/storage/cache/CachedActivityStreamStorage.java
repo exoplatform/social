@@ -49,6 +49,11 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
   public void unLike(Identity removedLike, ExoSocialActivity activity) {
     this.storage.unLike(removedLike, activity);
   }
+  
+  @Override
+  public void like(Identity liker, ExoSocialActivity activity) {
+    this.storage.like(liker, activity);
+  }
 
   @Override
   public void update(ProcessContext ctx) {
@@ -194,4 +199,6 @@ public class CachedActivityStreamStorage implements ActivityStreamStorage {
     this.storage.migrateStreamSize(owner, size, type);
     
   }
+
+ 
 }

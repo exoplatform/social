@@ -124,6 +124,8 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       } else if (SpaceIdentityProvider.NAME.equals(owner.getProviderId())) {
         //records to Space Streams for SpaceIdentity
         space(owner, activityEntity);
+        //mention case
+        addMentioner(streamCtx.getMentioners(), activityEntity);
       }
     } catch (NodeNotFoundException e) {
       ctx.setException(e);
@@ -228,6 +230,21 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
   }
   
   @Override
+  public void like(Identity liker, ExoSocialActivity activity) {
+    try {
+      //
+      ActivityEntity entity = _findById(ActivityEntity.class, activity.getId());
+      
+      manageRefList(new UpdateContext(liker, null), entity, ActivityRefType.FEED);
+      manageRefList(new UpdateContext(liker, null), entity, ActivityRefType.MY_ACTIVITIES);
+      
+    } catch (NodeNotFoundException e) {
+      LOG.warn("Failed to make Activity References for like case.");
+    }
+    
+  }
+  
+  @Override
   public void unLike(Identity removedLike, ExoSocialActivity activity) {
     try {
       //
@@ -240,10 +257,11 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       if (notDelete) return;
       
+      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.FEED);
       manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.MY_ACTIVITIES);
       
     } catch (NodeNotFoundException e) {
-      LOG.warn("Failed to unLike Activity References");
+      LOG.warn("Failed to delete Activity References for unlike case.");
     }
   }
   
@@ -880,9 +898,7 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
                                                 : entity.getPostedTime();
         listRef.setLastMigration(value.longValue());
       }
-
-      StorageUtils.persist();
-
+      
       //
       for (ExoSocialActivity a : activities) {
         ActivityEntity activityEntity = getSession().findById(ActivityEntity.class, a.getId());
@@ -892,10 +908,13 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
         ActivityRef ref = listRef.get(activityEntity);
         ref.setActivityEntity(activityEntity);
       }
+      
+      //StorageUtils.getNode(identityEntity).save();
+      //getSession().save();
+      StorageUtils.persist();
+      
     } catch (NodeNotFoundException e) {
       LOG.warn("Failed to create Activity references.");
-    } finally {
-      StorageUtils.persist();
     }
   }
   
@@ -952,4 +971,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
     
     return false;
   }
+
+  
 }
