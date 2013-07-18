@@ -22,6 +22,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.common.service.ProcessContext;
 import org.exoplatform.social.common.service.SocialServiceContext;
+import org.exoplatform.social.common.service.SocialServiceContext.ProcessType;
 import org.exoplatform.social.common.service.impl.SocialServiceContextImpl;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
@@ -43,7 +44,7 @@ public class StreamInvocationHelper {
    */
   public static ProcessContext save(Identity owner, ExoSocialActivity activity, String[] mentioners) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.NEW_ACTIVITY_PROCESS, ctx);
     processCtx.identity(owner).activity(activity).mentioners(mentioners);
     
@@ -111,7 +112,25 @@ public class StreamInvocationHelper {
       beforeAsync();
       //don't use asynchronous because there is problem to get SessionProvider on Ecms side
       //org.exoplatform.services.cms.impl.Utils
-      ctx.getServiceExecutor().execute(StreamProcessorFactory.unLikeStream(), processCtx);
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.unlikeActivity(), processCtx);
+    } finally {
+      LOG.info(processCtx.getTraceLog());
+    }
+    
+    return processCtx;
+  }
+  
+  public static ProcessContext like(Identity liker, ExoSocialActivity activity) {
+    //
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LIKE_ACTIVITY_PROCESS, ctx);
+    processCtx.identity(liker).activity(activity);
+    
+    try {
+      beforeAsync();
+      //don't use asynchronous because there is problem to get SessionProvider on Ecms side
+      //org.exoplatform.services.cms.impl.Utils
+      ctx.getServiceExecutor().execute(StreamProcessorFactory.likeActivity(), processCtx);
     } finally {
       LOG.info(processCtx.getTraceLog());
     }
@@ -138,7 +157,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext connect(Identity sender, Identity receiver) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.CONNECT_ACTIVITY_PROCESS, ctx);
     processCtx.sender(sender).receiver(receiver);
     
@@ -155,7 +174,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext addSpaceMember(Identity owner, Identity spaceIdentity) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.ADD_SPACE_MEMBER_ACTIVITY_PROCESS, ctx);
     processCtx.identity(owner).spaceIdentity(spaceIdentity);
     
@@ -189,7 +208,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createFeedActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
@@ -205,7 +224,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
@@ -221,7 +240,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
@@ -237,7 +256,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     
@@ -253,7 +272,7 @@ public class StreamInvocationHelper {
   
   public static ProcessContext createSpaceActivityRef(Identity owner, List<ExoSocialActivity> list) {
     //
-    SocialServiceContext ctx = SocialServiceContextImpl.getInstance();
+    SocialServiceContext ctx = SocialServiceContextImpl.getInstance(ProcessType.ASYNC);
     StreamProcessContext processCtx = StreamProcessContext.getIntance(StreamProcessContext.LAZY_UPGRADE_STREAM_PROCESS, ctx);
     processCtx.identity(owner).activities(list);
     

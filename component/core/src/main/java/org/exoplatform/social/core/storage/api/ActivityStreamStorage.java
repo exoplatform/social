@@ -73,14 +73,47 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   public void save(ProcessContext ctx);
-  
 
+  /**
+   * Deletes the activity reference what relates the deleted Activity 
+   * @param activityId
+   * @since 4.0.2, 4.1.0
+   * 
+   */
   public void delete(String activityId);
   
+  /**
+   * Likes the activity then push the liked to Liker's streams
+   *  
+   * @param liker who likes the activity
+   * @param activity the liked activity
+   * @since 4.0.2, 4.1.0
+   */
+  public void like(Identity liker, ExoSocialActivity activity);
+  
+  /**
+   * Unlikes the activity then push the liked to Liker's streams
+   * 
+   * @param removedLike who unlikes the activity
+   * @param activity the unliked activity
+   * @since 4.0.2, 4.1.0
+   * 
+   */
   public void unLike(Identity removedLike, ExoSocialActivity activity);
   
+  /**
+   * Makes relationship between sender and receiver identity
+   * @param sender who send the relationship 
+   * @param receiver who receiver the relationship
+   * @since 4.0.2, 4.1.0
+   */
   public void connect(Identity sender, Identity receiver);
   
+  /**
+   * Removes the relationship
+   * @param sender who request the relationship
+   * @param receiver who receives the relationship
+   */
   public void deleteConnect(Identity sender, Identity receiver);
   
   /**
@@ -125,48 +158,203 @@ public interface ActivityStreamStorage {
    * @since 4.0.2, 4.1.0
    */
   public void removeSpaceMember(ProcessContext ctx);
-  
+  /**
+   * Gets Feed stream by target identity
+   * @param owner the owner's stream
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public List<ExoSocialActivity> getFeed(Identity owner, int offset, int limit);
-  
+  /**
+   * Gets the number of owner's feed stream
+   * @param owner
+   * @return
+   * 
+   * @since 4.0.2, 4.1.0
+   */
   public int getNumberOfFeed(Identity owner);
   
+  /**
+   * Determines whether Feed Stream's size or not 
+   * @param owner
+   * @return
+   * 
+   * @since 4.0.2, 4.1.0
+   */
   public boolean hasSizeOfFeed(Identity owner);
   
+  /**
+   * Gets Connections stream by target identity
+   * 
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public List<ExoSocialActivity> getConnections(Identity owner, int offset, int limit);
   
+  /**
+   * The number of the activities on the owner's connection stream
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public int getNumberOfConnections(Identity owner);
   
+  /**
+   * Determines whether Connection stream's size or not.
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public boolean hasSizeOfConnections(Identity owner);
   
+  /**
+   * Gets the activities of My Space's stream by the owner
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public List<ExoSocialActivity> getMySpaces(Identity owner, int offset, int limit);
   
+  /**
+   * The number of the activity on the owner's my space stream
+   * 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public int getNumberOfMySpaces(Identity owner);
   
+  /**
+   * Determines whether My Space stream's size or not 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public boolean hasSizeOfMySpaces(Identity owner);
   
+  /**
+   * The activities of Space's stream by the owner
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public List<ExoSocialActivity> getSpaceStream(Identity owner, int offset, int limit);
   
+  /**
+   * 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public int getNumberOfSpaceStream(Identity owner);
   
+  /**
+   * Determines whether the Space stream's size or not
+   * 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public boolean hasSizeOfSpaceStream(Identity owner);
   
+  /**
+   *  Gets the activities of My Activities's stream by the owner
+   *  
+   * @param owner
+   * @param offset
+   * @param limit
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public List<ExoSocialActivity> getMyActivities(Identity owner, int offset, int limit);
   
+  /**
+   * 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public int getNumberOfMyActivities(Identity owner);
   
+  /**
+   * Determines whether Connection stream's size or not.
+   * 
+   * @param owner
+   * @return
+   * @since 4.0.2, 4.1.0
+   */
   public boolean hasSizeOfMyActivities(Identity owner);
   
+  /**
+   * Creates the ActivityRef by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @param type
+   * @since 4.0.2, 4.1.0
+   */
   void createActivityRef(Identity owner, List<ExoSocialActivity> activities, ActivityRefType type);
   
+  /**
+   * Creates the ActivityRef on the Feed stream by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @since 4.0.2, 4.1.0
+   */
   void createFeedActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
+  /**
+   * Creates the ActivityRef on the Connections stream by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @since 4.0.2, 4.1.0
+   */
   void createConnectionsActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
+  /**
+   * Creates the ActivityRef on the My spaces stream by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @since 4.0.2, 4.1.0
+   */
   void createMySpacesActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
+  /**
+   * Creates the ActivityRef on the Space stream by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @since 4.0.2, 4.1.0
+   */
   void createSpaceActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
+  /**
+   * Creates the ActivityRef on the My Activities stream by the given ActivityRefType
+   * 
+   * @param owner
+   * @param activities
+   * @since 4.0.2, 4.1.0
+   */
   void createMyActivitiesActivityRef(Identity owner, List<ExoSocialActivity> activities);
   
+  /**
+   * Migrate the stream size
+   * @param owner
+   * @param size
+   * @param type
+   * @since 4.0.2, 4.1.0
+   */
   void migrateStreamSize(Identity owner, int size, ActivityRefType type);
 }

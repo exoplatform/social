@@ -113,6 +113,56 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
 
   }
   
+  public void testLike() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activityStorage.saveActivity(rootIdentity, activity);
+
+    assertNotNull("activity.getId() must not be null", activity.getId());
+
+    tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 1));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    
+    //like
+    activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    
+    activityStorage.updateActivity(activity);
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+
+  }
+  /*
+  public void testUnlike() throws ActivityStorageException {
+    final String activityTitle = "activity Title";
+
+    ExoSocialActivity activity = new ExoSocialActivityImpl();
+    activity.setTitle(activityTitle);
+    activityStorage.saveActivity(rootIdentity, activity);
+
+    assertNotNull("activity.getId() must not be null", activity.getId());
+
+    tearDownActivityList.addAll(activityStorage.getUserActivities(rootIdentity, 0, 1));
+    
+    assertEquals(1, streamStorage.getNumberOfFeed(rootIdentity));
+    
+    //like
+    activity.setLikeIdentityIds(new String[] {maryIdentity.getId()});
+    activityStorage.updateActivity(activity);
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+    assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
+    
+    //unlike
+    activity.setLikeIdentityIds(new String[] {});
+    activityStorage.updateActivity(activity);
+    
+    assertEquals(0, streamStorage.getNumberOfMyActivities(maryIdentity));
+    assertEquals(0, streamStorage.getNumberOfFeed(maryIdentity));
+  } */
+  
   public void testSaveMentionActivity() throws ActivityStorageException {
     final String activityTitle = "activity Title";
 

@@ -43,15 +43,30 @@ public class SocialServiceContextImpl implements SocialServiceContext {
   
   private TraceList traceList;
   
+  private ProcessType isAsyn = ProcessType.SYNC;
+  
   private SocialServiceContextImpl() {
     this.executorServiceManager = new ExecutorServiceManagerImpl(this);
     this.serviceExecutor = new SocialServiceExecutorImpl(this, executorServiceManager.newDefaultThreadPool("Social"));
     this.traceFactory = TraceFactory.defaultFactory;
   }
   
+  private SocialServiceContextImpl(ProcessType isAsyn) {
+    this();
+    this.isAsyn = isAsyn;
+  }
+  
   public static SocialServiceContext getInstance() {
     if (instance == null) {
       instance = new SocialServiceContextImpl();
+    }
+    
+    return instance;
+  }
+  
+  public static SocialServiceContext getInstance(ProcessType isAsyn) {
+    if (instance == null) {
+      instance = new SocialServiceContextImpl(isAsyn);
     }
     
     return instance;
@@ -95,7 +110,7 @@ public class SocialServiceContextImpl implements SocialServiceContext {
   
   @Override
   public boolean isAsync() {
-    return true;
+    return this.isAsyn == ProcessType.ASYNC;
   }
   
 }
