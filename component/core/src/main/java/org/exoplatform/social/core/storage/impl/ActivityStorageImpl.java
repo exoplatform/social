@@ -188,11 +188,12 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       StreamInvocationHelper.update(activity, oldUpdated, null, null);
     }
     
-    //process likes activity
-    manageActivityLikes(addedLikes, removedLikes, activity);
-    
     //
     fillActivityEntityFromActivity(activity, activityEntity);
+    StorageUtils.persist();
+    
+    //process likes activity
+    manageActivityLikes(addedLikes, removedLikes, activity);
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {

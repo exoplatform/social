@@ -135,7 +135,7 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     assertEquals(1, streamStorage.getNumberOfMyActivities(maryIdentity));
 
   }
-  /*
+  
   public void testUnlike() throws ActivityStorageException {
     final String activityTitle = "activity Title";
 
@@ -160,8 +160,8 @@ public class ActivityStreamStorageTest extends AbstractCoreTest {
     activityStorage.updateActivity(activity);
     
     assertEquals(0, streamStorage.getNumberOfMyActivities(maryIdentity));
-    assertEquals(0, streamStorage.getNumberOfFeed(maryIdentity));
-  } */
+    assertEquals(1, streamStorage.getNumberOfFeed(maryIdentity));
+  } 
   
   public void testSaveMentionActivity() throws ActivityStorageException {
     final String activityTitle = "activity Title";

@@ -257,7 +257,6 @@ public class ActivityStreamStorageImpl extends AbstractStorage implements Activi
       
       if (notDelete) return;
       
-      manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.FEED);
       manageRefList(new UpdateContext(null, removedLike), entity, ActivityRefType.MY_ACTIVITIES);
       
     } catch (NodeNotFoundException e) {
