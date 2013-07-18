@@ -21,6 +21,11 @@ import java.util.List;
 import org.exoplatform.social.common.service.utils.TraceList;
 
 public interface SocialServiceContext {
+  
+  public enum ProcessType {
+    SYNC,
+    ASYNC
+  }
 
   /**
    * Returns the lifecycle services used to handle lifecycle notifications

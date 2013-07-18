@@ -179,22 +179,20 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
     
     //
     long oldUpdated = activityEntity.getLastUpdated();
-    activity.setUpdated(System.currentTimeMillis());
-    
-    //process likes activity
     String[] removedLikes = StorageUtils.sub(activityEntity.getLikes(), activity.getLikeIdentityIds());
     String[] addedLikes = StorageUtils.sub(activity.getLikeIdentityIds(), activityEntity.getLikes());
     
+    //streamStorage.update(activity, oldUpdated, false);
+    if (mustInjectStreams && removedLikes.length == 0) {
+      activity.setUpdated(System.currentTimeMillis());
+      StreamInvocationHelper.update(activity, oldUpdated, null, null);
+    }
+    
+    //process likes activity
     manageActivityLikes(addedLikes, removedLikes, activity);
     
     //
     fillActivityEntityFromActivity(activity, activityEntity);
-    
-    //streamStorage.update(activity, oldUpdated, false);
-    if (mustInjectStreams) {
-      StreamInvocationHelper.update(activity, oldUpdated, null, null);
-    }
-    
   }
   
   private void manageActivityLikes(String[] addedLikes, String[] removedLikes, ExoSocialActivity activity) {
@@ -204,7 +202,7 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
         Identity identity = identityStorage.findIdentityById(id);
         //streamStorage.save(identity, activity);
         if (mustInjectStreams) {
-          StreamInvocationHelper.save(identity, activity, null);
+          StreamInvocationHelper.like(identity, activity);
         }
       }
     }
@@ -585,15 +583,6 @@ public class ActivityStorageImpl extends AbstractStorage implements ActivityStor
       
       //
       activity.setUpdated(currentMillis);
-      
-      //
-      if (activity.getPosterId() != comment.getUserId()) {
-        //streamStorage.save(identityStorage.findIdentityById(comment.getUserId()), activity);
-        if (mustInjectStreams) {
-          StreamInvocationHelper.save(identityStorage.findIdentityById(comment.getUserId()), activity, null);
-        }
-        
-      }
       
       //
       //streamStorage.update(activity, oldUpdated, false);
